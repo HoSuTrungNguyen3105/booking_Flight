@@ -1,0 +1,81 @@
+@import '../mixins';
+
+.MuiFormControl-root {
+  @apply text-[#979998] rounded-sm;
+}
+
+.MuiInputBase-root {
+  @apply text-teal-900 text-xs pl-2 pr-1 py-1 rounded-[0.1875rem] flex items-start bg-white gap-0 !important;
+  border: 1px solid #b9bcbb;
+  height: 2.25rem;
+  @include inputStatus;
+
+  .MuiInputAdornMent-root {
+    @apply h-full ml-0;
+    position: unset;
+  }
+
+  .MuiInputBase-input {
+    @apply text-teal-900 p-0 h-full text-xs leading-6 font-normal text-left;
+    max-width: 100%;
+    &::placeholder {
+      @apply opacity-70 text-[#979998];
+    }
+  }
+
+  fieldset {
+    @apply hidden;
+  }
+}
+
+.datefield--medium .MuiInputBase-root {
+  @apply max-w-[10rem];
+}
+
+.date-range-picker--medium .MuiInputBase-root {
+  @apply max-w-[15rem];
+}
+
+.datefield--error .MuiInputBase-root,
+.date-range-field--error .MuiInputBase-root {
+  @apply border-red-600 focus:ring-red-500 !important;
+}
+
+.datefield--warning .MuiInputBase-root,
+.date-range-field--warning .MuiInputBase-root {
+  @apply border-yellow-400 focus:ring-yellow-500 !important;
+}
+
+.datefield--confirmed .MuiInputBase-root,
+.date-range-field--confirmed .MuiInputBase-root {
+  @apply border-green-500 focus:ring-green-500 !important;
+}
+
+.datefield--error .MuiOutlinedInput-notchedOutline,
+.date-range-field--error .MuiOutlinedInput-notchedOutline {
+  @apply border-red-600 !important;
+}
+
+.datefield--warning .MuiOutlinedInput-notchedOutline,
+.date-range-field--warning .MuiOutlinedInput-notchedOutline {
+  @apply border-yellow-400 !important;
+}
+
+.datefield--confirmed .MuiOutlinedInput-notchedOutline,
+.date-range-field--confirmed .MuiOutlinedInput-notchedOutline {
+  @apply border-green-500 !important;
+}
+
+.datemonthpicker .MuiFormControl-root {
+  @apply w-[8rem];
+}
+
+.dateyearpicker-container .MuiFormControl-root {
+  @apply w-[7rem];
+}
+.date-range-picker-container .MuiFormControl-root {
+  @apply w-[13rem];
+}
+.MuiTableCell-root {
+  @apply border-b-0 !important;
+}

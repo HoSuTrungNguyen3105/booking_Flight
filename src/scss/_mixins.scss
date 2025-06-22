@@ -1,0 +1,30 @@
+@mixin borderStatus() {
+    &.confirmed {
+        @apply border-green-500;
+    }
+
+    &.warning {
+        @apply border-yellow-300;
+    }
+
+    &.error {
+        @apply border-red-200;
+    }
+}
+
+@mixin inputStatus() {
+    &.Mui-focused {
+        border-color: #5B5C5B;
+    }
+
+    &.Mui-readOnly {
+        border-color: #b9bcbb;
+        background-color: #f1f4f3;
+    }
+
+    &.Mui-disabled {
+        background-color: #f1f4f3;
+        color: #979998;
+    }
+    @include borderStatus;
+}

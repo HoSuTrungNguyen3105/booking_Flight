@@ -1,0 +1,87 @@
+/* Sidebar.scss */
+
+.sidebar-container {
+  width: 300px;
+  height: 100vh;
+  background-color: #f5f7f9;
+  padding: 16px;
+  border-right: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+
+  //   /* Ẩn scrollbar cross-browser */
+  //   scrollbar-width: none; /* Firefox */
+  //   -ms-overflow-style: none;
+}
+.sidebar-container::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.sidebar-tabs {
+  .MuiTab-root {
+    font-weight: 500;
+    font-size: 14px;
+  }
+
+  .Mui-selected {
+    color: #2f9ab4 !important;
+    font-weight: 600;
+  }
+}
+
+.side-bar {
+  cursor: pointer;
+  padding: 8px 12px;
+  margin: 4px 0;
+  background-color: #e8f1f3;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: #d6eaf0;
+  }
+
+  &.active {
+    background-color: #2f9ab4;
+    color: #fff;
+  }
+
+  .icon-button {
+    margin-left: auto;
+  }
+
+  .label {
+    font-size: 15px;
+    font-weight: 500;
+  }
+}
+
+.sub-item,
+.nested-sub-item {
+  cursor: pointer;
+  padding: 6px 12px;
+  margin: 2px 0;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background-color: #f0f4f6;
+  }
+
+  &.active {
+    background-color: #2f9ab4;
+    color: #fff;
+  }
+}

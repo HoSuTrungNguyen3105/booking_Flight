@@ -1,0 +1,24 @@
+.hero-section {
+  background-color: #1e40af; // bg-blue-800
+  padding-bottom: 4rem; // pb-16
+
+  .hero-container {
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem; // gap-2
+  }
+
+  .hero-title {
+    font-size: 3rem; // text-5xl
+    color: white;
+    font-weight: bold;
+  }
+
+  .hero-subtitle {
+    font-size: 1.5rem; // text-2xl
+    color: white;
+  }
+}

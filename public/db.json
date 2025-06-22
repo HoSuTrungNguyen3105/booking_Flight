@@ -1,0 +1,38 @@
+{
+  "tab1Items": [
+    {
+      "id": "item1",
+      "label": "Trang chủ",
+      "subItems": [
+        {
+          "id": "sub1",
+          "label": "Thống kê",
+          "subItems": [
+            { "id": "nested1", "label": "Doanh thu" },
+            { "id": "nested2", "label": "Lợi nhuận" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "item2",
+      "label": "Sản phẩm"
+    }
+  ],
+  "tab2Items": [
+    {
+      "id": "item3",
+      "label": "Người dùng",
+      "subItems": [
+        {
+          "id": "sub2",
+          "label": "Danh sách",
+          "subItems": [
+            { "id": "nested3", "label": "Khách hàng" },
+            { "id": "nested4", "label": "Nhân viên" }
+          ]
+        }
+      ]
+    }
+  ]
+}

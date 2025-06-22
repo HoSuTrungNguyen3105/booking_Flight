@@ -1,0 +1,82 @@
+.container-content-modal {
+  z-index: 1050 !important;
+  transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  @apply h-[100vh] m-auto outline-0 flex justify-center items-center opacity-[1] relative;
+  .paper-container {
+    border: 1px solid rgb(185, 188, 187);
+    @apply p-6 rounded;
+    box-shadow:
+      rgba(0, 0, 0, 0.12) 0px 7px 10px 0px,
+      rgba(0, 0, 0, 0.12) 0px 0px 2px 0px;
+
+    .modal-header {
+      padding: 4.5px 0;
+      @apply flex justify-between items-center h-8 mb-6 overflow-hidden text-ellipsis whitespace-nowrap;
+
+      .title {
+        @apply flex justify-between items-center gap-x-2;
+
+        .icon {
+          background-color: rgb(45, 155, 178);
+          @apply w-2 h-2 rounded-lg;
+        }
+
+        .text {
+          color: rgb(11, 62, 99);
+          @apply m-0 text-lg font-bold leading-5 p-0;
+        }
+
+        .tool-tip {
+          @apply text-[1rem];
+        }
+      }
+
+      .icon-close {
+        user-select: none;
+        transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+        color: rgb(91, 92, 91);
+        @apply w-4 h-4 inline-block fill-current flex-shrink-0 text-[20px];
+      }
+    }
+
+    .fixed-header {
+      @apply absolute top-6 w-[97%];
+    }
+
+    .error {
+      @apply flex items-center gap-x-1 mb-4;
+
+      .icon-error {
+        user-select: none;
+        transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+        color: rgb(249, 75, 80);
+        @apply w-4 h-4 inline-block fill-current flex-shrink-0 text-xl;
+      }
+
+      .text-error {
+        color: rgb(179, 37, 66);
+        @apply m-0 text-sm leading-6 font-bold;
+      }
+    }
+
+    .modal-content {
+      @apply flex flex-col text-sm leading-6 font-normal max-h-full overflow-auto pr-[5px] pb-[2px];
+    }
+
+    .scroll-content {
+      @apply mt-[55px] mb-[72px] overflow-x-auto;
+    }
+
+    .modal-footer {
+      @apply mt-5 flex justify-end gap-x-2;
+    }
+
+    .fixed-bottom {
+      @apply absolute bottom-[30px] right-[10px] mt-[30px];
+    }
+  }
+
+  .overflow-position {
+    @apply bottom-0 left-4 mb-0 absolute;
+  }
+}

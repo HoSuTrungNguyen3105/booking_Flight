@@ -1,0 +1,127 @@
+$menu-icon-colour: #2d9bb2;
+$app-bar-colour: #f7f9f8;
+ 
+.search-status {
+  background-color: $app-bar-colour !important;
+  @apply flex gap-4;
+}
+ 
+.flight-container {
+  overflow: hidden;
+}
+ 
+.left-element,
+.bottom-element,
+.right-element {
+  @apply w-1/4;
+}
+ 
+.no-underline {
+  color: inherit;
+}
+ 
+.agrid-theme {
+  .black-row {
+    background-color: $app-bar-colour !important;
+    color: black !important;
+  }
+ 
+  .white-row {
+    background-color: white !important;
+    color: black !important;
+  }
+}
+ 
+.flight-form {
+  .flightid-container {
+    margin: 24px auto;
+    padding: 24px;
+    width: 90%;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+ 
+    .flightid-title {
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+ 
+    .form-footer {
+      margin-top: 24px;
+      display: flex;
+      justify-content: flex-end;
+    }
+ 
+    .MuiTableCell-root {
+      vertical-align: middle;
+    }
+  }
+}
+.flight-create-container {
+  padding: 24px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  h6,
+  .MuiTypography-root {
+    color: #1976d2;
+    font-weight: 500;
+  }
+  .flight-form-header {
+    margin-bottom: 16px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    text-align: left;
+  }
+  .airport-selection,
+  .datetime-selection {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+    .airport-box {
+      min-width: 200px;
+    }
+    .arrow-icon {
+      color: #1976d2;
+      font-size: 28px;
+    }
+  }
+  .selected-aircraft {
+    margin-top: 24px;
+    padding: 16px;
+    border: 1px solid #1976d2;
+    border-radius: 8px;
+    background-color: #e3f2fd;
+  }
+  .button-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+  }
+  .grid-container {
+    margin-top: 16px;
+    height: 50vh;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+  }
+  .form-row-4col {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+    .form-item {
+      min-width: 0;
+    }
+    .arrow-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #1976d2;
+    }
+  }
+ }
+.ag-grid {
+}

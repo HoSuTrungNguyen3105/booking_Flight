@@ -1,0 +1,184 @@
+@import '../_variable.scss';
+$variant-colors: (
+  Primary: (
+    contained: (
+      background-color: $darkBlue-50,
+      hover: $lightBlue-950,
+      active: $darkBlue-100,
+    ),
+    outlined: (
+      border: $lightBlue-1000,
+      color: $darkBlue-200,
+      background-color: $white,
+      hover: $lightBlue-1100,
+      hover-border: $lightBlue-600,
+      active: $lightBlue-100,
+      active-color: $lightBlue-900,
+      active-border: $lightBlue-600,
+    ),
+    unfilled: (
+      border: none,
+      color: $lightBlue-600,
+      hover: $lightBlue-50,
+      active: $lightBlue-100,
+      active-color: $lightBlue-900,
+    ),
+    unfilledInverse: (
+      color: $lightBlue-300,
+      hover: $lightBlue-700,
+      active: $lightBlue-800,
+      active-color: $lightBlue-800,
+    ),
+  ),
+  Normal: (
+    contained: (
+      background-color: $dark-50,
+      hover: $dark-100,
+      active: $dark-200,
+    ),
+    outlined: (
+      border: $gray-50,
+      color: $gray-100,
+      background-color: $white,
+      hover: $gray-300,
+      hover-border: $gray-200,
+      active: $gray-400,
+      active-color: $gray-500,
+      active-border: $gray-600,
+    ),
+    unfilled: (
+      border: none,
+      color: $indigo-700,
+      hover: $indigo-100,
+      active: $indigo-300,
+      active-color: $indigo-900,
+    ),
+    unfilledInverse: (
+      color: $indigo-300,
+      hover: $indigo-700,
+      active: $indigo-900,
+      active-color: $white,
+    ),
+  ),
+);
+
+@mixin renderVariantButton($variant) {
+  $colors: map-get($variant-colors, $variant);
+
+  &.MuiButton-contained {
+    color: rgb(255, 255, 255);
+    background-color: map-get($colors, contained, background-color);
+
+    &:hover,
+    &.hovered {
+      background-color: map-get($colors, contained, hover);
+      box-shadow: none;
+    }
+
+    &:active,
+    &.activated {
+      background-color: map-get($colors, contained, active);
+    }
+  }
+
+  &.MuiButton-outlined {
+    border: 1px solid map-get($colors, outlined, border);
+    color: map-get($colors, outlined, color);
+    background-color: map-get($colors, outlined, background-color);
+
+    &:hover,
+    &.hovered {
+      background-color: map-get($colors, outlined, hover);
+      border: 1px solid map-get($colors, outlined, hover-border);
+      box-shadow: none;
+    }
+
+    &:active,
+    &.activated {
+      color: map-get($colors, outlined, active-color);
+      border-color: map-get($colors, outlined, active-border);
+      background-color: map-get($colors, outlined, active);
+    }
+  }
+
+  &.MuiButton-unfilled {
+    border: map-get($colors, unfilled, border);
+    color: map-get($colors, unfilled, color);
+
+    &:hover,
+    &.hovered {
+      box-shadow: none;
+      background-color: map-get($colors, unfilled, hover);
+    }
+
+    &:active,
+    &.activated {
+      background-color: map-get($colors, unfilled, active);
+      color: map-get($colors, unfilled, active-color);
+    }
+  }
+
+  &.MuiButton-unfilledInverse {
+    color: map-get($colors, unfilledInverse, color);
+
+    &:hover,
+    &.hovered {
+      box-shadow: none;
+      background-color: map-get($colors, unfilledInverse, hover);
+    }
+
+    &:active,
+    &.activated {
+      color: map-get($colors, unfilledInverse, active-color);
+      background-color: map-get($colors, unfilledInverse, active);
+    }
+  }
+}
+
+.button {
+  &.MuiButtonBase-root {
+    transition:
+      background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+      box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+      border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+      color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    line-height: 1.5;
+    font-weight: 700;
+    border-radius: 4px;
+    text-transform: none;
+    box-shadow: none;
+    height: 32px;
+    font-size: 13px;
+    gap: 2px;
+    min-width: 32px;
+
+    &.MuiButton-colorPrimary {
+      @include renderVariantButton('Primary');
+    }
+
+    &.MuiButton-colorNormal {
+      @include renderVariantButton('Normal');
+    }
+
+    &.Mui-disabled {
+      box-shadow: none;
+      opacity: 0.4;
+    }
+
+    &.MuiButton-sizeLarge {
+      font-size: 14px;
+      min-width: 36px;
+      height: 36px;
+    }
+
+    &.MuiButton-sizeSmall {
+      font-size: 12px;
+      min-width: 28px;
+      height: 28px;
+    }
+
+    & .MuiButton-icon {
+      margin: 0px;
+    }
+  }
+}
