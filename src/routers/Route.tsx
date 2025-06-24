@@ -6,7 +6,6 @@ import Guard from "../guard/Guard";
 import Home from "../components/Home/Home";
 import Setting from "../common/Setting/Setting";
 import Registration from "../components/Auth/Registration";
-import { Header } from "../common/Header/Header";
 import AdminLayout from "../components/Layout/AdminLayout";
 import Search_layout from "../components/Admin/Search_layout";
 import { FileUpload } from "../common/FileUploader/FileUpload";
@@ -15,6 +14,7 @@ import Register from "../components/Auth/Register";
 import Hero from "../components/Hero/Hero";
 import SignOut from "../components/Auth/SignOut";
 import BookTicket from "../components/User/BookTicket";
+import { Typography } from "@mui/material";
 
 const routes: RouteObject[] = [
   {
@@ -44,6 +44,14 @@ const routes: RouteObject[] = [
           { path: "setting", element: <Setting /> },
           // { index: false, element: <Registration /> },
         ],
+      },
+      {
+        path: "overview/revenue",
+        element: <Typography>Xin chao</Typography>,
+      },
+      {
+        path: "airport-list/domestic",
+        element: <Typography>Xin chao</Typography>,
       },
       {
         path: "sampleFormDemo",

@@ -128,9 +128,14 @@ export const Dropdown = ({
           placeholder={placeholder}
           sx={{
             "& .MuiOutlinedInput-root": {
-              // alignItems: "center",
-              cursor: "pointer", // hoặc 'pointer', 'default'... tùy bạn thích
+              alignItems: "center",
+              textDecoration: "disable",
+              // cursor: "pointer", // hoặc 'pointer', 'default'... tùy bạn thích
             },
+            "& .MuiOutlinedInput-input::selection": {
+              background: "transparent",
+            },
+
             "& .MuiInputBase-root": {
               minWidth: "20px",
               display: "flex",
@@ -146,10 +151,12 @@ export const Dropdown = ({
               flexGrow: 1, // hoặc "unset" nếu muốn hiện full
               lineHeight: 1.5,
               fontSize: "15px",
+              // userSelect: "none", // Không cho bôi đen
+              // pointerEvents: "none", // Chặn toàn bộ event (nếu cần input không tương tác)
+              // WebkitUserSelect: "none", // Safari
+              // MozUserSelect: "none",
               // padding: "10px 14px",
             },
-
-            //
             "& .MuiOutlinedInput-notchedOutline": {
               borderColor: getBorderColour,
             },
@@ -160,7 +167,10 @@ export const Dropdown = ({
               right: 15,
             },
             "& input": {
-              cursor: "pointer", // hoặc 'pointer', 'default'... tùy bạn thích
+              cursor: "pointer",
+              // userSelect: "none",
+              // pointerEvents: "none",
+              // hoặc 'pointer', 'default'... tùy bạn thích
               // padding: "10.5px 14px",
               // lineHeight: "1.5",
               // overflow: "visible", // ✅ không bị cắt
@@ -169,6 +179,8 @@ export const Dropdown = ({
             },
           }}
           InputProps={{
+            readOnly: true,
+            disableUnderline: true,
             ...params.InputProps,
             startAdornment: customInput ? (
               <>

@@ -13,3 +13,10 @@ export interface Android12SwitchProps {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   "data-testid"?: string;
 }
+export interface CustomSwitchProps {
+  customColor?: string;
+  hasLabel?: boolean;
+  labelOn?: string;
+  labelOff?: string;
+  checked?: boolean;
+}

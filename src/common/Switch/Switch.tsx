@@ -1,4 +1,5 @@
 import { styled, Switch, Typography, Box } from "@mui/material";
+// import { styled, Switch, type Theme } from "@mui/material";
 import type { Android12SwitchProps } from "./type";
 import "../../scss/form/_switch.scss";
 
@@ -68,8 +69,8 @@ const CustomSwitch = styled(Switch, {
 
   "& .MuiButtonBase-root.MuiSwitch-switchBase": {
     margin: "4px",
-    top: 3,
-    left: 1,
+    top: 5,
+    left: 2,
   },
 
   "& .MuiSwitch-track": {

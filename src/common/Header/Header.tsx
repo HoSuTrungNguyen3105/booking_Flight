@@ -364,20 +364,21 @@ export const Header = forwardRef<HTMLElement>((_, ref) => {
                     /> */}
                   </Stack>
                 )}
-                <IconButton
-                  size="large"
-                  edge="start"
-                  color="default"
-                  aria-label="menu"
-                  sx={{ mr: 2 }}
-                >
-                  <AppsIcon />{" "}
-                </IconButton>{" "}
-              </Box>{" "}
-            </Box>{" "}
-          </Toolbar>{" "}
-        </AppBar>{" "}
-      </Box>{" "}
+                <Stack>
+                  <Button
+                    size="medium"
+                    icon={<AppsIcon />}
+                    priority="normal"
+                    // iconPosition="leading" //leading trailing
+                    appearance="unfilled"
+                    sx={{ mr: 2 }}
+                  />
+                </Stack>
+              </Box>
+            </Box>
+          </Toolbar>
+        </AppBar>
+      </Box>
     </AppBar>
   );
 });

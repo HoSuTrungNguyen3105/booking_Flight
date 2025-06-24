@@ -221,14 +221,16 @@ export const Sidebar = () => {
                             <RemoveIcon
                               fontSize="small"
                               onClick={() =>
-                                toast(`${REACT_APP_URL_TRANSFER}/${subItem.id}`)
+                                navigate(
+                                  `${REACT_APP_URL_TRANSFER}/${subItem.id}`
+                                )
                               }
                             />
                           ) : (
                             <AddIcon
                               fontSize="small"
                               onClick={() =>
-                                toast(
+                                navigate(
                                   `${process.env.REACT_APP_URL_TRANSFER}/${subItem.id}`
                                 )
                               }
@@ -277,8 +279,10 @@ export const Sidebar = () => {
                                   // }}
                                   onClick={() => {
                                     handleNestedSubItemClick(nestedSubItem.id);
-                                    toast(
-                                      `${REACT_APP_URL_TRANSFER}/${subItem.id}/${nestedSubItem.id}`
+                                    navigate(
+                                      `/${subItem.id}/${nestedSubItem.id}`
+
+                                      // `${REACT_APP_URL_TRANSFER}/${subItem.id}/${nestedSubItem.id}`
                                     );
                                   }}
                                 >
