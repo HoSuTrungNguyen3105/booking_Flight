@@ -73,7 +73,6 @@ export const FileUpload: FC<FileUploaderProps> = ({
         .split(",")
         .map((item) => item.toLowerCase());
       const sizeFiles = sumBy(files, "size") + totalSize;
-
       if (sizeFiles > sizeToBytes(maxSize)) {
         toast.error("Max size exceeded");
         return false;
@@ -259,7 +258,6 @@ export const FileUpload: FC<FileUploaderProps> = ({
             currentInputType === "input" ? (
               <Box className="container-img">
                 {imageFiles.map((file, index) => (
-                  // {imageFiles.map((file, index) => (
                   <Box
                     data-testid="file-item-1"
                     key={uniqueId()}
@@ -270,6 +268,7 @@ export const FileUpload: FC<FileUploaderProps> = ({
                       },
                       background: `url(${file.preview}) 0% 0% / 100% 100% no-repeat`,
                     }}
+                    onClick={() => openImageModal(file)}
                   >
                     <Box className="layout-img" />
                     <Box className="info-img">
@@ -288,6 +287,23 @@ export const FileUpload: FC<FileUploaderProps> = ({
                     />
                   </Box>
                 ))}
+                <ContentModal
+                  open={openImage}
+                  closeLabel="Exit"
+                  hideSubmit={true}
+                  handleClose={closeImageModal}
+                  contentArea={
+                    selectedFile ? (
+                      <Box>
+                        <img
+                          src={selectedFile.preview}
+                          alt={selectedFile.fileName}
+                          style={{ width: "100%", height: "100%" }}
+                        />
+                      </Box>
+                    ) : null
+                  }
+                />
               </Box>
             ) : currentInputType === "thumbnails" ? (
               <Box>
@@ -296,8 +312,7 @@ export const FileUpload: FC<FileUploaderProps> = ({
                     key={uniqueId()}
                     className="group-file"
                     data-testid="file-item"
-                    // onClick={openImageModal}
-                    onClick={() => openImageModal(file)} // mở modal khi click vào
+                    onClick={() => openImageModal(file)}
                   >
                     <Box className="name-file">
                       {getFileIcon(file.type)}
@@ -312,22 +327,6 @@ export const FileUpload: FC<FileUploaderProps> = ({
                         data-testid={`remove-file-${index}`}
                       />
                     </Box>
-                    {/* <ContentModal
-                      open={openImage}
-                      closeLabel="Exit"
-                      handleClose={closeImageModal}
-                      contentArea={
-                        selectedFile ? (
-                          <Box className="image-modal">
-                            <img
-                              src={file.preview}
-                              alt={file.fileName}
-                              style={{ width: "100%", height: "100%" }}
-                            />
-                          </Box>
-                        ) : null
-                      }
-                    /> */}
                   </Box>
                 ))}
                 <ContentModal

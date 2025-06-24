@@ -1,5 +1,4 @@
 import { type FC, useMemo } from "react";
-// import { ModalProps } from "./type";
 import {
   Box,
   Dialog,
@@ -11,10 +10,10 @@ import {
 } from "@mui/material";
 import clsx from "clsx";
 import { CloseOutlined } from "@mui/icons-material";
-// import { convertToString, quickValue } from "utils";
 import type { ModalProps } from "./type";
 import { convertToString, quickValue } from "../../utils";
 import { Button } from "../Button/Button";
+
 const ContentModal: FC<ModalProps> = ({
   type = "modal",
   contentArea,

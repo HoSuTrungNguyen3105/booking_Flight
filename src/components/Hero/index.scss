@@ -1,24 +1,77 @@
+// .hero-section {
+//   background-color: #1e40af; // bg-blue-800
+//   padding-bottom: 4rem; // pb-16
+
+//   .hero-container {
+//     max-width: 1280px;
+//     margin-left: auto;
+//     margin-right: auto;
+//     display: flex;
+//     flex-direction: column;
+//     gap: 0.5rem; // gap-2
+//   }
+
+//   .hero-title {
+//     font-size: 3rem; // text-5xl
+//     color: white;
+//     font-weight: bold;
+//   }
+
+//   .hero-subtitle {
+//     font-size: 1.5rem; // text-2xl
+//     color: white;
+//   }
+// }
 .hero-section {
-  background-color: #1e40af; // bg-blue-800
-  padding-bottom: 4rem; // pb-16
+  background-image: url("/cloneAirplaneManagement/public/image.jpg"); // 👉 Thay bằng ảnh hero thật
+  background-size: cover;
+  background-position: center;
+  min-height: 380px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  position: relative;
+  text-align: center;
+  padding: 2rem;
+
+  // Tạo overlay tối nhẹ cho ảnh để dễ đọc text
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 30, 60, 0.45);
+    z-index: 1;
+  }
 
   .hero-container {
-    max-width: 1280px;
-    margin-left: auto;
-    margin-right: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem; // gap-2
+    position: relative;
+    z-index: 2;
+    max-width: 700px;
+
+    .hero-title {
+      font-size: 3rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+      color: #ffffff;
+      line-height: 1.2;
+    }
+
+    .hero-subtitle {
+      font-size: 1.25rem;
+      color: #f0f0f0;
+    }
   }
 
-  .hero-title {
-    font-size: 3rem; // text-5xl
-    color: white;
-    font-weight: bold;
-  }
+  @media (max-width: 768px) {
+    .hero-container {
+      .hero-title {
+        font-size: 2rem;
+      }
 
-  .hero-subtitle {
-    font-size: 1.5rem; // text-2xl
-    color: white;
+      .hero-subtitle {
+        font-size: 1rem;
+      }
+    }
   }
 }

@@ -1,9 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  Modal,
   Box,
   TextField,
-  Button,
   IconButton,
   ListItem,
   InputAdornment,
@@ -12,10 +10,10 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import CancelIcon from "@mui/icons-material/Cancel";
-import CloseIcon from "@mui/icons-material/Close";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
-import DoneIcon from "@mui/icons-material/Done";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import ContentModal from "../Modal/ContentModal";
+import useDebounce from "../../hooks/useDebounce";
+import TextArea from "../Input/TextArea";
 
 const mockData = [
   { id: 1, name: "Kim Gil-dong", department: "Tech", location: "Seoul" },
@@ -33,22 +31,39 @@ const SearchPopup: React.FC = () => {
   const [selectedItems, setSelectedItems] = useState<(typeof mockData)[0][]>(
     []
   );
-  const [tempSelectedItems, setTempSelectedItems] = useState<
-    (typeof mockData)[0][]
-  >([]);
+  // const [tempSelectedItems, setTempSelectedItems] = useState<
+  //   (typeof mockData)[0][]
+  // >([]);
+  const closeModal = () => setOpen(false);
 
   const handleSelect = (item: (typeof mockData)[0]) => {
     setSelectedItems((prevSelected) => {
-      setSelectedItems(tempSelectedItems);
       const isSelected = prevSelected.some(
         (selected) => selected.id === item.id
       );
-      return isSelected
-        ? prevSelected.filter((selected) => selected.id !== item.id)
-        : [...prevSelected, item];
+
+      if (isSelected) {
+        return prevSelected.filter((selected) => selected.id !== item.id);
+      } else {
+        return [...prevSelected, item];
+      }
     });
   };
+  // const [query, setQuery] = useState("");
+  const debouncedQuery = useDebounce(query, 500);
 
+  useEffect(() => {
+    if (debouncedQuery.trim() !== "") {
+      handleFilter(debouncedQuery);
+    } else {
+      setFilteredResults(mockData);
+    }
+  }, [debouncedQuery]);
+
+  // const handleSearch = useDebounce((value: (typeof mockData)[0]) => {
+  //   // hàm gọi API hoặc xử lý gì đó
+  //   handleSelect(value);
+  // }, 1000);
   const handleRemoveItem = (id: number) => {
     setSelectedItems((prevSelected) =>
       prevSelected.filter((item) => item.id !== id)
@@ -71,6 +86,18 @@ const SearchPopup: React.FC = () => {
     );
     setFilteredResults(filtered);
   };
+  // const handleSearch = useDebounce((value: string) => {
+  //   handleFilter(value);
+  // }, 1000);
+
+  useEffect(() => {
+    if (debouncedQuery.trim() !== "") {
+      handleFilter(debouncedQuery);
+    } else {
+      setFilteredResults(mockData);
+    }
+  }, [debouncedQuery]);
+
   const handleCancel = () => {
     setSelectedItems([]);
     setOpen(false);
@@ -78,49 +105,41 @@ const SearchPopup: React.FC = () => {
   return (
     <Box className="search-popup">
       <Box className="search">
-        <TextField
-          variant="outlined"
-          size="small"
-          fullWidth
+        <TextArea
+          // variant="outlined"
+          // size="small"
+          // fullWidth
           id="uniqueText"
-          placeholder={selectedItems.length === 0 ? "placeholder" : ""}
+          placeholder={selectedItems.length === 0 ? "Enter" : ""}
           value={query}
-          data-testid="search-popup"
+          // data-testid="search-popup"
           onChange={(e) => handleFilter(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && setOpen(true)}
           className="search-bar"
           sx={{ maxHeight: "max-content", display: "flex", flexWrap: "wrap" }}
           InputProps={{
-            style: {
-              overflow: "auto",
-              whiteSpace: "nowrap",
-            },
+            // style: {
+            //   overflow: "auto",
+            //   whiteSpace: "nowrap",
+            // },
             startAdornment: (
               <>
                 <InputAdornment position="end" sx={{ margin: "0" }}>
                   <IconButton
                     onClick={() => setOpen(true)}
                     className="btn-modal"
-                    sx={{ padding: "0" }}
+                    // sx={{ padding: "0" }}
                   >
                     <SearchIcon />
                   </IconButton>
                 </InputAdornment>
                 {selectedItems.map((item) => (
                   <Box key={item.id} className="selected-tag">
-                    <Typography
-                      sx={{
-                        alignContent: "center",
-                        maxWidth: "fit-content",
-                        width: "max-content",
-                      }}
-                    >
-                      {item.name}
-                    </Typography>
+                    <Typography>{item.name}</Typography>
                     <IconButton
                       size="small"
                       onClick={() => handleRemoveItem(item.id)}
-                      data-testid={`cancel-button-${item.id}`}
+                      // data-testid={`cancel-button-${item.id}`}
                     >
                       <CancelIcon fontSize="small" />
                     </IconButton>
@@ -131,139 +150,72 @@ const SearchPopup: React.FC = () => {
           }}
         />
       </Box>
-      <Modal
+      <ContentModal
         open={open}
-        onClose={() => setOpen(false)}
-        className="search-modal"
-        data-testid="search-modal"
-      >
-        <Box
-          className="modal-box"
-          sx={{
-            width: "1000",
-            height: "800px",
-            bgcolor: "white",
-            p: 3,
-            borderRadius: 2,
-            boxShadow: 24,
-            overflow: "hidden",
-          }}
-        >
-          <Box className="modal-title">
-            <Box className="title">
-              <FiberManualRecordIcon className="circle" />
-              <Typography variant="h6">userInformation</Typography>
+        closeLabel="Exit"
+        handleClose={closeModal}
+        // onClose={() => setOpen(false)}
+        // className="search-modal"
+        // data-testid="search-modal"
+        contentArea={
+          <Box>
+            <Box className="modal-title">
+              <Box className="title">
+                <FiberManualRecordIcon className="circle" />
+                <Typography variant="h6">User Information</Typography>
+              </Box>
             </Box>
-            <IconButton
-              className="close-modal"
-              onClick={() => handleCancel()}
-              data-testid="close-button"
-            >
-              <CloseIcon />
-            </IconButton>
-          </Box>
-          <Box className="header-up">
-            <Typography className="bar" variant="h6">
-              searchResults
-            </Typography>
-            <TextField
-              variant="outlined"
-              fullWidth
-              value={query}
-              data-testid="placeholder"
-              onChange={(e) => handleFilter(e.target.value)}
-              className="search-bar"
-            />
-            <Button className="black" variant="contained" color="primary">
-              <SearchIcon />
-              select
-            </Button>
-          </Box>
-          <Box className="header">
-            <Typography className="bar" variant="h6">
-              searchResults
-            </Typography>
-            <TextField
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <IconButton
-                      onClick={() => setOpen(true)}
-                      className="btn-modal"
-                      sx={{ padding: "0" }}
-                    >
-                      <SearchIcon />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-              variant="outlined"
-              fullWidth
-              value={query}
-              sx={{ maxWidth: "30%" }}
-              onChange={(e) => handleFilter(e.target.value)}
-              className="search-bar"
-            />
-          </Box>
-          <Box className="table-header">
-            <CheckCircleOutlineIcon className="check-circle" />
-            <Box className="table-description">
-              <Typography className="result-name">name</Typography>
-              <Typography className="result-department">department</Typography>
-              <Typography className="result-location">location</Typography>
+            <Box className="header-up">
+              <Typography className="bar" variant="h6">
+                Search Results
+              </Typography>
+              <TextField
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search..."
+                // variant="outlined"
+                // value={query}
+                className="search-bar"
+                // onChange={(e) => {
+                //   handleFilter(e.target.value);
+                // }}
+              />
+            </Box>
+            <Box className="search-results" data-testid="search-results">
+              {query.trim() !== "" && filteredResults.length > 0 ? (
+                filteredResults.map((item) => (
+                  <ListItem
+                    key={item.id}
+                    className="search-result-item"
+                    onClick={() => handleSelect(item)}
+                    data-testid={`search-item-${item.id}`}
+                  >
+                    <Radio
+                      checked={selectedItems.some(
+                        (selected) => selected.id === item.id
+                      )}
+                      className="result-radio"
+                    />
+                    <Box className="table-description">
+                      <Typography className="result-name">
+                        {item.name}
+                      </Typography>
+                      <Typography className="result-department">
+                        {item.department}
+                      </Typography>
+                      <Typography className="result-location">
+                        {item.location}
+                      </Typography>
+                    </Box>
+                  </ListItem>
+                ))
+              ) : (
+                <Box className="no-results">No Results</Box>
+              )}
             </Box>
           </Box>
-          <Box className="search-results" data-testid="search-results">
-            {query.trim() !== "" && filteredResults.length > 0 ? (
-              filteredResults.map((item) => (
-                <ListItem
-                  key={item.id}
-                  className="search-result-item"
-                  onClick={() => handleSelect(item)}
-                  data-testid={`search-item-${item.id}`}
-                >
-                  <Radio
-                    checked={selectedItems.some(
-                      (selected) => selected.id === item.id
-                    )}
-                    className="result-radio"
-                  />
-                  <Box className="table-description">
-                    <Typography className="result-name">{item.name}</Typography>
-                    <Typography className="result-department">
-                      {item.department}
-                    </Typography>
-                    <Typography className="result-location">
-                      {item.location}
-                    </Typography>
-                  </Box>
-                </ListItem>
-              ))
-            ) : (
-              <Box className="no-results">noResults</Box>
-            )}
-          </Box>
-
-          <Box className="modal-footer">
-            <Button
-              variant="outlined"
-              onClick={() => handleCancel()}
-              data-testid="cancel-button"
-            >
-              cancel
-            </Button>
-            <Button
-              onClick={handleDone}
-              variant="contained"
-              color="primary"
-              data-testid="done-button"
-            >
-              <DoneIcon />
-              select
-            </Button>
-          </Box>
-        </Box>
-      </Modal>
+        }
+      ></ContentModal>
     </Box>
   );
 };

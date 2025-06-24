@@ -6,14 +6,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import {
-  Divider,
-  FormControlLabel,
-  Menu,
-  MenuItem,
-  Tab,
-  Tabs,
-} from "@mui/material";
+import { Divider, FormControlLabel, Tab, Tabs } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
 import MoreHorizSharpIcon from "@mui/icons-material/MoreHorizSharp";
@@ -23,41 +16,61 @@ import AppsIcon from "@mui/icons-material/Apps";
 import HelpOutlineRoundedIcon from "@mui/icons-material/HelpOutlineRounded";
 import { styled } from "@mui/material/styles";
 import Switch from "@mui/material/Switch";
-import InputLabel from "@mui/material/InputLabel";
-import FormControl from "@mui/material/FormControl";
-import Select, { type SelectChangeEvent } from "@mui/material/Select";
+import { type SelectChangeEvent } from "@mui/material/Select";
 import { useSidebar } from "../../context/SidebarContext";
 import "./index.scss";
 import { Button } from "../Button/Button";
 import { useAuth } from "../../context/AuthContext";
-import { Language, Login } from "@mui/icons-material";
+import { AppRegistration, Language, Login } from "@mui/icons-material";
 import { Dropdown } from "../Dropdown/Dropdown";
 import type { DropdownOptions } from "../Dropdown/type";
 import { Controller, useForm } from "react-hook-form";
 import SignOut from "../../components/Auth/SignOut";
+import { useTranslation } from "react-i18next";
+import { Single12Timepicker } from "../TimePicker";
+
 export const Header = forwardRef<HTMLElement>((_, ref) => {
   const { user, isAuthenticated } = useAuth();
   const { toggleSidebar, setSelectedMenu } = useSidebar();
   const [tabValue, setTabValue] = useState(0);
+  const { i18n } = useTranslation();
+
+  const handleChangeLanguage = (lang: string) => {
+    i18n.changeLanguage(lang); // 'en', 'jp', 'kr', v.v.
+  };
   // const [tabValue, setTabValue] = useState(0);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  // const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   // const handleTabChange = (event, newValue) => {
   //   setTabValue(newValue);
   // };
 
-  const handleOpenSubMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
+  // const handleOpenSubMenu = (event: React.MouseEvent<HTMLElement>) => {
+  //   setAnchorEl(event.currentTarget);
+  // };
 
-  const handleCloseSubMenu = () => {
-    setAnchorEl(null);
-  };
+  // const handleCloseSubMenu = () => {
+  //   setAnchorEl(null);
+  // };
+  const menuMap = [
+    "1Depth Menu1",
+    "1Depth Menu2",
+    "1Depth Menu3",
+    "1Depth Menu4",
+    "1Depth Menu5",
+  ];
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     event.stopPropagation();
     setTabValue(newValue);
+    setSelectedMenu(menuMap[newValue]);
   };
-  const [lng, setLng] = React.useState<string>("ENG");
+  const [lng, setLng] = React.useState<string>(() => {
+    return localStorage.getItem("language") || "en";
+  });
+
+  React.useEffect(() => {
+    localStorage.setItem("language", lng);
+  }, [lng]);
 
   const { control } = useForm({
     defaultValues: {
@@ -65,8 +78,9 @@ export const Header = forwardRef<HTMLElement>((_, ref) => {
     },
   });
   const valueTrans: DropdownOptions[] = [
-    { value: "ENG", label: "ENG" },
-    { value: "KOR", label: "KOR" },
+    { value: "en", label: "English" },
+    { value: "kr", label: "Korean" },
+    { value: "jp", label: "Japan" },
   ];
 
   // const{control}= useForm({
@@ -81,7 +95,7 @@ export const Header = forwardRef<HTMLElement>((_, ref) => {
   //   "1Depth Menu4",
   // ];
   // setSelectedMenu(menuMap[newValue]);
-  const handleChange2 = (event: SelectChangeEvent) => {
+  const handleChange = (event: SelectChangeEvent) => {
     setLng(event.target.value as string);
   };
   const Android12Switch = styled(Switch)(({ theme }) => ({
@@ -158,11 +172,17 @@ export const Header = forwardRef<HTMLElement>((_, ref) => {
                 </Box>
                 <Box sx={{ display: "flex", alignItems: "center", mr: 3 }}>
                   <Typography
-                    variant="h6"
+                    // variant="h6"
                     fontWeight="bold"
                     fontSize="2.2rem"
                     alignContent="center"
-                    sx={{ color: "#135678", ml: 2, mr: "10px", height: "100%" }}
+                    sx={{
+                      color: "#135678",
+                      ml: 2,
+                      mr: "10px",
+                      height: "100%",
+                      cursor: "pointer", // hoặc 'pointer', 'default'... tùy bạn thích
+                    }}
                   >
                     HSTN{" "}
                   </Typography>{" "}
@@ -176,30 +196,46 @@ export const Header = forwardRef<HTMLElement>((_, ref) => {
                     }}
                   />{" "}
                   <Box
-                    alignContent="center"
-                    sx={{ ml: 1, mr: 1, textAlign: "start", height: "100%" }}
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      ml: 1,
+                      mr: 1,
+                      textAlign: "start",
+                      height: "100%",
+                      borderRadius: 2,
+                      bgcolor: "grey.100",
+                    }}
                   >
                     {" "}
                     <Typography
-                      variant="body2"
+                      // variant="body2"
                       fontWeight="bold"
                       sx={{
                         color: "#135678",
-                        fontSize: 18,
-                        mt: 1,
-                        maxHeight: "fit-content",
-                        lineHeight: 1.1,
+                        whiteSpace: "nowrap",
+                        cursor: "pointer",
+                        // fontWeight: 600,
+                        // fontSize: 18,
+                        // lineHeight: 1.3,
+                        // fontSize: 18,
+                        // mt: 1,
+                        // maxHeight: "fit-content",
+                        // lineHeight: 1.1,
                       }}
                     >
-                      한글시스템명{" "}
+                      한글시스템명
                     </Typography>{" "}
-                    <Typography
+                    <Box>
+                      <Single12Timepicker />
+                    </Box>
+                    {/* <Typography
                       variant="subtitle1"
                       color="textSecondary"
                       sx={{ textAlign: "start", mb: 1, lineHeight: 1.1 }}
                     >
-                      English System{" "}
-                    </Typography>{" "}
+                      Management System{" "}
+                    </Typography>{" "} */}
                   </Box>{" "}
                 </Box>{" "}
               </Box>{" "}
@@ -211,9 +247,7 @@ export const Header = forwardRef<HTMLElement>((_, ref) => {
                 }}
                 className="height-tab"
               >
-                {" "}
                 <AppBar position="static" color="default">
-                  {" "}
                   <Tabs
                     value={tabValue}
                     onChange={handleTabChange}
@@ -222,302 +256,72 @@ export const Header = forwardRef<HTMLElement>((_, ref) => {
                     variant="fullWidth"
                     aria-label="action tabs example"
                   >
-                    <Tab label="Home" data-testid="Menu1" />
-                    <Tab
-                      label="Flight Ticket"
-                      // onMouseEnter={handleOpenSubMenu}
-                      // onMouseLeave={handleCloseSubMenu}
-                    />
-                    {/* <Tab
-                      label="Your carts"
-                      onMouseEnter={handleOpenSubMenu}
-                      onMouseLeave={handleCloseSubMenu}
-                    /> */}
-                    <Tab label="Favorites" data-testid="Menu3" />
-                    <Tab label="Contact" data-testid="Menu4" />
-                    <Tab label="Service" data-testid="Menu5" />
-                  </Tabs>{" "}
-                  <Menu
-                    anchorEl={anchorEl}
-                    open={Boolean(anchorEl)}
-                    onClose={handleCloseSubMenu}
-                    MenuListProps={{
-                      onMouseEnter: handleOpenSubMenu,
-                      onMouseLeave: handleCloseSubMenu,
-                    }}
-                  >
-                    <MenuItem>Vé nội địa</MenuItem>
-                    <MenuItem>Vé quốc tế</MenuItem>
-                    <MenuItem>Chuyến bay giá rẻ</MenuItem>
-                  </Menu>
-                </AppBar>{" "}
-              </Box>{" "}
+                    {menuMap.map((menu, index) => {
+                      return <Tab key={index} label={menu} />;
+                    })}
+                  </Tabs>
+                </AppBar>
+              </Box>
               <Box
-                sx={{ display: "flex", width: "40%", justifyContent: "end" }}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  width: "40%",
+                  justifyContent: "end",
+                }}
               >
-                {/* <Stack> */}
-                {/* <Button
-                  size="large"
-                  appearance="unfilled"
-                  icon={<MoreHorizSharpIcon />}
-                  // sx={{ alignItems: "center", mr: 1 }}
-                  sx={{
-                    // height: "50%",
-                    // maxWidth: "50%",
-                    display: "flex",
-                    // flex: "10px",
-                    alignItems: "center",
-                    // justifyContent: "center",
-                  }}
-                /> */}
-                <Stack>
-                  <Button
-                    sx={{
-                      width: 60, // hoặc anh có thể dùng "4rem", tuỳ thích
-                      height: 60,
-                      minWidth: 60,
-                      minHeight: 60,
-                      borderRadius: "8px",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      // backgroundColor: "#f0f0f0", // tuỳ ý
-                    }}
-                    priority="normal"
-                    iconPosition="trailing" //leading trailing
-                    size="small"
-                    appearance="unfilled"
-                    icon={
-                      <MoreHorizSharpIcon
-                        sx={{
-                          fontSize: "32px", // Tăng kích cỡ icon
-                          stroke: "black",
-                        }}
-                      />
-                    }
-                  ></Button>
-                </Stack>
-                <Stack>
-                  <Button
-                    sx={{
-                      width: 60, // hoặc anh có thể dùng "4rem", tuỳ thích
-                      height: 60,
-                      minWidth: 60,
-                      minHeight: 60,
-                      borderRadius: "8px",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      // backgroundColor: "#f0f0f0", // tuỳ ý
-                    }}
-                    priority="normal"
-                    iconPosition="trailing" //leading trailing
-                    size="large"
-                    appearance="unfilled"
-                    icon={
-                      <StarOutlineRoundedIcon
-                        sx={{
-                          fontSize: "32px", // Tăng kích cỡ icon
-                          stroke: "black",
-                        }}
-                      />
-                    }
-                  ></Button>
-                </Stack>
-                <Stack>
-                  <Button
-                    sx={{
-                      width: 60, // hoặc anh có thể dùng "4rem", tuỳ thích
-                      height: 60,
-                      minWidth: 60,
-                      minHeight: 60,
-                      borderRadius: "8px",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      // backgroundColor: "#f0f0f0", // tuỳ ý
-                    }}
-                    priority="normal"
-                    iconPosition="trailing" //leading trailing
-                    size="small"
-                    appearance="unfilled"
-                    icon={
-                      <HelpOutlineRoundedIcon
-                        sx={{
-                          fontSize: "32px", // Tăng kích cỡ icon
-                          stroke: "black",
-                        }}
-                      />
-                    }
-                  ></Button>
-                </Stack>
-                {/* <Button
-                  size="large"
-                  appearance="unfilled"
-                  icon={<HelpOutlineRoundedIcon />}
-                  sx={{ textAlign: "center" }}
-                /> */}
-                {/* <Button
-                  // sx={{
-                  //   // flex: "10px",
-                  //   display: "flex",
-                  //   alignItems: "center",
-                  // }}
-                  sx={{
-                    flexShrink: 0,
-                    height: "100%",
-                    display: "flex",
-                    flex: "10px",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                  priority="normal"
-                  size="large"
-                  appearance="unfilled"
-                  icon={
-                    <SettingsRoundedIcon
+                <IconButton className="icon-button">
+                  <HelpOutlineRoundedIcon />
+                </IconButton>
+                <IconButton className="icon-button">
+                  <MoreHorizSharpIcon />
+                </IconButton>
+                <IconButton className="icon-button">
+                  <StarOutlineRoundedIcon />
+                </IconButton>
+                <IconButton className="icon-button">
+                  <SettingsRoundedIcon />
+                </IconButton>
+                <FormControlLabel
+                  control={
+                    // <IconButton className="icon-button">
+                    <Android12Switch defaultChecked />
+                    // </IconButton>
+                  }
+                  label=""
+                  sx={{ mr: "5px" }}
+                />
+                <Controller
+                  name="language"
+                  control={control}
+                  render={({ field }) => (
+                    <Dropdown
+                      customInput={<Language />}
                       sx={{
-                        fontSize: "24px",
-                        fill: "none !important",
-                        stroke: "black",
+                        display: "flex",
+                        minWidth: 80,
+                        maxWidth: 90,
+                        // "& .MuiSelect-select": {
+                        //   padding: "8px 12px",
+                        //   fontSize: 14,
+                        // },
+                      }}
+                      options={valueTrans}
+                      value={
+                        valueTrans.find((opt) => opt.label === field.value) ??
+                        (field.value
+                          ? { label: field.value, value: field.value }
+                          : null)
+                      }
+                      onChange={(e, selected: any) => {
+                        const newValue = selected?.value ?? "";
+                        field.onChange(newValue);
+                        setLng(newValue);
+                        handleChangeLanguage(newValue);
                       }}
                     />
-                  }
-                /> */}
-                {/* <Stack sx={{}}>
-                  <Button
-                    sx={{
-                      mr: 1,
-                      flex: "10px",
-                      display: "flex",
-                    }}
-                    priority="normal"
-                    iconPosition="trailing" //leading trailing
-                    size="large"
-                    appearance="unfilled"
-                    icon={
-                      <SettingsRoundedIcon
-                        sx={{
-                          fontSize: "24px",
-                          fill: "none !important",
-                          stroke: "black",
-                        }}
-                      />
-                    }
-                  ></Button>
-                </Stack> */}
-                <Stack>
-                  <Button
-                    sx={{
-                      display: "flex",
-                      flex: "10px",
-                      width: 60, // hoặc anh có thể dùng "4rem", tuỳ thích
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                    priority="normal"
-                    iconPosition="trailing" //leading trailing
-                    size="small"
-                    appearance="unfilled"
-                    icon={
-                      <SettingsRoundedIcon
-                        sx={{
-                          fontSize: "auto", // Tăng kích cỡ icon
-                          stroke: "black",
-                        }}
-                      />
-                    }
-                  />
-                </Stack>
-                {/* </Stack> */}
-                {/* <IconButton
-                  size="large"
-                  edge="start"
-                  color="default"
-                  aria-label="menu"
-                  sx={{ mr: 1 }}
-                >
-                  <HelpOutlineRoundedIcon />{" "}
-                </IconButton>{" "} */}
-                {/* <IconButton
-                  size="large"
-                  edge="start"
-                  color="default"
-                  aria-label="menu"
-                  sx={{ mr: 1 }}
-                >
-                  {" "}
-                  <SettingsRoundedIcon
-                    sx={{ fill: "none !important", stroke: "black" }}
-                  />
-                </IconButton>{" "} */}
-                <FormControlLabel
-                  control={<Android12Switch defaultChecked />}
-                  label=""
-                  sx={{ mr: 3 }}
-                />{" "}
-                <FormControl className="form-control">
-                  <InputLabel id="demo-simple-select-label" />
-                  {/* <Select
-                    className="select"
-                    sx={{
-                      flex: "10px",
-                      display: "flex",
-                      "& fieldset": { border: "none" },
-                      backgroundColor: "#f7f9f8",
-                    }}
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={lng}
-                    onChange={handleChange2}
-                  >
-                    <MenuItem value={"ENG"}>ENG</MenuItem>
-                    <MenuItem value={"KOR"}>KOR</MenuItem>
-                  </Select> */}
-                  <Controller
-                    name="language"
-                    control={control}
-                    render={({ field }) => (
-                      <Dropdown
-                        customInput={<Language />}
-                        sx={{
-                          flex: "10px",
-                          display: "flex",
-                          // maxWidth: "100%",
-                          // alignContent: "flex-end",
-                          // "& fieldset": { border: "none" },
-                          backgroundColor: "#f7f9f8",
-                          alignItems: "center",
-                        }}
-                        options={valueTrans}
-                        value={
-                          valueTrans.find((opt) => opt.value === field.value) ??
-                          (field.value
-                            ? { label: field.value, value: field.value }
-                            : null)
-                        }
-                        onChange={(e, selected: any) => {
-                          // const newValue =
-                          //   selected?.map((item: any) => item.value) || "";
-                          const newValue = selected?.label ?? "";
-                          field.onChange(newValue);
-                          setLng(newValue); // cập nhật state bên ngoài
-                        }}
-                      />
-                    )}
-                  />
-
-                  {/* <Controller
-                    name="language"
-                    control={control}
-                    render={({ field }) => (
-                      <Select {...field}>
-                        <MenuItem value="ENG">English</MenuItem>
-                        <MenuItem value="VIE">Tiếng Việt</MenuItem>
-                      </Select>
-                    )}
-                  /> */}
-                </FormControl>{" "}
+                  )}
+                />
                 {isAuthenticated ? (
                   <Stack spacing={1}>
                     <Button
@@ -535,27 +339,29 @@ export const Header = forwardRef<HTMLElement>((_, ref) => {
                           {user?.userName}
                         </Box>
                       }
-                    ></Button>
+                    />
                     <SignOut />
-                    {/* icon={<Avatar sx={{ mr: 2 }} />}
-                  {/* <Avatar sx={{ mr: 1 }} alt="Remy Sharp" src="" />
-                    {/* {user ? user?.userName : <Login/>} 
-                    홍길동 */}
                   </Stack>
                 ) : (
                   <Stack>
                     <Button
-                      sx={{
-                        flex: "10px",
-                        display: "flex",
-                      }}
+                      // sx={{ flex: "10px", display: "flex" }}
+                      priority="normal"
+                      iconPosition="trailing" //leading trailing
+                      size="small"
+                      appearance="unfilled"
+                      icon={<Login />}
+                      label="Login"
+                    />
+                    {/* <Button
+                      sx={{ flex: "10px", display: "flex" }}
                       priority="normal"
                       iconPosition="trailing" //leading trailing
                       size="medium"
                       appearance="unfilled"
-                      icon={<Login />}
-                      label="Login"
-                    ></Button>
+                      icon={<AppRegistration />}
+                      label="Register"
+                    /> */}
                   </Stack>
                 )}
                 <IconButton

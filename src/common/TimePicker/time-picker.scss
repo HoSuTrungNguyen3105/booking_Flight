@@ -1,0 +1,58 @@
+.container {
+  .timepicker {
+    max-width: 200px;
+  }
+  .icon-bann-time-picker {
+    @apply relative w-5 h-5 bg-rose-700 rounded-full flex items-center justify-center;
+    &::after {
+      content: "";
+      @apply absolute w-full h-0.5 bg-rose-50;
+      height: 1px;
+      transform: rotate(45deg);
+    }
+  }
+
+  .icon-ban-time-picker {
+    &.MuiFormControl-root .MuiInputBase-root {
+      @apply border-red-500;
+    }
+  }
+
+  .icon-warning {
+    &.MuiFormControl-root .MuiInputBase-root {
+      @apply border-yellow-500;
+    }
+  }
+
+  .icon-confirmed {
+    &.MuiFormControl-root .MuiInputBase-root {
+      @apply border-teal-500;
+    }
+  }
+  // time picker hour and time picker minutes have gap by 3
+  .Multi-default {
+    @apply flex gap-3;
+  }
+  // text in time picker
+  .MuiFormControl-root .MuiInputBase-root .MuiInputBase-input {
+    font-size: large;
+  }
+  //
+  .icon {
+    height: 100px;
+  }
+  // distance between icon and font
+  .css-1e1swtx-MuiButtonBase-root-MuiIconButton-root {
+    padding: 8px 2px 8px 8px;
+  }
+  .css-1nowbqt-MuiInputAdornment-root {
+    margin: 0px;
+  }
+
+  .css-1annikf-MuiMultiSectionDigitalClock-root {
+    @apply flex flex-row-reverse;
+  }
+  .css-qve9l1-MuiInputBase-input-MuiOutlinedInput-input {
+    padding: 0;
+  }
+}

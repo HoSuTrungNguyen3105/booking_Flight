@@ -5,8 +5,8 @@ const TextArea = (props: TextFieldProps) => {
     <TextField
       {...props}
       multiline
-      minRows={4}
-      maxRows={4}
+      minRows={1}
+      maxRows={1}
       variant="outlined"
       fullWidth
       sx={{

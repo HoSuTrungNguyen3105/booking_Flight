@@ -24,7 +24,7 @@ const MainLayout = () => {
     <Box className={styles.mainLayout}>
       <SidebarProvider>
         <Header ref={headerRef} />
-        <main className={styles.mainContent} style={{ maxHeight }}>
+        <main className={styles.mainContent}>
           <Box className={styles.sidebarContainer}>
             <Sidebar />
           </Box>

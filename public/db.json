@@ -1,35 +1,73 @@
 {
   "tab1Items": [
     {
-      "id": "item1",
-      "label": "Trang chủ",
+      "id": "dashboard",
+      "label": "Bảng điều khiển",
       "subItems": [
         {
-          "id": "sub1",
-          "label": "Thống kê",
+          "id": "overview",
+          "label": "Tổng quan",
           "subItems": [
-            { "id": "nested1", "label": "Doanh thu" },
-            { "id": "nested2", "label": "Lợi nhuận" }
+            { "id": "revenue", "label": "Doanh thu" },
+            { "id": "flights", "label": "Chuyến bay hôm nay" }
           ]
         }
       ]
     },
     {
-      "id": "item2",
-      "label": "Sản phẩm"
+      "id": "flights",
+      "label": "Chuyến bay",
+      "subItems": [
+        {
+          "id": "flight-management",
+          "label": "Quản lý",
+          "subItems": [
+            { "id": "all-flights", "label": "Tất cả chuyến bay" },
+            { "id": "schedule", "label": "Lịch trình" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tickets",
+      "label": "Vé máy bay",
+      "subItems": [
+        {
+          "id": "ticket-ops",
+          "label": "Chức năng",
+          "subItems": [
+            { "id": "book-ticket", "label": "Đặt vé" },
+            { "id": "ticket-history", "label": "Lịch sử vé" }
+          ]
+        }
+      ]
     }
   ],
   "tab2Items": [
     {
-      "id": "item3",
+      "id": "airports",
+      "label": "Sân bay",
+      "subItems": [
+        {
+          "id": "airport-list",
+          "label": "Danh sách",
+          "subItems": [
+            { "id": "domestic", "label": "Nội địa" },
+            { "id": "international", "label": "Quốc tế" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "users",
       "label": "Người dùng",
       "subItems": [
         {
-          "id": "sub2",
-          "label": "Danh sách",
+          "id": "user-list",
+          "label": "Tài khoản",
           "subItems": [
-            { "id": "nested3", "label": "Khách hàng" },
-            { "id": "nested4", "label": "Nhân viên" }
+            { "id": "customers", "label": "Khách hàng" },
+            { "id": "staffs", "label": "Nhân viên" }
           ]
         }
       ]

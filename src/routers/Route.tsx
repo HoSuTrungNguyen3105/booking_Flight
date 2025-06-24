@@ -13,6 +13,8 @@ import { FileUpload } from "../common/FileUploader/FileUpload";
 import Login from "../components/Auth/Login";
 import Register from "../components/Auth/Register";
 import Hero from "../components/Hero/Hero";
+import SignOut from "../components/Auth/SignOut";
+import BookTicket from "../components/User/BookTicket";
 
 const routes: RouteObject[] = [
   {
@@ -48,12 +50,16 @@ const routes: RouteObject[] = [
         element: <Search_layout />,
       },
       {
+        path: "logout",
+        element: <SignOut />,
+      },
+      {
         path: "sampleFileUploader",
         element: <FileUpload name="fileUploader" />,
       },
       {
-        path: "headerpage",
-        element: <Header />,
+        path: "bookticket",
+        element: <BookTicket />,
       },
       {
         path: "sample",

@@ -1,0 +1,52 @@
+.datefield, .date-range-field-container {
+  @apply flex flex-col space-y-2;
+
+  &--small .datefield-input {
+    @apply text-sm py-1 px-2;
+  }
+
+  &--medium .datefield-input {
+    @apply text-base py-2 px-3;
+  }
+
+  &--large .datefield-input {
+    @apply text-lg py-3 px-4;
+  }
+  .icon {
+    @apply relative w-4 h-4;
+    margin-top: 0.3125rem;
+  }
+  .icon-ban {
+    @apply relative w-3 h-3 bg-rose-700 rounded-full flex items-center justify-center;
+    &::after {
+      content: '';
+      @apply absolute w-full h-0.5 bg-rose-50;
+      width: 1rem;
+      height:0.016rem;
+      transform: rotate(45deg);
+    }
+  }
+  .datefield-icon {
+    &--calendar {
+      @apply text-gray-500;
+    }
+
+    &--warningIcon {
+      color: #ff9322;
+      // @apply relative w-4 h-4;
+    }
+
+    &--confirmedIcon {
+      color: #00463a;
+      // @apply relative w-4 h-4;
+    }
+  }
+
+  // .MuiInputAdornment-root {
+  //   @apply text-gray-500;
+  // }
+
+  // .Mui-disabled {
+  //   @apply bg-gray-100 text-gray-400;
+  // }
+}

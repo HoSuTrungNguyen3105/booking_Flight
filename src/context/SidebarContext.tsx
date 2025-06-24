@@ -34,60 +34,26 @@ export const SidebarProvider: React.FC<{ children: React.ReactNode }> = ({
     return dbMap[menu] || "/db.json";
   };
 
-  // useEffect(() => {
-  //   // if (!isOpen) return;
-
-  //   setLoading(true);
-
-  //   console.log("Fetching JSON from:", getJsonFile(selectedMenu));
-
-  //   fetch(`${getJsonFile(selectedMenu)}?t=${new Date().getTime()}`, {
-  //     cache: "no-store",
-  //   })
-  //     .then((res) => {
-  //       if (!res.ok) {
-  //         throw new Error(`HTTP error! Status: ${res.status}`);
-  //       }
-  //       return res.text();
-  //     })
-  //     .then((text) => {
-  //       if (!text) {
-  //         throw new Error("Empty JSON response");
-  //       }
-  //       return JSON.parse(text);
-  //     })
-  //     .then((data) => {
-  //       setMenuData(data);
-  //       setLoading(false);
-  //     })
-  //     .catch((err) => {
-  //       console.error("Error when fetching data:", err);
-  //       setLoading(false);
-  //     });
-  // }, [isOpen, selectedMenu]);
-
-  // Chạy ngay khi app load
   useEffect(() => {
-    fetchMenuData(selectedMenu);
-  }, []);
+    // if (!isOpen) return;
 
-  // Chạy lại khi selectedMenu thay đổi
-  useEffect(() => {
-    fetchMenuData(selectedMenu);
-  }, [selectedMenu]);
-
-  const fetchMenuData = (menu: string) => {
     setLoading(true);
 
-    fetch(`${getJsonFile(menu)}?t=${new Date().getTime()}`, {
+    console.log("Fetching JSON from:", getJsonFile(selectedMenu));
+
+    fetch(`${getJsonFile(selectedMenu)}?t=${new Date().getTime()}`, {
       cache: "no-store",
     })
       .then((res) => {
-        if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+        if (!res.ok) {
+          throw new Error(`HTTP error! Status: ${res.status}`);
+        }
         return res.text();
       })
       .then((text) => {
-        if (!text) throw new Error("Empty JSON response");
+        if (!text) {
+          throw new Error("Empty JSON response");
+        }
         return JSON.parse(text);
       })
       .then((data) => {
@@ -98,7 +64,41 @@ export const SidebarProvider: React.FC<{ children: React.ReactNode }> = ({
         console.error("Error when fetching data:", err);
         setLoading(false);
       });
-  };
+  }, [isOpen, selectedMenu]);
+
+  // Chạy ngay khi app load
+  // useEffect(() => {
+  //   fetchMenuData(selectedMenu);
+  // }, []);
+
+  // // Chạy lại khi selectedMenu thay đổi
+  // useEffect(() => {
+  //   fetchMenuData(selectedMenu);
+  // }, [selectedMenu]);
+
+  // const fetchMenuData = (menu: string) => {
+  //   setLoading(true);
+
+  //   fetch(`${getJsonFile(menu)}?t=${new Date().getTime()}`, {
+  //     cache: "no-store",
+  //   })
+  //     .then((res) => {
+  //       if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+  //       return res.text();
+  //     })
+  //     .then((text) => {
+  //       if (!text) throw new Error("Empty JSON response");
+  //       return JSON.parse(text);
+  //     })
+  //     .then((data) => {
+  //       setMenuData(data);
+  //       setLoading(false);
+  //     })
+  //     .catch((err) => {
+  //       console.error("Error when fetching data:", err);
+  //       setLoading(false);
+  //     });
+  // };
 
   return (
     <SidebarContext.Provider
@@ -120,8 +120,19 @@ export const SidebarProvider: React.FC<{ children: React.ReactNode }> = ({
 // Custom hook
 export const useSidebar = () => {
   const context = useContext(SidebarContext);
+  // if (!context) {
+  //   throw new Error("useSidebar must used in SidebarProvider");
+  // }
   if (!context) {
-    throw new Error("useSidebar must used in SidebarProvider");
+    return {
+      isOpen: false,
+      selectedMenu: "",
+      setSelectedMenu: () => {},
+      menuData: null,
+      loading: false,
+      toggleSidebar: () => {},
+      getJsonFile: () => "/db.json",
+    };
   }
   return context;
 };

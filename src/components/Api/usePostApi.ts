@@ -12,6 +12,7 @@ import type {
 import { MethodType } from "../../hooks/type";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
 import { useFetch } from "../../hooks/useFetch.ts";
+import type { FlightDetailResponse, UserSearchType } from "../User/type.ts";
 
 const postMethod = {
   method: MethodType.POST,
@@ -33,10 +34,10 @@ const messageMethod = { success: "Success action", error: "Error action" };
 type FlightId = {
   id?: number;
 };
-type AirportCode = {
-  arrivalCode?: string;
-  departureCode?: string;
-};
+// type AirportCode = {
+//   arrivalCode?: string;
+//   departureCode?: string;
+// };
 export const mapToDropdown = (
   list: CodeItem[],
   key: keyof CodeItem,
@@ -215,5 +216,47 @@ export const useSelectIdFlight = (id: string | number | undefined) => {
   return {
     selectIdFlight,
     refetchSelectIdFlight,
+  };
+};
+
+// import { useFetch } from 'hooks/useFetch';
+// import { FlightDetailResponse, UserSearchType } from './type';
+// const postMethod = { method: 'POST', headers: { 'Content-Type': 'application/json' }, timeout: 3000 };
+// const getMethod = { method: 'GET', headers: { 'Content-Type': 'application/json' }, timeout: 3000 };
+// const deleteMethod = { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, timeout: 3000 };
+// const putMethod = { method: 'PUT', headers: { 'Content-Type': 'application/json' }, timeout: 3000 };
+// const messageMethod = { success: 'Success', error: 'Error' };
+export const useFlightBooking = (flightParams: UserSearchType) => {
+  const { data: flightBookingData, refetch: refetchFlightBookingDataData } =
+    useFetch<FlightDetailResponse, UserSearchType>({
+      url: "/ticket/getFlightList",
+      params: {
+        ...flightParams,
+      },
+      defaultValue: { resultCode: "", resultMessage: "" },
+      autoFetch: false,
+      config: postMethod,
+      message: messageMethod,
+    });
+  return {
+    flightBookingData,
+    refetchFlightBookingDataData,
+  };
+};
+export const useTicketById = (flightParams: UserSearchType) => {
+  const { data: flightBookingData, refetch: refetchFlightBookingDataData } =
+    useFetch<FlightDetailResponse, UserSearchType>({
+      url: "/ticket/getTicket",
+      params: {
+        ...flightParams,
+      },
+      defaultValue: { resultCode: "", resultMessage: "" },
+      autoFetch: false,
+      config: postMethod,
+      message: messageMethod,
+    });
+  return {
+    flightBookingData,
+    refetchFlightBookingDataData,
   };
 };

@@ -1,12 +1,17 @@
 import type { DropdownType } from "./type";
-import { Autocomplete, InputAdornment, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  InputAdornment,
+  TextField,
+  Typography,
+} from "@mui/material";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import WarningIcon from "@mui/icons-material/Warning";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import Checkbox from "@mui/material/Checkbox";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 export const Dropdown = ({
   options = [],
   value = [],
@@ -37,9 +42,12 @@ export const Dropdown = ({
   }, [status]);
   const icon = <CheckBoxOutlineBlankIcon fontSize="small" color="secondary" />;
   const checkedIcon = <CheckBoxIcon fontSize="small" color="secondary" />;
+  const [inputText, setInputText] = useState("");
+  const showEndAdornment = multiple && !readonly;
   return (
     <Autocomplete
       disablePortal
+      inputValue={inputText}
       disableCloseOnSelect={disableCloseOnSelect}
       readOnly={readonly}
       disabled={disabled}
@@ -49,7 +57,28 @@ export const Dropdown = ({
       onOpen={onOpen}
       onClose={onClose}
       value={value}
-      onChange={onChange}
+      onInputChange={(event, newInputValue, reason) => {
+        if (reason === "input") return;
+        setInputText(newInputValue);
+      }}
+      onChange={(event, newValue) => {
+        if (Array.isArray(newValue)) {
+          setInputText("");
+          onChange?.(event, newValue);
+        } else {
+          setInputText(newValue?.label || "");
+          onChange?.(event, newValue); // newValue: DropdownOptions | null
+        }
+      }}
+      // slotProps={{
+      //   paper: {
+      //     sx: {
+      //       minWidth: 300,
+      //       maxWidth: 600,
+      //       overflowX: "auto",
+      //     },
+      //   },
+      // }}
       getOptionLabel={(option) => option.label || ""}
       renderOption={(props, option, { selected }) => {
         const { key, ...optionProps } = props;
@@ -63,7 +92,7 @@ export const Dropdown = ({
                 checked={selected}
               />
             )}
-            <span
+            {/* <span
               style={{
                 overflow: "hidden",
                 whiteSpace: "nowrap",
@@ -72,6 +101,20 @@ export const Dropdown = ({
               }}
             >
               {option.label}
+            </span> */}
+            <span
+              style={
+                {
+                  // overflow: "hidden",
+                  // whiteSpace: "normal", // 🔄 từ "nowrap" ➝ "normal"
+                  // textOverflow: "unset",
+                  // maxWidth: "100%",
+                  // wordBreak: "break-word",
+                  // fontSize: "15px", // nếu muốn chữ nhỏ lại
+                }
+              }
+            >
+              {option.value}
             </span>
           </li>
         );
@@ -85,23 +128,25 @@ export const Dropdown = ({
           placeholder={placeholder}
           sx={{
             "& .MuiOutlinedInput-root": {
-              alignItems: "left",
+              // alignItems: "center",
+              cursor: "pointer", // hoặc 'pointer', 'default'... tùy bạn thích
             },
-            "& input": {
-              // padding: "10.5px 14px",
-              // lineHeight: "1.5",
-              padding: "10.5px 14px",
-              lineHeight: "1.5",
-              overflow: "visible", // ✅ không bị cắt
-              textOverflow: "unset", // ✅ bỏ ...
-              whiteSpace: "normal",
+            "& .MuiInputBase-root": {
+              minWidth: "20px",
+              display: "flex",
+              minHeight: "20px",
+              // alignItems: "center",
+              // cursor: "pointer", // hoặc 'pointer', 'default'... tùy bạn thích
             },
             "& .MuiOutlinedInput-input": {
-              flexGrow: 1,
-              minWidth: 0, // cần để flex hoạt động
-              overflow: "visible",
-              whiteSpace: "nowrap",
-              textOverflow: "unset",
+              //overflow: "hidden",
+              textOverflow: "unset", // hoặc "unset" nếu muốn hiện full
+              // whiteSpace: "nowrap", // chuyển thành "normal" nếu muốn xuống dòng
+              //minWidth: 0,
+              flexGrow: 1, // hoặc "unset" nếu muốn hiện full
+              lineHeight: 1.5,
+              fontSize: "15px",
+              // padding: "10px 14px",
             },
 
             //
@@ -114,18 +159,27 @@ export const Dropdown = ({
             "& .MuiAutocomplete-endAdornment": {
               right: 15,
             },
+            "& input": {
+              cursor: "pointer", // hoặc 'pointer', 'default'... tùy bạn thích
+              // padding: "10.5px 14px",
+              // lineHeight: "1.5",
+              // overflow: "visible", // ✅ không bị cắt
+              // textOverflow: "unset", // ✅ bỏ ...
+              // whiteSpace: "normal",
+            },
           }}
           InputProps={{
             ...params.InputProps,
             startAdornment: customInput ? (
               <>
-                {params.InputProps.startAdornment}
+                {/* {params.InputProps.startAdornment} */}
                 <InputAdornment position="start">{customInput}</InputAdornment>
               </>
             ) : null,
             endAdornment: (
               <>
-                {params.InputProps.endAdornment}
+                {showEndAdornment && params.InputProps.endAdornment}
+                {/* {params.InputProps.endAdornment} */}
                 {status === "warning" && (
                   <InputAdornment position="end">
                     <WarningIcon color="warning" />

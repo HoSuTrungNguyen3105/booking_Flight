@@ -12,27 +12,26 @@ import {
 import { AgGridReact } from "ag-grid-react";
 import {
   AdminPanelSettings,
-  BookOnline,
   DeleteForever,
-  HomeMini,
   House,
   StarBorder,
 } from "@mui/icons-material";
-import { MessageOption, type DataFlight, type SearchType } from "./type";
+// import { MessageOption, type DataFlight, type SearchType } from "";
 import type { SelectionChangedEvent } from "ag-grid-community";
-import {
-  useFlightById,
-  useFlightUpdate,
-  useSearchFlight,
-} from "../Api/usePostApi";
+import { useFlightUpdate, useSearchFlight } from "../Api/usePostApi";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import { Button } from "../../common/Button/Button";
 import ContentModal from "../../common/Modal/ContentModal";
 import "../../scss/_ag-grid.scss";
 import { Input } from "../../common/CustomRender/Input";
-import TextArea from "../../common/Input/TextArea";
+// import TextArea from "../../common/Input/TextArea";
 import type { BreadcrumbItem } from "../../common/BreadCrumb/type";
 import { toast } from "react-toastify";
+import {
+  MessageOption,
+  type DataFlight,
+  type SearchType,
+} from "../../utils/type";
 // import { useFlightSearchContext } from "../../context/SearchContext";
 type FlightId = {
   id: number;
@@ -42,9 +41,9 @@ const Search_layout: React.FC = () => {
   const [flightId, setFlightId] = React.useState<FlightId | null>(null);
   const [selectId, setSelectId] = React.useState<number[]>([]);
   const [updateFlight, setUpdateFlight] = React.useState<boolean>(false);
-  const [displayDataFlight, setDisplayDataFlight] = React.useState<
-    DataFlight[]
-  >([]);
+  // const [displayDataFlight, setDisplayDataFlight] = React.useState<
+  //   DataFlight[]
+  // >([]);
   // const search = useSearchContext();
 
   const [openUpdateConfirm, setOpenUpdateConfirm] =
@@ -68,8 +67,6 @@ const Search_layout: React.FC = () => {
     control: controlSearch,
     handleSubmit: handleSearchSubmit,
     reset: resetSearch,
-    resetField: resetFieldSearch,
-    getValues,
   } = useForm<SearchType>({
     defaultValues: flightParams,
   });
@@ -636,15 +633,15 @@ const Search_layout: React.FC = () => {
             <AgGridReact
               rowSelection="multiple"
               onSelectionChanged={onSelectionChanged}
-              // rowData={displayDataFlight}
               rowData={rowData}
               // domLayout="autoHeight"
+              //getRowClass={getRowClass}
+              // rowData={displayDataFlight}
               columnDefs={colDefs}
               defaultColDef={defaultColDef}
               pagination={true}
               rowClassRules={rowClassStyle}
               rowMultiSelectWithClick={true}
-              //getRowClass={getRowClass}
               suppressRowClickSelection={true}
             />
             <ContentModal

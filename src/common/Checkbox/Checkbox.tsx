@@ -1,5 +1,5 @@
 import { FormControlLabel, Checkbox as MuiCheckbox } from "@mui/material";
-import { CheckedIcon, IndeterminateIcon, UncheckedIcon } from "./Checkbox-icon";
+import { CheckedIcon, IndeterminateIcon, UncheckedIcon } from "./CheckboxIcons";
 import type { CheckboxProps } from "./type";
 
 export const Checkbox = ({

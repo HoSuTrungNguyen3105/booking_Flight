@@ -1,10 +1,11 @@
 import { isAxiosError } from "axios";
 import { toast } from "react-toastify";
+import type { ResponseMessage } from "./type";
 
 export class ErrorHandlerUtils {
-  handleError = (error: any, message?: string) => {
+  handleError = (error: ResponseMessage, message?: string) => {
     console.error(error);
-    if (isAxiosError(error) && error.status === 409) {
+    if (isAxiosError(error) && error.resultCode === "09") {
       toast.error("Vui lòng xác thực email trước khi sử dụng chức năng này");
       return;
     }
