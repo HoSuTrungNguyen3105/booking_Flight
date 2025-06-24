@@ -23,7 +23,8 @@
           "label": "Quản lý",
           "subItems": [
             { "id": "all-flights", "label": "Tất cả chuyến bay" },
-            { "id": "schedule", "label": "Lịch trình" }
+            { "id": "schedule", "label": "Lịch trình" },
+            { "id": "food", "label": "Thuc an" } 
           ]
         }
       ]

@@ -66,10 +66,10 @@ export type AircraftList = {
 };
 
 export type FlightListResponse<T> = {
-  flightList?: T[];
+  list?: T[];
   resultCode: string;
   resultMessage: string;
-  totalCount?: OptionalNumber;
+  // totalCount?: OptionalNumber;
 };
 
 export type FlightDetailResponse<T> = {

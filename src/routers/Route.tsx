@@ -15,6 +15,7 @@ import Hero from "../components/Hero/Hero";
 import SignOut from "../components/Auth/SignOut";
 import BookTicket from "../components/User/BookTicket";
 import { Typography } from "@mui/material";
+import Food from "../common/Food/Food";
 
 const routes: RouteObject[] = [
   {
@@ -52,6 +53,10 @@ const routes: RouteObject[] = [
       {
         path: "airport-list/domestic",
         element: <Typography>Xin chao</Typography>,
+      },
+      {
+        path: "flight-management/food",
+        element: <Food />,
       },
       {
         path: "sampleFormDemo",

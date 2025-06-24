@@ -201,7 +201,29 @@ export const useAirCraftList = (craftParams: AvailableAircraft) => {
     refetchAircraftList,
   };
 };
-
+export const useFlightList = (flightParams: DataFlight) => {
+  const { data: flightList, refetch: refetchFlightList } = useFetch<
+    FlightListApiResponse,
+    DataFlight
+  >({
+    url: "/sys/flights",
+    params: {
+      ...flightParams,
+    },
+    defaultValue: {
+      list: [],
+      resultCode: "",
+      resultMessage: "",
+    },
+    autoFetch: true,
+    config: postMethod,
+    showToast: false,
+  });
+  return {
+    flightList,
+    refetchFlightList,
+  };
+};
 export const useSelectIdFlight = (id: string | number | undefined) => {
   const { data: selectIdFlight, refetch: refetchSelectIdFlight } = useFetch<
     FlightDetailApiResponse,
