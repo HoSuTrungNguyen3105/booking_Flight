@@ -2,7 +2,8 @@ import type { AxiosRequestConfig } from "axios";
 import { useApi } from "../context/ApiContext";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MethodType } from "./type";
-import { toast } from "react-toastify";
+import { useToast } from "../context/ToastContext";
+// import { toast } from "react-toastify";
 type ToastMessage = {
   success?: string;
   error?: string;
@@ -38,6 +39,7 @@ export const useFetch = <T extends Partial<ResponseMessage>, P>({
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
+  const toast = useToast();
   const abortController = useRef<AbortController | null>(null);
   const refetch = useCallback(
     async (extra?: P, overrideUrl?: string): Promise<T | undefined> => {
@@ -68,9 +70,9 @@ export const useFetch = <T extends Partial<ResponseMessage>, P>({
         setSuccess(true);
         if (showToast) {
           if (res?.resultMessage) {
-            toast.success(res.resultMessage);
+            toast(res.resultMessage, "success");
           } else if (message?.success) {
-            toast.success(message.success);
+            toast(message.success, "success");
           }
         }
         onSuccess?.(res);
@@ -81,9 +83,9 @@ export const useFetch = <T extends Partial<ResponseMessage>, P>({
         const backendMessage = err?.response?.data?.resultMessage;
         if (showToast) {
           if (backendMessage) {
-            toast.error(backendMessage);
+            toast(backendMessage, "error");
           } else if (message?.error) {
-            toast.error(message.error);
+            toast(message.error, "error");
           }
         }
 

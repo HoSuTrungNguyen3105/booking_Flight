@@ -629,6 +629,7 @@ const Search_layout: React.FC = () => {
               </Box>
             </Box>
           </Box>
+
           <Box className="agrid-theme" mt={1.5} sx={{ height: "66vh" }}>
             <AgGridReact
               rowSelection="multiple"

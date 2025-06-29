@@ -1,70 +1,80 @@
 $menu-icon-colour: #2d9bb2;
 $app-bar-colour: #f7f9f8;
- 
+
 .search-status {
   background-color: $app-bar-colour !important;
   @apply flex gap-4;
 }
- 
+
 .flight-container {
   overflow: hidden;
+  border: none !important;
+  box-shadow: none !important;
 }
- 
+
 .left-element,
 .bottom-element,
 .right-element {
   @apply w-1/4;
 }
- 
+
 .no-underline {
   color: inherit;
 }
- 
+
+// .agrid-theme {
+//   .black-row {
+//     background-color: $app-bar-colour !important;
+//     color: black !important;
+//   }
+
+//   .white-row {
+//     background-color: white !important;
+//     color: black !important;
+//   }
+// }
+
 .agrid-theme {
-  .black-row {
-    background-color: $app-bar-colour !important;
-    color: black !important;
-  }
- 
-  .white-row {
-    background-color: white !important;
-    color: black !important;
-  }
-}
- 
-.flight-form {
+  border: none !important;
+  box-shadow: none !important;
   .flightid-container {
+    border: none !important;
+    box-shadow: none !important;
     margin: 24px auto;
     padding: 24px;
     width: 90%;
     border: 1px solid #ddd;
     border-radius: 8px;
     background-color: #fff;
- 
+
     .flightid-title {
       font-weight: 600;
       margin-bottom: 16px;
     }
- 
+
     .form-footer {
       margin-top: 24px;
       display: flex;
       justify-content: flex-end;
     }
- 
+
     .MuiTableCell-root {
       vertical-align: middle;
     }
   }
 }
 .flight-create-container {
-  padding: 24px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  border: none !important;
+  box-shadow: none !important;
+  // padding: 24px;
+  // background-color: #fff;
+  // border-radius: 8px;
+  // box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
   h6,
   .MuiTypography-root {
     color: #1976d2;
+    border: none !important;
+    box-shadow: none !important;
     font-weight: 500;
   }
   .flight-form-header {
@@ -102,6 +112,8 @@ $app-bar-colour: #f7f9f8;
     margin-top: 24px;
   }
   .grid-container {
+    border: none !important;
+    box-shadow: none !important;
     margin-top: 16px;
     height: 50vh;
     border: 1px solid #ccc;
@@ -122,6 +134,8 @@ $app-bar-colour: #f7f9f8;
       color: #1976d2;
     }
   }
- }
+}
 .ag-grid {
+  border: none !important;
+  box-shadow: none !important;
 }

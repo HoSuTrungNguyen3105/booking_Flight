@@ -16,6 +16,10 @@ import SignOut from "../components/Auth/SignOut";
 import BookTicket from "../components/User/BookTicket";
 import { Typography } from "@mui/material";
 import Food from "../common/Food/Food";
+import SampleTimePicker from "../common/Sample/SampleTimePicker";
+import Sample from "../common/Sample";
+import Layout from "../common/Dashboard/Layout";
+import TableCustom from "../common/Table/Table";
 
 const routes: RouteObject[] = [
   {
@@ -24,9 +28,21 @@ const routes: RouteObject[] = [
     children: [{ index: true, element: <Login /> }],
   },
   {
+    path: "sampleButton",
+    element: <Sample />,
+  },
+  {
+    path: "table",
+    element: <TableCustom />,
+  },
+  {
     path: "RegistrationForm",
     element: <Registration />,
     // children: [{ index: true, element: <Registration /> }],
+  },
+  {
+    path: "layout",
+    element: <Layout />,
   },
   {
     path: "Register",
@@ -55,12 +71,24 @@ const routes: RouteObject[] = [
         element: <Typography>Xin chao</Typography>,
       },
       {
-        path: "flight-management/food",
+        path: "food",
         element: <Food />,
       },
+      // {
+      //   path: "table",
+      //   element: <Table />,
+      // },
       {
         path: "sampleFormDemo",
         element: <Search_layout />,
+      },
+      // {
+      //   path: "sampleButton",
+      //   element: <Sample />,
+      // },
+      {
+        path: "sampleTimepicker",
+        element: <SampleTimePicker />,
       },
       {
         path: "logout",

@@ -12,7 +12,7 @@ import {
   type MouseEventHandler,
 } from "react";
 import { sumBy, uniqueId } from "lodash";
-import type { FileUploaderProps, TFileUploader } from "./type";
+import { INPUT_TYPE, type FileUploaderProps, type TFileUploader } from "./type";
 import {
   bytesToSize,
   concatStrings,
@@ -190,12 +190,28 @@ export const FileUpload: FC<FileUploaderProps> = ({
     // onChange?.(imageFiles.filter((_, i: number) => i !== index));
   };
 
-  const onInputClick: MouseEventHandler<HTMLInputElement> = (
-    event: MouseEvent<HTMLInputElement>
-  ) => {
+  // const onInputClick: MouseEventHandler<HTMLInputElement> = (
+  //   event: MouseEvent<HTMLInputElement>
+  // ) => {
+  //   event.stopPropagation;
+  //   if (currentInputType === INPUT_TYPE.READONLY) {
+  //     return toast.warning("Cant chose file in read only");
+  //   } else {
+  //     const element = event.target as HTMLInputElement;
+  //     element.value = "";
+  //   }
+  // };
+  const onInputClick: MouseEventHandler<HTMLInputElement> = (event) => {
+    event.stopPropagation();
+    if (currentInputType === INPUT_TYPE.READONLY) {
+      toast.warning("Can't choose file in read-only mode");
+      event.preventDefault();
+      return;
+    }
     const element = event.target as HTMLInputElement;
     element.value = "";
   };
+
   const getFileIcon = (fileType: string) => {
     if (fileType.includes("png")) return <FilePresentIcon />;
     return <Image />;
@@ -206,11 +222,11 @@ export const FileUpload: FC<FileUploaderProps> = ({
       <section className="upload-image-container" style={{ width, height }}>
         <Button onClick={toggleInputType} data-testid="toggle-input-type">
           Switch:
-          {currentInputType === "input"
-            ? "Thumbnails"
-            : currentInputType === "thumbnails"
-            ? "Input"
-            : "Read-Only"}
+          {currentInputType === INPUT_TYPE.INPUT
+            ? INPUT_TYPE.THUMBNAIL
+            : currentInputType === INPUT_TYPE.THUMBNAIL
+            ? INPUT_TYPE.INPUT
+            : INPUT_TYPE.READONLY}
         </Button>
         <Box
           className={`image-uploader ${
@@ -221,7 +237,6 @@ export const FileUpload: FC<FileUploaderProps> = ({
           sx={{
             pointerEvents: disabled ? "none" : "pointer",
           }}
-          data-testid="drop-zone"
         >
           {!disabled && (
             <input
@@ -279,7 +294,11 @@ export const FileUpload: FC<FileUploaderProps> = ({
                       </Box>
                     </Box>
                     <CancelIcon
-                      onClick={() => handleRemoveFile(index)}
+                      onClick={(e) => {
+                        e.stopPropagation(); // 👈 Ngăn không cho click ảnh
+                        handleRemoveFile(index);
+                      }}
+                      sx={{ cursor: "pointer" }}
                       className="ic-delete"
                       width={16}
                       height={16}
@@ -291,6 +310,7 @@ export const FileUpload: FC<FileUploaderProps> = ({
                   open={openImage}
                   closeLabel="Exit"
                   hideSubmit={true}
+                  hideCloseBtn={true}
                   handleClose={closeImageModal}
                   contentArea={
                     selectedFile ? (
@@ -321,7 +341,11 @@ export const FileUpload: FC<FileUploaderProps> = ({
                     <Box className="size-file">
                       <span>{bytesToSize(file.size)}</span>
                       <CancelIcon
-                        onClick={() => handleRemoveFile(index)}
+                        onClick={(e) => {
+                          e.stopPropagation(); // 👈 Ngăn không cho click ảnh
+                          handleRemoveFile(index);
+                        }}
+                        sx={{ cursor: "pointer" }}
                         width={16}
                         height={16}
                         data-testid={`remove-file-${index}`}
@@ -334,6 +358,7 @@ export const FileUpload: FC<FileUploaderProps> = ({
                   closeLabel="Exit"
                   hideSubmit={true}
                   handleClose={closeImageModal}
+                  hideCloseBtn={true}
                   contentArea={
                     selectedFile ? (
                       <Box className="image-modal">

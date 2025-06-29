@@ -86,17 +86,17 @@ const InputField = React.forwardRef(
     return (
       <TextField
         label={label}
-        data-testid={
-          type === "number"
-            ? "number-input"
-            : type === "number-multi"
-            ? "number-multi-input"
-            : type === "alpha-numeric"
-            ? "alpha-numeric-input"
-            : isPassword
-            ? "password-input"
-            : "input-field"
-        }
+        // data-testid={
+        //   type === "number"
+        //     ? "number-input"
+        //     : type === "number-multi"
+        //     ? "number-multi-input"
+        //     : type === "alpha-numeric"
+        //     ? "alpha-numeric-input"
+        //     : isPassword
+        //     ? "password-input"
+        //     : "input-field"
+        // }
         error={error}
         helperText={helperText}
         type={isPassword && !showPassword ? "password" : "text"}
@@ -135,7 +135,7 @@ const InputField = React.forwardRef(
                 <Box className="flex color-[#5B5C5B] cursor-pointer gap-1">
                   {endAdorment}
                   {showStatusIcon && ICON_BY_STATUS[status] && (
-                    <SvgIcon className="text-base" data-testid="status-icon">
+                    <SvgIcon className="text-base">
                       {ICON_BY_STATUS[status]}
                     </SvgIcon>
                   )}
@@ -143,7 +143,6 @@ const InputField = React.forwardRef(
                     <IconButton
                       className="text-base cursor-pointer"
                       onClick={changePasswordVisibility}
-                      data-testid="toggle-password"
                     >
                       {showPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>

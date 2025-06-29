@@ -19,8 +19,10 @@ export type ModalProps = {
   closeLabel?: string;
   open: boolean;
   sx?: SxProps<Theme>;
+  errorMessage?: ReactNode;
   component?: ElementType;
   title?: string;
+  title2?: string;
   hideCloseBtn?: boolean;
   disabled?: boolean;
   isScreenPopup?: boolean;

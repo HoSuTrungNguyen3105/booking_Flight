@@ -207,14 +207,8 @@ export const useFlightList = (flightParams: DataFlight) => {
     DataFlight
   >({
     url: "/sys/flights",
-    params: {
-      ...flightParams,
-    },
-    defaultValue: {
-      list: [],
-      resultCode: "",
-      resultMessage: "",
-    },
+    params: flightParams, // 🔧 THIẾU dòng này
+    defaultValue: { resultCode: "", resultMessage: "" },
     autoFetch: true,
     config: postMethod,
     showToast: false,

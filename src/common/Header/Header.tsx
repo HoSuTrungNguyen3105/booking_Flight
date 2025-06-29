@@ -16,18 +16,18 @@ import AppsIcon from "@mui/icons-material/Apps";
 import HelpOutlineRoundedIcon from "@mui/icons-material/HelpOutlineRounded";
 import { styled } from "@mui/material/styles";
 import Switch from "@mui/material/Switch";
-import { type SelectChangeEvent } from "@mui/material/Select";
 import { useSidebar } from "../../context/SidebarContext";
 import "./index.scss";
 import { Button } from "../Button/Button";
 import { useAuth } from "../../context/AuthContext";
-import { AppRegistration, Language, Login } from "@mui/icons-material";
+import { Language, Login } from "@mui/icons-material";
 import { Dropdown } from "../Dropdown/Dropdown";
 import type { DropdownOptions } from "../Dropdown/type";
 import { Controller, useForm } from "react-hook-form";
 import SignOut from "../../components/Auth/SignOut";
 import { useTranslation } from "react-i18next";
 import { Single12Timepicker } from "../TimePicker";
+import { PlainSwitch } from "../Switch/PlainSwitch";
 
 export const Header = forwardRef<HTMLElement>((_, ref) => {
   const { user, isAuthenticated } = useAuth();
@@ -38,20 +38,6 @@ export const Header = forwardRef<HTMLElement>((_, ref) => {
   const handleChangeLanguage = (lang: string) => {
     i18n.changeLanguage(lang); // 'en', 'jp', 'kr', v.v.
   };
-  // const [tabValue, setTabValue] = useState(0);
-  // const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
-  // const handleTabChange = (event, newValue) => {
-  //   setTabValue(newValue);
-  // };
-
-  // const handleOpenSubMenu = (event: React.MouseEvent<HTMLElement>) => {
-  //   setAnchorEl(event.currentTarget);
-  // };
-
-  // const handleCloseSubMenu = () => {
-  //   setAnchorEl(null);
-  // };
   const menuMap = [
     "1Depth Menu1",
     "1Depth Menu2",
@@ -83,22 +69,11 @@ export const Header = forwardRef<HTMLElement>((_, ref) => {
     { value: "jp", label: "Japan" },
   ];
 
-  // const{control}= useForm({
-  //   defaultValues:lng
-  // })
-  // const menuMap = [
-  //   "1Depth Menu1",
-  //   "1Depth Menu2",
-  //   "1Depth Menu3",
-  //   "1Depth Menu4",
-  //   "1Depth Menu3",
-  //   "1Depth Menu4",
-  // ];
-  // setSelectedMenu(menuMap[newValue]);
-  const handleChange = (event: SelectChangeEvent) => {
-    setLng(event.target.value as string);
-  };
-  const Android12Switch = styled(Switch)(({ theme }) => ({
+  // const handleChange = (event: SelectChangeEvent) => {
+  //   setLng(event.target.value as string);
+  // };
+
+  const Android12Switch = styled(Switch)(() => ({
     padding: 8,
     width: 65,
     height: 44,
@@ -143,6 +118,7 @@ export const Header = forwardRef<HTMLElement>((_, ref) => {
       marginTop: 2.2,
     },
   }));
+
   return (
     <AppBar className="header" data-testid="headerTest" ref={ref}>
       <Box
@@ -184,7 +160,7 @@ export const Header = forwardRef<HTMLElement>((_, ref) => {
                       cursor: "pointer", // hoặc 'pointer', 'default'... tùy bạn thích
                     }}
                   >
-                    HSTN{" "}
+                    HSTN
                   </Typography>{" "}
                   <Divider
                     orientation="vertical"
@@ -215,20 +191,13 @@ export const Header = forwardRef<HTMLElement>((_, ref) => {
                         color: "#135678",
                         whiteSpace: "nowrap",
                         cursor: "pointer",
-                        // fontWeight: 600,
-                        // fontSize: 18,
-                        // lineHeight: 1.3,
-                        // fontSize: 18,
-                        // mt: 1,
-                        // maxHeight: "fit-content",
-                        // lineHeight: 1.1,
                       }}
                     >
                       한글시스템명
-                    </Typography>{" "}
-                    <Box>
+                    </Typography>
+                    {/* <Box>
                       <Single12Timepicker />
-                    </Box>
+                    </Box> */}
                     {/* <Typography
                       variant="subtitle1"
                       color="textSecondary"
@@ -286,6 +255,15 @@ export const Header = forwardRef<HTMLElement>((_, ref) => {
                   control={
                     // <IconButton className="icon-button">
                     <Android12Switch defaultChecked />
+                    // </IconButton>
+                  }
+                  label=""
+                  sx={{ mr: "5px" }}
+                />
+                <FormControlLabel
+                  control={
+                    // <IconButton className="icon-button">
+                    <PlainSwitch defaultChecked />
                     // </IconButton>
                   }
                   label=""

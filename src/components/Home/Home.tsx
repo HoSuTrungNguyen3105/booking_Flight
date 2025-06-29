@@ -2,7 +2,6 @@ import { Box, Typography } from "@mui/material";
 import { useAuth } from "../../context/AuthContext";
 import { Link } from "react-router-dom";
 import styles from "./index.module.scss";
-import Search_layout from "../Admin/Search_layout";
 import Sample from "../../common/Sample";
 
 const Home = () => {

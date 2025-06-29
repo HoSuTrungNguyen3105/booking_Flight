@@ -1,10 +1,5 @@
 import type { DropdownType } from "./type";
-import {
-  Autocomplete,
-  InputAdornment,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Autocomplete, InputAdornment, TextField } from "@mui/material";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import WarningIcon from "@mui/icons-material/Warning";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -162,13 +157,16 @@ export const Dropdown = ({
             },
             "& .MuiAutocomplete-startAdornment": {
               right: 15,
+              cursor: "pointer",
+              userSelect: "none",
+              pointerEvents: "none",
             },
             "& .MuiAutocomplete-endAdornment": {
               right: 15,
             },
             "& input": {
               cursor: "pointer",
-              // userSelect: "none",
+              userSelect: "none",
               // pointerEvents: "none",
               // hoặc 'pointer', 'default'... tùy bạn thích
               // padding: "10.5px 14px",
@@ -184,7 +182,7 @@ export const Dropdown = ({
             ...params.InputProps,
             startAdornment: customInput ? (
               <>
-                {/* {params.InputProps.startAdornment} */}
+                {params.InputProps.startAdornment}
                 <InputAdornment position="start">{customInput}</InputAdornment>
               </>
             ) : null,

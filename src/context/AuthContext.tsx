@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
+
 type User = {
   userName?: string;
   email?: string;
@@ -8,6 +9,7 @@ type User = {
   emailSuffix?: string;
   password: string;
   remember?: boolean;
+  // role:
 };
 interface AuthContextType {
   isAuthenticated: boolean;

@@ -69,28 +69,19 @@ export const Sidebar = () => {
   if (!isOpen) return null;
   return (
     <Box
-      // className="sidebar-container"
       sx={{
-        // scrollMarginBlock: 1,
         width: 350,
-        // height: "30px",
-        maxHeight: "calc(100vh - 200px)", // hoặc giá trị thực tế bạn tính
-        // bgcolor: "gray.100",
+        maxHeight: "calc(100vh - 150px)", // hoặc giá trị thực tế bạn tính
+        bgcolor: "gray.100",
         p: 2,
-        // maxHeight: "calc(100vh - 200px)",
         overflowY: "auto",
-        // scrollbarWidth: "none",
-        // "&::-webkit-scrollbar": {
-        //   display: "none",
-        // },
+        scrollbarWidth: "none",
       }}
     >
       <Box
         className="sidebar-header"
         sx={{ p: 2, display: "flex", justifyContent: "space-between" }}
       >
-        {/* <Single12Timepicker /> */}
-        {/* <Single24Timepicker /> */}
         <Typography sx={{ cursor: "pointer" }} variant="h6" fontWeight="bold">
           {selectedMenu}
         </Typography>
@@ -221,16 +212,14 @@ export const Sidebar = () => {
                             <RemoveIcon
                               fontSize="small"
                               onClick={() =>
-                                navigate(
-                                  `${REACT_APP_URL_TRANSFER}/${subItem.id}`
-                                )
+                                toast(`${REACT_APP_URL_TRANSFER}/${subItem.id}`)
                               }
                             />
                           ) : (
                             <AddIcon
                               fontSize="small"
                               onClick={() =>
-                                navigate(
+                                toast(
                                   `${process.env.REACT_APP_URL_TRANSFER}/${subItem.id}`
                                 )
                               }
@@ -280,9 +269,9 @@ export const Sidebar = () => {
                                   onClick={() => {
                                     handleNestedSubItemClick(nestedSubItem.id);
                                     navigate(
-                                      `/${subItem.id}/${nestedSubItem.id}`
-
-                                      // `${REACT_APP_URL_TRANSFER}/${subItem.id}/${nestedSubItem.id}`
+                                      // `/${subItem.id}/${nestedSubItem.id}`
+                                      // `/${nestedSubItem.id}`
+                                      `/${nestedSubItem.id}`
                                     );
                                   }}
                                 >

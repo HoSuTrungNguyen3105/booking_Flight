@@ -80,7 +80,7 @@ const ContentModal: FC<ModalProps> = ({
             <Box className="title">
               {titleIcon ?? <Box className="icon" />}{" "}
               <DialogTitle className="text">
-                <Tooltip title={<h4>{title}</h4>}>
+                <Tooltip title={<Box>{title}</Box>}>
                   <Box
                     sx={{
                       color: titleColor,
@@ -89,7 +89,7 @@ const ContentModal: FC<ModalProps> = ({
                     }}
                     className="overflow-hidden whitespace-nowrap text-ellipsis"
                   >
-                    {title}{" "}
+                    {title}
                   </Box>
                 </Tooltip>
               </DialogTitle>

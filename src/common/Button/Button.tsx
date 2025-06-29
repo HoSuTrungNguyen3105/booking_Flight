@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Button as MuiButton, SvgIcon } from "@mui/material";
+import { darken, Button as MuiButton, SvgIcon } from "@mui/material";
 import "../../scss/form/_button.scss";
 import type { ButtonProps } from "./type";
 
@@ -13,6 +13,7 @@ enum AppearanceEnum {
 enum PriorityEnum {
   Primary = "primary",
   Normal = "normal",
+  Custom = "custom", // ➕
 }
 
 enum SizeEnum {
@@ -25,6 +26,7 @@ const MUIButtonBaseClassName = {
   priority: {
     [PriorityEnum.Primary]: "MuiButton-colorPrimary",
     [PriorityEnum.Normal]: "MuiButton-colorNormal",
+    [PriorityEnum.Custom]: "MuiButton-colorCustom", // ➕ nếu cần className riêng
   },
   size: {
     [SizeEnum.Small]: "MuiButton-sizeSmall",
@@ -86,7 +88,8 @@ export const Button = ({
   icon,
   label,
   translate = true,
-  className,
+  customColor,
+  customLabelColor,
   sx,
   type,
   isHovered = false,
@@ -95,20 +98,21 @@ export const Button = ({
   const [hovered, setHovered] = useState(isHovered);
   const [activated, setActivated] = useState(isActivated);
   const [iconInvisible, setIconInvisible] = useState(false);
-  //const { t } = useTranslation();
   const buttonClassName = useMemo(() => {
-    const baseClassName = `${MUIButtonBaseClassName.size[size]} ${MUIButtonBaseClassName.priority[priority]}`;
-    const priorityClassName = MUIButtonPriorityClassName[priority][appearance];
+    const baseClassName = `${MUIButtonBaseClassName.size[size]} ${
+      priority !== "custom" ? MUIButtonBaseClassName.priority[priority] : ""
+    }`;
+    const priorityClassName =
+      priority !== "custom"
+        ? MUIButtonPriorityClassName[priority]?.[appearance]
+        : "";
+
     const sizeClassName = MUIButtonSizeClassName[size][appearance];
     const appearanceClassName = MUIButtonAppearanceClassName[appearance];
 
-    //return `MuiButton-root  ${appearanceClassName}  ${sizeClassName} `;
-    if (hovered) {
-      return `button ${baseClassName} ${appearanceClassName} ${priorityClassName} ${sizeClassName} hovered`;
-    } else if (activated) {
-      return `button ${baseClassName} ${appearanceClassName} ${priorityClassName} ${sizeClassName} activated`;
-    }
-    return `button ${baseClassName} ${appearanceClassName} ${priorityClassName} ${sizeClassName}`;
+    const state = hovered ? "hovered" : activated ? "activated" : "";
+
+    return `button ${baseClassName} ${appearanceClassName} ${priorityClassName} ${sizeClassName} ${state}`.trim();
   }, [appearance, priority, size, hovered, activated]);
 
   const iconPositionProps = icon
@@ -125,13 +129,31 @@ export const Button = ({
     }
     setIconInvisible((current) => !current);
   };
-
   const btnlabel = useMemo(() => {
     return typeof label === "string" && translate ? label : label;
   }, [label, translate]);
   return (
     <MuiButton
-      sx={{ padding: label ? "6px 10px" : 0, ...sx }}
+      sx={{
+        padding: label ? "8px 12px" : 0,
+        px: 4, // 👈 tăng padding ngang
+        mr: 2,
+        minWidth: 160,
+        ...(priority === "custom" &&
+          appearance === "contained" &&
+          customColor && {
+            backgroundColor: `${customColor} !important`,
+            color: `${customLabelColor} !important` || "#fff",
+            "&:hover": {
+              backgroundColor: darken(customColor, 0.1),
+            },
+            "&.Mui-disabled": {
+              opacity: 0.5,
+              backgroundColor: customColor,
+            },
+          }),
+        ...sx,
+      }}
       className={buttonClassName}
       {...iconPositionProps}
       disabled={disabled}

@@ -10,6 +10,7 @@ import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import type { TimePickerProps } from "./type";
 import type { Moment } from "moment";
 import moment from "moment";
+
 enum typeEnum {
   Error = "Error",
   Warning = "Warning",
@@ -73,6 +74,7 @@ export const MultiTimepicker = ({
       <Box className="container">
         <Box className="Multi-default" data-testid="Multi">
           <TimePicker
+            enableAccessibleFieldDOMStructure={false}
             ampm={false}
             views={["hours"]}
             readOnly={ReadOnly}
@@ -108,6 +110,7 @@ export const MultiTimepicker = ({
             }}
           />
           <TimePicker
+            enableAccessibleFieldDOMStructure={false}
             views={["minutes"]}
             ampm={false}
             readOnly={ReadOnly}
@@ -192,6 +195,7 @@ export const Single24Timepicker = ({
       <Box className="container" data-testid="Single24">
         {/*Single type (24h)*/}
         <TimePicker
+          enableAccessibleFieldDOMStructure={false}
           timeSteps={{ minutes: 15 }}
           thresholdToRenderTimeInASingleColumn={96}
           readOnly={ReadOnly}
@@ -297,6 +301,7 @@ export const Single12Timepicker = ({
       <Box className="container" data-testid="Single12">
         {/*Single type (12h)*/}
         <TimePicker
+          enableAccessibleFieldDOMStructure={false}
           readOnly={status === "ReadOnly"}
           disabled={status === "Disable"}
           value={value}

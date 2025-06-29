@@ -52,6 +52,7 @@ import {
   Button,
 } from "@mui/material";
 import Android12Switch from "../Switch/Switch";
+import { PlainSwitch } from "../Switch/PlainSwitch";
 
 const Setting = () => {
   const [darkMode, setDarkMode] = React.useState(false);
@@ -87,6 +88,7 @@ const Setting = () => {
           checked={darkMode}
           onChange={(e) => setDarkMode(e.target.checked)}
         />
+        <PlainSwitch />
       </Box>
 
       {/* Ngôn ngữ */}
