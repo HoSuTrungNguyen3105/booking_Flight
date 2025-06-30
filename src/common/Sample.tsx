@@ -341,8 +341,13 @@ const Sample = () => {
   }, [open]);
   const handleSubmit = () => {
     // toast("나타날 토스트입니다이것이 나타", "success");
+    if (name.trim() === "error") {
+      setError("이름을 입력해주세요.");
+      toast("이름을 입력해주세요.", "error");
+      return;
+    }
     setOpen(true);
-    setError("타날 토스트입니다이것이");
+    setError("");
     setIsDisable(true);
   };
 

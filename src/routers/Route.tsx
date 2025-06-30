@@ -20,6 +20,7 @@ import SampleTimePicker from "../common/Sample/SampleTimePicker";
 import Sample from "../common/Sample";
 import Layout from "../common/Dashboard/Layout";
 import TableCustom from "../common/Table/Table";
+import ResizeLayout from "../components/Layout/ResizeLayout";
 
 const routes: RouteObject[] = [
   {
@@ -42,7 +43,7 @@ const routes: RouteObject[] = [
   },
   {
     path: "layout",
-    element: <Layout />,
+    element: <Sample />,
   },
   {
     path: "Register",
@@ -121,7 +122,7 @@ const routes: RouteObject[] = [
   },
   {
     path: "/admin",
-    element: <AdminLayout />,
+    element: <ResizeLayout />,
     errorElement: <ErrorPage />,
     children: [
       //   {

@@ -1,4 +1,4 @@
-import { type FC, useEffect, useMemo } from "react";
+import { type FC, useMemo } from "react";
 import {
   Box,
   Dialog,
@@ -15,6 +15,7 @@ import type { ModalProps } from "./type";
 import { convertToString, quickValue } from "../../utils";
 import { Button } from "../Button/Button";
 import "./../../scss/_modal.scss";
+
 const Modal: FC<ModalProps> = ({
   type = "modal",
   contentArea,

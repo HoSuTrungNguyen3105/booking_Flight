@@ -7,10 +7,6 @@ const Layout = () => {
   return (
     <Box
       sx={{
-        // height: "100vh",
-        // display: "flex",
-        // flexDirection: "column",
-        // backgroundColor: "gray", // màu nâu bên ngoài
         height: "100vh",
         display: "flex",
         justifyContent: "center", // 👈 căn giữa theo trục ngang
@@ -31,12 +27,6 @@ const Layout = () => {
         <Typography>{}</Typography>
         <Backdrop
           sx={{
-            //   color: "#333",
-            // phần trong màu trắng
-            // alignItems: "center",
-            // boxShadow: 1,
-            // zIndex: (theme) => theme.zIndex.drawer + 1,
-            //   backgroundColor: "rgba(255, 255, 255, 0.8)",
             display: "flex",
             flexDirection: "column",
             gap: 2,

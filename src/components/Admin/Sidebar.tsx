@@ -11,14 +11,6 @@ import { ResizableBox } from "react-resizable";
 const AsideContainer = styled("div")(() => ({
   position: "relative",
   height: "100%",
-  // backgroundColor: "#f0f0f0",
-  //   borderRight: "1px solid #ccc",
-
-  //   // position: "relative",
-  //   overflow: "hidden",
-  //   "&:hover": {
-  //     backgroundColor: "#e0e0e0",
-  //   },
 }));
 const ResizeHandle = styled("div")({
   zIndex: 10,
@@ -43,38 +35,24 @@ const Sidebar = ({ children }: PropsWithChildren) => {
   const [sidebarHeight, setSidebarHeight] = useState<number>(0);
   const handleWidthChange = useCallback((newWidth: number) => {
     setSidebarWidth(newWidth);
-    // localStorage.setItem("sidebarWidth", String(newWidth));
     localStorage.setItem("sidebarWidth", newWidth.toString());
   }, []);
   const resizeHandle = useCallback(() => {
     if (asideRef.current) {
-      // const { width, height } = asideRef.current.getBoundingClientRect();
-      setSidebarWidth(asideRef.current.clientWidth);
-      // setSidebarHeight(height);
+      setSidebarHeight(asideRef.current.clientHeight);
     }
   }, []);
   useEffect(() => {
     resizeHandle();
     window.addEventListener("resize", resizeHandle);
     return () => window.removeEventListener("resize", resizeHandle);
-    // if (asideRef.current) {
-    //     const { width, height } = asideRef.current.getBoundingClientRect();
-    //     setSidebarWidth(width);
-    //     setSidebarHeight(height);
-    // }
   }, [resizeHandle]);
 
   const resizeHandleBox = (
-    <ResizeHandle
-      sx={{ height: "100%", px: 1 }}
-      // onMouseDown={(e) => {
-      //   e.preventDefault();
-      //   e.stopPropagation();
-      // }}
-    >
+    <ResizeHandle sx={{ height: "100%", px: 1 }}>
       <Box
         component="img"
-        src="./public/image.jpg"
+        // src="./public/image.jpg"
         sx={{ fontSize: "16px", color: "#666" }}
         alt="Resize Handle"
       />
@@ -98,14 +76,7 @@ const Sidebar = ({ children }: PropsWithChildren) => {
         }}
         handle={resizeHandleBox}
       >
-        <NavContainer
-        // sx={{
-        //   width: "100%",
-        //   height: "100%",
-        //   overflowY: "auto",
-        //   overflowX: "hidden",
-        // }}
-        >
+        <NavContainer>
           <Box component={"nav"} height={`100%`}>
             {children}
           </Box>

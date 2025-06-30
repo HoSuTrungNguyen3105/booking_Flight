@@ -6,7 +6,16 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import { Divider, FormControlLabel, Tab, Tabs } from "@mui/material";
+import {
+  Divider,
+  FormControlLabel,
+  InputLabel,
+  MenuItem,
+  Select,
+  Tab,
+  Tabs,
+  type SelectChangeEvent,
+} from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
 import MoreHorizSharpIcon from "@mui/icons-material/MoreHorizSharp";
@@ -20,13 +29,17 @@ import { useSidebar } from "../../context/SidebarContext";
 import "./index.scss";
 import { Button } from "../Button/Button";
 import { useAuth } from "../../context/AuthContext";
-import { Language, Login } from "@mui/icons-material";
+import {
+  ArrowDownward,
+  ArrowUpward,
+  Language,
+  Login,
+} from "@mui/icons-material";
 import { Dropdown } from "../Dropdown/Dropdown";
 import type { DropdownOptions } from "../Dropdown/type";
 import { Controller, useForm } from "react-hook-form";
 import SignOut from "../../components/Auth/SignOut";
 import { useTranslation } from "react-i18next";
-import { Single12Timepicker } from "../TimePicker";
 import { PlainSwitch } from "../Switch/PlainSwitch";
 
 export const Header = forwardRef<HTMLElement>((_, ref) => {
@@ -34,7 +47,14 @@ export const Header = forwardRef<HTMLElement>((_, ref) => {
   const { toggleSidebar, setSelectedMenu } = useSidebar();
   const [tabValue, setTabValue] = useState(0);
   const { i18n } = useTranslation();
+  const [value, setValue] = useState("");
+  const [open, setOpen] = useState(false);
 
+  const handleChange = (event: SelectChangeEvent) => {
+    setValue(event.target.value);
+  };
+
+  const IconComponent = () => (open ? <ArrowUpward /> : <ArrowDownward />);
   const handleChangeLanguage = (lang: string) => {
     i18n.changeLanguage(lang); // 'en', 'jp', 'kr', v.v.
   };
@@ -161,7 +181,22 @@ export const Header = forwardRef<HTMLElement>((_, ref) => {
                     }}
                   >
                     HSTN
-                  </Typography>{" "}
+                  </Typography>
+                  <InputLabel id="select-label">Chọn mục</InputLabel>
+                  <Select
+                    labelId="select-label"
+                    value={value}
+                    onChange={handleChange}
+                    open={open}
+                    onOpen={() => setOpen(true)}
+                    onClose={() => setOpen(false)}
+                    IconComponent={IconComponent}
+                    label="Chọn mục"
+                  >
+                    <MenuItem value="1">Mục 1</MenuItem>
+                    <MenuItem value="2">Mục 2</MenuItem>
+                    <MenuItem value="3">Mục 3</MenuItem>
+                  </Select>
                   <Divider
                     orientation="vertical"
                     flexItem
@@ -331,6 +366,7 @@ export const Header = forwardRef<HTMLElement>((_, ref) => {
                       icon={<Login />}
                       label="Login"
                     />
+
                     {/* <Button
                       sx={{ flex: "10px", display: "flex" }}
                       priority="normal"

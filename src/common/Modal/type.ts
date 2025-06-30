@@ -21,8 +21,8 @@ export type ModalProps = {
   sx?: SxProps<Theme>;
   errorMessage?: ReactNode;
   component?: ElementType;
-  title?: string;
-  title2?: string;
+  title?: ReactNode;
+  title2?: ReactNode;
   hideCloseBtn?: boolean;
   disabled?: boolean;
   isScreenPopup?: boolean;
