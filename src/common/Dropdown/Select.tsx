@@ -137,11 +137,11 @@ import {
   MenuItem,
   Select,
   type SelectChangeEvent,
-  IconButton,
 } from "@mui/material";
 import { useState } from "react";
 import { ArrowBack, ArrowDownward } from "@mui/icons-material";
 import Modal from "../Modal/Modal";
+import CSelect from "./CSelect";
 
 interface OptionType {
   label: string;
@@ -150,38 +150,44 @@ interface OptionType {
   icon?: string;
   description?: string;
 }
+interface ActionType {
+  type: "add" | "edit" | "delete";
+  payload?: any;
+  onClick?: () => void;
+}
+interface OptionDropdown {
+  label: string;
+  icon?: string;
+  action: ActionType;
+}
 
 const options: OptionType[] = [
   {
     label: "Quản trị viên",
     value: "admin",
     type: "admin",
-    icon: "./public/image.jpg",
+    icon: "/image.jpg",
     description: "Toàn quyền hệ thống",
   },
   {
     label: "Người dùng",
     value: "user",
     type: "user",
-    icon: "./public/image.jpg",
+    icon: "/image.jpg",
     description: "Tài khoản thông thường",
   },
   {
     label: "Khách",
     value: "guest",
     type: "guest",
-    icon: "./public/image.jpg",
+    icon: "/image.jpg",
     description: "Không đăng nhập",
   },
 ];
 
 const renderMenuItem = (option: OptionType) => (
   <Box display="flex" alignItems="center">
-    {/* {option.icon && (
-      <img src={option.icon} alt="" width={20} style={{ borderRadius: 4 }} />
-    )} */}
     <Typography fontWeight="bold">{option.label}</Typography>
-    {/* <Typography variant="caption">{option.description}</Typography> */}
   </Box>
 );
 
@@ -200,8 +206,20 @@ const initialData: RowData[] = [
 export default function TableWithSelectModal() {
   const [data, setData] = useState(initialData);
   const [selectOpen, setSelectOpen] = useState<number | null>(null);
-  const [modalOpen, setModalOpen] = useState(false);
+  const [modalOpen1, setModalOpen1] = useState(false);
+  const [nodalOpen2, setModalOpen2] = useState(false);
+  const [modalOpen3, setModalOpen3] = useState(false);
   const [modalType, setModalType] = useState<OptionType | null>(null);
+  const valueOptiondrpp: OptionDropdown[] = [
+    {
+      label: "kkk",
+      action: {
+        type: "add",
+        payload: null, // ✅ hoặc giá trị phù hợp
+        // onClick: () => handleChange(),
+      },
+    },
+  ];
 
   const handleChange = (rowId: number) => (e: SelectChangeEvent<string>) => {
     const selected = options.find((o) => o.value === e.target.value);
@@ -212,7 +230,7 @@ export default function TableWithSelectModal() {
         )
       );
       setModalType(selected);
-      setModalOpen(true);
+      setModalOpen1(true);
     }
   };
 
@@ -228,7 +246,9 @@ export default function TableWithSelectModal() {
             <TableRow>
               <TableCell>ID</TableCell>
               <TableCell>Ảnh</TableCell>
-              <TableCell>Tùy chọn</TableCell>
+              <TableCell sx={{ padding: 0 }}>
+                {/* <CSelect value={row.type} /> */}
+              </TableCell>
               <TableCell>Loại</TableCell>
             </TableRow>
           </TableHead>
@@ -246,8 +266,8 @@ export default function TableWithSelectModal() {
                 </TableCell>
                 <TableCell
                   sx={{
-                    border: "none", // ❌ bỏ border của cell
-                    padding: 0, // ✅ sát nội dung
+                    border: "none",
+                    padding: 0,
                   }}
                 >
                   <Select
@@ -255,20 +275,38 @@ export default function TableWithSelectModal() {
                     onChange={handleChange(row.id)}
                     onOpen={() => setSelectOpen(row.id)}
                     onClose={() => setSelectOpen(null)}
-                    variant="standard" // ✅ Không dùng 'outlined'
+                    variant="standard"
                     disableUnderline
                     size="small"
                     displayEmpty
-                    IconComponent={CustomSelectIcon}
+                    IconComponent={() => null}
                     renderValue={() => {
                       const selected = options.find(
                         (o) => o.value === row.type
                       );
-                      return selected
-                        ? renderMenuItem(selected)
-                        : "Chọn vai trò";
+                      return (
+                        <Box
+                          display="flex"
+                          alignItems="center"
+                          justifyContent="start"
+                          width="100%"
+                        >
+                          <Typography variant="body2">
+                            {selected ? selected.label : "Chọn vai trò"}
+                          </Typography>
+                          <CustomSelectIcon />{" "}
+                        </Box>
+                      );
                     }}
                     sx={{
+                      "& .MuiSelect-select": {
+                        display: "flex",
+                        alignItems: "center",
+                        paddingRight: "24px !important",
+                      },
+                      "& svg": {
+                        right: 0,
+                      },
                       ".MuiOutlinedInput-notchedOutline": {
                         border: "none", // ✅ Nếu lỡ xài 'outlined'
                       },
@@ -310,12 +348,12 @@ export default function TableWithSelectModal() {
         </Table>
       </TableContainer>
 
-      <Modal
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
+      {/* <Modal
+        open={modalOpen1}
+        onClose={() => setModalOpen1(false)}
         onSubmit={() => {
           console.log("Chọn role:", modalType?.value);
-          setModalOpen(false);
+          setModalOpen1(false);
         }}
         title={
           <Typography fontWeight="bold">
@@ -331,7 +369,32 @@ export default function TableWithSelectModal() {
         <Typography variant="body1">
           {modalType?.description ?? "Không có mô tả"}
         </Typography>
-      </Modal>
+      </Modal> */}
+      <Modal
+        open={modalOpen1}
+        handleClose={() => setModalOpen1(false)}
+        handleSubmit={() => {
+          console.log("Chọn role:", modalType?.value);
+          setModalOpen1(false);
+        }}
+        title={
+          <Typography fontWeight="bold">
+            {modalType?.label ?? "Thông tin"}
+          </Typography>
+        }
+        submitLabel="Xác nhận"
+        contentArea={
+          <Box>
+            <Typography variant="body2" mb={1}>
+              Đây là modal cho vai trò:{" "}
+              <strong>{modalType?.type.toUpperCase()}</strong>
+            </Typography>
+            <Typography variant="body1">
+              {modalType?.description ?? "Không có mô tả"}
+            </Typography>
+          </Box>
+        }
+      ></Modal>
     </>
   );
 }

@@ -124,11 +124,11 @@ export const Dropdown = ({
           sx={{
             "& .MuiOutlinedInput-root": {
               alignItems: "center",
-              textDecoration: "disable",
-              // cursor: "pointer", // hoặc 'pointer', 'default'... tùy bạn thích
+              textDecoration: "disabled",
+              cursor: "pointer", // hoặc 'pointer', 'default'... tùy bạn thích
             },
             "& .MuiOutlinedInput-input::selection": {
-              background: "transparent",
+              cursor: "pointer", // hoặc 'pointer', 'default'... tùy bạn thích
             },
 
             "& .MuiInputBase-root": {
@@ -139,18 +139,10 @@ export const Dropdown = ({
               // cursor: "pointer", // hoặc 'pointer', 'default'... tùy bạn thích
             },
             "& .MuiOutlinedInput-input": {
-              //overflow: "hidden",
               textOverflow: "unset", // hoặc "unset" nếu muốn hiện full
-              // whiteSpace: "nowrap", // chuyển thành "normal" nếu muốn xuống dòng
-              //minWidth: 0,
               flexGrow: 1, // hoặc "unset" nếu muốn hiện full
               lineHeight: 1.5,
               fontSize: "15px",
-              // userSelect: "none", // Không cho bôi đen
-              // pointerEvents: "none", // Chặn toàn bộ event (nếu cần input không tương tác)
-              // WebkitUserSelect: "none", // Safari
-              // MozUserSelect: "none",
-              // padding: "10px 14px",
             },
             "& .MuiOutlinedInput-notchedOutline": {
               borderColor: getBorderColour,
@@ -167,13 +159,6 @@ export const Dropdown = ({
             "& input": {
               cursor: "pointer",
               userSelect: "none",
-              // pointerEvents: "none",
-              // hoặc 'pointer', 'default'... tùy bạn thích
-              // padding: "10.5px 14px",
-              // lineHeight: "1.5",
-              // overflow: "visible", // ✅ không bị cắt
-              // textOverflow: "unset", // ✅ bỏ ...
-              // whiteSpace: "normal",
             },
           }}
           InputProps={{
@@ -189,7 +174,6 @@ export const Dropdown = ({
             endAdornment: (
               <>
                 {showEndAdornment && params.InputProps.endAdornment}
-                {/* {params.InputProps.endAdornment} */}
                 {status === "warning" && (
                   <InputAdornment position="end">
                     <WarningIcon color="warning" />

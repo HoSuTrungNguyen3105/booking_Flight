@@ -237,8 +237,8 @@
 // }
 import { useState } from "react";
 import { Box, IconButton, TextField, Typography } from "@mui/material";
-import Modal from "../../common/Modal/Modal";
 import SelectWithModal from "../../common/Dropdown/Select";
+import Modal from "../../common/Modal/Modal";
 
 interface InputField {
   id: number;
@@ -275,41 +275,50 @@ export default function Hero() {
       <SelectWithModal />
       <Modal
         open={open}
-        onClose={() => setOpen(false)}
-        onSubmit={handleSubmit}
+        handleClose={() => setOpen(false)}
+        handleSubmit={handleSubmit}
         title={<Typography fontWeight="bold">사용자 등록</Typography>}
-        confirmText="등록"
-        isDisabled={isSubmitDisabled} // truyền thêm prop để disable button
-      >
-        <Typography variant="body2" mb={1}>
-          멤버로 등록할 아이디를 입력하세요.
-        </Typography>
+        submitLabel="등록"
+        disabled={isSubmitDisabled}
+        contentArea={
+          <Box>
+            <Typography variant="body2" mb={1}>
+              멤버로 등록할 아이디를 입력하세요.
+            </Typography>
 
-        {fields.map((field, idx) => (
-          <Box key={field.id} display="flex" alignItems="center" mb={1} gap={1}>
-            <Box flex={1}>
-              <TextField
-                fullWidth
-                size="small"
-                placeholder="ID_NEW_MEMBER"
-                value={field.value}
-                disabled={idx !== fields.length - 1}
-                onChange={(e) => handleChange(field.id, e.target.value)}
-              />
-            </Box>
+            {fields.map((field, idx) => (
+              <Box
+                key={field.id}
+                display="flex"
+                alignItems="center"
+                mb={1}
+                gap={1}
+              >
+                <Box flex={1}>
+                  <TextField
+                    fullWidth
+                    size="small"
+                    placeholder="ID_NEW_MEMBER"
+                    value={field.value}
+                    disabled={idx !== fields.length - 1}
+                    onChange={(e) => handleChange(field.id, e.target.value)}
+                  />
+                </Box>
 
-            {fields.length > 1 && (
-              <IconButton onClick={() => handleRemove(field.id)}>
-                <Box
-                  component="img"
-                  src="./public/image.jpg"
-                  sx={{ width: 24, height: 24 }}
-                />
-              </IconButton>
-            )}
+                {fields.length > 1 && (
+                  <IconButton onClick={() => handleRemove(field.id)}>
+                    <Box
+                      component="img"
+                      src="./public/image.jpg"
+                      sx={{ width: 24, height: 24 }}
+                    />
+                  </IconButton>
+                )}
+              </Box>
+            ))}
           </Box>
-        ))}
-      </Modal>
+        }
+      ></Modal>
     </>
   );
 }

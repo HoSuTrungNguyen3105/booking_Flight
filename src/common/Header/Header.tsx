@@ -182,7 +182,7 @@ export const Header = forwardRef<HTMLElement>((_, ref) => {
                   >
                     HSTN
                   </Typography>
-                  <InputLabel id="select-label">Chọn mục</InputLabel>
+                  {/* <InputLabel id="select-label">Chọn mục</InputLabel>
                   <Select
                     labelId="select-label"
                     value={value}
@@ -196,7 +196,7 @@ export const Header = forwardRef<HTMLElement>((_, ref) => {
                     <MenuItem value="1">Mục 1</MenuItem>
                     <MenuItem value="2">Mục 2</MenuItem>
                     <MenuItem value="3">Mục 3</MenuItem>
-                  </Select>
+                  </Select> */}
                   <Divider
                     orientation="vertical"
                     flexItem
