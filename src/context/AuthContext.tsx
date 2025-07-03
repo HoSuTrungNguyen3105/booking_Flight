@@ -4,95 +4,80 @@ import { toast } from "react-toastify";
 type User = {
   userName?: string;
   email?: string;
-  // password: string;
-  emailPrefix?: string;
-  emailSuffix?: string;
   password: string;
   remember?: boolean;
-  // role:
 };
+
 interface AuthContextType {
   isAuthenticated: boolean;
   user: User | null;
+  token: string | null;
   login: (userData: User) => void;
   register: (userData: User) => void;
   logout: () => void;
 }
+
 interface AuthProviderProps {
   children: React.ReactNode;
 }
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+
   useEffect(() => {
-    const saveIsAuthenticated =
-      localStorage.getItem("isAuthenticated") === "true";
-    const saveUser = localStorage.getItem("user");
-    if (saveIsAuthenticated && saveUser) {
+    const savedToken = localStorage.getItem("token");
+    const savedUser = localStorage.getItem("user");
+    if (savedToken && savedUser) {
       setIsAuthenticated(true);
-      setUser(JSON.parse(saveUser));
+      setToken(savedToken);
+      setUser(JSON.parse(savedUser));
     }
   }, []);
-  // login: (userData: User) => {
-  //         setIsAuthenticate(true);
-  //         setUser(userData);
-  //         localStorage.setItem("isAuthenticated", "true");
-  //         localStorage.setItem("user", JSON.stringify(userData));
-  //       },
-  //       logout: () => {
-  //         setIsAuthenticate(false);
-  //         setUser(null);
-  //         localStorage.removeItem("isAuthenticated");
-  //         localStorage.removeItem("user");
-  //       },
-  const updateLocalStorage = (isAuthenticated: boolean, user: User | null) => {
-    if (!updateLocalStorage) return;
+
+  const updateLocalStorage = (
+    isAuthenticated: boolean,
+    user: User | null,
+    token: string | null
+  ) => {
     localStorage.setItem("isAuthenticated", String(isAuthenticated));
     localStorage.setItem("user", JSON.stringify(user));
+    localStorage.setItem("token", token || "");
   };
 
-  const login = async (userData: User) => {
-    if (!userData) return;
-    // const res = await refetchLoginUser(userData);
-    // try {
-    //   if (res?.resultCode === MessageOption.Option00) {
-    //     setIsAuthenticated(true);
-    //     setUser(userData);
-    //     updateLocalStorage(true, userData);
-    //   }
-    // } catch (err) {
-    //   console.error('Lỗi khi đăng nhập:', err);
-    //   setUser(null);
-    //   setIsAuthenticated(false);
-    // }
+  const login = (userData: User) => {
+    // ✅ Giả lập token (tùy bạn đặt)
+    const fakeToken = "fake-jwt-token";
+
+    setIsAuthenticated(true);
+    setUser(userData);
+    setToken(fakeToken);
+
+    updateLocalStorage(true, userData, fakeToken);
+
+    toast.success("Đăng nhập thành công (local)!");
   };
-  const register = async (userData: User) => {
-    if (!userData) return;
-    // const res = await refetchRegisterUser(userData);
-    // try {
-    //   if (res?.resultCode === MessageOption.Option00) {
-    //     setIsAuthenticated(true);
-    //     setUser(userData);
-    //     updateLocalStorage(true, userData);
-    //   }
-    // } catch (err) {
-    //   console.error('Lỗi khi đăng ký:', err);
-    //   setUser(null);
-    //   setIsAuthenticated(false);
-    // }
+
+  const register = (userData: User) => {
+    toast.success("Đăng ký thành công (giả lập)");
   };
+
   const logout = () => {
     setIsAuthenticated(false);
     setUser(null);
+    setToken(null);
     localStorage.removeItem("isAuthenticated");
     localStorage.removeItem("user");
-    toast.success("Logout Success");
+    localStorage.removeItem("token");
+    toast.success("Đăng xuất thành công!");
   };
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, user, login, register, logout }}
+      value={{ isAuthenticated, user, token, login, register, logout }}
     >
       {children}
     </AuthContext.Provider>
@@ -101,7 +86,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;

@@ -336,7 +336,7 @@ export const Header = forwardRef<HTMLElement>((_, ref) => {
                   )}
                 />
                 {isAuthenticated ? (
-                  <Stack spacing={1}>
+                  <Box>
                     <Button
                       sx={{
                         flex: "10px",
@@ -354,7 +354,7 @@ export const Header = forwardRef<HTMLElement>((_, ref) => {
                       }
                     />
                     <SignOut />
-                  </Stack>
+                  </Box>
                 ) : (
                   <Stack>
                     <Button

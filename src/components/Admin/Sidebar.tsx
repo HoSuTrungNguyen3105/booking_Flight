@@ -8,40 +8,50 @@ import {
   memo,
 } from "react";
 import { ResizableBox } from "react-resizable";
+import "react-resizable/css/styles.css";
+
 const AsideContainer = styled("div")(() => ({
   position: "relative",
   height: "100%",
 }));
+
 const ResizeHandle = styled("div")({
-  zIndex: 10,
-  width: 8,
+  position: "absolute",
+  top: "50%",
+  right: 0,
+  transform: "translateY(-50%)",
+  width: 6,
   height: 40,
-  transform: "translate(100̀%, -50%)",
   backgroundColor: "#ccc",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  cursor: "se-resize",
+  cursor: "col-resize",
+  zIndex: 10,
 });
+
 const NavContainer = styled(Box)({
   height: "100%",
   overflow: "hidden",
 });
+
 const Sidebar = ({ children }: PropsWithChildren) => {
   const asideRef = useRef<HTMLDivElement>(null);
   const [sidebarWidth, setSidebarWidth] = useState<number>(
     Number(localStorage.getItem("sidebarWidth")) || 250
   );
-  const [sidebarHeight, setSidebarHeight] = useState<number>(0);
+  const [sidebarHeight, setSidebarHeight] = useState<number>(
+    window.innerHeight
+  );
+
   const handleWidthChange = useCallback((newWidth: number) => {
     setSidebarWidth(newWidth);
     localStorage.setItem("sidebarWidth", newWidth.toString());
   }, []);
+
   const resizeHandle = useCallback(() => {
     if (asideRef.current) {
       setSidebarHeight(asideRef.current.clientHeight);
     }
   }, []);
+
   useEffect(() => {
     resizeHandle();
     window.addEventListener("resize", resizeHandle);
@@ -49,35 +59,43 @@ const Sidebar = ({ children }: PropsWithChildren) => {
   }, [resizeHandle]);
 
   const resizeHandleBox = (
-    <ResizeHandle sx={{ height: "100%", px: 1 }}>
+    <ResizeHandle>
       <Box
-        component="img"
-        // src="./public/image.jpg"
-        sx={{ fontSize: "16px", color: "#666" }}
-        alt="Resize Handle"
+        sx={{
+          width: "4px",
+          height: "40px",
+          bgcolor: "#999",
+          borderRadius: "2px",
+        }}
       />
     </ResizeHandle>
   );
+
   return (
     <AsideContainer ref={asideRef}>
       <ResizableBox
-        style={{ border: "1px solid #ccc", padding: 10 }}
-        axis="x"
         width={sidebarWidth}
         height={sidebarHeight}
+        axis="x"
         minConstraints={[185, sidebarHeight]}
         maxConstraints={[400, sidebarHeight]}
-        resizeHandles={["e"]} // southeast handle
-        onResizeStart={(e) => {
-          e.preventDefault();
-        }}
-        onResize={(_, { size }) => {
-          handleWidthChange(size.width);
-        }}
+        resizeHandles={["e"]}
+        onResize={(_, { size }) => handleWidthChange(size.width)}
         handle={resizeHandleBox}
+        style={{
+          position: "relative", // ✅ rất quan trọng để handle dùng absolute bên trong
+          display: "flex",
+          flexDirection: "column",
+        }}
+        // style={{
+        //   borderRight: "1px solid #ccc",
+        //   boxSizing: "border-box",
+        //   height: sidebarHeight,
+        //   background: "#f9f9f9",
+        // }}
       >
         <NavContainer>
-          <Box component={"nav"} height={`100%`}>
+          <Box component="nav" height="100%">
             {children}
           </Box>
         </NavContainer>

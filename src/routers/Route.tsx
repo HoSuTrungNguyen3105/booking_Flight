@@ -1,13 +1,10 @@
 import { createBrowserRouter, type RouteObject } from "react-router-dom";
-import FullLayout from "../components/Layout/FullLayout";
 import MainLayout from "../components/Layout/MainLayout";
 import ErrorPage from "../components/Layout/ErrorPage";
 import Guard from "../guard/Guard";
 import Home from "../components/Home/Home";
 import Setting from "../common/Setting/Setting";
 import Registration from "../components/Auth/Registration";
-import AdminLayout from "../components/Layout/AdminLayout";
-import Search_layout from "../components/Admin/Search_layout";
 import { FileUpload } from "../common/FileUploader/FileUpload";
 import Login from "../components/Auth/Login";
 import Register from "../components/Auth/Register";
@@ -18,121 +15,123 @@ import { Typography } from "@mui/material";
 import Food from "../common/Food/Food";
 import SampleTimePicker from "../common/Sample/SampleTimePicker";
 import Sample from "../common/Sample";
-import Layout from "../common/Dashboard/Layout";
 import TableCustom from "../common/Table/Table";
-import ResizeLayout from "../components/Layout/ResizeLayout";
+import { ROUTE_PATHS } from "./RoutePath";
+import ManageLayout from "../components/Layout/ResizeLayout";
 
 const routes: RouteObject[] = [
   {
-    path: "login",
-    element: <FullLayout />,
-    children: [{ index: true, element: <Login /> }],
+    path: ROUTE_PATHS.LOGIN,
+    element: <Login />,
   },
   {
-    path: "sampleButton",
+    path: ROUTE_PATHS.SAMPLE_BUTTON,
     element: <Sample />,
   },
   {
-    path: "table",
+    path: ROUTE_PATHS.TABLE,
     element: <TableCustom />,
   },
   {
-    path: "RegistrationForm",
+    path: ROUTE_PATHS.REGISTRATION_FORM,
     element: <Registration />,
-    // children: [{ index: true, element: <Registration /> }],
   },
   {
-    path: "layout",
-    element: <Sample />,
-  },
-  {
-    path: "Register",
+    path: ROUTE_PATHS.REGISTER,
     element: <Register />,
   },
   {
-    path: "/",
+    path: ROUTE_PATHS.LANDING,
     element: <MainLayout />,
     errorElement: <ErrorPage />,
     children: [
       {
-        path: "/",
+        path: ROUTE_PATHS.LANDING, // = "/"
         element: <Guard />,
         children: [
           { index: true, element: <Hero /> },
           { path: "setting", element: <Setting /> },
-          // { index: false, element: <Registration /> },
         ],
       },
       {
         path: "overview/revenue",
-        element: <Typography>Xin chao</Typography>,
+        element: <Typography>Xin chào</Typography>,
       },
       {
         path: "airport-list/domestic",
-        element: <Typography>Xin chao</Typography>,
+        element: <Typography>Xin chào</Typography>,
       },
       {
-        path: "food",
+        path: ROUTE_PATHS.FOOD.replace("/", ""),
         element: <Food />,
       },
-      // {
-      //   path: "table",
-      //   element: <Table />,
-      // },
       {
-        path: "sampleFormDemo",
-        element: <Search_layout />,
+        path: ROUTE_PATHS.SAMPLE_FORM.replace("/", ""),
+        element: <Sample />,
       },
-      // {
-      //   path: "sampleButton",
-      //   element: <Sample />,
-      // },
       {
-        path: "sampleTimepicker",
+        path: ROUTE_PATHS.TIME_PICKER.replace("/", ""),
         element: <SampleTimePicker />,
       },
       {
-        path: "logout",
+        path: ROUTE_PATHS.LOGOUT.replace("/", ""),
         element: <SignOut />,
       },
       {
-        path: "sampleFileUploader",
+        path: ROUTE_PATHS.FILE_UPLOAD.replace("/", ""),
         element: <FileUpload name="fileUploader" />,
       },
       {
-        path: "bookticket",
+        path: ROUTE_PATHS.BOOK_TICKET.replace("/", ""),
         element: <BookTicket />,
       },
       {
-        path: "sample",
+        path: ROUTE_PATHS.SAMPLE.replace("/", ""),
         element: <Home />,
-        children: [
-          //   {
-          //     path: "RegistrationForm",
-          //     element: <Registration />,
-          //     children: [{ index: true, element: <Registration /> }],
-          //   },
-          //   {
-          //     path: "headerpage",
-          //     element: <Header />,
-          //   },
-        ],
       },
     ],
   },
   {
-    path: "/admin",
-    element: <ResizeLayout />,
+    path: ROUTE_PATHS.ADMIN,
+    element: <ManageLayout />,
     errorElement: <ErrorPage />,
     children: [
-      //   {
-      //     path: 'createFlight',
-      //     element: <CreateFlight />,
-      //   },
-      //   {
-      //     path: "sampleFormDemo",
-      //     element: <Search_layout />,
-      //   },
+      {
+        path: "revenue",
+        element: <Typography>Xin chào</Typography>,
+      },
+      {
+        path: "domestic",
+        element: <Typography>Xin chào</Typography>,
+      },
+      {
+        path: ROUTE_PATHS.FOOD.replace("/", ""),
+        element: <Food />,
+      },
+      {
+        path: ROUTE_PATHS.SAMPLE_BUTTON.replace("/", ""),
+        element: <Sample />,
+      },
+      {
+        path: ROUTE_PATHS.TIME_PICKER.replace("/", ""),
+        element: <SampleTimePicker />,
+      },
+      {
+        path: ROUTE_PATHS.LOGOUT.replace("/", ""),
+        element: <SignOut />,
+      },
+      {
+        path: ROUTE_PATHS.FILE_UPLOAD.replace("/", ""),
+        element: <FileUpload name="fileUploader" />,
+      },
+      {
+        path: ROUTE_PATHS.BOOK_TICKET.replace("/", ""),
+        element: <BookTicket />,
+      },
+      {
+        path: ROUTE_PATHS.SAMPLE.replace("/", ""),
+        element: <Home />,
+      },
     ],
   },
   {
