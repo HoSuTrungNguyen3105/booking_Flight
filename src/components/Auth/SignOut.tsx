@@ -3,12 +3,14 @@
 // import { useAppContext } from "../contexts/AppContext";
 import { Button } from "../../common/Button/Button";
 import { useAuth } from "../../context/AuthContext";
-import { toast } from "react-toastify";
+import { useToast } from "../../context/ToastContext";
+// import { toast } from "react-toastify";
 
 const SignOut = () => {
   // const queryClient = useQueryClient();
   //   const { showToast } = useAppContext();
   const { user, logout } = useAuth();
+  const toast = useToast();
   //   const mutation = useMutation(logout(), {
   //     onSuccess: async () => {
   //       await queryClient.invalidateQueries("validadeUser");
@@ -24,7 +26,7 @@ const SignOut = () => {
   const handleClick = () => {
     // mutation.mutate();
     if (user === null) {
-      toast.error("You are not logged in!");
+      toast("You are not logged in!", "error");
       return;
     }
     logout();

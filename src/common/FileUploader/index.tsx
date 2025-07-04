@@ -8,8 +8,8 @@ import {
   type DragEvent,
   type DragEventHandler,
   type FC,
-  type MouseEvent,
   type MouseEventHandler,
+  useRef,
 } from "react";
 import { sumBy, uniqueId } from "lodash";
 import { INPUT_TYPE, type FileUploaderProps, type TFileUploader } from "./type";
@@ -19,14 +19,24 @@ import {
   getFileInformation,
   sizeToBytes,
 } from "../../utils";
-import { Box, Button } from "@mui/material";
+import { Box } from "@mui/material";
 import { Image } from "@mui/icons-material";
 import CancelIcon from "@mui/icons-material/Cancel";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import "./index.scss";
 import FilePresentIcon from "@mui/icons-material/FilePresent";
-import { toast } from "react-toastify";
 import ContentModal from "../Modal/ContentModal";
+import { Button } from "../Button/Button";
+import { useToast } from "../../context/ToastContext";
+import { styled } from "@mui/material/styles";
+
+type MediaItem = {
+  link: string;
+  type: "youtube" | "facebook";
+  thumbnail: string;
+};
+const MAX_IMAGE_COUNT = 5;
+
 export const FileUpload: FC<FileUploaderProps> = ({
   width = "100%",
   height = "auto",
@@ -45,7 +55,170 @@ export const FileUpload: FC<FileUploaderProps> = ({
   const [currentInputType, setCurrentInputType] = useState(inputType);
   const [openImage, setOpenImage] = useState(false);
   const [selectedFile, setSelectedFile] = useState<TFileUploader | null>(null);
+  // const [mediaLinks, setMediaLinks] = useState<string[]>([]);
+  const [mediaLinks, setMediaLinks] = useState<MediaItem[]>([]);
 
+  useEffect(() => {
+    const savedLinks = localStorage.getItem("mediaLinks");
+    if (savedLinks) {
+      setMediaLinks(JSON.parse(savedLinks));
+    }
+  }, []);
+
+  const toast = useToast();
+  const getYouTubeVideoId = (url: string): string => {
+    const match = url.match(
+      /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([0-9A-Za-z_-]{11})/
+    );
+    return match?.[1] || "";
+  };
+
+  const handleAddLink = (link: string) => {
+    // const currentCount = mediaLinks.length;
+    // const isYouTube = isYouTubeLink(link);
+    // const isFacebook = isFacebookLink(link);
+
+    // if (!isYouTube && !isFacebook) {
+    //   toast("Chỉ hỗ trợ link Facebook hoặc YouTube", "error");
+    //   return;
+    // }
+
+    // if (currentCount >= MAX_IMAGE_COUNT) {
+    //   toast(`Chỉ được upload tối đa ${MAX_IMAGE_COUNT} ảnh.`, "error");
+    //   return;
+    // }
+
+    // if (isYouTube) {
+    //   const videoId = getYouTubeVideoId(link);
+    //   if (!videoId) {
+    //     toast("Link YouTube không hợp lệ", "error");
+    //     return;
+    //   }
+
+    //   const newItem = {
+    //     link,
+    //     type: "youtube",
+    //     thumbnail: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
+    //   };
+
+    //   const updated = [...mediaLinks, newItem];
+    //   setMediaLinks((prev) => [
+    //     ...prev,
+    //     {
+    //       link,
+    //       type: "youtube",
+    //       thumbnail: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
+    //     },
+    //   ]);
+    //   localStorage.setItem("mediaLinks", JSON.stringify(updated));
+    // }
+
+    // if (isFacebook) {
+    //   const newItem = {
+    //     link,
+    //     type: "facebook",
+    //     thumbnail: "/fb-placeholder.jpg",
+    //   };
+
+    //   const updated = [...mediaLinks, newItem];
+    //   setMediaLinks((prev) => [
+    //     ...prev,
+    //     {
+    //       link,
+    //       type: "facebook",
+    //       thumbnail: "/fb-placeholder.jpg", // fallback ảnh mặc định
+    //     },
+    //   ]);
+    //   localStorage.setItem("mediaLinks", JSON.stringify(updated));
+    // }
+    const currentCount = mediaLinks.length;
+
+    if (currentCount >= MAX_IMAGE_COUNT) {
+      toast(`Chỉ được upload tối đa ${MAX_IMAGE_COUNT} ảnh.`, "error");
+      return;
+    }
+
+    const isYouTube = isYouTubeLink(link);
+    const isFacebook = isFacebookLink(link);
+
+    if (!isYouTube && !isFacebook) {
+      toast("Chỉ hỗ trợ link Facebook hoặc YouTube", "error");
+      return;
+    }
+
+    let newItem: MediaItem | null = null;
+
+    if (isYouTube) {
+      const videoId = getYouTubeVideoId(link);
+      if (!videoId) {
+        toast("Link YouTube không hợp lệ", "error");
+        return;
+      }
+
+      newItem = {
+        link,
+        type: "youtube",
+        thumbnail: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
+      };
+    }
+
+    if (isFacebook) {
+      newItem = {
+        link,
+        type: "facebook",
+        thumbnail: "/fb-placeholder.jpg",
+      };
+    }
+
+    if (newItem) {
+      const updated = [...mediaLinks, newItem];
+      setMediaLinks(updated);
+      localStorage.setItem("mediaLinks", JSON.stringify(updated));
+    }
+  };
+
+  const handleRemoveLink = (index: number) => {
+    const updatedLinks = [...mediaLinks];
+    updatedLinks.splice(index, 1); // xoá phần tử ở vị trí index
+
+    setMediaLinks(updatedLinks);
+    localStorage.setItem("mediaLinks", JSON.stringify(updatedLinks));
+  };
+
+  // const handleAddLink = (link: string) => {
+  //   localStorage.setItem("mediaLinks", JSON.stringify(mediaLinks));
+  //   if (mediaLinks.length > MAX_IMAGE_COUNT) {
+  //     toast(`Chỉ được upload tối đa ${MAX_IMAGE_COUNT} ảnh.`, "error");
+  //     console.log("anh", isFacebookLink.length && isYouTubeLink.length);
+  //     return;
+  //   }
+  //   if (isYouTubeLink(link)) {
+  //     const videoId = getYouTubeVideoId(link);
+  //     if (!videoId) return toast("Link YouTube không hợp lệ", "error");
+  //     setMediaLinks((prev) => [
+  //       ...prev,
+  //       {
+  //         link,
+  //         type: "youtube",
+  //         thumbnail: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
+  //       },
+  //     ]);
+  //   } else if (isFacebookLink(link)) {
+  //     setMediaLinks((prev) => [
+  //       ...prev,
+  //       {
+  //         link,
+  //         type: "facebook",
+  //         thumbnail: "/fb-placeholder.jpg", // fallback ảnh mặc định
+  //       },
+  //     ]);
+  //   } else {
+  //     toast("Chỉ hỗ trợ link Facebook hoặc YouTube", "error");
+  //   }
+  // };
+
+  const linkInputRef = useRef<HTMLInputElement | null>(null);
+  console.log(linkInputRef);
   const [_, setIsDragging] = useState(false);
   useEffect(() => {
     setImageFiles(value || []);
@@ -58,6 +231,19 @@ export const FileUpload: FC<FileUploaderProps> = ({
       return "input";
     });
   };
+  const isYouTubeLink = (url: string) =>
+    /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\//.test(url);
+
+  const isFacebookLink = (url: string) =>
+    /^(https?:\/\/)?(www\.)?(facebook\.com|fb\.watch)\//.test(url);
+  // const handleAddLink = (link: string) => {
+  //   if (!isYouTubeLink(link) && !isFacebookLink(link)) {
+  //     toast.error("Chỉ hỗ trợ link Facebook hoặc YouTube");
+  //     return;
+  //   }
+
+  //   setMediaLinks((prev) => [...prev, link]);
+  // };
 
   const totalSize = useMemo(() => {
     let total = 0;
@@ -74,7 +260,7 @@ export const FileUpload: FC<FileUploaderProps> = ({
         .map((item) => item.toLowerCase());
       const sizeFiles = sumBy(files, "size") + totalSize;
       if (sizeFiles > sizeToBytes(maxSize)) {
-        toast.error("Max size exceeded");
+        toast("Max size exceeded", "error");
         return false;
       }
       if (
@@ -85,14 +271,14 @@ export const FileUpload: FC<FileUploaderProps> = ({
             )
         )
       ) {
-        toast.error("Not a valid file");
+        toast("Not a valid file");
         return false;
       }
       if (
         Array.isArray(imageFiles) &&
         files.length + imageFiles.length > maxFiles
       ) {
-        toast.success("Maximum file limit reached");
+        toast("Maximum file limit reached");
         return false;
       }
       return true;
@@ -151,6 +337,12 @@ export const FileUpload: FC<FileUploaderProps> = ({
     setSelectedFile(file);
     setOpenImage(true);
   };
+  const StyledInput = styled("input")({
+    flex: 1,
+    padding: "8px",
+    borderRadius: "4px",
+    border: "1px solid #ccc",
+  });
 
   const closeImageModal = () => {
     setOpenImage(false);
@@ -190,21 +382,10 @@ export const FileUpload: FC<FileUploaderProps> = ({
     // onChange?.(imageFiles.filter((_, i: number) => i !== index));
   };
 
-  // const onInputClick: MouseEventHandler<HTMLInputElement> = (
-  //   event: MouseEvent<HTMLInputElement>
-  // ) => {
-  //   event.stopPropagation;
-  //   if (currentInputType === INPUT_TYPE.READONLY) {
-  //     return toast.warning("Cant chose file in read only");
-  //   } else {
-  //     const element = event.target as HTMLInputElement;
-  //     element.value = "";
-  //   }
-  // };
   const onInputClick: MouseEventHandler<HTMLInputElement> = (event) => {
     event.stopPropagation();
     if (currentInputType === INPUT_TYPE.READONLY) {
-      toast.warning("Can't choose file in read-only mode");
+      toast("Can't choose file in read-only mode", "info");
       event.preventDefault();
       return;
     }
@@ -220,14 +401,117 @@ export const FileUpload: FC<FileUploaderProps> = ({
   return (
     <Box className="file-uploader-container">
       <section className="upload-image-container" style={{ width, height }}>
-        <Button onClick={toggleInputType} data-testid="toggle-input-type">
-          Switch:
-          {currentInputType === INPUT_TYPE.INPUT
-            ? INPUT_TYPE.THUMBNAIL
-            : currentInputType === INPUT_TYPE.THUMBNAIL
-            ? INPUT_TYPE.INPUT
-            : INPUT_TYPE.READONLY}
-        </Button>
+        <Button
+          label={`Switch: ${
+            currentInputType === INPUT_TYPE.INPUT
+              ? INPUT_TYPE.THUMBNAIL
+              : currentInputType === INPUT_TYPE.THUMBNAIL
+              ? INPUT_TYPE.INPUT
+              : INPUT_TYPE.READONLY
+          }`}
+          size="large"
+          onClick={toggleInputType}
+        />
+        <Box display="flex" gap={1} mt={2}>
+          <StyledInput
+            ref={linkInputRef}
+            placeholder="Paste YouTube/Facebook link"
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                const link = linkInputRef.current?.value || "";
+                handleAddLink(link);
+                linkInputRef.current!.value = "";
+              }
+            }}
+            disabled={disabled}
+          />
+        </Box>
+        {/* <Input
+            ref={linkInputRef}
+            placeholder="Paste YouTube/Facebook link"
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                const link = linkInputRef.current?.value || "";
+                handleAddLink(link);
+                linkInputRef.current!.value = "";
+              }
+            }}
+            disabled={disabled}
+            style={{
+              flex: 1,
+              padding: "8px",
+              borderRadius: "4px",
+              border: "1px solid #ccc",
+            }}
+          /> */}
+        {/* <Button
+            label="Thêm"
+            onClick={() => {
+              const input = document.querySelector<HTMLInputElement>(
+                "input[placeholder*='link']"
+              );
+              if (input?.value) handleAddLink(input.value);
+            }}
+          /> */}
+        {/* {mediaLinks.length > 0 && (
+            <Box
+              className="group-img"
+              mt={2}
+              display="flex"
+              flexDirection="column"
+              gap={2}
+            >
+              {mediaLinks.map((item, i) => (
+                <Box key={i}>
+                  <img
+                    src={item.thumbnail}
+                    alt={`media-${i}`}
+                    style={{
+                      width: "100%",
+                      maxWidth: 400,
+                      borderRadius: 8,
+                      cursor: "pointer",
+                    }}
+                    onClick={() => window.open(item.link, "_blank")}
+                  />
+                </Box>
+              ))}
+            </Box>
+          )} */}
+        {mediaLinks.length > 0 && (
+          <Box
+            sx={{
+              display: "flex",
+              padding: "1px",
+              justifyContent: "start",
+            }}
+            mt={2}
+            display="flex"
+            flexDirection="row"
+            flexWrap="wrap"
+            gap={2}
+          >
+            {mediaLinks.map((item, i) => (
+              <Box key={i}>
+                <img
+                  src={item.thumbnail}
+                  alt={`media-${i}`}
+                  style={{
+                    width: 120,
+                    height: 90,
+                    objectFit: "cover",
+                    borderRadius: 8,
+                    cursor: "pointer",
+                  }}
+                  onClick={() => window.open(item.link, "_blank")}
+                />
+                <button onClick={() => handleRemoveLink(i)}>Xoá</button>
+              </Box>
+            ))}
+          </Box>
+        )}
         <Box
           className={`image-uploader ${
             imageFiles.length > 0 ? "upload-box active" : "upload box"
@@ -250,6 +534,7 @@ export const FileUpload: FC<FileUploaderProps> = ({
               data-testid="file-input"
             />
           )}
+
           <label className="mb-0" htmlFor={name}>
             <Box className="upload-info">
               <Box className="gap-[3px] flex items-center flex-grow">

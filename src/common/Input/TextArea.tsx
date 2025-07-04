@@ -1,9 +1,9 @@
 import { TextField, type TextFieldProps } from "@mui/material";
 
-const TextArea = (props: TextFieldProps) => {
+const TextArea = ({ sx, ...rest }: TextFieldProps) => {
   return (
     <TextField
-      {...props}
+      {...rest}
       multiline
       minRows={1}
       maxRows={1}
@@ -11,19 +11,20 @@ const TextArea = (props: TextFieldProps) => {
       fullWidth
       sx={{
         "& .MuiOutlinedInput-root": {
-          borderRadius: "8px",
+          borderRadius: 2, // tương đương 16px
           padding: "8px",
-          alignItems: "flex-start", // Align text at the top
+          alignItems: "flex-start",
         },
         "& fieldset": {
-          borderColor: "grey.400", // Default border color
+          borderColor: "grey.400",
         },
         "&:hover fieldset": {
-          borderColor: "primary.main", // Border on hover
+          borderColor: "primary.main",
         },
         "&.Mui-focused fieldset": {
-          borderColor: "primary.dark", // Border on focus
+          borderColor: "primary.dark",
         },
+        ...sx, // Merge sx từ bên ngoài
       }}
     />
   );

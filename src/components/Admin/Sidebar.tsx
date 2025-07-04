@@ -87,12 +87,6 @@ const Sidebar = ({ children }: PropsWithChildren) => {
           display: "flex",
           flexDirection: "column",
         }}
-        // style={{
-        //   borderRight: "1px solid #ccc",
-        //   boxSizing: "border-box",
-        //   height: sidebarHeight,
-        //   background: "#f9f9f9",
-        // }}
       >
         <NavContainer>
           <Box component="nav" height="100%">

@@ -87,17 +87,14 @@ export const Sidebar = () => {
         </Typography>
         <Button
           priority="normal"
-          iconPosition="leading" //leading trailing
+          iconPosition="trailing" //leading trailing
           size="large"
           onClick={gotoSetting}
           appearance="unfilled"
           icon={<SettingsRoundedIcon sx={{ fill: "#135678 !important" }} />}
         />
       </Box>
-      {/* <TextArea /> */}
-      {/* <Button /> */}
       <SearchPopup />
-      {/* Tabs */}
       <Tabs
         className="sidebar-tabs"
         value={activeTab}
@@ -124,7 +121,6 @@ export const Sidebar = () => {
         />
       </Tabs>
       <Box data-testid="list-item">
-        {/* <Box className="sidebar-scrollable"></Box> */}
         {items.map((item) => (
           <Box key={item.id}>
             <Box
@@ -157,11 +153,6 @@ export const Sidebar = () => {
                 >
                   {openSubMenus.includes(item.id) ? (
                     <RemoveIcon
-                      // onClick={() =>
-                      //   navigate(
-                      //     `${process.env.REACT_APP_URL_TRANSFER}/${item.id}`
-                      //   )
-                      // }
                       onClick={() =>
                         toast(`${REACT_APP_URL_TRANSFER}/${item.id}`)
                       }

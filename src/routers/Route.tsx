@@ -5,7 +5,7 @@ import Guard from "../guard/Guard";
 import Home from "../components/Home/Home";
 import Setting from "../common/Setting/Setting";
 import Registration from "../components/Auth/Registration";
-import { FileUpload } from "../common/FileUploader/FileUpload";
+import { FileUpload } from "../common/FileUploader";
 import Login from "../components/Auth/Login";
 import Register from "../components/Auth/Register";
 import Hero from "../components/Hero/Hero";
