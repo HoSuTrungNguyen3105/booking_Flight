@@ -18,6 +18,7 @@ import Sample from "../common/Sample";
 import TableCustom from "../common/Table/Table";
 import { ROUTE_PATHS } from "./RoutePath";
 import ManageLayout from "../components/Layout/ResizeLayout";
+import App from "../components/Auth/Loginv2";
 
 const routes: RouteObject[] = [
   {
@@ -76,6 +77,10 @@ const routes: RouteObject[] = [
       {
         path: ROUTE_PATHS.LOGOUT.replace("/", ""),
         element: <SignOut />,
+      },
+      {
+        path: ROUTE_PATHS.PROFILE.replace("/", ""),
+        element: <App />,
       },
       {
         path: ROUTE_PATHS.FILE_UPLOAD.replace("/", ""),

@@ -14,6 +14,12 @@ export const ROUTE_PATHS = {
   SAMPLE_FORM: "sampleFormDemo",
   SAMPLE: "/sample",
   ADMIN: "/admin",
+  // New routes
+  PROFILE: "/profile",
+  SETTINGS: "/settings",
+  DASHBOARD: "/dashboard",
+  SUPPORT: "/support",
+  NOTIFICATIONS: "/notifications",
 };
 
 // export const ROUTE_PATHS = {

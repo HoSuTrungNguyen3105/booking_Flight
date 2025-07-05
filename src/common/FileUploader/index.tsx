@@ -55,7 +55,6 @@ export const FileUpload: FC<FileUploaderProps> = ({
   const [currentInputType, setCurrentInputType] = useState(inputType);
   const [openImage, setOpenImage] = useState(false);
   const [selectedFile, setSelectedFile] = useState<TFileUploader | null>(null);
-  // const [mediaLinks, setMediaLinks] = useState<string[]>([]);
   const [mediaLinks, setMediaLinks] = useState<MediaItem[]>([]);
 
   useEffect(() => {
