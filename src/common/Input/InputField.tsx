@@ -75,6 +75,9 @@ const InputField = React.forwardRef(
               ""
             );
             break;
+          // case "text":
+          //   event.target.value = event.target.value.replace(/[^\d,]/g, "");
+          //   break;
           default:
             break;
         }
@@ -86,17 +89,6 @@ const InputField = React.forwardRef(
     return (
       <TextField
         label={label}
-        // data-testid={
-        //   type === "number"
-        //     ? "number-input"
-        //     : type === "number-multi"
-        //     ? "number-multi-input"
-        //     : type === "alpha-numeric"
-        //     ? "alpha-numeric-input"
-        //     : isPassword
-        //     ? "password-input"
-        //     : "input-field"
-        // }
         error={error}
         helperText={helperText}
         type={isPassword && !showPassword ? "password" : "text"}

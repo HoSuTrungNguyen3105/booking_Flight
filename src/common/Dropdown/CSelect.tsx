@@ -46,30 +46,11 @@ const CSelect = ({
       displayEmpty
       size="small"
       IconComponent={() => null}
-      // ...
-      //   renderValue={() => {
-      //     const selected = options.find((o) => o.value);
-      //     const hasBorder = true; // 👈 Bạn tự set theo variant, hoặc truyền prop
-
-      //     return (
-      //       <Box
-      //         display="flex"
-      //         alignItems="center"
-      //         justifyContent={hasBorder ? "space-between" : "flex-start"}
-      //         width="100%"
-      //       >
-      //         <Typography variant="body2">
-      //           {selected ? selected.label : "Chọn vai trò"}
-      //         </Typography>
-      //         <CustomSelectIcon />
-      //       </Box>
-      //     );
-      //   }}
       renderValue={() => (
         <Box
           display="flex"
           alignItems="center"
-          justifyContent={withBorder ? "space-between" : "flex-start"} // ✅ Logic chính
+          justifyContent={withBorder ? "space-between" : "flex-start"}
           width="100%"
         >
           <Typography variant="body2">

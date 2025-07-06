@@ -15,7 +15,6 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { Button } from "../Button/Button";
-import { KeyboardArrowDown } from "@mui/icons-material";
 // import Select from "react-select";
 const columns = [
   {
@@ -116,55 +115,9 @@ const TableCustom = () => {
               alignItems: "center",
               justifyContent: "space-between",
             }}
-          >
-            {/* <Box sx={{ display: "flex", alignItems: "center" }}>
-              <StarBorder />
-              <Typography>Search Flight</Typography>
-            </Box> */}
-            {/* <Box sx={{ display: "flex", alignItems: "center" }}>
-              <BreadCrumb items={breadCrumbText} />
-            </Box> */}
-          </Box>
+          ></Box>
           <Box sx={{ borderRadius: 1, border: "solid 3px #f2f3f8" }}>
-            <Box className="search-status">
-              {/* <Box className="left-element">
-                {Input("status", controlSearch, "Select", true, true)}
-                {Input("aircraftCode", controlSearch, "Select", true, true)} */}
-              {/* <TextArea /> */}
-              {/* <FormRow label="Status">
-                  {renderDropdownField('status', controlSearch, status, 'Select', false, false)}
-                </FormRow>
-                <FormRow label="Aircraft Code">
-                  {renderDropdownField('aircraftCode', controlSearch, aircraft, 'Select', false, false)}
-                </FormRow> */}
-              {/* </Box> */}
-              {/* <Box className="bottom-element"> */}
-              {/* <FormRow label="Departure Airport">
-                  {renderDropdownField(
-                    'departureAirport',
-                    controlSearch,
-                    departureAirportList,
-                    'Select',
-                    false,
-                    false,
-                    handleDepartureChange,
-                  )}
-                </FormRow>
-                <FormRow label="Arrival Airport">
-                  {renderDropdownField(
-                    'arrivalAirport',
-                    controlSearch,
-                    arrivalAirportList,
-                    'Select',
-                    false,
-                    false,
-                    handleArrivalChange,
-                  )}
-                </FormRow> */}
-            </Box>
-            {/* <Box className="right-element"> */}
-            {/* <FormRow label="Scheduled Departure">{renderDatePicker('scheduledDeparture', controlSearch)}</FormRow>
-                <FormRow label="Scheduled Arrival">{renderDatePicker('scheduledArrival', controlSearch)}</FormRow> */}
+            <Box className="search-status"></Box>
           </Box>
           <Paper sx={{ width: "100%", overflow: "hidden" }}>
             <TableContainer sx={{ maxHeight: 360 }}>

@@ -19,6 +19,7 @@ import TableCustom from "../common/Table/Table";
 import { ROUTE_PATHS } from "./RoutePath";
 import ManageLayout from "../components/Layout/ResizeLayout";
 import App from "../components/Auth/Loginv2";
+import Search_layout from "../components/Admin/Search_layout";
 
 const routes: RouteObject[] = [
   {
@@ -77,6 +78,14 @@ const routes: RouteObject[] = [
       {
         path: ROUTE_PATHS.LOGOUT.replace("/", ""),
         element: <SignOut />,
+      },
+      {
+        path: "/sampleFormData",
+        element: <Search_layout />,
+      },
+      {
+        path: "/sampleFormData",
+        element: <TableCustom />,
       },
       {
         path: ROUTE_PATHS.PROFILE.replace("/", ""),

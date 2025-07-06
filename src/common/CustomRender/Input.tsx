@@ -43,23 +43,23 @@
 // };
 
 // export default StyledInput;
-import { Controller } from "react-hook-form";
+import { Controller, type Control } from "react-hook-form";
 import { toast } from "react-toastify";
-import InputField from "../Input/InputField";
+import InputField from "../Input/InputField"; // Giả định bạn đã có component này
 import { forwardRef } from "react";
 
 interface InputProps {
   name: string;
-  control: any;
+  control: Control<any>; // bạn có thể thay bằng Control<FormValues> nếu có
   placeholder?: string;
   isPassword?: boolean;
   isEditable?: boolean;
   disabled?: boolean;
-  style?: React.CSSProperties;
+  sx?: React.CSSProperties;
   onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
 }
 
-// Dùng forwardRef để nhận ref từ cha
+// Dùng forwardRef để nhận ref từ cha (nếu cần dùng focus, etc.)
 const Input = forwardRef<HTMLInputElement, InputProps>(
   (
     {
@@ -68,8 +68,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       placeholder,
       isPassword = false,
       isEditable = true,
-      disabled,
-      style,
+      disabled = false,
+      sx,
       onKeyDown,
     },
     ref
@@ -86,7 +86,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             placeholder={placeholder}
             disabled={disabled}
             onKeyDown={onKeyDown}
-            sx={{ width: "50%", ...style }}
+            sx={{ width: "50%", ...sx }}
             onChange={(value) => {
               if (!isEditable) {
                 toast.warning("This field cannot be edited!");

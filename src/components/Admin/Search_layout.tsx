@@ -23,7 +23,6 @@ import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import { Button } from "../../common/Button/Button";
 import ContentModal from "../../common/Modal/ContentModal";
 import "../../scss/_ag-grid.scss";
-import { Input } from "../../common/CustomRender/Input";
 // import TextArea from "../../common/Input/TextArea";
 import type { BreadcrumbItem } from "../../common/BreadCrumb/type";
 import { toast } from "react-toastify";
@@ -32,6 +31,7 @@ import {
   type DataFlight,
   type SearchType,
 } from "../../utils/type";
+import Input from "../../common/CustomRender/Input";
 // import { useFlightSearchContext } from "../../context/SearchContext";
 type FlightId = {
   id: number;
@@ -554,43 +554,55 @@ const Search_layout: React.FC = () => {
           <Box sx={{ borderRadius: 1, border: "solid 3px #f2f3f8" }}>
             <Box className="search-status">
               <Box className="left-element">
-                {Input("status", controlSearch, "Select", true, true)}
-                {Input("aircraftCode", controlSearch, "Select", true, true)}
-                {/* <TextArea /> */}
-                {/* <FormRow label="Status">
-                  {renderDropdownField('status', controlSearch, status, 'Select', false, false)}
-                </FormRow>
-                <FormRow label="Aircraft Code">
-                  {renderDropdownField('aircraftCode', controlSearch, aircraft, 'Select', false, false)}
-                </FormRow> */}
+                <Input
+                  name="status"
+                  control={controlSearch}
+                  placeholder="Select"
+                  isPassword={false}
+                  isEditable={true}
+                />
+
+                <Input
+                  name="aircraftCode"
+                  control={controlSearch}
+                  placeholder="Select"
+                  isPassword={false}
+                  isEditable={true}
+                />
               </Box>
               <Box className="bottom-element">
-                {/* <FormRow label="Departure Airport">
-                  {renderDropdownField(
-                    'departureAirport',
-                    controlSearch,
-                    departureAirportList,
-                    'Select',
-                    false,
-                    false,
-                    handleDepartureChange,
-                  )}
-                </FormRow>
-                <FormRow label="Arrival Airport">
-                  {renderDropdownField(
-                    'arrivalAirport',
-                    controlSearch,
-                    arrivalAirportList,
-                    'Select',
-                    false,
-                    false,
-                    handleArrivalChange,
-                  )}
-                </FormRow> */}
+                <Input
+                  name="status"
+                  control={controlSearch}
+                  placeholder="Select"
+                  isPassword={false}
+                  isEditable={true}
+                />
+
+                <Input
+                  name="aircraftCode"
+                  control={controlSearch}
+                  placeholder="Select"
+                  isPassword={false}
+                  isEditable={true}
+                />
               </Box>
               <Box className="right-element">
-                {/* <FormRow label="Scheduled Departure">{renderDatePicker('scheduledDeparture', controlSearch)}</FormRow>
-                <FormRow label="Scheduled Arrival">{renderDatePicker('scheduledArrival', controlSearch)}</FormRow> */}
+                <Input
+                  name="status"
+                  control={controlSearch}
+                  placeholder="Select"
+                  isPassword={false}
+                  isEditable={true}
+                />
+
+                <Input
+                  name="aircraftCode"
+                  control={controlSearch}
+                  placeholder="Select"
+                  isPassword={false}
+                  isEditable={true}
+                />
               </Box>
               <Box
                 sx={{
@@ -609,7 +621,6 @@ const Search_layout: React.FC = () => {
                   size="large"
                   type="reset"
                   iconSize={21}
-                  // disabled={isReset}
                 />
                 <Button
                   priority="normal"
@@ -635,9 +646,6 @@ const Search_layout: React.FC = () => {
               rowSelection="multiple"
               onSelectionChanged={onSelectionChanged}
               rowData={rowData}
-              // domLayout="autoHeight"
-              //getRowClass={getRowClass}
-              // rowData={displayDataFlight}
               columnDefs={colDefs}
               defaultColDef={defaultColDef}
               pagination={true}
@@ -661,56 +669,6 @@ const Search_layout: React.FC = () => {
               ]}
               contentArea={
                 <Box sx={{ gap: 3.5, padding: 1.5 }}>
-                  {/* <FormRow mt={1} label="Flight Id">
-                    <Box sx={{ width: '200px', maxWidth: '250px', minWidth: '100px' }}>
-                      {renderInputField('flightId', controlUpdate, '선택', true, false)}
-                    </Box>
-                  </FormRow>
-                  <FormRow mt={1} label="Flight No">
-                    <Box sx={{ width: '200px', maxWidth: '250px', minWidth: '100px' }}>
-                      {renderInputField('flightNo', controlUpdate, '선택', true, false)}
-                    </Box>
-                  </FormRow>
-                  <FormRow mt={1} label="Scheduled Departure">
-                    <Box sx={{ width: '200px', maxWidth: '250px', minWidth: '100px' }}>
-                      {renderDatePicker('scheduledDeparture', controlUpdate)}
-                    </Box>
-                  </FormRow>
-                  <FormRow mt={1} label="Scheduled Arrival">
-                    <Box sx={{ width: '200px', maxWidth: '250px', minWidth: '100px' }}>
-                      {renderDatePicker('scheduledArrival', controlUpdate)}
-                    </Box>
-                  </FormRow>
-                  <FormRow mt={1} label="Departure Airport">
-                    <Box sx={{ width: '200px', maxWidth: '250px', minWidth: '100px' }}>
-                      {renderDropdownValueField('departureAirport', controlUpdate, airportName, 'Select', true)}
-                    </Box>
-                  </FormRow>
-                  <FormRow mt={1} label="Arrival Airport">
-                    <Box sx={{ width: '200px', maxWidth: '250px', minWidth: '100px' }}>
-                      {renderDropdownValueField('arrivalAirport', controlUpdate, airportName, 'Select', true)}
-                    </Box>
-                  </FormRow>
-                  <FormRow mt={1} label="Status">
-                    <Box sx={{ width: '200px', maxWidth: '250px', minWidth: '100px' }}>
-                      {renderDropdownValueField('status', controlUpdate, status, 'Select', false)}
-                    </Box>
-                  </FormRow>
-                  <FormRow mt={1} label="Aircraft Code">
-                    <Box sx={{ width: '200px', maxWidth: '250px', minWidth: '100px' }}>
-                      {renderDropdownValueField('aircraftCode', controlUpdate, aircraftName, 'Select', true)}
-                    </Box>
-                  </FormRow>
-                  <FormRow mt={1} label="Actual Departure">
-                    <Box sx={{ width: '200px', maxWidth: '250px', minWidth: '100px' }}>
-                      {renderDatePicker('actualDeparture', controlUpdate)}
-                    </Box>
-                  </FormRow>
-                  <FormRow mt={1} label="Actual Arrival">
-                    <Box sx={{ width: '200px', maxWidth: '250px', minWidth: '100px' }}>
-                      {renderDatePicker('actualArrival', controlUpdate)}
-                    </Box>
-                  </FormRow> */}
                   <ContentModal
                     open={openUpdateConfirm}
                     closeLabel="Cancel"

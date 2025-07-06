@@ -46,7 +46,7 @@ export const FileUpload: FC<FileUploaderProps> = ({
   name,
   value,
   onChange,
-  maxFiles = 5,
+  maxFiles = MAX_IMAGE_COUNT,
   multiple = true,
   hidePreview,
   disabled = false,
@@ -73,63 +73,6 @@ export const FileUpload: FC<FileUploaderProps> = ({
   };
 
   const handleAddLink = (link: string) => {
-    // const currentCount = mediaLinks.length;
-    // const isYouTube = isYouTubeLink(link);
-    // const isFacebook = isFacebookLink(link);
-
-    // if (!isYouTube && !isFacebook) {
-    //   toast("Chỉ hỗ trợ link Facebook hoặc YouTube", "error");
-    //   return;
-    // }
-
-    // if (currentCount >= MAX_IMAGE_COUNT) {
-    //   toast(`Chỉ được upload tối đa ${MAX_IMAGE_COUNT} ảnh.`, "error");
-    //   return;
-    // }
-
-    // if (isYouTube) {
-    //   const videoId = getYouTubeVideoId(link);
-    //   if (!videoId) {
-    //     toast("Link YouTube không hợp lệ", "error");
-    //     return;
-    //   }
-
-    //   const newItem = {
-    //     link,
-    //     type: "youtube",
-    //     thumbnail: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
-    //   };
-
-    //   const updated = [...mediaLinks, newItem];
-    //   setMediaLinks((prev) => [
-    //     ...prev,
-    //     {
-    //       link,
-    //       type: "youtube",
-    //       thumbnail: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
-    //     },
-    //   ]);
-    //   localStorage.setItem("mediaLinks", JSON.stringify(updated));
-    // }
-
-    // if (isFacebook) {
-    //   const newItem = {
-    //     link,
-    //     type: "facebook",
-    //     thumbnail: "/fb-placeholder.jpg",
-    //   };
-
-    //   const updated = [...mediaLinks, newItem];
-    //   setMediaLinks((prev) => [
-    //     ...prev,
-    //     {
-    //       link,
-    //       type: "facebook",
-    //       thumbnail: "/fb-placeholder.jpg", // fallback ảnh mặc định
-    //     },
-    //   ]);
-    //   localStorage.setItem("mediaLinks", JSON.stringify(updated));
-    // }
     const currentCount = mediaLinks.length;
 
     if (currentCount >= MAX_IMAGE_COUNT) {
@@ -184,38 +127,6 @@ export const FileUpload: FC<FileUploaderProps> = ({
     localStorage.setItem("mediaLinks", JSON.stringify(updatedLinks));
   };
 
-  // const handleAddLink = (link: string) => {
-  //   localStorage.setItem("mediaLinks", JSON.stringify(mediaLinks));
-  //   if (mediaLinks.length > MAX_IMAGE_COUNT) {
-  //     toast(`Chỉ được upload tối đa ${MAX_IMAGE_COUNT} ảnh.`, "error");
-  //     console.log("anh", isFacebookLink.length && isYouTubeLink.length);
-  //     return;
-  //   }
-  //   if (isYouTubeLink(link)) {
-  //     const videoId = getYouTubeVideoId(link);
-  //     if (!videoId) return toast("Link YouTube không hợp lệ", "error");
-  //     setMediaLinks((prev) => [
-  //       ...prev,
-  //       {
-  //         link,
-  //         type: "youtube",
-  //         thumbnail: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
-  //       },
-  //     ]);
-  //   } else if (isFacebookLink(link)) {
-  //     setMediaLinks((prev) => [
-  //       ...prev,
-  //       {
-  //         link,
-  //         type: "facebook",
-  //         thumbnail: "/fb-placeholder.jpg", // fallback ảnh mặc định
-  //       },
-  //     ]);
-  //   } else {
-  //     toast("Chỉ hỗ trợ link Facebook hoặc YouTube", "error");
-  //   }
-  // };
-
   const linkInputRef = useRef<HTMLInputElement | null>(null);
   console.log(linkInputRef);
   const [_, setIsDragging] = useState(false);
@@ -235,14 +146,6 @@ export const FileUpload: FC<FileUploaderProps> = ({
 
   const isFacebookLink = (url: string) =>
     /^(https?:\/\/)?(www\.)?(facebook\.com|fb\.watch)\//.test(url);
-  // const handleAddLink = (link: string) => {
-  //   if (!isYouTubeLink(link) && !isFacebookLink(link)) {
-  //     toast.error("Chỉ hỗ trợ link Facebook hoặc YouTube");
-  //     return;
-  //   }
-
-  //   setMediaLinks((prev) => [...prev, link]);
-  // };
 
   const totalSize = useMemo(() => {
     let total = 0;
@@ -426,59 +329,6 @@ export const FileUpload: FC<FileUploaderProps> = ({
             disabled={disabled}
           />
         </Box>
-        {/* <Input
-            ref={linkInputRef}
-            placeholder="Paste YouTube/Facebook link"
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                const link = linkInputRef.current?.value || "";
-                handleAddLink(link);
-                linkInputRef.current!.value = "";
-              }
-            }}
-            disabled={disabled}
-            style={{
-              flex: 1,
-              padding: "8px",
-              borderRadius: "4px",
-              border: "1px solid #ccc",
-            }}
-          /> */}
-        {/* <Button
-            label="Thêm"
-            onClick={() => {
-              const input = document.querySelector<HTMLInputElement>(
-                "input[placeholder*='link']"
-              );
-              if (input?.value) handleAddLink(input.value);
-            }}
-          /> */}
-        {/* {mediaLinks.length > 0 && (
-            <Box
-              className="group-img"
-              mt={2}
-              display="flex"
-              flexDirection="column"
-              gap={2}
-            >
-              {mediaLinks.map((item, i) => (
-                <Box key={i}>
-                  <img
-                    src={item.thumbnail}
-                    alt={`media-${i}`}
-                    style={{
-                      width: "100%",
-                      maxWidth: 400,
-                      borderRadius: 8,
-                      cursor: "pointer",
-                    }}
-                    onClick={() => window.open(item.link, "_blank")}
-                  />
-                </Box>
-              ))}
-            </Box>
-          )} */}
         {mediaLinks.length > 0 && (
           <Box
             sx={{
@@ -550,7 +400,6 @@ export const FileUpload: FC<FileUploaderProps> = ({
               </Box>
             </Box>
           </label>
-
           {Array.isArray(imageFiles) &&
           imageFiles.length > 0 &&
           !hidePreview ? (
@@ -598,12 +447,17 @@ export const FileUpload: FC<FileUploaderProps> = ({
                   handleClose={closeImageModal}
                   contentArea={
                     selectedFile ? (
-                      <Box>
-                        <img
+                      <Box
+                        component={"img"}
+                        src={selectedFile.preview}
+                        alt={selectedFile.fileName}
+                        style={{ width: "100%", height: "100%" }}
+                      >
+                        {/* <img
                           src={selectedFile.preview}
                           alt={selectedFile.fileName}
                           style={{ width: "100%", height: "100%" }}
-                        />
+                        /> */}
                       </Box>
                     ) : null
                   }
@@ -624,19 +478,22 @@ export const FileUpload: FC<FileUploaderProps> = ({
                     </Box>
                     <Box className="size-file">
                       <span>{bytesToSize(file.size)}</span>
-                      <CancelIcon
+
+                      {/* Bao CancelIcon trong 1 Box để chặn truyền sự kiện */}
+                      <Box
                         onClick={(e) => {
-                          e.stopPropagation(); // 👈 Ngăn không cho click ảnh
+                          e.stopPropagation(); // ⛔ chặn click lên cha
                           handleRemoveFile(index);
                         }}
-                        sx={{ cursor: "pointer" }}
-                        width={16}
-                        height={16}
+                        sx={{ cursor: "pointer", ml: 1 }} // thêm margin nếu cần
                         data-testid={`remove-file-${index}`}
-                      />
+                      >
+                        <CancelIcon sx={{ width: 16, height: 16 }} />
+                      </Box>
                     </Box>
                   </Box>
                 ))}
+
                 <ContentModal
                   open={openImage}
                   closeLabel="Exit"

@@ -6,18 +6,8 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import {
-  Divider,
-  FormControlLabel,
-  InputLabel,
-  MenuItem,
-  Select,
-  Tab,
-  Tabs,
-  type SelectChangeEvent,
-} from "@mui/material";
+import { Divider, FormControlLabel, Tab, Tabs } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
-import Stack from "@mui/material/Stack";
 import MoreHorizSharpIcon from "@mui/icons-material/MoreHorizSharp";
 import StarOutlineRoundedIcon from "@mui/icons-material/StarOutlineRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
@@ -44,16 +34,16 @@ import { PlainSwitch } from "../Switch/PlainSwitch";
 import { Link } from "react-router-dom";
 
 export const Header = forwardRef<HTMLElement>((_, ref) => {
-  const { user, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
   const { toggleSidebar, setSelectedMenu } = useSidebar();
   const [tabValue, setTabValue] = useState(0);
   const { i18n } = useTranslation();
-  const [value, setValue] = useState("");
+  // const [value, setValue] = useState("");
   const [open, setOpen] = useState(false);
 
-  const handleChange = (event: SelectChangeEvent) => {
-    setValue(event.target.value);
-  };
+  // const handleChange = (event: SelectChangeEvent) => {
+  //   setValue(event.target.value);
+  // };
 
   const IconComponent = () => (open ? <ArrowUpward /> : <ArrowDownward />);
   const handleChangeLanguage = (lang: string) => {
@@ -79,11 +69,17 @@ export const Header = forwardRef<HTMLElement>((_, ref) => {
     localStorage.setItem("language", lng);
   }, [lng]);
 
-  const { control } = useForm({
+  const {
+    control,
+    setValue: setValueLang,
+    watch: watchLang,
+  } = useForm<{ language: string }>({
     defaultValues: {
       language: lng,
     },
   });
+  const selectedLang = watchLang("language");
+
   const valueTrans: DropdownOptions[] = [
     { value: "en", label: "English" },
     { value: "kr", label: "Korean" },
@@ -248,9 +244,9 @@ export const Header = forwardRef<HTMLElement>((_, ref) => {
                 }}
               >
                 {/* Utility icons */}
-                {/* <IconButton className="icon-button">
+                <IconButton className="icon-button">
                   <HelpOutlineRoundedIcon />
-                </IconButton> */}
+                </IconButton>
                 <IconButton className="icon-button">
                   <MoreHorizSharpIcon />
                 </IconButton>
@@ -262,16 +258,37 @@ export const Header = forwardRef<HTMLElement>((_, ref) => {
                 </IconButton>
 
                 {/* Switches */}
-                <FormControlLabel
+                {/* <FormControlLabel
                   control={<Android12Switch defaultChecked />}
                   label=""
                   sx={{ mr: 1 }}
-                />
+                /> */}
                 <FormControlLabel
                   control={<PlainSwitch defaultChecked />}
                   label=""
                   sx={{ mr: 2 }}
                 />
+
+                {/* <Dropdown
+                  label="Language"
+                  // value={
+                  //   valueTrans.find((v) => v.value === selectedLang) ?? null
+                  // }
+                  value={
+                    valueTrans.find((v) => v.value === String(selectedLang)) ??
+                    null
+                  }
+                  options={valueTrans}
+                  onChange={(event, newValue) => {
+                    const selected = Array.isArray(newValue)
+                      ? newValue[0]
+                      : newValue;
+                    setValueLang("language", selected?.value ?? "en");
+                  }}
+                  placeholder="Select language"
+                  multiple={false}
+                  status="confirmed"
+                /> */}
 
                 {/* Language Dropdown */}
                 <Controller
@@ -279,6 +296,7 @@ export const Header = forwardRef<HTMLElement>((_, ref) => {
                   control={control}
                   render={({ field }) => (
                     <Dropdown
+                      label="Language"
                       customInput={<Language />}
                       sx={{
                         display: "flex",
@@ -301,8 +319,6 @@ export const Header = forwardRef<HTMLElement>((_, ref) => {
                     />
                   )}
                 />
-
-                {/* User Section: Logged in or not */}
                 {isAuthenticated ? (
                   <Box sx={{ display: "flex", alignItems: "center", ml: 2 }}>
                     <Button
@@ -311,12 +327,7 @@ export const Header = forwardRef<HTMLElement>((_, ref) => {
                       iconPosition="trailing"
                       size="medium"
                       appearance="unfilled"
-                      label={
-                        <Box sx={{ display: "flex", alignItems: "center" }}>
-                          <Avatar sx={{ mr: 1 }} alt="User" src="" />
-                          {user?.userName}
-                        </Box>
-                      }
+                      label={<Avatar sx={{ mr: 1 }} alt="User" src="" />}
                     />
                     <SignOut />
                   </Box>
@@ -331,14 +342,11 @@ export const Header = forwardRef<HTMLElement>((_, ref) => {
                     />
                   </Link>
                 )}
-                <SignOut />
-                {/* Apps Button */}
                 <Button
                   size="medium"
                   icon={<AppsIcon />}
                   priority="normal"
                   appearance="unfilled"
-                  sx={{ ml: 2 }}
                 />
               </Box>
             </Box>

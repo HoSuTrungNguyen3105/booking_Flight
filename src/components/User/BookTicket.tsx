@@ -5,10 +5,10 @@ import {
   CardContent,
   CircularProgress,
   FormControl,
+  Grid,
   TableContainer,
   Typography,
 } from "@mui/material";
-import Grid from "@mui/material/Grid";
 import FormRow from "../../common/CustomRender/FormRow";
 import { DropdownField } from "../../common/CustomRender/Dropdown";
 import React from "react";
@@ -23,9 +23,6 @@ import {
   SearchRounded,
 } from "@mui/icons-material";
 import Zigzag from "../../common/CustomRender/Zigzag";
-import { Link } from "react-router-dom";
-import { DatePicker } from "@mui/x-date-pickers";
-import { InputDate } from "../../common/DayPicker";
 import { DatetimePicker } from "../../common/CustomRender/TPicker";
 
 const BookTicket = () => {
@@ -42,7 +39,6 @@ const BookTicket = () => {
     control: controlSearch,
     handleSubmit: handleSearchSubmit,
     reset: resetSearch,
-    getValues,
   } = useForm<UserSearchType>({
     defaultValues: flightParams,
   });
@@ -143,58 +139,71 @@ const BookTicket = () => {
           </Box>
           <Box sx={{ borderRadius: 2, border: "solid 3px #f2f3f8" }}>
             <Box
+              borderRadius={2}
+              border="3px solid #f2f3f8"
+              p={3}
               className="search-status"
-              sx={{ display: "flex", flexWrap: "wrap", gap: 3, p: 3 }}
             >
-              <Box className="left-element">
-                <FormRow label="Fare Conditions">
-                  {DropdownField(
-                    "fareConditions",
-                    controlSearch,
-                    fareConditions,
-                    "Select"
-                  )}
-                </FormRow>
-                <FormRow label="Passenger Count">
-                  {DropdownField(
-                    "passengerCount",
-                    controlSearch,
-                    [],
-                    "Choose number"
-                  )}
-                </FormRow>
-              </Box>
-              <Box className="bottom-element">
-                <FormRow label="Departure Airport">
-                  {DropdownField(
-                    "departureAirport",
-                    controlSearch,
-                    airportName,
-                    "Select",
-                    false
-                  )}
-                </FormRow>
-                <FormRow label="Arrival Airport">
-                  {DropdownField(
-                    "arrivalAirport",
-                    controlSearch,
-                    airportName,
-                    "Select",
-                    false
-                  )}
-                </FormRow>
-              </Box>
-              <Box className="right-element">
-                <FormRow label="Scheduled Departure">
-                  {DatetimePicker("scheduledDeparture", controlSearch)}
-                  {/* <DatePicker /> */}
-                  {/* <InputDate/> */}
-                </FormRow>
-                <FormRow label="Scheduled Arrival">
-                  {DatetimePicker("scheduledArrival", controlSearch)}
-                  {/* <DatePicker /> */}
-                </FormRow>
-              </Box>
+              <Grid container spacing={3}>
+                {/* Left column */}
+                <Grid item xs={12} md={6}>
+                  <FormRow label="Fare Conditions">
+                    {/* <DropdownField
+              name="fareConditions"
+              control={controlSearch}
+              options={fareConditions}
+              placeholder="Select"
+            /> */}
+                  </FormRow>
+
+                  <FormRow label="Passenger Count">
+                    <DropdownField
+                      name="passengerCount"
+                      control={controlSearch}
+                      options={[]} // Replace with real data
+                      placeholder="Choose number"
+                    />
+                  </FormRow>
+                </Grid>
+
+                {/* Middle column */}
+                <Grid item xs={12} md={4}>
+                  <FormRow label="Departure Airport">
+                    <DropdownField
+                      name="departureAirport"
+                      control={controlSearch}
+                      options={airportName}
+                      placeholder="Select"
+                    />
+                  </FormRow>
+
+                  <FormRow label="Arrival Airport">
+                    <DropdownField
+                      name="arrivalAirport"
+                      control={controlSearch}
+                      options={airportName}
+                      placeholder="Select"
+                    />
+                  </FormRow>
+                </Grid>
+
+                {/* Right column */}
+                <Grid item xs={12} md={4}>
+                  <FormRow label="Scheduled Departure">
+                    <DatetimePicker
+                      name="scheduledDeparture"
+                      control={controlSearch}
+                    />
+                  </FormRow>
+
+                  <FormRow label="Scheduled Arrival">
+                    <DatetimePicker
+                      name="scheduledArrival"
+                      control={controlSearch}
+                    />
+                  </FormRow>
+                </Grid>
+              </Grid>
               <Box
                 sx={{
                   display: "flex",

@@ -1,3 +1,6 @@
+@import ".../../../../scss/variables.scss";
+@import ".../../../../scss/breakpoints.scss";
+
 .css-mk73dd-MuiAutocomplete-root .MuiOutlinedInput-root {
   padding: 2px !important;
 }
@@ -27,14 +30,14 @@
 }
 
 .css-1n04w30-MuiInputBase-root-MuiOutlinedInput-root {
-max-height: 35px !important;
+  max-height: 35px !important;
 }
 .css-1tlcqt-MuiAutocomplete-root .MuiOutlinedInput-root .MuiAutocomplete-input {
-    padding: unset !important;
+  padding: unset !important;
 }
 .word {
-  &.MuiFormControl-root .MuiInputBase-root{
-  background-color: rgb(224, 224, 224) !important;
+  &.MuiFormControl-root .MuiInputBase-root {
+    background-color: rgb(224, 224, 224) !important;
   }
   &.MuiFormControl-root .MuiInputBase-root {
     border: 1px solid rgb(224, 224, 224) !important;
@@ -43,27 +46,128 @@ max-height: 35px !important;
     width: 155px !important;
   }
 }
-.text{
+.text {
   width: 30%;
 }
-.css-d5rhbo{
+.css-d5rhbo {
   gap: 35px !important;
 }
-.css-1blp12k-MuiInputBase-root-MuiOutlinedInput-root{
+.css-1blp12k-MuiInputBase-root-MuiOutlinedInput-root {
   margin-right: auto;
 }
 .css-1tlcqt-MuiAutocomplete-root {
   width: 30%;
 }
-.css-zd3p4e-MuiAutocomplete-root .MuiAutocomplete-inputRoot .MuiAutocomplete-input {
+.css-zd3p4e-MuiAutocomplete-root
+  .MuiAutocomplete-inputRoot
+  .MuiAutocomplete-input {
   height: 10px !important;
 }
-.css-mk73dd-MuiAutocomplete-root .MuiAutocomplete-inputRoot .MuiAutocomplete-input {
-  height: 10px !important
+.css-mk73dd-MuiAutocomplete-root
+  .MuiAutocomplete-inputRoot
+  .MuiAutocomplete-input {
+  height: 10px !important;
 }
-.css-mk73dd-MuiAutocomplete-root .MuiAutocomplete-inputRoot .MuiAutocomplete-input{
-  height: 10px !important
+.css-mk73dd-MuiAutocomplete-root
+  .MuiAutocomplete-inputRoot
+  .MuiAutocomplete-input {
+  height: 10px !important;
 }
-.css-23p7sp-MuiAutocomplete-root .MuiAutocomplete-inputRoot .MuiAutocomplete-input{
-  height: 10px !important
+.css-23p7sp-MuiAutocomplete-root
+  .MuiAutocomplete-inputRoot
+  .MuiAutocomplete-input {
+  height: 10px !important;
+}
+
+.register {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background: url("../../public/assets/register.jpg") center;
+  background-size: cover;
+
+  &_content {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 40%;
+    padding: 40px;
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 20px;
+
+    @include lg {
+      width: 60%;
+    }
+
+    @include mm {
+      width: 80%;
+    }
+
+    &_form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+
+      input {
+        width: 100%;
+        padding: 7px 15px;
+        background-color: transparent;
+        border: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        outline: none;
+        text-align: center;
+        color: white;
+
+        input:not(:placeholder-shown):focus {
+          background: transparent; /* or background: none; */
+        }
+
+        &::placeholder {
+          color: white;
+        }
+      }
+
+      label {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 9px;
+        cursor: pointer;
+        color: white;
+        font-size: 14px;
+
+        img {
+          width: 25px;
+        }
+      }
+
+      button {
+        margin-top: 15px;
+
+        @include buttonStyle;
+        width: 50%;
+
+        &:hover {
+          box-shadow: 0 0 10px 3px rgba(255, 255, 255);
+        }
+      }
+    }
+
+    a {
+      text-decoration: none;
+      color: white;
+      font-size: 13px;
+      margin-top: 10px;
+      text-align: center;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
 }
