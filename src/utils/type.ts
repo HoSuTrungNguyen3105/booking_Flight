@@ -90,6 +90,8 @@ export type ResponseMessage = {
   resultMessage?: string;
 };
 
+export type Language = "en" | "kr" | "jp";
+
 // export type OptionalNumber = number | undefined;
 // export type SearchType = FlightTimeFields &
 //   FlightLocationFields &

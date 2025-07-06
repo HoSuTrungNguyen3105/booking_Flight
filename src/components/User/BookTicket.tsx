@@ -9,10 +9,7 @@ import {
   TableContainer,
   Typography,
 } from "@mui/material";
-import FormRow from "../../common/CustomRender/FormRow";
-import { DropdownField } from "../../common/CustomRender/Dropdown";
 import React from "react";
-import { useFlightCode } from "../Api/useGetApi";
 import { useForm } from "react-hook-form";
 import type { FareConditions, UserSearchType } from "./type";
 import { useFlightBooking } from "../Api/usePostApi";
@@ -23,10 +20,8 @@ import {
   SearchRounded,
 } from "@mui/icons-material";
 import Zigzag from "../../common/CustomRender/Zigzag";
-import { DatetimePicker } from "../../common/CustomRender/TPicker";
 
 const BookTicket = () => {
-  const { airportName, fareConditions } = useFlightCode();
   const [flightParams, setFlightParams] = React.useState<UserSearchType>({
     fareConditions: "",
     scheduledDeparture: "",
@@ -146,14 +141,14 @@ const BookTicket = () => {
             >
               <Grid container spacing={3}>
                 {/* Left column */}
-                <Grid item xs={12} md={6}>
-                  <FormRow label="Fare Conditions">
+                {/* <Grid item xs={12} md={6}> */}
+                {/* <FormRow label="Fare Conditions">
                     {/* <DropdownField
               name="fareConditions"
               control={controlSearch}
               options={fareConditions}
               placeholder="Select"
-            /> */}
+            /> 
                   </FormRow>
 
                   <FormRow label="Passenger Count">
@@ -163,12 +158,11 @@ const BookTicket = () => {
                       options={[]} // Replace with real data
                       placeholder="Choose number"
                     />
-                  </FormRow>
-                </Grid>
+                  </FormRow> */}
+              </Grid>
 
-                {/* Middle column */}
-                <Grid item xs={12} md={4}>
-                  <FormRow label="Departure Airport">
+              {/* Middle column */}
+              {/* <FormRow label="Departure Airport">
                     <DropdownField
                       name="departureAirport"
                       control={controlSearch}
@@ -184,11 +178,10 @@ const BookTicket = () => {
                       options={airportName}
                       placeholder="Select"
                     />
-                  </FormRow>
-                </Grid>
+                  </FormRow> */}
 
-                {/* Right column */}
-                <Grid item xs={12} md={4}>
+              {/* Right column */}
+              {/* <Grid item xs={12} md={4}>
                   <FormRow label="Scheduled Departure">
                     <DatetimePicker
                       name="scheduledDeparture"
@@ -203,7 +196,7 @@ const BookTicket = () => {
                     />
                   </FormRow>
                 </Grid>
-              </Grid>
+              </Grid> */}
               <Box
                 sx={{
                   display: "flex",

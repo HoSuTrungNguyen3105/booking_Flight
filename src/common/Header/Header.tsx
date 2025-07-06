@@ -303,6 +303,7 @@ export const Header = forwardRef<HTMLElement>((_, ref) => {
                         minWidth: 80,
                         maxWidth: 90,
                       }}
+                      size="medium" // hoặc "small"
                       options={valueTrans}
                       value={
                         valueTrans.find((opt) => opt.label === field.value) ??

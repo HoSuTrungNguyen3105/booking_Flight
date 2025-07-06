@@ -27,7 +27,7 @@ const InputField = React.forwardRef(
       placeholder,
       value,
       onChange,
-      readOnly,
+      readOnly = false,
       isPassword = false,
       onKeyDown,
       startAdorment,
@@ -112,16 +112,25 @@ const InputField = React.forwardRef(
         slotProps={{
           formHelperText: { error: true },
           input: {
+            inputProps: {
+              readOnly, // ✅ Đúng chỗ rồi nè
+              style: {
+                textAlign,
+                border: "none",
+                color: "black", // 💥 Thêm dòng này để chữ hiện rõ ra
+                fontSize: "15px",
+              },
+            },
             autoComplete: isPassword && !showPassword ? "new-password" : "off",
             className: `${className} ${status}`,
             placeholder,
-            readOnly,
+            // readOnly,
             startAdornment: startAdorment ? (
               <InputAdornment position="start">{startAdorment}</InputAdornment>
             ) : null,
-            inputProps: {
-              style: { textAlign, border: "none" },
-            },
+            // inputProps: {
+            //   style: { textAlign, border: "none" },
+            // },
             endAdornment: (
               <InputAdornment position="end">
                 <Box className="flex color-[#5B5C5B] cursor-pointer gap-1">
