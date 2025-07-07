@@ -26,12 +26,12 @@ export const SidebarProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const getJsonFile = (menu: string) => {
     const dbMap: { [key: string]: string } = {
-      "1Depth Menu1": "/db.json",
+      // "1Depth Menu1": "/db.ts",
       "1Depth Menu2": "/db2.json",
-      "1Depth Menu3": "/db3.json",
-      sample: "/db4.json",
+      // "1Depth Menu3": "/db3.json",
+      // sample: "/db4.json",
     };
-    return dbMap[menu] || "/db.json";
+    return dbMap[menu] || "/db2.json";
   };
 
   useEffect(() => {
