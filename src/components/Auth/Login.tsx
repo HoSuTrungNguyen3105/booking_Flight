@@ -48,11 +48,11 @@ const Login = () => {
       return;
     }
     setLoading(true);
-    // login({
-    //   email,
-    //   password: data.password,
-    //   remember: data.remember,
-    // });
+    login({
+      email,
+      password: data.password,
+      remember: data.remember,
+    });
     setLoading(false);
   };
 

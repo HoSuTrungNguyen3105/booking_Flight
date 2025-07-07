@@ -8,6 +8,8 @@ import type {
   AircraftList,
   AvailableAircraft,
   ResponseMessage,
+  UserListResponse,
+  UserData,
 } from "../../utils/type.ts";
 import { MethodType } from "../../hooks/type";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
@@ -34,10 +36,6 @@ const messageMethod = { success: "Success action", error: "Error action" };
 type FlightId = {
   id?: number;
 };
-// type AirportCode = {
-//   arrivalCode?: string;
-//   departureCode?: string;
-// };
 export const mapToDropdown = (
   list: CodeItem[],
   key: keyof CodeItem,
@@ -137,7 +135,30 @@ export const useFlightUpdate = () => {
     refetchUpdateFlightId,
   };
 };
-
+type loginData = {
+  email: string;
+  password: string;
+};
+export const useLoginUser = () => {
+  const { data: loginUserData, refetch: refetchLogin } = useFetch<
+    UserListResponse,
+    loginData
+  >({
+    url: "/auth/login",
+    defaultValue: {
+      resultCode: "",
+      resultMessage: "",
+      list: [],
+    },
+    autoFetch: true,
+    config: postMethod,
+    showToast: false,
+  });
+  return {
+    loginUserData,
+    refetchLogin,
+  };
+};
 // export const useFlightUpdate = (data:Dat) => {
 //   const { data: updateFlightId, refetch:refetchUpdateFlightId } = useFetch<FlightDetailApiResponse, DataFlight>({
 //     url: `/sys/flights/flights/${data.flightId}`,

@@ -300,11 +300,14 @@ const Food = () => {
             customColor={isSelected ? "#6FCF97" : "#F5A3C7"}
             label={isSelected ? "Đã chọn" : "Chọn món"}
             onClick={() => handleSelect(params.row.id)}
-          ></Button>
+          />
         );
       },
     },
   ];
+  const totalPrice = meals
+    .filter((meal) => selectedMeals.includes(meal.id))
+    .reduce((sum, meal) => sum + meal.price, 0);
 
   return (
     <Box className="p-6 max-w-2xl mx-auto bg-white rounded-xl shadow-md space-y-4">
@@ -350,7 +353,16 @@ const Food = () => {
                 mb={2}
                 sx={{ color: "#333" }}
               >
-                📝 Món đã chọn
+                Món đã chọn
+              </Typography>
+              <Typography
+                variant="subtitle1"
+                fontWeight={700}
+                textAlign="right"
+                mt={2}
+                sx={{ color: "#2e7d32" }}
+              >
+                Tổng cộng: {totalPrice.toFixed(2)} USD
               </Typography>
 
               {meals

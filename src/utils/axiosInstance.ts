@@ -6,4 +6,6 @@ const axiosInstance = axios.create({
     "Content-Type": "application/json",
   },
 });
+console.log("BASE_URL =", import.meta.env.VITE_REACT_APP_URL);
+
 export default axiosInstance;

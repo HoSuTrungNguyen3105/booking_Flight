@@ -65,11 +65,25 @@ export type AircraftList = {
   aircraftList: Aircraft[];
 };
 
+// ✅ Dùng type cho response list
 export type FlightListResponse<T> = {
-  list?: T[];
   resultCode: string;
   resultMessage: string;
-  // totalCount?: OptionalNumber;
+  list?: T[];
+};
+
+// ✅ TypeScript cho User (từ Prisma model)
+export type UserData = {
+  id: number;
+  email: string;
+  name: string;
+  firstname: string;
+  lastname: string;
+  pictureUrl: string;
+  rank: string;
+  role: "USER" | "ADMIN"; // hoặc nếu bạn có enum Role cụ thể, dùng nó
+  password: string;
+  createdAt: string; // hoặc Date nếu bạn xử lý bằng Date object
 };
 
 export type FlightDetailResponse<T> = {
@@ -83,6 +97,7 @@ export type FlightDetailResponse<T> = {
 };
 
 export type FlightListApiResponse = FlightListResponse<DataFlight>;
+export type UserListResponse = FlightListResponse<UserData>;
 export type FlightDetailApiResponse = FlightDetailResponse<DataFlight>;
 
 export type ResponseMessage = {

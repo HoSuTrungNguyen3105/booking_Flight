@@ -1,9 +1,9 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { useLoginUser } from "../components/Api/usePostApi";
 
 type User = {
-  userName?: string;
-  email?: string;
+  email: string;
   password: string;
   remember?: boolean;
 };
@@ -12,7 +12,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   user: User | null;
   token: string | null;
-  login: (userData: User) => void;
+  login: (userData: User) => Promise<void>;
   register: (userData: User) => void;
   logout: () => void;
 }
@@ -28,37 +28,26 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
 
-  useEffect(() => {
-    const savedToken = localStorage.getItem("token");
-    const savedUser = localStorage.getItem("user");
-    if (savedToken && savedUser) {
-      setIsAuthenticated(true);
-      setToken(savedToken);
-      setUser(JSON.parse(savedUser));
+  const { refetchLogin } = useLoginUser(); // Không truyền user ban đầu
+
+  const login = async (userData: User) => {
+    try {
+      const res = await refetchLogin(userData); // ✅ truyền userData khi gọi API
+
+      if (res?.resultCode === "0000") {
+        setIsAuthenticated(true);
+        setUser(userData); // hoặc res.user nếu response có object user
+        setToken(token);
+
+        updateLocalStorage(true, userData, token);
+        toast.success("Đăng nhập thành công!");
+      } else {
+        toast.error(res?.resultMessage || "Đăng nhập thất bại!");
+      }
+    } catch (error: any) {
+      toast.error("Lỗi hệ thống khi đăng nhập");
+      console.error("Login error:", error);
     }
-  }, []);
-
-  const updateLocalStorage = (
-    isAuthenticated: boolean,
-    user: User | null,
-    token: string | null
-  ) => {
-    localStorage.setItem("isAuthenticated", String(isAuthenticated));
-    localStorage.setItem("user", JSON.stringify(user));
-    localStorage.setItem("token", token || "");
-  };
-
-  const login = (userData: User) => {
-    // ✅ Giả lập token (tùy bạn đặt)
-    const fakeToken = "fake-jwt-token";
-
-    setIsAuthenticated(true);
-    setUser(userData);
-    setToken(fakeToken);
-
-    updateLocalStorage(true, userData, fakeToken);
-
-    toast.success("Đăng nhập thành công (local)!");
   };
 
   const register = (userData: User) => {
@@ -74,6 +63,26 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     localStorage.removeItem("token");
     toast.success("Đăng xuất thành công!");
   };
+
+  const updateLocalStorage = (
+    isAuthenticated: boolean,
+    user: User | null,
+    token: string | null
+  ) => {
+    localStorage.setItem("isAuthenticated", String(isAuthenticated));
+    localStorage.setItem("user", JSON.stringify(user));
+    localStorage.setItem("token", token || "");
+  };
+
+  useEffect(() => {
+    const savedToken = localStorage.getItem("token");
+    const savedUser = localStorage.getItem("user");
+    if (savedToken && savedUser) {
+      setIsAuthenticated(true);
+      setToken(savedToken);
+      setUser(JSON.parse(savedUser));
+    }
+  }, []);
 
   return (
     <AuthContext.Provider
