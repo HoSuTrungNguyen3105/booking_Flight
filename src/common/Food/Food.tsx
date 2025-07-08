@@ -206,13 +206,12 @@ import {
   type GridRenderCellParams,
 } from "@mui/x-data-grid";
 import { useState, type ReactNode } from "react";
-import TextArea from "../Input/TextArea"; // Component TextArea bạn đã viết
 import { Button } from "../Button/Button";
-import NonVegIcon from "../../../public/svgs/celery-svg.svg";
-import VeganIcon from "../../../public/svgs/orange-svg.svg";
-import SeafoodIcon from "../../../public/svgs/shrimp-svg.svg";
-import DessertIcon from "../../../public/svgs/chicken-svg.svg";
-import BeverageIcon from "../../../public/svgs/gelatin-svg.svg";
+import NonVegIcon from "../../../src/svgs/celery-svg.svg";
+import VeganIcon from "../../../src/svgs/orange-svg.svg";
+import SeafoodIcon from "../../../src/svgs/shrimp-svg.svg";
+import DessertIcon from "../../../src/svgs/chicken-svg.svg";
+import BeverageIcon from "../../../src/svgs/gelatin-svg.svg";
 type FoodData = {
   id: number;
   name: string;
@@ -391,15 +390,6 @@ const Food = () => {
                 ))}
             </Paper>
           )}
-          {/* {meals
-            .filter((meal) => selectedMeals.includes(meal.id))
-            .join(",")
-            .map((meal) => (
-              <Box key={meal.id} display="flex" alignItems="center" mb={1}>
-                {typeIcons[meal.type]}
-                <Typography ml={1}>{meal.name}</Typography>
-              </Box>
-            ))} */}
         </Box>
       )}
     </Box>

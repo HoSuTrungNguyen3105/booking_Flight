@@ -12,9 +12,12 @@ import {
   DataGrid,
   type GridColDef,
   type GridPaginationModel,
+  type GridRenderCellParams,
 } from "@mui/x-data-grid";
 import { StyledPagination } from "../CustomRender/Pagination";
 import { Button, ButtonGroup } from "@mui/material";
+import type { DropdownOption } from "./MultiDropdown";
+import { Dropdown } from "./Dropdown";
 
 interface OptionType {
   label: string;
@@ -29,6 +32,13 @@ interface RowData {
   avatar: string;
   type: string;
 }
+
+const optionsDropdown: DropdownOption[] = [
+  { label: "JavaScript", value: "js" },
+  { label: "TypeScript", value: "ts" },
+  { label: "Python", value: "py" },
+  { label: "Java", value: "java" },
+];
 
 const options: OptionType[] = [
   {
@@ -55,11 +65,13 @@ const options: OptionType[] = [
 ];
 
 const typeList = ["admin", "user", "guest"] as const;
+const statusList = ["완료", "미완료", "진행중"] as const;
 
 const initialData: RowData[] = Array.from({ length: 25 }).map((_, i) => ({
   id: i + 1,
   avatar: "/image.jpg",
   type: typeList[Math.floor(Math.random() * typeList.length)],
+  status: statusList[Math.floor(Math.random() * typeList.length)],
 }));
 
 export default function DataGridWithSelectModal() {
@@ -71,6 +83,13 @@ export default function DataGridWithSelectModal() {
     page: 0,
     pageSize: 10,
   });
+
+  const [selected, setSelected] = useState<DropdownOption[]>([]);
+  // const [selectedValues, setSelectedValues] = useState<
+  //   DropdownOption | DropdownOption[] | null
+  // >(null);
+
+  const [selectedValues, setSelectedValues] = useState<DropdownOption[]>([]); // ✅ default là mảng rỗng
 
   const handleChange = (rowId: number) => (e: SelectChangeEvent<string>) => {
     const selected = options.find((o) => o.value === e.target.value);
@@ -172,13 +191,51 @@ export default function DataGridWithSelectModal() {
       headerName: "Loại",
       width: 130,
     },
+    {
+      field: "status",
+      headerName: "상태",
+      width: 150,
+      renderCell: (params: GridRenderCellParams) => {
+        let bgColor = "";
+        let textColor = "#000";
+
+        switch (params.value) {
+          case "진행중":
+            bgColor = "#FFF36C"; // Yellow
+            break;
+          case "미완료":
+            bgColor = "#E1BEE7"; // Light purple/pink
+            break;
+          case "완료":
+            bgColor = "#D6ECE7"; // Light blue
+            break;
+          default:
+            bgColor = "#E0E0E0"; // Grey
+        }
+
+        return (
+          <Typography
+            sx={{
+              backgroundColor: bgColor,
+              padding: "4px 12px",
+              borderRadius: "6px",
+              display: "inline-block",
+              fontWeight: "bold",
+              color: textColor,
+            }}
+          >
+            {params.value}
+          </Typography>
+        );
+      },
+    },
   ];
 
   return (
     <>
-      <Box sx={{ height: 400, width: "100%" }}>
+      <Box sx={{ width: "100%", p: 2 }}>
         <DataGrid
-          key={paginationModel.page} // Tránh lỗi re-render
+          key={paginationModel.page}
           rows={data}
           columns={columns}
           pagination
@@ -190,6 +247,13 @@ export default function DataGridWithSelectModal() {
             pagination: (props) => <StyledPagination {...props} />,
           }}
           sx={{
+            border: 0,
+            borderRadius: 2,
+            backgroundColor: "#fff",
+            boxShadow: 1,
+            "& .MuiDataGrid-cell": {
+              alignItems: "center",
+            },
             "& .MuiDataGrid-footerContainer": {
               justifyContent: "center",
               paddingY: 2,
@@ -199,30 +263,16 @@ export default function DataGridWithSelectModal() {
                 margin: 0,
               },
           }}
-          // sx={{
-          //   "& .MuiDataGrid-footerContainer": {
-          //     justifyContent: "center",
-          //     paddingY: 2,
-          //   },
-          // }}
         />
-        <Box display="flex" justifyContent="space-between" mt={2}>
-          <Typography>
-            Hiển thị {paginationModel.page * paginationModel.pageSize + 1}–
-            {Math.min(
-              (paginationModel.page + 1) * paginationModel.pageSize,
-              data.length
-            )}{" "}
-            trên {data.length} bản ghi
-          </Typography>
-        </Box>
+
         <Box
           display="flex"
           justifyContent="space-between"
           alignItems="center"
           mt={2}
+          px={1}
         >
-          <Typography>
+          <Typography variant="body2" color="text.secondary">
             Hiển thị {paginationModel.page * paginationModel.pageSize + 1}–
             {Math.min(
               (paginationModel.page + 1) * paginationModel.pageSize,
@@ -235,9 +285,9 @@ export default function DataGridWithSelectModal() {
             {[5, 10, 25].map((size) => (
               <Button
                 key={size}
-                onClick={() => {
-                  setPaginationModel((prev) => ({ ...prev, pageSize: size }));
-                }}
+                onClick={() =>
+                  setPaginationModel((prev) => ({ ...prev, pageSize: size }))
+                }
                 variant={
                   paginationModel.pageSize === size ? "contained" : "outlined"
                 }
@@ -248,6 +298,37 @@ export default function DataGridWithSelectModal() {
           </ButtonGroup>
         </Box>
       </Box>
+
+      {/* Dropdown Section */}
+      <Box
+        mt={4}
+        px={3}
+        py={5}
+        borderTop="2px solid #eee"
+        bgcolor="#f9f9f9"
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        gap={2}
+      >
+        <Typography variant="subtitle1" fontWeight="bold">
+          Lọc theo Framework
+        </Typography>
+        <Dropdown
+          label="Chọn Framework"
+          placeholder="Chọn nhiều cái"
+          options={optionsDropdown}
+          value={selectedValues}
+          onChange={(event, newValue) =>
+            setSelectedValues(newValue as DropdownOption[])
+          }
+          multiple
+          disableCloseOnSelect
+          status="confirmed"
+        />
+      </Box>
+
+      {/* Modal */}
       <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
         <Box
           sx={{
@@ -255,17 +336,27 @@ export default function DataGridWithSelectModal() {
             bgcolor: "white",
             borderRadius: 2,
             boxShadow: 24,
-            width: 300,
+            width: 350,
+            maxWidth: "90%",
             mx: "auto",
             mt: "20vh",
           }}
         >
           <Typography variant="h6" fontWeight="bold">
-            Vai trò được chọn:
+            Vai trò được chọn
           </Typography>
-          <Typography mt={1}>
+          <Typography mt={1} color="text.secondary">
             {modalType?.label} - {modalType?.description}
           </Typography>
+          <Box textAlign="right" mt={2}>
+            <Button
+              onClick={() => setModalOpen(false)}
+              variant="outlined"
+              size="small"
+            >
+              Đóng
+            </Button>
+          </Box>
         </Box>
       </Modal>
     </>

@@ -1,13 +1,7 @@
 import { ArrowBack, ArrowDownward } from "@mui/icons-material";
 import { Box, Select, Typography, type SelectChangeEvent } from "@mui/material";
 import { useState } from "react";
-interface OptionType {
-  value: string; // ✅ Thêm value cho select hoạt động
-  label: string;
-  type: "add" | "edit" | "delete";
-  payload?: any;
-  onClick?: () => void;
-}
+
 interface ActionType {
   type: "add" | "edit" | "delete";
   payload?: any;

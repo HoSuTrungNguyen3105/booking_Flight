@@ -4,6 +4,7 @@ import {
   InputAdornment,
   TextField,
   Checkbox,
+  Chip,
 } from "@mui/material";
 import {
   CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon,
@@ -16,20 +17,20 @@ import { useMemo, useState } from "react";
 
 export const Dropdown = ({
   options = [],
-  value = [],
+  value,
   sx,
   label = "",
   customInput = <></>,
   onOpen,
   onClose,
   onChange,
-  multiple,
+  multiple = false,
   placeholder = "",
   status,
   readonly,
   disabled,
   disableCloseOnSelect,
-  size = "small", // ✅ hỗ trợ kích cỡ
+  size = "small",
 }: DropdownType & { size?: "small" | "medium" }) => {
   const [inputText, setInputText] = useState("");
 
@@ -58,24 +59,20 @@ export const Dropdown = ({
       disabled={disabled}
       multiple={multiple}
       inputValue={readonly ? "" : inputText}
-      onInputChange={(event, newInputValue, reason) => {
+      onInputChange={(_, newInputValue, reason) => {
         if (!readonly && reason === "input") {
           setInputText(newInputValue);
         }
       }}
       options={options}
-      value={value}
-      getOptionLabel={(option) => option.label || ""}
+      value={(value ?? (multiple ? [] : null)) as any} // tránh lỗi khi null
+      getOptionLabel={(option) => option?.label || ""}
+      isOptionEqualToValue={(option, val) => option?.value === val?.value}
       onOpen={onOpen}
       onClose={onClose}
       onChange={(event, newValue) => {
-        if (Array.isArray(newValue)) {
-          setInputText("");
-          onChange?.(event, newValue);
-        } else {
-          setInputText(newValue?.label || "");
-          onChange?.(event, newValue);
-        }
+        setInputText("");
+        onChange?.(event, newValue);
       }}
       size={size}
       sx={{
@@ -95,6 +92,20 @@ export const Dropdown = ({
           {option.label}
         </li>
       )}
+      renderTags={
+        multiple
+          ? (selected, getTagProps) =>
+              selected.map((option, index) => (
+                <Chip
+                  {...getTagProps({ index })}
+                  key={option.value}
+                  label={option.label}
+                  size="small"
+                  sx={{ backgroundColor: "#E0F2F1" }}
+                />
+              ))
+          : undefined
+      }
       renderInput={(params) => (
         <TextField
           {...params}
@@ -105,7 +116,6 @@ export const Dropdown = ({
             "& .MuiOutlinedInput-root": {
               borderColor: getBorderColour,
             },
-            // các style khác nếu cần
           }}
           InputProps={{
             ...params.InputProps,
