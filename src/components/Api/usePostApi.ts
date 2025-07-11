@@ -9,12 +9,11 @@ import type {
   AvailableAircraft,
   ResponseMessage,
   UserListResponse,
-  UserData,
 } from "../../utils/type.ts";
 import { MethodType } from "../../hooks/type";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
-import { useFetch } from "../../hooks/useFetch.ts";
 import type { FlightDetailResponse, UserSearchType } from "../User/type.ts";
+import { useFetch } from "../../context/use[custom]/useFetch.ts";
 
 const postMethod = {
   method: MethodType.POST,
@@ -148,7 +147,8 @@ export const useLoginUser = () => {
     defaultValue: {
       resultCode: "",
       resultMessage: "",
-      list: [],
+      user: [],
+      accessToken: "",
     },
     autoFetch: true,
     config: postMethod,

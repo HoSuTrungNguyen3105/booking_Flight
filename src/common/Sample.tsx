@@ -282,13 +282,13 @@
 // export default Sample;
 import { Box, Typography } from "@mui/material";
 import type { ResponseMessage } from "../utils/type";
-import { useFetch } from "../hooks/useFetch";
 import { Button } from "./Button/Button";
 import { useEffect, useState } from "react";
 import Modal from "./Modal/Modal";
 import TextArea from "./Input/TextArea";
 import { useToast } from "../context/ToastContext";
 import { Controller, useForm } from "react-hook-form";
+import { useFetch } from "../context/use[custom]/useFetch";
 // type SampleData = {
 //   id: number;
 //   title: string;
@@ -320,27 +320,18 @@ const Sample = () => {
   const [open, setOpen] = useState<boolean>(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  // useEffect(() => {
-  //   const { name } = getValues();
-  //   // if (watch("name") !== "") {
-  //   if (name !== "") {
-  //     setIsDisable(false);
-  //   } else setIsDisable(true);
-  // }, [name]);
   const name = watch("name");
   const [error, setError] = useState<string>("");
   useEffect(() => {
     setIsDisable(name.trim() === "");
   }, [name]);
   useEffect(() => {
-    // if (open || name.trim == '') {
     if (open) {
       reset();
       setError("");
     }
   }, [open]);
   const handleSubmit = () => {
-    // toast("나타날 토스트입니다이것이 나타", "success");
     if (name.trim() === "error") {
       setError("이름을 입력해주세요.");
       toast("이름을 입력해주세요.", "error");
@@ -392,612 +383,16 @@ const Sample = () => {
                 </Box>
               }
             />
-            {/* 
-            <Button
-              appearance="contained"
-              priority="primary"
-              onClick={() => refetch()}
-              icon={<CheckIcon />}
-              label="Button"
-              size="large"
-            />
-            <Button
-              appearance="contained"
-              priority="primary"
-              label="Button"
-              onClick={() => refetch()}
-              icon={<CheckIcon />}
-              iconPosition="trailing"
-              size="large"
-            />
-            <Button
-              appearance="contained"
-              priority="primary"
-              onClick={() => refetch()}
-              icon={<CheckIcon />}
-              size="large"
-            /> */}
           </Box>
-          {/*hover*/}
-          {/* <Box display={"flex"} gap={3} paddingTop={5} paddingLeft={5}>
-            <Button
-              appearance="contained"
-              priority="primary"
-              onClick={() => refetch()}
-              label="Button"
-              iconPosition="trailing"
-              size="large"
-              isHovered
-            />
-            <Button
-              appearance="contained"
-              priority="primary"
-              onClick={() => refetch()}
-              icon={<CheckIcon />}
-              label="Button"
-              size="large"
-              isHovered
-            />
-            <Button
-              appearance="contained"
-              priority="primary"
-              label="Button"
-              onClick={() => refetch()}
-              icon={<CheckIcon />}
-              iconPosition="trailing"
-              size="large"
-              isHovered
-            />
-            <Button
-              appearance="contained"
-              priority="primary"
-              onClick={() => refetch()}
-              icon={<CheckIcon />}
-              size="large"
-              isHovered
-            />
-          </Box>
-          {/*active*/}
-          {/* <Box display={"flex"} gap={3} paddingTop={5} paddingLeft={5}>
-            <Button
-              appearance="contained"
-              priority="primary"
-              onClick={() => refetch()}
-              label="Button"
-              iconPosition="trailing"
-              size="large"
-              isActivated
-            />
-            <Button
-              appearance="contained"
-              priority="primary"
-              onClick={() => refetch()}
-              icon={<CheckIcon />}
-              label="Button"
-              size="large"
-              isActivated
-            />
-            <Button
-              appearance="contained"
-              priority="primary"
-              label="Button"
-              onClick={() => refetch()}
-              icon={<CheckIcon />}
-              iconPosition="trailing"
-              size="large"
-              isActivated
-            />
-            <Button
-              appearance="contained"
-              priority="primary"
-              onClick={() => refetch()}
-              icon={<CheckIcon />}
-              size="large"
-              isActivated
-            />
-          </Box>
-          {/*disable
-          <Box display={"flex"} gap={3} paddingTop={5} paddingLeft={5}>
-            <Button
-              appearance="contained"
-              priority="primary"
-              onClick={() => refetch()}
-              label="Button"
-              iconPosition="trailing"
-              size="large"
-              disabled
-            />
-            <Button
-              appearance="contained"
-              priority="primary"
-              onClick={() => refetch()}
-              icon={<CheckIcon />}
-              label="Button"
-              size="large"
-              disabled
-            />
-            <Button
-              appearance="contained"
-              priority="primary"
-              label="Button"
-              onClick={() => refetch()}
-              icon={<CheckIcon />}
-              iconPosition="trailing"
-              size="large"
-              disabled
-            />
-            <Button
-              appearance="contained"
-              priority="primary"
-              onClick={() => refetch()}
-              icon={<CheckIcon />}
-              size="large"
-              disabled
-            />
-          </Box>
-        </Box>
-        {/*outlined primary
-        <Box>
-          {/*default
-          <Box display={"flex"} gap={3} paddingTop={5} paddingLeft={5}>
-            <Button
-              appearance="outlined"
-              priority="primary"
-              onClick={() => refetch()}
-              label="Button"
-              iconPosition="trailing"
-              size="large"
-            />
-            <Button
-              appearance="outlined"
-              priority="primary"
-              onClick={() => refetch()}
-              icon={<CheckIcon />}
-              label="Button"
-              size="large"
-            />
-            <Button
-              appearance="outlined"
-              priority="primary"
-              label="Button"
-              onClick={() => refetch()}
-              icon={<CheckIcon />}
-              iconPosition="trailing"
-              size="large"
-            />
-            <Button
-              appearance="outlined"
-              priority="primary"
-              onClick={() => refetch()}
-              icon={<CheckIcon />}
-              size="large"
-            />
-          </Box> 
-          {/*hover
-          <Box display={"flex"} gap={3} paddingTop={5} paddingLeft={5}>
-            <Button
-              appearance="outlined"
-              priority="primary"
-              onClick={() => refetch()}
-              label="Button"
-              iconPosition="trailing"
-              size="large"
-              isHovered
-            />
-            <Button
-              appearance="outlined"
-              priority="primary"
-              onClick={() => refetch()}
-              icon={<CheckIcon />}
-              label="Button"
-              size="large"
-              isHovered
-            />
-            <Button
-              appearance="outlined"
-              priority="primary"
-              label="Button"
-              onClick={() => refetch()}
-              icon={<CheckIcon />}
-              iconPosition="trailing"
-              size="large"
-              isHovered
-            />
-            <Button
-              appearance="outlined"
-              priority="primary"
-              onClick={() => refetch()}
-              icon={<CheckIcon />}
-              size="large"
-              isHovered
-            />
-          </Box>
-          {/*active
-          <Box display={"flex"} gap={3} paddingTop={5} paddingLeft={5}>
-            <Button
-              appearance="outlined"
-              priority="primary"
-              onClick={() => refetch()}
-              label="Button"
-              iconPosition="trailing"
-              size="large"
-              isActivated
-            />
-            <Button
-              appearance="outlined"
-              priority="primary"
-              onClick={() => refetch()}
-              icon={<CheckIcon />}
-              label="Button"
-              size="large"
-              isActivated
-            />
-            <Button
-              appearance="outlined"
-              priority="primary"
-              label="Button"
-              onClick={() => refetch()}
-              icon={<CheckIcon />}
-              iconPosition="trailing"
-              size="large"
-              isActivated
-            />
-            <Button
-              appearance="outlined"
-              priority="primary"
-              onClick={() => refetch()}
-              icon={<CheckIcon />}
-              size="large"
-              isActivated
-            />
-          </Box>
-          {/*disable
-          <Box display={"flex"} gap={3} paddingTop={5} paddingLeft={5}>
-            <Button
-              appearance="outlined"
-              priority="primary"
-              onClick={() => refetch()}
-              label="Button"
-              iconPosition="trailing"
-              size="large"
-              disabled
-            />
-            <Button
-              appearance="outlined"
-              priority="primary"
-              onClick={() => refetch()}
-              icon={<CheckIcon />}
-              label="Button"
-              size="large"
-              disabled
-            />
-            <Button
-              appearance="outlined"
-              priority="primary"
-              label="Button"
-              onClick={() => refetch()}
-              icon={<CheckIcon />}
-              iconPosition="trailing"
-              size="large"
-              disabled
-            />
-            <Button
-              appearance="outlined"
-              priority="primary"
-              onClick={() => refetch()}
-              icon={<CheckIcon />}
-              size="large"
-              disabled
-            />
-          </Box>
-        </Box>
-      </Box>
-      <Box display={"flex"}>
-        {/*contained normal*/}
-          {/* <Box>
-          {/*default
-          <Box display={"flex"} gap={3} paddingTop={5} paddingLeft={5}>
-            <Button
-              appearance="contained"
-              priority="normal"
-              onClick={() => refetch()}
-              label="Button"
-              iconPosition="trailing"
-              size="large"
-            />
-            <Button
-              appearance="contained"
-              priority="normal"
-              onClick={() => refetch()}
-              icon={<CheckIcon />}
-              label="Button"
-              size="large"
-            />
-            <Button
-              appearance="contained"
-              priority="normal"
-              label="Button"
-              onClick={() => refetch()}
-              icon={<CheckIcon />}
-              iconPosition="trailing"
-              size="large"
-            />
-            <Button
-              appearance="contained"
-              priority="normal"
-              onClick={() => refetch()}
-              icon={<CheckIcon />}
-              size="large"
-            />
-          </Box>
-          {/*hover
-          <Box display={"flex"} gap={3} paddingTop={5} paddingLeft={5}>
-            <Button
-              appearance="contained"
-              priority="normal"
-              onClick={() => refetch()}
-              label="Button"
-              iconPosition="trailing"
-              size="large"
-              isHovered
-            />
-            <Button
-              appearance="contained"
-              priority="normal"
-              onClick={() => refetch()}
-              icon={<CheckIcon />}
-              label="Button"
-              size="large"
-              isHovered
-            />
-            <Button
-              appearance="contained"
-              priority="normal"
-              label="Button"
-              onClick={() => refetch()}
-              icon={<CheckIcon />}
-              iconPosition="trailing"
-              size="large"
-              isHovered
-            />
-            <Button
-              appearance="contained"
-              priority="normal"
-              onClick={() => refetch()}
-              icon={<CheckIcon />}
-              size="large"
-              isHovered
-            />
-          </Box>
-          {/*active
-          <Box display={"flex"} gap={3} paddingTop={5} paddingLeft={5}>
-            <Button
-              appearance="contained"
-              priority="normal"
-              onClick={() => refetch()}
-              label="Button"
-              iconPosition="trailing"
-              size="large"
-              isActivated
-            />
-            <Button
-              appearance="contained"
-              priority="normal"
-              onClick={() => refetch()}
-              icon={<CheckIcon />}
-              label="Button"
-              size="large"
-              isActivated
-            />
-            <Button
-              appearance="contained"
-              priority="normal"
-              label="Button"
-              onClick={() => refetch()}
-              icon={<CheckIcon />}
-              iconPosition="trailing"
-              size="large"
-              isActivated
-            />
-            <Button
-              appearance="contained"
-              priority="normal"
-              onClick={() => refetch()}
-              icon={<CheckIcon />}
-              size="large"
-              isActivated
-            />
-          </Box>
-          {/*disable
-          <Box display={"flex"} gap={3} paddingTop={5} paddingLeft={5}>
-            <Button
-              appearance="contained"
-              priority="normal"
-              onClick={() => refetch()}
-              label="Button"
-              iconPosition="trailing"
-              size="large"
-              disabled
-            />
-            <Button
-              appearance="contained"
-              priority="normal"
-              onClick={() => refetch()}
-              icon={<CheckIcon />}
-              label="Button"
-              size="large"
-              disabled
-            />
-            <Button
-              appearance="contained"
-              priority="normal"
-              label="Button"
-              onClick={() => refetch()}
-              icon={<CheckIcon />}
-              iconPosition="trailing"
-              size="large"
-              disabled
-            />
-            <Button
-              appearance="contained"
-              priority="normal"
-              onClick={() => refetch()}
-              icon={<CheckIcon />}
-              size="large"
-              disabled
-            />
-          </Box>
-        </Box>
-        {/*outlined normal
-        <Box>
-          {/*default
-          <Box display={"flex"} gap={3} paddingTop={5} paddingLeft={5}>
-            <Button
-              appearance="outlined"
-              priority="normal"
-              onClick={() => refetch()}
-              label="Button"
-              iconPosition="trailing"
-              size="large"
-            />
-            <Button
-              appearance="outlined"
-              priority="normal"
-              onClick={() => refetch()}
-              icon={<CheckIcon />}
-              label="Button"
-              size="large"
-            />
-            <Button
-              appearance="outlined"
-              priority="normal"
-              label="Button"
-              onClick={() => refetch()}
-              icon={<CheckIcon />}
-              iconPosition="trailing"
-              size="large"
-            />
-            <Button
-              appearance="outlined"
-              priority="normal"
-              onClick={() => refetch()}
-              icon={<CheckIcon />}
-              size="large"
-            />
-          </Box>
-          {/*hover
-          <Box display={"flex"} gap={3} paddingTop={5} paddingLeft={5}>
-            <Button
-              appearance="outlined"
-              priority="normal"
-              onClick={() => refetch()}
-              label="Button"
-              iconPosition="trailing"
-              size="large"
-              isHovered
-            />
-            <Button
-              appearance="outlined"
-              priority="normal"
-              onClick={() => refetch()}
-              icon={<CheckIcon />}
-              label="Button"
-              size="large"
-              isHovered
-            />
-            <Button
-              appearance="outlined"
-              priority="normal"
-              label="Button"
-              onClick={() => refetch()}
-              icon={<CheckIcon />}
-              iconPosition="trailing"
-              size="large"
-              isHovered
-            />
-            <Button
-              appearance="outlined"
-              priority="normal"
-              onClick={() => refetch()}
-              icon={<CheckIcon />}
-              size="large"
-              isHovered
-            />
-          </Box> 
-          {/*active
-          <Box display={"flex"} gap={3} paddingTop={5} paddingLeft={5}>
-            <Button
-              appearance="contained"
-              priority="custom"
-              label="단추단추"
-              onClick={() => refetch()}
-              // icon={<CheckIcon />}
-              // iconPosition="trailing"
-              size="large"
-              customLabelColor="#000000"
-              // isActivated
 
-              customColor="#fdd835" // 🌟 vàng sáng nổi bật
-            />
-            <Button
-              appearance="contained"
-              priority="custom"
-              onClick={() => refetch()}
-              customLabelColor="#000000"
-              isHovered={false}
-              label="단추단추"
-              // icon={<CheckIcon />}
-              customColor="#ffa500" // 🌟 vàng sáng nổi bật
-              size="large"
-            />
-            <Button
-              appearance="outlined"
-              priority="custom"
-              // customLabelColor="#000000"
-              onClick={() => refetch()}
-              // icon={<CheckIcon />}
-              label="Button"
-              size="large"
-              // isActivated
-            />
-            <Button
-              appearance="contained"
-              priority="custom"
-              label="단추단추"
-              onClick={() => refetch()}
-              // icon={<CheckIcon />}
-              // iconPosition="trailing"
-              size="large"
-              customLabelColor="#000000"
-              // isActivated
-              disabled
-              customColor="#fdd835" // 🌟 vàng sáng nổi bật
-            />
-            <Button
-              appearance="contained"
-              priority="custom"
-              onClick={() => refetch()}
-              customLabelColor="#000000"
-              isHovered={false}
-              label="단추단추"
-              // icon={<CheckIcon />}
-              customColor="#ffa500" // 🌟 vàng sáng nổi bật
-              size="large"
-              disabled
-            />
-          </Box> 
           {/*disable*/}
           <Button
             appearance="contained"
             priority="custom"
             label="단추단추"
             onClick={() => refetch()}
-            // icon={<CheckIcon />}
-            // iconPosition="trailing"
             size="large"
             customLabelColor="#000000"
-            // isActivated
-
             customColor="#fdd835" // 🌟 vàng sáng nổi bật
           />
           <Button
@@ -1007,30 +402,16 @@ const Sample = () => {
             customLabelColor="#000000"
             isHovered={false}
             label="단추단추"
-            // icon={<CheckIcon />}
             customColor="#ffa500" // 🌟 vàng sáng nổi bật
             size="large"
           />
-          {/* <Button
-              appearance="outlined"
-              priority="custom"
-              // customLabelColor="#000000"
-              onClick={() => refetch()}
-              // icon={<CheckIcon />}
-              label="Button"
-              size="large"
-              // isActivated
-            /> */}
           <Button
             appearance="contained"
             priority="custom"
             label="단추단추"
             onClick={() => refetch()}
-            // icon={<CheckIcon />}
-            // iconPosition="trailing"
             size="large"
             customLabelColor="#000000"
-            // isActivated
             disabled
             customColor="#fdd835" // 🌟 vàng sáng nổi bật
           />
@@ -1041,13 +422,10 @@ const Sample = () => {
             customLabelColor="#000000"
             isHovered={false}
             label="단추단추"
-            // icon={<CheckIcon />}
             customColor="#ffa500" // 🌟 vàng sáng nổi bật
             size="large"
             disabled
           />
-          {/* <CheckboxUI /> */}
-          {/* <Checkbox color="secondary" checked /> */}
         </Box>
       </Box>
     </Box>

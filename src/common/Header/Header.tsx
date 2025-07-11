@@ -31,16 +31,21 @@ import { Controller, useForm } from "react-hook-form";
 import SignOut from "../../components/Auth/SignOut";
 import { useTranslation } from "react-i18next";
 import { PlainSwitch } from "../Switch/PlainSwitch";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export const Header = forwardRef<HTMLElement>((_, ref) => {
   const { isAuthenticated } = useAuth();
   const { toggleSidebar, setSelectedMenu } = useSidebar();
   const [tabValue, setTabValue] = useState(0);
   const { i18n } = useTranslation();
-  // const [value, setValue] = useState("");
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-
+  const handleOpenProfile = async () => {
+    // const result = await loginAPI();
+    // if (result.success) {
+    navigate("/profile");
+    //}
+  };
   // const handleChange = (event: SelectChangeEvent) => {
   //   setValue(event.target.value);
   // };
@@ -256,41 +261,11 @@ export const Header = forwardRef<HTMLElement>((_, ref) => {
                 <IconButton className="icon-button">
                   <SettingsRoundedIcon />
                 </IconButton>
-
-                {/* Switches */}
-                {/* <FormControlLabel
-                  control={<Android12Switch defaultChecked />}
-                  label=""
-                  sx={{ mr: 1 }}
-                /> */}
                 <FormControlLabel
                   control={<PlainSwitch defaultChecked />}
                   label=""
                   sx={{ mr: 2 }}
                 />
-
-                {/* <Dropdown
-                  label="Language"
-                  // value={
-                  //   valueTrans.find((v) => v.value === selectedLang) ?? null
-                  // }
-                  value={
-                    valueTrans.find((v) => v.value === String(selectedLang)) ??
-                    null
-                  }
-                  options={valueTrans}
-                  onChange={(event, newValue) => {
-                    const selected = Array.isArray(newValue)
-                      ? newValue[0]
-                      : newValue;
-                    setValueLang("language", selected?.value ?? "en");
-                  }}
-                  placeholder="Select language"
-                  multiple={false}
-                  status="confirmed"
-                /> */}
-
-                {/* Language Dropdown */}
                 <Controller
                   name="language"
                   control={control}
@@ -325,6 +300,7 @@ export const Header = forwardRef<HTMLElement>((_, ref) => {
                     <Button
                       sx={{ display: "flex", alignItems: "center" }}
                       priority="normal"
+                      onClick={handleOpenProfile}
                       iconPosition="trailing"
                       size="medium"
                       appearance="unfilled"

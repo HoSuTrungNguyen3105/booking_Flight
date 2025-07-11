@@ -41,7 +41,8 @@ const Login = () => {
   ];
 
   const onSubmit = (data: ILoginForm) => {
-    const email = `${data.emailPrefix}${data.emailSuffix}`;
+    // const email = `${data.emailPrefix}${data.emailSuffix}`;
+    const email = `${data.emailPrefix}`;
     console.log("email", email);
     if (!email || !data.password) {
       toast.error("Missing email or password");
@@ -106,21 +107,24 @@ const Login = () => {
           <Controller
             name="emailSuffix"
             control={control}
-            render={({ field }) => (
-              <Dropdown
-                {...field}
-                value={{
-                  label: field.value,
-                  value: field.value,
-                }}
-                onChange={(e, selected) => {
-                  field.onChange((selected as DropdownOptions)?.label);
-                }}
-                options={emailDomains}
-                size="medium" // hoặc "small"
-                placeholder="Chọn domain"
-              />
-            )}
+            render={({ field }) => {
+              const selectedOption =
+                emailDomains.find((item) => item.value === field.value) || null;
+
+              return (
+                <Dropdown
+                  {...field}
+                  value={selectedOption}
+                  onChange={(e, selected) => {
+                    const selectedValue = (selected as DropdownOptions)?.value;
+                    field.onChange(selectedValue);
+                  }}
+                  options={emailDomains}
+                  size="medium"
+                  placeholder="Chọn domain"
+                />
+              );
+            }}
           />
         </Box>
 

@@ -6,7 +6,7 @@ import type {
 import React from "react";
 import { MethodType } from "../../hooks/type.ts";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
-import { useFetch } from "../../hooks/useFetch.ts";
+import { useFetch } from "../../context/use[custom]/useFetch.ts";
 
 const getMethod = {
   method: MethodType.GET,

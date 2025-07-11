@@ -1,4 +1,4 @@
-import type { SxProps } from "@mui/material";
+import type { SxProps, Theme } from "@mui/material";
 import React from "react";
 
 export type CheckboxProps = {
@@ -13,7 +13,7 @@ export type CheckboxProps = {
   onBlur?: React.FocusEventHandler<HTMLButtonElement>;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   center?: boolean;
-  sx?: SxProps;
+  sx?: SxProps<Theme>; // ✅ sửa ở đây để dùng sx hợp lệ
   checkedIcon?: React.ReactNode;
   indeterminateIcon?: React.ReactNode;
 };

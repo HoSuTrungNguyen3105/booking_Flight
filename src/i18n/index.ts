@@ -13,7 +13,7 @@ const defaultLng = localStorage.getItem("language") || "en";
 i18n.use(initReactI18next).init({
   resources,
   lng: defaultLng,
-  fallbackLng: "en", // phòng trường hợp language không hợp lệ
+  fallbackLng: "en",
   interpolation: {
     escapeValue: false,
   },

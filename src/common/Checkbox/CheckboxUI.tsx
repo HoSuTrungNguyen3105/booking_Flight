@@ -91,7 +91,6 @@ const CheckboxUI: React.FC = () => {
                 control={
                   <Checkbox
                     className={`checkbox ${color}`}
-                    // data-testid={`${title}-Checked-${columnIndex}`}
                     color={color}
                     checked={column[0]}
                     onChange={() =>

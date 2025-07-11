@@ -6,18 +6,20 @@ import {
   Modal,
   type SelectChangeEvent,
 } from "@mui/material";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { ArrowBack, ArrowDownward } from "@mui/icons-material";
 import {
-  DataGrid,
   type GridColDef,
   type GridPaginationModel,
   type GridRenderCellParams,
 } from "@mui/x-data-grid";
-import { StyledPagination } from "../CustomRender/Pagination";
+import DataTable from "../DataGrid/index.tsx";
 import { Button, ButtonGroup } from "@mui/material";
 import type { DropdownOption } from "./MultiDropdown";
 import { Dropdown } from "./Dropdown";
+import SearchLayout, {
+  type TabItem,
+} from "../../components/Layout/SearchLayout.tsx";
 
 interface OptionType {
   label: string;
@@ -31,6 +33,7 @@ interface RowData {
   id: number;
   avatar: string;
   type: string;
+  status: string;
 }
 
 const optionsDropdown: DropdownOption[] = [
@@ -83,12 +86,25 @@ export default function DataGridWithSelectModal() {
     page: 0,
     pageSize: 10,
   });
+  const [activeTab, setActiveTab] = useState(0);
 
-  const [selected, setSelected] = useState<DropdownOption[]>([]);
-  // const [selectedValues, setSelectedValues] = useState<
-  //   DropdownOption | DropdownOption[] | null
-  // >(null);
-
+  const tabs: TabItem[] = [
+    {
+      label: "Tổng quan",
+      value: "overview",
+      content: <div>Nội dung tổng quan</div>,
+    },
+    {
+      label: "Chi tiết",
+      value: "details",
+      content: <div>Nội dung chi tiết</div>,
+    },
+    {
+      label: "Lịch sử",
+      value: "history",
+      content: <div>Lịch sử thay đổi</div>,
+    },
+  ];
   const [selectedValues, setSelectedValues] = useState<DropdownOption[]>([]); // ✅ default là mảng rỗng
 
   const handleChange = (rowId: number) => (e: SelectChangeEvent<string>) => {
@@ -112,12 +128,14 @@ export default function DataGridWithSelectModal() {
     {
       field: "id",
       headerName: "ID",
-      width: 90,
+      flex: 1,
+      minWidth: 150,
     },
     {
       field: "avatar",
       headerName: "Ảnh",
-      width: 80,
+      flex: 1,
+      minWidth: 150,
       renderCell: (params) => (
         <img
           src={params.value}
@@ -132,6 +150,8 @@ export default function DataGridWithSelectModal() {
       field: "typeSelect",
       headerName: "Chọn loại",
       width: 200,
+      flex: 1,
+      minWidth: 150,
       renderCell: (params) => {
         const row = params.row as RowData;
         return (
@@ -189,12 +209,14 @@ export default function DataGridWithSelectModal() {
     {
       field: "type",
       headerName: "Loại",
-      width: 130,
+      flex: 1,
+      minWidth: 150,
     },
     {
       field: "status",
       headerName: "상태",
-      width: 150,
+      flex: 1,
+      minWidth: 150,
       renderCell: (params: GridRenderCellParams) => {
         let bgColor = "";
         let textColor = "#000";
@@ -214,57 +236,42 @@ export default function DataGridWithSelectModal() {
         }
 
         return (
-          <Typography
-            sx={{
-              backgroundColor: bgColor,
-              padding: "4px 12px",
-              borderRadius: "6px",
-              display: "inline-block",
-              fontWeight: "bold",
-              color: textColor,
-            }}
-          >
-            {params.value}
-          </Typography>
+          <Box display="flex" padding={1.2}>
+            <Typography
+              sx={{
+                display: "flex",
+                backgroundColor: bgColor,
+                padding: "4px 12px",
+                borderRadius: "3px",
+                color: textColor,
+                width: "70px", // hoặc width: 64
+                justifyContent: "center",
+                textAlign: "center",
+                alignItems: "center",
+              }}
+            >
+              {params.value}
+            </Typography>
+          </Box>
         );
       },
     },
   ];
+  const renderGridData = useMemo(() => {
+    return <DataTable rows={data} columns={columns} />;
+  }, [data, columns]);
 
   return (
     <>
       <Box sx={{ width: "100%", p: 2 }}>
-        <DataGrid
-          key={paginationModel.page}
-          rows={data}
-          columns={columns}
-          pagination
-          paginationModel={paginationModel}
-          onPaginationModelChange={setPaginationModel}
-          pageSizeOptions={[5, 10, 20, 50]}
-          paginationMode="client"
-          slots={{
-            pagination: (props) => <StyledPagination {...props} />,
-          }}
-          sx={{
-            border: 0,
-            borderRadius: 2,
-            backgroundColor: "#fff",
-            boxShadow: 1,
-            "& .MuiDataGrid-cell": {
-              alignItems: "center",
-            },
-            "& .MuiDataGrid-footerContainer": {
-              justifyContent: "center",
-              paddingY: 2,
-            },
-            "& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows":
-              {
-                margin: 0,
-              },
-          }}
+        <SearchLayout
+          title="Thông tin chuyến bay"
+          description="Chọn tab để xem nội dung tương ứng"
+          tabs={tabs}
+          activeTab={activeTab}
+          onChangeTab={setActiveTab}
         />
-
+        {renderGridData}
         <Box
           display="flex"
           justifyContent="space-between"

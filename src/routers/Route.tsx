@@ -20,11 +20,24 @@ import { ROUTE_PATHS } from "./RoutePath";
 import ManageLayout from "../components/Layout/ResizeLayout";
 import App from "../components/Auth/Loginv2";
 import Search_layout from "../components/Admin/Search_layout";
-
-const routes: RouteObject[] = [
+import GuestGuard from "../components/Layout/GuardLayout";
+import InspectionDetails from "../components/User/Profile";
+import type { JSX } from "react";
+interface IRouteObject {
+  path?: (typeof ROUTE_PATHS)[keyof typeof ROUTE_PATHS];
+  index?: boolean;
+  element: JSX.Element;
+  errorElement?: JSX.Element;
+  children?: IRouteObject[];
+}
+const routes = [
   {
     path: ROUTE_PATHS.LOGIN,
-    element: <Login />,
+    element: (
+      <GuestGuard>
+        <Login />,
+      </GuestGuard>
+    ),
   },
   {
     path: ROUTE_PATHS.SAMPLE_BUTTON,
@@ -62,6 +75,10 @@ const routes: RouteObject[] = [
       {
         path: "airport-list/domestic",
         element: <Typography>Xin chào</Typography>,
+      },
+      {
+        path: "profile",
+        element: <InspectionDetails></InspectionDetails>,
       },
       {
         path: ROUTE_PATHS.FOOD.replace("/", ""),
@@ -152,7 +169,7 @@ const routes: RouteObject[] = [
     path: "*",
     element: <ErrorPage />,
   },
-];
+] satisfies RouteObject[];
 
 const router = createBrowserRouter(routes);
 

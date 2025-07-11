@@ -33,13 +33,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const login = async (userData: User) => {
     try {
       const res = await refetchLogin(userData); // ✅ truyền userData khi gọi API
-
-      if (res?.resultCode === "0000") {
+      if (res?.resultCode === "00") {
+        const accessToken = res.accessToken;
         setIsAuthenticated(true);
-        setUser(userData); // hoặc res.user nếu response có object user
-        setToken(token);
-
-        updateLocalStorage(true, userData, token);
+        setUser(userData); // hoặc res.user nếu có
+        // if (accessToken !== undefined) {
+        //   setToken(accessToken);
+        // }
+        setToken(accessToken ?? null); // nếu undefined thì fallback thành null
+        updateLocalStorage(true, userData, accessToken ?? null);
         toast.success("Đăng nhập thành công!");
       } else {
         toast.error(res?.resultMessage || "Đăng nhập thất bại!");

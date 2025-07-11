@@ -1,30 +1,29 @@
-import type { DropdownType } from "./type";
+import { useMemo, useState } from "react";
 import {
   Autocomplete,
-  InputAdornment,
   TextField,
+  InputAdornment,
   Checkbox,
-  Chip,
 } from "@mui/material";
 import {
-  CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon,
-  CheckBox as CheckBoxIcon,
-  ErrorOutline as ErrorOutlineIcon,
+  CheckBoxOutlineBlank as UncheckedIcon,
+  CheckBox as CheckedIcon,
+  ErrorOutline as ErrorIcon,
   Warning as WarningIcon,
-  CheckCircle as CheckCircleIcon,
+  CheckCircle as ConfirmedIcon,
 } from "@mui/icons-material";
-import { useMemo, useState } from "react";
+import type { DropdownType } from "./type";
 
 export const Dropdown = ({
   options = [],
-  value,
+  value = [],
   sx,
   label = "",
-  customInput = <></>,
+  customInput,
   onOpen,
   onClose,
   onChange,
-  multiple = false,
+  multiple,
   placeholder = "",
   status,
   readonly,
@@ -34,78 +33,63 @@ export const Dropdown = ({
 }: DropdownType & { size?: "small" | "medium" }) => {
   const [inputText, setInputText] = useState("");
 
-  const getBorderColour = useMemo(() => {
-    switch (status) {
-      case "error":
-        return "red";
-      case "warning":
-        return "orange";
-      case "confirmed":
-        return "green";
-      default:
-        return undefined;
-    }
+  const borderColor = useMemo(() => {
+    const colorMap: Record<string, string> = {
+      error: "red",
+      warning: "orange",
+      confirmed: "green",
+    };
+    return status && colorMap[status] ? colorMap[status] : undefined;
   }, [status]);
 
-  const icon = <CheckBoxOutlineBlankIcon fontSize="small" color="secondary" />;
-  const checkedIcon = <CheckBoxIcon fontSize="small" color="secondary" />;
-  const showEndAdornment = multiple && !readonly;
+  const renderEndIcon = () => {
+    switch (status) {
+      case "warning":
+        return <WarningIcon color="warning" />;
+      case "error":
+        return <ErrorIcon color="error" />;
+      case "confirmed":
+        return <ConfirmedIcon color="success" />;
+      default:
+        return null;
+    }
+  };
 
   return (
     <Autocomplete
+      multiple={multiple}
       disablePortal
       disableCloseOnSelect={disableCloseOnSelect}
       readOnly={readonly}
       disabled={disabled}
-      multiple={multiple}
-      inputValue={readonly ? "" : inputText}
-      onInputChange={(_, newInputValue, reason) => {
-        if (!readonly && reason === "input") {
-          setInputText(newInputValue);
-        }
-      }}
       options={options}
-      value={(value ?? (multiple ? [] : null)) as any} // tránh lỗi khi null
-      getOptionLabel={(option) => option?.label || ""}
-      isOptionEqualToValue={(option, val) => option?.value === val?.value}
+      value={value}
+      inputValue={readonly ? "" : inputText}
+      getOptionLabel={(option) => option.label || ""}
       onOpen={onOpen}
       onClose={onClose}
-      onChange={(event, newValue) => {
-        setInputText("");
-        onChange?.(event, newValue);
+      onInputChange={(e, val, reason) => {
+        if (!readonly && reason === "input") setInputText(val);
+      }}
+      onChange={(e, newValue) => {
+        setInputText(Array.isArray(newValue) ? "" : newValue?.label || "");
+        onChange?.(e, newValue);
       }}
       size={size}
-      sx={{
-        minWidth: 200,
-        ...sx,
-      }}
+      sx={{ minWidth: 200, ...sx }}
       renderOption={(props, option, { selected }) => (
         <li {...props}>
           {multiple && (
             <Checkbox
-              icon={icon}
-              checkedIcon={checkedIcon}
-              style={{ marginRight: 4 }}
+              icon={<UncheckedIcon fontSize="small" color="secondary" />}
+              checkedIcon={<CheckedIcon fontSize="small" color="secondary" />}
               checked={selected}
+              sx={{ mr: 0.5 }}
             />
           )}
           {option.label}
         </li>
       )}
-      renderTags={
-        multiple
-          ? (selected, getTagProps) =>
-              selected.map((option, index) => (
-                <Chip
-                  {...getTagProps({ index })}
-                  key={option.value}
-                  label={option.label}
-                  size="small"
-                  sx={{ backgroundColor: "#E0F2F1" }}
-                />
-              ))
-          : undefined
-      }
       renderInput={(params) => (
         <TextField
           {...params}
@@ -114,8 +98,9 @@ export const Dropdown = ({
           size={size}
           sx={{
             "& .MuiOutlinedInput-root": {
-              borderColor: getBorderColour,
+              borderColor: borderColor,
             },
+            ...sx,
           }}
           InputProps={{
             ...params.InputProps,
@@ -130,20 +115,10 @@ export const Dropdown = ({
             ),
             endAdornment: (
               <>
-                {showEndAdornment && params.InputProps.endAdornment}
-                {status === "warning" && (
+                {multiple && !readonly && params.InputProps.endAdornment}
+                {renderEndIcon() && (
                   <InputAdornment position="end">
-                    <WarningIcon color="warning" />
-                  </InputAdornment>
-                )}
-                {status === "error" && (
-                  <InputAdornment position="end">
-                    <ErrorOutlineIcon color="error" />
-                  </InputAdornment>
-                )}
-                {status === "confirmed" && (
-                  <InputAdornment position="end">
-                    <CheckCircleIcon color="success" />
+                    {renderEndIcon()}
                   </InputAdornment>
                 )}
               </>

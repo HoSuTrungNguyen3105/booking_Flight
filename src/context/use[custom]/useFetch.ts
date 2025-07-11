@@ -1,8 +1,8 @@
 import type { AxiosRequestConfig } from "axios";
-import { useApi } from "../context/ApiContext";
+import { useApi } from "../../context/ApiContext";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { MethodType } from "./type";
-import { useToast } from "../context/ToastContext";
+import { useToast } from "../../context/ToastContext";
+import { MethodType } from "../../hooks/type";
 // import { toast } from "react-toastify";
 type ToastMessage = {
   success?: string;

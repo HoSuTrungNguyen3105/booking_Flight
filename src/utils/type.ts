@@ -69,7 +69,8 @@ export type AircraftList = {
 export type FlightListResponse<T> = {
   resultCode: string;
   resultMessage: string;
-  list?: T[];
+  user?: T[];
+  accessToken?: string | null;
 };
 
 // ✅ TypeScript cho User (từ Prisma model)
@@ -94,6 +95,8 @@ export type FlightDetailResponse<T> = {
   resultCode: string;
   resultMessage: string;
   selectById?: boolean;
+  accessToken?: string;
+  // user: List[];
 };
 
 export type FlightListApiResponse = FlightListResponse<DataFlight>;
