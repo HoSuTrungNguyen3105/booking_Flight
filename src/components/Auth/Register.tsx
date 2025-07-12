@@ -1,12 +1,11 @@
-import { useCallback, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import "./index.scss";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import { Button } from "../../common/Button/Button";
 import Input from "../../common/CustomRender/Input";
 import { Controller, useForm } from "react-hook-form";
 import { FileUpload } from "../../common/FileUploader";
-import type { TFileUploader } from "../../common/FileUploader/type";
+import { INPUT_TYPE, type TFileUploader } from "../../common/FileUploader/type";
 import { useToast } from "../../context/ToastContext";
 
 interface FormDataType {
@@ -19,13 +18,7 @@ interface FormDataType {
 }
 
 const Register = () => {
-  const {
-    control,
-    handleSubmit,
-    watch,
-    getValues,
-    formState: { errors },
-  } = useForm<FormDataType>({
+  const { control, handleSubmit, watch, getValues } = useForm<FormDataType>({
     defaultValues: {
       firstName: "",
       lastName: "",
@@ -36,9 +29,7 @@ const Register = () => {
     },
   });
   const toast = useToast();
-
   const [passwordMismatch, setPasswordMismatch] = useState(false);
-
   const password = watch("password");
   const confirmPassword = watch("confirmPassword");
 
@@ -121,6 +112,7 @@ const Register = () => {
             render={({ field }) => (
               <FileUpload
                 name="profileImage"
+                inputType={INPUT_TYPE.THUMBNAIL}
                 onChange={(files: TFileUploader[]) => {
                   console.log(files);
                   field.onChange(files);

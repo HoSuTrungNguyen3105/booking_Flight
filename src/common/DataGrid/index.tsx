@@ -15,24 +15,31 @@ import {
   type CheckboxProps,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
+import {
+  CheckedIcon,
+  IndeterminateIcon,
+  UncheckedIcon,
+} from "../Checkbox/CheckboxIcons";
 export type GridRowDef = GridRowModel & {
   id: GridRowId;
 };
-const CustomCheckbox = forwardRef<HTMLInputElement, CheckboxProps>(
-  (props, ref) => (
-    <Checkbox
-      ref={ref}
-      {...props}
-      sx={{
-        color: { xs: "red", sm: "blue" },
-        "&.Mui-checked": {
-          color: "#f44336",
-        },
-        ...(props.sx || {}),
-      }}
-    />
-  )
-);
+const CustomCheckbox = forwardRef<HTMLButtonElement, any>((props, ref) => {
+  return (
+    <span ref={ref}>
+      <Checkbox
+        {...props}
+        size="small"
+        color="primary"
+        sx={{
+          color: "#aaa",
+          "&.Mui-checked": {
+            color: "#1976d2",
+          },
+        }}
+      />
+    </span>
+  );
+});
 
 interface IDataTableProps {
   loading?: boolean;
@@ -137,11 +144,31 @@ const DataTable = ({
       sortModel={sortModel}
       onSortModelChange={onSortModelChange}
       slots={{
-        baseCheckbox: CustomCheckbox, // <-- dùng custom Checkbox
+        // baseCheckbox: {
+        //   sx: {
+        //     color: "red",
+        //     "&.Mui-checked": {
+        //       color: "green",
+        //     },
+        //   },
+        // }, // <-- dùng custom Checkbox
         noRowsOverlay: emptyContent
           ? () => <>{emptyContent}</>
           : EmptyRowsOverlay,
         loadingOverlay: loadingMemo,
+      }}
+      slotProps={{
+        baseCheckbox: {
+          sx: {
+            color: "red",
+            "&.Mui-checked": {
+              color: "green",
+            },
+          },
+          icon: <UncheckedIcon />,
+          checkedIcon: <CheckedIcon color="primary" />,
+          indeterminateIcon: <IndeterminateIcon color="primary" />,
+        },
       }}
     />
   );

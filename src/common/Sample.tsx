@@ -314,7 +314,7 @@ const Sample = () => {
   });
   const toast = useToast();
   const handleOpenToaats = () => {
-    toast("이것이 나타날 토스트입니다이것이 나타날 토스트입니다", "info");
+    toast("이것이 나타날 토스트입니다이것이 나타날 토스트입니다", "success");
   };
   const [isDisable, setIsDisable] = useState(false);
   const [open, setOpen] = useState<boolean>(false);
@@ -332,23 +332,20 @@ const Sample = () => {
     }
   }, [open]);
   const handleSubmit = () => {
-    if (name.trim() === "error") {
-      setError("이름을 입력해주세요.");
-      toast("이름을 입력해주세요.", "error");
-      return;
-    }
-    setOpen(true);
-    setError("");
-    setIsDisable(true);
+    // if (name.trim() === "error") {
+    setError("이름을 입력해주세요.");
+    toast("이름을 입력해주세요.", "error");
+    return;
+    // }
+    // setOpen(true);
+    // setError("");
+    // setIsDisable(true);
   };
 
   return (
     <Box>
-      {/*primary*/}
       <Box display={"flex"}>
-        {/*contained primary*/}
         <Box>
-          {/*default*/}
           <Box display={"flex"} gap={3} paddingTop={5} paddingLeft={5}>
             <Button
               appearance="contained"
@@ -390,7 +387,7 @@ const Sample = () => {
             appearance="contained"
             priority="custom"
             label="단추단추"
-            onClick={() => refetch()}
+            onClick={() => handleSubmit()}
             size="large"
             customLabelColor="#000000"
             customColor="#fdd835" // 🌟 vàng sáng nổi bật

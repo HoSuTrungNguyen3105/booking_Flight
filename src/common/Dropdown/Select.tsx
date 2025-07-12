@@ -369,3 +369,265 @@ export default function DataGridWithSelectModal() {
     </>
   );
 }
+
+// import { Box, Typography, Button } from "@mui/material";
+// import Arrow from "./../../svgs/celery-svg.svg"; // path theo dự án bạn
+// import { useNavigate } from "react-router-dom";
+// import type { GridRowDef } from "../DataGrid";
+// import { useMemo, useState } from "react";
+// import type { GridColDef } from "@mui/x-data-grid";
+// const generateRandomCheckTime = (): string => {
+//   const hours = Math.floor(Math.random() * 24) + 1;
+//   return `${hours}시간 전`;
+// };
+
+// // Hàm sinh trạng thái giả
+// const generateRandomStatus = (): string => {
+//   const statuses = ["점검완료", "점검필요"];
+//   return statuses[Math.floor(Math.random() * statuses.length)];
+// };
+
+// // Dữ liệu giả
+// const DUMMY_ROWS: GridRowDef[] = Array.from({ length: 20 }, (_, index) => ({
+//   id: (index + 1).toString(),
+//   checkTime: generateRandomCheckTime(),
+//   itemScope: "RAG",
+//   situation: `데이터 오염 점검 : ${index + 1}`,
+//   status: "자동",
+//   reviewStatus: "기본 항목",
+//   value: generateRandomStatus(),
+//   inspectorId: "ID_HONG",
+// }));
+
+// const DataGridWithSelectModal = () => {
+//   const navigate = useNavigate();
+//   const [link, setLink] = useState<string[]>([]);
+//   const [isComplete, setIsComplete] = useState(true);
+
+//   // Hàm xử lý sắp xếp và phân trang
+//   // const {
+//   //   sortedData,
+//   //   sortModel,
+//   //   onSortModelChange,
+//   //   currentPage,
+//   //   paginatedData,
+//   //   totalPages,
+//   //   totalElements,
+//   //   pageSize,
+//   //   onPageChange,
+//   // } = useSorting({
+//   //   data: DUMMY_ROWS,
+//   // });
+
+//   const inspectionData = {
+//     TITLE: "25.6.13 오전 1:30 - 데이터, 모델, AI 서비스 범위 점검 정보",
+//     status: "미완료",
+//     time: "25.6.13 오전 1:30",
+//     inspector: "ID_HONG",
+//     dataStatus: ["데이터  19/30", "데이터 1/30", "데이터: 0/30"],
+//     completeTime: "25.6.13 오전 2:30",
+//     text: "데이터 오염 점검의 의미: ... 데이터 오염 점검 오류시 아래와 같은 문제가 발생할 수 있습니다.",
+//     content: "데이터 오염 점검의 의미 ....",
+//     checkTime: "자동 배정",
+//     itemStatusLeft: "모델 20/30, AI 서비스 10/10, 모델 20/30",
+//     itemStatusRight: "AI RED 10/15, 총 자동 점검 60/60, 기타 10/15",
+//     detail1: ["해당 파일 확인하기", "점검하기", "문제 해결하기"],
+//     detail2: [],
+//   };
+
+//   // Các cột của bảng
+//   const columns: GridColDef[] = useMemo(
+//     () => [
+//       { field: "id", headerName: "데이터 이름", flex: 1 },
+//       { field: "itemScope", headerName: "데이터 형택", flex: 1 },
+//       { field: "situation", headerName: "데이터 정보", flex: 1 },
+//       { field: "reviewStatus", headerName: "상태", flex: 1 },
+//       { field: "inspectorId", headerName: "검토자", flex: 1 },
+//       {
+//         field: "value",
+//         headerName: "검토 결과",
+//         flex: 1,
+//         renderCell: ({ value }) => {
+//           const StatusChip = ({ status }: { status: string }) => {
+//             const colorMap: Record<string, string> = {
+//               점검완료: "#567B7A",
+//               점검필요: "#B46674",
+//             };
+
+//             if (colorMap[status]?.length === 0 || status === "점검필요") {
+//               setIsComplete(false);
+//             }
+
+//             return (
+//               <Typography
+//                 variant="body1"
+//                 sx={{ color: colorMap[status] || "black" }}
+//               >
+//                 {status}
+//               </Typography>
+//             );
+//           };
+
+//           return <StatusChip status={value} />;
+//         },
+//       },
+//     ],
+//     []
+//   );
+
+//   return (
+//     <Box>
+//       {/* Header */}
+//       <Box sx={{ padding: "8px", border: `1px solid black` }}>
+//         <Box
+//           sx={{
+//             display: "flex",
+//             justifyContent: "space-between",
+//             alignItems: "center",
+//           }}
+//         >
+//           <Box sx={{ display: "flex", padding: "3px", alignItems: "center" }}>
+//             <Box
+//               component="img"
+//               src={Arrow}
+//               alt="Arrow Icon"
+//               onClick={() => navigate(-1)}
+//               sx={{
+//                 width: "24px",
+//                 height: "24px",
+//                 transform: "rotate(270deg)",
+//                 transition: "transform 0.3s ease",
+//               }}
+//             />
+//             <Typography variant="body1" sx={{ ml: 1 }}>
+//               {inspectionData.TITLE}
+//             </Typography>
+//           </Box>
+
+//           <Button disabled={isComplete} variant="contained">
+//             <Typography variant="button">최종 점검 완료</Typography>
+//           </Button>
+//         </Box>
+//       </Box>
+
+//       {/* Details */}
+//       <Box
+//         border="1px solid #E0E0E0"
+//         sx={{ backgroundColor: "white", borderRadius: "2px", mb: "8px" }}
+//       >
+//         <Typography variant="body1" padding="12px">
+//           Details
+//         </Typography>
+//         <Box
+//           display="flex"
+//           justifyContent="space-between"
+//           padding="14px 16px"
+//           borderTop={1}
+//           borderColor="#E0E0E0"
+//         >
+//           <Box sx={{ flex: 1, display: "flex", gap: 2 }}>
+//             <Box
+//               sx={{ display: "flex", flexDirection: "column", paddingRight: 2 }}
+//             >
+//               <Typography variant="body1" color="error" sx={{ mb: 0.5 }}>
+//                 검사 상태
+//               </Typography>
+//               <Typography variant="body1">{inspectionData.status}</Typography>
+//             </Box>
+
+//             <Box
+//               sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 2 }}
+//             >
+//               <Typography variant="body1" color="error" sx={{ mb: 0.5 }}>
+//                 시작 시간
+//               </Typography>
+//               <Typography variant="body1">{inspectionData.time}</Typography>
+//             </Box>
+//           </Box>
+//         </Box>
+
+//         {/* Content */}
+//         <Box display="flex" width="100%" paddingRight="24px">
+//           <Box sx={{ width: "1px", backgroundColor: "gray", mx: 2 }} />
+//           <Box
+//             sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 2 }}
+//           >
+//             <Typography variant="body1" color="error" sx={{ mb: 0.5 }}>
+//               최종 점검 내용
+//             </Typography>
+//             <Typography
+//               variant="body1"
+//               sx={{
+//                 wordBreak: "break-word",
+//                 overflowWrap: "break-word",
+//                 maxWidth: "100%",
+//               }}
+//             >
+//               {inspectionData.content}
+//             </Typography>
+//           </Box>
+//         </Box>
+
+//         {/* 항목 구분 */}
+//         <Box
+//           display="flex"
+//           justifyContent="space-between"
+//           padding="14px 16px"
+//           borderTop={1}
+//           borderColor="#E0E0E0"
+//           paddingRight="24px"
+//         >
+//           <Box sx={{ width: "1px", backgroundColor: "gray", mx: 2 }} />
+//           <Box sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
+//             <Typography variant="body1" color="error" sx={{ mb: 0.5 }}>
+//               항목 구분
+//             </Typography>
+//             {inspectionData.dataStatus.map((item: string, idx: number) => (
+//               <Typography key={idx} variant="body1">
+//                 {item}
+//               </Typography>
+//             ))}
+//           </Box>
+//         </Box>
+
+//         {/* 항목 상세 설명 */}
+//         <Box display="flex" width="100%" paddingRight="24px">
+//           <Box sx={{ width: "1px", backgroundColor: "gray", mx: 2 }} />
+//           <Box sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
+//             <Typography variant="body1" color="error" sx={{ mb: 0.5 }}>
+//               항목 상세 설명
+//             </Typography>
+//             <Typography variant="body1">데이터 오류 점검의 의미</Typography>
+//             <Typography variant="body1">
+//               데이터 오류 점검 오류시 아래와 같은 문제가 발생할 수 있습니다.
+//             </Typography>
+//             {inspectionData.detail1.map((item: string, idx: number) => (
+//               <Box key={idx} sx={{ mb: 0.2 }}>
+//                 <Typography variant="body2">
+//                   {idx + 1}. {item.length > 0 ? item : "N/A"}
+//                 </Typography>
+//               </Box>
+//             ))}
+//           </Box>
+//         </Box>
+
+//         {/* 다음 가이드 */}
+//         <Box display="flex" width="100%" paddingRight="24px">
+//           <Box sx={{ width: "1px", backgroundColor: "wheat", mx: 2 }} />
+//           <Box sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
+//             <Typography variant="body1" color="black" sx={{ mb: 0.5 }}>
+//               다음 가이드를 참고하세요.
+//             </Typography>
+//             {inspectionData.dataStatus.map((item: string, idx: number) => (
+//               <Typography key={idx} variant="body1">
+//                 {item}
+//               </Typography>
+//             ))}
+//           </Box>
+//         </Box>
+//       </Box>
+//     </Box>
+//   );
+// };
+
+// export default DataGridWithSelectModal;

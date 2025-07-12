@@ -152,7 +152,7 @@ export const useLoginUser = () => {
     },
     autoFetch: true,
     config: postMethod,
-    showToast: false,
+    showToast: true,
   });
   return {
     loginUserData,

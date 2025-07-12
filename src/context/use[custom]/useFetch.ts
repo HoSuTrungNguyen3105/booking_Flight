@@ -69,10 +69,12 @@ export const useFetch = <T extends Partial<ResponseMessage>, P>({
         setData(res);
         setSuccess(true);
         if (showToast) {
-          if (res?.resultMessage) {
-            toast(res.resultMessage, "success");
-          } else if (message?.success) {
-            toast(message.success, "success");
+          const isSuccess = res?.resultCode === "00";
+          if (isSuccess && (res?.resultMessage || message?.success)) {
+            toast(
+              res?.resultMessage ?? message?.success ?? "Thành công",
+              "success"
+            );
           }
         }
         onSuccess?.(res);

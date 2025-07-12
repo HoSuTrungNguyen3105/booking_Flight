@@ -235,16 +235,13 @@
 //     </>
 //   );
 // }
+
 import { useState } from "react";
 import { Box, IconButton, TextField, Typography } from "@mui/material";
 import SelectWithModal from "../../common/Dropdown/Select";
 import Modal from "../../common/Modal/Modal";
 import { useTranslation } from "react-i18next";
-import {
-  handleLanguageChange,
-  optionLanguage,
-} from "../../context/use[custom]/useChangeLng";
-import { Dropdown } from "../../common/Dropdown/Dropdown";
+import { LanguageDropdown } from "../../common/Dropdown/Changelng";
 
 interface InputField {
   id: number;
@@ -277,12 +274,7 @@ export default function Hero() {
   const { t } = useTranslation();
   return (
     <>
-      <Dropdown
-        size="medium"
-        value={optionLanguage}
-        options={optionLanguage}
-        onChange={handleLanguageChange}
-      />
+      <LanguageDropdown />
 
       <button onClick={() => setOpen(true)}>Mở modal</button>
       <Typography onClick={() => setOpen(true)}>{t("content1")}</Typography>

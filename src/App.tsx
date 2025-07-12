@@ -11,16 +11,15 @@ import { ToastProvider } from "./context/ToastContext";
 function App() {
   return (
     <I18nextProvider i18n={i18n}>
-      <ApiProvider>
-        <AuthProvider>
-          <FlightSearchProvider>
-            {/* <ToastContainer /> */}
-            <ToastProvider>
+      <ToastProvider>
+        <ApiProvider>
+          <AuthProvider>
+            <FlightSearchProvider>
               <RouterProvider router={router} />
-            </ToastProvider>
-          </FlightSearchProvider>
-        </AuthProvider>
-      </ApiProvider>
+            </FlightSearchProvider>
+          </AuthProvider>
+        </ApiProvider>
+      </ToastProvider>
     </I18nextProvider>
   );
 }

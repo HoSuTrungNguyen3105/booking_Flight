@@ -97,14 +97,23 @@ export const Dropdown = ({
           placeholder={placeholder}
           size={size}
           sx={{
-            "& .MuiOutlinedInput-root": {
-              borderColor: borderColor,
-            },
             ...sx,
+            "& .MuiOutlinedInput-root": {
+              cursor: "pointer", // con trỏ khi hover
+              "& fieldset": {
+                borderColor: borderColor,
+              },
+              "&:hover fieldset": {
+                borderColor: borderColor,
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: borderColor,
+              },
+            },
           }}
           InputProps={{
             ...params.InputProps,
-            readOnly: readonly,
+            // readOnly: readonly,
             startAdornment: customInput ? (
               <>
                 {params.InputProps.startAdornment}

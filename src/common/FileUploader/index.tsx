@@ -42,7 +42,7 @@ export const FileUpload: FC<FileUploaderProps> = ({
   height = "auto",
   accept = ".jpg,.png",
   maxSize = "10 MB",
-  inputType = "thumbnails",
+  inputType = INPUT_TYPE.THUMBNAIL,
   name,
   value,
   onChange,
@@ -136,9 +136,9 @@ export const FileUpload: FC<FileUploaderProps> = ({
 
   const toggleInputType = () => {
     setCurrentInputType((prev) => {
-      if (prev === "input") return "thumbnails";
-      if (prev === "thumbnails") return "read-only";
-      return "input";
+      if (prev === INPUT_TYPE.INPUT) return INPUT_TYPE.THUMBNAIL;
+      if (prev === INPUT_TYPE.THUMBNAIL) return INPUT_TYPE.READONLY;
+      return INPUT_TYPE.INPUT;
     });
   };
   const isYouTubeLink = (url: string) =>
@@ -294,6 +294,31 @@ export const FileUpload: FC<FileUploaderProps> = ({
     const element = event.target as HTMLInputElement;
     element.value = "";
   };
+  const [selectedType] = useState<INPUT_TYPE>(inputType);
+
+  const renderChange = useMemo(() => {
+    // Không cho đổi input type sau khi đã chọn file
+    if (inputType !== selectedType) return null;
+
+    return (
+      <label className="mb-0" htmlFor={name}>
+        <Box className="upload-info">
+          <Box className="gap-[3px] flex items-center flex-grow">
+            <AttachFileIcon
+              width={18}
+              height={19}
+              style={{ transform: "rotate(45deg)" }}
+            />
+            <label htmlFor={name}>Drag drop file here</label>
+          </Box>
+          <Box className="size">
+            <span>{bytesToSize(totalSize)}</span>
+            <span>/{maxSize}</span>
+          </Box>
+        </Box>
+      </label>
+    );
+  }, [inputType, selectedType, name, totalSize, maxSize]);
 
   const getFileIcon = (fileType: string) => {
     if (fileType.includes("png")) return <FilePresentIcon />;
@@ -384,22 +409,7 @@ export const FileUpload: FC<FileUploaderProps> = ({
             />
           )}
 
-          <label className="mb-0" htmlFor={name}>
-            <Box className="upload-info">
-              <Box className="gap-[3px] flex items-center flex-grow">
-                <AttachFileIcon
-                  width={18}
-                  height={19}
-                  style={{ transform: "rotate(45deg)" }}
-                />
-                <label htmlFor={name}>Drag drop file here</label>
-              </Box>
-              <Box className="size">
-                <span>{bytesToSize(totalSize)}</span>
-                <span>/{maxSize}</span>
-              </Box>
-            </Box>
-          </label>
+          {renderChange}
           {Array.isArray(imageFiles) &&
           imageFiles.length > 0 &&
           !hidePreview ? (

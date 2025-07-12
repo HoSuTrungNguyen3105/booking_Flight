@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { toast } from "react-toastify";
 import { useLoginUser } from "../components/Api/usePostApi";
+import { useToast } from "./ToastContext";
 
 type User = {
   email: string;
@@ -17,43 +17,39 @@ interface AuthContextType {
   logout: () => void;
 }
 
-interface AuthProviderProps {
-  children: React.ReactNode;
-}
+const AuthContext = createContext<AuthContextType | null>(null);
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-export const AuthProvider = ({ children }: AuthProviderProps) => {
+// ✅ Component export tách riêng
+const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
-
-  const { refetchLogin } = useLoginUser(); // Không truyền user ban đầu
-
+  const toast = useToast();
+  const { loginUserData, refetchLogin } = useLoginUser();
   const login = async (userData: User) => {
     try {
-      const res = await refetchLogin(userData); // ✅ truyền userData khi gọi API
+      const res = await refetchLogin(userData);
+      console.log("toast", loginUserData);
       if (res?.resultCode === "00") {
+        console.log("toast", loginUserData);
         const accessToken = res.accessToken;
         setIsAuthenticated(true);
-        setUser(userData); // hoặc res.user nếu có
-        // if (accessToken !== undefined) {
-        //   setToken(accessToken);
-        // }
-        setToken(accessToken ?? null); // nếu undefined thì fallback thành null
+        setUser(userData);
+        setToken(accessToken ?? null);
         updateLocalStorage(true, userData, accessToken ?? null);
-        toast.success("Đăng nhập thành công!");
+        // toast("Đăng nhập thành công!", "success");
       } else {
-        toast.error(res?.resultMessage || "Đăng nhập thất bại!");
+        console.log("toast", loginUserData);
+        toast(res?.resultMessage || "Đăng nhập thất bại", "error");
       }
-    } catch (error: any) {
-      toast.error("Lỗi hệ thống khi đăng nhập");
+    } catch (error) {
+      toast("Lỗi hệ thống khi đăng nhập");
       console.error("Login error:", error);
     }
   };
 
   const register = (userData: User) => {
-    toast.success("Đăng ký thành công (giả lập)");
+    toast("Đăng ký thành công (giả lập)", "success");
   };
 
   const logout = () => {
@@ -63,7 +59,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     localStorage.removeItem("isAuthenticated");
     localStorage.removeItem("user");
     localStorage.removeItem("token");
-    toast.success("Đăng xuất thành công!");
+    toast("Đăng xuất thành công!", "success");
   };
 
   const updateLocalStorage = (
@@ -94,11 +90,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     </AuthContext.Provider>
   );
 };
-
-export const useAuth = (): AuthContextType => {
+// ✅ Custom hook: Định nghĩa & export riêng
+const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (!context) {
     throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
+// ✅ Named exports để tránh lỗi HMR
+export { AuthProvider, useAuth };

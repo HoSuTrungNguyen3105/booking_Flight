@@ -83,12 +83,12 @@ const SidebarAdmin = () => {
         >
           <Link to="/">
             <Avatar
-              alt={user?.userName}
+              alt={user?.email}
               src=""
               sx={{ width: "50%", height: "50%", mb: 1 }}
             />
           </Link>
-          <Typography variant="subtitle1">{user?.userName}</Typography>
+          <Typography variant="subtitle1">Remember:{user?.remember}</Typography>
           <Button size="large" label="Logout" onClick={handleOpen} />
           <ContentModal
             open={open}

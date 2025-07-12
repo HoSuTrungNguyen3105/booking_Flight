@@ -1,18 +1,14 @@
-import React, { createContext, useContext, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 type ToastType = "success" | "error" | "info";
 import { Box, SvgIcon, type SvgIconProps } from "@mui/material";
-import { Info, PermDeviceInformation, Warning } from "@mui/icons-material";
 // import '../scss/_toast.scss'
 
-// const SuccessGreen = (props: SvgIconProps) => (
-//   <SvgIcon {...props} viewBox="0 0 24 24" sx={{ fontSize: "20px" }}>
-//     <circle cx="12" cy="12" r="12" fill="#ffffff" />
-//     <path
-//       fill="#0071E3" // 🌊 xanh biển (MUI blue[600]) D9EAFB 0288d1
-//       d="M10.8 17.1l-4.5-4.5 1.4-1.4 3.1 3.1 6.5-6.5 1.4 1.4-7.9 7.9z"
-//     />
-//   </SvgIcon>
-// );
 const Success = (props: SvgIconProps) => (
   <SvgIcon {...props} viewBox="0 0 24 24" sx={{ fontSize: "20px" }}>
     <circle cx="12" cy="12" r="12" fill="#ffffff" />{" "}
@@ -27,18 +23,47 @@ type Toast = {
   message: string;
   type: ToastType;
 };
+const Warning = (props: SvgIconProps) => (
+  <SvgIcon {...props} viewBox="0 0 24 24" sx={{ fontSize: "20px" }}>
+    <circle cx="12" cy="12" r="12" fill="#ffffff" />
+    <path
+      fill="#E53935"
+      d="M12 7c.55 0 1 .45 1 1v4c0 .55-.45 1-1 1s-1-.45-1-1V8c0-.55.45-1 1-1zm0 10c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"
+    />
+  </SvgIcon>
+);
+const Info = (props: SvgIconProps) => (
+  <SvgIcon {...props} viewBox="0 0 24 24" sx={{ fontSize: "20px" }}>
+    <circle cx="12" cy="12" r="12" fill="#ffffff" />
+    <path fill="#0288D1" d="M11 17h2v-6h-2v6zm0-8h2V7h-2v2z" />
+  </SvgIcon>
+);
 const ToastContext = createContext<(msg: string, type?: ToastType) => void>(
   () => {}
 );
 export const useToast = () => useContext(ToastContext);
 export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
   const [toasts, setToasts] = useState<Toast[]>([]);
+  const timeoutMap = useRef<Map<number, ReturnType<typeof setTimeout>>>(
+    new Map()
+  );
+  // ✅ Log chỉ khi ToastProvider mount
+  useEffect(() => {
+    console.log("✅ ToastProvider mounted");
+  }, []);
+
   const showToast = (message: string, type: ToastType = "info") => {
-    const id = Date.now();
-    setToasts((prev) => [...prev, { id, message, type }]);
-    setTimeout(() => {
+    const id = Date.now() + Math.random();
+    const newToast = { id, message, type };
+    setToasts((prev) => [...prev, newToast]);
+
+    const timeoutId = setTimeout(() => {
       setToasts((prev) => prev.filter((t) => t.id !== id));
+      timeoutMap.current.delete(id);
+      console.log("Toast expired:", id); // ✅ Chỉ log nếu thực sự còn toast
     }, 6000);
+
+    timeoutMap.current.set(id, timeoutId);
   };
   return (
     <ToastContext.Provider value={showToast}>
@@ -59,53 +84,64 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
           pointerEvents: "none",
         }}
       >
-        {toasts.map((toast) => (
-          <Box
-            sx={{
-              maxWidth: 500,
-              minWidth: 280,
-              padding: "8px 12px",
-              borderRadius: "20px",
-              border: "1px solid white",
-              backgroundColor: toast.type === "success" ? "#1e293b" : "#7f1d1d",
-              color: "#fff",
-              display: "flex",
-              alignItems: "center",
-              gap: 1.5,
-              pointerEvents: "auto",
-            }}
-          >
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              {toast.type === "success" && <Success />}
-              {toast.type === "error" && (
-                <span style={{ fontSize: 20 }}>
+        {toasts.map((toast) => {
+          console.log("Rendering toast:", toast); // 👈 kiểm tra
+          return (
+            <Box
+              key={toast.id}
+              sx={{
+                // position: "fixed",
+                zIndex: 1300,
+                maxWidth: 500,
+                minWidth: 280,
+                padding: "8px 12px",
+                borderRadius: "20px",
+                border: "1px solid white",
+                backgroundColor:
+                  toast.type === "success"
+                    ? "#15803d" // xanh lá
+                    : toast.type === "error"
+                    ? "#b91c1c" // đỏ
+                    : "#0c4a6e", // xanh dương cho info
+                color: "#fff",
+                display: "flex",
+                alignItems: "center",
+                gap: 1.5,
+                pointerEvents: "auto",
+              }}
+            >
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                {toast.type === "success" && <Success />}
+                {toast.type === "error" && (
+                  // <span style={{ fontSize: 20 }}>
                   <Warning />
-                </span>
-              )}
-              {toast.type === "info" && (
-                <span style={{ fontSize: 20 }}>
+                  // </span>
+                )}
+                {toast.type === "info" && (
+                  // <span style={{ fontSize: 20 }}>
                   <Info />
-                </span>
-              )}
-            </Box>
-            <Box sx={{ flex: 1 }}>
-              <Box
-                component="span"
-                sx={{
-                  display: "flex",
-                  alignContent: "center",
-                  fontSize: 16,
-                  maxWidth: 300,
-                  wordBreak: "break-word",
-                  whiteSpace: "normal",
-                  lineHeight: 1.5,
-                }}
-              >
-                {toast.message}
+                  // </span>
+                )}
+              </Box>
+              <Box sx={{ flex: 1 }}>
+                <Box
+                  component="span"
+                  sx={{
+                    display: "flex",
+                    alignContent: "center",
+                    fontSize: 16,
+                    maxWidth: 300,
+                    wordBreak: "break-word",
+                    whiteSpace: "normal",
+                    lineHeight: 1.5,
+                  }}
+                >
+                  {toast.message}
+                </Box>
               </Box>
             </Box>
-          </Box>
-        ))}
+          );
+        })}
       </Box>
     </ToastContext.Provider>
   );

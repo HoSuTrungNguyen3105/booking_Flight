@@ -6,16 +6,24 @@ export const optionLanguage: DropdownOptions[] = [
   { label: "日本語", value: "jp" },
   { label: "한국어", value: "kr" },
 ];
+export const changeLanguage = ({ value }: DropdownOptions) => {
+  const lng = String(value);
+  i18n.changeLanguage(lng);
+  localStorage.setItem("language", lng);
+};
 
-// ✅ Dùng trực tiếp để truyền vào Dropdown
-export const handleLanguageChange = (
+// ✅ Adapter khớp kiểu Dropdown onChange
+export const handleDropdownChange = (
   event: React.SyntheticEvent,
   newValue: DropdownOptions | DropdownOptions[] | null
 ) => {
-  const selected = Array.isArray(newValue) ? newValue[0] : newValue;
-  if (!selected) return;
+  if (!newValue) return;
 
-  const lng = String(selected.value);
-  i18n.changeLanguage(lng);
-  localStorage.setItem("language", lng);
+  // Trường hợp multiple
+  if (Array.isArray(newValue)) {
+    // Nếu cần dùng nhiều giá trị, lặp qua đây
+    changeLanguage(newValue[0]); // hoặc xử lý theo logic riêng
+  } else {
+    changeLanguage(newValue);
+  }
 };

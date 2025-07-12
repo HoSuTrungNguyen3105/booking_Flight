@@ -2,12 +2,12 @@ import { Box, Typography } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
 import InputField from "../../common/Input/InputField";
 import { Dropdown } from "../../common/Dropdown/Dropdown";
 import { Button } from "../../common/Button/Button";
 import type { DropdownOptions } from "../../common/Dropdown/type";
+import { useToast } from "../../context/ToastContext";
 
 interface ILoginForm {
   emailPrefix: string;
@@ -20,8 +20,10 @@ const Login = () => {
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [_, setLoading] = useState(false);
+  const toast = useToast();
   const {
     handleSubmit,
+    watch,
     control,
     formState: { errors },
   } = useForm<ILoginForm>({
@@ -42,10 +44,16 @@ const Login = () => {
 
   const onSubmit = (data: ILoginForm) => {
     // const email = `${data.emailPrefix}${data.emailSuffix}`;
-    const email = `${data.emailPrefix}`;
+    // const email = `${data.emailPrefix}`;
+    const email = watch("emailPrefix");
+    const passwords = watch("password");
     console.log("email", email);
-    if (!email || !data.password) {
-      toast.error("Missing email or password");
+    if (!email) {
+      toast("Missing email", "error");
+      return;
+    }
+    if (!passwords) {
+      toast("Missing passwords", "error");
       return;
     }
     setLoading(true);

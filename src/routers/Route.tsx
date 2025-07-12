@@ -18,7 +18,7 @@ import Sample from "../common/Sample";
 import TableCustom from "../common/Table/Table";
 import { ROUTE_PATHS } from "./RoutePath";
 import ManageLayout from "../components/Layout/ResizeLayout";
-import App from "../components/Auth/Loginv2";
+// import App from "../components/Auth/Loginv2";
 import Search_layout from "../components/Admin/Search_layout";
 import GuestGuard from "../components/Layout/GuardLayout";
 import InspectionDetails from "../components/User/Profile";
@@ -80,10 +80,10 @@ const routes = [
         path: "profile",
         element: <InspectionDetails></InspectionDetails>,
       },
-      {
-        path: ROUTE_PATHS.FOOD.replace("/", ""),
-        element: <Food />,
-      },
+      // {
+      //   path: ROUTE_PATHS.FOOD.replace("/", ""),
+      //   element: <Food />,
+      // },
       {
         path: ROUTE_PATHS.SAMPLE_FORM.replace("/", ""),
         element: <Sample />,
@@ -104,10 +104,10 @@ const routes = [
         path: "/sampleFormData",
         element: <TableCustom />,
       },
-      {
-        path: ROUTE_PATHS.PROFILE.replace("/", ""),
-        element: <App />,
-      },
+      // {
+      //   path: ROUTE_PATHS.PROFILE.replace("/", ""),
+      //   element: <App />,
+      // },
       {
         path: ROUTE_PATHS.FILE_UPLOAD.replace("/", ""),
         element: <FileUpload name="fileUploader" />,
