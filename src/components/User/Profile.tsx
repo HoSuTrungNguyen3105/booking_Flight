@@ -415,30 +415,22 @@ const ConnectedFourBoxes = () => {
             p: 2,
           }}
         >
-          {/* <Typography
-            sx={{
-              borderBottom: "1px solid rgba(0, 0, 0, 0.2)",
-              padding: 2,
-              // height: "50%",
-            }}
-            variant="body1"
-          >
-            Details
-          </Typography> */}
           <Box>
             <Grid container spacing={2} sx={{ mb: 2 }}>
-              <Grid size={12}>
+              <Grid size={13}>
                 <Box
                   sx={{
                     borderBottom: "1px solid rgba(0, 0, 0, 0.2)",
-                    width: "100%", // đảm bảo chiếm toàn bộ chiều ngang
+                    // width: "100%", // đảm bảo chiếm toàn bộ chiều ngang
+                    //mx: -2, // phá padding ngang (p: 2 <=> 16px)
+                    //mb: 2,
                   }}
                 >
                   <Typography
                     variant="body1"
                     sx={{
-                      p: 1,
-                      // fontWeight: 500,
+                      px: 2,
+                      py: 1, // fontWeight: 500,
                     }}
                   >
                     Details
