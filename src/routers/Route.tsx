@@ -78,7 +78,7 @@ const routes = [
       },
       {
         path: "profile",
-        element: <InspectionDetails></InspectionDetails>,
+        element: <InspectionDetails />,
       },
       // {
       //   path: ROUTE_PATHS.FOOD.replace("/", ""),
