@@ -335,7 +335,6 @@ const ConnectedFourBoxes = () => {
     status: "미완료",
     time: "25.6.13 오전 1:30",
     inspector: "ID_HONG",
-    //dataStatus: ["데이터  19/30", "데이터 1/30", "데이터: 0/30"],
     completeTime: "25.6.13 오전 2:30",
     text: "데이터 오염 점검의 의미: ...",
     content: "데이터 오염 점검의 의미 ....",
@@ -353,8 +352,6 @@ const ConnectedFourBoxes = () => {
       "자동 배정 모델 20/30, AI 서비스 10/10, 모델 20/30 모델 20/30, AI 서비스 10/10, 모델 20/30 모델 20/30, AI 서비스 10/10, 모델 20/30",
     itemStatusLeft: "모델 20/30, AI 서비스 10/10, 모델 20/30",
     itemStatusRight: "AI RED 10/15, 총 자동 점검 60/60, 기타 10/15",
-    //detail1: ["해당 파일 확인하기", "점검하기", "문제 해결하기"],
-    //detail2: ["해당 파일 확인하기", "점검하기", "문제 해결하기"],
   });
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [showInputs, setShowInputs] = useState(false);
@@ -371,13 +368,6 @@ const ConnectedFourBoxes = () => {
     setShowInputs(true); // Hiện các InputField
     setFiles((prevFiles) => [...prevFiles, ...newFiles]);
   };
-  // const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   const files = event.target.files;
-  //   if (files && files.length > 0) {
-  //     setSelectedFiles(files); // Lưu lại file đã chọn
-  //     setShowInputs(true); // Hiện các InputField
-  //   }
-  // };
   const renderBox = (label: string, value: React.ReactNode, hasLine = true) => (
     <Box display="flex" width="100%">
       {hasLine && (
@@ -415,30 +405,9 @@ const ConnectedFourBoxes = () => {
             p: 2,
           }}
         >
-          {/* Cột trái - danh sách file */}
-          {/* <Grid size={4}>
-                <Box display="flex" flexDirection="column" gap={1}>
-                  {[...Array(5)].map((_, i) => (
-                    <Box
-                      key={i}
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        border: "1px solid #ccc",
-                        padding: "8px",
-                        borderRadius: "4px",
-                      }}
-                    >
-                      <Typography>{`{file_name}_데이터오염점검1_ID_HONG.png (10 M)`}</Typography>
-                      <Typography sx={{ cursor: "pointer" }}>❌</Typography>
-                    </Box>
-                  ))}
-                </Box>
-              </Grid> */}
           <Box>
             <Grid container spacing={2} sx={{ mb: 2 }}>
-              <Grid size={13}>
+              <Grid size={12}>
                 <Box
                   sx={{
                     borderBottom: "1px solid rgba(0, 0, 0, 0.2)",
@@ -455,7 +424,10 @@ const ConnectedFourBoxes = () => {
                   </Typography>
                 </Box>
               </Grid>
-              <Grid container spacing={2} sx={{ mb: 2, padding: "6px 10px" }}>
+              <Grid
+                container
+                sx={{ mb: 2, p: "6px 10px" }} // padding top-bottom: 6px, left-right: 10px
+              >
                 {/* Row 1 */}
                 <Grid size={3}>
                   {renderBox("검사 상태", inspectionData.status, false)}
@@ -579,65 +551,71 @@ const ConnectedFourBoxes = () => {
                 <Box>{renderBox("완료 시간", inspectionData.completeTime)}</Box>
               </Grid>
               <Grid size={4}>
-                <Box
-                  sx={{
-                    width: "2px",
-                    backgroundColor: "rgba(0,0,0,0.3)", // Màu đen nhạt (30% độ mờ)
-                    borderRadius: "2px",
-                    mr: 1,
-                  }}
-                />
-                <Box flex={1} display="flex" flexDirection="column">
-                  <Typography
-                    variant="caption"
-                    color="text.secondary"
-                    sx={{ mb: 1 }}
-                  >
-                    점검 설명
-                  </Typography>
-                  <Typography variant="body2" sx={{ mb: 2 }}>
-                    {inspectionData.content}
-                  </Typography>
-
+                <Box display="flex" width="100%">
                   <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    width="100%"
-                  >
+                    sx={{
+                      width: "2px",
+                      backgroundColor: "rgba(0,0,0,0.3)", // Màu đen nhạt (30% độ mờ)
+                      borderRadius: "2px",
+                      mr: 1,
+                      minHeight: "35%",
+                    }}
+                  />
+                  <Box flex={1} display="flex" flexDirection="column">
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{ mb: 1 }}
+                    >
+                      점검 설명
+                    </Typography>
+                    <Typography variant="body2" sx={{ mb: 2 }}>
+                      {inspectionData.content}
+                    </Typography>
+
                     <Box
                       display="flex"
-                      flexDirection="column"
-                      gap={1}
-                      flex={1}
-                      mr={2}
+                      justifyContent="space-between"
+                      width="100%"
                     >
-                      {showInputs && (
-                        <Box
-                          mt={2}
-                          display="flex"
-                          flexDirection="column"
-                          gap={1}
-                        >
-                          {files.map((item, i) => (
-                            <InputField key={i} value={item.name} />
-                          ))}
-                        </Box>
-                      )}
+                      <Box
+                        display="flex"
+                        flexDirection="column"
+                        gap={1}
+                        flex={1}
+                        mr={2}
+                      >
+                        {showInputs && (
+                          <Box
+                            mt={2}
+                            display="flex"
+                            flexDirection="column"
+                            gap={1}
+                          >
+                            {files.map((item, i) => (
+                              <InputField key={i} value={item.name} />
+                            ))}
+                          </Box>
+                        )}
+                      </Box>
                     </Box>
                   </Box>
                 </Box>
               </Grid>
 
               {/* Cột bên phải chứa button nằm ở đáy */}
-              <Grid size={2}>
+              {/* <Grid size={2}>
                 <Box
-                  display="flex"
-                  justifyContent="center"
-                  alignItems="flex-end"
-                  height="100%"
-                  sx={{ minHeight: "220px" }}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "flex-end",
+                    // minHeight: "220px",
+                    height: "100%",
+                    // pl: 6, // padding-left
+                  }}
                 >
-                  <Button onClick={handleAddClick} label="파일 첨부"></Button>
+                  <Button onClick={handleAddClick} label="파일 첨부" />
                   <input
                     ref={fileInputRef}
                     type="file"
@@ -647,18 +625,172 @@ const ConnectedFourBoxes = () => {
                     onChange={handleFileChange}
                   />
                 </Box>
+              </Grid> */}
+              <Grid size={2}>
+                <Box
+                  display="flex"
+                  flexDirection="column"
+                  justifyContent="flex-end"
+                  height="100%"
+                  minHeight={"280px"}
+                  gap={1}
+                >
+                  <Button onClick={handleAddClick} label="파일 첨부" />
+
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept=".jpg,.png,.pdf"
+                    multiple
+                    hidden
+                    onChange={handleFileChange}
+                  />
+                </Box>
+              </Grid>
+              <Grid size={2}>
+                <Box
+                  display="flex"
+                  flexDirection="column"
+                  justifyContent="flex-end"
+                  height="100%"
+                  gap={1}
+                >
+                  <Button onClick={handleAddClick} label="파일 첨부" />
+
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept=".jpg,.png,.pdf"
+                    multiple
+                    hidden
+                    onChange={handleFileChange}
+                  />
+                </Box>
+              </Grid>
+              <Grid size={2}>
+                <Box
+                  display="flex"
+                  flexDirection="column"
+                  justifyContent="flex-end"
+                  height="100%"
+                  gap={1}
+                >
+                  <Button onClick={handleAddClick} label="파일 첨부" />
+
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept=".jpg,.png,.pdf"
+                    multiple
+                    hidden
+                    onChange={handleFileChange}
+                  />
+                </Box>
+              </Grid>
+              <Grid size={2}>
+                <Box
+                  display="flex"
+                  flexDirection="column"
+                  justifyContent="flex-end"
+                  height="100%"
+                  gap={1}
+                >
+                  <Button onClick={handleAddClick} label="파일 첨부" />
+
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept=".jpg,.png,.pdf"
+                    multiple
+                    hidden
+                    onChange={handleFileChange}
+                  />
+                </Box>
+              </Grid>
+              <Grid size={2}>
+                <Box
+                  display="flex"
+                  flexDirection="column"
+                  justifyContent="flex-end"
+                  height="100%"
+                  gap={1}
+                >
+                  <Button onClick={handleAddClick} label="파일 첨부" />
+
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept=".jpg,.png,.pdf"
+                    multiple
+                    hidden
+                    onChange={handleFileChange}
+                  />
+                </Box>
+              </Grid>
+              <Grid size={2}>
+                <Box
+                  display="flex"
+                  flexDirection="column"
+                  justifyContent="flex-end"
+                  height="100%"
+                  gap={1}
+                >
+                  <Button onClick={handleAddClick} label="파일 첨부" />
+
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept=".jpg,.png,.pdf"
+                    multiple
+                    hidden
+                    onChange={handleFileChange}
+                  />
+                </Box>
+              </Grid>
+              <Grid size={2}>
+                <Box
+                  display="flex"
+                  flexDirection="column"
+                  justifyContent="flex-end"
+                  height="100%"
+                  gap={1}
+                >
+                  <Button onClick={handleAddClick} label="파일 첨부" />
+
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept=".jpg,.png,.pdf"
+                    multiple
+                    hidden
+                    onChange={handleFileChange}
+                  />
+                </Box>
               </Grid>
 
-              <Grid size={3}>
-                <Box>
-                  <Button label="파일 첨부"></Button>
-                </Box>
+              {/* <Typography variant="caption" align="center">
+                    {files.length} 개의 파일이 선택 되었습니다.
+                  </Typography> */}
+
+              {/* <Button onClick={handleAddClick} label="파일 첨부" /> */}
+              {/* <Grid size={3}>
+                <Box>{renderBox("점검 설명", inspectionData.content)}</Box>
               </Grid>
               <Grid size={3}>
-                <Box>
-                  <Button label="파일 첨부"></Button>
-                </Box>
+                <Box>{renderBox("점검 설명", inspectionData.content)}</Box>
               </Grid>
+              <Grid size={3}>
+                <Box>{renderBox("점검 설명", inspectionData.content)}</Box>
+              </Grid>
+              <Grid size={3}>
+                <Box>{renderBox("점검 설명", inspectionData.content)}</Box>
+              </Grid>
+              <Grid size={3}>
+                <Box>{renderBox("점검 설명", inspectionData.completeTime)}</Box>
+              </Grid>
+              <Grid size={3}>
+                <Box>{renderBox("점검 설명", inspectionData.content)}</Box>
+              </Grid> */}
             </Grid>
           </Box>
         </Box>
