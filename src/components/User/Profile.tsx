@@ -415,15 +415,33 @@ const ConnectedFourBoxes = () => {
             p: 2,
           }}
         >
+          {/* Cột trái - danh sách file */}
+          {/* <Grid size={4}>
+                <Box display="flex" flexDirection="column" gap={1}>
+                  {[...Array(5)].map((_, i) => (
+                    <Box
+                      key={i}
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        border: "1px solid #ccc",
+                        padding: "8px",
+                        borderRadius: "4px",
+                      }}
+                    >
+                      <Typography>{`{file_name}_데이터오염점검1_ID_HONG.png (10 M)`}</Typography>
+                      <Typography sx={{ cursor: "pointer" }}>❌</Typography>
+                    </Box>
+                  ))}
+                </Box>
+              </Grid> */}
           <Box>
             <Grid container spacing={2} sx={{ mb: 2 }}>
               <Grid size={13}>
                 <Box
                   sx={{
                     borderBottom: "1px solid rgba(0, 0, 0, 0.2)",
-                    // width: "100%", // đảm bảo chiếm toàn bộ chiều ngang
-                    //mx: -2, // phá padding ngang (p: 2 <=> 16px)
-                    //mb: 2,
                   }}
                 >
                   <Typography
@@ -451,8 +469,6 @@ const ConnectedFourBoxes = () => {
                 <Grid size={3}>
                   {renderBox("점검 제목", inspectionData.TITLE)}
                 </Grid>
-
-                {/* Row 2 */}
                 <Grid size={3}>
                   {renderBox(
                     "데이터 상태",
@@ -462,22 +478,6 @@ const ConnectedFourBoxes = () => {
                   {renderBox("", inspectionData.checkStatus.auto, false)}
                   {renderBox("", inspectionData.checkStatus.manual, false)}
                 </Grid>
-                {/* <Grid item xs={4}>
-          <Typography variant="caption" color="text.secondary">
-            점검 현태별 상태
-          </Typography>
-          <Typography variant="body2">{inspectionData.checkStatus.total}</Typography>
-          <Typography variant="body2">{inspectionData.checkStatus.auto}</Typography>
-          <Typography variant="body2">{inspectionData.checkStatus.manual}</Typography>
-        </Grid>
-        <Grid item xs={4}>
-          <Typography variant="caption" color="text.secondary">
-            항목 구분 별 상태
-          </Typography>
-          <Typography variant="body2">{inspectionData.categoryStatus.data}</Typography>
-          <Typography variant="body2">{inspectionData.categoryStatus.model}</Typography>
-          <Typography variant="body2">{inspectionData.categoryStatus.ai}</Typography>
-        </Grid> */}
                 <Grid size={3}>
                   {renderBox("완료 시간", inspectionData.completeTime)}
                 </Grid>
@@ -487,8 +487,6 @@ const ConnectedFourBoxes = () => {
                 <Grid size={3}>
                   {renderBox("점검 설명", inspectionData.content)}
                 </Grid>
-
-                {/* Row 3 - Form Input + Button */}
                 <Grid size={3}>
                   {renderBox("완료 시간", inspectionData.completeTime, false)}
                 </Grid>
@@ -553,23 +551,10 @@ const ConnectedFourBoxes = () => {
                           style={{ display: "none" }}
                           onChange={handleFileChange}
                         />
-
-                        {/* Hiển thị input sau khi chọn file */}
-                        {/* {showInputs && (
-                <Box mt={2} display="flex" flexDirection="column" gap={1}>
-                  <Typography variant="caption" color="text.secondary">
-                    Tên file: {selectedFiles?.[0]?.name}
-                  </Typography>
-                  <InputField label="Nhập mô tả" />
-                  <InputField label="Thông tin bổ sung" />
-                </Box>
-              )} */}
                       </Box>
                     </Box>
                   </Box>
                 </Grid>
-
-                {/* Row 4 - Extra Info */}
                 <Grid size={3}>
                   {renderBox("완료 시간", inspectionData.completeTime, false)}
                 </Grid>
@@ -582,6 +567,97 @@ const ConnectedFourBoxes = () => {
                 <Grid size={3}>
                   {renderBox("점검 설명", inspectionData.content)}
                 </Grid>
+              </Grid>
+            </Grid>
+            <Grid container spacing={2}>
+              <Grid size={3}>
+                <Box>
+                  {renderBox("완료 시간", inspectionData.completeTime, false)}
+                </Box>
+              </Grid>
+              <Grid size={3}>
+                <Box>{renderBox("완료 시간", inspectionData.completeTime)}</Box>
+              </Grid>
+              <Grid size={4}>
+                <Box
+                  sx={{
+                    width: "2px",
+                    backgroundColor: "rgba(0,0,0,0.3)", // Màu đen nhạt (30% độ mờ)
+                    borderRadius: "2px",
+                    mr: 1,
+                  }}
+                />
+                <Box flex={1} display="flex" flexDirection="column">
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    sx={{ mb: 1 }}
+                  >
+                    점검 설명
+                  </Typography>
+                  <Typography variant="body2" sx={{ mb: 2 }}>
+                    {inspectionData.content}
+                  </Typography>
+
+                  <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    width="100%"
+                  >
+                    <Box
+                      display="flex"
+                      flexDirection="column"
+                      gap={1}
+                      flex={1}
+                      mr={2}
+                    >
+                      {showInputs && (
+                        <Box
+                          mt={2}
+                          display="flex"
+                          flexDirection="column"
+                          gap={1}
+                        >
+                          {files.map((item, i) => (
+                            <InputField key={i} value={item.name} />
+                          ))}
+                        </Box>
+                      )}
+                    </Box>
+                  </Box>
+                </Box>
+              </Grid>
+
+              {/* Cột bên phải chứa button nằm ở đáy */}
+              <Grid size={2}>
+                <Box
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="flex-end"
+                  height="100%"
+                  sx={{ minHeight: "220px" }}
+                >
+                  <Button onClick={handleAddClick} label="파일 첨부"></Button>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    multiple
+                    accept=".jpg,.png,.pdf"
+                    style={{ display: "none" }}
+                    onChange={handleFileChange}
+                  />
+                </Box>
+              </Grid>
+
+              <Grid size={3}>
+                <Box>
+                  <Button label="파일 첨부"></Button>
+                </Box>
+              </Grid>
+              <Grid size={3}>
+                <Box>
+                  <Button label="파일 첨부"></Button>
+                </Box>
               </Grid>
             </Grid>
           </Box>

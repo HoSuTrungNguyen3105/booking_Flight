@@ -10,7 +10,7 @@ const Home = () => {
     <div>
       {isAuthenticated ? (
         <>
-          <div>Welcome,{user?.userName}</div>
+          <div>Welcome,{user?.email}</div>
           <div className={styles.hero}>
             <p className={styles["hero-text"]}>
               It's more than
@@ -27,7 +27,6 @@ const Home = () => {
               It's more than
               <br /> just a trip
             </p>
-            {/* <Sample /> */}
           </div>
           <Typography>
             <Link to="/RegistrationForm">Register?</Link>

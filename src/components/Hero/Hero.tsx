@@ -37,7 +37,6 @@ export default function Hero() {
   return (
     <>
       <LanguageDropdown />
-
       <button onClick={() => setOpen(true)}>Mở modal</button>
       <Typography onClick={() => setOpen(true)}>{t("content1")}</Typography>
       <SelectWithModal />

@@ -5,9 +5,15 @@ import React, {
   useRef,
   useState,
 } from "react";
-type ToastType = "success" | "error" | "info";
 import { Box, SvgIcon, type SvgIconProps } from "@mui/material";
-// import '../scss/_toast.scss'
+
+type ToastType = "success" | "error" | "info";
+
+type Toast = {
+  id: number;
+  message: string;
+  type: ToastType;
+};
 
 const Success = (props: SvgIconProps) => (
   <SvgIcon {...props} viewBox="0 0 24 24" sx={{ fontSize: "20px" }}>
@@ -18,11 +24,6 @@ const Success = (props: SvgIconProps) => (
     />
   </SvgIcon>
 );
-type Toast = {
-  id: number;
-  message: string;
-  type: ToastType;
-};
 const Warning = (props: SvgIconProps) => (
   <SvgIcon {...props} viewBox="0 0 24 24" sx={{ fontSize: "20px" }}>
     <circle cx="12" cy="12" r="12" fill="#ffffff" />
@@ -47,11 +48,6 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
   const timeoutMap = useRef<Map<number, ReturnType<typeof setTimeout>>>(
     new Map()
   );
-  // ✅ Log chỉ khi ToastProvider mount
-  useEffect(() => {
-    console.log("✅ ToastProvider mounted");
-  }, []);
-
   const showToast = (message: string, type: ToastType = "info") => {
     const id = Date.now() + Math.random();
     const newToast = { id, message, type };
@@ -112,16 +108,8 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
             >
               <Box sx={{ display: "flex", alignItems: "center" }}>
                 {toast.type === "success" && <Success />}
-                {toast.type === "error" && (
-                  // <span style={{ fontSize: 20 }}>
-                  <Warning />
-                  // </span>
-                )}
-                {toast.type === "info" && (
-                  // <span style={{ fontSize: 20 }}>
-                  <Info />
-                  // </span>
-                )}
+                {toast.type === "error" && <Warning />}
+                {toast.type === "info" && <Info />}
               </Box>
               <Box sx={{ flex: 1 }}>
                 <Box
