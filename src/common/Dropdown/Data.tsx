@@ -3,7 +3,6 @@ import {
   Typography,
   MenuItem,
   Select,
-  Modal,
   type SelectChangeEvent,
 } from "@mui/material";
 import { useMemo, useState } from "react";
@@ -14,9 +13,11 @@ import {
   type GridRenderCellParams,
 } from "@mui/x-data-grid";
 import DataTable from "../DataGrid/index.tsx";
-import { Button, ButtonGroup } from "@mui/material";
+import { ButtonGroup } from "@mui/material";
 import type { DropdownOption } from "./MultiDropdown";
 import { Dropdown } from "./Dropdown";
+import { Button } from "../Button/Button.tsx";
+import Modal from "../Modal/Modal.tsx";
 
 interface OptionType {
   label: string;
@@ -84,7 +85,10 @@ export default function DataGridInTab() {
     pageSize: 10,
   });
   const [selectedValues, setSelectedValues] = useState<DropdownOption[]>([]); // ✅ default là mảng rỗng
-
+  const [onOpenModal, setOnOpenModal] = useState(false);
+  const HandleOpenModal = () => {
+    setOnOpenModal(true);
+  };
   const handleChange = (rowId: number) => (e: SelectChangeEvent<string>) => {
     const selected = options.find((o) => o.value === e.target.value);
     if (!selected) return;
@@ -235,8 +239,15 @@ export default function DataGridInTab() {
       },
     },
   ];
+
   const renderGridData = useMemo(() => {
-    return <DataTable rows={data} columns={columns} />;
+    return (
+      <Box>
+        <Button label="Submit" onClick={HandleOpenModal} />
+        <DataTable rows={data} columns={columns} />
+        <Modal open={onOpenModal} contentArea={<></>} />
+      </Box>
+    );
   }, [data, columns]);
 
   return (
@@ -262,16 +273,15 @@ export default function DataGridInTab() {
           <ButtonGroup size="small" variant="outlined">
             {[5, 10, 25].map((size) => (
               <Button
+                label={size}
                 key={size}
                 onClick={() =>
                   setPaginationModel((prev) => ({ ...prev, pageSize: size }))
                 }
-                variant={
-                  paginationModel.pageSize === size ? "contained" : "outlined"
-                }
-              >
-                {size}
-              </Button>
+                // variant={
+                //   paginationModel.pageSize === size ? "contained" : "outlined"
+                // }
+              ></Button>
             ))}
           </ButtonGroup>
         </Box>
@@ -305,36 +315,39 @@ export default function DataGridInTab() {
       </Box>
 
       {/* Modal */}
-      <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
-        <Box
-          sx={{
-            p: 3,
-            bgcolor: "white",
-            borderRadius: 2,
-            boxShadow: 24,
-            width: 350,
-            maxWidth: "90%",
-            mx: "auto",
-            mt: "20vh",
-          }}
-        >
-          <Typography variant="h6" fontWeight="bold">
-            Vai trò được chọn
-          </Typography>
-          <Typography mt={1} color="text.secondary">
-            {modalType?.label} - {modalType?.description}
-          </Typography>
-          <Box textAlign="right" mt={2}>
-            <Button
-              onClick={() => setModalOpen(false)}
-              variant="outlined"
-              size="small"
-            >
-              Đóng
-            </Button>
+      <Modal
+        open={onOpenModal}
+        handleClose={() => setModalOpen(false)}
+        contentArea={
+          <Box
+            sx={{
+              // p: 3,
+              bgcolor: "darkblue",
+              // borderRadius: 2,
+              // boxShadow: 24,
+              // width: 350,
+              // maxWidth: "90%",
+              // mx: "auto",
+              // mt: "20vh",
+            }}
+          >
+            <Typography variant="h6" fontWeight="bold">
+              Vai trò được chọn
+            </Typography>
+            <Typography mt={1} color="text.secondary">
+              {modalType?.label} - {modalType?.description}
+            </Typography>
+            <Box textAlign="right" mt={2}>
+              <Button
+                label="Đóng"
+                onClick={() => setModalOpen(false)}
+                // variant="outlined"
+                size="small"
+              ></Button>
+            </Box>
           </Box>
-        </Box>
-      </Modal>
+        }
+      />
     </>
   );
 }

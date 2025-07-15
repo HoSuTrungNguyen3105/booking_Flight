@@ -1,11 +1,6 @@
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { createContext, useContext, useRef, useState } from "react";
 import { Box, SvgIcon, type SvgIconProps } from "@mui/material";
+import { motion, AnimatePresence } from "framer-motion";
 
 type ToastType = "success" | "error" | "info";
 
@@ -80,56 +75,66 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
           pointerEvents: "none",
         }}
       >
-        {toasts.map((toast) => {
-          console.log("Rendering toast:", toast); // 👈 kiểm tra
-          return (
-            <Box
-              key={toast.id}
-              sx={{
-                // position: "fixed",
-                zIndex: 1300,
-                maxWidth: 500,
-                minWidth: 280,
-                padding: "8px 12px",
-                borderRadius: "20px",
-                border: "1px solid white",
-                backgroundColor:
-                  toast.type === "success"
-                    ? "#15803d" // xanh lá
-                    : toast.type === "error"
-                    ? "#b91c1c" // đỏ
-                    : "#0c4a6e", // xanh dương cho info
-                color: "#fff",
-                display: "flex",
-                alignItems: "center",
-                gap: 1.5,
-                pointerEvents: "auto",
-              }}
-            >
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                {toast.type === "success" && <Success />}
-                {toast.type === "error" && <Warning />}
-                {toast.type === "info" && <Info />}
-              </Box>
-              <Box sx={{ flex: 1 }}>
+        <AnimatePresence>
+          {toasts.map((toast) => {
+            console.log("Rendering toast:", toast); // 👈 kiểm tra
+            return (
+              <motion.div
+                key={toast.id}
+                initial={{ opacity: 0, y: -20, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -20, scale: 0.95 }}
+                transition={{ duration: 0.3 }}
+                // style={{ width: "100%" }}
+              >
                 <Box
-                  component="span"
+                  key={toast.id}
                   sx={{
+                    zIndex: 1300,
+                    maxWidth: 500,
+                    minWidth: 280,
+                    padding: "8px 12px",
+                    borderRadius: "20px",
+                    border: "1px solid white",
+                    backgroundColor:
+                      toast.type === "success"
+                        ? "#15803d"
+                        : toast.type === "error"
+                        ? "#b91c1c"
+                        : "#0c4a6e",
+                    color: "#fff",
                     display: "flex",
-                    alignContent: "center",
-                    fontSize: 16,
-                    maxWidth: 300,
-                    wordBreak: "break-word",
-                    whiteSpace: "normal",
-                    lineHeight: 1.5,
+                    alignItems: "center",
+                    gap: 1.5,
+                    pointerEvents: "auto",
                   }}
                 >
-                  {toast.message}
+                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                    {toast.type === "success" && <Success />}
+                    {toast.type === "error" && <Warning />}
+                    {toast.type === "info" && <Info />}
+                  </Box>
+                  <Box sx={{ flex: 1 }}>
+                    <Box
+                      component="span"
+                      sx={{
+                        display: "flex",
+                        alignContent: "center",
+                        fontSize: 16,
+                        maxWidth: 300,
+                        wordBreak: "break-word",
+                        whiteSpace: "normal",
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      {toast.message}
+                    </Box>
+                  </Box>
                 </Box>
-              </Box>
-            </Box>
-          );
-        })}
+              </motion.div>
+            );
+          })}
+        </AnimatePresence>
       </Box>
     </ToastContext.Provider>
   );

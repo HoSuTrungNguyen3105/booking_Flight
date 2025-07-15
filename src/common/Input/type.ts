@@ -1,5 +1,5 @@
 import type { SxProps } from "@mui/material";
-import type { CSSProperties, ReactNode } from "react";
+import type { CSSProperties, HTMLInputTypeAttribute, ReactNode } from "react";
 
 export type InputFieldStatus = "error" | "warning" | "confirmed" | "default";
 export type TInputField = "text" | "number" | "number-multi" | "alpha-numeric";
@@ -30,6 +30,22 @@ export type InputFieldProps = {
   helperText?: string;
   allowHypen?: boolean;
 };
+export interface IInputTextFieldProps {
+  type?: HTMLInputTypeAttribute;
+  placeholder2: string;
+  startIcon?: React.ReactNode;
+  endIcon?: React.ReactNode;
+  clearable?: boolean;
+  sx?: SxProps;
+  error?: boolean;
+  name?: string;
+  disabled?: boolean;
+  readonly?: boolean;
+  value: string;
+  onChange: (value: string) => void;
+  onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+}
+
 export type InputNumberProps = {
   placeholder?: string;
   value?: number;

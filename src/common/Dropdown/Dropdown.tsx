@@ -113,7 +113,6 @@ export const Dropdown = ({
           }}
           InputProps={{
             ...params.InputProps,
-            // readOnly: readonly,
             startAdornment: customInput ? (
               <>
                 {params.InputProps.startAdornment}

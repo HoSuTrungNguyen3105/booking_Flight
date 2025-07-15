@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Box, IconButton, TextField, Typography } from "@mui/material";
+import { Box, IconButton, Typography } from "@mui/material";
 import SelectWithModal from "../../common/Dropdown/Select";
 import Modal from "../../common/Modal/Modal";
 import { useTranslation } from "react-i18next";
 import { LanguageDropdown } from "../../common/Dropdown/Changelng";
-
+import addIcon from "./../../svgs/local.png";
+import InputField from "../../common/Input/InputField";
 interface InputField {
   id: number;
   value: string;
@@ -62,13 +63,23 @@ export default function Hero() {
                 gap={1}
               >
                 <Box flex={1}>
-                  <TextField
+                  <InputField
                     fullWidth
-                    size="small"
                     placeholder="ID_NEW_MEMBER"
                     value={field.value}
                     disabled={idx !== fields.length - 1}
                     onChange={(e) => handleChange(field.id, e.target.value)}
+                    sx={{
+                      "& .MuiInputBase-root": {
+                        height: "90px",
+                        alignItems: "flex-start",
+                      },
+                      "& .MuiInputBase-inputMultiline": {
+                        padding: "18px 20px 0 20px", // ✨ Chỉ padding nội dung, không root
+                        margin: 0,
+                        boxSizing: "border-box",
+                      },
+                    }}
                   />
                 </Box>
 
@@ -76,7 +87,7 @@ export default function Hero() {
                   <IconButton onClick={() => handleRemove(field.id)}>
                     <Box
                       component="img"
-                      src="./public/image.jpg"
+                      src={addIcon}
                       sx={{ width: 24, height: 24 }}
                     />
                   </IconButton>
@@ -85,7 +96,7 @@ export default function Hero() {
             ))}
           </Box>
         }
-      ></Modal>
+      />
     </>
   );
 }

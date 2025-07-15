@@ -41,6 +41,10 @@ const Login = () => {
     { label: "lg.com", value: "@lg.com" },
     { label: "lgcns.com", value: "@lgcns.com" },
   ];
+  const typeDomains: DropdownOptions[] = [
+    { label: "DEV", value: "DEV" },
+    { label: "SSO", value: "SSO" },
+  ];
 
   const onSubmit = (data: ILoginForm) => {
     // const email = `${data.emailPrefix}${data.emailSuffix}`;
@@ -135,6 +139,28 @@ const Login = () => {
             }}
           />
         </Box>
+        <Controller
+          name="emailSuffix"
+          control={control}
+          render={({ field }) => {
+            const selectedOption =
+              emailDomains.find((item) => item.value === field.value) || null;
+
+            return (
+              <Dropdown
+                {...field}
+                value={selectedOption}
+                onChange={(e, selected) => {
+                  const selectedValue = (selected as DropdownOptions)?.value;
+                  field.onChange(selectedValue);
+                }}
+                options={typeDomains}
+                size="medium"
+                placeholder="Chọn domain"
+              />
+            );
+          }}
+        />
 
         {/* Password */}
         <Controller

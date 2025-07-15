@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import AsideLnb from "./../Admin/Sidebar";
 import {
@@ -8,9 +8,11 @@ import {
   ListItemText,
   Collapse,
   Typography,
+  Stack,
 } from "@mui/material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { menuData, type MenuItem } from "../../../public/db";
+import { Header } from "../../common/Header/Header";
 
 const ResizeLayout = () => {
   const { pathname } = useLocation();
@@ -119,14 +121,42 @@ const ResizeLayout = () => {
 };
 const ManageLayout = () => {
   return (
-    <div style={{ display: "flex", height: "100vh" }}>
-      <ResizeLayout />
+    <Stack sx={{ direction: "column", height: "100vh" }}>
+      {/* <ResizeLayout /> */}
 
-      <div style={{ flex: 1, overflow: "auto" }}>
+      {/* <div style={{ flex: 1, overflow: "auto" }}>
         <Outlet /> {/* ✅ Quan trọng để render route con */}
-      </div>
-    </div>
+      {/* </div> */}
+      {/* Header cố định chiều cao 48px */}
+      {/* <Header /> */}
+
+      <Box
+        component="main"
+        sx={{ height: "calc(100vh - 48px)" }}
+        flexGrow={1}
+        bgcolor="var(--bg-green-md)"
+      >
+        <Box display="flex" height="100%">
+          {/* Sidebar bên trái */}
+          <ResizeLayout />
+
+          {/* Phần nội dung chính */}
+          <Box
+            component="article"
+            flexGrow={1}
+            p={2}
+            bgcolor="grey.50"
+            sx={{
+              transition: "width 200ms",
+              overflow: "auto",
+            }}
+          >
+            <Outlet />
+          </Box>
+        </Box>
+      </Box>
+    </Stack>
   );
 };
 
-export default ManageLayout;
+export default memo(ManageLayout);

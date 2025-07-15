@@ -45,7 +45,7 @@ export const Header = forwardRef<HTMLElement>((_, ref) => {
   };
 
   return (
-    <AppBar className="header" data-testid="headerTest" ref={ref}>
+    <AppBar className="header" ref={ref}>
       <Box sx={{ width: "100%", padding: 0 }}>
         <AppBar position="static" className="app-bar">
           <Toolbar>
@@ -162,7 +162,9 @@ export const Header = forwardRef<HTMLElement>((_, ref) => {
                   label=""
                   sx={{ mr: 2 }}
                 />
-                <LanguageDropdown />
+                <Box>
+                  <LanguageDropdown />
+                </Box>
 
                 {isAuthenticated ? (
                   <Box sx={{ display: "flex", alignItems: "center", ml: 2 }}>

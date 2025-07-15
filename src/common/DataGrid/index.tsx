@@ -144,14 +144,6 @@ const DataTable = ({
       sortModel={sortModel}
       onSortModelChange={onSortModelChange}
       slots={{
-        // baseCheckbox: {
-        //   sx: {
-        //     color: "red",
-        //     "&.Mui-checked": {
-        //       color: "green",
-        //     },
-        //   },
-        // }, // <-- dùng custom Checkbox
         noRowsOverlay: emptyContent
           ? () => <>{emptyContent}</>
           : EmptyRowsOverlay,
