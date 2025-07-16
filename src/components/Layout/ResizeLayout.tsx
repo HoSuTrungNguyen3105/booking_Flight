@@ -12,7 +12,6 @@ import {
 } from "@mui/material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { menuData, type MenuItem } from "../../../public/db";
-import { Header } from "../../common/Header/Header";
 
 const ResizeLayout = () => {
   const { pathname } = useLocation();
@@ -26,10 +25,6 @@ const ResizeLayout = () => {
     }));
   };
 
-  // Hàm build path từ cha → con: ["settings", "profile"] => "/settings/profile"
-  // const buildPath = (parentIds: string[], id: string) => {
-  //   return "/admin/" + [...parentIds, id].join("/");
-  // };
   const buildPath = (id: string) => `/admin/${id}`;
 
   // Đệ quy render menu
@@ -122,14 +117,6 @@ const ResizeLayout = () => {
 const ManageLayout = () => {
   return (
     <Stack sx={{ direction: "column", height: "100vh" }}>
-      {/* <ResizeLayout /> */}
-
-      {/* <div style={{ flex: 1, overflow: "auto" }}>
-        <Outlet /> {/* ✅ Quan trọng để render route con */}
-      {/* </div> */}
-      {/* Header cố định chiều cao 48px */}
-      {/* <Header /> */}
-
       <Box
         component="main"
         sx={{ height: "calc(100vh - 48px)" }}
@@ -137,10 +124,7 @@ const ManageLayout = () => {
         bgcolor="var(--bg-green-md)"
       >
         <Box display="flex" height="100%">
-          {/* Sidebar bên trái */}
           <ResizeLayout />
-
-          {/* Phần nội dung chính */}
           <Box
             component="article"
             flexGrow={1}

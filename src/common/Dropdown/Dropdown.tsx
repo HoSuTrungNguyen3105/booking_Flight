@@ -102,12 +102,15 @@ export const Dropdown = ({
               cursor: "pointer", // con trỏ khi hover
               "& fieldset": {
                 borderColor: borderColor,
+                cursor: "pointer", // con trỏ khi hover
               },
               "&:hover fieldset": {
                 borderColor: borderColor,
+                cursor: "pointer", // con trỏ khi hover
               },
               "&.Mui-focused fieldset": {
                 borderColor: borderColor,
+                cursor: "pointer", // con trỏ khi hover
               },
             },
           }}

@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Alert, Box, Typography } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -48,7 +48,6 @@ const Login = () => {
 
   const onSubmit = (data: ILoginForm) => {
     // const email = `${data.emailPrefix}${data.emailSuffix}`;
-    // const email = `${data.emailPrefix}`;
     const email = watch("emailPrefix");
     const passwords = watch("password");
     console.log("email", email);
@@ -100,7 +99,10 @@ const Login = () => {
         <Typography variant="h5" fontWeight={600}>
           Đăng nhập
         </Typography>
-
+        {/* {<Alert severity="success">This is a success Alert.</Alert>}
+        <Alert severity="info">This is an info Alert.</Alert>
+        <Alert severity="warning">This is a warning Alert.</Alert>
+        <Alert severity="error">This is an error Alert.</Alert> */}
         {/* Email */}
         <Box display="flex" gap={1} alignItems="center">
           <Controller

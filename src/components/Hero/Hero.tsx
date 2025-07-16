@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { Box, IconButton, Typography } from "@mui/material";
+import { Alert, Box, IconButton, Typography } from "@mui/material";
 import SelectWithModal from "../../common/Dropdown/Select";
 import Modal from "../../common/Modal/Modal";
 import { useTranslation } from "react-i18next";
 import { LanguageDropdown } from "../../common/Dropdown/Changelng";
 import addIcon from "./../../svgs/local.png";
 import InputField from "../../common/Input/InputField";
+import InputTextArea from "../../common/Input/InputTextArea";
 interface InputField {
   id: number;
   value: string;
@@ -13,27 +14,32 @@ interface InputField {
 
 export default function Hero() {
   const [open, setOpen] = useState(false);
-  const [fields, setFields] = useState<InputField[]>([
+  const [fieldsValue, setFieldsValue] = useState<InputField[]>([
     { id: Date.now(), value: "" },
   ]);
+  const [value, setValue] = useState("");
+  const [success, setSuccess] = useState(true);
 
   const handleChange = (id: number, value: string) => {
-    setFields((prev) => prev.map((f) => (f.id === id ? { ...f, value } : f)));
+    setFieldsValue((prev) =>
+      prev.map((f) => (f.id === id ? { ...f, value } : f))
+    );
   };
 
   const handleRemove = (id: number) => {
-    setFields((prev) => prev.filter((f) => f.id !== id));
+    setFieldsValue((prev) => prev.filter((f) => f.id !== id));
   };
 
   const handleSubmit = () => {
-    const last = fields[fields.length - 1];
-    if (!last.value.trim()) return;
+    // const last = fieldsValue[fieldsValue.length - 1];
+    // if (!last.value.trim()) return;
 
-    setFields((prev) => [...prev, { id: Date.now(), value: "" }]);
+    setFieldsValue((prev) => [...prev, { id: Date.now(), value: "" }]);
+    // setValue("");
   };
 
   // 🔥 Kiểm tra nếu còn ô nào chưa nhập thì không cho submit
-  const isSubmitDisabled = fields.some((f) => f.value.trim() === "");
+  const isSubmitDisabled = fieldsValue.some((f) => f.value.trim() === "");
   const { t } = useTranslation();
   return (
     <>
@@ -43,18 +49,21 @@ export default function Hero() {
       <SelectWithModal />
       <Modal
         open={open}
-        handleClose={() => setOpen(false)}
+        handleClose={() => {
+          setValue("");
+          setOpen(false);
+        }}
         handleSubmit={handleSubmit}
         title={<Typography fontWeight="bold">사용자 등록</Typography>}
         submitLabel="등록"
-        disabled={isSubmitDisabled}
+        // disabled={isSubmitDisabled}
         contentArea={
           <Box>
             <Typography variant="body2" mb={1}>
               멤버로 등록할 아이디를 입력하세요.
             </Typography>
 
-            {fields.map((field, idx) => (
+            {fieldsValue.map((field, idx) => (
               <Box
                 key={field.id}
                 display="flex"
@@ -63,27 +72,17 @@ export default function Hero() {
                 gap={1}
               >
                 <Box flex={1}>
-                  <InputField
-                    fullWidth
+                  <InputTextArea
+                    minRows={1}
                     placeholder="ID_NEW_MEMBER"
                     value={field.value}
-                    disabled={idx !== fields.length - 1}
-                    onChange={(e) => handleChange(field.id, e.target.value)}
-                    sx={{
-                      "& .MuiInputBase-root": {
-                        height: "90px",
-                        alignItems: "flex-start",
-                      },
-                      "& .MuiInputBase-inputMultiline": {
-                        padding: "18px 20px 0 20px", // ✨ Chỉ padding nội dung, không root
-                        margin: 0,
-                        boxSizing: "border-box",
-                      },
-                    }}
+                    style={{ minWidth: "30rem" }}
+                    // disabled={idx !== value.length}
+                    onChange={(val) => handleChange(field.id, val)}
                   />
                 </Box>
 
-                {fields.length > 1 && (
+                {field.value.length > 1 && (
                   <IconButton onClick={() => handleRemove(field.id)}>
                     <Box
                       component="img"

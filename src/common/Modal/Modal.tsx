@@ -82,37 +82,14 @@ const Modal: FC<ModalProps> = ({
           {customHeaderTitle ?? (
             <Box className="title">
               <DialogTitle className="text">
-                {/* <Tooltip title={<Box>{title}</Box>}>
-                  <Box
-                    sx={{
-                      color: titleColor,
-                      fontSize: titleFontSize,
-                      maxWidth,
-                    }}
-                    className="overflow-hidden "
-                  >
-                    {title}
-                    <Typography
-                      fontSize={15}
-                      sx={{
-                        color: titleColor,
-                      }}
-                    >
-                      {title2 ?? null}
-                    </Typography>
-                  </Box>
-                </Tooltip> */}
                 <Tooltip title={<Box>{title}</Box>}>
                   <Box
                     sx={{
-                      // display: "flex",
                       alignItems: "center",
                       gap: 1,
                       flexDirection: "column",
                       color: titleColor,
                       fontSize: titleFontSize,
-                      // maxWidth,
-                      // overflow: "hidden",
                     }}
                   >
                     <Typography
@@ -121,7 +98,6 @@ const Modal: FC<ModalProps> = ({
                         fontWeight: 1000,
                         whiteSpace: "nowrap",
                         textOverflow: "ellipsis",
-                        // overflow: "hidden",
                       }}
                     >
                       {title}
@@ -133,12 +109,8 @@ const Modal: FC<ModalProps> = ({
                         fontSize={15}
                         sx={{
                           color: titleColor,
-                          // whiteSpace: "nowrap",
-                          // fontWeight: 500,
-                          // whiteSpace: "nowrap",
                           fontWeight: 500,
                           textOverflow: "ellipsis",
-                          // overflow: "hidden",
                         }}
                       >
                         {title2}
@@ -186,7 +158,6 @@ const Modal: FC<ModalProps> = ({
                   disabled={disabled}
                   onClick={handleSubmit}
                   label={submitLabel}
-                  // priority="primary"
                   appearance="contained"
                   priority="custom"
                   customColor="#fdd835"
@@ -211,7 +182,10 @@ const Modal: FC<ModalProps> = ({
                   onClick={handleClose}
                   label={closeLabel}
                   appearance="outlined"
-                  priority="normal"
+                  priority="custom"
+                  customColor="#fdd835"
+                  size="large"
+                  customLabelColor="#000000"
                 />
               )}
             </>

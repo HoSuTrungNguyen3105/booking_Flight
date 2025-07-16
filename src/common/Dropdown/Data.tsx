@@ -2,8 +2,8 @@ import {
   Box,
   Typography,
   MenuItem,
-  Select,
   type SelectChangeEvent,
+  Select,
 } from "@mui/material";
 import { useMemo, useState } from "react";
 import { ArrowBack, ArrowDownward } from "@mui/icons-material";
@@ -151,7 +151,7 @@ export default function DataGridInTab() {
                   <Typography variant="body2">
                     {selected?.label ?? "Chọn vai trò"}
                   </Typography>
-                  <CustomSelectIcon />
+                  {/* <CustomSelectIcon /> */}
                 </Box>
               );
             }}
@@ -319,18 +319,7 @@ export default function DataGridInTab() {
         open={onOpenModal}
         handleClose={() => setModalOpen(false)}
         contentArea={
-          <Box
-            sx={{
-              // p: 3,
-              bgcolor: "darkblue",
-              // borderRadius: 2,
-              // boxShadow: 24,
-              // width: 350,
-              // maxWidth: "90%",
-              // mx: "auto",
-              // mt: "20vh",
-            }}
-          >
+          <Box sx={{ bgcolor: "grey" }}>
             <Typography variant="h6" fontWeight="bold">
               Vai trò được chọn
             </Typography>
@@ -341,7 +330,6 @@ export default function DataGridInTab() {
               <Button
                 label="Đóng"
                 onClick={() => setModalOpen(false)}
-                // variant="outlined"
                 size="small"
               ></Button>
             </Box>

@@ -24,13 +24,18 @@ const SignOut = () => {
   const submitLogout = () => {
     logout();
   };
+  const closeModal = () => {
+    setOpen(false);
+  };
 
   return (
     <>
       <Button size="large" onClick={handleClick} label="Sign Out" />
       <Modal
         handleSubmit={submitLogout}
-        submitLabel="Oke"
+        handleClose={closeModal}
+        submitLabel="Confirm"
+        closeLabel="Exit"
         open={open}
         contentArea={
           <>

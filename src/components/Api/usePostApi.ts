@@ -150,7 +150,7 @@ export const useLoginUser = () => {
       user: [],
       accessToken: "",
     },
-    autoFetch: true,
+    autoFetch: false,
     config: postMethod,
     showToast: true,
   });

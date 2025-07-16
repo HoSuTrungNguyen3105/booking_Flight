@@ -1,7 +1,7 @@
-import { Backdrop, CircularProgress } from "@mui/material";
+import { Backdrop, Box, CircularProgress } from "@mui/material";
 import { useApi } from "../../context/ApiContext";
 import { memo } from "react";
-
+import LoadingGif from "./../../svgs/loading.gif";
 interface ILoadingProps {
   size?: keyof typeof sizeMap; // hoặc "small" | "medium" | "large";
 }
@@ -24,14 +24,15 @@ export const Loading = memo(({ size = "large" }: ILoadingProps) => {
         backgroundColor: "rgba(255, 255, 255, 0.4)",
       })}
     >
-      <CircularProgress
+      {/* <CircularProgress
         sx={{
           width: sizeMap[size] ?? sizeMap.small,
           height: sizeMap[size] ?? sizeMap.small,
         }}
         color="secondary"
         disableShrink
-      />
+      /> */}
+      <Box component={"img"} src={LoadingGif} />
     </Backdrop>
   );
 });

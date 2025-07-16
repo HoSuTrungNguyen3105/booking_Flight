@@ -37,6 +37,7 @@ export const LanguageDropdown = () => {
       options={optionLanguage}
       value={selectedLang}
       onChange={handleLanguageChange}
+      //readonly={true}
       label="Language"
     />
   );

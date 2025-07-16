@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useLoginUser } from "../components/Api/usePostApi";
 import { useToast } from "./ToastContext";
+import axios, { AxiosError } from "axios";
 
 type User = {
   email: string;
@@ -26,25 +27,77 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
   const toast = useToast();
   const { loginUserData, refetchLogin } = useLoginUser();
+  const updateLocalStorage = (
+    isAuthenticated: boolean,
+    user: User | null,
+    token: string | null
+  ) => {
+    localStorage.setItem("isAuthenticated", String(isAuthenticated));
+    localStorage.setItem("user", JSON.stringify(user));
+    localStorage.setItem("token", token || "");
+  };
+
   const login = async (userData: User) => {
-    try {
-      const res = await refetchLogin(userData);
-      console.log("toast", loginUserData);
-      if (res?.resultCode === "00") {
-        console.log("toast", loginUserData);
-        const accessToken = res.accessToken;
-        setIsAuthenticated(true);
-        setUser(userData);
-        setToken(accessToken ?? null);
-        updateLocalStorage(true, userData, accessToken ?? null);
-        // toast("Đăng nhập thành công!", "success");
-      } else {
-        console.log("toast", loginUserData);
-        toast(res?.resultMessage || "Đăng nhập thất bại", "error");
-      }
-    } catch (error) {
-      toast("Lỗi hệ thống khi đăng nhập");
-      console.error("Login error:", error);
+    // try {
+    //   const res = await refetchLogin(userData);
+    //   console.log("res full:", res);
+
+    //   if (res?.resultCode === "00") {
+    //     const accessToken = res.accessToken;
+    //     setIsAuthenticated(true);
+    //     setUser(userData);
+    //     setToken(accessToken ?? null);
+    //     updateLocalStorage(true, userData, accessToken ?? null);
+    //     toast("Đăng nhập thành công!", "success");
+    //   } else {
+    //     toast(res?.resultMessage || "Đăng nhập thất bại", "error");
+    //   }
+    // } catch (error) {
+    //   if (axios.isAxiosError(error)) {
+    //     if (error.code === "ECONNABORTED") {
+    //       toast("Kết nối hết thời gian. Vui lòng thử lại sau.", "error");
+    //     } else if (!error.response) {
+    //       // ❌ Không có phản hồi => thường là server chưa chạy hoặc mất mạng
+    //       toast(
+    //         "Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại backend hoặc kết nối mạng.",
+    //         "error"
+    //       );
+    //       console.error("Không có phản hồi từ server:", error.message);
+    //     } else {
+    //       // Có phản hồi nhưng mã lỗi (4xx, 5xx)
+    //       const status = error.response.status;
+    //       const message =
+    //         error.response.data?.message || `Lỗi máy chủ (${status})`;
+    //       toast(message, "error");
+    //       console.error("Lỗi có phản hồi từ server:", status, message);
+    //     }
+    //   } else {
+    //     // Lỗi không phải từ Axios
+    //     toast("Lỗi không xác định ở phía client", "error");
+    //     console.error("Lỗi không xác định:", error);
+    //   }
+    // }
+    const res = await refetchLogin(userData);
+
+    if (!res) {
+      toast(
+        "Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại backend hoặc kết nối mạng.",
+        "error"
+      );
+    } else if (res?.resultCode === "00") {
+      const accessToken = res.accessToken;
+      setIsAuthenticated(true);
+      setUser(userData);
+      setToken(accessToken ?? null);
+      updateLocalStorage(true, userData, accessToken ?? null);
+      toast("Đăng nhập thành công!", "success");
+    } else if (res?.resultCode === "NETWORK_ERROR") {
+      toast(
+        "Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại backend hoặc kết nối mạng.",
+        "error"
+      );
+    } else {
+      toast(res?.resultMessage || "Đăng nhập thất bại", "error");
     }
   };
 
@@ -60,16 +113,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
     toast("Đăng xuất thành công!", "success");
-  };
-
-  const updateLocalStorage = (
-    isAuthenticated: boolean,
-    user: User | null,
-    token: string | null
-  ) => {
-    localStorage.setItem("isAuthenticated", String(isAuthenticated));
-    localStorage.setItem("user", JSON.stringify(user));
-    localStorage.setItem("token", token || "");
   };
 
   useEffect(() => {
