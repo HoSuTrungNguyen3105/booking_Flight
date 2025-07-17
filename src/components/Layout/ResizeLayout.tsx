@@ -85,6 +85,7 @@ const ResizeLayout = () => {
           subheader={
             <Typography
               variant="subtitle2"
+              py="20px"
               fontWeight="bold"
               sx={{ pl: 2, pt: 2 }}
             >

@@ -23,6 +23,7 @@ import Search_layout from "../components/Admin/Search_layout";
 import GuestGuard from "../components/Layout/GuardLayout";
 import InspectionDetails from "../components/User/Profile";
 import type { JSX } from "react";
+import Profile from "../common/Profile";
 interface IRouteObject {
   path?: (typeof ROUTE_PATHS)[keyof typeof ROUTE_PATHS];
   index?: boolean;
@@ -134,6 +135,10 @@ const routes = [
       {
         path: "domestic",
         element: <Typography>Xin chào</Typography>,
+      },
+      {
+        path: "profile",
+        element: <Profile />,
       },
       {
         path: ROUTE_PATHS.FOOD.replace("/", ""),

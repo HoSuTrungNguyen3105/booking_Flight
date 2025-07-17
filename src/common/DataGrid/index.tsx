@@ -4,42 +4,19 @@ import type {
   GridColDef,
   GridSortModel,
 } from "@mui/x-data-grid";
-import { forwardRef, memo, useCallback, useState, type ReactNode } from "react";
+import { memo, useCallback, useState, type ReactNode } from "react";
 import { Loading } from "../Loading/Loading";
-import {
-  Box,
-  Checkbox,
-  Stack,
-  styled,
-  Typography,
-  type CheckboxProps,
-} from "@mui/material";
+import { Box, Stack, styled, Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import {
   CheckedIcon,
   IndeterminateIcon,
   UncheckedIcon,
 } from "../Checkbox/CheckboxIcons";
+import Icon from "../../svgs/loading.gif";
 export type GridRowDef = GridRowModel & {
   id: GridRowId;
 };
-const CustomCheckbox = forwardRef<HTMLButtonElement, any>((props, ref) => {
-  return (
-    <span ref={ref}>
-      <Checkbox
-        {...props}
-        size="small"
-        color="primary"
-        sx={{
-          color: "#aaa",
-          "&.Mui-checked": {
-            color: "#1976d2",
-          },
-        }}
-      />
-    </span>
-  );
-});
 
 interface IDataTableProps {
   loading?: boolean;
@@ -51,6 +28,7 @@ interface IDataTableProps {
   selectedRows?: GridRowId[];
   sortModel?: GridSortModel;
   emptyContent?: ReactNode;
+  emptyItemIcon?: string;
   onRowSelect?: (rowId: Set<GridRowId>) => void;
   onSortModelChange?: (model: GridSortModel) => void;
 }
@@ -61,20 +39,25 @@ const loadingMemo = memo(() => {
     </Box>
   );
 }); // <== thêm dependency array ở đây
-
-const EmptyRowsOverlay = memo(() => {
-  return (
-    <Stack
-      justifyContent={"center"}
-      alignItems={"center"}
-      gap={1}
-      height={"100%"}
-    >
-      <Box />
-      <Typography>No item</Typography>
-    </Stack>
-  );
-});
+type EmptyRowsOverlayProps = {
+  emptyContent?: ReactNode;
+  emptyItemIcon?: string;
+};
+const EmptyRowsOverlay = memo(
+  ({ emptyContent, emptyItemIcon }: EmptyRowsOverlayProps) => {
+    return (
+      <Stack
+        justifyContent={"center"}
+        alignItems={"center"}
+        gap={1}
+        height={"100%"}
+      >
+        <Box component={"img"} src={emptyItemIcon ?? Icon} />
+        <Typography color="grey.500">{emptyContent ?? "No item"}</Typography>
+      </Stack>
+    );
+  }
+);
 EmptyRowsOverlay.displayName = "EmptyRowsOverlay";
 
 // Styled DataGrid component
@@ -122,8 +105,11 @@ const DataTable = ({
 }: IDataTableProps) => {
   const [selectedRows, setSelectedRows] = useState<GridRowId[]>([]);
   const noRowOverlay = useCallback(() => {
-    emptyContent ? <>{emptyContent}</> : <EmptyRowsOverlay />;
+    return (
+      <EmptyRowsOverlay emptyContent={emptyContent} emptyItemIcon={Icon} />
+    );
   }, [emptyContent]);
+
   return (
     <StyledDataGrid
       rows={rows}
@@ -144,9 +130,7 @@ const DataTable = ({
       sortModel={sortModel}
       onSortModelChange={onSortModelChange}
       slots={{
-        noRowsOverlay: emptyContent
-          ? () => <>{emptyContent}</>
-          : EmptyRowsOverlay,
+        noRowsOverlay: noRowOverlay,
         loadingOverlay: loadingMemo,
       }}
       slotProps={{

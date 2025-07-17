@@ -48,7 +48,7 @@ const CSelect = ({
           width="100%"
         >
           <Typography variant="body2">
-            {selected ? selected.label : "Chọn vai trò"}
+            {selected ? selected.label : "Chọn option"}
           </Typography>
           <CustomSelectIcon />
         </Box>

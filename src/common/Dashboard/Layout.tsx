@@ -1,6 +1,5 @@
-import { Backdrop, Box, CircularProgress, Typography } from "@mui/material";
+import { Backdrop, Box, Typography } from "@mui/material";
 import { LoadingOrbit } from "../Loading/LoadingOrbit";
-
 const Layout = () => {
   const loading = true; // hoặc const { loading } = useApi();
 
@@ -33,11 +32,6 @@ const Layout = () => {
           }}
           open={loading}
         >
-          {/* <CircularProgress
-            sx={{ height: "30px" }}
-            color="secondary"
-            // disableShrink
-          /> */}
           <LoadingOrbit />
           <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
             ...로딩 중입니다

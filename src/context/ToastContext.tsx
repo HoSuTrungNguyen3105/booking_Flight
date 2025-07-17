@@ -51,8 +51,7 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
     const timeoutId = setTimeout(() => {
       setToasts((prev) => prev.filter((t) => t.id !== id));
       timeoutMap.current.delete(id);
-      console.log("Toast expired:", id); // ✅ Chỉ log nếu thực sự còn toast
-    }, 6000);
+    }, 2500);
 
     timeoutMap.current.set(id, timeoutId);
   };
@@ -77,15 +76,13 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
       >
         <AnimatePresence>
           {toasts.map((toast) => {
-            console.log("Rendering toast:", toast); // 👈 kiểm tra
             return (
               <motion.div
                 key={toast.id}
                 initial={{ opacity: 0, y: -20, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -20, scale: 0.95 }}
-                transition={{ duration: 0.3 }}
-                // style={{ width: "100%" }}
+                transition={{ duration: 0.15 }}
               >
                 <Box
                   key={toast.id}
@@ -114,21 +111,16 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
                     {toast.type === "error" && <Warning />}
                     {toast.type === "info" && <Info />}
                   </Box>
-                  <Box sx={{ flex: 1 }}>
-                    <Box
-                      component="span"
-                      sx={{
-                        display: "flex",
-                        alignContent: "center",
-                        fontSize: 16,
-                        maxWidth: 300,
-                        wordBreak: "break-word",
-                        whiteSpace: "normal",
-                        lineHeight: 1.5,
-                      }}
-                    >
-                      {toast.message}
-                    </Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignContent: "center",
+                      alignItems: "center",
+                      fontSize: 16,
+                      width: "auto",
+                    }}
+                  >
+                    {toast.message}
                   </Box>
                 </Box>
               </motion.div>

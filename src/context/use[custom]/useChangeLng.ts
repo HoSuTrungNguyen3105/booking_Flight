@@ -1,29 +1,29 @@
+import { useState } from "react";
 import type { DropdownOptions } from "../../common/Dropdown/type";
 import i18n from "../../i18n";
+import { optionLanguage } from "../../i18n/resource";
 
-export const optionLanguage: DropdownOptions[] = [
-  { label: "English", value: "en" },
-  { label: "日本語", value: "jp" },
-  { label: "한국어", value: "kr" },
-];
-export const changeLanguage = ({ value }: DropdownOptions) => {
-  const lng = String(value);
-  i18n.changeLanguage(lng);
-  localStorage.setItem("language", lng);
-};
+export const useChangeLanguage = () => {
+  const [selectedLang, setSelectedLang] = useState<DropdownOptions | null>(
+    optionLanguage.find((o) => o.value === localStorage.getItem("language")) ||
+      null
+  );
 
-// ✅ Adapter khớp kiểu Dropdown onChange
-export const handleDropdownChange = (
-  event: React.SyntheticEvent,
-  newValue: DropdownOptions | DropdownOptions[] | null
-) => {
-  if (!newValue) return;
+  const handleLanguageChange = (
+    _: React.SyntheticEvent,
+    newValue: DropdownOptions | DropdownOptions[] | null
+  ) => {
+    const selected = Array.isArray(newValue) ? newValue[0] : newValue;
+    if (!selected) return;
 
-  // Trường hợp multiple
-  if (Array.isArray(newValue)) {
-    // Nếu cần dùng nhiều giá trị, lặp qua đây
-    changeLanguage(newValue[0]); // hoặc xử lý theo logic riêng
-  } else {
-    changeLanguage(newValue);
-  }
+    setSelectedLang(selected);
+    const lng = String(selected.value);
+    i18n.changeLanguage(lng);
+    localStorage.setItem("language", lng);
+  };
+
+  return {
+    selectedLang,
+    handleLanguageChange,
+  };
 };

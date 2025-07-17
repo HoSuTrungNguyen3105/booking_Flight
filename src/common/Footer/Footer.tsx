@@ -1,61 +1,46 @@
-import { forwardRef } from "react";
+import { forwardRef, useMemo } from "react";
 import { Box, Typography, Link as MuiLink } from "@mui/material";
 import { Link } from "react-router-dom";
 
-export const Footer = forwardRef<HTMLElement>((_, ref) => (
-  <Box
-    ref={ref}
-    component="footer"
-    sx={{
-      backgroundColor: "#f5f5f5",
-      borderTop: "1px solid #ccc",
-      mt: 4,
-      py: 3,
-      px: { xs: 2, md: 6 },
-      textAlign: "center",
-    }}
-  >
-    <Typography variant="body2" color="text.secondary">
-      © {new Date().getFullYear()} MyFlight Co. All rights reserved.
-    </Typography>
-
+export const Footer = () => {
+  const dataFooter = useMemo(
+    () => [
+      {
+        title: "Footer",
+        child: "This is the footer section of the application.",
+      },
+      {
+        title: "Contact Us",
+        child: "For inquiries, please contact us at info@myflight.com",
+      },
+    ],
+    []
+  );
+  const renderFooterCard = useMemo(() => {
+    return dataFooter.map((item, index) => (
+      <Box key={index} sx={{ mb: 2 }}>
+        <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+          {item.title}
+        </Typography>
+        <Typography variant="body2">{item.child}</Typography>
+      </Box>
+    ));
+  }, [dataFooter]);
+  return (
     <Box
       sx={{
-        mt: 1,
-        display: "flex",
-        justifyContent: "center",
-        gap: 2,
-        flexWrap: "wrap",
-        fontWeight: 500,
+        backgroundColor: "#f8f9fa",
+        padding: 2,
+        textAlign: "center",
+        position: "relative",
+        bottom: 0,
+        width: "100%",
       }}
     >
-      <MuiLink
-        component={Link}
-        sx={{ fontSize: "18px" }}
-        to="/terms"
-        underline="hover"
-        color="textSecondary"
-      >
-        Terms
-      </MuiLink>
-      <MuiLink
-        component={Link}
-        sx={{ fontSize: "18px" }}
-        to="/privacy"
-        underline="hover"
-        color="textSecondary"
-      >
-        Privacy
-      </MuiLink>
-      <MuiLink
-        component={Link}
-        sx={{ fontSize: "18px" }}
-        to="/contact"
-        underline="hover"
-        color="textSecondary"
-      >
-        Contact
-      </MuiLink>
+      {renderFooterCard}
+      <Typography variant="body2" sx={{ mt: 2 }}>
+        Privacy Policy
+      </Typography>
     </Box>
-  </Box>
-));
+  );
+};

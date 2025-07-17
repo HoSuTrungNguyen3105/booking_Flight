@@ -1,9 +1,5 @@
 import { Box, Paper, Typography } from "@mui/material";
-import {
-  DataGrid,
-  type GridColDef,
-  type GridRenderCellParams,
-} from "@mui/x-data-grid";
+import { type GridColDef, type GridRenderCellParams } from "@mui/x-data-grid";
 import { useState, type ReactNode } from "react";
 import { Button } from "../Button/Button";
 import NonVegIcon from "../../../src/svgs/celery-svg.svg";
@@ -11,6 +7,7 @@ import VeganIcon from "../../../src/svgs/orange-svg.svg";
 import SeafoodIcon from "../../../src/svgs/shrimp-svg.svg";
 import DessertIcon from "../../../src/svgs/chicken-svg.svg";
 import BeverageIcon from "../../../src/svgs/gelatin-svg.svg";
+import DataTable from "../DataGrid/index.tsx";
 type FoodData = {
   id: number;
   name: string;
@@ -39,6 +36,14 @@ const meals: FoodData[] = [
   { id: 18, name: "Nước cam", type: "Beverage", price: 3 },
   { id: 19, name: "Cà phê sữa đá", type: "Beverage", price: 3 },
   { id: 20, name: "Trà chanh", type: "Beverage", price: 2.5 },
+  { id: 21, name: "Nước ngọt", type: "Beverage", price: 2 },
+  { id: 22, name: "Bánh mì kẹp thịt", type: "Non-Veg", price: 5 },
+  { id: 23, name: "Mì quảng", type: "Non-Veg", price: 9 },
+  { id: 24, name: "Bánh mì thịt nguội", type: "Non-Veg", price: 6 },
+  { id: 25, name: "Bánh mì chả cá", type: "Non-Veg", price: 7 },
+  { id: 26, name: "Bánh mì pate", type: "Non-Veg", price: 5 },
+  { id: 27, name: "Bánh mì xíu mại", type: "Non-Veg", price: 6 },
+  { id: 28, name: "Bánh mì thịt nướng", type: "Non-Veg", price: 7 },
 ];
 
 // Map icon theo loại món
@@ -71,12 +76,10 @@ const Food = () => {
   const columns: GridColDef[] = [
     { field: "id", headerName: "ID", width: 70 },
     { field: "name", headerName: "Tên món", flex: 1 },
-    { field: "type", headerName: "Loại", flex: 1 },
+    { field: "type", headerName: "Loại" },
     {
       field: "price",
       headerName: "Giá (USD)",
-      flex: 1,
-      type: "number",
       valueFormatter: (params: any) => {
         const num = Number(params);
         return !isNaN(num) ? `${num} USD` : "0.00 USD";
@@ -108,8 +111,8 @@ const Food = () => {
     .reduce((sum, meal) => sum + meal.price, 0);
 
   return (
-    <Box className="p-6 max-w-2xl mx-auto bg-white rounded-xl shadow-md space-y-4">
-      <Typography className="text-2xl font-bold text-gray-800 mb-4">
+    <Box sx={{ width: "100%", p: 2 }}>
+      <Typography variant="h4" sx={{ mb: 2 }}>
         Danh sách món ăn trên chuyến bay
       </Typography>
 
@@ -117,22 +120,26 @@ const Food = () => {
         sx={{
           height: 400,
           width: "100%",
-          overflow: "auto", // ✅ chỉ hiện scroll khi cần
-          "& .MuiDataGrid-virtualScroller": {
-            overflowY: "auto !important", // ✅ đảm bảo scroll hoạt động đúng
-          },
-          // Ẩn thanh cuộn nếu không cần thiết (optional)
-          "&::-webkit-scrollbar": {
-            width: 0,
-            height: 0,
-          },
+          // minHeight: "400px",
+          // overflow: "auto", // ✅ chỉ hiện scroll khi cần
+          // "& .MuiDataGrid-virtualScroller": {
+          //   overflowY: "auto !important", // ✅ đảm bảo scroll hoạt động đúng
+          // },
+          // "&::-webkit-scrollbar": {
+          //   width: 0,
+          //   height: 0,
+          // },
         }}
       >
-        <DataGrid
+        <DataTable
           rows={meals}
           columns={columns}
-          pageSizeOptions={[5]}
-          disableRowSelectionOnClick
+          checkboxSelection={false}
+          // onSelectionModelChange={(newSelection) => {
+          //   setSelectedMeals(newSelection as number[]);
+          // }}
+          // pageSizeOptions={[5]}
+          // disableRowSelectionOnClick
         />
       </Box>
 

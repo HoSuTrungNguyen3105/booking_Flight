@@ -7,6 +7,7 @@ import { LanguageDropdown } from "../../common/Dropdown/Changelng";
 import addIcon from "./../../svgs/local.png";
 import InputField from "../../common/Input/InputField";
 import InputTextArea from "../../common/Input/InputTextArea";
+import TableCustom from "../../common/Table/Table";
 interface InputField {
   id: number;
   value: string;
@@ -44,7 +45,8 @@ export default function Hero() {
   return (
     <>
       <LanguageDropdown />
-      <button onClick={() => setOpen(true)}>Mở modal</button>
+      {/* <TableCustom /> */}
+      {/* <button onClick={() => setOpen(true)}>Mở modal</button> */}
       <Typography onClick={() => setOpen(true)}>{t("content1")}</Typography>
       <SelectWithModal />
       <Modal
