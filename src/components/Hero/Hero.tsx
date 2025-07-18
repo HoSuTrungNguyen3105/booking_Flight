@@ -8,6 +8,7 @@ import addIcon from "./../../svgs/local.png";
 import InputField from "../../common/Input/InputField";
 import InputTextArea from "../../common/Input/InputTextArea";
 import TableCustom from "../../common/Table/Table";
+import TableInfo from "../../common/Dropdown/TableInfo";
 interface InputField {
   id: number;
   value: string;
@@ -19,8 +20,7 @@ export default function Hero() {
     { id: Date.now(), value: "" },
   ]);
   const [value, setValue] = useState("");
-  const [success, setSuccess] = useState(true);
-
+  const [success, setSuccess] = useState();
   const handleChange = (id: number, value: string) => {
     setFieldsValue((prev) =>
       prev.map((f) => (f.id === id ? { ...f, value } : f))
@@ -48,7 +48,50 @@ export default function Hero() {
       {/* <TableCustom /> */}
       {/* <button onClick={() => setOpen(true)}>Mở modal</button> */}
       <Typography onClick={() => setOpen(true)}>{t("content1")}</Typography>
-      <SelectWithModal />
+      <TableInfo
+        title="Table Information"
+        description="Details about the table"
+        content={[
+          {
+            descContent: { content1: "Description 1" },
+            content: { content1: "Complete" },
+            getReviewStatusStyle(status) {
+              return {
+                color: status === "Complete" ? "green" : "#931024",
+                fontWeight: "bold",
+              };
+            },
+          },
+          {
+            descContent: { content1: "Description 2" },
+            content: { content1: "Content 3", content2: "Content 4" },
+          },
+          {
+            descContent: { content1: "Description 3" },
+            content: { content1: "Content 5" },
+          },
+          {
+            descContent: { content1: "Description 4" },
+            content: { content1: "Content 7", content2: "Content 8" },
+          },
+          {
+            descContent: { content1: "Description 5" },
+            content: { content1: "Content 9", content2: "Content 10" },
+          },
+        ]}
+      />
+      <TableInfo
+        title="Thông tin kiểm tra"
+        description="Không có mô tả"
+        content={[]}
+        // getReviewStatusStyle={(val) => {
+        //   if (val === "REJECTED") return { color: "red", fontWeight: "bold" };
+        //   if (val === "PASS") return { color: "green" };
+        //   return {};
+        // }}
+      />
+
+      {/* <SelectWithModal /> */}
       <Modal
         open={open}
         handleClose={() => {
