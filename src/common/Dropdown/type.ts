@@ -57,3 +57,33 @@ export type DropdownOptionTypes = {
   type: string;
   value: string | number;
 };
+
+export type ChildContent = {
+  content1?: React.ReactNode;
+  content2?: React.ReactNode;
+  content3?: React.ReactNode;
+  content4?: React.ReactNode;
+};
+
+export type ContentBlock = {
+  descContent?: ChildContent;
+  content: ChildContent;
+  gridSize?: number; // 👉 Kích thước lưới, mặc định là 3
+  contentLabels?: string[]; // 👉 Mỗi label ứng với content1 -> content4
+  extraContent?: []; // 👉 Thêm nội dung phụ nếu cần
+  bigContent?: boolean; // 👉 Thêm prop này để xác định có hiển thị content lớn hay khôn
+  getContentStyle?: (content: ChildContent) => React.CSSProperties;
+  getDescContentStyle?: (descContent: ChildContent) => React.CSSProperties;
+  hasLine?: boolean;
+  highlight?: boolean;
+  color?: string;
+};
+
+export type TableInfoProps = {
+  title: string;
+  description: string;
+  content: ContentBlock[];
+  buttonLabel?: string;
+  buttonOnChange?: () => void;
+  getReviewStatusStyle?: (status: string) => React.CSSProperties;
+};

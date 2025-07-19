@@ -157,6 +157,10 @@ const routes = [
         element: <SignOut />,
       },
       {
+        path: "hero",
+        element: <Hero />,
+      },
+      {
         path: ROUTE_PATHS.FILE_UPLOAD.replace("/", ""),
         element: <FileUpload name="fileUploader" />,
       },

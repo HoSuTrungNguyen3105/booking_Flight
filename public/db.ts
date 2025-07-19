@@ -20,6 +20,7 @@ export const menuData: MenuData = {
         { id: "food", label: "Sample button" },
         { id: "sampleTimepicker", label: "Sample timepicker" },
         { id: "sampleButton", label: "Chuyến bay hôm nay" },
+        { id: "hero", label: "Bảng mẫu" },
       ],
     },
   ],

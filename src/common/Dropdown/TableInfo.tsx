@@ -2,32 +2,7 @@ import { Box, Button, Grid, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useRef, useState } from "react";
 import { ArrowBack } from "@mui/icons-material";
-
-type ChildContent = {
-  content1: string;
-  content2?: string;
-  content3?: string;
-  content4?: string;
-};
-
-type ContentBlock = {
-  descContent?: ChildContent;
-  content: ChildContent;
-  contentLabels?: string[]; // 👉 Mỗi label ứng với content1 -> content4
-  getReviewStatusStyle?: (status: string) => React.CSSProperties;
-  hasLine?: boolean;
-  highlight?: boolean;
-  color?: string;
-};
-
-type TableInfoProps = {
-  title: string;
-  description: string;
-  content: ContentBlock[];
-  buttonLabel?: string;
-  buttonOnChange?: () => void;
-  getReviewStatusStyle?: (status: string) => React.CSSProperties;
-};
+import type { TableInfoProps } from "./type";
 
 const TableInfo = ({
   title,
@@ -84,12 +59,15 @@ const TableInfo = ({
           }}
         >
           <Typography variant="caption" padding={2}>
-            Details
+            <Typography variant="body2">{description}</Typography>
           </Typography>
 
           <Grid container spacing={2} sx={{ p: "14px 16px", mb: 2 }}>
             {content.map((block, idx) => (
-              <Grid size={3} key={idx}>
+              <Grid
+                size={block.gridSize ?? 3} // mặc định 3 khi không có
+                key={idx}
+              >
                 <Box
                   sx={{
                     display: "flex",
@@ -124,29 +102,12 @@ const TableInfo = ({
                           {block.descContent.content1}
                         </Typography>
                         {block.descContent.content2 && (
-                          <Typography variant="body2" color="grey.600">
+                          <Typography variant="caption" color="grey.500">
                             {block.descContent.content2}
                           </Typography>
                         )}
                       </Box>
                     )}
-
-                    {/* {[
-                      block.content.content1,
-                      block.content.content2,
-                      block.content.content3,
-                      block.content.content4,
-                    ]
-                      .filter(Boolean)
-                      .map((val, i) => (
-                        <Typography
-                          key={i}
-                          variant="body2"
-                          sx={getReviewStatusStyle?.(val || "")}
-                        >
-                          {val}
-                        </Typography>
-                      ))} */}
                     {[
                       block.content.content1,
                       block.content.content2,
@@ -155,16 +116,42 @@ const TableInfo = ({
                     ].map((val, i) => {
                       if (!val) return null;
                       const label = block.contentLabels?.[i];
+
+                      // Nếu là string hoặc number thì bọc Typography
+                      const isPrimitive =
+                        typeof val === "string" || typeof val === "number";
+
                       return (
-                        <Typography
-                          key={i}
-                          variant="body2"
-                          sx={getReviewStatusStyle?.(val)}
-                        >
-                          {label ? <strong>{label}:</strong> : null} {val}
-                        </Typography>
+                        <Box key={i} mb={1}>
+                          {label && (
+                            <Typography variant="body2">{label}:</Typography>
+                          )}{" "}
+                          {isPrimitive ? (
+                            <Typography
+                              variant="body2"
+                              sx={getReviewStatusStyle?.(val as string)}
+                            >
+                              {val}
+                            </Typography>
+                          ) : (
+                            val // val là component JSX
+                          )}
+                        </Box>
                       );
                     })}
+
+                    {/* 👉 hiển thị extraContent nếu có */}
+                    {block.extraContent && (
+                      <Box mt={1}>
+                        {Array.isArray(block.extraContent)
+                          ? block.extraContent.map((el, i) => (
+                              <Box key={i} mb={1}>
+                                {el}
+                              </Box>
+                            ))
+                          : block.extraContent}
+                      </Box>
+                    )}
                   </Box>
                 </Box>
               </Grid>
