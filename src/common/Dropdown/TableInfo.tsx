@@ -102,7 +102,7 @@ const TableInfo = ({
                           {block.descContent.content1}
                         </Typography>
                         {block.descContent.content2 && (
-                          <Typography variant="caption" color="grey.500">
+                          <Typography variant="body2" color="grey.600">
                             {block.descContent.content2}
                           </Typography>
                         )}
@@ -115,17 +115,34 @@ const TableInfo = ({
                       block.content.content4,
                     ].map((val, i) => {
                       if (!val) return null;
-                      const label = block.contentLabels?.[i];
+                      // const label = block.contentLabels?.[i];
+                      const label =
+                        block.contentLabels?.[i] ||
+                        block.descContent?.[
+                          `content${i + 1}` as keyof typeof block.descContent
+                        ];
 
                       // Nếu là string hoặc number thì bọc Typography
                       const isPrimitive =
                         typeof val === "string" || typeof val === "number";
 
                       return (
-                        <Box key={i} mb={1}>
+                        <Box
+                          key={i}
+                          mb={1}
+                          display="flex"
+                          alignItems="center"
+                          gap={1}
+                          flexWrap="wrap"
+                        >
+                          <Typography color="grey">
+                            {block.bigContent}
+                          </Typography>
                           {label && (
-                            <Typography variant="body2">{label}:</Typography>
-                          )}{" "}
+                            <Typography variant="body2" sx={{ minWidth: 20 }}>
+                              {label}:
+                            </Typography>
+                          )}
                           {isPrimitive ? (
                             <Typography
                               variant="body2"
@@ -134,14 +151,14 @@ const TableInfo = ({
                               {val}
                             </Typography>
                           ) : (
-                            val // val là component JSX
+                            val
                           )}
                         </Box>
                       );
                     })}
 
                     {/* 👉 hiển thị extraContent nếu có */}
-                    {block.extraContent && (
+                    {/* {block.extraContent && (
                       <Box mt={1}>
                         {Array.isArray(block.extraContent)
                           ? block.extraContent.map((el, i) => (
@@ -151,7 +168,7 @@ const TableInfo = ({
                             ))
                           : block.extraContent}
                       </Box>
-                    )}
+                    )} */}
                   </Box>
                 </Box>
               </Grid>
