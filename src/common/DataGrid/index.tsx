@@ -131,43 +131,26 @@ const DataTable = ({
         type: "include",
         ids: new Set(selectedRows),
       }}
-      // onRowSelectionModelChange={(newSelection) => {
-      //   setInternalSelectedRows(
-      //     Array.isArray(newSelection)
-      //       ? newSelection
-      //       : Array.from(newSelection as Set<GridRowId>)
-      //   );
-      //   onRowSelectionModelChange?.({
-      //     type: "include",
-      //     ids: new Set(
-      //       Array.isArray(newSelection)
-      //         ? newSelection
-      //         : Array.from(newSelection as Set<GridRowId>)
-      //     ),
-      //   });
-      // }}
-      // rowSelectionModel={selectedRows}
       onRowSelectionModelChange={(newSelection) => {
-        const updatedSelection = Array.isArray(newSelection)
-          ? newSelection
-          : Array.from(newSelection as Set<GridRowId>);
-
-        setInternalSelectedRows(updatedSelection);
-        onRowSelectionModelChange?.(updatedSelection);
+        setInternalSelectedRows(
+          Array.isArray(newSelection)
+            ? newSelection
+            : Array.from(newSelection as Set<GridRowId>)
+        );
+        onRowSelectionModelChange?.({
+          type: "include",
+          ids: new Set(
+            Array.isArray(newSelection)
+              ? newSelection
+              : Array.from(newSelection as Set<GridRowId>)
+          ),
+        });
       }}
       sortModel={sortModel}
       onSortModelChange={(model) => onSortModelChange(model)}
       slots={{
         noRowsOverlay: noRowOverlay,
         loadingOverlay: loadingMemo,
-      }}
-      componentsProps={{
-        baseCheckbox: {
-          indeterminate: false,
-        },
-      }}
-      components={{
-        BaseCheckbox: CustomCheckboxComponent, // nếu muốn tự tạo component riêng
       }}
       onRowClick={(event) => {
         onRowSelect(event.row as GridRowDef);

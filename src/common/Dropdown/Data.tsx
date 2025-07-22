@@ -18,6 +18,7 @@ import type { DropdownOption } from "./MultiDropdown";
 import { Dropdown } from "./Dropdown";
 import { Button } from "../Button/Button.tsx";
 import Modal from "../Modal/Modal.tsx";
+import { useNavigate } from "react-router-dom";
 
 interface OptionType {
   label: string;
@@ -102,6 +103,7 @@ export default function DataGridInTab() {
     setModalType(selected);
     setModalOpen(true);
   };
+  const navigate = useNavigate();
 
   const CustomSelectIcon = () =>
     selectOpen !== null ? <ArrowBack /> : <ArrowDownward />;
@@ -244,7 +246,15 @@ export default function DataGridInTab() {
     return (
       <Box>
         <Button label="Submit" onClick={HandleOpenModal} />
-        <DataTable rows={data} columns={columns} />
+        <DataTable
+          onRowSelect={(row) =>
+            navigate("/admin/profile", {
+              state: { id: row.id },
+            })
+          }
+          rows={data}
+          columns={columns}
+        />
         <Modal open={onOpenModal} contentArea={<></>} />
       </Box>
     );

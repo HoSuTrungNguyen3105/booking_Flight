@@ -10,6 +10,7 @@ import {
   type GridRowSelectionModel,
 } from "@mui/x-data-grid";
 import DataTable from "../DataGrid/index";
+import { useNavigate } from "react-router-dom";
 const mockData = [
   { id: 1, name: "Kim Gil-dong", department: "Tech", location: "Seoul" },
   { id: 2, name: "Lee Gil-dong", department: "HR", location: "Busan" },
@@ -129,16 +130,11 @@ const SearchPopup: React.FC = () => {
     }
   }, [debouncedQuery]);
 
-  useEffect(() => {
-    if (open) {
-      setQuery("");
-    }
-  }, [open]);
-
   const handleCancel = () => {
     setSelectedItems([]);
     setOpen(false);
   };
+  const navigate = useNavigate();
   return (
     <Box className="search-popup">
       <Box className="search">
@@ -192,8 +188,8 @@ const SearchPopup: React.FC = () => {
       </Box>
       <ContentModal
         open={open}
-        closeLabel="Exit"
         submitLabel="Select"
+        closeLabel="Exit"
         handleClose={closeModal}
         contentArea={
           <Box>
@@ -214,11 +210,10 @@ const SearchPopup: React.FC = () => {
             </Box>
             <Box
               sx={{
+                minHeight: 500,
+                maxHeight: 600,
                 height: "60vh",
                 overflowY: "auto",
-                minHeight: "300px",
-                display: "flex",
-                overflow: "auto",
               }}
             >
               <DataTable
@@ -227,6 +222,9 @@ const SearchPopup: React.FC = () => {
                 checkboxSelection
                 loading={false}
                 columnHeaderHeight={40}
+                onRowSelect={(row: any) => {
+                  navigate(`/users/${row.id}`);
+                }}
                 selectedRows={[...selectedIdsModel.ids]} // convert Set → Array
                 onRowSelectionModelChange={(model) => {
                   setSelectedIdsModel(model);
