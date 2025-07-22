@@ -9,6 +9,9 @@ import InputTextArea from "../../common/Input/InputTextArea";
 import TableInfo from "../../common/Dropdown/TableInfo";
 import type { ContentBlock } from "../../common/Dropdown/type";
 import { Button } from "../../common/Button/Button";
+import FieldRenderer, {
+  FieldType,
+} from "../../common/CustomRender/FieldRenderer";
 interface InputField {
   id: number;
   value: string;
@@ -203,6 +206,25 @@ export default function Hero() {
       gridSize: 1,
     },
   ];
+  const [formData, setFormData] = useState({
+    active: true,
+    gender: "",
+    bio: "",
+    notes: "",
+  });
+
+  const genderOptions = [
+    { label: "Nam", value: "male" },
+    { label: "Nữ", value: "female" },
+    { label: "Khác", value: "other" },
+  ];
+
+  const handleFiledChange = (key: string, value: any) => {
+    setFormData((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
   return (
     <>
       <LanguageDropdown />
@@ -211,6 +233,28 @@ export default function Hero() {
         title="Thông tin kiểm tra"
         description="Không có mô tả"
         content={mappedContent}
+      />
+      <FieldRenderer
+        options={genderOptions}
+        type={FieldType.SWITCH}
+        value={formData.active}
+        onChange={(value) => handleFiledChange("active", value)}
+      />
+
+      <FieldRenderer
+        type={FieldType.DROPDOWN}
+        placeholder="Chọn giới tính"
+        options={genderOptions}
+        value={formData.gender}
+        onChange={(value) => handleFiledChange("gender", value)}
+      />
+
+      <FieldRenderer
+        options={genderOptions}
+        type={FieldType.INPUT}
+        placeholder="Mô tả ngắn"
+        value={formData.bio}
+        onChange={(value) => handleFiledChange("bio", value)}
       />
       <Modal
         open={open}

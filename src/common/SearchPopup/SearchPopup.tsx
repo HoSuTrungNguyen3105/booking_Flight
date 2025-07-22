@@ -1,25 +1,15 @@
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  TextField,
-  IconButton,
-  InputAdornment,
-  Typography,
-  Chip,
-} from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
+import { Box, TextField, IconButton, Typography } from "@mui/material";
 import CancelIcon from "@mui/icons-material/Cancel";
-import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import ContentModal from "../Modal/ContentModal";
 import useDebounce from "../../context/use[custom]/useDebounce";
 import TextArea from "../Input/TextArea";
 import {
-  DataGrid,
   type GridColDef,
   type GridRowId,
   type GridRowSelectionModel,
 } from "@mui/x-data-grid";
-
+import DataTable from "../DataGrid/index";
 const mockData = [
   { id: 1, name: "Kim Gil-dong", department: "Tech", location: "Seoul" },
   { id: 2, name: "Lee Gil-dong", department: "HR", location: "Busan" },
@@ -27,6 +17,22 @@ const mockData = [
   { id: 4, name: "Nguyen Dinh Thi", department: "TaiXiu", location: "TamKi" },
   { id: 5, name: "Doan Cong Son", department: "Drug", location: "KonTum" },
   { id: 6, name: "Nguyen Viet Nhan", department: "LuaDao", location: "Hue" },
+  { id: 7, name: "Tran Minh Chau", department: "Marketing", location: "Hanoi" },
+  { id: 8, name: "Pham Van An", department: "Sales", location: "Can Tho" },
+  { id: 9, name: "Le Thi Bich", department: "Support", location: "Hai Phong" },
+  {
+    id: 10,
+    name: "Hoang Van Cuong",
+    department: "Development",
+    location: "Nha Trang",
+  },
+  { id: 11, name: "Nguyen Thi Mai", department: "Design", location: "Da Nang" },
+  {
+    id: 12,
+    name: "Tran Van Khoa",
+    department: "Research  ",
+    location: "Vung Tau",
+  },
 ];
 const columns: GridColDef[] = [
   { field: "name", headerName: "Name", flex: 1 },
@@ -38,14 +44,20 @@ const SearchPopup: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [filteredResults, setFilteredResults] = useState(mockData);
-  const [selectedItems, setSelectedItems] = useState<(typeof mockData)[0][]>(
-    []
-  );
-  const [selectedIdsModel, setSelectedIdsModel] =
-    useState<GridRowSelectionModel>({
-      type: "include",
-      ids: new Set<GridRowId>(),
-    });
+  // const [selectedItems, setSelectedItems] = useState<(typeof mockData)[0][]>(
+  //   []
+  // );
+  // const [selectedIdsModel, setSelectedIdsModel] =
+  //   useState<GridRowSelectionModel>({
+  //     type: "include",
+  //     ids: new Set<GridRowId>(),
+  //   });
+  const [selectedIdsModel, setSelectedIdsModel] = useState<{
+    type: "include";
+    ids: Set<string>;
+  }>({ type: "include", ids: new Set() });
+
+  const [selectedItems, setSelectedItems] = useState<any[]>([]);
 
   const closeModal = () => setOpen(false);
 
@@ -90,7 +102,25 @@ const SearchPopup: React.FC = () => {
     );
     setFilteredResults(filtered);
   };
-
+  // const handleCheckboxChange = (id: number) => {
+  //   setSelectedIdsModel((prev) => {
+  //     const newIds = new Set(prev.ids);
+  //     if (newIds.has(id)) {
+  //       newIds.delete(id);
+  //     } else {
+  //       newIds.add(id);
+  //     }
+  //     return { ...prev, ids: newIds };
+  //   });
+  // }
+  // const handleSelectAll = (selectAll: boolean) => {
+  //   setSelectedIdsModel((prev) => {
+  //     const newIds = selectAll
+  //       ? new Set(mockData.map((item) => item.id))
+  //       : new Set();
+  //     return { ...prev, ids: newIds };
+  //   });
+  // };
   useEffect(() => {
     if (debouncedQuery.trim() !== "") {
       handleFilter(debouncedQuery);
@@ -99,54 +129,18 @@ const SearchPopup: React.FC = () => {
     }
   }, [debouncedQuery]);
 
+  useEffect(() => {
+    if (open) {
+      setQuery("");
+    }
+  }, [open]);
+
   const handleCancel = () => {
     setSelectedItems([]);
     setOpen(false);
   };
   return (
     <Box className="search-popup">
-      {/* <Box className="search">
-        <TextArea
-          id="uniqueText"
-          placeholder={selectedItems.length === 0 ? "Enter" : ""}
-          value={query}
-          onChange={(e) => handleFilter(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey) {
-              e.preventDefault(); // Ngăn textarea xuống dòng
-              setOpen(true);
-            }
-          }}
-          className="search-bar"
-          sx={{ maxHeight: "max-content", display: "flex", flexWrap: "wrap" }}
-          InputProps={{
-            startAdornment: (
-              <>
-                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-                  <InputAdornment position="end" sx={{ margin: "0" }}>
-                    <IconButton
-                      onClick={() => setOpen(true)}
-                      className="btn-modal"
-                      sx={{ padding: "0" }}
-                    >
-                      <SearchIcon />
-                    </IconButton>
-                  </InputAdornment>
-                  {selectedItems.map((item) => (
-                    <Chip
-                      key={item.id}
-                      label={item.name}
-                      onDelete={() => handleRemoveItem(item.id)}
-                      size="small"
-                      sx={{ bgcolor: "grey.200" }}
-                    />
-                  ))}
-                </Box>
-              </>
-            ),
-          }}
-        />
-      </Box> */}
       <Box className="search">
         {selectedItems.length > 0 && (
           <Box
@@ -199,12 +193,12 @@ const SearchPopup: React.FC = () => {
       <ContentModal
         open={open}
         closeLabel="Exit"
+        submitLabel="Select"
         handleClose={closeModal}
         contentArea={
           <Box>
             <Box className="modal-title">
               <Box className="title">
-                <FiberManualRecordIcon className="circle" />
                 <Typography variant="h6">User Information</Typography>
               </Box>
             </Box>
@@ -216,31 +210,54 @@ const SearchPopup: React.FC = () => {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search..."
-                // variant="outlined"
-                // value={query}
-                className="search-bar"
-                // onChange={(e) => {
-                //   handleFilter(e.target.value);
-                // }}
               />
             </Box>
-            <Box className="search-results" data-testid="search-results">
-              <DataGrid
+            <Box
+              sx={{
+                height: "60vh",
+                overflowY: "auto",
+                minHeight: "300px",
+                display: "flex",
+                overflow: "auto",
+              }}
+            >
+              <DataTable
                 rows={filteredResults}
                 columns={columns}
                 checkboxSelection
-                rowSelectionModel={selectedIdsModel}
-                onRowSelectionModelChange={(newModel) => {
-                  setSelectedIdsModel(newModel as GridRowSelectionModel);
+                loading={false}
+                columnHeaderHeight={40}
+                selectedRows={[...selectedIdsModel.ids]} // convert Set → Array
+                onRowSelectionModelChange={(model) => {
+                  setSelectedIdsModel(model);
 
-                  const selectedRows = mockData.filter((item) =>
-                    (newModel as GridRowSelectionModel).ids.has(item.id)
+                  const selected = filteredResults.filter((row) =>
+                    model.ids.has(row.id)
                   );
-                  setSelectedItems(selectedRows);
+                  setSelectedItems(selected);
                 }}
-                getRowId={(row) => row.id}
-                disableRowSelectionOnClick
-                sx={{ backgroundColor: "#fff", borderRadius: 1 }}
+                // onRowSelectionModelChange={(newSelection: { ids: Set<GridRowId> }) => {
+                //   const selectedIdSet = new Set(newSelection.ids);
+                //   setSelectedIdsModel({
+                //     type: "include",
+                //     ids: new Set(selectedIdSet),
+                //   });
+
+                //   // cập nhật selectedItems từ filteredResults
+                //   const selected = filteredResults.filter((row) =>
+                //     selectedIdSet.has(row.id)
+                //   );
+                //   setSelectedItems(selected);
+                // }}
+
+                //selectedRows={handleCheckboxChange}
+                //rowSelectionModel={selectedIdsModel}
+                // onRowSelectionModelChange={(newSelection) => {
+                //   setSelectedIdsModel({
+                //     type: "include",
+                //     ids: new Set(newSelection),
+                //   });
+                // }}
               />
 
               {selectedItems.map((item) => (

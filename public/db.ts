@@ -16,9 +16,9 @@ export const menuData: MenuData = {
       id: "overview",
       label: "Tổng quan",
       subItems: [
-        { id: "sampleFileUploader", label: "Sample FileUploader" },
-        { id: "food", label: "Sample button" },
-        { id: "sampleTimepicker", label: "Sample timepicker" },
+        { id: "sampleFileUploader", label: "FileUploader" },
+        { id: "food", label: "Button" },
+        { id: "sampleTimepicker", label: "Timepicker" },
         { id: "sampleButton", label: "Chuyến bay hôm nay" },
         { id: "hero", label: "Bảng mẫu" },
       ],
