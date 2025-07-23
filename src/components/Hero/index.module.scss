@@ -1,0 +1,167 @@
+// .hero-section {
+//   background-color: #1e40af; // bg-blue-800
+//   padding-bottom: 4rem; // pb-16
+
+//   .hero-container {
+//     max-width: 1280px;
+//     margin-left: auto;
+//     margin-right: auto;
+//     display: flex;
+//     flex-direction: column;
+//     gap: 0.5rem; // gap-2
+//   }
+
+//   .hero-title {
+//     font-size: 3rem; // text-5xl
+//     color: white;
+//     font-weight: bold;
+//   }
+
+//   .hero-subtitle {
+//     font-size: 1.5rem; // text-2xl
+//     color: white;
+//   }
+// // }
+
+// .hero-section {
+//   background-image: url("/cloneAirplaneManagement/public/image.jpg"); // 👉 Thay bằng ảnh hero thật
+//   background-size: cover;
+//   background-position: center;
+//   min-height: 380px;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   color: #fff;
+//   position: relative;
+//   text-align: center;
+//   padding: 2rem;
+
+//   // Tạo overlay tối nhẹ cho ảnh để dễ đọc text
+//   &::before {
+//     content: "";
+//     position: absolute;
+//     inset: 0;
+//     background: rgba(0, 30, 60, 0.45);
+//     z-index: 1;
+//   }
+
+//   .hero-container {
+//     position: relative;
+//     z-index: 2;
+//     max-width: 700px;
+
+//     .hero-title {
+//       font-size: 3rem;
+//       font-weight: bold;
+//       margin-bottom: 1rem;
+//       color: #ffffff;
+//       line-height: 1.2;
+//     }
+
+//     .hero-subtitle {
+//       font-size: 1.25rem;
+//       color: #f0f0f0;
+//     }
+//   }
+
+//   @media (max-width: 768px) {
+//     .hero-container {
+//       .hero-title {
+//         font-size: 2rem;
+//       }
+
+//       .hero-subtitle {
+//         font-size: 1rem;
+//       }
+//     }
+//   }
+// }
+
+.hero {
+  z-index: 1;
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: grid;
+  place-items: center;
+  background-color: #141b2b;
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: 0 2rem;
+    justify-content: space-between;
+    gap: 7rem;
+
+    @media (min-width: 768px) {
+      flex-direction: row;
+      padding: 0 200px;
+      gap: 0;
+    }
+
+    .left {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+
+      .welcome {
+        color: #60a5fa; // text-blue-400
+        font-size: 28px;
+        font-weight: 500;
+      }
+
+      .title {
+        color: white;
+        font-weight: 500;
+        font-size: 45px;
+
+        @media (min-width: 768px) {
+          font-size: 60px;
+        }
+      }
+
+      .description {
+        color: white;
+        line-height: 1.75;
+        max-width: 500px;
+        text-align: justify;
+      }
+
+      .buttons {
+        display: flex;
+        align-items: center;
+        gap: 28px;
+        margin-top: 20px;
+
+        Button {
+          font-weight: 600;
+          padding: 12px 24px;
+          border-radius: 9999px; // rounded-full
+          cursor: pointer;
+
+          &.book {
+            background-color: #60a5fa; // blue-400
+            color: #1f2937; // gray-900
+          }
+
+          &.contact {
+            border: 2px solid #60a5fa;
+            color: white;
+            background: transparent;
+          }
+        }
+      }
+    }
+
+    .right {
+      width: 100%;
+
+      @media (min-width: 768px) {
+        width: 53%;
+      }
+    }
+  }
+}

@@ -1,30 +1,54 @@
 import { ArrowBack, ArrowDownward } from "@mui/icons-material";
-import { Box, Select, Typography, type SelectChangeEvent } from "@mui/material";
-import { useState } from "react";
+import {
+  Box,
+  Select,
+  Typography,
+  type SelectChangeEvent,
+  type SxProps,
+} from "@mui/material";
+import { useState, type FC, type ReactNode } from "react";
 
 interface ActionType {
   type: "add" | "edit" | "delete";
+  value?: string | number;
+  icon?: ReactNode;
+  label?: string;
+  disabled?: boolean;
   payload?: any;
   onClick?: () => void;
 }
 interface OptionDropdown {
   label: string;
-  icon?: string;
-  action: ActionType;
-}
-interface CustomSelectFieldProps {
-  value: string;
-  options: OptionDropdown[];
+  placeholder?: string;
+  options: ActionType[];
+  sx?: SxProps;
+  disabled?: boolean;
+  variant?: "outlined" | "standard" | "filled";
+  error?: boolean;
+  value?: string | number;
+  defaultValue?: string | number;
+  onChange?: (event: string | number) => void;
   withBorder?: boolean; // ✅ Prop để xác định có border hay không
-  onChange: (event: SelectChangeEvent<string>) => void;
 }
+// interface CustomSelectFieldProps {
+//   value: string;
+//   options: OptionDropdown[];
+//   withBorder?: boolean; // ✅ Prop để xác định có border hay không
+//   onChange: (event: SelectChangeEvent<string>) => void;
+// }
 
-const CSelect = ({
+const CSelect: FC<OptionDropdown> = ({
   value,
   options,
   withBorder = false,
   onChange,
-}: CustomSelectFieldProps) => {
+  sx,
+  disabled,
+  placeholder = "Select an option",
+  variant = "outlined",
+  defaultValue = "",
+  error,
+}) => {
   const CustomSelectIcon = () => {
     const [selectOpen, setSelectOpen] = useState<number | null>(null);
 
@@ -34,7 +58,7 @@ const CSelect = ({
   return (
     <Select
       value={value}
-      onChange={onChange}
+      // onChange={onChange}
       variant={withBorder ? "outlined" : "standard"}
       disableUnderline={!withBorder}
       displayEmpty

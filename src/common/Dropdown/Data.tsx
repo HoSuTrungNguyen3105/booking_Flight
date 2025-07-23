@@ -19,6 +19,7 @@ import { Dropdown } from "./Dropdown";
 import { Button } from "../Button/Button.tsx";
 import Modal from "../Modal/Modal.tsx";
 import { useNavigate } from "react-router-dom";
+import OrderButton from "../Button/OrderButton.tsx";
 
 interface OptionType {
   label: string;
@@ -85,6 +86,27 @@ export default function DataGridInTab() {
     page: 0,
     pageSize: 10,
   });
+  const handleOrderChange = (direction: "up" | "down", rowIndex: number) => {
+    if (direction === "up" && rowIndex > 0) {
+      setData((prev) => {
+        const newData = [...prev];
+        [newData[rowIndex - 1], newData[rowIndex]] = [
+          newData[rowIndex],
+          newData[rowIndex - 1],
+        ];
+        return newData;
+      });
+    } else if (direction === "down" && rowIndex < data.length - 1) {
+      setData((prev) => {
+        const newData = [...prev];
+        [newData[rowIndex + 1], newData[rowIndex]] = [
+          newData[rowIndex],
+          newData[rowIndex + 1],
+        ];
+        return newData;
+      });
+    }
+  };
   const [selectedValues, setSelectedValues] = useState<DropdownOption[]>([]); // ✅ default là mảng rỗng
   const [onOpenModal, setOnOpenModal] = useState(false);
   const HandleOpenModal = () => {
@@ -139,54 +161,67 @@ export default function DataGridInTab() {
       renderCell: (params) => {
         const row = params.row as RowData;
         return (
-          <Select
-            value={row.type}
-            onChange={handleChange(row.id)}
-            onOpen={() => setSelectOpen(row.id)}
-            onClose={() => setSelectOpen(null)}
-            size="small"
-            IconComponent={() => null}
-            renderValue={() => {
-              const selected = options.find((o) => o.value === row.type);
-              return (
-                <Box display="flex" alignItems="center" gap={1}>
-                  <Typography variant="body2">
-                    {selected?.label ?? "Chọn vai trò"}
-                  </Typography>
-                  {/* <CustomSelectIcon /> */}
-                </Box>
-              );
-            }}
-            sx={{
-              minWidth: 160,
-              "& .MuiSelect-select": {
-                padding: "4px 28px 4px 8px",
-                display: "flex",
-                alignItems: "center",
-              },
-              "& fieldset": {
-                border: "none",
-              },
-              "& .MuiInputBase-root": {
-                borderRadius: 0,
-              },
-            }}
-          >
-            {options.map((opt) => (
-              <MenuItem key={opt.value} value={opt.value}>
-                <Box display="flex" alignItems="center" gap={1}>
-                  <img
-                    src={opt.icon}
-                    alt=""
-                    width={20}
-                    height={20}
-                    style={{ borderRadius: "50%" }}
-                  />
-                  <Typography>{opt.label}</Typography>
-                </Box>
-              </MenuItem>
-            ))}
-          </Select>
+          // <Select
+          //   value={row.type}
+          //   onChange={handleChange(row.id)}
+          //   onOpen={() => setSelectOpen(row.id)}
+          //   onClose={() => setSelectOpen(null)}
+          //   size="small"
+          //   IconComponent={() => null}
+          //   renderValue={() => {
+          //     const selected = options.find((o) => o.value === row.type);
+          //     return (
+          //       <Box display="flex" alignItems="center" gap={1}>
+          //         <Typography variant="body2">
+          //           {selected?.label ?? "Chọn vai trò"}
+          //         </Typography>
+          //         {/* <CustomSelectIcon /> */}
+          //       </Box>
+          //     );
+          //   }}
+          //   sx={{
+          //     minWidth: 160,
+          //     "& .MuiSelect-select": {
+          //       padding: "4px 28px 4px 8px",
+          //       display: "flex",
+          //       alignItems: "center",
+          //     },
+          //     "& fieldset": {
+          //       border: "none",
+          //     },
+          //     "& .MuiInputBase-root": {
+          //       borderRadius: 0,
+          //     },
+          //   }}
+          // >
+          //   {options.map((opt) => (
+          //     <MenuItem key={opt.value} value={opt.value}>
+          //       <Box display="flex" alignItems="center" gap={1}>
+          //         <img
+          //           src={opt.icon}
+          //           alt=""
+          //           width={20}
+          //           height={20}
+          //           style={{ borderRadius: "50%" }}
+          //         />
+          //         <Typography>{opt.label}</Typography>
+          //       </Box>
+          //     </MenuItem>
+          //   ))}
+          // </Select>
+          <Dropdown
+            label="Chọn loại"
+            placeholder="Chọn vai trò"
+            options={options.map((opt) => ({
+              label: opt.label,
+              value: opt.value,
+            }))}
+            value={selectedValues}
+            onChange={(event, newValue) =>
+              setSelectedValues(newValue as DropdownOption[])
+            }
+            disableCloseOnSelect
+          />
         );
       },
     },
@@ -194,7 +229,21 @@ export default function DataGridInTab() {
       field: "type",
       headerName: "Loại",
       flex: 1,
-      minWidth: 150,
+      renderCell: (params) => {
+        const rowIndex = params.api.getRowIndexRelativeToVisibleRows(params.id);
+
+        return (
+          <Box onClick={(e) => e.stopPropagation()}>
+            <OrderButton
+              disabled={{
+                up: rowIndex === 0,
+                down: rowIndex === data.length - 1,
+              }}
+              onClick={(direction) => handleOrderChange(direction, rowIndex)}
+            />
+          </Box>
+        );
+      },
     },
     {
       field: "status",
@@ -247,11 +296,11 @@ export default function DataGridInTab() {
       <Box>
         <Button label="Submit" onClick={HandleOpenModal} />
         <DataTable
-          onRowSelect={(row) =>
-            navigate("/admin/profile", {
-              state: { id: row.id },
-            })
-          }
+          // onRowSelect={(row) =>
+          //   navigate("/admin/profile", {
+          //     state: { id: row.id },
+          //   })
+          // }
           rows={data}
           columns={columns}
         />
@@ -281,7 +330,7 @@ export default function DataGridInTab() {
           </Typography>
 
           <ButtonGroup size="small" variant="outlined">
-            {[5, 10, 25].map((size) => (
+            {[5, 10, 25, 50].map((size) => (
               <Button
                 label={size}
                 key={size}
@@ -291,7 +340,7 @@ export default function DataGridInTab() {
                 // variant={
                 //   paginationModel.pageSize === size ? "contained" : "outlined"
                 // }
-              ></Button>
+              />
             ))}
           </ButtonGroup>
         </Box>
