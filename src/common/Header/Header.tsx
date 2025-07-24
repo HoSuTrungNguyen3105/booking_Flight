@@ -125,10 +125,8 @@ export const Header = forwardRef<HTMLElement>((_, ref) => {
                   <Tabs
                     value={tabValue}
                     onChange={handleTabChange}
-                    indicatorColor="primary"
                     textColor="primary"
                     variant="fullWidth"
-                    aria-label="action tabs"
                   >
                     {menuMap.map((menu, index) => (
                       <Tab key={index} label={menu} />
@@ -145,12 +143,12 @@ export const Header = forwardRef<HTMLElement>((_, ref) => {
                   gap: 1,
                 }}
               >
-                <IconButton className="icon-button">
+                {/* <IconButton className="icon-button">
                   <HelpOutlineRoundedIcon />
                 </IconButton>
                 <IconButton className="icon-button">
                   <MoreHorizSharpIcon />
-                </IconButton>
+                </IconButton> */}
                 <IconButton className="icon-button">
                   <StarOutlineRoundedIcon />
                 </IconButton>
@@ -170,10 +168,9 @@ export const Header = forwardRef<HTMLElement>((_, ref) => {
                   <Box sx={{ display: "flex", alignItems: "center", ml: 2 }}>
                     <Button
                       sx={{ display: "flex", alignItems: "center" }}
-                      priority="normal"
                       onClick={handleOpenProfile}
                       iconPosition="trailing"
-                      size="medium"
+                      size="small"
                       appearance="unfilled"
                       label={<Avatar sx={{ mr: 1 }} alt="User" src="" />}
                     />

@@ -24,6 +24,7 @@ import GuestGuard from "../components/Layout/GuardLayout";
 import InspectionDetails from "../components/User/Profile";
 import type { JSX } from "react";
 import Profile from "../common/Profile";
+import DataV2 from "../common/Dropdown/DataV2";
 interface IRouteObject {
   path?: (typeof ROUTE_PATHS)[keyof typeof ROUTE_PATHS];
   index?: boolean;
@@ -138,7 +139,7 @@ const routes = [
       },
       {
         path: "profile",
-        element: <Profile />,
+        element: <DataV2 />,
       },
       {
         path: ROUTE_PATHS.FOOD.replace("/", ""),

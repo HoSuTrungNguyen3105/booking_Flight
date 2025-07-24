@@ -53,6 +53,7 @@ import {
 } from "@mui/material";
 import Android12Switch from "../Switch/Switch";
 import { PlainSwitch } from "../Switch/PlainSwitch";
+import { LanguageDropdown } from "../Dropdown/Changelng";
 
 const Setting = () => {
   const [darkMode, setDarkMode] = React.useState(false);
@@ -94,7 +95,8 @@ const Setting = () => {
       {/* Ngôn ngữ */}
       <Box sx={{ mb: 3 }}>
         <Typography variant="subtitle1">Ngôn ngữ</Typography>
-        <Select
+        <LanguageDropdown />
+        {/* <Select
           value={language}
           onChange={(e) => setLanguage(e.target.value)}
           sx={{ mt: 1, width: 200 }}
@@ -102,7 +104,7 @@ const Setting = () => {
           <MenuItem value="en">English</MenuItem>
           <MenuItem value="vi">Tiếng Việt</MenuItem>
           <MenuItem value="ja">日本語</MenuItem>
-        </Select>
+        </Select> */}
       </Box>
 
       {/* Thông báo */}

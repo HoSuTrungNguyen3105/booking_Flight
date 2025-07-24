@@ -1,6 +1,7 @@
 import { ArrowDownward, ArrowUpward } from "@mui/icons-material";
 import { IconButton, Stack } from "@mui/material";
-
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 const OrderButton = ({
   disabled,
   onClick,
@@ -14,14 +15,14 @@ const OrderButton = ({
       disabled={disabled.up}
       onClick={() => onClick("up")}
     >
-      <ArrowUpward fontSize="inherit" />
+      <KeyboardArrowUpIcon fontSize="inherit" />
     </IconButton>
     <IconButton
       size="small"
       disabled={disabled.down}
       onClick={() => onClick("down")}
     >
-      <ArrowDownward fontSize="inherit" />
+      <KeyboardArrowDownIcon fontSize="inherit" />
     </IconButton>
   </Stack>
 );

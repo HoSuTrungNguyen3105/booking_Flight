@@ -1,6 +1,28 @@
+export type SideBarValueTypes =
+  | "security"
+  | "setting"
+  | "dashboard"
+  | "flight"
+  | "airplane"
+  | "airport"
+  | "ticket"
+  | "user"
+  | "flightSchedule"
+  | "flightStatus"
+  | "flightManagement"
+  | "airplaneManagement"
+  | "airplaneType"
+  | "airplaneStatus"
+  | "airplaneSchedule"
+  | "airplaneTicket"
+  | "airplaneUser";
 export type MenuItem = {
   id: string;
   label: string;
+  icon?: React.ReactNode;
+  displayYn?: SideBarValueTypes;
+  adminOnly?: boolean;
+  visible?: boolean;
   path?: string;
   subItems?: MenuItem[];
 };

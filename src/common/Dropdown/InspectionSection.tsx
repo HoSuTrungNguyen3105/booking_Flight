@@ -4,6 +4,7 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import DataTable from "../DataGrid/index";
 import { Button } from "../Button/Button";
 import SearchIcon from "../../svgs/phone.png";
+import Pagination from "../DataGrid/Pagination";
 type ISecurityTabSectionProps = {
   totalResult?: number;
   currentPage?: number;
@@ -160,14 +161,14 @@ const InspectionSection = ({
           />
         </Box>
 
-        {/* <DataTablePagination
+        <Pagination
           currentPage={currentPage}
           totalResult={totalResult}
           totalPage={totalPage}
           pageSize={pageSize}
           onPageChange={onChangePage}
           onPageSizeChange={onPageSizeChange}
-        /> */}
+        />
       </Box>
     );
   }, [tabs, totalResult, rows, columns, loading, onSortModelChange, sortModel]);

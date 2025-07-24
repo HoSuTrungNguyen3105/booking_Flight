@@ -227,7 +227,7 @@ const SearchPopup: React.FC = () => {
                 }}
                 selectedRows={[...selectedIdsModel.ids]} // convert Set → Array
                 onRowSelectionModelChange={(model) => {
-                  setSelectedIdsModel(model);
+                  //setSelectedIdsModel(model);
 
                   const selected = filteredResults.filter((row) =>
                     model.ids.has(row.id)

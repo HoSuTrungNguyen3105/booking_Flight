@@ -20,6 +20,8 @@ import { Button } from "../Button/Button.tsx";
 import Modal from "../Modal/Modal.tsx";
 import { useNavigate } from "react-router-dom";
 import OrderButton from "../Button/OrderButton.tsx";
+import CSelect, { type ActionType } from "./CSelect.tsx";
+import Pagination from "../DataGrid/Pagination.tsx";
 
 interface OptionType {
   label: string;
@@ -112,23 +114,33 @@ export default function DataGridInTab() {
   const HandleOpenModal = () => {
     setOnOpenModal(true);
   };
-  const handleChange = (rowId: number) => (e: SelectChangeEvent<string>) => {
-    const selected = options.find((o) => o.value === e.target.value);
-    if (!selected) return;
+  // const handleChange = (rowId: number) => (e: SelectChangeEvent<string>) => {
+  //   const selected = options.find((o) => o.value === e.target.value);
+  //   if (!selected) return;
 
-    setData((prev) =>
-      prev.map((row) =>
-        row.id === rowId ? { ...row, type: selected.value } : row
-      )
-    );
+  //   // setData((prev) =>
+  //   //   prev.map((row) =>
+  //   //     row.id === rowId ? { ...row, type: selected.value } : row
+  //   //   )
+  //   // );
 
-    setModalType(selected);
-    setModalOpen(true);
+  //   // setModalType(selected);
+  //   setModalOpen(true);
+  // };
+  const [selectedValue, setSelectedValue] = useState<string | number>("");
+
+  const handleChange = (val: string | number) => {
+    console.log("Giá trị đã chọn:", val);
+    setSelectedValue(val);
   };
-  const navigate = useNavigate();
 
-  const CustomSelectIcon = () =>
-    selectOpen !== null ? <ArrowBack /> : <ArrowDownward />;
+  const options: ActionType[] = [
+    { value: 10, label: "10 sản phẩm" },
+    { value: 15, label: "15 sản phẩm" },
+    { value: 20, label: "20 sản phẩm" },
+  ];
+  // const CustomSelectIcon = () =>
+  //   selectOpen !== null ? <ArrowBack /> : <ArrowDownward />;
 
   const columns: GridColDef[] = [
     {
@@ -157,70 +169,18 @@ export default function DataGridInTab() {
       headerName: "Chọn loại",
       width: 200,
       flex: 1,
-      minWidth: 150,
       renderCell: (params) => {
         const row = params.row as RowData;
         return (
-          // <Select
-          //   value={row.type}
-          //   onChange={handleChange(row.id)}
-          //   onOpen={() => setSelectOpen(row.id)}
-          //   onClose={() => setSelectOpen(null)}
-          //   size="small"
-          //   IconComponent={() => null}
-          //   renderValue={() => {
-          //     const selected = options.find((o) => o.value === row.type);
-          //     return (
-          //       <Box display="flex" alignItems="center" gap={1}>
-          //         <Typography variant="body2">
-          //           {selected?.label ?? "Chọn vai trò"}
-          //         </Typography>
-          //         {/* <CustomSelectIcon /> */}
-          //       </Box>
-          //     );
-          //   }}
-          //   sx={{
-          //     minWidth: 160,
-          //     "& .MuiSelect-select": {
-          //       padding: "4px 28px 4px 8px",
-          //       display: "flex",
-          //       alignItems: "center",
-          //     },
-          //     "& fieldset": {
-          //       border: "none",
-          //     },
-          //     "& .MuiInputBase-root": {
-          //       borderRadius: 0,
-          //     },
-          //   }}
-          // >
-          //   {options.map((opt) => (
-          //     <MenuItem key={opt.value} value={opt.value}>
-          //       <Box display="flex" alignItems="center" gap={1}>
-          //         <img
-          //           src={opt.icon}
-          //           alt=""
-          //           width={20}
-          //           height={20}
-          //           style={{ borderRadius: "50%" }}
-          //         />
-          //         <Typography>{opt.label}</Typography>
-          //       </Box>
-          //     </MenuItem>
-          //   ))}
-          // </Select>
-          <Dropdown
-            label="Chọn loại"
-            placeholder="Chọn vai trò"
-            options={options.map((opt) => ({
-              label: opt.label,
-              value: opt.value,
-            }))}
-            value={selectedValues}
-            onChange={(event, newValue) =>
-              setSelectedValues(newValue as DropdownOption[])
-            }
-            disableCloseOnSelect
+          <CSelect
+            value={selectedValue}
+            onChange={handleChange}
+            options={options}
+            placeholder="Chọn số lượng"
+            withBorder={true}
+            variant="outlined"
+            sx={{ minWidth: "2rem" }}
+            // onChange={handleChange(row.id)}
           />
         );
       },
@@ -293,108 +253,37 @@ export default function DataGridInTab() {
 
   const renderGridData = useMemo(() => {
     return (
-      <Box>
-        <Button label="Submit" onClick={HandleOpenModal} />
-        <DataTable
-          // onRowSelect={(row) =>
-          //   navigate("/admin/profile", {
-          //     state: { id: row.id },
-          //   })
-          // }
-          rows={data}
-          columns={columns}
-        />
-        <Modal open={onOpenModal} contentArea={<></>} />
+      <Box
+        display={"flex"}
+        flexDirection="column"
+        margin={"8px"}
+        height={"350px"}
+        gap={2}
+      >
+        <Box sx={{ flexGrow: 1, overflow: "hidden" }}>
+          <DataTable rows={data} columns={columns} loading={false} />
+        </Box>
+        <Box sx={{ flexShrink: 0 }}>
+          <Pagination
+            currentPage={paginationModel.page + 1}
+            pageSize={paginationModel.pageSize}
+            totalPage={Math.ceil(data.length / paginationModel.pageSize)}
+            totalResult={data.length}
+            onPageChange={(page) =>
+              setPaginationModel((prev) => ({ ...prev, page }))
+            }
+            onPageSizeChange={(pageSize) =>
+              setPaginationModel((prev) => ({ ...prev, pageSize }))
+            }
+          />
+        </Box>
       </Box>
     );
   }, [data, columns]);
 
   return (
     <>
-      <Box sx={{ width: "100%", p: 2 }}>
-        {renderGridData}
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          mt={2}
-          px={1}
-        >
-          <Typography variant="body2" color="text.secondary">
-            Hiển thị {paginationModel.page * paginationModel.pageSize + 1}–
-            {Math.min(
-              (paginationModel.page + 1) * paginationModel.pageSize,
-              data.length
-            )}{" "}
-            trên {data.length} bản ghi
-          </Typography>
-
-          <ButtonGroup size="small" variant="outlined">
-            {[5, 10, 25, 50].map((size) => (
-              <Button
-                label={size}
-                key={size}
-                onClick={() =>
-                  setPaginationModel((prev) => ({ ...prev, pageSize: size }))
-                }
-                // variant={
-                //   paginationModel.pageSize === size ? "contained" : "outlined"
-                // }
-              />
-            ))}
-          </ButtonGroup>
-        </Box>
-      </Box>
-      <Box
-        mt={4}
-        px={3}
-        py={5}
-        borderTop="2px solid #eee"
-        bgcolor="#f9f9f9"
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        gap={2}
-      >
-        <Typography variant="subtitle1" fontWeight="bold">
-          Lọc theo Framework
-        </Typography>
-        <Dropdown
-          label="Chọn Framework"
-          placeholder="Chọn nhiều cái"
-          options={optionsDropdown}
-          value={selectedValues}
-          onChange={(event, newValue) =>
-            setSelectedValues(newValue as DropdownOption[])
-          }
-          multiple
-          disableCloseOnSelect
-          status="confirmed"
-        />
-      </Box>
-
-      {/* Modal */}
-      <Modal
-        open={onOpenModal}
-        handleClose={() => setModalOpen(false)}
-        contentArea={
-          <Box sx={{ bgcolor: "grey" }}>
-            <Typography variant="h6" fontWeight="bold">
-              Vai trò được chọn
-            </Typography>
-            <Typography mt={1} color="text.secondary">
-              {modalType?.label} - {modalType?.description}
-            </Typography>
-            <Box textAlign="right" mt={2}>
-              <Button
-                label="Đóng"
-                onClick={() => setModalOpen(false)}
-                size="small"
-              ></Button>
-            </Box>
-          </Box>
-        }
-      />
+      <Box sx={{ width: "100%", p: 2 }}>{renderGridData}</Box>
     </>
   );
 }

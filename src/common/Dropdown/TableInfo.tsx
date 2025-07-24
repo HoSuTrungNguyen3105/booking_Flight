@@ -71,16 +71,16 @@ const TableInfo = ({
                 <Box
                   sx={{
                     display: "flex",
-                    flexDirection: "row",
+                    width: "100%",
                   }}
                 >
                   {block.hasLine && (
                     <Box
                       sx={{
-                        width: "2px",
+                        width: "1px",
                         backgroundColor: "rgba(0,0,0,0.3)",
                         borderRadius: "2px",
-                        mr: 2,
+                        mr: 1,
                       }}
                     />
                   )}

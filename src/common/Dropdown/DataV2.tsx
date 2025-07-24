@@ -1,10 +1,27 @@
 import { Box } from "@mui/material";
-import "./index.scss";
 import DataGridInTab from "../../common/Dropdown/Data";
 import InspectionSection from "../../common/Dropdown/InspectionSection";
 import type { GridColDef } from "@mui/x-data-grid";
-import { MultiTimepicker } from "../TimePicker";
+import Hero from "../../components/Hero/Hero";
 const DataV2 = () => {
+  type RowData = {
+    id: number;
+    name: string;
+    age: number;
+    email: string;
+  };
+  const typeList = ["John Doe", "Henry Gover", "John Smith"] as const;
+  const statusList = [
+    "완료@gmail.com",
+    "미완료@gmail.com",
+    "진행중@gmail.com",
+  ] as const;
+  const initialData: RowData[] = Array.from({ length: 25 }).map((_, i) => ({
+    id: i + 1,
+    age: Math.floor(Math.random() * 100),
+    name: typeList[Math.floor(Math.random() * typeList.length)],
+    email: statusList[Math.floor(Math.random() * statusList.length)],
+  }));
   const row = [
     {
       id: 1,
@@ -29,14 +46,14 @@ const DataV2 = () => {
     {
       label: "Tab 2",
       description: "Description for Tab 2",
-      content: <MultiTimepicker />,
+      content: <Hero />,
     },
   ];
   const columns: GridColDef[] = [
-    { field: "id", headerName: "ID", width: 90 },
-    { field: "name", headerName: "Name", width: 150 },
-    { field: "age", headerName: "Age", type: "number", width: 110 },
-    { field: "email", headerName: "Email", width: 200 },
+    { field: "id", headerName: "ID", flex: 1 },
+    { field: "name", headerName: "Name", flex: 1 },
+    { field: "age", headerName: "Age", flex: 1 },
+    { field: "email", headerName: "Email", flex: 1 },
   ];
   return (
     // <Box className="hero-section">
@@ -49,14 +66,6 @@ const DataV2 = () => {
       <Box paddingTop={2}>
         {/* <DataGridInTab /> */}
         <InspectionSection
-          totalResult={100}
-          currentPage={1}
-          totalPage={5}
-          pageSize={10}
-          onChangePage={() => {}}
-          onPageSizeChange={() => {}}
-          onSortModelChange={() => {}}
-          sortModel={[]}
           handleAction={() => {}}
           columns={[]}
           tabs={tabs}
