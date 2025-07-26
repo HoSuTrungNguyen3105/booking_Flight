@@ -151,12 +151,12 @@ export default function DataGridInTab() {
     },
     {
       field: "avatar",
-      headerName: "Ảnh",
+      headerName: "Ảnh + Tên",
       flex: 1,
-      minWidth: 150,
+      minWidth: 200,
       renderCell: (params) => (
         <img
-          src={params.value}
+          src={params.value} // = avatar
           alt="avatar"
           width={30}
           height={30}
@@ -167,19 +167,13 @@ export default function DataGridInTab() {
     {
       field: "typeSelect",
       headerName: "Chọn loại",
-      width: 200,
       flex: 1,
-      renderCell: (params) => {
-        const row = params.row as RowData;
+      renderCell: () => {
         return (
           <CSelect
             value={selectedValue}
             onChange={handleChange}
             options={options}
-            placeholder="Chọn số lượng"
-            withBorder={true}
-            variant="outlined"
-            sx={{ minWidth: "2rem" }}
             // onChange={handleChange(row.id)}
           />
         );

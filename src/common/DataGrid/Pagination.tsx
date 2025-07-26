@@ -49,7 +49,7 @@ const DataTablePagination = ({
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        padding: "3px 16px",
+        padding: "3px 14px",
         backgroundColor: "white",
         border: 1,
         borderColor: "grey.200",

@@ -25,11 +25,12 @@ interface IDataTableProps {
   sortModel?: GridSortModel;
   emptyContent?: ReactNode;
   emptyItemIcon?: string;
-  onRowSelect?: (row: GridRowDef) => void;
-  onRowSelectionModelChange?: (model: {
-    type: "include" | "exclude";
-    ids: Set<GridRowId>;
-  }) => void;
+  onRowSelect?: (row: Set<GridRowId>) => void;
+  onRowClick?: (row: GridRowDef) => void;
+  // onRowSelectionModelChange?: (model: {
+  //   type: "include" | "exclude";
+  //   ids: Set<GridRowId>;
+  // }) => void;
   onSortModelChange?: (model: GridSortModel) => void;
 }
 
@@ -101,17 +102,13 @@ const DataTable = ({
   rows,
   columns,
   columnHeaderHeight,
+  onRowClick = () => {},
   selectedRows,
   emptyContent,
   sortModel,
   onSortModelChange = () => {},
   onRowSelect = () => {},
-  onRowSelectionModelChange = () => {},
 }: IDataTableProps) => {
-  const [internalSelectedRows, setInternalSelectedRows] = useState<GridRowId[]>(
-    []
-  );
-
   const noRowOverlay = useCallback(
     () => <EmptyRowsOverlay emptyContent={emptyContent} emptyItemIcon={Icon} />,
     [emptyContent]
@@ -131,20 +128,21 @@ const DataTable = ({
         type: "include",
         ids: new Set(selectedRows),
       }}
-      onRowSelectionModelChange={(newSelection) => {
-        setInternalSelectedRows(
-          Array.isArray(newSelection)
-            ? newSelection
-            : Array.from(newSelection as Set<GridRowId>)
-        );
-        onRowSelectionModelChange?.({
-          type: "include",
-          ids: new Set(
-            Array.isArray(newSelection)
-              ? newSelection
-              : Array.from(newSelection as Set<GridRowId>)
-          ),
-        });
+      onRowSelectionModelChange={(row) => {
+        onRowSelect(row.ids);
+        // setInternalSelectedRows(
+        //   Array.isArray(newSelection)
+        //     ? newSelection
+        //     : Array.from(newSelection as Set<GridRowId>)
+        // );
+        // onRowSelectionModelChange?.({
+        //   type: "include",
+        //   ids: new Set(
+        //     Array.isArray(newSelection)
+        //       ? newSelection
+        //       : Array.from(newSelection as Set<GridRowId>)
+        //   ),
+        // });
       }}
       sortModel={sortModel}
       onSortModelChange={(model) => onSortModelChange(model)}
@@ -153,7 +151,7 @@ const DataTable = ({
         loadingOverlay: loadingMemo,
       }}
       onRowClick={(event) => {
-        onRowSelect(event.row as GridRowDef);
+        onRowClick(event.row);
       }}
     />
   );

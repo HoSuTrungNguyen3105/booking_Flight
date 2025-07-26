@@ -3,7 +3,6 @@ import { useApi } from "../../context/ApiContext";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useToast } from "../../context/ToastContext";
 import { MethodType } from "../../hooks/type";
-// import { toast } from "react-toastify";
 type ToastMessage = {
   success?: string;
   error?: string;

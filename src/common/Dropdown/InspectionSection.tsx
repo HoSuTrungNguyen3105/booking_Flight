@@ -5,6 +5,7 @@ import DataTable from "../DataGrid/index";
 import { Button } from "../Button/Button";
 import SearchIcon from "../../svgs/phone.png";
 import Pagination from "../DataGrid/Pagination";
+import SearchBar from "../CustomRender/SearchBar";
 type ISecurityTabSectionProps = {
   totalResult?: number;
   currentPage?: number;
@@ -39,7 +40,7 @@ const InspectionSection = ({
   tabs,
   rows,
   loading,
-  onSearch,
+  onSearch = () => {},
 }: ISecurityTabSectionProps) => {
   const headerRef = useRef<HTMLDivElement>(null);
   const [headerHeight, setHeaderHeight] = useState(0);
@@ -115,7 +116,7 @@ const InspectionSection = ({
     }
 
     return (
-      <Box display="flex" flexDirection="column" height="100%">
+      <Box marginRight={0} display="flex" flexDirection="column" height="100%">
         <Box
           sx={{
             display: "flex",
@@ -142,6 +143,7 @@ const InspectionSection = ({
               </Typography>
             </Typography>
             <Button
+              priority="normal"
               onClick={() => handleAction()}
               label={<Typography variant="button">지금 검색</Typography>}
             ></Button>
@@ -160,7 +162,6 @@ const InspectionSection = ({
             // emptyContent={<EmptyRowsOverlay />}
           />
         </Box>
-
         <Pagination
           currentPage={currentPage}
           totalResult={totalResult}
@@ -175,7 +176,9 @@ const InspectionSection = ({
 
   return (
     <Stack gap="10px" height="100%">
-      {/* <SearchBar onSearch={onSearch} /> */}
+      <Box minHeight={"2rem"}>
+        <SearchBar onSearch={onSearch as (query: any) => void} />
+      </Box>
       {renderTabData}
       <Box flexGrow={1}>{renderContent()}</Box>
     </Stack>

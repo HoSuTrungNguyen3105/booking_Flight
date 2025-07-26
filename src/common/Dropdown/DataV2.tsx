@@ -64,7 +64,6 @@ const DataV2 = () => {
     //     </Typography>
     <Box>
       <Box paddingTop={2}>
-        {/* <DataGridInTab /> */}
         <InspectionSection
           handleAction={() => {}}
           columns={[]}

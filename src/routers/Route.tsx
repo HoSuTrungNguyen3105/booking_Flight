@@ -23,8 +23,9 @@ import Search_layout from "../components/Admin/Search_layout";
 import GuestGuard from "../components/Layout/GuardLayout";
 import InspectionDetails from "../components/User/Profile";
 import type { JSX } from "react";
-import Profile from "../common/Profile";
+import DataSecure from "../common/Setting/DataSecure";
 import DataV2 from "../common/Dropdown/DataV2";
+import { LoginPage } from "../components/Auth/LoginPage";
 interface IRouteObject {
   path?: (typeof ROUTE_PATHS)[keyof typeof ROUTE_PATHS];
   index?: boolean;
@@ -40,6 +41,10 @@ const routes = [
         <Login />,
       </GuestGuard>
     ),
+  },
+  {
+    path: "loginPage",
+    element: <LoginPage />,
   },
   {
     path: ROUTE_PATHS.SAMPLE_BUTTON,
@@ -135,7 +140,7 @@ const routes = [
       },
       {
         path: "domestic",
-        element: <Typography>Xin chào</Typography>,
+        element: <DataSecure />,
       },
       {
         path: "profile",

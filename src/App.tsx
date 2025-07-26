@@ -3,7 +3,7 @@ import { RouterProvider } from "react-router-dom";
 import { ApiProvider } from "./context/ApiContext";
 import router from "./routers/Route";
 import { AuthProvider } from "./context/AuthContext";
-import { FlightSearchProvider } from "./context/SearchContext";
+// import { FlightSearchProvider } from "./context/SearchContext";
 import { I18nextProvider } from "react-i18next";
 import "./i18n";
 import i18n from "./i18n";
@@ -14,9 +14,9 @@ function App() {
       <ToastProvider>
         <ApiProvider>
           <AuthProvider>
-            <FlightSearchProvider>
-              <RouterProvider router={router} />
-            </FlightSearchProvider>
+            {/* <FlightSearchProvider> */}
+            <RouterProvider router={router} />
+            {/* </FlightSearchProvider> */}
           </AuthProvider>
         </ApiProvider>
       </ToastProvider>
