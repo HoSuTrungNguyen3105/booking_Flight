@@ -2,6 +2,7 @@ import { ArrowDownward, ArrowUpward } from "@mui/icons-material";
 import { IconButton, Stack } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import HorizontalRuleSharpIcon from "@mui/icons-material/HorizontalRuleSharp";
 const OrderButton = ({
   disabled,
   onClick,
@@ -17,6 +18,10 @@ const OrderButton = ({
     >
       <KeyboardArrowUpIcon fontSize="inherit" />
     </IconButton>
+    {/* <IconButton size="small">
+      <HorizontalRuleSharpIcon />
+    </IconButton> */}
+
     <IconButton
       size="small"
       disabled={disabled.down}

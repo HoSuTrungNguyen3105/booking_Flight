@@ -66,9 +66,9 @@ const DataV2 = () => {
       <Box paddingTop={2}>
         <InspectionSection
           handleAction={() => {}}
-          columns={[]}
-          tabs={tabs}
-          rows={[]}
+          columns={columns}
+          tabs={[]}
+          rows={row}
           loading={false}
           onSearch={() => {}}
         />

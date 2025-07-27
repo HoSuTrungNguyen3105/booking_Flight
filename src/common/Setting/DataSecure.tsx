@@ -5,6 +5,11 @@ import type { ContentBlock } from "../Dropdown/type";
 import { Box, Typography } from "@mui/material";
 import TableSection from "./TableSection";
 import DetailedInformationModal from "./hooks/DetailedInformationModal";
+import { FileUpload } from "../FileUploader";
+import DetailDataSystemModal from "./hooks/DetailDataSystem";
+import type { GridRowParams } from "@mui/x-data-grid";
+// import DetailDataSystemModal from "./hooks/DetailDataSystemModal";
+// FIX: Update the import path or create the missing file if necessary
 
 // Interface định nghĩa cấu trúc dữ liệu
 export interface IDataHistoryProps extends GridRowDef {
@@ -13,6 +18,17 @@ export interface IDataHistoryProps extends GridRowDef {
   database: string;
   creationUser: string;
 }
+export const customLabels: Record<keyof Detail, string> = {
+  TITLE: "제목", // Tiêu đề
+  status: "상태", // Trạng thái
+  time: "시간", // Thời gian
+  inspection: "검사", // Kiểm tra
+  datStatus: "DAT 상태", // Tình trạng DAT
+  computerTime: "컴퓨터 시간", // Giờ máy tính
+  checklist: "체크리스트", // Danh sách kiểm tra
+  itemsStatus: "항목 상태", // Trạng thái mục
+  itemsScope: "항목 범위", // Phạm vi mục
+};
 export interface Detail {
   TITLE: string;
   status: string;
@@ -29,6 +45,7 @@ const DataSecure = () => {
   // State management
   const [isLoading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const [openSubfile, setOpenSubefile] = useState(false);
   const [selectedRow, setSelectedRow] = useState<IDataHistoryProps | null>(
     null
   );
@@ -39,8 +56,20 @@ const DataSecure = () => {
     setSelectedRow(row as IDataHistoryProps);
     setOpen(true);
   };
+  const openModalSubfile = (row: GridRowDef) => {
+    setSelectedRow(row as IDataHistoryProps);
+    setOpenSubefile(true);
+  };
+  const handleRowClick = (params: GridRowParams) => {
+    const row = params.row as IDataHistoryProps;
+    setSelectedRow(row);
+    setOpenSubefile(true);
+  };
   const closeModal = () => {
     setOpen(false);
+  };
+  const closeModalSubfile = () => {
+    setOpenSubefile(false);
   };
   // Inspection data state
   const [inspectionData, setInspectionData] = useState<Detail>({
@@ -54,6 +83,19 @@ const DataSecure = () => {
     itemsStatus: "10/15",
     itemsScope: "AL RED",
   });
+  const randomFileNames = [
+    "report1.csv",
+    "data_final.json",
+    "graph.png",
+    "summary.docx",
+    "export.xlsx",
+    "image01.jpg",
+  ];
+
+  function getRandomFiles(count: number) {
+    const shuffled = [...randomFileNames].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count);
+  }
 
   // Column definitions for tables
   const columnSubfileList = useMemo(
@@ -63,6 +105,7 @@ const DataSecure = () => {
       { field: "uploadTime", headerName: "수정 날짜", flex: 1 },
       { field: "uploader", headerName: "유형", flex: 1 },
       { field: "fileSize", headerName: "Size", flex: 1 },
+      { field: "name", headerName: "Size", flex: 1 },
     ],
     []
   );
@@ -88,7 +131,9 @@ const DataSecure = () => {
     ],
     []
   );
-
+  const numberOfFile = {
+    name: ["dkdkdkdk.tsx", "dkdkdkdk.tsx", "dkdkdkdk.tsx"],
+  };
   // Mock data generation
   const rowsSubfileList = useMemo(
     () =>
@@ -101,6 +146,7 @@ const DataSecure = () => {
         }`,
         uploader: "픽셀 문서",
         type: `/directoryJ/directory${i % 3}`,
+        name: getRandomFiles(2 + (i % 3)), // 2-4 file random
       })),
     []
   );
@@ -137,7 +183,7 @@ const DataSecure = () => {
         content1: inspectionData.datStatus,
       },
       descContent: {
-        content1: "Thông tin địa chỉ",
+        content1: customLabels.TITLE,
       },
       contentLabels: ["Họ tên"],
     },
@@ -173,7 +219,7 @@ const DataSecure = () => {
     },
     {
       content: {
-        content1: "Thông tin cá nhân",
+        content1: <FileUpload name="fileUploaderV3" />,
       },
       descContent: {
         content1: "Thông tin cá nhân",
@@ -226,7 +272,8 @@ const DataSecure = () => {
           <TableSection
             rows={rowsSubfileList}
             columns={columnSubfileList}
-            setRows={setRelatedItems}
+            handleRowClick={openModalSubfile}
+            setRows={setSubfileList}
             isLoading={false}
             nextRowClick={true}
             largeThan
@@ -246,17 +293,28 @@ const DataSecure = () => {
             rows={rowsDataHistory}
             columns={columnDataHistory}
             handleRowClick={openModal}
-            setRows={setRelatedItems}
+            setRows={setDataHistory}
             isLoading={false}
             nextRowClick={true}
             largeThan
           />
-          <DetailedInformationModal
+          {open && (
+            <DetailedInformationModal
+              onSuccess={() => {}}
+              onClose={closeModal}
+              selectedRows={selectedRow}
+              detailData={inspectionData}
+              open={open}
+            />
+          )}
+
+          <DetailDataSystemModal
             onSuccess={() => {}}
-            onClose={closeModal}
+            onClose={closeModalSubfile}
             selectedRows={selectedRow}
+            // files={numberOfFile}
             detailData={inspectionData}
-            open={open}
+            open={openSubfile}
           />
         </Box>
       </Box>

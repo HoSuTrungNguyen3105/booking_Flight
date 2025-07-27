@@ -31,7 +31,6 @@ const TableSection = ({
     currentPage,
     totalPages,
     onSortModelChange,
-    goToLastPage,
   } = useClientPagination({ data: rows });
   const handleRowSelect = useCallback(
     (selectedRow: Set<GridRowId>) => {

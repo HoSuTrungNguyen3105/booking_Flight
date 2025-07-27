@@ -26,6 +26,7 @@ import type { JSX } from "react";
 import DataSecure from "../common/Setting/DataSecure";
 import DataV2 from "../common/Dropdown/DataV2";
 import { LoginPage } from "../components/Auth/LoginPage";
+import Security from "../common/Setting/Security";
 interface IRouteObject {
   path?: (typeof ROUTE_PATHS)[keyof typeof ROUTE_PATHS];
   index?: boolean;
@@ -135,8 +136,8 @@ const routes = [
     errorElement: <ErrorPage />,
     children: [
       {
-        path: "revenue",
-        element: <Typography>Xin chào</Typography>,
+        path: "international",
+        element: <Security />,
       },
       {
         path: "domestic",
@@ -168,7 +169,7 @@ const routes = [
       },
       {
         path: ROUTE_PATHS.FILE_UPLOAD.replace("/", ""),
-        element: <FileUpload name="fileUploader" />,
+        element: <FileUpload name="fileUploaderV2" />,
       },
       {
         path: ROUTE_PATHS.BOOK_TICKET.replace("/", ""),

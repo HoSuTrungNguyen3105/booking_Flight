@@ -130,19 +130,6 @@ const DataTable = ({
       }}
       onRowSelectionModelChange={(row) => {
         onRowSelect(row.ids);
-        // setInternalSelectedRows(
-        //   Array.isArray(newSelection)
-        //     ? newSelection
-        //     : Array.from(newSelection as Set<GridRowId>)
-        // );
-        // onRowSelectionModelChange?.({
-        //   type: "include",
-        //   ids: new Set(
-        //     Array.isArray(newSelection)
-        //       ? newSelection
-        //       : Array.from(newSelection as Set<GridRowId>)
-        //   ),
-        // });
       }}
       sortModel={sortModel}
       onSortModelChange={(model) => onSortModelChange(model)}

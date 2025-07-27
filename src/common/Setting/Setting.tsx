@@ -47,8 +47,6 @@ import {
   Divider,
   Switch,
   FormControlLabel,
-  Select,
-  MenuItem,
   Button,
 } from "@mui/material";
 import Android12Switch from "../Switch/Switch";
@@ -58,7 +56,6 @@ import { LanguageDropdown } from "../Dropdown/Changelng";
 const Setting = () => {
   const [darkMode, setDarkMode] = React.useState(false);
   const [notifications, setNotifications] = React.useState(true);
-  const [language, setLanguage] = React.useState("en");
   const [autoDelete, setAutoDelete] = React.useState(false);
   const [bookingCount, setBookingCount] = React.useState(12); // ví dụ giả lập
 
@@ -90,6 +87,7 @@ const Setting = () => {
           onChange={(e) => setDarkMode(e.target.checked)}
         />
         <PlainSwitch />
+        <Switch />
       </Box>
 
       {/* Ngôn ngữ */}

@@ -1,51 +1,41 @@
 import { Box, Grid, Typography } from "@mui/material";
 import { memo, useCallback, useMemo } from "react";
 import { Button } from "../../Button/Button";
-import type { Detail, IDataHistoryProps } from "../DataSecure";
+import {
+  customLabels,
+  type Detail,
+  type IDataHistoryProps,
+} from "../DataSecure";
 import TableSection from "../TableSection";
 import type { GridRowDef } from "../../DataGrid";
 import BaseModal from "../../Modal/BaseModal";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
+import InputField from "../../Input/InputField";
+
 interface IModalStatisticalDataLearningProps {
   open: boolean;
   onClose: () => void;
   onSuccess: () => void;
   detailData: Detail | null;
   selectedRows: IDataHistoryProps | null;
+  // files: {
+  //   name: string[];
+  // };
 }
-
-// const customLabels: Record<Detail, string> = {
-//   creationUser: "데이터 이름",
-//   collectionDate: "수집 시간",
-//   collectionMethod: "데이터 형태",
-//   collectionType: "Loại thu thập",
-
-// };
-
-const customLabels: Record<keyof Detail, string> = {
-  TITLE: "제목", // Tiêu đề
-  status: "상태", // Trạng thái
-  time: "시간", // Thời gian
-  inspection: "검사", // Kiểm tra
-  datStatus: "DAT 상태", // Tình trạng DAT
-  computerTime: "컴퓨터 시간", // Giờ máy tính
-  checklist: "체크리스트", // Danh sách kiểm tra
-  itemsStatus: "항목 상태", // Trạng thái mục
-  itemsScope: "항목 범위", // Phạm vi mục
-};
 
 type DataExample = GridRowDef & {
   category: string;
   fileName: string;
 };
-
 const DetailDataSystemModal = ({
   open,
   onClose,
   onSuccess,
+  // files,
   selectedRows,
   detailData,
 }: IModalStatisticalDataLearningProps) => {
+  // Action nút dưới modal
   const renderActions = useCallback(() => {
     return (
       <Box display="flex" gap={1} justifyContent="flex-end" alignItems="center">
@@ -54,82 +44,90 @@ const DetailDataSystemModal = ({
           priority="normal"
           label="삭제"
           onClick={() => {}}
-          disabled={true}
         />
       </Box>
     );
   }, []);
 
-  const renderContent = useCallback(() => {
-    const columnsSubFileList = useMemo(
-      () => [
-        { field: "category", headerName: "유형", flex: 1 },
-        { field: "fileName", headerName: "파일 이름", flex: 1 },
-      ],
-      []
-    );
-
-    const DATA_ROWS: DataExample[] = Array.from({ length: 5 }, (_, index) => ({
-      category: "원본 데이터",
-      fileName: "원본데이터.csv",
-      id: (index + 1).toString(),
-    }));
-
-    const renderRows = (data: Detail | null) => {
-      if (!data) return null;
-      return (
-        <Box>
-          <Grid container spacing={1}>
-            {detailData &&
-              Object.entries(data).map(([key, value]) => (
-                <Grid container size={12} key={key}>
-                  <Grid size={4}>
-                    <Typography variant="body2" color="grey.500">
-                      {customLabels[key as keyof Detail]}
-                    </Typography>
-                  </Grid>
-                  <Grid size={8}>
-                    <Typography variant="body2">{value}</Typography>
-                  </Grid>
-                </Grid>
-              ))}
-          </Grid>
-        </Box>
-      );
-    };
-
+  // Render các dòng key-value từ detailData
+  const renderDetailRows = (data: Detail | null) => {
+    if (!data) return null;
     return (
-      <Box maxHeight="100%">
-        <Box>
-          <Typography component="p" variant="body2">
-            기본 정보
-          </Typography>
-          {renderRows(detailData)}
-          <Typography component="p" variant="body2">
-            임시 비밀번호
-          </Typography>
-          <Box gap="8px">
-            <Box paddingRight="0px">
-              <TableSection
-                columns={columnsSubFileList}
-                rows={DATA_ROWS}
-                setRows={() => {}}
-                isLoading={false}
-                nextRowClick={false}
-                handleRowClick={() => {}}
-              />
+      <Grid container spacing={1}>
+        {Object.entries(data).map(([key, value]) => (
+          <Grid container size={12} key={key}>
+            <Grid size={4}>
+              <Typography variant="body2" color="grey.500">
+                {customLabels[key as keyof Detail]}
+              </Typography>
+            </Grid>
+            <Grid size={8}>
+              <Typography variant="body2">{value}</Typography>
+            </Grid>
+          </Grid>
+        ))}
+      </Grid>
+    );
+  };
+
+  // Hiển thị danh sách file và ô nhập
+  const renderFilesAndButton = () => {
+    return (
+      <Box display="flex" flexDirection="column" minHeight="15vh">
+        <Typography variant="caption" color="text.secondary" sx={{ mb: 1 }}>
+          점검 설명
+        </Typography>
+        {/* <Box display="flex" flexDirection="row" width="100%">
+          {files?.name?.length > 0 && (
+            <Box display="flex" flexDirection="column" gap={1} flex={1} mr={2}>
+              {files.name.map((item, i) => (
+                <InputField key={i} value={item} />
+              ))}
             </Box>
-          </Box>
-        </Box>
+          )}
+        </Box> */}
+        <Grid container size={12}>
+          <Grid size={4}>
+            <Typography variant="body2" color="grey.500">
+              점검 설명
+            </Typography>
+          </Grid>
+          <Grid size={8}>
+            {/* {selectedRows?.name?.length > 0 && ( */}
+            <Box display="flex" flexDirection="column" gap={1}>
+              {selectedRows?.name?.map((item: any, i: any) => (
+                <InputField key={i} value={item} />
+              ))}
+            </Box>
+            {/* )} */}
+          </Grid>
+        </Grid>
       </Box>
     );
-  }, [selectedRows, detailData]);
+  };
+
+  // Render nội dung chính của modal
+  const renderContent = useCallback(() => {
+    return (
+      <Box maxHeight="100%">
+        <Typography component="p" variant="body2" fontWeight="bold" mb={1}>
+          기본 정보
+        </Typography>
+        {renderDetailRows(detailData)}
+
+        <Typography component="p" variant="body2" fontWeight="bold" mt={3}>
+          임시 비밀번호
+        </Typography>
+        <Box mt={1}>{renderFilesAndButton()}</Box>
+      </Box>
+    );
+  }, [detailData]);
 
   return (
     <BaseModal
       open={open}
       onClose={onClose}
-      title={`원본 데이터, 통계 데이터 학습 Seq${selectedRows?.sequence} 상세 정보`}
+      title={`원본 데이터, 통계 데이터 학습 Seq${selectedRows?.name} 상세 정보`}
       subtitle="-선택된 원본 데이터의 상세 정보를 확인합니다.-"
       Icon={PrivacyTipIcon}
       slots={{ content: renderContent(), actions: renderActions() }}
