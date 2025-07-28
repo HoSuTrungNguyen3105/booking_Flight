@@ -6,12 +6,13 @@ import {
   List,
   ListItemButton,
   ListItemText,
+  ListItemIcon,
   Collapse,
   Typography,
   Stack,
 } from "@mui/material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
-import { menuData, type MenuItem } from "../../../public/db";
+import { menuData, type MenuItem } from "./../../utils/db";
 
 const ResizeLayout = () => {
   const { pathname } = useLocation();
@@ -27,12 +28,10 @@ const ResizeLayout = () => {
 
   const buildPath = (id: string) => `/admin/${id}`;
 
-  // Đệ quy render menu
   const renderMenuItems = (items: MenuItem[], level = 0) => {
     return items.map((item) => {
       const hasSubItems = !!item.subItems?.length;
       const isOpen = openMenu[item.id] || false;
-
       const fullPath = buildPath(item.id);
       const isActive = pathname === fullPath;
 
@@ -41,7 +40,12 @@ const ResizeLayout = () => {
           <ListItemButton
             sx={{
               pl: 2 + level * 2,
-              bgcolor: !hasSubItems && isActive ? "action.selected" : "inherit",
+              bgcolor: isActive ? "action.selected" : "inherit",
+              borderRadius: 1,
+              mb: 0.5,
+              "&:hover": {
+                bgcolor: "action.hover",
+              },
             }}
             onClick={() => {
               if (hasSubItems) {
@@ -51,6 +55,9 @@ const ResizeLayout = () => {
               }
             }}
           >
+            {item.icon && (
+              <ListItemIcon sx={{ minWidth: 32 }}>{item.icon}</ListItemIcon>
+            )}
             <ListItemText primary={item.label} />
             {hasSubItems &&
               (isOpen ? (
@@ -77,52 +84,44 @@ const ResizeLayout = () => {
       <Box
         sx={(theme) => ({
           height: "100%",
+          py: 2,
           overflowY: "auto",
-          bgcolor: theme.palette.background.paper,
+          bgcolor: theme.palette.background.default,
+          px: 1.5,
         })}
       >
-        <List
-          subheader={
-            <Typography
-              variant="subtitle2"
-              py="20px"
-              fontWeight="bold"
-              sx={{ pl: 2, pt: 2 }}
-            >
-              Tab 1
-            </Typography>
-          }
-        >
-          {renderMenuItems(menuData.tab1Items)}
-        </List>
-        <List
-          subheader={
-            <Typography
-              variant="subtitle2"
-              fontWeight="bold"
-              sx={{ pl: 2, pt: 2 }}
-            >
-              Tab 2
-            </Typography>
-          }
-        >
-          {renderMenuItems(menuData.tab2Items)}
-        </List>
+        {menuData.map((section, index) => (
+          <List
+            key={index}
+            subheader={
+              <Typography
+                variant="subtitle2"
+                color="text.secondary"
+                sx={{ pl: 1, pt: 1.5, pb: 0.5 }}
+              >
+                {section.title}
+              </Typography>
+            }
+          >
+            {renderMenuItems(section.items)}
+          </List>
+        ))}
       </Box>
-      <div style={{ flex: 1, overflow: "auto" }}>
-        <Outlet /> {/* ✅ Quan trọng để render route con */}
-      </div>
+      <Box flex={1} sx={{ overflow: "auto" }}>
+        <Outlet />
+      </Box>
     </AsideLnb>
   );
 };
+
 const ManageLayout = () => {
   return (
-    <Stack sx={{ direction: "column", height: "100vh" }}>
+    <Stack sx={{ height: "100vh" }}>
       <Box
         component="main"
         sx={{ height: "calc(100vh - 48px)" }}
         flexGrow={1}
-        bgcolor="var(--bg-green-md)"
+        bgcolor={"var(--bg-green-md)"}
       >
         <Box display="flex" height="100%">
           <ResizeLayout />
@@ -134,6 +133,8 @@ const ManageLayout = () => {
             sx={{
               transition: "width 200ms",
               overflow: "auto",
+              // borderLeft: "1px solid",
+              // borderColor: "grey.200",
             }}
           >
             <Outlet />

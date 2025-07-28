@@ -27,7 +27,6 @@ const TableInfo = ({
 
   return (
     <Box gap="8px">
-      {/* Header */}
       <Box sx={{ padding: "1px", border: `1px solid grey` }}>
         <Box
           sx={{
@@ -42,15 +41,12 @@ const TableInfo = ({
               {title}
             </Typography>
           </Box>
-
           {buttonLabel && buttonOnChange && (
             <Button onClick={buttonOnChange} variant="contained">
               <Typography variant="button">{buttonLabel}</Typography>
             </Button>
           )}
         </Box>
-
-        {/* Content */}
         <Box
           sx={{
             paddingBottom: "8px",
@@ -115,14 +111,11 @@ const TableInfo = ({
                       block.content.content4,
                     ].map((val, i) => {
                       if (!val) return null;
-                      // const label = block.contentLabels?.[i];
                       const label =
                         block.contentLabels?.[i] ||
                         block.descContent?.[
                           `content${i + 1}` as keyof typeof block.descContent
                         ];
-
-                      // Nếu là string hoặc number thì bọc Typography
                       const isPrimitive =
                         typeof val === "string" || typeof val === "number";
 
@@ -156,19 +149,6 @@ const TableInfo = ({
                         </Box>
                       );
                     })}
-
-                    {/* 👉 hiển thị extraContent nếu có */}
-                    {/* {block.extraContent && (
-                      <Box mt={1}>
-                        {Array.isArray(block.extraContent)
-                          ? block.extraContent.map((el, i) => (
-                              <Box key={i} mb={1}>
-                                {el}
-                              </Box>
-                            ))
-                          : block.extraContent}
-                      </Box>
-                    )} */}
                   </Box>
                 </Box>
               </Grid>

@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import type { GridRowDef } from "../DataGrid";
 import TableInfo from "../Dropdown/TableInfo";
 import type { ContentBlock } from "../Dropdown/type";
@@ -8,6 +8,12 @@ import DetailedInformationModal from "./hooks/DetailedInformationModal";
 import { FileUpload } from "../FileUploader";
 import DetailDataSystemModal from "./hooks/DetailDataSystem";
 import type { GridRowParams } from "@mui/x-data-grid";
+import type { IDetailItem } from "../Dropdown/DetailSection";
+import DetailSection from "../Dropdown/DetailSection";
+import { Button } from "../Button/Button";
+import InputField from "../Input/InputField";
+import type { MenuData } from "../BreadCrumb/BreadcrumbV2";
+import Breadcrumb from "../BreadCrumb/BreadcrumbV2";
 // import DetailDataSystemModal from "./hooks/DetailDataSystemModal";
 // FIX: Update the import path or create the missing file if necessary
 
@@ -17,6 +23,7 @@ export interface IDataHistoryProps extends GridRowDef {
   dataId: string;
   database: string;
   creationUser: string;
+  name?: string[];
 }
 export const customLabels: Record<keyof Detail, string> = {
   TITLE: "제목", // Tiêu đề
@@ -91,6 +98,118 @@ const DataSecure = () => {
     "export.xlsx",
     "image01.jpg",
   ];
+  type InputFieldValue = { id: number; value: string };
+  const [fieldsValue, setFieldsValue] = useState<InputFieldValue[]>([
+    { id: Date.now(), value: "" },
+  ]);
+  const [value, setValue] = useState("");
+  const handleChange = (id: number, value: string) => {
+    setFieldsValue((prev) =>
+      prev.map((f) => (f.id === id ? { ...f, value } : f))
+    );
+  };
+  const handleSubmit = () => {
+    setFieldsValue((prev) => [...prev, { id: Date.now(), value: "" }]);
+  };
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [showInputs, setShowInputs] = useState(false);
+  const [files, setFiles] = useState<File[]>([]);
+
+  const handleAddClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click(); // Mở hộp thoại chọn file
+    }
+  };
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newFiles = Array.from(e.target.files || []);
+    setShowInputs(true); // Hiện các InputField
+    setFiles((prevFiles) => [...prevFiles, ...newFiles]);
+  };
+  const renderFilesAndButton = () => {
+    return (
+      <Box display="flex" flexDirection="column" minHeight="20vh">
+        <Typography variant="caption" color="text.secondary" sx={{ mb: 1 }}>
+          점검 설명
+        </Typography>
+        <Box display="flex" flexDirection="row" width="100%">
+          {showInputs && files.length > 0 && (
+            <Box display="flex" flexDirection="column" gap={1} flex={1} mr={2}>
+              {files.map((item, i) => (
+                <InputField key={i} value={item.name} />
+              ))}
+            </Box>
+          )}
+        </Box>
+      </Box>
+    );
+  };
+  const renderButtonAddFile = useCallback(() => {
+    return (
+      <Box
+        display="flex"
+        justifyContent="flex-end"
+        alignItems="center"
+        minHeight="30vh"
+        pr={2}
+      >
+        <Button onClick={handleAddClick} label="Tải tệp" />
+
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".jpg,.png,.pdf"
+          style={{ display: "none" }}
+          onChange={handleFileChange}
+        />
+      </Box>
+    );
+  }, [handleAddClick, handleFileChange]);
+
+  const detailData: IDetailItem[] = [
+    {
+      title: "Demo",
+      description: "None",
+    },
+    {
+      title: "Demo",
+      description: "None",
+    },
+    {
+      title: "Demo",
+      description: "None",
+    },
+    {
+      title: "Demo",
+      description: "None",
+    },
+    {
+      title: "Demo",
+      description: "None",
+    },
+    {
+      title: "Demo",
+      description: "None",
+    },
+    {
+      title: "Demo",
+      description: "None",
+    },
+    {
+      title: "Demo",
+      description: "",
+    },
+
+    {
+      title: "Demo",
+      description: renderFilesAndButton(),
+      size: 5,
+    },
+    {
+      title: "Demo",
+      description: renderButtonAddFile(),
+      size: 1,
+    },
+  ];
 
   function getRandomFiles(count: number) {
     const shuffled = [...randomFileNames].sort(() => 0.5 - Math.random());
@@ -109,6 +228,10 @@ const DataSecure = () => {
     ],
     []
   );
+  const dataBread: MenuData[] = [
+    { label: "Home", url: "/" },
+    { label: "Home", url: "/profile" },
+  ];
   const columnCheckItem = useMemo(
     () => [
       { field: "directoryType", headerName: "파일 이름", flex: 1 },
@@ -236,10 +359,13 @@ const DataSecure = () => {
 
   // Component logic and UI here
   return (
-    <Box height={"70vh"}>
-      <Typography>Name of function</Typography>
+    <Box minHeight={"50vh"}>
+      <Typography>
+        <Breadcrumb data={dataBread} maxLength={3} limitWidth={120} />
+      </Typography>
       <Box overflow={"auto"} minHeight={"50vh"}>
-        <TableInfo title="Table" description="" content={mappedContent} />
+        {/* <TableInfo title="Table" description="" content={mappedContent} /> */}
+        <DetailSection data={detailData} />
         <Box borderTop={1} paddingTop={2} borderColor={"grey.200"}>
           <Box
             bgcolor={"white"}

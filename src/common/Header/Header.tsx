@@ -29,7 +29,7 @@ export const Header = forwardRef<HTMLElement>((_, ref) => {
   const [tabValue, setTabValue] = useState(0);
   const navigate = useNavigate();
   const handleOpenProfile = async () => {
-    navigate("/profile");
+    navigate("/admin");
   };
   const menuMap = [
     "1Depth Menu1",

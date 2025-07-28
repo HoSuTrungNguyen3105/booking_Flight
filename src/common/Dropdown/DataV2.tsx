@@ -3,6 +3,7 @@ import DataGridInTab from "../../common/Dropdown/Data";
 import InspectionSection from "../../common/Dropdown/InspectionSection";
 import type { GridColDef } from "@mui/x-data-grid";
 import Hero from "../../components/Hero/Hero";
+import type { IDetailItem } from "./DetailSection";
 const DataV2 = () => {
   type RowData = {
     id: number;
