@@ -80,6 +80,7 @@ const DataSecure = () => {
   };
   // Inspection data state
   const [inspectionData, setInspectionData] = useState<Detail>({
+    //DataDetail
     TITLE: "25.6.13 2:21 1:30 - TITLE, AL 서비스 범위 점검 정보",
     status: "미완료",
     time: "25.6.13 2:21 1:30",
@@ -230,7 +231,9 @@ const DataSecure = () => {
   );
   const dataBread: MenuData[] = [
     { label: "Home", url: "/" },
-    { label: "Home", url: "/profile" },
+    { label: "Message", url: "/profile" },
+    { label: "Admin", url: "/profile" },
+    { label: "Adv", url: "/profile" },
   ];
   const columnCheckItem = useMemo(
     () => [

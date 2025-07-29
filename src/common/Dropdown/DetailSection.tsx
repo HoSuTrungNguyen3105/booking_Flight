@@ -59,9 +59,11 @@ const DetailSection = ({
             size={item.size || GRID_COL_NUM / itemPerRow}
             key={index}
             sx={{
-              borderRight:
-                // index + 1 === data.length
-                item.hasBorder ? 0 : (index + 1) % itemPerRow !== 0 ? 1 : 0,
+              borderRight: item.hasBorder
+                ? 0
+                : (index + 1) % itemPerRow !== 0
+                ? 1
+                : 0,
               borderColor: "grey.200",
               pr: (index + 1) % itemPerRow !== 0 ? 2 : 0,
             }}
