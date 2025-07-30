@@ -27,6 +27,8 @@ import DataSecure from "../common/Setting/DataSecure";
 import DataV2 from "../common/Dropdown/DataV2";
 import { LoginPage } from "../components/Auth/LoginPage";
 import Security from "../common/Setting/Security";
+import FullLayout from "../components/Layout/FullLayout";
+import CheckboxUI from "../common/Checkbox/CheckboxUI";
 interface IRouteObject {
   path?: (typeof ROUTE_PATHS)[keyof typeof ROUTE_PATHS];
   index?: boolean;
@@ -43,10 +45,10 @@ const routes = [
       </GuestGuard>
     ),
   },
-  {
-    path: "loginPage",
-    element: <LoginPage />,
-  },
+  // {
+  //   path: "loginPage",
+  //   element: <LoginPage />,
+  // },
   {
     path: ROUTE_PATHS.SAMPLE_BUTTON,
     element: <Sample />,
@@ -62,6 +64,17 @@ const routes = [
   {
     path: ROUTE_PATHS.REGISTER,
     element: <Register />,
+  },
+  {
+    path: ROUTE_PATHS.INIT,
+    element: <FullLayout />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        path: "loginPage",
+        element: <LoginPage />,
+      },
+    ],
   },
   {
     path: ROUTE_PATHS.LANDING,
@@ -94,7 +107,7 @@ const routes = [
       // },
       {
         path: ROUTE_PATHS.SAMPLE_FORM.replace("/", ""),
-        element: <Sample />,
+        element: <CheckboxUI />,
       },
       {
         path: ROUTE_PATHS.TIME_PICKER.replace("/", ""),

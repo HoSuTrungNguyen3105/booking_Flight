@@ -17,7 +17,7 @@ interface IModalStatisticalDataLearningProps {
 type ISomeDataInSubfilelist = GridRowDef &
   Pick<ISubfileListProps, "type" | "fileName">;
 
-type ISomeDataDataHistory = Omit<
+export type ISomeDataDataHistory = Omit<
   DataDetail,
   "description" | "isDeleted" | "metadata"
 > & {
@@ -102,7 +102,7 @@ const DataHistoryModal = ({
     };
 
     return (
-      <Box minHeight="20rem" maxHeight="100%">
+      <Box>
         <Divider sx={{ mb: 2, marginTop: 0, marginBottom: "22px" }} />
         <Typography variant="body1">데이터 목록</Typography>
         {renderRows(filteredDetailData)}
@@ -114,6 +114,7 @@ const DataHistoryModal = ({
             isLoading={false}
             nextRowClick={false}
             handleRowClick={() => {}}
+            largeThan={true}
           />
           {/* {filteredDetailData.map((detail) => (
         <DetailItem key={detail.id} detail={detail} />

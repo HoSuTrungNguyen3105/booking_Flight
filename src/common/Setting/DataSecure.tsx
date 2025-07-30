@@ -187,29 +187,29 @@ const DataSecure = () => {
       title: "Demo",
       description: "None",
     },
-    {
-      title: "Demo",
-      description: "None",
-    },
-    {
-      title: "Demo",
-      description: "None",
-    },
-    {
-      title: "Demo",
-      description: "",
-    },
+    // {
+    //   title: "Demo",
+    //   description: "None",
+    // },
+    // {
+    //   title: "Demo",
+    //   description: "None",
+    // },
+    // {
+    //   title: "Demo",
+    //   description: "",
+    // },
 
-    {
-      title: "Demo",
-      description: renderFilesAndButton(),
-      size: 5,
-    },
-    {
-      title: "Demo",
-      description: renderButtonAddFile(),
-      size: 1,
-    },
+    // {
+    //   title: "Demo",
+    //   description: renderFilesAndButton(),
+    //   size: 5,
+    // },
+    // {
+    //   title: "Demo",
+    //   description: renderButtonAddFile(),
+    //   size: 1,
+    // },
   ];
 
   function getRandomFiles(count: number) {
@@ -233,6 +233,9 @@ const DataSecure = () => {
     { label: "Home", url: "/" },
     { label: "Message", url: "/profile" },
     { label: "Admin", url: "/profile" },
+    { label: "Adv", url: "/profile" },
+    { label: "Adv", url: "/profile" },
+    { label: "Adv", url: "/profile" },
     { label: "Adv", url: "/profile" },
   ];
   const columnCheckItem = useMemo(
@@ -303,64 +306,6 @@ const DataSecure = () => {
       })),
     []
   );
-  const mappedContent: ContentBlock[] = [
-    {
-      content: {
-        content1: inspectionData.datStatus,
-      },
-      descContent: {
-        content1: customLabels.TITLE,
-      },
-      contentLabels: ["Họ tên"],
-    },
-    {
-      content: {
-        content1: inspectionData.checklist,
-      },
-      descContent: {
-        content1: "Thông tin địa chỉ",
-      },
-      hasLine: true,
-      contentLabels: ["Địa chỉ"],
-    },
-    {
-      content: {
-        content1: inspectionData.inspection,
-      },
-      descContent: {
-        content1: "Thông tin địa chỉ",
-      },
-      contentLabels: ["Địa chỉ"],
-      hasLine: true,
-    },
-    {
-      content: {
-        content1: inspectionData.inspection,
-      },
-      descContent: {
-        content1: "Thông tin địa chỉ",
-      },
-      hasLine: true,
-      contentLabels: ["Địa chỉ"],
-    },
-    {
-      content: {
-        content1: <FileUpload name="fileUploaderV3" />,
-      },
-      descContent: {
-        content1: "Thông tin cá nhân",
-      },
-      contentLabels: ["Họ tên"],
-    },
-  ];
-  // Initialize data
-  // useEffect(() => {
-  //     setSubfileList(rowsSubfileList);
-  //     setDataHistory(rowsDataHistory);
-  //     setRelatedItems(rowsCheckItems);
-  // }, [rowsSubfileList, rowsDataHistory, rowsCheckItems]);
-
-  // Component logic and UI here
   return (
     <Box minHeight={"50vh"}>
       <Typography>

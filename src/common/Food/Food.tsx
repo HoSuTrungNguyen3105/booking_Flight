@@ -1,4 +1,12 @@
-import { Box, Paper, Typography } from "@mui/material";
+import {
+  Box,
+  Divider,
+  Fade,
+  Grid,
+  Paper,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import { type GridColDef, type GridRenderCellParams } from "@mui/x-data-grid";
 import { useState, type ReactNode } from "react";
 import { Button } from "../Button/Button";
@@ -8,6 +16,9 @@ import SeafoodIcon from "../../../src/svgs/shrimp-svg.svg";
 import DessertIcon from "../../../src/svgs/chicken-svg.svg";
 import BeverageIcon from "../../../src/svgs/gelatin-svg.svg";
 import DataTable from "../DataGrid/index.tsx";
+import { motion } from "framer-motion";
+import RestaurantMenuIcon from "@mui/icons-material/RestaurantMenu";
+
 type FoodData = {
   id: number;
   name: string;
@@ -65,7 +76,7 @@ const typeIcons: Record<string, ReactNode> = {
 
 const Food = () => {
   const [selectedMeals, setSelectedMeals] = useState<number[]>([]);
-
+  const theme = useTheme();
   const handleSelect = (id: number) => {
     console.log(typeIcons);
     setSelectedMeals((prev) =>
@@ -111,106 +122,192 @@ const Food = () => {
     .reduce((sum, meal) => sum + meal.price, 0);
 
   return (
-    <Box sx={{ width: "100%", p: 2 }}>
-      <Typography variant="h4" sx={{ mb: 2 }}>
-        Danh sách món ăn trên chuyến bay
-      </Typography>
-
+    <Box
+      sx={{
+        width: "100%",
+        p: { xs: 2, md: 4 },
+        background: "linear-gradient(180deg, #f9fafb 0%, #ffffff 100%)",
+        borderRadius: 3,
+        boxShadow: "0 4px 20px rgba(0, 0, 0, 0.05)",
+        maxWidth: 1200,
+        mx: "auto",
+      }}
+    >
+      {/* Header Section */}
       <Box
         sx={{
-          height: 400,
-          width: "100%",
-          // minHeight: "400px",
-          // overflow: "auto", // ✅ chỉ hiện scroll khi cần
-          // "& .MuiDataGrid-virtualScroller": {
-          //   overflowY: "auto !important", // ✅ đảm bảo scroll hoạt động đúng
-          // },
-          // "&::-webkit-scrollbar": {
-          //   width: 0,
-          //   height: 0,
-          // },
+          display: "flex",
+          alignItems: "center",
+          mb: 4,
+          gap: 2,
+        }}
+      >
+        <RestaurantMenuIcon
+          sx={{ fontSize: 40, color: theme.palette.primary.main }}
+        />
+        <Typography
+          variant="h3"
+          sx={{
+            fontWeight: 700,
+            color: theme.palette.text.primary,
+            letterSpacing: "-0.5px",
+          }}
+        >
+          In-Flight Dining Menu
+        </Typography>
+      </Box>
+
+      {/* Data Table Section */}
+      <Paper
+        elevation={1}
+        sx={{
+          borderRadius: 2,
+          overflow: "hidden",
+          mb: 4,
+          "& .MuiDataGrid-root": {
+            border: "none",
+            "& .MuiDataGrid-cell": {
+              fontSize: "0.9rem",
+              color: theme.palette.text.secondary,
+            },
+            "& .MuiDataGrid-columnHeaders": {
+              backgroundColor: theme.palette.grey[100],
+              fontWeight: 600,
+            },
+          },
         }}
       >
         <DataTable
           rows={meals}
           columns={columns}
           checkboxSelection={false}
-          // onSelectionModelChange={(newSelection) => {
-          //   setSelectedMeals(newSelection as number[]);
+          // autoHeight
+          // sx={{
+          //   height: "100%",
+          //   width: "100%",
+          //   "&:hover": {
+          //     cursor: "pointer",
+          //   },
           // }}
-          // pageSizeOptions={[5]}
-          // disableRowSelectionOnClick
+          onRowClick={(params) => handleSelect(params.row.id)} // Add click handler for row selection
         />
-      </Box>
+      </Paper>
 
+      {/* Selected Meals Section */}
       {selectedMeals.length > 0 && (
-        <Box
-          sx={{
-            backgroundColor: "#f4f6f8",
-            mt: 2,
-            p: 2,
-            borderRadius: 2,
-          }}
-        >
-          <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 600 }}>
-            Món đã chọn
-          </Typography>
-          {selectedMeals.length > 0 && (
-            <Paper
-              elevation={3}
+        <Fade in={selectedMeals.length > 0}>
+          <Paper
+            elevation={2}
+            sx={{
+              p: { xs: 2, md: 3 },
+              borderRadius: 3,
+              background: "#ffffff",
+              border: `1px solid ${theme.palette.divider}`,
+              mt: 4,
+              transition: "all 0.3s ease",
+            }}
+            component={motion.div}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <Typography
+              variant="h5"
               sx={{
-                mt: 2,
-                p: 2,
-                backgroundColor: "#f0f8ff", // màu nền nhẹ
-                border: "1px solid #cce",
-                borderRadius: 2,
+                fontWeight: 600,
+                mb: 3,
+                color: theme.palette.text.primary,
               }}
             >
-              <Typography
-                variant="subtitle1"
-                fontWeight={600}
-                mb={2}
-                sx={{ color: "#333" }}
-              >
-                Món đã chọn
-              </Typography>
-              <Typography
-                variant="subtitle1"
-                fontWeight={700}
-                textAlign="right"
-                mt={2}
-                sx={{ color: "#2e7d32" }}
-              >
-                Tổng cộng: {totalPrice.toFixed(2)} USD
-              </Typography>
+              Your Selected Meals
+            </Typography>
 
+            <Grid container spacing={2}>
               {meals
                 .filter((meal) => selectedMeals.includes(meal.id))
                 .map((meal) => (
-                  <Box
-                    key={meal.id}
-                    display="flex"
-                    alignItems="center"
-                    mb={1.2}
-                    p={1}
-                    borderRadius={1}
-                    sx={{
-                      backgroundColor: "#ffffff",
-                      boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
-                    }}
-                  >
-                    {typeIcons[meal.type]}
-                    <Typography ml={1} color="#333">
-                      {meal.name} –{" "}
-                      <Box component="span" fontWeight="bold">
-                        {meal.price.toFixed(2)} USD
+                  <Grid size={12} key={meal.id}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        p: 2,
+                        borderRadius: 2,
+                        backgroundColor: theme.palette.grey[50],
+                        transition: "background-color 0.2s",
+                        "&:hover": {
+                          backgroundColor: theme.palette.grey[100],
+                        },
+                      }}
+                      component={motion.div}
+                      whileHover={{ scale: 1.02 }}
+                    >
+                      {typeIcons[meal.type]}
+                      <Box sx={{ ml: 2, flexGrow: 1 }}>
+                        <Typography
+                          variant="body1"
+                          sx={{
+                            fontWeight: 500,
+                            color: theme.palette.text.primary,
+                          }}
+                        >
+                          {meal.name}
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          sx={{ color: theme.palette.text.secondary }}
+                        >
+                          {meal.name || "Delicious in-flight meal option"}
+                        </Typography>
                       </Box>
-                    </Typography>
-                  </Box>
+                      <Typography
+                        variant="body1"
+                        sx={{
+                          fontWeight: 600,
+                          color: theme.palette.success.main,
+                        }}
+                      >
+                        ${meal.price.toFixed(2)}
+                      </Typography>
+                    </Box>
+                  </Grid>
                 ))}
-            </Paper>
-          )}
-        </Box>
+            </Grid>
+
+            <Divider sx={{ my: 3 }} />
+
+            {/* Total Price and Action Button */}
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 700,
+                  color: theme.palette.text.primary,
+                }}
+              >
+                Total: ${totalPrice.toFixed(2)}
+              </Typography>
+              <Button
+                size="large"
+                label="                Confirm Selection"
+                sx={{
+                  borderRadius: 2,
+                  textTransform: "none",
+                  fontWeight: 600,
+                  px: 4,
+                }}
+                // component={motion.button}
+                // whileHover={{ scale: 1.05 }}
+                // whileTap={{ scale: 0.95 }}
+              ></Button>
+            </Box>
+          </Paper>
+        </Fade>
       )}
     </Box>
   );

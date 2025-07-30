@@ -1,6 +1,7 @@
 export const ROUTE_PATHS = {
   LANDING: "/",
   HOME: "/v1",
+  INIT: "init",
   LOGIN: "/login",
   REGISTER: "/Register",
   REGISTRATION_FORM: "/RegistrationForm",
