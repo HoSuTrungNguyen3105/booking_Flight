@@ -8,7 +8,7 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Divider, FormControlLabel, Tab, Tabs } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
-import MoreHorizSharpIcon from "@mui/icons-material/MoreHorizSharp";
+import Person3Icon from "@mui/icons-material/Person3";
 import StarOutlineRoundedIcon from "@mui/icons-material/StarOutlineRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import AppsIcon from "@mui/icons-material/Apps";
@@ -32,13 +32,7 @@ export const Header = forwardRef<HTMLElement, React.HTMLProps<HTMLElement>>(
     const handleOpenProfile = async () => {
       navigate("/admin");
     };
-    const menuMap = [
-      "1Depth Menu1",
-      "1Depth Menu2",
-      "1Depth Menu3",
-      "1Depth Menu4",
-      "1Depth Menu5",
-    ];
+    const menuMap = ["1Depth Menu1", "1Depth Menu2", "1Depth Menu3"];
     const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
       event.stopPropagation();
       setTabValue(newValue);
@@ -146,18 +140,18 @@ export const Header = forwardRef<HTMLElement, React.HTMLProps<HTMLElement>>(
                     gap: 1,
                   }}
                 >
+                  <IconButton className="icon-button">
+                    <HelpOutlineRoundedIcon />
+                  </IconButton>
                   {/* <IconButton className="icon-button">
-                  <HelpOutlineRoundedIcon />
-                </IconButton>
-                <IconButton className="icon-button">
-                  <MoreHorizSharpIcon />
-                </IconButton> */}
+                    <MoreHorizSharpIcon />
+                  </IconButton> */}
                   <IconButton className="icon-button">
                     <StarOutlineRoundedIcon />
                   </IconButton>
-                  <IconButton className="icon-button">
+                  {/* <IconButton className="icon-button">
                     <SettingsRoundedIcon />
-                  </IconButton>
+                  </IconButton> */}
                   <FormControlLabel
                     control={<PlainSwitch defaultChecked />}
                     label=""
@@ -166,16 +160,16 @@ export const Header = forwardRef<HTMLElement, React.HTMLProps<HTMLElement>>(
                   <Box>
                     <LanguageDropdown />
                   </Box>
-
                   {isAuthenticated ? (
                     <Box sx={{ display: "flex", alignItems: "center", ml: 2 }}>
                       <Button
                         sx={{ display: "flex", alignItems: "center" }}
                         onClick={handleOpenProfile}
-                        iconPosition="trailing"
-                        size="small"
-                        appearance="unfilled"
-                        label={<Avatar sx={{ mr: 1 }} alt="User" src="" />}
+                        iconPosition="leading"
+                        size="large"
+                        appearance="unfilledInverse"
+                        icon={<Person3Icon />}
+                        label="User"
                       />
                       <SignOut />
                     </Box>

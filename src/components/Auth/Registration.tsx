@@ -106,7 +106,7 @@ const Registration = () => {
   return (
     <TableContainer
       component={Paper}
-      sx={{ maxWidth: 800, margin: "auto", mt: 4, p: 2 }}
+      sx={{ maxWidth: "auto", margin: "auto", mt: 4, p: 2 }}
     >
       <Table>
         <TableBody>
