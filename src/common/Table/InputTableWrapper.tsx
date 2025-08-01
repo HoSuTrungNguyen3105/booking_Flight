@@ -1,5 +1,5 @@
 import { TableBody, TableCell, TableHead, TableRow } from "@mui/material";
-import { ReactComponent as RequiredIcon } from "assets/images/icon/required_icon.svg";
+import RequiredIcon from "assets/images/icon/required_icon.svg";
 import { Table } from "react-bootstrap"; // 2.7k (gzipped: 1.3k)
 import { useTranslation } from "react-i18next"; // 5.3k (gzipped: 2.3k)
 import { Checkbox } from "../Checkbox/Checkbox";

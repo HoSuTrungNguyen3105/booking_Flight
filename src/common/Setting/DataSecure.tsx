@@ -14,6 +14,7 @@ import { Button } from "../Button/Button";
 import InputField from "../Input/InputField";
 import type { MenuData } from "../BreadCrumb/BreadcrumbV2";
 import Breadcrumb from "../BreadCrumb/BreadcrumbV2";
+import InputTextField from "../Input/InputTextField";
 // import DetailDataSystemModal from "./hooks/DetailDataSystemModal";
 // FIX: Update the import path or create the missing file if necessary
 
@@ -306,11 +307,20 @@ const DataSecure = () => {
       })),
     []
   );
+  const [valuePw, setValuePw] = useState("wdwdmwdwdmwdmwdwmdwkdk");
   return (
     <Box minHeight={"50vh"}>
       <Typography>
         <Breadcrumb data={dataBread} maxLength={3} limitWidth={120} />
       </Typography>
+      <InputTextField
+        type="password"
+        canCopy
+        value={valuePw}
+        realease3phrase
+        showEyeIcon
+        onChange={setValuePw}
+      />
       <Box overflow={"auto"} minHeight={"50vh"}>
         {/* <TableInfo title="Table" description="" content={mappedContent} /> */}
         <DetailSection data={detailData} />
