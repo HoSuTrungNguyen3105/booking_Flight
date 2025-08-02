@@ -8,14 +8,15 @@ type ImageThumbnailProps = {
 export const ImageThumbnail: FC<ImageThumbnailProps> = ({ url }) => {
   return url ? (
     <Box
-      width="100%"
-      height="100%"
+      width={32}
+      height={32}
       sx={{
         background: `url(${url}) no-repeat center`,
-        backgroundSize: "contain",
+        backgroundSize: "cover",
+        borderRadius: "50%", // Nếu muốn ảnh tròn
+        border: "1px solid #ccc",
+        flexShrink: 0,
       }}
-    >
-      <Box className="layout-img" />
-    </Box>
+    />
   ) : null;
 };

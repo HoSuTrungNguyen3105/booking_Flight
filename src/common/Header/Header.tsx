@@ -22,7 +22,8 @@ import SignOut from "../../components/Auth/SignOut";
 import { PlainSwitch } from "../Switch/PlainSwitch";
 import { Link, useNavigate } from "react-router-dom";
 import { LanguageDropdown } from "../Dropdown/Changelng";
-
+import { ImageThumbnail } from "../Profile/ImageThumbnail";
+import UserInfo from "../../svgs/eye.png";
 export const Header = forwardRef<HTMLElement, React.HTMLProps<HTMLElement>>(
   (props, ref) => {
     const { isAuthenticated } = useAuth();
@@ -165,10 +166,10 @@ export const Header = forwardRef<HTMLElement, React.HTMLProps<HTMLElement>>(
                       <Button
                         sx={{ display: "flex", alignItems: "center" }}
                         onClick={handleOpenProfile}
-                        iconPosition="leading"
+                        iconPosition="trailing"
                         size="large"
-                        appearance="unfilledInverse"
-                        icon={<Person3Icon />}
+                        appearance="contained"
+                        icon={<ImageThumbnail url={UserInfo} />}
                         label="User"
                       />
                       <SignOut />

@@ -1,19 +1,19 @@
-import { Switch } from "@mui/material";
 import { Dropdown } from "../Dropdown/Dropdown";
 import InputTextArea from "../Input/InputTextArea";
-import TextArea from "../Input/TextArea";
 import type { DropdownOptions } from "../Dropdown/type";
 import Android12Switch from "../Switch/Switch";
+import InputTextField from "../Input/InputTextField";
 
 export enum FieldType {
   SWITCH = "switch",
   DROPDOWN = "dropdown",
-  INPUT = "input",
+  INPUT_WITH_TYPE_PASSWORD = "input_pw",
+  INPUT_WITH_TYPE_TEXT = "input_text",
   TEXTAREA = "textarea",
   DATE = "date",
 }
-type IFormField = {
-  id?: string;
+export type IFormField = {
+  id: string;
   label?: string;
   type: FieldType;
   placeholder?: string;
@@ -21,8 +21,10 @@ type IFormField = {
   value: any;
   disabled?: boolean;
   onChange: (value: any) => void;
+  customProps?: Record<string, any>; // ✅ Thêm dòng này
 };
-interface IFieldRendererProps extends Omit<IFormField, "id" | "label"> {
+interface IFieldRendererProps extends Omit<IFormField, "id"> {
+  error?: boolean | string;
   disabled?: boolean;
   onChange: (value: any) => void;
 }
@@ -33,7 +35,9 @@ const FieldRenderer = ({
   options,
   value,
   disabled,
+  error,
   onChange,
+  customProps,
 }: IFieldRendererProps) => {
   switch (type) {
     case FieldType.SWITCH:
@@ -54,16 +58,40 @@ const FieldRenderer = ({
           value={value}
           disabled={disabled}
           onChange={onChange}
+          {...(customProps || {})} // ✅ Truyền toàn bộ prop riêng vào
         />
       );
 
-    case FieldType.INPUT:
+    case FieldType.INPUT_WITH_TYPE_PASSWORD:
       return (
-        <TextArea
-          placeholder={placeholder}
+        <InputTextField
+          // placeholder={placeholder}
+          // value={value}
+          // disabled={disabled}
+          // onChange={(e) => onChange(e.target.value)}
+          type="password"
+          canCopy
+          realease3phrase
+          // readOnly
+          showEyeIcon
           value={value}
-          disabled={disabled}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={onChange}
+          {...(customProps || {})} // ✅ Truyền toàn bộ prop riêng vào
+        />
+      );
+    case FieldType.INPUT_WITH_TYPE_TEXT:
+      return (
+        <InputTextField
+          // placeholder={placeholder}
+          // value={value}
+          // disabled={disabled}
+          // onChange={(e) => onChange(e.target.value)}
+          error={error as boolean}
+          type="text"
+          clearable
+          value={value}
+          onChange={onChange}
+          {...(customProps || {})} // ✅ Truyền toàn bộ prop riêng vào
         />
       );
 

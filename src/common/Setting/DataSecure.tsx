@@ -15,6 +15,7 @@ import InputField from "../Input/InputField";
 import type { MenuData } from "../BreadCrumb/BreadcrumbV2";
 import Breadcrumb from "../BreadCrumb/BreadcrumbV2";
 import InputTextField from "../Input/InputTextField";
+import AddUserModal from "./hooks/AddUserModal";
 // import DetailDataSystemModal from "./hooks/DetailDataSystemModal";
 // FIX: Update the import path or create the missing file if necessary
 
@@ -54,6 +55,7 @@ const DataSecure = () => {
   const [isLoading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [openSubfile, setOpenSubefile] = useState(false);
+  const [openUserModal, setOpenUserModal] = useState(false);
   const [selectedRow, setSelectedRow] = useState<IDataHistoryProps | null>(
     null
   );
@@ -66,7 +68,7 @@ const DataSecure = () => {
   };
   const openModalSubfile = (row: GridRowDef) => {
     setSelectedRow(row as IDataHistoryProps);
-    setOpenSubefile(true);
+    setOpenUserModal(true);
   };
   const handleRowClick = (params: GridRowParams) => {
     const row = params.row as IDataHistoryProps;
@@ -399,6 +401,11 @@ const DataSecure = () => {
             // files={numberOfFile}
             detailData={inspectionData}
             open={openSubfile}
+          />
+          <AddUserModal
+            onSuccess={() => {}}
+            onClose={closeModalSubfile}
+            open={openUserModal}
           />
         </Box>
       </Box>

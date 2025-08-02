@@ -5,6 +5,7 @@ import TextField from "@mui/material/TextField";
 import ClearIcon from "../../svgs/close-circle-svg.svg";
 import ClearErrorIcon from "../../svgs/eye_close.png";
 import CopyIcon from "../../svgs/copy-link-icon.svg";
+import HasCopyIcon from "../../svgs/copy-success-svg.svg";
 import PwHideIcon from "../../svgs/eye_close.png";
 import PwShowIcon from "../../svgs/eye_1.png";
 
@@ -16,7 +17,6 @@ import React, {
   useState,
   type HTMLInputTypeAttribute,
 } from "react";
-import { useToast } from "../../context/ToastContext";
 
 interface IInputTextFieldProps {
   type?: HTMLInputTypeAttribute;
@@ -59,7 +59,7 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
     ref
   ) => {
     const [showPassword, setShowPassword] = useState(false);
-    const toast = useToast();
+    const [hasCopy, setHasCopy] = useState(false);
     const handleTogglePasswordVisibility = useCallback(() => {
       setShowPassword((prev) => !prev);
     }, []);
@@ -77,7 +77,12 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
 
     const handleCopyText = () => {
       navigator.clipboard.writeText(value || "");
-      toast("Success copy", "success");
+      setHasCopy(true);
+
+      // Tự reset lại sau 2 giây (2000ms)
+      setTimeout(() => {
+        setHasCopy(false);
+      }, 2000);
     };
 
     const readonlyStyles: SxProps = {
@@ -88,50 +93,58 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
       },
     };
 
+    // const mergedSx = useMemo(() => {
+    //   return {
+    //     ...sx,
+    //     ...(readOnly ? readonlyStyles : {}),
+    //   };
+    // }, [readOnly, sx]);
     const mergedSx = useMemo(() => {
       return {
         ...sx,
         ...(readOnly ? readonlyStyles : {}),
+        ...(hasCopy
+          ? {
+              "& .MuiOutlinedInput-root": {
+                border: "2px solid #4caf50",
+                borderRadius: "8px", // hoặc theo thiết kế của bạn
+              },
+            }
+          : {}),
       };
-    }, [readOnly, sx]);
+    }, [readOnly, hasCopy, sx]);
 
     return (
       <TextField
-        // type={type === "password" && showPassword ? "text" : type}
         type={
           type === "password"
             ? showPassword
               ? "text"
-              : "text" // dùng "text" để cho phép hiển thị masked dạng "•••abc"
+              : "text" // vẫn là text để dùng `•••` che
             : type
         }
-        inputRef={ref}
-        // value={
-        //   type === "password" && realease3phrase && !showPassword
-        //     ? getMaskedPassword(value || "")
-        //     : value
-        // }
         value={
           type === "password" && realease3phrase && !showPassword
             ? getMaskedPassword(value || "")
             : value
         }
+        inputRef={ref}
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={onKeyDown}
         error={error}
         disabled={disabled}
         sx={mergedSx}
         {...restProps}
-        inputProps={{
-          readOnly: realease3phrase && !showPassword,
-        }}
+        // inputProps={{
+        //   readOnly: realease3phrase && !showPassword,
+        // }}
         slotProps={{
           input: {
             startAdornment: !!startIcon && (
               <InputAdornment position="start">{startIcon}</InputAdornment>
             ),
             endAdornment: (clearable || endIcon || type === "password") && (
-              <InputAdornment position="end">
+              <InputAdornment sx={{ gap: 1, paddingRight: 0 }} position="end">
                 {clearable && !!value && (
                   <IconButton
                     edge="end"
@@ -141,8 +154,8 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
                   >
                     <img
                       src={error ? ClearErrorIcon : ClearIcon}
-                      width={24}
-                      height={24}
+                      width={20}
+                      height={20}
                       alt="clear"
                     />
                   </IconButton>
@@ -150,14 +163,14 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
                 {type === "password" && showEyeIcon ? (
                   <IconButton
                     onClick={handleTogglePasswordVisibility}
-                    disabled={disabled}
+                    disabled={false}
                     edge="end"
                     sx={{ cursor: "pointer" }}
                   >
                     <img
                       src={showPassword ? PwShowIcon : PwHideIcon}
-                      width={26}
-                      height={26}
+                      width={20}
+                      height={20}
                       alt="toggle-password"
                     />
                   </IconButton>
@@ -166,12 +179,21 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
                 )}
                 {canCopy && (
                   <IconButton onClick={handleCopyText}>
-                    <Box
-                      component={"img"}
-                      width={20}
-                      height={20}
-                      src={CopyIcon}
-                    />
+                    {hasCopy ? (
+                      <Box
+                        component={"img"}
+                        width={20}
+                        height={20}
+                        src={HasCopyIcon}
+                      />
+                    ) : (
+                      <Box
+                        component={"img"}
+                        width={20}
+                        height={20}
+                        src={CopyIcon}
+                      />
+                    )}
                   </IconButton>
                 )}
               </InputAdornment>
