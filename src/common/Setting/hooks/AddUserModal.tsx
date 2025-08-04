@@ -130,8 +130,7 @@ IModalStatisticalDataLearningProps) => {
           placeholder: "Nhập mật khẩu...",
           options: [],
           value: formData.passWord,
-          onChange: (val) =>
-            setFormData((prev) => ({ ...prev, passWord: val })),
+          // onChange: () => {},
         },
       ];
 

@@ -128,7 +128,7 @@ const DataHistoryModal = ({
     <BaseModal
       open={open}
       onClose={onClose}
-      title={`원본 데이터, 통계 데이터 학습 Seq${selectedRows?.name} 상세 정보`}
+      title={`원본 데이터, 통계 데이터 학습 Seq$ 상세 정보`}
       subtitle="-선택된 원본 데이터의 상세 정보를 확인합니다.-"
       Icon={AddCircleOutlineIcon}
       slots={{ content: renderContent(), actions: renderActions() }}

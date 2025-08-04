@@ -11,41 +11,41 @@ $app-bar-colour: #f7f9f8;
 .app-bar {
   background-color: $app-bar-colour !important;
 }
-.MuiToolbar-root
-  MuiToolbar-gutters
-  MuiToolbar-regular
-  css-1ygil4i-MuiToolbar-root {
-  padding: 0 !important;
-}
-.css-1ygil4i-MuiToolbar-root {
-  padding-left: 0px !important;
-  padding-right: 0px !important;
-}
-.css-e7t1q4-MuiButtonBase-root-MuiIconButton-root {
-  margin-left: 0 !important;
-}
-.css-12ysj7f-MuiPaper-root-MuiAppBar-root {
-  box-shadow: none !important;
-  height: 100%;
-}
-.select {
-  //   padding: 0px !important;
-  border: none !important;
-}
-#demo-simple-select {
-  display: flex !important;
-  vertical-align: middle !important;
-  text-align: center !important;
-}
-.header {
-  width: fit-content;
-}
-.css-jhczcq-MuiTabs-root {
-  height: 100%;
-}
-.css-1wxkzlj-MuiTabs-flexContainer {
-  height: 100%;
-}
+// .MuiToolbar-root
+//   MuiToolbar-gutters
+//   MuiToolbar-regular
+//   css-1ygil4i-MuiToolbar-root {
+//   padding: 0 !important;
+// }
+// .css-1ygil4i-MuiToolbar-root {
+//   padding-left: 0px !important;
+//   padding-right: 0px !important;
+// }
+// .css-e7t1q4-MuiButtonBase-root-MuiIconButton-root {
+//   margin-left: 0 !important;
+// }
+// .css-12ysj7f-MuiPaper-root-MuiAppBar-root {
+//   box-shadow: none !important;
+//   height: 100%;
+// }
+// .select {
+//   //   padding: 0px !important;
+//   border: none !important;
+// }
+// #demo-simple-select {
+//   display: flex !important;
+//   vertical-align: middle !important;
+//   text-align: center !important;
+// }
+// .header {
+//   width: fit-content;
+// }
+// .css-jhczcq-MuiTabs-root {
+//   height: 100%;
+// }
+// .css-1wxkzlj-MuiTabs-flexContainer {
+//   height: 100%;
+// }
 .MuiTab-root {
   color: gray !important;
 }
@@ -58,55 +58,55 @@ $app-bar-colour: #f7f9f8;
   margin-left: 0px !important;
   position: relative !important;
 }
-.css-e7t1q4-MuiButtonBase-root-MuiIconButton-root {
-  padding: 1rem !important;
-  height: 100% !important;
-}
-.css-zanzjh-MuiPaper-root-MuiAppBar-root {
-  width: fit-content !important;
-  width: 100% !important;
-  top: 10;
-  left: unset !important;
-  right: unset !important;
-  box-shadow: none !important;
-  height: 100%;
-}
+// .css-e7t1q4-MuiButtonBase-root-MuiIconButton-root {
+//   padding: 1rem !important;
+//   height: 100% !important;
+// }
+// .css-zanzjh-MuiPaper-root-MuiAppBar-root {
+//   width: fit-content !important;
+//   width: 100% !important;
+//   top: 10;
+//   left: unset !important;
+//   right: unset !important;
+//   box-shadow: none !important;
+//   height: 100%;
+// }
 .height-tab {
   max-height: 4.4rem !important;
   width: 40% !important;
 }
-.css-ptdwpq-MuiPaper-root-MuiAppBar-root {
-  box-shadow: none !important;
-  height: 100% !important;
-}
-.css-f1rsp6 {
-  height: 100%;
-  border: 1px solid gainsboro;
-  position: absolute !important;
-  width: 100% !important;
-}
-.header-sidebar {
-  position: absolute;
-  top: 100%;
-  width: 15% !important;
-}
-.icon-button {
-  width: 50px;
-  height: 50px;
-  border-radius: 10px;
-  background-color: #f0f2f5;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0;
-  transition: background-color 0.3s ease;
+// .css-ptdwpq-MuiPaper-root-MuiAppBar-root {
+//   box-shadow: none !important;
+//   height: 100% !important;
+// }
+// .css-f1rsp6 {
+//   height: 100%;
+//   border: 1px solid gainsboro;
+//   position: absolute !important;
+//   width: 100% !important;
+// }
+// .header-sidebar {
+//   position: absolute;
+//   top: 100%;
+//   width: 15% !important;
+// }
+// .icon-button {
+//   width: 50px;
+//   height: 50px;
+//   border-radius: 10px;
+//   background-color: #f0f2f5;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   padding: 0;
+//   transition: background-color 0.3s ease;
 
-  svg {
-    font-size: 24px;
-    color: #135678;
-  }
+//   svg {
+//     font-size: 24px;
+//     color: #135678;
+//   }
 
-  &:hover {
-    background-color: #e0e7ec;
-  }
-}
+//   &:hover {
+//     background-color: #e0e7ec;
+//   }
+// }

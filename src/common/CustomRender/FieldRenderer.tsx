@@ -3,6 +3,8 @@ import InputTextArea from "../Input/InputTextArea";
 import type { DropdownOptions } from "../Dropdown/type";
 import Android12Switch from "../Switch/Switch";
 import InputTextField from "../Input/InputTextField";
+import type { Theme } from "@mui/material/styles";
+import type { SxProps } from "@mui/system";
 
 export enum FieldType {
   SWITCH = "switch",
@@ -19,8 +21,9 @@ export type IFormField = {
   placeholder?: string;
   options: DropdownOptions[];
   value: any;
+  sx?: SxProps<Theme>;
   disabled?: boolean;
-  onChange: (value: any) => void;
+  onChange?: (value: any) => void;
   customProps?: Record<string, any>; // ✅ Thêm dòng này
 };
 interface IFieldRendererProps extends Omit<IFormField, "id"> {
@@ -37,6 +40,7 @@ const FieldRenderer = ({
   disabled,
   error,
   onChange,
+  sx,
   customProps,
 }: IFieldRendererProps) => {
   switch (type) {
@@ -52,7 +56,7 @@ const FieldRenderer = ({
     case FieldType.DROPDOWN:
       return (
         <Dropdown
-          sx={{ width: "100%" }}
+          sx={{ width: "100%" }} //
           placeholder={placeholder}
           options={options}
           value={value}

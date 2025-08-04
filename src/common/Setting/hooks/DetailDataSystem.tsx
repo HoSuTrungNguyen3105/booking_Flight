@@ -1,5 +1,5 @@
 import { Box, Grid, Typography } from "@mui/material";
-import { memo, useCallback, useMemo } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 import { Button } from "../../Button/Button";
 import {
   customLabels,
@@ -11,6 +11,7 @@ import type { GridRowDef } from "../../DataGrid";
 import BaseModal from "../../Modal/BaseModal";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
 import InputField from "../../Input/InputField";
+import InputTextField from "../../Input/InputTextField";
 
 interface IModalStatisticalDataLearningProps {
   open: boolean;
@@ -69,13 +70,33 @@ const DetailDataSystemModal = ({
       </Grid>
     );
   };
+  // const [formData, setFormData] = useState({
+  //         User: ['user.tsx'],
+  //         Admin: ['hasText.tsx'],
+  //         Guest: ['hasText.tsx'],
+  //       });
+
+  type Role = "User" | "Admin" | "Guest";
+
+  type FormDataType = {
+    [key in Role]: string[];
+  };
+
+  const [formData, setFormData] = useState<FormDataType>({
+    User: ["user.tsx"],
+    Admin: ["hasText.tsx"],
+    Guest: ["hasText.tsx"],
+  });
 
   // Hiển thị danh sách file và ô nhập
-  const renderFilesAndButton = () => {
+  const renderFilesAndButton = (
+    functionText: string,
+    selectedRows: string[]
+  ) => {
     return (
       <Box display="flex" flexDirection="column" minHeight="15vh">
         <Typography variant="caption" color="text.secondary" sx={{ mb: 1 }}>
-          점검 설명
+          {functionText}
         </Typography>
         {/* <Box display="flex" flexDirection="row" width="100%">
           {files?.name?.length > 0 && (
@@ -95,8 +116,8 @@ const DetailDataSystemModal = ({
           <Grid size={8}>
             {/* {selectedRows?.name?.length > 0 && ( */}
             <Box display="flex" flexDirection="column" gap={1}>
-              {selectedRows?.name?.map((item: any, i: any) => (
-                <InputField key={i} value={item} />
+              {selectedRows?.map((item: any, i: any) => (
+                <InputTextField key={i} value={item} />
               ))}
             </Box>
             {/* )} */}
@@ -114,11 +135,16 @@ const DetailDataSystemModal = ({
           기본 정보
         </Typography>
         {renderDetailRows(detailData)}
-
         <Typography component="p" variant="body2" fontWeight="bold" mt={3}>
           임시 비밀번호
         </Typography>
-        <Box mt={1}>{renderFilesAndButton()}</Box>
+        {renderFilesAndButton("User role files", formData.User)}
+        <Box mt={1}>
+          {renderFilesAndButton("Admin role files", formData.Admin)}
+        </Box>
+        <Box mt={1}>
+          {renderFilesAndButton("Guest role files", formData.Guest)}
+        </Box>
       </Box>
     );
   }, [detailData]);
@@ -127,7 +153,7 @@ const DetailDataSystemModal = ({
     <BaseModal
       open={open}
       onClose={onClose}
-      title={`원본 데이터, 통계 데이터 학습 Seq${selectedRows?.name} 상세 정보`}
+      title={`원본 데이터, 통계 데이터 학습 Seq$ 상세 정보`}
       subtitle="-선택된 원본 데이터의 상세 정보를 확인합니다.-"
       Icon={PrivacyTipIcon}
       slots={{ content: renderContent(), actions: renderActions() }}

@@ -315,14 +315,14 @@ const DataSecure = () => {
       <Typography>
         <Breadcrumb data={dataBread} maxLength={3} limitWidth={120} />
       </Typography>
-      <InputTextField
+      {/* <InputTextField
         type="password"
         canCopy
         value={valuePw}
         realease3phrase
         showEyeIcon
         onChange={setValuePw}
-      />
+      /> */}
       <Box overflow={"auto"} minHeight={"50vh"}>
         {/* <TableInfo title="Table" description="" content={mappedContent} /> */}
         <DetailSection data={detailData} />

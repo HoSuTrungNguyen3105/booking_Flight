@@ -71,42 +71,53 @@ export const Sidebar = () => {
     <Box
       sx={{
         width: 350,
-        maxHeight: "calc(100vh - 150px)", // hoặc giá trị thực tế bạn tính
-        bgcolor: "gray.100",
+        maxHeight: "calc(100vh - 150px)",
+        bgcolor: "grey.100",
         p: 2,
         overflowY: "auto",
         scrollbarWidth: "none",
+        "&::-webkit-scrollbar": { display: "none" }, // ẩn scrollbar cho Chrome
       }}
     >
+      {/* Header */}
       <Box
-        className="sidebar-header"
-        sx={{ p: 2, display: "flex", justifyContent: "space-between" }}
+        sx={{
+          p: 2,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 2,
+        }}
       >
-        <Typography sx={{ cursor: "pointer" }} variant="h6" fontWeight="bold">
+        <Typography variant="h6" fontWeight="bold" sx={{ cursor: "pointer" }}>
           {selectedMenu}
         </Typography>
         <Button
-          priority="normal"
-          iconPosition="trailing" //leading trailing
           size="large"
           onClick={gotoSetting}
+          iconPosition="trailing"
           appearance="unfilled"
-          icon={<SettingsRoundedIcon sx={{ fill: "#135678 !important" }} />}
+          icon={<SettingsRoundedIcon sx={{ color: "#135678" }} />}
         />
       </Box>
+
+      {/* Search */}
       <SearchPopup />
+
+      {/* Tabs */}
       <Tabs
-        className="sidebar-tabs"
         value={activeTab}
         onChange={handleTabChange}
         variant="fullWidth"
+        sx={{ mb: 2 }}
       >
         <Tab
           label="탭아이템"
           data-testid="tab1"
           sx={{
             "&.Mui-selected": {
-              color: "rgb(47, 154, 180) !important",
+              color: "primary.main",
+              fontWeight: "bold",
             },
           }}
         />
@@ -115,32 +126,39 @@ export const Sidebar = () => {
           data-testid="tab2"
           sx={{
             "&.Mui-selected": {
-              color: "rgb(47, 154, 180) !important",
+              color: "primary.main",
+              fontWeight: "bold",
             },
           }}
         />
       </Tabs>
+
+      {/* Sidebar Items */}
       <Box data-testid="list-item">
         {items.map((item) => (
-          <Box key={item.id}>
+          <Box key={item.id} mb={1}>
+            {/* Parent Item */}
             <Box
               sx={{
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
                 p: 1,
-                bgcolor: "grey.200",
+                bgcolor:
+                  selectedItemsId === item.id ? "primary.main" : "grey.200",
+                color: selectedItemsId === item.id ? "white" : "text.primary",
                 borderRadius: 1,
                 cursor: "pointer",
+                transition: "0.2s",
+                "&:hover": {
+                  bgcolor:
+                    selectedItemsId === item.id ? "primary.dark" : "grey.300",
+                },
               }}
-              className={`side-bar ${
-                selectedItemsId === item.id ? "active" : ""
-              }`}
               onClick={() => handleItemClick(item.id)}
             >
               <Typography
                 variant="body1"
-                ml={1}
                 onClick={() => handleToggleSubMenu(item.id)}
               >
                 {item.label}
@@ -152,88 +170,66 @@ export const Sidebar = () => {
                   onClick={() => handleToggleSubMenu(item.id)}
                 >
                   {openSubMenus.includes(item.id) ? (
-                    <RemoveIcon
-                      onClick={() =>
-                        toast(`${REACT_APP_URL_TRANSFER}/${item.id}`)
-                      }
-                      fontSize="small"
-                    />
+                    <RemoveIcon fontSize="small" />
                   ) : (
-                    <AddIcon
-                      fontSize="small"
-                      onClick={() =>
-                        toast(`${REACT_APP_URL_TRANSFER}/${item.id}`)
-                      }
-                    />
+                    <AddIcon fontSize="small" />
                   )}
                 </IconButton>
               )}
             </Box>
+
+            {/* Sub Items */}
             {openSubMenus.includes(item.id) && item.subItems && (
-              <Box ml={4}>
-                {item.subItems.map((subItem: TSidebarSubItem) => (
-                  <Box key={subItem.id}>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        p: 1,
-                        bgcolor: "grey.200",
-                        borderRadius: 1,
-                        cursor: "pointer",
-                      }}
-                      className={`sub-item ${
-                        selectedSubItemsId === subItem.id ? "active" : ""
-                      }`}
-                      onClick={() => handleSubItemClick(subItem.id)}
-                    >
-                      <Typography
-                        variant="body2"
-                        onClick={() => handleToggleSubMenu(subItem.id)}
+              <Box ml={3} mt={1}>
+                {item.subItems.map((subItem: TSidebarSubItem) => {
+                  const isSubSelected = selectedSubItemsId === subItem.id;
+
+                  return (
+                    <Box key={subItem.id} mb={1}>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          p: 1,
+                          bgcolor: isSubSelected ? "primary.light" : "grey.100",
+                          color: isSubSelected
+                            ? "primary.dark"
+                            : "text.primary",
+                          borderRadius: 1,
+                          cursor: "pointer",
+                          "&:hover": {
+                            bgcolor: "grey.200",
+                          },
+                        }}
+                        onClick={() => handleSubItemClick(subItem.id)}
                       >
-                        {subItem.label}
-                      </Typography>
-                      {subItem.subItems && subItem.subItems.length > 0 && (
-                        <IconButton
-                          size="small"
-                          onClick={() => handleToggleSubMenu(subItem.id)}
-                        >
-                          {openSubMenus.includes(subItem.id) ? (
-                            <RemoveIcon
-                              fontSize="small"
-                              onClick={() =>
-                                toast(`${REACT_APP_URL_TRANSFER}/${subItem.id}`)
-                              }
-                            />
-                          ) : (
-                            <AddIcon
-                              fontSize="small"
-                              onClick={() =>
-                                toast(
-                                  `${process.env.REACT_APP_URL_TRANSFER}/${subItem.id}`
-                                )
-                              }
-                            />
-                          )}
-                        </IconButton>
-                      )}
-                    </Box>
-                    {openSubMenus.includes(subItem.id) && subItem.subItems && (
-                      <Box ml={4}>
-                        {subItem.subItems.map(
-                          (nestedSubItem: TSidebarSubItem) => {
-                            const isSelected =
-                              selectedNestedSubItemsId === nestedSubItem.id;
-                            return (
-                              <Box key={nestedSubItem.id}>
+                        <Typography variant="body2">{subItem.label}</Typography>
+                        {subItem.subItems?.length > 0 && (
+                          <IconButton
+                            size="small"
+                            onClick={() => handleToggleSubMenu(subItem.id)}
+                          >
+                            {openSubMenus.includes(subItem.id) ? (
+                              <RemoveIcon fontSize="small" />
+                            ) : (
+                              <AddIcon fontSize="small" />
+                            )}
+                          </IconButton>
+                        )}
+                      </Box>
+
+                      {/* Nested Sub Items */}
+                      {openSubMenus.includes(subItem.id) &&
+                        subItem.subItems && (
+                          <Box ml={3} mt={0.5}>
+                            {subItem.subItems.map((nested) => {
+                              const isSelected =
+                                selectedNestedSubItemsId === nested.id;
+                              return (
                                 <Box
-                                  display="flex"
-                                  alignItems="center"
-                                  justifyContent="space-between"
+                                  key={nested.id}
                                   sx={{
-                                    display: "flex",
-                                    alignItems: "center",
                                     px: 2,
                                     py: 1,
                                     borderRadius: 1,
@@ -244,40 +240,29 @@ export const Sidebar = () => {
                                     color: isSelected
                                       ? "white"
                                       : "text.primary",
+                                    transition: "0.2s",
                                     "&:hover": {
                                       bgcolor: isSelected
                                         ? "primary.dark"
                                         : "grey.200",
                                     },
-                                    transition: "background-color 0.2s ease",
                                   }}
-                                  // onClick={() => {
-                                  //   handleNestedSubItemClick(nestedSubItem.id);
-                                  //   toast(
-                                  //     `${REACT_APP_URL_TRANSFER}/${subItem.id}/${selectedNestedSubItemsId}`
-                                  //   );
-                                  // }}
                                   onClick={() => {
-                                    handleNestedSubItemClick(nestedSubItem.id);
-                                    navigate(
-                                      // `/${subItem.id}/${nestedSubItem.id}`
-                                      // `/${nestedSubItem.id}`
-                                      `/${nestedSubItem.id}`
-                                    );
+                                    handleNestedSubItemClick(nested.id);
+                                    navigate(`/${nested.id}`);
                                   }}
                                 >
                                   <Typography variant="body2">
-                                    {nestedSubItem.label}
+                                    {nested.label}
                                   </Typography>
                                 </Box>
-                              </Box>
-                            );
-                          }
+                              );
+                            })}
+                          </Box>
                         )}
-                      </Box>
-                    )}
-                  </Box>
-                ))}
+                    </Box>
+                  );
+                })}
               </Box>
             )}
           </Box>

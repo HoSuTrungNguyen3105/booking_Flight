@@ -126,34 +126,24 @@ const Food = () => {
       sx={{
         width: "100%",
         p: { xs: 2, md: 4 },
-        background: "linear-gradient(180deg, #f9fafb 0%, #ffffff 100%)",
+        background: "linear-gradient(180deg, #f0f4f8 0%, #ffffff 100%)",
         borderRadius: 3,
-        boxShadow: "0 4px 20px rgba(0, 0, 0, 0.05)",
+        boxShadow: "0 4px 20px rgba(0, 0, 0, 0.06)",
         maxWidth: 1200,
         mx: "auto",
       }}
     >
       {/* Header Section */}
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          mb: 4,
-          gap: 2,
-        }}
-      >
+      <Box sx={{ display: "flex", alignItems: "center", mb: 4, gap: 2 }}>
         <RestaurantMenuIcon
           sx={{ fontSize: 40, color: theme.palette.primary.main }}
         />
         <Typography
-          variant="h3"
-          sx={{
-            fontWeight: 700,
-            color: theme.palette.text.primary,
-            letterSpacing: "-0.5px",
-          }}
+          variant="h4"
+          fontWeight={700}
+          color={theme.palette.text.primary}
         >
-          In-Flight Dining Menu
+          In-Flight Meal Management
         </Typography>
       </Box>
 
@@ -181,44 +171,33 @@ const Food = () => {
           rows={meals}
           columns={columns}
           checkboxSelection={false}
-          // autoHeight
-          // sx={{
-          //   height: "100%",
-          //   width: "100%",
-          //   "&:hover": {
-          //     cursor: "pointer",
-          //   },
-          // }}
-          onRowClick={(params) => handleSelect(params.row.id)} // Add click handler for row selection
+          onRowClick={(params) => handleSelect(params.row.id)}
         />
       </Paper>
 
       {/* Selected Meals Section */}
       {selectedMeals.length > 0 && (
-        <Fade in={selectedMeals.length > 0}>
+        <Fade in>
           <Paper
             elevation={2}
+            component={motion.div}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             sx={{
               p: { xs: 2, md: 3 },
               borderRadius: 3,
               background: "#ffffff",
               border: `1px solid ${theme.palette.divider}`,
               mt: 4,
-              transition: "all 0.3s ease",
             }}
-            component={motion.div}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
           >
             <Typography
               variant="h5"
-              sx={{
-                fontWeight: 600,
-                mb: 3,
-                color: theme.palette.text.primary,
-              }}
+              fontWeight={600}
+              mb={3}
+              color={theme.palette.text.primary}
             >
-              Your Selected Meals
+              Selected In-Flight Meals
             </Typography>
 
             <Grid container spacing={2}>
@@ -227,44 +206,39 @@ const Food = () => {
                 .map((meal) => (
                   <Grid size={12} key={meal.id}>
                     <Box
+                      component={motion.div}
+                      whileHover={{ scale: 1.02 }}
                       sx={{
                         display: "flex",
                         alignItems: "center",
                         p: 2,
                         borderRadius: 2,
                         backgroundColor: theme.palette.grey[50],
-                        transition: "background-color 0.2s",
                         "&:hover": {
                           backgroundColor: theme.palette.grey[100],
                         },
                       }}
-                      component={motion.div}
-                      whileHover={{ scale: 1.02 }}
                     >
                       {typeIcons[meal.type]}
                       <Box sx={{ ml: 2, flexGrow: 1 }}>
                         <Typography
                           variant="body1"
-                          sx={{
-                            fontWeight: 500,
-                            color: theme.palette.text.primary,
-                          }}
+                          fontWeight={500}
+                          color={theme.palette.text.primary}
                         >
                           {meal.name}
                         </Typography>
                         <Typography
                           variant="body2"
-                          sx={{ color: theme.palette.text.secondary }}
+                          color={theme.palette.text.secondary}
                         >
-                          {meal.name || "Delicious in-flight meal option"}
+                          {meal.name || "Standard meal served onboard"}
                         </Typography>
                       </Box>
                       <Typography
                         variant="body1"
-                        sx={{
-                          fontWeight: 600,
-                          color: theme.palette.success.main,
-                        }}
+                        fontWeight={600}
+                        color={theme.palette.success.main}
                       >
                         ${meal.price.toFixed(2)}
                       </Typography>
@@ -275,7 +249,7 @@ const Food = () => {
 
             <Divider sx={{ my: 3 }} />
 
-            {/* Total Price and Action Button */}
+            {/* Total Price & Confirm Button */}
             <Box
               sx={{
                 display: "flex",
@@ -285,25 +259,21 @@ const Food = () => {
             >
               <Typography
                 variant="h6"
-                sx={{
-                  fontWeight: 700,
-                  color: theme.palette.text.primary,
-                }}
+                fontWeight={700}
+                color={theme.palette.text.primary}
               >
                 Total: ${totalPrice.toFixed(2)}
               </Typography>
               <Button
                 size="large"
-                label="                Confirm Selection"
+                label="Confirm Meal List"
                 sx={{
                   borderRadius: 2,
                   textTransform: "none",
                   fontWeight: 600,
                   px: 4,
                 }}
-                // component={motion.button}
-                // whileHover={{ scale: 1.05 }}
-                // whileTap={{ scale: 0.95 }}
+                // onClick={handleConfirmMeals}
               ></Button>
             </Box>
           </Paper>

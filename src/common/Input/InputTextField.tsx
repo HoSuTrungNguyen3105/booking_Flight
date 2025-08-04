@@ -93,26 +93,27 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
       },
     };
 
-    // const mergedSx = useMemo(() => {
-    //   return {
-    //     ...sx,
-    //     ...(readOnly ? readonlyStyles : {}),
-    //   };
-    // }, [readOnly, sx]);
     const mergedSx = useMemo(() => {
       return {
         ...sx,
         ...(readOnly ? readonlyStyles : {}),
-        ...(hasCopy
-          ? {
-              "& .MuiOutlinedInput-root": {
-                border: "2px solid #4caf50",
-                borderRadius: "8px", // hoặc theo thiết kế của bạn
-              },
-            }
-          : {}),
       };
-    }, [readOnly, hasCopy, sx]);
+    }, [readOnly, sx]);
+
+    // const mergedSx = useMemo(() => {
+    //   return {
+    //     ...sx,
+    //     ...(readOnly ? readonlyStyles : {}),
+    //     ...(hasCopy
+    //       ? {
+    //           "& .MuiOutlinedInput-root": {
+    //             border: "2px solid #4caf50",
+    //             borderRadius: "8px", // hoặc theo thiết kế của bạn
+    //           },
+    //         }
+    //       : {}),
+    //   };
+    // }, [readOnly, hasCopy, sx]);
 
     return (
       <TextField

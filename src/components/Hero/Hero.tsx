@@ -105,9 +105,7 @@ export default function Hero() {
       },
       content: {
         content1: "Thông tin cá nhân",
-        content2: "Thông tin liên hệ",
       },
-      contentLabels: ["Họ tên", "Tuổi", "Email", "Số điện thoại"],
       // highlight: true,
     },
     {
@@ -120,18 +118,6 @@ export default function Hero() {
     },
     {
       content: {
-        content1: "Địa chỉ",
-        content2: "Thành phố",
-        content3: "Quốc gia",
-      },
-      descContent: {
-        content1: "Thông tin địa chỉ",
-      },
-      hasLine: true,
-      contentLabels: ["Địa chỉ", "Thành phố", "Quốc gia"],
-    },
-    {
-      content: {
         content1: response.name,
         content2: String(response.age),
         content3: response.email,
@@ -145,92 +131,6 @@ export default function Hero() {
       },
       contentLabels: ["Họ tên", "Tuổi", "Email", "Số điện thoại"],
       hasLine: true,
-    },
-    {
-      content: {
-        content1: "Địa chỉ",
-        content2: "Thành phố",
-        content3: "Quốc gia",
-      },
-      descContent: {
-        content1: "Thông tin địa chỉ",
-      },
-      contentLabels: ["Địa chỉ", "Thành phố", "Quốc gia"],
-    },
-    {
-      content: {
-        content1: "Địa chỉ",
-        content2: "Thành phố",
-        content3: "Quốc gia",
-      },
-      descContent: {
-        content1: "Thông tin địa chỉ",
-      },
-      hasLine: true,
-      contentLabels: ["Địa chỉ", "Thành phố", "Quốc gia"],
-    },
-    {
-      content: {
-        content1: response.name,
-        content2: String(response.age),
-        content3: response.email,
-        content4: response.phone,
-      },
-      descContent: {
-        content1: "Thông tin cá nhân",
-        content2: "Thông tin liên hệ",
-        content3: "Thông tin liên hệ",
-        content4: "Thông tin liên hệ",
-      },
-      hasLine: true,
-      contentLabels: ["Họ tên", "Tuổi", "Email", "Số điện thoại"],
-    },
-    {
-      content: {
-        content1: "Thông tin cá nhân",
-        content2: "Thông tin liên hệ",
-      },
-      descContent: {
-        content1: "Thông tin cá nhân",
-        content2: "Thông tin liên hệ",
-      },
-      hasLine: true,
-      contentLabels: ["Họ tên", "Tuổi", "Email", "Số điện thoại"],
-    },
-    {
-      content: {
-        content1: "Thông tin cá nhân",
-        content2: "Thông tin liên hệ",
-      },
-      descContent: {
-        content1: "Thông tin cá nhân",
-        content2: "Thông tin liên hệ",
-      },
-      contentLabels: ["Họ tên", "Tuổi", "Email", "Số điện thoại"],
-    },
-    {
-      content: {
-        content1: "Địa chỉ",
-      },
-      descContent: {
-        content1: "Thông tin địa chỉ",
-      },
-      hasLine: true,
-      gridSize: 3,
-      contentLabels: ["Địa chỉ", "Thành phố", "Quốc gia"],
-    },
-    {
-      content: {
-        content1: renderFilesAndButton(),
-      },
-      hasLine: true,
-      gridSize: 5,
-    },
-    {
-      content: {
-        content1: renderButtonAddFile(),
-      },
-      gridSize: 1,
     },
   ];
   const [formData, setFormData] = useState({

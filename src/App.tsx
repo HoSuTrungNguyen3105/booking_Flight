@@ -10,33 +10,34 @@ import i18n from "./i18n";
 import { ToastProvider } from "./context/ToastContext";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
-const theme = createTheme({
-  palette: {
-    text: {
-      primary: "#145A32", // màu chữ
-    },
-  },
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          backgroundColor: "#D4EFDF", // ✅ nền cho button
-          color: "#145A32",
-          "&:hover": {
-            backgroundColor: "#A9DFBF", // hover màu khác chút
-          },
-        },
-      },
-    },
-    MuiInputBase: {
-      styleOverrides: {
-        root: {
-          backgroundColor: "#E8F8F5", // ✅ nền cho input (TextField, Input)
-        },
-      },
-    },
-  },
-});
+import theme from "./scss/theme";
+// const theme = createTheme({
+//   palette: {
+//     text: {
+//       primary: "#145A32", // màu chữ
+//     },
+//   },
+//   components: {
+//     MuiButton: {
+//       styleOverrides: {
+//         root: {
+//           backgroundColor: "#D4EFDF", // ✅ nền cho button
+//           color: "#145A32",
+//           "&:hover": {
+//             backgroundColor: "#A9DFBF", // hover màu khác chút
+//           },
+//         },
+//       },
+//     },
+//     MuiInputBase: {
+//       styleOverrides: {
+//         root: {
+//           backgroundColor: "#E8F8F5", // ✅ nền cho input (TextField, Input)
+//         },
+//       },
+//     },
+//   },
+// });
 function App() {
   return (
     <ThemeProvider theme={theme}>

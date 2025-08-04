@@ -6,11 +6,9 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
+import LocalAirportSharpIcon from "@mui/icons-material/LocalAirportSharp";
 import { Divider, FormControlLabel, Tab, Tabs } from "@mui/material";
-import Avatar from "@mui/material/Avatar";
-import Person3Icon from "@mui/icons-material/Person3";
 import StarOutlineRoundedIcon from "@mui/icons-material/StarOutlineRounded";
-import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import AppsIcon from "@mui/icons-material/Apps";
 import HelpOutlineRoundedIcon from "@mui/icons-material/HelpOutlineRounded";
 import { useSidebar } from "../../context/SidebarContext";
@@ -60,12 +58,10 @@ export const Header = forwardRef<HTMLElement, React.HTMLProps<HTMLElement>>(
                     size="large"
                     edge="start"
                     className="menu-icon"
-                    aria-label="menu"
-                    data-testid="button-menu"
                     onClick={toggleSidebar}
                     sx={{ mr: 2 }}
                   >
-                    <MenuIcon />
+                    <LocalAirportSharpIcon />
                   </IconButton>
                   <Box sx={{ display: "flex", alignItems: "center" }}>
                     <Typography
