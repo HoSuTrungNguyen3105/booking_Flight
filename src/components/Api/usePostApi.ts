@@ -9,6 +9,10 @@ import type {
   AvailableAircraft,
   ResponseMessage,
   UserListResponse,
+  UserListManageResponse,
+  UserData,
+  UserCreateResponse,
+  UserDataNoGrid,
 } from "../../utils/type.ts";
 import { MethodType } from "../../hooks/type";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
@@ -149,6 +153,7 @@ export const useLoginUser = () => {
       resultMessage: "",
       user: {
         id: 0,
+        userId: 0,
         email: "",
         name: "",
         password: "",
@@ -300,5 +305,24 @@ export const useTicketById = (flightParams: UserSearchType) => {
   return {
     flightBookingData,
     refetchFlightBookingDataData,
+  };
+};
+export const useCreateUserByAdmin = () => {
+  // const isValid = !!id;
+  const {
+    data: fetchCreateUser,
+    refetch: refetchCreateUser,
+    loading: loadingUser,
+  } = useFetch<UserCreateResponse, UserDataNoGrid>({
+    url: "/sys/users/createUserByAdmin",
+    // params: ,
+    autoFetch: false,
+    config: postMethod,
+    showToast: true,
+  });
+  return {
+    fetchCreateUser,
+    refetchCreateUser,
+    loadingUser,
   };
 };

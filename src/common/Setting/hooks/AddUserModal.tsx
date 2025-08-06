@@ -11,6 +11,9 @@ import FieldRenderer, {
 } from "../../CustomRender/FieldRenderer";
 import { Checkbox } from "../../Checkbox/Checkbox";
 import InputTextField from "../../Input/InputTextField";
+import { useUpdateUser } from "./useUpdateUser";
+import { useCreateUserByAdmin } from "../../../components/Api/usePostApi";
+import type { UseRCreate } from "../../../utils/type";
 interface IModalStatisticalDataLearningProps {
   open: boolean;
   onClose: () => void;
@@ -54,106 +57,70 @@ const SERVICE_TYPE_OPTIONS = [
 const AddUserModal = ({
   open,
   onClose,
-}: //   selectedRows,
-//   detailData,
-//   subfileList,
-IModalStatisticalDataLearningProps) => {
+  onSuccess,
+}: IModalStatisticalDataLearningProps) => {
+  const {
+    formDetailConfig,
+    handleChangeFormInput,
+    enableUpdateBtn,
+    formData,
+    error,
+    fetchUser,
+    loadingUser,
+    handleChange,
+    handleSubmit,
+    refetchUser,
+  } = useUpdateUser({
+    onClose,
+    onSuccess,
+  });
+  console.log("fetch", fetchUser);
+  // const handleSubmit = () => {}
   const renderActions = useCallback(() => {
     return (
       <Box display="flex" gap={1} justifyContent="flex-end" alignItems="center">
-        <Button variant="outlined" onClick={() => {}}>
+        <Button variant="outlined" onClick={handleSubmit}>
           확인
         </Button>
       </Box>
     );
-  }, []);
+  }, [handleSubmit]);
+
+  // function generateRandomPassword(length: number = 8): string {
+  //   const chars =
+  //     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
+  //   let password = "";
+  //   for (let i = 0; i < length; i++) {
+  //     const randomChar = chars.charAt(Math.floor(Math.random() * chars.length));
+  //     password += randomChar;
+  //   }
+  //   return password;
+  // }
 
   const renderContent = useCallback(() => {
-    const columnsSubfileList = useMemo(
-      () => [
-        { field: "fileName", headerName: "파일 이름", flex: 1 },
-        { field: "type", headerName: "유형", flex: 1 },
-      ],
-      []
-    );
-
     // hook lấy từ net nhgko thấy mẫu cũ
     const renderRows = () => {
       // Danh sách các field muốn render
-      const [formData, setFormData] = useState({
-        userName: "",
-        passWord: "co3t93WnBGD69sKyBux",
-        role: "member",
-        addDress: "",
-        permissionRole: [],
-      });
+      //   const [formData, setFormData] = useState({
+      //     name: "",
+      //     password: generateRandomPassword(12),
+      //     role: "",
+      //     email: "",
+      //     // permissionRole: "",
+      //   });
+      //   // const {  fetchCreateUser,
+      // // refetchCreateUser, }=useCreateUserByAdmin();
+      // //   console.log(formData);
 
-      const fields: IFormField[] = [
-        {
-          id: "userName",
-          label: "Tên đăng nhập",
-          type: FieldType.INPUT_WITH_TYPE_TEXT,
-          placeholder: "Nhập tên đăng nhập...",
-          options: [],
-          value: formData.userName,
-          onChange: (val) =>
-            setFormData((prev) => ({ ...prev, userName: val })),
-        },
-        {
-          id: "passWord",
-          label: "Mật khẩu",
-          type: FieldType.INPUT_WITH_TYPE_PASSWORD,
-          placeholder: "Nhập mật khẩu...",
-          options: [],
-          value: formData.passWord,
-          // onChange: () => {},
-        },
-        {
-          id: "role",
-          label: "Chọn vai trò",
-          type: FieldType.DROPDOWN,
-          placeholder: "Chọn vai trò...",
-          options: [
-            { label: "Thành viên", value: "member" },
-            { label: "Quản trị", value: "admin" },
-          ],
-          value: formData.role,
-          onChange: (val) => setFormData((prev) => ({ ...prev, role: val })),
-        },
-        {
-          id: "addDress",
-          label: "Địa chỉ",
-          type: FieldType.INPUT_WITH_TYPE_TEXT,
-          placeholder: "Nhập địa chỉ...",
-          options: [],
-          value: formData.addDress,
-          onChange: (val) =>
-            setFormData((prev) => ({ ...prev, addDress: val })),
-        },
-        {
-          id: "permissionRole",
-          label: "Chọn quyền",
-          type: FieldType.DROPDOWN,
-          placeholder: "Chọn quyền...",
-          options: [
-            { label: "Lựa chọn 1", value: "option1" },
-            { label: "Lựa chọn 2", value: "option2" },
-          ],
-          value: formData.permissionRole,
-          onChange: (val) =>
-            setFormData((prev) => ({ ...prev, permissionRole: val })),
-        },
-      ];
-
-      // Hàm cập nhật value
-      const handleChange = (key: string, value: any) => {
-        setFormData((prev) => ({ ...prev, [key]: value }));
-      };
+      //   // Hàm cập nhật value
+      //   const handleChange = (key: string, value: any) => {
+      //     setFormData((prev) => ({ ...prev, [key]: value }));
+      //   };
 
       return (
         <Stack>
           <Typography variant="body1">데이터 목록</Typography>
-          {fields.map((field) => (
+          {formDetailConfig.map((field) => (
             <Box key={field.id}>
               <Typography variant="body1" sx={{ mb: 1 }}>
                 {field.label}
@@ -165,7 +132,7 @@ IModalStatisticalDataLearningProps) => {
                 options={field.options}
                 value={formData[field.id as keyof typeof formData]}
                 disabled={false}
-                onChange={(val) => handleChange(field.id, val)}
+                onChange={(val) => handleChangeFormInput(field.id typof keyof as UseRCreate , val)}
               />
             </Box>
           ))}

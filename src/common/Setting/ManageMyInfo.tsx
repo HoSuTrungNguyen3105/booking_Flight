@@ -4,6 +4,7 @@ import { Box } from "@mui/material";
 import TableSection from "./TableSection";
 import DataTable from "../DataGrid/index";
 import Pagination from "../DataGrid/Pagination";
+import AddUserModal from "./hooks/AddUserModal";
 
 const ManageMyInfo = () => {
   const {
@@ -23,6 +24,7 @@ const ManageMyInfo = () => {
     onSortModelChange,
     onPageChange,
     onPageSizeChange,
+    openModal,
     onRowClick,
     onSearch,
     openCheckNow,
@@ -60,6 +62,13 @@ const ManageMyInfo = () => {
           onPageSizeChange={onPageSizeChange}
         />
       </Box>
+      {openModal.addUser && (
+        <AddUserModal
+          open={openModal.addUser}
+          onSuccess={() => {}}
+          onClose={() => {}}
+        />
+      )}
     </Box>
   );
 };

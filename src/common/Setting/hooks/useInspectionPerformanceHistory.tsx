@@ -6,6 +6,7 @@ import { UserRole, type UserData } from "../../../utils/type";
 import CSelect from "../../Dropdown/CSelect";
 import { useAuth } from "../../../context/AuthContext";
 import theme from "../../../scss/theme";
+import { useGetUserList } from "../../../components/Api/useGetApi";
 
 const dummyRows = Array.from({ length: 20 }, (_, index) => {
   const id = index + 1;
@@ -70,6 +71,7 @@ type IInspectionPerformanceHistoryItem = GridRowDef;
 export const useInspectionPerformanceHistory = () => {
   const dataTableViewRef = useRef<HTMLDivElement>(null);
   const [headerHeight, setHeaderHeight] = useState(0);
+  const { fetchUser, loadingUser, refetchUser } = useGetUserList();
 
   // const [rows, setRows] = useState(dummyRows);
   const [openCheckNow, setOpenCheckNow] = useState(false);
@@ -80,40 +82,37 @@ export const useInspectionPerformanceHistory = () => {
 
   const { user } = useAuth();
 
-  enum UserRole {
-    ADMIN = "ADMIN",
-    MEMBER = "MEMBER",
-  }
+  const rows = fetchUser?.list ?? [];
 
-  const rows = [
-    {
-      id: 1,
-      userId: "nguyen123",
-      userAlias: "Anh Nguyên",
-      userRole: UserRole.ADMIN,
-      createDate: "2024-09-01T10:15:00Z",
-      lastLoginDate: "2024-09-24T08:00:00Z",
-      situation: "활성화됨", // Active
-    },
-    {
-      id: 2,
-      userId: user?.id,
-      userAlias: user?.name,
-      userRole: user?.role,
-      createDate: "2024-08-20T09:00:00Z",
-      lastLoginDate: "2024-09-23T16:30:00Z",
-      situation: "비활성화됨", // Inactive
-    },
-    {
-      id: 3,
-      userId: "test01",
-      userAlias: "",
-      userRole: UserRole.MEMBER,
-      createDate: "2024-07-10T12:00:00Z",
-      lastLoginDate: "2024-08-01T14:45:00Z",
-      situation: "잠김", // Locked
-    },
-  ];
+  // const rows = [
+  //   {
+  //     id: 1,
+  //     userId: "nguyen123",
+  //     userAlias: "Anh Nguyên",
+  //     userRole: UserRole.ADMIN,
+  //     createDate: "2024-09-01T10:15:00Z",
+  //     lastLoginDate: "2024-09-24T08:00:00Z",
+  //     situation: "활성화됨", // Active
+  //   },
+  //   {
+  //     id: 2,
+  //     userId: user?.id,
+  //     userAlias: user?.name,
+  //     userRole: user?.role,
+  //     createDate: "2024-08-20T09:00:00Z",
+  //     lastLoginDate: "2024-09-23T16:30:00Z",
+  //     situation: "비활성화됨", // Inactive
+  //   },
+  //   {
+  //     id: 3,
+  //     userId: "test01",
+  //     userAlias: "",
+  //     userRole: UserRole.MEMBER,
+  //     createDate: "2024-07-10T12:00:00Z",
+  //     lastLoginDate: "2024-08-01T14:45:00Z",
+  //     situation: "잠김", // Locked
+  //   },
+  // ];
 
   // TODO: Replace with useServerPagination
   const {
@@ -214,33 +213,31 @@ export const useInspectionPerformanceHistory = () => {
   const columns: GridColDef[] = useMemo(
     () => [
       {
-        field: "userId",
+        field: "email",
         flex: 1,
         headerName: "아이디",
-        renderCell: ({ row }) => (
-          <span>
-            {row.userAlias ? `${row.userId}(${row.userAlias})` : row.userId}
-          </span>
-        ),
-      },
-      {
-        field: "userRole",
-        flex: 1,
-        headerName: "권한",
-        renderCell: ({ row }) => (
-          <span>{row.userRole === UserRole.ADMIN ? "관리자" : "멤버"}</span>
-        ),
-      },
-      {
-        field: "createDate",
-        headerName: "생성시간",
-        flex: 1,
         // renderCell: ({ row }) => (
-        //   <span>{getOffsetDateTimeFromNow(row.createDate, "-")}</span>
+        //   <span>
+        //     {row.userAlias ? `${row.userId}(${row.userAlias})` : row.userId}
+        //   </span>
         // ),
       },
       {
-        field: "lastLoginDate",
+        field: "role",
+        flex: 1,
+        headerName: "권한",
+        renderCell: ({ row }) => (
+          <span>{row.role === UserRole.ADMIN ? "관리자" : "멤버"}</span>
+        ),
+      },
+      {
+        field: "rank",
+        headerName: "생성시간",
+        flex: 1,
+        renderCell: ({ row }) => <span>{row.rank ? "Member" : "-"}</span>,
+      },
+      {
+        field: "mfaEnabledYn",
         headerName: "로그인",
         flex: 1,
         // renderCell: ({ row }) => (
@@ -248,7 +245,12 @@ export const useInspectionPerformanceHistory = () => {
         // ),
       },
       {
-        field: "userAlias",
+        field: "createdAt",
+        headerName: "상태",
+        flex: 1,
+      },
+      {
+        field: "name",
         headerName: "상태",
         flex: 1,
       },
@@ -258,7 +260,7 @@ export const useInspectionPerformanceHistory = () => {
         flex: 1,
         sortable: false,
         renderCell: ({ row }) =>
-          row.userId !== user?.id && (
+          row.id !== user?.id && (
             <CSelect
               key={row.id}
               defaultValue="관리"
@@ -271,7 +273,7 @@ export const useInspectionPerformanceHistory = () => {
                 },
               }}
               options={[
-                { label: "정보 수정", value: "editUser" },
+                { label: "정보 수정", value: "addUser" },
                 { label: "MFA 설정 삭제", value: "deleteMfaSettings" },
                 { label: "잠금/해금", value: "lock_unlockAccount" },
                 { label: "비밀번호 초기화", value: "resetPassword" },
@@ -332,6 +334,7 @@ export const useInspectionPerformanceHistory = () => {
     selectedItemDetailRow,
     setSelectedItemDetailRow,
     rows: paginatedData,
+    openModal,
     columns,
     pageInfo: {
       page: currentPage,

@@ -1,3 +1,5 @@
+import type { GridRowDef } from "../common/DataGrid";
+
 export enum MethodConfig {
   GET = "GET",
   POST = "POST",
@@ -79,14 +81,14 @@ export type UserDataResponse<T> = {
   accessToken?: string | null;
 };
 export enum UserRole {
-  ADMIN = "admin",
-  MEMBER = "member",
+  ADMIN = "ADMIN",
+  MEMBER = "MEMBER",
 }
 export type UserRoleType = UserRole.ADMIN | UserRole.MEMBER;
 
 // ✅ TypeScript cho User (từ Prisma model)
-export type UserData = {
-  id: number;
+export type UserData = GridRowDef & {
+  userId: number;
   email: string;
   name?: string;
   authType?: string;
@@ -105,23 +107,46 @@ export type UserData = {
   mfaEnabledYn?: string;
   mfaSecretKey?: string;
 };
+export type UserDataNoGrid = {
+  // userId: number;
+  email: string;
+  name?: string;
+  authType?: string;
+  userAlias?: string;
+  remember?: boolean;
+  firstname?: string;
+  lastname?: string;
+  pictureUrl?: string;
+  rank?: string;
+  role?: UserRoleType; // hoặc nếu bạn có enum Role cụ thể, dùng nó
+  password: string;
+  createdAt?: string;
+  prevPassword?: string;
+  loginFailCnt?: number;
+  accountLockYn?: string;
+  mfaEnabledYn?: string;
+  mfaSecretKey?: string;
+};
+export type UseRCreate = {
+  email: string;
+  name?: string;
+  role?: UserRoleType; // hoặc nếu bạn có enum Role cụ thể, dùng nó
+  password: string;
+};
 
-export type FlightDetailResponse<T> = {
-  codeList?: CodeItem[];
-  flightList?: T;
-  deleteStatus?: string;
-  deletedFlightId?: string;
+export type DetailResponseMessage<T> = {
+  data?: T;
+  list?: T[];
   resultCode: string;
   resultMessage: string;
-  selectById?: boolean;
-  accessToken?: string;
-  // user: List[];
 };
 
 export type FlightListApiResponse = FlightListResponse<DataFlight>;
 export type UserListResponse = UserDataResponse<UserData>;
-export type FlightDetailApiResponse = FlightDetailResponse<DataFlight>;
+export type UserCreateResponse = DetailResponseMessage<UserDataNoGrid>;
 
+export type FlightDetailApiResponse = DetailResponseMessage<DataFlight>;
+export type UserListManageResponse = DetailResponseMessage<UserData>;
 export type ResponseMessage = {
   resultCode?: string;
   resultMessage?: string;
