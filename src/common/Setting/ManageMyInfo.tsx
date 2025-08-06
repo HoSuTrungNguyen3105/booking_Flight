@@ -5,6 +5,7 @@ import TableSection from "./TableSection";
 import DataTable from "../DataGrid/index";
 import Pagination from "../DataGrid/Pagination";
 import AddUserModal from "./hooks/AddUserModal";
+import { Loading } from "../Loading/Loading";
 
 const ManageMyInfo = () => {
   const {
@@ -30,6 +31,9 @@ const ManageMyInfo = () => {
     openCheckNow,
     toggleOpenCheckNow,
   } = useInspectionPerformanceHistory();
+  if (loading) {
+    return <Loading />;
+  }
   return (
     <Box>
       {/* <TableSection
@@ -44,11 +48,8 @@ const ManageMyInfo = () => {
       <DataTable
         rows={rows}
         columns={columns}
-        //   hideColumnHeaderCheckbox={hideColumnHeaderCheckbox}
         checkboxSelection={false}
-        //   selectedRows={selectedRow}
         onRowClick={onRowClick}
-        //   onRowSelect={handleRowSelect}
         onSortModelChange={onSortModelChange}
         loading={loading}
       />

@@ -38,6 +38,7 @@ export const useFetch = <T extends Partial<ResponseMessage>, P>({
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
+  const [currentParams, setCurrentParams] = useState<P | undefined>(params);
   const toast = useToast();
   const abortController = useRef<AbortController | null>(null);
   const refetch = useCallback(
@@ -55,14 +56,22 @@ export const useFetch = <T extends Partial<ResponseMessage>, P>({
         signal: controller?.signal,
       };
       try {
+        // const fetchMethod =
+        //   method === MethodType.POST
+        //     ? post<T, P>(finalUrl, extra ?? params, finalConfig)
+        //     : method === MethodType.PUT || method === MethodType.PATCH
+        //     ? update<T, P>(finalUrl, extra ?? params, finalConfig)
+        //     : method === MethodType.DELETE
+        //     ? del<T>(finalUrl, extra ?? finalConfig)
+        //     : get<T, P>(finalUrl, extra ?? params, finalConfig);
         const fetchMethod =
           method === MethodType.POST
-            ? post<T, P>(finalUrl, extra ?? params, finalConfig)
+            ? post<T, P>(finalUrl, extra ?? currentParams, finalConfig)
             : method === MethodType.PUT || method === MethodType.PATCH
-            ? update<T, P>(finalUrl, extra ?? params, finalConfig)
+            ? update<T, P>(finalUrl, extra ?? currentParams, finalConfig)
             : method === MethodType.DELETE
             ? del<T>(finalUrl, extra ?? finalConfig)
-            : get<T, P>(finalUrl, extra ?? params, finalConfig);
+            : get<T, P>(finalUrl, extra ?? currentParams, finalConfig);
 
         const res = await fetchMethod;
         setData(res);
@@ -110,8 +119,15 @@ export const useFetch = <T extends Partial<ResponseMessage>, P>({
   }, [fetch, autoFetch]);
 
   const state = useMemo(
-    () => ({ data, loading, success, error, refetch }),
-    [data, loading, success, error, refetch]
+    () => ({
+      data,
+      loading,
+      success,
+      error,
+      refetch,
+      setParams: setCurrentParams,
+    }),
+    [data, loading, success, error, refetch, setCurrentParams]
   );
   return state;
 };

@@ -82,9 +82,10 @@ export type UserDataResponse<T> = {
 };
 export enum UserRole {
   ADMIN = "ADMIN",
-  MEMBER = "MEMBER",
+  USER = "USER",
+  MONITOR = "MONITOR",
 }
-export type UserRoleType = UserRole.ADMIN | UserRole.MEMBER;
+export type UserRoleType = UserRole.ADMIN | UserRole.USER | UserRole.MONITOR;
 
 // ✅ TypeScript cho User (từ Prisma model)
 export type UserData = GridRowDef & {

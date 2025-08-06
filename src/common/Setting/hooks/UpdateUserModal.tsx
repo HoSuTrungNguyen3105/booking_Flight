@@ -1,71 +1,27 @@
 import { Box, Button, Divider, Grid, Stack, Typography } from "@mui/material";
 import { memo, useCallback, useMemo, useState } from "react";
-import type { GridRowDef } from "../../DataGrid";
 import type { DataDetail, IDataHistoryProps, ISubfileListProps } from "../type";
 import BaseModal from "../../Modal/BaseModal";
 import AddIcon from "@mui/icons-material/Add";
-import SearchIcon from "../../../svgs/icon-search.svg";
-import FieldRenderer, {
-  FieldType,
-  type IFormField,
-} from "../../CustomRender/FieldRenderer";
-import { Checkbox } from "../../Checkbox/Checkbox";
-import InputTextField from "../../Input/InputTextField";
+import FieldRenderer from "../../CustomRender/FieldRenderer";
 import { useUpdateUser } from "./useUpdateUser";
-import { useCreateUserByAdmin } from "../../../components/Api/usePostApi";
-import type { UseRCreate } from "../../../utils/type";
-import { Loading } from "../../Loading/Loading";
+import type { UserData } from "../../../utils/type";
+
 interface IModalStatisticalDataLearningProps {
   open: boolean;
   onClose: () => void;
   onSuccess: () => void;
-  //   detailData: ISomeDataDataHistory | null;
-  //   selectedRows: IDataHistoryProps | null;
-  //   subfileList: ISubfileListProps[];
+  data: UserData;
 }
 
-type ISomeDataInSubfilelist = GridRowDef &
-  Pick<ISubfileListProps, "type" | "fileName">;
-
-export type ISomeDataDataHistory = Omit<
-  DataDetail,
-  "description" | "isDeleted" | "metadata"
-> & {
-  explanation?: string;
-};
-
-export const customLabelsInModal: Record<keyof ISomeDataDataHistory, string> = {
-  dataName: "데이터 이름",
-  managementId: "관리 ID",
-  dataType: "데이터 형태",
-  dataSource: "데이터 출처",
-  collectionMethod: "수집 방법",
-  collectionTime: "수집 시간",
-  explanation: "설명",
-  hash: "HASH",
-  evaluationHistoryLink: "평가 이력 링크",
-  metadataDescription: "메타데이터 설명",
-};
-const SERVICE_TYPE_OPTIONS = [
-  { label: "admin", value: "admin" },
-  { label: "admin", value: "admin" },
-  { label: "admin", value: "admin" },
-  { label: "admin", value: "admin" },
-  { label: "admin", value: "admin" },
-  { label: "admin", value: "admin" },
-];
-
-const AddUserModal = ({
+const UpdateUserModal = ({
   open,
   onClose,
   onSuccess,
 }: IModalStatisticalDataLearningProps) => {
   const {
     formDetailConfig,
-    handleChangeFormInput,
-    enableUpdateBtn,
     formData,
-    error,
     fetchUser,
     loadingUser,
     handleChange,
@@ -163,4 +119,4 @@ const AddUserModal = ({
   );
 };
 
-export default memo(AddUserModal);
+export default memo(UpdateUserModal);

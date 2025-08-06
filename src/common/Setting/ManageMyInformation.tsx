@@ -83,7 +83,7 @@ const ManageMyInformation = () => {
         confirmLabel="Xác nhận"
       />
       {isFetching && <Loading />}
-      {error && <ErrorMessage error={error} />}
+      {/* {error && <ErrorMessage error={error} />} */}
     </Box>
   );
 };

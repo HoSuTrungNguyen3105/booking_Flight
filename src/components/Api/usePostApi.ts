@@ -313,6 +313,7 @@ export const useCreateUserByAdmin = () => {
     data: fetchCreateUser,
     refetch: refetchCreateUser,
     loading: loadingUser,
+    setParams: setParamsUser,
   } = useFetch<UserCreateResponse, UserDataNoGrid>({
     url: "/sys/users/createUserByAdmin",
     // params: ,
@@ -324,5 +325,6 @@ export const useCreateUserByAdmin = () => {
     fetchCreateUser,
     refetchCreateUser,
     loadingUser,
+    setParamsUser,
   };
 };

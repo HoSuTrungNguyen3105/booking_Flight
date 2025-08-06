@@ -1,6 +1,11 @@
 import { useMutation } from "@tanstack/react-query";
 import { useCallback, useMemo, useState } from "react";
-import type { UseRCreate, UserData, UserRole } from "../../../utils/type";
+import {
+  UserRole,
+  type UseRCreate,
+  type UserData,
+  type UserRoleType,
+} from "../../../utils/type";
 import { useGetUserList } from "../../../components/Api/useGetApi";
 import { useDataSection, type UpdateUserForm } from "./useDataSection";
 import { useCreateUserByAdmin } from "../../../components/Api/usePostApi";
@@ -10,15 +15,6 @@ interface IUseUpdateUserProps {
   onSuccess: () => void;
   user?: UserData;
 }
-
-// interface UpdateUserForm {
-//   roleType?: string;
-//   userId?: string;
-//   dataQueryPermission: string;
-//   userName?: string;
-//   userAlias?: string;
-// }
-
 export const useUpdateUser = ({
   onClose,
   onSuccess,
@@ -29,10 +25,12 @@ export const useUpdateUser = ({
   const { fetchUser, loadingUser, refetchUser } = useGetUserList();
   const [updateInfo, setUpdateInfo] = useState<UpdateUserForm>({
     role: user?.role,
-    password: user?.password,
+    // password: user?.password,
+    rank: user?.rank,
     mfaEnabledYn: user?.mfaEnabledYn,
     name: user?.name,
     userAlias: user?.userAlias,
+    email: user?.email,
   });
   function generateRandomPassword(length: number = 8): string {
     const chars =
@@ -44,34 +42,45 @@ export const useUpdateUser = ({
     }
     return password;
   }
-  const [formData, setFormData] = useState<UseRCreate>({
-    // userId: 0,
-    // id: 0,
+  const defaultFormData = {
     name: "",
     password: generateRandomPassword(12),
-    role: "MEMBER" as UserRole,
     email: "",
-    // permissionRole: "",
+    role: UserRole.USER, // dùng enum
+  };
+
+  const [formData, setFormData] = useState<UseRCreate>(defaultFormData);
+  //   const formDetailConfig = useDataSection(formData, false);
+  const formDetailConfig = useDataSection(formData, true, {
+    password: { disabled: true }, // ẩn hoặc khóa password khi update
+    email: { disabled: true }, // không cho sửa email
   });
-  // const {  fetchCreateUser,
-  // refetchCreateUser, }=useCreateUserByAdmin();
-  //   console.log(formData);
 
   // Hàm cập nhật value
   const handleChange = (key: string, value: any) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
   };
-  const { fetchCreateUser, refetchCreateUser } = useCreateUserByAdmin();
+  const { fetchCreateUser, refetchCreateUser, setParamsUser } =
+    useCreateUserByAdmin();
   const handleSubmit = async () => {
-    const res = await refetchCreateUser(formData); // truyền dữ liệu vào
+    // JSON.stringify(formData);
+    const payload: UseRCreate = {
+      name: formData.name,
+      password: formData.password,
+      email: formData.email,
+      role: formData.role, // đảm bảo đúng kiểu
+    };
+    setParamsUser(payload);
+
+    const res = await refetchCreateUser(payload); // ✅ Truyền trực tiếp
+
+    console.log(setParamsUser(payload));
     if (res?.resultCode === "00") {
       console.log("Tạo user thành công", res.data);
     } else {
-      console.error("Tạo user thất bại", res?.resultMessage);
+      console.error("Tạo user thất bại", res);
     }
   };
-
-  const formDetailConfig = useDataSection(formData);
 
   const enableUpdateBtn = useMemo(
     () =>
@@ -80,27 +89,12 @@ export const useUpdateUser = ({
     [updateInfo]
   );
 
-  const handleChangeFormInput = useCallback(
-    (key: keyof UseRCreate, value: string) => {
-      setFormData((prev) => ({
-        ...prev,
-        [key]: value,
-      }));
-    },
-    []
-  );
-
-  //   const { mutateAsync: updateUser, isLoading } = useMutation({
-  //     mutationFn: () => api.UserInfo.updateUser(updateInfo),
-  //     onSuccess: () => {
-  //       onClose();
-  //       onSuccess();
-  //     },
-  //     onError: (error) => {
-  //       setError('Failed to update user');
-  //       console.error(error);
-  //     }
-  //   });
+  const handleChangeFormInput = (key: keyof typeof formData, value: any) => {
+    setFormData((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
 
   return {
     // isLoading,

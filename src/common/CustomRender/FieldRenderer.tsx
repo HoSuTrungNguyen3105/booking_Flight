@@ -5,6 +5,7 @@ import Android12Switch from "../Switch/Switch";
 import InputTextField from "../Input/InputTextField";
 import type { Theme } from "@mui/material/styles";
 import type { SxProps } from "@mui/system";
+import CSelect from "../Dropdown/CSelect";
 
 export enum FieldType {
   SWITCH = "switch",
@@ -14,7 +15,7 @@ export enum FieldType {
   TEXTAREA = "textarea",
   DATE = "date",
 }
-export type IFormField = {
+type FormField = {
   id: string;
   label?: string;
   type: FieldType;
@@ -26,7 +27,11 @@ export type IFormField = {
   onChange?: (value: any) => void;
   customProps?: Record<string, any>; // ✅ Thêm dòng này
 };
-interface IFieldRendererProps extends Omit<IFormField, "id"> {
+export type IFormField = {
+  disabled?: boolean;
+  fields: FormField;
+};
+interface IFieldRendererProps extends Omit<FormField, "id"> {
   error?: boolean | string;
   disabled?: boolean;
   onChange: (value: any) => void;
@@ -55,7 +60,7 @@ const FieldRenderer = ({
 
     case FieldType.DROPDOWN:
       return (
-        <Dropdown
+        <CSelect
           sx={{ width: "100%" }} //
           placeholder={placeholder}
           options={options}

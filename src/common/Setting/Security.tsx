@@ -26,7 +26,6 @@ const Security = () => {
     <div>
       <SearchLayout
         onChangeTab={setTab}
-        description="Demo"
         activeTab={tabX}
         title="Layout"
         tabs={tabs}
