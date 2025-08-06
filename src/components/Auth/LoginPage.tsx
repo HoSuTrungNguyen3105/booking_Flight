@@ -1,33 +1,33 @@
-import { Box, FormControl, Input, Stack, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { Dropdown } from "../../common/Dropdown/Dropdown";
+import { Box, FormControl, Stack, Typography } from "@mui/material";
+import React, { useState } from "react";
 import CSelect from "../../common/Dropdown/CSelect";
-import InputTextArea from "../../common/Input/InputTextArea";
 import { Button } from "../../common/Button/Button";
 import InputField from "../../common/Input/InputField";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "../../context/ToastContext";
-import { useForm } from "react-hook-form";
-type AuthType = "SSO" | "DEV";
+import { Controller, useForm } from "react-hook-form";
 
 interface ILoginForm {
   email: string;
   password: string;
   remember?: boolean;
 }
-
+type AuthType = "ID,PW" | "SSO" | "DEV";
 export const LoginPage: React.FC = () => {
-  const AUTH_TYPE_OPTIONS = [
+  const AUTH_TYPE_OPTIONS: { label: string; value: AuthType }[] = [
+    { label: "ID,PW", value: "ID,PW" },
     { label: "SSO", value: "SSO" },
     { label: "DEV", value: "DEV" },
   ];
   const [formData, setFormData] = React.useState({
     authType: AUTH_TYPE_OPTIONS[0].value,
-    userId: "",
+    //
+    email: "",
+    password: "",
   });
 
-  const { login, isAuthenticated } = useAuth();
+  const { login, user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [_, setLoading] = useState(false);
   const toast = useToast();
@@ -47,28 +47,16 @@ export const LoginPage: React.FC = () => {
     const email = watch("email");
     const passwords = watch("password");
     console.log("email", email);
-    if (!email) {
-      toast("Missing email", "error");
-      return;
-    }
-    if (!passwords) {
-      toast("Missing passwords", "error");
-      return;
-    }
+    console.log("email", passwords);
     setLoading(true);
     login({
       email,
       password: data.password,
       remember: data.remember,
     });
+    console.log("user", user);
     setLoading(false);
   };
-
-  //   useEffect(() => {
-  //     if (isAuthenticated) {
-  //       navigate("/");
-  //     }
-  //   }, [isAuthenticated]);
 
   const handleChangeFormInput = (key: string, value: string) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
@@ -134,15 +122,54 @@ export const LoginPage: React.FC = () => {
               <Typography variant="body1" mb={0.5}>
                 아이디
               </Typography>
-              <InputField
-                value={formData.userId}
+              {/* <InputField
+                value={formData.email}
                 // disabled={loading}
 
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                  handleChangeFormInput("userId", event.target.value)
+                  handleChangeFormInput("email", event.target.value)
                 }
                 placeholder="아이디를 입력하세요."
                 // error={!error}
+              /> */}
+              <Controller
+                control={control}
+                name="email"
+                render={({ field }) => (
+                  <InputField
+                    {...field}
+                    placeholder="아이디를 입력하세요."
+                    // error={!!errors.email}
+                  />
+                )}
+              />
+            </FormControl>
+
+            <FormControl fullWidth>
+              <Typography variant="body1" mb={0.5}>
+                아이디
+              </Typography>
+              {/* <InputField
+                value={formData.password}
+                // disabled={loading}
+
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                  handleChangeFormInput("password", event.target.value)
+                }
+                placeholder="아이디를 입력하세요."
+                // error={!error}
+              /> */}
+              <Controller
+                control={control}
+                name="password"
+                render={({ field }) => (
+                  <InputField
+                    {...field}
+                    placeholder="비밀번호를 입력하세요."
+                    // type="password"
+                    // error={!!errors.password}
+                  />
+                )}
               />
             </FormControl>
 

@@ -2,8 +2,9 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { useLoginUser } from "../components/Api/usePostApi";
 import { useToast } from "./ToastContext";
 import axios, { AxiosError } from "axios";
+import type { UserData } from "../utils/type";
 
-type User = {
+export type User = {
   email: string;
   password: string;
   remember?: boolean;
@@ -11,10 +12,10 @@ type User = {
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  user: User | null;
+  user: UserData | null;
   token: string | null;
   login: (userData: User) => Promise<void>;
-  register: (userData: User) => void;
+  register: (userData: UserData) => void;
   logout: () => void;
 }
 
@@ -23,13 +24,13 @@ const AuthContext = createContext<AuthContextType | null>(null);
 // ✅ Component export tách riêng
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UserData | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const toast = useToast();
   const { loginUserData, refetchLogin } = useLoginUser();
   const updateLocalStorage = (
     isAuthenticated: boolean,
-    user: User | null,
+    user: UserData | null,
     token: string | null
   ) => {
     localStorage.setItem("isAuthenticated", String(isAuthenticated));
@@ -38,45 +39,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const login = async (userData: User) => {
-    // try {
-    //   const res = await refetchLogin(userData);
-    //   console.log("res full:", res);
-
-    //   if (res?.resultCode === "00") {
-    //     const accessToken = res.accessToken;
-    //     setIsAuthenticated(true);
-    //     setUser(userData);
-    //     setToken(accessToken ?? null);
-    //     updateLocalStorage(true, userData, accessToken ?? null);
-    //     toast("Đăng nhập thành công!", "success");
-    //   } else {
-    //     toast(res?.resultMessage || "Đăng nhập thất bại", "error");
-    //   }
-    // } catch (error) {
-    //   if (axios.isAxiosError(error)) {
-    //     if (error.code === "ECONNABORTED") {
-    //       toast("Kết nối hết thời gian. Vui lòng thử lại sau.", "error");
-    //     } else if (!error.response) {
-    //       // ❌ Không có phản hồi => thường là server chưa chạy hoặc mất mạng
-    //       toast(
-    //         "Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại backend hoặc kết nối mạng.",
-    //         "error"
-    //       );
-    //       console.error("Không có phản hồi từ server:", error.message);
-    //     } else {
-    //       // Có phản hồi nhưng mã lỗi (4xx, 5xx)
-    //       const status = error.response.status;
-    //       const message =
-    //         error.response.data?.message || `Lỗi máy chủ (${status})`;
-    //       toast(message, "error");
-    //       console.error("Lỗi có phản hồi từ server:", status, message);
-    //     }
-    //   } else {
-    //     // Lỗi không phải từ Axios
-    //     toast("Lỗi không xác định ở phía client", "error");
-    //     console.error("Lỗi không xác định:", error);
-    //   }
-    // }
     const res = await refetchLogin(userData);
 
     if (!res) {
@@ -84,12 +46,21 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         "Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại backend hoặc kết nối mạng.",
         "error"
       );
-    } else if (res?.resultCode === "00") {
+    } else if (res?.resultCode === "00" && res.user) {
       const accessToken = res.accessToken;
+      const userInfo: UserData = res.user;
+      setUser({
+        ...userInfo,
+        authType: "ID,PW", // nếu cần thêm field cho frontend
+        name: "",
+        firstname: "",
+        lastname: "",
+        password: userData.password,
+      });
       setIsAuthenticated(true);
-      setUser(userData);
+      // setUser(userInfo);
       setToken(accessToken ?? null);
-      updateLocalStorage(true, userData, accessToken ?? null);
+      updateLocalStorage(true, userInfo, accessToken ?? null);
       toast("Đăng nhập thành công!", "success");
     } else if (res?.resultCode === "NETWORK_ERROR") {
       toast(

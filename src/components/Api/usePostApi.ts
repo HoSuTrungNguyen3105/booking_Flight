@@ -147,7 +147,12 @@ export const useLoginUser = () => {
     defaultValue: {
       resultCode: "",
       resultMessage: "",
-      user: [],
+      user: {
+        id: 0,
+        email: "",
+        name: "",
+        password: "",
+      },
       accessToken: "",
     },
     autoFetch: false,

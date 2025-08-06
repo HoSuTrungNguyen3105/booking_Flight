@@ -13,6 +13,7 @@ type ITableSectionProps = {
   handleRowClick?: (row: GridRowDef) => void;
   nextRowClick?: boolean;
   largeThan?: boolean;
+  hideColumnHeaderCheckbox?: boolean;
 };
 const TableSection = ({
   rows,
@@ -21,6 +22,7 @@ const TableSection = ({
   handleRowClick,
   nextRowClick,
   largeThan,
+  hideColumnHeaderCheckbox,
   isLoading,
 }: ITableSectionProps) => {
   const {
@@ -28,6 +30,7 @@ const TableSection = ({
     paginatedData,
     pageSize,
     onPageChange,
+    onPageSizeChange,
     currentPage,
     totalPages,
     onSortModelChange,
@@ -59,7 +62,7 @@ const TableSection = ({
         <DataTable
           rows={paginatedData}
           columns={columns}
-          hideColumnHeaderCheckbox
+          hideColumnHeaderCheckbox={hideColumnHeaderCheckbox}
           checkboxSelection={false}
           selectedRows={selectedRow}
           onRowClick={handleRowClick}
@@ -76,6 +79,7 @@ const TableSection = ({
             onPageChange={onPageChange}
             currentPage={currentPage}
             pageSize={pageSize}
+            onPageSizeChange={onPageSizeChange}
           />
         </Box>
       )}

@@ -7,11 +7,11 @@ import { memo } from "react";
 const FullLayout = () => {
   return (
     <Stack direction="column" sx={{ height: "100vh" }}>
-      <Header />
+      {/* <Header /> */}
       <Box component="main" flexGrow={1} bgcolor="var(--bg-green-md)">
         <Outlet />
       </Box>
-      <Footer />
+      {/* <Footer /> */}
     </Stack>
   );
 };

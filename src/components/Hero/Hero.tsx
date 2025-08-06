@@ -12,6 +12,7 @@ import { Button } from "../../common/Button/Button";
 import FieldRenderer, {
   FieldType,
 } from "../../common/CustomRender/FieldRenderer";
+import { useAuth } from "../../context/AuthContext";
 interface InputField {
   id: number;
   value: string;
@@ -145,6 +146,7 @@ export default function Hero() {
     { label: "Nữ", value: "female" },
     { label: "Khác", value: "other" },
   ];
+  const { user } = useAuth();
 
   const handleFiledChange = (key: string, value: any) => {
     setFormData((prev) => ({
@@ -152,6 +154,8 @@ export default function Hero() {
       [key]: value,
     }));
   };
+  console.log("user", user);
+
   return (
     <>
       <LanguageDropdown />
@@ -178,7 +182,7 @@ export default function Hero() {
 
       <FieldRenderer
         options={genderOptions}
-        type={FieldType.INPUT}
+        type={FieldType.DROPDOWN}
         placeholder="Mô tả ngắn"
         value={formData.bio}
         onChange={(value) => handleFiledChange("bio", value)}

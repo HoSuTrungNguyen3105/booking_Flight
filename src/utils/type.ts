@@ -72,19 +72,38 @@ export type FlightListResponse<T> = {
   user?: T[];
   accessToken?: string | null;
 };
+export type UserDataResponse<T> = {
+  resultCode: string;
+  resultMessage: string;
+  user?: T;
+  accessToken?: string | null;
+};
+export enum UserRole {
+  ADMIN = "admin",
+  MEMBER = "member",
+}
+export type UserRoleType = UserRole.ADMIN | UserRole.MEMBER;
 
 // ✅ TypeScript cho User (từ Prisma model)
 export type UserData = {
   id: number;
   email: string;
-  name: string;
-  firstname: string;
-  lastname: string;
-  pictureUrl: string;
-  rank: string;
-  role: "USER" | "ADMIN"; // hoặc nếu bạn có enum Role cụ thể, dùng nó
+  name?: string;
+  authType?: string;
+  userAlias?: string;
+  remember?: boolean;
+  firstname?: string;
+  lastname?: string;
+  pictureUrl?: string;
+  rank?: string;
+  role?: UserRoleType; // hoặc nếu bạn có enum Role cụ thể, dùng nó
   password: string;
-  createdAt: string; // hoặc Date nếu bạn xử lý bằng Date object
+  createdAt?: string;
+  prevPassword?: string;
+  loginFailCnt?: number;
+  accountLockYn?: string;
+  mfaEnabledYn?: string;
+  mfaSecretKey?: string;
 };
 
 export type FlightDetailResponse<T> = {
@@ -100,7 +119,7 @@ export type FlightDetailResponse<T> = {
 };
 
 export type FlightListApiResponse = FlightListResponse<DataFlight>;
-export type UserListResponse = FlightListResponse<UserData>;
+export type UserListResponse = UserDataResponse<UserData>;
 export type FlightDetailApiResponse = FlightDetailResponse<DataFlight>;
 
 export type ResponseMessage = {

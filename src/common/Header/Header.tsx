@@ -37,6 +37,7 @@ export const Header = forwardRef<HTMLElement, React.HTMLProps<HTMLElement>>(
       setTabValue(newValue);
       setSelectedMenu(menuMap[newValue]);
     };
+    const { user } = useAuth();
 
     return (
       <AppBar className="header" ref={ref}>
@@ -166,7 +167,7 @@ export const Header = forwardRef<HTMLElement, React.HTMLProps<HTMLElement>>(
                         size="large"
                         appearance="contained"
                         icon={<ImageThumbnail url={UserInfo} />}
-                        label="User"
+                        label={user?.name}
                       />
                       <SignOut />
                     </Box>

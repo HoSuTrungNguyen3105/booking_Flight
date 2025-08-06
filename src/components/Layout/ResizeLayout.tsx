@@ -133,8 +133,6 @@ const ManageLayout = () => {
             sx={{
               transition: "width 200ms",
               overflow: "auto",
-              // borderLeft: "1px solid",
-              // borderColor: "grey.200",
             }}
           >
             <Outlet />

@@ -4,10 +4,13 @@ import type { GridRowDef } from "../../DataGrid";
 import type { DataDetail, IDataHistoryProps, ISubfileListProps } from "../type";
 import BaseModal from "../../Modal/BaseModal";
 import AddIcon from "@mui/icons-material/Add";
+import SearchIcon from "../../../svgs/icon-search.svg";
 import FieldRenderer, {
   FieldType,
   type IFormField,
 } from "../../CustomRender/FieldRenderer";
+import { Checkbox } from "../../Checkbox/Checkbox";
+import InputTextField from "../../Input/InputTextField";
 interface IModalStatisticalDataLearningProps {
   open: boolean;
   onClose: () => void;
@@ -39,6 +42,14 @@ export const customLabelsInModal: Record<keyof ISomeDataDataHistory, string> = {
   evaluationHistoryLink: "평가 이력 링크",
   metadataDescription: "메타데이터 설명",
 };
+const SERVICE_TYPE_OPTIONS = [
+  { label: "admin", value: "admin" },
+  { label: "admin", value: "admin" },
+  { label: "admin", value: "admin" },
+  { label: "admin", value: "admin" },
+  { label: "admin", value: "admin" },
+  { label: "admin", value: "admin" },
+];
 
 const AddUserModal = ({
   open,
@@ -89,6 +100,15 @@ IModalStatisticalDataLearningProps) => {
             setFormData((prev) => ({ ...prev, userName: val })),
         },
         {
+          id: "passWord",
+          label: "Mật khẩu",
+          type: FieldType.INPUT_WITH_TYPE_PASSWORD,
+          placeholder: "Nhập mật khẩu...",
+          options: [],
+          value: formData.passWord,
+          // onChange: () => {},
+        },
+        {
           id: "role",
           label: "Chọn vai trò",
           type: FieldType.DROPDOWN,
@@ -123,15 +143,6 @@ IModalStatisticalDataLearningProps) => {
           onChange: (val) =>
             setFormData((prev) => ({ ...prev, permissionRole: val })),
         },
-        {
-          id: "passWord",
-          label: "Mật khẩu",
-          type: FieldType.INPUT_WITH_TYPE_PASSWORD,
-          placeholder: "Nhập mật khẩu...",
-          options: [],
-          value: formData.passWord,
-          // onChange: () => {},
-        },
       ];
 
       // Hàm cập nhật value
@@ -158,6 +169,52 @@ IModalStatisticalDataLearningProps) => {
               />
             </Box>
           ))}
+          {/* CheckBox Dropdown */}
+          <Box
+            padding="8px"
+            border={1}
+            bgcolor="grey.100"
+            borderColor="grey.200"
+          >
+            <Box bgcolor="white">
+              <InputTextField
+                sx={{
+                  "& .MuiInputBase-root": {
+                    height: "40px",
+                  },
+                }}
+                placeholder="검색 단어를 입력해주세요."
+                endIcon={
+                  <Box
+                    component="img"
+                    sx={{ width: "20px" }}
+                    src={SearchIcon}
+                  />
+                }
+              />
+              <Box
+                display="flex"
+                flexDirection="column"
+                overflow="auto"
+                maxHeight="100px"
+                border="0.5px solid #ccc"
+                padding={1}
+              >
+                {SERVICE_TYPE_OPTIONS.map((item, index) => (
+                  <Box key={index}>
+                    <Box
+                      display="flex"
+                      alignItems="center"
+                      borderBottom="1px solid #ddd"
+                    >
+                      <Checkbox />
+                      <Typography variant="body1">{item.label}</Typography>
+                    </Box>
+                  </Box>
+                ))}
+              </Box>
+            </Box>
+          </Box>
         </Stack>
       );
     };

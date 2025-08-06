@@ -7,7 +7,10 @@ import { Box, Button, Stack } from "@mui/material";
 // import TransferAuthoritySection from 'components/molecules/TransferAuthoritySection';
 // import DataAccessPermissionSection from 'components/molecules/DataAccessPermissionSection';
 // import TimeInfoSection from 'components/molecules/TimeInfoSection';
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
+import DataAccessPermissionSection from "./DataAccessPermissionSection";
+import DialogConfirm from "../Modal/DialogConfirm";
+import { Loading } from "../Loading/Loading";
 
 const ManageMyInformation = () => {
   const [myInfo, setMyInfo] = useState(null);
@@ -65,6 +68,7 @@ const ManageMyInformation = () => {
       {renderButtonSection()}
       <DialogConfirm
         icon="warning"
+        cancelLabel="Exit"
         open={toggleOpenModal}
         onClose={() => setToggleOpenModal(false)}
         onConfirm={async () => {
@@ -79,7 +83,7 @@ const ManageMyInformation = () => {
         confirmLabel="Xác nhận"
       />
       {isFetching && <Loading />}
-      {error && <ErrorMessagePart error={error} />}
+      {error && <ErrorMessage error={error} />}
     </Box>
   );
 };

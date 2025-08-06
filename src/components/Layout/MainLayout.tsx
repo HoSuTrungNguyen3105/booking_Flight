@@ -66,7 +66,7 @@ const MainLayout = () => {
       </SidebarProvider>
 
       {/* Footer */}
-      <Footer ref={footerRef} />
+      <Footer />
       <Loading />
     </Box>
   );

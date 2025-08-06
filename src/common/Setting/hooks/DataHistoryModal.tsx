@@ -102,7 +102,7 @@ const DataHistoryModal = ({
     };
 
     return (
-      <Box>
+      <Box width={"500px"}>
         <Divider sx={{ mb: 2, marginTop: 0, marginBottom: "22px" }} />
         <Typography variant="body1">데이터 목록</Typography>
         {renderRows(filteredDetailData)}

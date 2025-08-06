@@ -13,13 +13,11 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
 export interface ActionType {
-  // type?: "add" | "edit" | "delete";
   value?: string | number;
   icon?: ReactNode;
   label?: string;
   disabled?: boolean;
   color?: string; // Màu sắc của option
-  // payload?: any;
   onClick?: () => void;
 }
 interface OptionDropdown {
@@ -103,7 +101,7 @@ const CSelect: FC<OptionDropdown> = ({
         //   </Box>
         // )}
       >
-        {placeholder && (
+        {/* {placeholder && (
           <Box component="option" value="" disabled sx={{ color: "grey.500" }}>
             {placeholder}
           </Box>
@@ -117,7 +115,26 @@ const CSelect: FC<OptionDropdown> = ({
           >
             {label || value}
           </MenuItem>
-        ))}
+        ))} */}
+        {/* Render default value as a hidden menu item */}
+      {defaultValue && (
+        <MenuItem sx={{ display: 'none' }} value={defaultValue}>
+          {defaultValue}
+        </MenuItem>
+      )}
+
+      {/* Render placeholder if provided */}
+      {placeholder && (
+        <MenuItem sx={{ color: 'grey.800' }} value="">
+          {placeholder}
+        </MenuItem>
+      )}
+
+      {options.map(({ label, value, color, disabled }) => (
+        <MenuItem key={value} disabled={disabled} value={value} sx={{ color: color }}>
+          {label}
+        </MenuItem>
+      ))}
       </StyledSelect>
     </FormControl>
   );

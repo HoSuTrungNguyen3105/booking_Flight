@@ -79,7 +79,7 @@ const DataSecure = () => {
     setOpen(false);
   };
   const closeModalSubfile = () => {
-    setOpenSubefile(false);
+    setOpenUserModal(false);
   };
   // Inspection data state
   const [inspectionData, setInspectionData] = useState<Detail>({

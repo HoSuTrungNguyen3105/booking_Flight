@@ -72,7 +72,11 @@ const routes = [
     children: [
       {
         path: "loginPage",
-        element: <LoginPage />,
+        element: (
+          <GuestGuard>
+            <LoginPage />
+          </GuestGuard>
+        ),
       },
     ],
   },

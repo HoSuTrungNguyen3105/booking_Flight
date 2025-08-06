@@ -99,7 +99,7 @@ const DetailedInformationModal = ({
     };
 
     return (
-      <Box maxHeight="100%">
+      <Box maxHeight="30rem">
         <Box>
           <Typography component="p" variant="body2">
             기본 정보
