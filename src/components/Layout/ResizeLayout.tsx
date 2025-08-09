@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { menuData, type MenuItem } from "./../../utils/db";
+import Header from "../../common/Setting/Header";
 
 const ResizeLayout = () => {
   const { pathname } = useLocation();
@@ -116,7 +117,8 @@ const ResizeLayout = () => {
 
 const ManageLayout = () => {
   return (
-    <Stack sx={{ height: "100vh" }}>
+    <Stack direction={"column"} sx={{ height: "100vh" }}>
+      <Header />
       <Box
         component="main"
         sx={{ height: "calc(100vh - 48px)" }}

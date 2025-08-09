@@ -11,7 +11,7 @@ interface IModalStatisticalDataLearningProps {
   open: boolean;
   onClose: () => void;
   onSuccess: () => void;
-  data: UserData;
+  data?: UserData;
 }
 
 const UpdateUserModal = ({
@@ -19,20 +19,11 @@ const UpdateUserModal = ({
   onClose,
   onSuccess,
 }: IModalStatisticalDataLearningProps) => {
-  const {
-    formDetailConfig,
-    formData,
-    fetchUser,
-    loadingUser,
-    handleChange,
-    handleSubmit,
-    refetchUser,
-  } = useUpdateUser({
-    onClose,
-    onSuccess,
-  });
-  console.log("fetch", fetchUser);
-  console.log("VALUE:", formDetailConfig);
+  const { formDetailConfig, formData, handleChange, handleSubmit } =
+    useUpdateUser({
+      onClose,
+      onSuccess,
+    });
   // const handleSubmit = () => {}
   const renderActions = useCallback(() => {
     return (
@@ -56,30 +47,8 @@ const UpdateUserModal = ({
     // hook lấy từ net nhgko thấy mẫu cũ
     const renderRows = () => {
       return (
-        // <Stack>
-        //   <Typography variant="body1">데이터 목록</Typography>
-        //   {formDetailConfig.map((field) => (
-        //     <Box key={field.id}>
-        //       <Typography variant="body1" sx={{ mb: 1 }}>
-        //         {field.label}
-        //       </Typography>
-
-        //       <FieldRenderer
-        //         type={field.type}
-        //         placeholder={field.placeholder}
-        //         options={field.options}
-        //         // value={formData?.[field.id] ?? ""}
-        //         value={formData[field.id as keyof typeof formData] ?? ""}
-        //         // value={formData[field.id as keyof typeof formData]}
-        //         disabled={false}
-        //         onChange={(val) => handleChange(field.id, val)}
-        //       />
-        //     </Box>
-        //   ))}
-        // </Stack>
         <Stack>
           <Typography variant="body1">데이터 목록</Typography>
-
           {formDetailConfig
             .filter((fieldItem) => !fieldItem.disabled) // 🔥 Chỉ render nếu không bị disable
             .map(({ disabled, fields }) => (

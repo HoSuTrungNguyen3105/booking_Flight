@@ -89,7 +89,7 @@ export type UserRoleType = UserRole.ADMIN | UserRole.USER | UserRole.MONITOR;
 
 // ✅ TypeScript cho User (từ Prisma model)
 export type UserData = GridRowDef & {
-  userId: number;
+  id: number;
   email: string;
   name?: string;
   authType?: string;
@@ -110,6 +110,7 @@ export type UserData = GridRowDef & {
 };
 export type UserDataNoGrid = {
   // userId: number;
+  id: string;
   email: string;
   name?: string;
   authType?: string;
@@ -135,7 +136,7 @@ export type UseRCreate = {
   password: string;
 };
 
-export type DetailResponseMessage<T> = {
+export type DetailResponseMessage<T = any> = {
   data?: T;
   list?: T[];
   resultCode: string;
@@ -145,7 +146,7 @@ export type DetailResponseMessage<T> = {
 export type FlightListApiResponse = FlightListResponse<DataFlight>;
 export type UserListResponse = UserDataResponse<UserData>;
 export type UserCreateResponse = DetailResponseMessage<UserDataNoGrid>;
-
+// export type
 export type FlightDetailApiResponse = DetailResponseMessage<DataFlight>;
 export type UserListManageResponse = DetailResponseMessage<UserData>;
 export type ResponseMessage = {

@@ -70,7 +70,7 @@ export const useUpdateUser = ({
       email: formData.email,
       role: formData.role, // đảm bảo đúng kiểu
     };
-    setParamsUser(payload);
+    // setParamsUser(payload);
 
     const res = await refetchCreateUser(payload); // ✅ Truyền trực tiếp
 

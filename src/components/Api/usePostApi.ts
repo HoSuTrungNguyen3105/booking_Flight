@@ -13,6 +13,7 @@ import type {
   UserData,
   UserCreateResponse,
   UserDataNoGrid,
+  DetailResponseMessage,
 } from "../../utils/type.ts";
 import { MethodType } from "../../hooks/type";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
@@ -325,6 +326,32 @@ export const useCreateUserByAdmin = () => {
     fetchCreateUser,
     refetchCreateUser,
     loadingUser,
+    setParamsUser,
+  };
+};
+export interface ILockAccountProps {
+  id?: number;
+  accountLockYn: string;
+}
+
+export const useAccountLock = () => {
+  // const isValid = !!id;
+  const {
+    data: fetchAccountLock,
+    refetch: refetchAccountLock,
+    loading: loadingAccountLock,
+    setParams: setParamsUser,
+  } = useFetch<DetailResponseMessage, ILockAccountProps>({
+    url: "/sys/users/setAccountLock",
+    // params: ,
+    autoFetch: false,
+    config: postMethod,
+    showToast: true,
+  });
+  return {
+    loadingAccountLock,
+    fetchAccountLock,
+    refetchAccountLock,
     setParamsUser,
   };
 };

@@ -1,19 +1,21 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { useLoginUser } from "../components/Api/usePostApi";
 import { useToast } from "./ToastContext";
-import axios, { AxiosError } from "axios";
-import type { UserData } from "../utils/type";
+import { UserRole, type UserData } from "../utils/type";
 
 export type User = {
   email: string;
   password: string;
   remember?: boolean;
 };
+export type AuthType = "DEV" | "IDPW";
 
 interface AuthContextType {
   isAuthenticated: boolean;
   user: UserData | null;
   token: string | null;
+  isAdmin: boolean;
+  authType: AuthType;
   login: (userData: User) => Promise<void>;
   register: (userData: UserData) => void;
   logout: () => void;
@@ -27,7 +29,11 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<UserData | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const toast = useToast();
-  const { loginUserData, refetchLogin } = useLoginUser();
+  const { refetchLogin } = useLoginUser();
+  const isAdminLogin = useMemo(() => {
+    const userAdmin = user?.role === UserRole.ADMIN;
+    return userAdmin;
+  }, [user]);
   const updateLocalStorage = (
     isAuthenticated: boolean,
     user: UserData | null,
@@ -98,7 +104,16 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, user, token, login, register, logout }}
+      value={{
+        isAuthenticated,
+        user,
+        token,
+        login,
+        register,
+        logout,
+        isAdmin: isAdminLogin,
+        authType: "IDPW",
+      }}
     >
       {children}
     </AuthContext.Provider>

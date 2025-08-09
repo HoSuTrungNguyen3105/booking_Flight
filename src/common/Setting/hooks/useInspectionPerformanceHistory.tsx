@@ -75,8 +75,7 @@ export const useInspectionPerformanceHistory = () => {
 
   // const [rows, setRows] = useState(dummyRows);
   const [openCheckNow, setOpenCheckNow] = useState(false);
-  const [selectedRow, setSelectedRow] =
-    useState<IInspectionPerformanceHistoryItem | null>(null);
+  const [selectedRow, setSelectedRow] = useState<UserData | null>(null);
   const [selectedItemDetailRow, setSelectedItemDetailRow] =
     useState<IInspectionPerformanceHistoryItem | null>(null);
 
@@ -194,7 +193,7 @@ export const useInspectionPerformanceHistory = () => {
     transferAdminPermission: false,
     deleteUser: false,
   });
-  const [seletedRow, setSelectedRowUser] = useState<UserData | null>(null);
+  // const [seletedRow, setSelectedRowUser] = useState<UserData>();
   const toggleOpenModal = useCallback((action: ActionType) => {
     setOpenModal((prev) => ({
       ...prev,
@@ -274,7 +273,7 @@ export const useInspectionPerformanceHistory = () => {
               }}
               options={[
                 { label: "정보 수정", value: "addUser" },
-                { label: "MFA 설정 삭제", value: "deleteMfaSettings" },
+                { label: "MFA 설정 삭제", value: "editUser" },
                 { label: "잠금/해금", value: "lock_unlockAccount" },
                 { label: "비밀번호 초기화", value: "resetPassword" },
                 { label: "관리자 권한 이전", value: "transferAdminPermission" },
@@ -293,12 +292,9 @@ export const useInspectionPerformanceHistory = () => {
 
   const handleSearch = useCallback(() => {}, []);
 
-  const handleRowClick = useCallback(
-    (row: IInspectionPerformanceHistoryItem) => {
-      setSelectedRow(row);
-    },
-    []
-  );
+  const handleRowClick = useCallback((row: GridRowDef & UserData) => {
+    setSelectedRow(row);
+  }, []);
 
   useEffect(() => {
     if (!dataTableViewRef.current) return;
@@ -335,6 +331,7 @@ export const useInspectionPerformanceHistory = () => {
     setSelectedItemDetailRow,
     rows: paginatedData,
     openModal,
+    toggleOpenModal,
     columns,
     pageInfo: {
       page: currentPage,

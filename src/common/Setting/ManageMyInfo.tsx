@@ -6,45 +6,29 @@ import DataTable from "../DataGrid/index";
 import Pagination from "../DataGrid/Pagination";
 import AddUserModal from "./hooks/AddUserModal";
 import { Loading } from "../Loading/Loading";
+import UpdateUserModal from "./hooks/UpdateUserModal";
+import AccountLock from "./AccountLock";
+import DeleteUserModal from "./DeleteUserModal";
 
 const ManageMyInfo = () => {
   const {
-    dataTableViewRef,
-    headerHeight,
     loading,
-    totalCount,
     totalPages,
     selectedRow,
-    setSelectedRow,
-    selectedItemDetailRow,
-    setSelectedItemDetailRow,
+    toggleOpenModal,
     rows,
     columns,
-    pageInfo,
-    sortModel,
     onSortModelChange,
     onPageChange,
     onPageSizeChange,
     openModal,
     onRowClick,
-    onSearch,
-    openCheckNow,
-    toggleOpenCheckNow,
   } = useInspectionPerformanceHistory();
   if (loading) {
     return <Loading />;
   }
   return (
     <Box>
-      {/* <TableSection
-    rows={rows}
-  columns={columns}
-  handleRowClick={onRowClick}
-  nextRowClick
-  largeThan
-  isLoading={loading}
-
-    />  */}
       <DataTable
         rows={rows}
         columns={columns}
@@ -66,7 +50,31 @@ const ManageMyInfo = () => {
       {openModal.addUser && (
         <AddUserModal
           open={openModal.addUser}
-          onSuccess={() => {}}
+          onSuccess={() => toggleOpenModal("addUser")}
+          onClose={() => {}}
+        />
+      )}
+      {openModal.editUser && (
+        <UpdateUserModal
+          open={openModal.editUser}
+          data={selectedRow?.id}
+          onSuccess={() => toggleOpenModal("editUser")}
+          onClose={() => {}}
+        />
+      )}
+      {openModal.deleteUser && selectedRow && (
+        <DeleteUserModal
+          open={openModal.deleteUser}
+          user={selectedRow}
+          onSuccess={() => toggleOpenModal("deleteUser")}
+          onClose={() => {}}
+        />
+      )}
+      {openModal.lock_unlockAccount && selectedRow && (
+        <AccountLock
+          open={openModal.lock_unlockAccount}
+          user={selectedRow}
+          onSuccess={() => toggleOpenModal("lock_unlockAccount")}
           onClose={() => {}}
         />
       )}

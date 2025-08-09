@@ -1,0 +1,78 @@
+import { useCallback, useState } from "react";
+import type { UserData } from "../../../utils/type";
+import { useToast } from "../../../context/ToastContext";
+import { useAccountLock } from "../../../components/Api/usePostApi";
+
+interface ILockAccountModalProps {
+  onClose: () => void;
+  onSuccess: () => void;
+  user?: UserData;
+}
+interface ILockAccountProps {
+  id?: number;
+  accountLockYn: string;
+}
+
+export const useLockAccount = ({
+  onClose,
+  onSuccess,
+  user,
+}: ILockAccountModalProps) => {
+  //   const api = useApis();
+  const [error, setError] = useState("");
+  const { fetchAccountLock, refetchAccountLock } = useAccountLock();
+  const [formData, setFormData] = useState<ILockAccountProps>({
+    id: user?.id,
+    accountLockYn: user?.accountLockedYn,
+  });
+
+  const isLocked = user?.accountLockYn === "Y";
+  const title = isLocked ? "계정 잠금 해제" : "계정 잠금";
+  const subtitle = isLocked
+    ? "아래의 사용자의 계정의 잠금 상태를 해제합니다."
+    : "아래의 사용자의 계정을 잠금 상태로 만듭니다.";
+  const buttonTitle = isLocked ? "해제" : "잠금";
+  const toast = useToast();
+
+  const handleLockAccount = useCallback(async () => {
+    try {
+      const params: ILockAccountProps = {
+        id: user?.id,
+        accountLockYn: isLocked ? "N" : "Y",
+      };
+
+      const result = await refetchAccountLock(params);
+
+      if (result?.resultCode === "00") {
+        const message = isLocked
+          ? "사용자 잠금해제가 정상적으로 완료되었습니다."
+          : "사용자 잠금이 정상적으로 완료되었습니다.";
+        toast(`${message}`, "success");
+        onClose();
+      } else {
+        toast(`${result?.resultMessage}`, "error");
+      }
+    } catch (error) {
+      console.error("Error locking/unlocking account:", error);
+    }
+  }, [isLocked, user, onClose]);
+
+  const userInfoLines = useCallback(() => {
+    return [
+      //   `사용자 ID: ${formData?.userId}`,
+      //   `사용자 이름: ${formData?.userName}`,
+      //   `닉네임: ${formData?.userAlias}`,
+      //   `최근 로그인: ${formData?.lastLoginDate}`,
+    ];
+  }, [formData]);
+
+  return {
+    formData,
+    userInfoLines,
+    handleLockAccount,
+    error,
+    title,
+    buttonTitle,
+    subtitle,
+  } as const;
+};

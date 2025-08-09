@@ -146,7 +146,7 @@ export const useDataSection = (
           id: "name",
           label: "Tên đăng nhập",
           type:
-            fieldConfigs["name"]?.overrideType ??
+            // fieldConfigs["name"]?.overrideType ??
             FieldType.INPUT_WITH_TYPE_TEXT,
           placeholder: "Nhập tên đăng nhập...",
           options: [],
@@ -159,7 +159,7 @@ export const useDataSection = (
           id: "password",
           label: "Mật khẩu",
           type:
-            fieldConfigs["password"]?.overrideType ??
+            // fieldConfigs["password"]?.overrideType ??
             FieldType.INPUT_WITH_TYPE_PASSWORD,
           placeholder: "Nhập mật khẩu...",
           options: [],
@@ -172,7 +172,7 @@ export const useDataSection = (
           id: "email",
           label: "Email",
           type:
-            fieldConfigs["email"]?.overrideType ??
+            // fieldConfigs["email"]?.overrideType ??
             FieldType.INPUT_WITH_TYPE_TEXT,
           placeholder: "Nhập email...",
           options: [],
@@ -185,7 +185,7 @@ export const useDataSection = (
           id: "rank",
           label: "Rank",
           type:
-            fieldConfigs["email"]?.overrideType ??
+            // fieldConfigs["email"]?.overrideType ??
             FieldType.INPUT_WITH_TYPE_TEXT,
           placeholder: "Nhập email...",
           options: [],
@@ -198,7 +198,7 @@ export const useDataSection = (
           id: "mfaEnabledYn",
           label: "Mfa EnabledYn",
           type:
-            fieldConfigs["email"]?.overrideType ??
+            // fieldConfigs["email"]?.overrideType ??
             FieldType.INPUT_WITH_TYPE_TEXT,
           placeholder: "Type",
           options: [],
@@ -210,7 +210,7 @@ export const useDataSection = (
         fields: {
           id: "role",
           label: "Chọn vai trò",
-          type: fieldConfigs["role"]?.overrideType ?? FieldType.DROPDOWN,
+          type: FieldType.DROPDOWN,
           placeholder: "Chọn vai trò...",
           options: [
             { label: "Thành viên", value: UserRole.USER },
