@@ -101,11 +101,7 @@
 // };
 
 import { useMemo } from "react";
-import {
-  UserRole,
-  type UserData,
-  type UserRoleType,
-} from "../../../utils/type";
+import { UserRole, type UserRoleType } from "../../../utils/type";
 import { FieldType, type IFormField } from "../../CustomRender/FieldRenderer";
 
 export type UseRCreate = {
@@ -115,15 +111,11 @@ export type UseRCreate = {
   password: string;
 };
 export type UpdateUserForm = {
-  firstname?: string;
-  lastname?: string;
   pictureUrl?: string;
   rank?: string;
   role?: UserRoleType;
-  email?: string;
   name?: string;
   userAlias?: string;
-  mfaEnabledYn?: string;
 };
 type FieldConfig = {
   disabled?: boolean;
@@ -154,7 +146,7 @@ export const useDataSection = (
         },
       },
       {
-        disabled: fieldConfigs["password"]?.disabled ?? isDisable ?? false,
+        // disabled: fieldConfigs["password"]?.disabled ?? isDisable ?? false,
         fields: {
           id: "password",
           label: "Mật khẩu",
@@ -192,19 +184,18 @@ export const useDataSection = (
           value: data.rank,
         },
       },
-      {
-        // disabled: fieldConfigs["email"]?.disabled ?? isDisable ?? false,
-        fields: {
-          id: "mfaEnabledYn",
-          label: "Mfa EnabledYn",
-          type:
-            // fieldConfigs["email"]?.overrideType ??
-            FieldType.INPUT_WITH_TYPE_TEXT,
-          placeholder: "Type",
-          options: [],
-          value: data.mfaEnabledYn,
-        },
-      },
+      // {
+      //   // disabled: fieldConfigs["email"]?.disabled ?? isDisable ?? false,
+      //   fields: {
+      //     id: "mfaEnabledYn",
+      //     label: "Mfa EnabledYn",
+      //     type: FieldType.CHECKBOX_SELECT,
+      //     placeholder: "EnabledYn",
+      //     options: [],
+      //     value: data.mfaEnabledYn,
+      //     valueIncheckbox: [],
+      //   },
+      // },
       {
         // disabled: fieldConfigs["role"]?.disabled ?? isDisable ?? false,
         fields: {

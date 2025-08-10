@@ -9,12 +9,10 @@ import FieldRenderer, {
   FieldType,
   type IFormField,
 } from "../../CustomRender/FieldRenderer";
-import { Checkbox } from "../../Checkbox/Checkbox";
-import InputTextField from "../../Input/InputTextField";
 import { useUpdateUser } from "./useUpdateUser";
 import { useCreateUserByAdmin } from "../../../components/Api/usePostApi";
-import type { UseRCreate } from "../../../utils/type";
-import { Loading } from "../../Loading/Loading";
+import { useCreateUser } from "./useCreateUser";
+
 interface IModalStatisticalDataLearningProps {
   open: boolean;
   onClose: () => void;
@@ -52,7 +50,6 @@ const SERVICE_TYPE_OPTIONS = [
   { label: "admin", value: "admin" },
   { label: "admin", value: "admin" },
   { label: "admin", value: "admin" },
-  { label: "admin", value: "admin" },
 ];
 
 const AddUserModal = ({
@@ -71,12 +68,10 @@ const AddUserModal = ({
     handleChange,
     handleSubmit,
     refetchUser,
-  } = useUpdateUser({
+  } = useCreateUser({
     onClose,
     onSuccess,
   });
-  console.log("fetch", fetchUser);
-  console.log("VALUE:", formDetailConfig);
   // const handleSubmit = () => {}
   const renderActions = useCallback(() => {
     return (
@@ -89,12 +84,12 @@ const AddUserModal = ({
   }, [handleSubmit]);
   // console.log("Đang gửi:", JSON.stringify(formData));
 
-  console.log("Sending payload:", {
-    name: formData.name,
-    password: formData.password,
-    email: formData.email,
-    role: formData.role,
-  });
+  // console.log("Sending payload:", {
+  //   name: formData.name,
+  //   password: formData.password,
+  //   email: formData.email,
+  //   role: formData.role,
+  // });
 
   const renderContent = useCallback(() => {
     // hook lấy từ net nhgko thấy mẫu cũ

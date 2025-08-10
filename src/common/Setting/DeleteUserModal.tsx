@@ -28,11 +28,11 @@ const DeleteAccountModal = ({
   const { refetchDeleteUser } = useDeleteUserById(user?.id);
   const [inputId, setInputId] = useState("");
 
-  const onDeleteOnChange = () => {
-    refetchDeleteUser();
-    onSuccess?.();
+  const onDeleteOnChange = useCallback(async () => {
+    await refetchDeleteUser();
+    onSuccess();
     onClose();
-  };
+  }, [onSuccess, onClose, refetchDeleteUser]);
 
   const renderActions = useCallback(() => {
     return (

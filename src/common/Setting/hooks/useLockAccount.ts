@@ -21,9 +21,9 @@ export const useLockAccount = ({
   //   const api = useApis();
   const [error, setError] = useState("");
   const { fetchAccountLock, refetchAccountLock } = useAccountLock();
-  const [formData, setFormData] = useState<ILockAccountProps>({
+  const [formData, setFormData] = useState<{ id?: number }>({
     id: user?.id,
-    accountLockYn: user?.accountLockedYn,
+    // accountLockYn: user?.accountLockYn,
   });
 
   const isLocked = user?.accountLockYn === "Y";
@@ -49,13 +49,14 @@ export const useLockAccount = ({
           : "사용자 잠금이 정상적으로 완료되었습니다.";
         toast(`${message}`, "success");
         onClose();
+        onSuccess();
       } else {
         toast(`${result?.resultMessage}`, "error");
       }
     } catch (error) {
       console.error("Error locking/unlocking account:", error);
     }
-  }, [isLocked, user, onClose]);
+  }, [isLocked, user, onSuccess, onClose]);
 
   const userInfoLines = useCallback(() => {
     return [

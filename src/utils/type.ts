@@ -130,12 +130,18 @@ export type UserDataNoGrid = {
   mfaSecretKey?: string;
 };
 export type UseRCreate = {
-  email: string;
+  email?: string;
   name?: string;
   role?: UserRoleType; // hoặc nếu bạn có enum Role cụ thể, dùng nó
-  password: string;
+  password?: string;
 };
-
+export type UserUpdateProps = {
+  userAlias?: string;
+  name?: string;
+  role?: UserRoleType; // hoặc nếu bạn có enum Role cụ thể, dùng nó
+  rank?: string;
+  pictureUrl?: string;
+};
 export type DetailResponseMessage<T = any> = {
   data?: T;
   list?: T[];

@@ -5,12 +5,9 @@ import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
 import LocalAirportSharpIcon from "@mui/icons-material/LocalAirportSharp";
 import { Divider, FormControlLabel, Tab, Tabs } from "@mui/material";
-import StarOutlineRoundedIcon from "@mui/icons-material/StarOutlineRounded";
 import AppsIcon from "@mui/icons-material/Apps";
-import HelpOutlineRoundedIcon from "@mui/icons-material/HelpOutlineRounded";
 import { useSidebar } from "../../context/SidebarContext";
 import "./index.scss";
 import { Button } from "../Button/Button";
@@ -22,6 +19,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { LanguageDropdown } from "../Dropdown/Changelng";
 import { ImageThumbnail } from "../Profile/ImageThumbnail";
 import UserInfo from "../../svgs/eye.png";
+import { useGetUserById } from "../../components/Api/useGetApi";
 export const Header = forwardRef<HTMLElement, React.HTMLProps<HTMLElement>>(
   (props, ref) => {
     const { isAuthenticated } = useAuth();
@@ -38,6 +36,7 @@ export const Header = forwardRef<HTMLElement, React.HTMLProps<HTMLElement>>(
       setSelectedMenu(menuMap[newValue]);
     };
     const { user } = useAuth();
+    // const { refetchUserById } = useGetUserById();
 
     return (
       <AppBar className="header" ref={ref}>
@@ -138,15 +137,15 @@ export const Header = forwardRef<HTMLElement, React.HTMLProps<HTMLElement>>(
                     gap: 1,
                   }}
                 >
-                  <IconButton className="icon-button">
+                  {/* <IconButton className="icon-button">
                     <HelpOutlineRoundedIcon />
-                  </IconButton>
+                  </IconButton> */}
                   {/* <IconButton className="icon-button">
                     <MoreHorizSharpIcon />
                   </IconButton> */}
-                  <IconButton className="icon-button">
+                  {/* <IconButton className="icon-button">
                     <StarOutlineRoundedIcon />
-                  </IconButton>
+                  </IconButton> */}
                   {/* <IconButton className="icon-button">
                     <SettingsRoundedIcon />
                   </IconButton> */}

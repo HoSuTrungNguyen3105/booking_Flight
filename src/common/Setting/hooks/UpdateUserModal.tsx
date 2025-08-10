@@ -1,6 +1,5 @@
 import { Box, Button, Divider, Grid, Stack, Typography } from "@mui/material";
-import { memo, useCallback, useMemo, useState } from "react";
-import type { DataDetail, IDataHistoryProps, ISubfileListProps } from "../type";
+import { memo, useCallback } from "react";
 import BaseModal from "../../Modal/BaseModal";
 import AddIcon from "@mui/icons-material/Add";
 import FieldRenderer from "../../CustomRender/FieldRenderer";
@@ -36,12 +35,12 @@ const UpdateUserModal = ({
   }, [handleSubmit]);
   // console.log("Đang gửi:", JSON.stringify(formData));
 
-  console.log("Sending payload:", {
-    name: formData.name,
-    password: formData.password,
-    email: formData.email,
-    role: formData.role,
-  });
+  // console.log("Sending payload:", {
+  //   name: formData.name,
+  //   password: formData.password,
+  //   email: formData.email,
+  //   role: formData.role,
+  // });
 
   const renderContent = useCallback(() => {
     // hook lấy từ net nhgko thấy mẫu cũ

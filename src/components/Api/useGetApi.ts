@@ -4,6 +4,7 @@ import type {
   SearchType,
   UserListManageResponse,
   UserData,
+  DetailResponseMessage,
 } from "../../utils/type.ts";
 import React from "react";
 import { MethodType } from "../../hooks/type.ts";
@@ -238,6 +239,27 @@ export const useFlightCode = (
     mapToDropdown,
   };
 };
+export const useRandomPassword = () => {
+  // const isValid = !!id;
+  const {
+    data: fetchUserPw,
+    refetch: refetchUserPw,
+    loading: loadingUser,
+    setParams: setParamsUser,
+  } = useFetch<DetailResponseMessage, DetailResponseMessage>({
+    url: "/sys/users/getRandomPw",
+    // params: ,
+    autoFetch: true,
+    config: getMethod,
+    showToast: false,
+  });
+  return {
+    fetchUserPw,
+    refetchUserPw,
+    loadingUser,
+    setParamsUser,
+  };
+};
 export const useFlightById = ({ id }: FlightId) => {
   const isValid = !!id;
   const { data: fetchFlightId, refetch: refetchFlightId } = useFetch<
@@ -272,5 +294,24 @@ export const useGetUserList = () => {
     fetchUser,
     refetchUser,
     loadingUser,
+  };
+};
+export const useGetUserById = (id: string) => {
+  // const isValid = !!id;
+  const {
+    data: fetchUserById,
+    refetch: refetchUserById,
+    loading: loadingUserById,
+  } = useFetch<UserListManageResponse, UserData>({
+    url: `/sys/users/${id}`,
+    // params: ,
+    autoFetch: false,
+    config: getMethod,
+    showToast: false,
+  });
+  return {
+    fetchUserById,
+    refetchUserById,
+    loadingUserById,
   };
 };

@@ -6,6 +6,7 @@ import InputTextField from "../Input/InputTextField";
 import type { Theme } from "@mui/material/styles";
 import type { SxProps } from "@mui/system";
 import CSelect from "../Dropdown/CSelect";
+import JobTypeSelector from "../Setting/JobTypeSelector";
 
 export enum FieldType {
   SWITCH = "switch",
@@ -14,6 +15,7 @@ export enum FieldType {
   INPUT_WITH_TYPE_TEXT = "input_text",
   TEXTAREA = "textarea",
   DATE = "date",
+  CHECKBOX_SELECT = "checkbox_select",
 }
 type FormField = {
   id: string;
@@ -21,6 +23,7 @@ type FormField = {
   type: FieldType;
   placeholder?: string;
   options: DropdownOptions[];
+  valueIncheckbox?: string[];
   value: any;
   sx?: SxProps<Theme>;
   disabled?: boolean;
@@ -43,6 +46,7 @@ const FieldRenderer = ({
   options,
   value,
   disabled,
+  valueIncheckbox = [],
   error,
   onChange,
   sx,
@@ -98,6 +102,20 @@ const FieldRenderer = ({
           error={error as boolean}
           type="text"
           clearable
+          value={value}
+          onChange={onChange}
+          {...(customProps || {})} // ✅ Truyền toàn bộ prop riêng vào
+        />
+      );
+    case FieldType.CHECKBOX_SELECT:
+      return (
+        <JobTypeSelector
+          valueInCheckBox={valueIncheckbox}
+          // placeholder={placeholder}
+          // value={value}
+          // disabled={disabled}
+          // onChange={(e) => onChange(e.target.value)}
+          error={error as boolean}
           value={value}
           onChange={onChange}
           {...(customProps || {})} // ✅ Truyền toàn bộ prop riêng vào

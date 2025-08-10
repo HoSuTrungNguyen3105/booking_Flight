@@ -1,4 +1,4 @@
-import { use, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useClientPagination from "../../../context/use[custom]/useClientPagination";
 import type { GridColDef } from "@mui/x-data-grid";
 import type { GridRowDef } from "../../DataGrid";
@@ -7,6 +7,7 @@ import CSelect from "../../Dropdown/CSelect";
 import { useAuth } from "../../../context/AuthContext";
 import theme from "../../../scss/theme";
 import { useGetUserList } from "../../../components/Api/useGetApi";
+import { DateFormatEnum, formatDateKR } from "../../../hooks/format";
 
 const dummyRows = Array.from({ length: 20 }, (_, index) => {
   const id = index + 1;
@@ -83,36 +84,6 @@ export const useInspectionPerformanceHistory = () => {
 
   const rows = fetchUser?.list ?? [];
 
-  // const rows = [
-  //   {
-  //     id: 1,
-  //     userId: "nguyen123",
-  //     userAlias: "Anh Nguyên",
-  //     userRole: UserRole.ADMIN,
-  //     createDate: "2024-09-01T10:15:00Z",
-  //     lastLoginDate: "2024-09-24T08:00:00Z",
-  //     situation: "활성화됨", // Active
-  //   },
-  //   {
-  //     id: 2,
-  //     userId: user?.id,
-  //     userAlias: user?.name,
-  //     userRole: user?.role,
-  //     createDate: "2024-08-20T09:00:00Z",
-  //     lastLoginDate: "2024-09-23T16:30:00Z",
-  //     situation: "비활성화됨", // Inactive
-  //   },
-  //   {
-  //     id: 3,
-  //     userId: "test01",
-  //     userAlias: "",
-  //     userRole: UserRole.MEMBER,
-  //     createDate: "2024-07-10T12:00:00Z",
-  //     lastLoginDate: "2024-08-01T14:45:00Z",
-  //     situation: "잠김", // Locked
-  //   },
-  // ];
-
   // TODO: Replace with useServerPagination
   const {
     currentPage,
@@ -130,51 +101,6 @@ export const useInspectionPerformanceHistory = () => {
     initialSortDirection: "asc",
   });
 
-  // const columns: GridColDef[] = useMemo(
-  //   () => [
-  //     {
-  //       field: "inspectionTime",
-  //       headerName: "점검 시간",
-  //       flex: 1,
-  //     },
-  //     {
-  //       field: "itemScope",
-  //       headerName: "항목 범위",
-  //       flex: 1,
-  //     },
-  //     {
-  //       field: "inspectionStartType",
-  //       headerName: "점검 시작",
-  //       flex: 1,
-  //     },
-  //     {
-  //       field: "reviewStatus",
-  //       headerName: "검토 필요 항목",
-  //       flex: 1,
-  //       // renderCell: ({ row }) => (
-  //       //   <Box bgcolor={statusColorMapper[row.inspectionStatus]}>
-  //       //     {statusTextMapper[row.inspectionStatus]}
-  //       //   </Box>
-  //       // ),
-  //     },
-  //     {
-  //       field: "inspectionStatus",
-  //       headerName: "상태",
-  //       flex: 1,
-  //       // renderCell: ({ row }) => (
-  //       //   <Box bgcolor={statusColorMapper[row.status]}>
-  //       //     {statusTextMapper[row.status] ?? ''}
-  //       //   </Box>
-  //       // ),
-  //     },
-  //     {
-  //       field: "lastInspector",
-  //       headerName: "최종 점검자",
-  //       flex: 1,
-  //     },
-  //   ],
-  //   []
-  // );
   type ActionType =
     | "addUser"
     | "editUser"
@@ -201,6 +127,13 @@ export const useInspectionPerformanceHistory = () => {
     }));
   }, []);
 
+  const closeModal = useCallback((action: ActionType) => {
+    setOpenModal((prev) => ({
+      ...prev,
+      [action]: false,
+    }));
+  }, []);
+
   const handleSelectAction = useCallback(
     (row: UserData, action: ActionType) => {
       setSelectedRow(row);
@@ -208,6 +141,9 @@ export const useInspectionPerformanceHistory = () => {
     },
     [toggleOpenModal]
   );
+  // const handleRefetchUserList = useCallback(() => {
+  //   refetchUser();
+  // }, [refetchUser]);
 
   const columns: GridColDef[] = useMemo(
     () => [
@@ -215,11 +151,6 @@ export const useInspectionPerformanceHistory = () => {
         field: "email",
         flex: 1,
         headerName: "아이디",
-        // renderCell: ({ row }) => (
-        //   <span>
-        //     {row.userAlias ? `${row.userId}(${row.userAlias})` : row.userId}
-        //   </span>
-        // ),
       },
       {
         field: "role",
@@ -236,17 +167,19 @@ export const useInspectionPerformanceHistory = () => {
         renderCell: ({ row }) => <span>{row.rank ? "Member" : "-"}</span>,
       },
       {
-        field: "mfaEnabledYn",
+        field: "accountLockYn",
         headerName: "로그인",
         flex: 1,
-        // renderCell: ({ row }) => (
-        //   <span>{getOffsetDateTimeFromNow(row.lastLoginDate, "-")}</span>
-        // ),
       },
       {
         field: "createdAt",
         headerName: "상태",
         flex: 1,
+        renderCell: ({ row }) => (
+          <span>
+            {formatDateKR(DateFormatEnum.MM_DD_YYYY_HH_MM_SS, row.createdAt)}
+          </span>
+        ),
       },
       {
         field: "name",
@@ -292,7 +225,7 @@ export const useInspectionPerformanceHistory = () => {
 
   const handleSearch = useCallback(() => {}, []);
 
-  const handleRowClick = useCallback((row: GridRowDef & UserData) => {
+  const handleRowClick = useCallback((row: UserData) => {
     setSelectedRow(row);
   }, []);
 
@@ -317,7 +250,12 @@ export const useInspectionPerformanceHistory = () => {
     };
   }, []);
 
-  useEffect(() => {}, []);
+  // useEffect(() => {
+  //   refetchUser();
+  // }, [refetchUser]);
+  const handleRefetchUserList = useCallback(() => {
+    refetchUser();
+  }, [refetchUser]);
 
   return {
     dataTableViewRef,
@@ -332,7 +270,9 @@ export const useInspectionPerformanceHistory = () => {
     rows: paginatedData,
     openModal,
     toggleOpenModal,
+    handleRefetchUserList,
     columns,
+    closeModal,
     pageInfo: {
       page: currentPage,
       size: pageSize,

@@ -55,14 +55,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } else if (res?.resultCode === "00" && res.user) {
       const accessToken = res.accessToken;
       const userInfo: UserData = res.user;
-      setUser({
-        ...userInfo,
-        authType: "ID,PW", // nếu cần thêm field cho frontend
-        name: "",
-        firstname: "",
-        lastname: "",
-        password: userData.password,
-      });
+      setUser(res.user);
       setIsAuthenticated(true);
       // setUser(userInfo);
       setToken(accessToken ?? null);

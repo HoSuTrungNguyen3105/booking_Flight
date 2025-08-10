@@ -14,6 +14,7 @@ import type {
   UserCreateResponse,
   UserDataNoGrid,
   DetailResponseMessage,
+  UseRCreate,
 } from "../../utils/type.ts";
 import { MethodType } from "../../hooks/type";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
@@ -315,7 +316,7 @@ export const useCreateUserByAdmin = () => {
     refetch: refetchCreateUser,
     loading: loadingUser,
     setParams: setParamsUser,
-  } = useFetch<UserCreateResponse, UserDataNoGrid>({
+  } = useFetch<UserCreateResponse, UseRCreate>({
     url: "/sys/users/createUserByAdmin",
     // params: ,
     autoFetch: false,
@@ -324,6 +325,28 @@ export const useCreateUserByAdmin = () => {
   });
   return {
     fetchCreateUser,
+    refetchCreateUser,
+    loadingUser,
+    setParamsUser,
+  };
+};
+
+export const useUpdateUserById = () => {
+  // const isValid = !!id;
+  const {
+    data: fetchUpdateUserById,
+    refetch: refetchCreateUser,
+    loading: loadingUser,
+    setParams: setParamsUser,
+  } = useFetch<UserCreateResponse, UserDataNoGrid>({
+    url: "/sys/users/createUserByAdmin",
+    // params: ,
+    autoFetch: false,
+    config: postMethod,
+    showToast: true,
+  });
+  return {
+    fetchUpdateUserById,
     refetchCreateUser,
     loadingUser,
     setParamsUser,
@@ -346,7 +369,7 @@ export const useAccountLock = () => {
     // params: ,
     autoFetch: false,
     config: postMethod,
-    showToast: true,
+    showToast: false,
   });
   return {
     loadingAccountLock,

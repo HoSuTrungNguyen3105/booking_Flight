@@ -1,6 +1,9 @@
-import { useCallback, useMemo, useState } from "react";
-import { UserRole, type UseRCreate, type UserData } from "../../../utils/type";
-import { useGetUserList } from "../../../components/Api/useGetApi";
+import { useEffect, useMemo, useState } from "react";
+import { type UseRCreate, type UserData } from "../../../utils/type";
+import {
+  useGetUserList,
+  useRandomPassword,
+} from "../../../components/Api/useGetApi";
 import { useDataSection, type UpdateUserForm } from "./useDataSection";
 import { useCreateUserByAdmin } from "../../../components/Api/usePostApi";
 
@@ -9,7 +12,7 @@ interface IUseUpdateUserProps {
   onSuccess: () => void;
   user?: UserData;
 }
-export const useUpdateUser = ({
+export const useCreateUser = ({
   onClose,
   onSuccess,
   user,
@@ -17,39 +20,17 @@ export const useUpdateUser = ({
   //   const api = useApi5();
   const [error, setError] = useState<string>("");
   const { fetchUser, loadingUser, refetchUser } = useGetUserList();
-  const [updateInfo, setUpdateInfo] = useState<UpdateUserForm>({
+  const { refetchUserPw, fetchUserPw } = useRandomPassword();
+  const [updateInfo, setUpdateInfo] = useState<UseRCreate>({
     role: user?.role,
-    // password: user?.password,
-    rank: user?.rank,
-    mfaEnabledYn: user?.mfaEnabledYn,
-    name: user?.name,
-    userAlias: user?.userAlias,
+    password: fetchUserPw?.data,
     email: user?.email,
+    name: user?.name,
   });
-  // function generateRandomPassword(length: number = 8): string {
-  //   const chars =
-  //     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
-  //   let password = "";
-  //   for (let i = 0; i < length; i++) {
-  //     const randomChar = chars.charAt(Math.floor(Math.random() * chars.length));
-  //     password += randomChar;
-  //   }
-  //   return password;
-  // }
-  // const defaultFormData = {
-  //   name: "",
 
-  //   // password: generateRandomPassword(12),
-  //   email: "",
-  //   role: UserRole.USER, // dùng enum
-  // };
-
-  const [formData, setFormData] = useState<UpdateUserForm>(updateInfo);
+  const [formData, setFormData] = useState<UseRCreate>(updateInfo);
   //   const formDetailConfig = useDataSection(formData, false);
-  const formDetailConfig = useDataSection(formData, true, {
-    password: { disabled: true }, // ẩn hoặc khóa password khi update
-    email: { disabled: false }, // không cho sửa email
-  });
+  const formDetailConfig = useDataSection(formData, false);
 
   // Hàm cập nhật value
   const handleChange = (key: string, value: any) => {
@@ -58,13 +39,13 @@ export const useUpdateUser = ({
   const { fetchCreateUser, refetchCreateUser } = useCreateUserByAdmin();
   const handleSubmit = async () => {
     // JSON.stringify(formData);
-    const payload: UpdateUserForm = {
+    const payload: UseRCreate = {
       name: formData.name,
-      userAlias: formData.userAlias,
-      rank: formData.rank,
+      email: formData.email,
+      password: formData.password,
       role: formData.role, // đảm bảo đúng kiểu
-      pictureUrl: formData.pictureUrl, // đảm bảo đúng kiểu
     };
+    // Khi có password random mới thì set lại formData.password
     // setParamsUser(payload);
 
     const res = await refetchCreateUser(payload); // ✅ Truyền trực tiếp
@@ -75,11 +56,21 @@ export const useUpdateUser = ({
       console.error("Tạo user thất bại", res);
     }
   };
+  useEffect(() => {
+    if (fetchUserPw?.data) {
+      setFormData((prev) => ({
+        ...prev,
+        password: fetchUserPw.data,
+      }));
+    }
+  }, [fetchUserPw]);
+
+  useEffect(() => {
+    refetchUserPw();
+  }, [refetchUserPw, user]);
 
   const enableUpdateBtn = useMemo(
-    () =>
-      updateInfo.userAlias?.trim() !== "" ||
-      updateInfo?.mfaEnabledYn?.trim() !== "",
+    () => updateInfo.name?.trim() !== "" || updateInfo?.email?.trim() !== "",
     [updateInfo]
   );
 

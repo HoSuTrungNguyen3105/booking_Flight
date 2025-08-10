@@ -14,9 +14,11 @@ const ManageMyInfo = () => {
   const {
     loading,
     totalPages,
+    handleRefetchUserList,
     selectedRow,
     toggleOpenModal,
     rows,
+    closeModal,
     columns,
     onSortModelChange,
     onPageChange,
@@ -33,7 +35,7 @@ const ManageMyInfo = () => {
         rows={rows}
         columns={columns}
         checkboxSelection={false}
-        onRowClick={onRowClick}
+        // onRowClick={onRowClick}
         onSortModelChange={onSortModelChange}
         loading={loading}
       />
@@ -54,11 +56,14 @@ const ManageMyInfo = () => {
           onClose={() => {}}
         />
       )}
-      {openModal.editUser && (
+      {openModal.editUser && selectedRow && (
         <UpdateUserModal
           open={openModal.editUser}
-          data={selectedRow?.id}
-          onSuccess={() => toggleOpenModal("editUser")}
+          data={selectedRow}
+          onSuccess={() => {
+            handleRefetchUserList();
+            closeModal("editUser");
+          }}
           onClose={() => {}}
         />
       )}
@@ -66,7 +71,10 @@ const ManageMyInfo = () => {
         <DeleteUserModal
           open={openModal.deleteUser}
           user={selectedRow}
-          onSuccess={() => toggleOpenModal("deleteUser")}
+          onSuccess={() => {
+            handleRefetchUserList();
+            closeModal("deleteUser");
+          }}
           onClose={() => {}}
         />
       )}
@@ -74,8 +82,11 @@ const ManageMyInfo = () => {
         <AccountLock
           open={openModal.lock_unlockAccount}
           user={selectedRow}
-          onSuccess={() => toggleOpenModal("lock_unlockAccount")}
-          onClose={() => {}}
+          onSuccess={() => {
+            handleRefetchUserList();
+            closeModal("lock_unlockAccount");
+          }}
+          onClose={() => toggleOpenModal("lock_unlockAccount")}
         />
       )}
     </Box>
