@@ -1,24 +1,11 @@
-import {
-  Box,
-  Typography,
-  MenuItem,
-  type SelectChangeEvent,
-  Select,
-} from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useMemo, useState } from "react";
-import { ArrowBack, ArrowDownward } from "@mui/icons-material";
 import {
   type GridColDef,
   type GridPaginationModel,
   type GridRenderCellParams,
 } from "@mui/x-data-grid";
 import DataTable from "../DataGrid/index.tsx";
-import { ButtonGroup } from "@mui/material";
-import type { DropdownOption } from "./MultiDropdown";
-import { Dropdown } from "./Dropdown";
-import { Button } from "../Button/Button.tsx";
-import Modal from "../Modal/Modal.tsx";
-import { useNavigate } from "react-router-dom";
 import OrderButton from "../Button/OrderButton.tsx";
 import CSelect, { type ActionType } from "./CSelect.tsx";
 import Pagination from "../DataGrid/Pagination.tsx";
@@ -37,38 +24,6 @@ interface RowData {
   type: string;
   status: string;
 }
-
-const optionsDropdown: DropdownOption[] = [
-  { label: "JavaScript", value: "js" },
-  { label: "TypeScript", value: "ts" },
-  { label: "Python", value: "py" },
-  { label: "Java", value: "java" },
-];
-
-const options: OptionType[] = [
-  {
-    label: "Quản trị viên",
-    value: "admin",
-    type: "admin",
-    icon: "/image.jpg",
-    description: "Toàn quyền hệ thống",
-  },
-  {
-    label: "Người dùng",
-    value: "user",
-    type: "user",
-    icon: "/image.jpg",
-    description: "Tài khoản thông thường",
-  },
-  {
-    label: "Khách",
-    value: "guest",
-    type: "sys_guest",
-    icon: "/image.jpg",
-    description: "Không đăng nhập",
-  },
-];
-
 const typeList = ["admin", "user", "sys_guest"] as const;
 const statusList = ["완료", "미완료", "진행중"] as const;
 
@@ -81,9 +36,6 @@ const initialData: RowData[] = Array.from({ length: 25 }).map((_, i) => ({
 
 export default function DataGridInTab() {
   const [data, setData] = useState<RowData[]>(initialData);
-  const [selectOpen, setSelectOpen] = useState<number | null>(null);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [modalType, setModalType] = useState<OptionType | null>(null);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: 0,
     pageSize: 10,
@@ -109,24 +61,7 @@ export default function DataGridInTab() {
       });
     }
   };
-  const [selectedValues, setSelectedValues] = useState<DropdownOption[]>([]); // ✅ default là mảng rỗng
-  const [onOpenModal, setOnOpenModal] = useState(false);
-  const HandleOpenModal = () => {
-    setOnOpenModal(true);
-  };
-  // const handleChange = (rowId: number) => (e: SelectChangeEvent<string>) => {
-  //   const selected = options.find((o) => o.value === e.target.value);
-  //   if (!selected) return;
 
-  //   // setData((prev) =>
-  //   //   prev.map((row) =>
-  //   //     row.id === rowId ? { ...row, type: selected.value } : row
-  //   //   )
-  //   // );
-
-  //   // setModalType(selected);
-  //   setModalOpen(true);
-  // };
   const [selectedValue, setSelectedValue] = useState<string | number>("");
 
   const handleChange = (val: string | number) => {

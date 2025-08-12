@@ -29,6 +29,7 @@ import { LoginPage } from "../components/Auth/LoginPage";
 import Security from "../common/Setting/Security";
 import FullLayout from "../components/Layout/FullLayout";
 import CheckboxUI from "../common/Checkbox/CheckboxUI";
+import Setting_flight from "../components/Admin/Setting_flight";
 interface IRouteObject {
   path?: (typeof ROUTE_PATHS)[keyof typeof ROUTE_PATHS];
   index?: boolean;
@@ -183,6 +184,10 @@ const routes = [
       {
         path: "hero",
         element: <Hero />,
+      },
+      {
+        path: "setting",
+        element: <Setting_flight />,
       },
       {
         path: ROUTE_PATHS.FILE_UPLOAD.replace("/", ""),

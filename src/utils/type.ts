@@ -149,12 +149,64 @@ export type DetailResponseMessage<T = any> = {
   resultMessage: string;
 };
 
-export type FlightListApiResponse = FlightListResponse<DataFlight>;
+interface Airport {
+  code: string;
+  name: string;
+  city: string;
+}
+
+// interface Aircraft {
+//   code: string;
+//   model: string;
+//   range: number;
+// }
+// types.ts
+export interface Flight {
+  flightId: number;
+  flightNo: string;
+  scheduledDeparture: string;
+  scheduledArrival: string;
+  departureAirport: Airport;
+  arrivalAirport: Airport;
+  status: string;
+  aircraftCode: Aircraft;
+  actualDeparture?: string | null;
+  actualArrival?: string | null;
+}
+
+export interface Meal {
+  id: number;
+  name: string;
+  mealType: string;
+  description?: string;
+  price?: number;
+  isAvailable: boolean;
+}
+
+export interface FlightMeal {
+  id: number;
+  flightId: number;
+  mealId: number;
+  quantity: number;
+  price?: number;
+  flight: Flight;
+  meal: Meal;
+}
+
+// export interface ApiResponse {
+//   resultCode: string;
+//   resultMessage: string;
+//   data: FlightMeal[];
+// }
+
+// export type FlightListApiResponse = FlightListResponse<DataFlight>;
 export type UserListResponse = UserDataResponse<UserData>;
 export type UserCreateResponse = DetailResponseMessage<UserDataNoGrid>;
 // export type
 export type FlightDetailApiResponse = DetailResponseMessage<DataFlight>;
+export type FlightMealDetailApiResponse = DetailResponseMessage<FlightMeal>;
 export type UserListManageResponse = DetailResponseMessage<UserData>;
+export type FlightListApiResponse = DetailResponseMessage<Flight>;
 export type ResponseMessage = {
   resultCode?: string;
   resultMessage?: string;

@@ -5,6 +5,8 @@ import type {
   UserListManageResponse,
   UserData,
   DetailResponseMessage,
+  FlightMealDetailApiResponse,
+  FlightListApiResponse,
 } from "../../utils/type.ts";
 import React from "react";
 import { MethodType } from "../../hooks/type.ts";
@@ -275,6 +277,50 @@ export const useFlightById = ({ id }: FlightId) => {
   return {
     fetchFlightId,
     refetchFlightId,
+  };
+};
+
+export const useFlightMeals = () => {
+  const { data: fetchFlightMeals, refetch: refetchFlightMeals } = useFetch<
+    FlightMealDetailApiResponse,
+    FlightMealDetailApiResponse
+  >({
+    url: `/sys/flight-meals`,
+    autoFetch: false,
+    config: getMethod,
+    showToast: false,
+  });
+  return {
+    fetchFlightMeals,
+    refetchFlightMeals,
+  };
+};
+export const useFlightMealsById = (id: string) => {
+  const { data: fetchFlightMealsById, refetch: refetchFlightMealsById } =
+    useFetch<FlightMealDetailApiResponse, FlightMealDetailApiResponse>({
+      url: `/sys/flight-meals/${id}`,
+      autoFetch: false,
+      config: getMethod,
+      showToast: false,
+    });
+  return {
+    fetchFlightMealsById,
+    refetchFlightMealsById,
+  };
+};
+export const useFlightList = () => {
+  const { data: fetchFlightList, refetch: refetchFlightList } = useFetch<
+    FlightListApiResponse,
+    FlightListApiResponse
+  >({
+    url: `/sys/flights`,
+    autoFetch: true,
+    config: getMethod,
+    showToast: false,
+  });
+  return {
+    fetchFlightList,
+    refetchFlightList,
   };
 };
 export const useGetUserList = () => {

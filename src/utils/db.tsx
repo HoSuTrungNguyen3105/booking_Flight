@@ -71,7 +71,11 @@ export const menuData: MenuSection[] = [
             icon: <WifiPasswordRoundedIcon />,
           },
           { id: "sampleButton", label: "Chuyến bay hôm nay" },
-          { id: "hero", label: "Bảng mẫu", icon: <OtherHousesTwoToneIcon /> },
+          {
+            id: "setting",
+            label: "Bảng mẫu",
+            icon: <OtherHousesTwoToneIcon />,
+          },
         ],
       },
     ],
