@@ -30,6 +30,7 @@ import Security from "../common/Setting/Security";
 import FullLayout from "../components/Layout/FullLayout";
 import CheckboxUI from "../common/Checkbox/CheckboxUI";
 import Setting_flight from "../components/Admin/Setting_flight";
+import MealList from "../common/Setting/MealList";
 interface IRouteObject {
   path?: (typeof ROUTE_PATHS)[keyof typeof ROUTE_PATHS];
   index?: boolean;
@@ -162,8 +163,8 @@ const routes = [
         element: <DataSecure />,
       },
       {
-        path: "profile",
-        element: <DataV2 />,
+        path: "flightmeals",
+        element: <MealList />,
       },
       {
         path: ROUTE_PATHS.FOOD.replace("/", ""),

@@ -292,6 +292,7 @@ export const useFlightBooking = (flightParams: UserSearchType) => {
     refetchFlightBookingDataData,
   };
 };
+
 export const useTicketById = (flightParams: UserSearchType) => {
   const { data: flightBookingData, refetch: refetchFlightBookingDataData } =
     useFetch<FlightDetailResponse, UserSearchType>({

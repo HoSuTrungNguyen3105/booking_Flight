@@ -17,7 +17,7 @@ type SideBarValueTypes =
   | "flightManagement"
   | "airplaneManagement"
   | "airplaneType"
-  | "airplaneStatus"
+  | "flightmeals"
   | "airplaneSchedule"
   | "airplaneTicket"
   | "airplaneUser"
@@ -91,6 +91,7 @@ export const menuData: MenuSection[] = [
             id: "airport-list",
             label: "Danh sách",
             subItems: [
+              { id: "flightmeals", label: "Nhân viên" },
               { id: "domestic", label: "Nội địa" },
               { id: "international", label: "Quốc tế" },
             ],

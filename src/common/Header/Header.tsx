@@ -39,159 +39,182 @@ export const Header = forwardRef<HTMLElement, React.HTMLProps<HTMLElement>>(
     // const { refetchUserById } = useGetUserById();
 
     return (
-      <AppBar className="header" ref={ref}>
-        <Box sx={{ width: "100%", padding: 0 }}>
-          <AppBar position="static" className="app-bar">
-            <Toolbar>
+      <AppBar
+        className="header"
+        ref={ref}
+        position="static"
+        sx={{
+          background: "transparent",
+          boxShadow: "none",
+          position: "relative",
+        }}
+      >
+        {/* Nền Gradient + Bóng Tròn */}
+        <Box
+          sx={{
+            position: "absolute",
+            inset: 0,
+            background:
+              "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)",
+            "&::before": {
+              content: '""',
+              position: "absolute",
+              top: "10%",
+              left: "10%",
+              width: 100,
+              height: 100,
+              borderRadius: "50%",
+              background: "rgba(255, 255, 255, 0.1)",
+              animation: "float 6s ease-in-out infinite",
+            },
+            "&::after": {
+              content: '""',
+              position: "absolute",
+              top: "60%",
+              right: "15%",
+              width: 80,
+              height: 80,
+              borderRadius: "50%",
+              background: "rgba(255, 255, 255, 0.08)",
+              animation: "float 8s ease-in-out infinite reverse",
+            },
+            "@keyframes float": {
+              "0%, 100%": { transform: "translateY(0px)" },
+              "50%": { transform: "translateY(-20px)" },
+            },
+          }}
+        />
+
+        <Toolbar sx={{ position: "relative", zIndex: 1 }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              width: "100%",
+              gap: 10,
+            }}
+          >
+            {/* Logo + Menu */}
+            <Box sx={{ display: "flex", width: "30%", alignItems: "center" }}>
+              <IconButton
+                size="large"
+                edge="start"
+                onClick={toggleSidebar}
+                sx={{ mr: 2, color: "white" }}
+              >
+                <LocalAirportSharpIcon />
+              </IconButton>
+              <Typography
+                fontWeight="bold"
+                fontSize="2.2rem"
+                sx={{
+                  ml: 2,
+                  cursor: "pointer",
+                  background: "linear-gradient(45deg, #fff 30%, #f0f8ff 90%)",
+                  backgroundClip: "text",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                }}
+              >
+                HSTN
+              </Typography>
+              <Divider
+                orientation="vertical"
+                flexItem
+                sx={{
+                  height: 40,
+                  borderColor: "rgba(255,255,255,0.5)",
+                  mx: 2,
+                }}
+              />
               <Box
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  width: "100%",
-                  gap: 10,
+                  bgcolor: "rgba(255,255,255,0.15)",
+                  borderRadius: 2,
+                  px: 2,
+                  height: 40,
                 }}
               >
-                <Box
-                  sx={{ display: "flex", width: "30%", alignItems: "center" }}
-                >
-                  <IconButton
-                    size="large"
-                    edge="start"
-                    className="menu-icon"
-                    onClick={toggleSidebar}
-                    sx={{ mr: 2 }}
-                  >
-                    <LocalAirportSharpIcon />
-                  </IconButton>
-                  <Box sx={{ display: "flex", alignItems: "center" }}>
-                    <Typography
-                      fontWeight="bold"
-                      fontSize="2.2rem"
-                      sx={{
-                        color: "#135678",
-                        ml: 2,
-                        cursor: "pointer",
-                      }}
-                    >
-                      HSTN
-                    </Typography>
-                    <Divider
-                      orientation="vertical"
-                      flexItem
-                      sx={{
-                        height: 40,
-                        borderColor: "#ccc",
-                        mx: 2,
-                      }}
-                    />
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        bgcolor: "grey.100",
-                        borderRadius: 2,
-                        px: 2,
-                        height: 40,
-                      }}
-                    >
-                      <Typography
-                        fontWeight="bold"
-                        sx={{
-                          color: "#135678",
-                          whiteSpace: "nowrap",
-                          cursor: "pointer",
-                        }}
-                      >
-                        한글시스템명
-                      </Typography>
-                    </Box>
-                  </Box>
-                </Box>
-                <Box
+                <Typography
+                  fontWeight="bold"
                   sx={{
-                    flexGrow: 1,
-                    maxWidth: 800,
-                    position: "relative",
-                  }}
-                  className="height-tab"
-                >
-                  <AppBar position="static" color="default" elevation={0}>
-                    <Tabs
-                      value={tabValue}
-                      onChange={handleTabChange}
-                      textColor="primary"
-                      variant="fullWidth"
-                    >
-                      {menuMap.map((menu, index) => (
-                        <Tab key={index} label={menu} />
-                      ))}
-                    </Tabs>
-                  </AppBar>
-                </Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    width: "40%",
-                    justifyContent: "flex-end",
-                    gap: 1,
+                    color: "white",
+                    whiteSpace: "nowrap",
+                    cursor: "pointer",
                   }}
                 >
-                  {/* <IconButton className="icon-button">
-                    <HelpOutlineRoundedIcon />
-                  </IconButton> */}
-                  {/* <IconButton className="icon-button">
-                    <MoreHorizSharpIcon />
-                  </IconButton> */}
-                  {/* <IconButton className="icon-button">
-                    <StarOutlineRoundedIcon />
-                  </IconButton> */}
-                  {/* <IconButton className="icon-button">
-                    <SettingsRoundedIcon />
-                  </IconButton> */}
-                  <FormControlLabel
-                    control={<PlainSwitch defaultChecked />}
-                    label=""
-                    sx={{ mr: 2 }}
-                  />
-                  <Box>
-                    <LanguageDropdown />
-                  </Box>
-                  {isAuthenticated ? (
-                    <Box sx={{ display: "flex", alignItems: "center", ml: 2 }}>
-                      <Button
-                        sx={{ display: "flex", alignItems: "center" }}
-                        onClick={handleOpenProfile}
-                        iconPosition="trailing"
-                        size="large"
-                        appearance="contained"
-                        icon={<ImageThumbnail url={UserInfo} />}
-                        label={user?.name}
-                      />
-                      <SignOut />
-                    </Box>
-                  ) : (
-                    <Link to="/login">
-                      <Button
-                        priority="normal"
-                        size="small"
-                        appearance="unfilled"
-                        icon={<Login />}
-                        label="Login"
-                      />
-                    </Link>
-                  )}
-                  <Button
-                    size="medium"
-                    icon={<AppsIcon />}
-                    priority="normal"
-                    appearance="unfilled"
-                  />
-                </Box>
+                  한글시스템명
+                </Typography>
               </Box>
-            </Toolbar>
-          </AppBar>
-        </Box>
+            </Box>
+
+            {/* Tabs */}
+            <Box sx={{ flexGrow: 1, maxWidth: 800 }}>
+              <Tabs
+                value={tabValue}
+                onChange={handleTabChange}
+                textColor="inherit"
+                indicatorColor="secondary"
+                variant="fullWidth"
+              >
+                {menuMap.map((menu, index) => (
+                  <Tab key={index} label={menu} sx={{ color: "white" }} />
+                ))}
+              </Tabs>
+            </Box>
+
+            {/* Actions */}
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                width: "40%",
+                justifyContent: "flex-end",
+                gap: 1,
+              }}
+            >
+              <FormControlLabel
+                control={<PlainSwitch defaultChecked />}
+                label=""
+              />
+              <LanguageDropdown />
+              {isAuthenticated ? (
+                <Box sx={{ display: "flex", alignItems: "center", ml: 2 }}>
+                  <Button
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      color: "white",
+                    }}
+                    onClick={handleOpenProfile}
+                    iconPosition="trailing"
+                    size="large"
+                    appearance="contained"
+                    icon={<ImageThumbnail url={UserInfo} />}
+                    label={user?.name}
+                  />
+                  <SignOut />
+                </Box>
+              ) : (
+                <Link to="/login">
+                  <Button
+                    size="small"
+                    icon={<Login />}
+                    label="Login"
+                    sx={{ color: "white" }}
+                  />
+                </Link>
+              )}
+              <Button
+                size="medium"
+                icon={<AppsIcon />}
+                sx={{ color: "white" }}
+              />
+            </Box>
+          </Box>
+        </Toolbar>
       </AppBar>
     );
   }

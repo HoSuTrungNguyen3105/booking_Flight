@@ -174,15 +174,6 @@ export interface Flight {
   actualArrival?: string | null;
 }
 
-export interface Meal {
-  id: number;
-  name: string;
-  mealType: string;
-  description?: string;
-  price?: number;
-  isAvailable: boolean;
-}
-
 export interface FlightMeal {
   id: number;
   flightId: number;
@@ -193,6 +184,22 @@ export interface FlightMeal {
   meal: Meal;
 }
 
+export interface Meal {
+  id: number;
+  name: string;
+  mealType: string;
+  description?: string;
+  price: number;
+  isAvailable: boolean;
+  flightMeals: FlightMeal[];
+}
+
+// export interface BaseResponseDto<T> {
+//   resultCode: string;
+//   resultMessage: string;
+//   list: T[];
+// }
+
 // export interface ApiResponse {
 //   resultCode: string;
 //   resultMessage: string;
@@ -202,6 +209,9 @@ export interface FlightMeal {
 // export type FlightListApiResponse = FlightListResponse<DataFlight>;
 export type UserListResponse = UserDataResponse<UserData>;
 export type UserCreateResponse = DetailResponseMessage<UserDataNoGrid>;
+
+export type MealResponse = DetailResponseMessage<Meal>;
+
 // export type
 export type FlightDetailApiResponse = DetailResponseMessage<DataFlight>;
 export type FlightMealDetailApiResponse = DetailResponseMessage<FlightMeal>;

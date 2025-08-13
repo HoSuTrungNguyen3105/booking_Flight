@@ -2,9 +2,7 @@ import { Outlet } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import styles from "./index.module.scss";
 import { Box } from "@mui/material";
-import { SidebarProvider } from "../../context/SidebarContext";
 import { Header } from "../../common/Header/Header";
-import { Sidebar } from "../../common/Sidebar/Sidebar";
 import { Loading } from "../../common/Loading/Loading";
 import { Footer } from "../../common/Footer/Footer";
 
@@ -16,10 +14,8 @@ const MainLayout = () => {
 
   useEffect(() => {
     const updateHeights = () => {
-      const h = headerRef.current?.clientHeight ?? 0;
-      const f = footerRef.current?.clientHeight ?? 0;
-      setHeaderHeight(h);
-      setFooterHeight(f);
+      setHeaderHeight(headerRef.current?.clientHeight ?? 0);
+      setFooterHeight(footerRef.current?.clientHeight ?? 0);
     };
 
     updateHeights();
@@ -28,45 +24,48 @@ const MainLayout = () => {
   }, []);
 
   return (
-    <Box className={styles.mainLayout}>
-      <SidebarProvider>
-        {/* Fixed Header */}
-        <Box
-          ref={headerRef}
-          sx={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            zIndex: 1000,
-            backgroundColor: "#fff",
-            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-          }}
-        >
-          <Header />
-        </Box>
+    <Box
+      className={styles.mainLayout}
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "100vh",
+      }}
+    >
+      {/* Header cố định */}
+      <Box
+        ref={headerRef}
+        sx={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 1000,
+          backgroundColor: "#fff",
+          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+        }}
+      >
+        <Header />
+      </Box>
 
-        {/* Main Content, push down by header height */}
-        <main
-          className={styles.mainContent}
-          style={{ paddingTop: headerHeight }}
-        >
-          <Box className={styles.sidebarContainer}>
-            <Sidebar />
-          </Box>
-          <Box
-            className={styles.contentContainer}
-            style={{
-              maxHeight: `calc(100vh - ${headerHeight + footerHeight}px)`,
-            }}
-          >
-            <Outlet />
-          </Box>
-        </main>
-      </SidebarProvider>
+      {/* Nội dung chính */}
+      <Box
+        component="main"
+        sx={{
+          flex: 1,
+          paddingTop: `${headerHeight}px`,
+          paddingBottom: `${footerHeight}px`,
+          width: "100%",
+          background:
+            "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)", // giống style hero
+        }}
+      >
+        <Outlet />
+      </Box>
 
       {/* Footer */}
       <Footer />
+
       <Loading />
     </Box>
   );
