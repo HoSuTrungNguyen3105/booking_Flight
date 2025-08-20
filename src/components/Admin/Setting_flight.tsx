@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useFlightList } from "../Api/useGetApi";
 import type { GridColDef } from "@mui/x-data-grid";
-import type { Flight } from "../../utils/type";
 import { Typography } from "@mui/material";
 import DataTable from "../../common/DataGrid/index";
 import theme from "../../scss/theme";
 import CSelect from "../../common/Dropdown/CSelect";
+import type { Flight } from "../../common/Setting/type";
 
 const Setting_flight = () => {
   const [rows, setRows] = useState<Flight[]>([]);

@@ -1,5 +1,4 @@
 import { Box, Chip, Stack, Typography } from "@mui/material";
-import SearchIcon from "assets/svgs/search.svg";
 // import CalendarCard from "components/atoms/CalendarCard";
 // import InputTextField from "components/atoms/InputTextField";
 import {
@@ -10,7 +9,6 @@ import {
   useState,
   type KeyboardEvent,
 } from "react";
-import InputTextArea from "../Input/InputTextArea";
 import InputField from "../Input/InputField";
 
 export interface ISearchQuery {

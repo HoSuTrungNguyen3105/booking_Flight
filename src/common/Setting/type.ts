@@ -54,3 +54,38 @@ export interface ISubfileListProps extends GridRowDef {
   uploader: string;
   type: string;
 }
+// types.ts
+export interface Meal {
+  id: number;
+}
+
+export interface Aircraft {
+  code: string;
+  model: string;
+  range: number;
+}
+
+export interface Airport {
+  code: string;
+  name: string;
+  city: string;
+  coordinates: string;
+  timezone: string;
+}
+
+export type Flight = {
+  flightId: number;
+  flightNo: string;
+  scheduledDeparture: string;
+  scheduledArrival: string;
+  departureAirport: string;
+  arrivalAirport: string;
+  status: string;
+  aircraftCode: string;
+  actualDeparture?: string | null;
+  actualArrival?: string | null;
+  aircraft: Aircraft;
+  departureAirportRel: Airport;
+  arrivalAirportRel: Airport;
+  meals: Meal[];
+};

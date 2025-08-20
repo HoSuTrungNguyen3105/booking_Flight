@@ -4,7 +4,7 @@ import type {
   GridColDef,
   GridSortModel,
 } from "@mui/x-data-grid";
-import { memo, useCallback, useState, type ReactNode } from "react";
+import { memo, useCallback, type ReactNode } from "react";
 import { Loading } from "../Loading/Loading";
 import { Box, Stack, styled, Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
@@ -27,10 +27,6 @@ interface IDataTableProps {
   emptyItemIcon?: string;
   onRowSelect?: (row: Set<GridRowId>) => void;
   onRowClick?: (row: GridRowDef) => void;
-  // onRowSelectionModelChange?: (model: {
-  //   type: "include" | "exclude";
-  //   ids: Set<GridRowId>;
-  // }) => void;
   onSortModelChange?: (model: GridSortModel) => void;
 }
 

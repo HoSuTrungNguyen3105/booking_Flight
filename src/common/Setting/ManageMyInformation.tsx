@@ -1,12 +1,4 @@
 import { Box, Button, Stack } from "@mui/material";
-// import DialogConfirm from 'components/atoms/DialogConfirm';
-// import ErrorMessagePart from 'components/atoms/ErrorMessagePart';
-// import Loading from 'components/atoms/Loading';
-// import UserInfoSection from 'components/atoms/UserInfoSection';
-// import ManagePathAdminSection from 'components/molecules/ManagePathAdminSection';
-// import TransferAuthoritySection from 'components/molecules/TransferAuthoritySection';
-// import DataAccessPermissionSection from 'components/molecules/DataAccessPermissionSection';
-// import TimeInfoSection from 'components/molecules/TimeInfoSection';
 import { useCallback, useState } from "react";
 import DataAccessPermissionSection from "./DataAccessPermissionSection";
 import DialogConfirm from "../Modal/DialogConfirm";

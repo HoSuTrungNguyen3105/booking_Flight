@@ -30,11 +30,7 @@ const BookTicket = () => {
     arrivalAirport: "",
     passengerCount: 0,
   });
-  const {
-    control: controlSearch,
-    handleSubmit: handleSearchSubmit,
-    reset: resetSearch,
-  } = useForm<UserSearchType>({
+  const { reset: resetSearch } = useForm<UserSearchType>({
     defaultValues: flightParams,
   });
   const onResetForm = () => {

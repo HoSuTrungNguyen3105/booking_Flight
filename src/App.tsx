@@ -1,4 +1,4 @@
-import "./App.scss";
+// import "./App.scss";
 import { RouterProvider } from "react-router-dom";
 import { ApiProvider } from "./context/ApiContext";
 import router from "./routers/Route";

@@ -54,12 +54,19 @@
 // }
 import React, { useEffect, useState } from "react";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
-import { useGetMeal } from "../../components/Api/useGetApi";
+import { useGetFlightData, useGetMeal } from "../../components/Api/useGetApi";
 import type { Meal } from "../../utils/type";
+import { Typography } from "@mui/material";
+import FlightTable from "./hooks/FlightData";
+import type { Flight } from "./type";
 
 export default function MealList() {
   const [data, setData] = useState<Meal[]>([]);
+  const [dataFlight, setDataFlight] = useState<Flight[]>([]);
+
   const { refetchFlightBookingDataData } = useGetMeal();
+
+  const { refetchGetFlightData } = useGetFlightData();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -67,6 +74,23 @@ export default function MealList() {
         const res = await refetchFlightBookingDataData();
         if (res) {
           setData(res.list ?? []);
+        }
+      } catch (error) {
+        console.error("Lỗi khi lấy dữ liệu:", error);
+      }
+    };
+
+    fetchData();
+  }, [refetchFlightBookingDataData]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await refetchGetFlightData();
+        if (res?.resultCode == "00") {
+          setDataFlight(res.list ?? []);
+        } else {
+          setDataFlight([]);
         }
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu:", error);
@@ -115,6 +139,8 @@ export default function MealList() {
         }}
         disableRowSelectionOnClick
       />
+      <Typography>Flight list</Typography>
+      <FlightTable flights={dataFlight} />;
     </div>
   );
 }

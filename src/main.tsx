@@ -1,11 +1,11 @@
 import React from "react";
-import "./index.scss";
+// import "./index.scss";
 import App from "./App.tsx";
 import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
 // import "ag-grid-community/styles/ag-grid.css";
 // import "ag-grid-community/styles/ag-theme-alpine.css";
 // import { ClerkProvider } from "@clerk/clerk-react";
-import "bootstrap/dist/css/bootstrap.min.css";
+// import "bootstrap/dist/css/bootstrap.min.css";
 import ReactDOM from "react-dom/client";
 ModuleRegistry.registerModules([AllCommunityModule]);
 const root = ReactDOM.createRoot(

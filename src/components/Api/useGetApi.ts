@@ -8,6 +8,7 @@ import type {
   FlightMealDetailApiResponse,
   FlightListApiResponse,
   MealResponse,
+  FlightResponse,
 } from "../../utils/type.ts";
 import React from "react";
 import { MethodType } from "../../hooks/type.ts";
@@ -319,6 +320,20 @@ export const useGetMeal = () => {
   return {
     flightBookingData,
     refetchFlightBookingDataData,
+  };
+};
+export const useGetFlightData = () => {
+  const { data: getFlightData, refetch: refetchGetFlightData } = useFetch<
+    FlightResponse,
+    FlightResponse
+  >({
+    url: "/sys/flights",
+    autoFetch: true,
+    config: getMethod,
+  });
+  return {
+    getFlightData,
+    refetchGetFlightData,
   };
 };
 export const useFlightList = () => {

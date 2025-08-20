@@ -4,13 +4,10 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import ContentModal from "../Modal/ContentModal";
 import useDebounce from "../../context/use[custom]/useDebounce";
 import TextArea from "../Input/TextArea";
-import {
-  type GridColDef,
-  type GridRowId,
-  type GridRowSelectionModel,
-} from "@mui/x-data-grid";
+import { type GridColDef } from "@mui/x-data-grid";
 import DataTable from "../DataGrid/index";
 import { useNavigate } from "react-router-dom";
+
 const mockData = [
   { id: 1, name: "Kim Gil-dong", department: "Tech", location: "Seoul" },
   { id: 2, name: "Lee Gil-dong", department: "HR", location: "Busan" },
@@ -45,14 +42,6 @@ const SearchPopup: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [filteredResults, setFilteredResults] = useState(mockData);
-  // const [selectedItems, setSelectedItems] = useState<(typeof mockData)[0][]>(
-  //   []
-  // );
-  // const [selectedIdsModel, setSelectedIdsModel] =
-  //   useState<GridRowSelectionModel>({
-  //     type: "include",
-  //     ids: new Set<GridRowId>(),
-  //   });
   const [selectedIdsModel, setSelectedIdsModel] = useState<{
     type: "include";
     ids: Set<string>;

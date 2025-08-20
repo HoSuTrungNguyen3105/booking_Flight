@@ -13,7 +13,6 @@ export const useDeleteUserById = (id?: number) => {
     DetailResponseMessage
   >({
     url: isValid ? `/sys/users/${id}` : "",
-    // params: {},
     autoFetch: false,
     config: deleteMethod,
     showToast: true,

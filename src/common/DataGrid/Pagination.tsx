@@ -1,6 +1,5 @@
 import { Box, Pagination, styled, Typography } from "@mui/material";
 import { memo, useCallback } from "react";
-import { Dropdown } from "../Dropdown/Dropdown";
 import CSelect from "../Dropdown/CSelect";
 
 interface ICustomPaginationProps {

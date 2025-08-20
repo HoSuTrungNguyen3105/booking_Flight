@@ -1,4 +1,5 @@
 import type { GridRowDef } from "../common/DataGrid";
+import type { Flight } from "../common/Setting/type";
 
 export enum MethodConfig {
   GET = "GET",
@@ -161,18 +162,18 @@ interface Airport {
 //   range: number;
 // }
 // types.ts
-export interface Flight {
-  flightId: number;
-  flightNo: string;
-  scheduledDeparture: string;
-  scheduledArrival: string;
-  departureAirport: Airport;
-  arrivalAirport: Airport;
-  status: string;
-  aircraftCode: Aircraft;
-  actualDeparture?: string | null;
-  actualArrival?: string | null;
-}
+// export interface Flight {
+//   flightId: number;
+//   flightNo: string;
+//   scheduledDeparture: string;
+//   scheduledArrival: string;
+//   departureAirport: Airport;
+//   arrivalAirport: Airport;
+//   status: string;
+//   aircraftCode: Aircraft;
+//   actualDeparture?: string | null;
+//   actualArrival?: string | null;
+// }
 
 export interface FlightMeal {
   id: number;
@@ -211,6 +212,7 @@ export type UserListResponse = UserDataResponse<UserData>;
 export type UserCreateResponse = DetailResponseMessage<UserDataNoGrid>;
 
 export type MealResponse = DetailResponseMessage<Meal>;
+export type FlightResponse = DetailResponseMessage<Flight>;
 
 // export type
 export type FlightDetailApiResponse = DetailResponseMessage<DataFlight>;

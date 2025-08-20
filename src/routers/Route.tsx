@@ -24,13 +24,13 @@ import GuestGuard from "../components/Layout/GuardLayout";
 import InspectionDetails from "../components/User/Profile";
 import type { JSX } from "react";
 import DataSecure from "../common/Setting/DataSecure";
-import DataV2 from "../common/Dropdown/DataV2";
 import { LoginPage } from "../components/Auth/LoginPage";
 import Security from "../common/Setting/Security";
 import FullLayout from "../components/Layout/FullLayout";
 import CheckboxUI from "../common/Checkbox/CheckboxUI";
 import Setting_flight from "../components/Admin/Setting_flight";
 import MealList from "../common/Setting/MealList";
+
 interface IRouteObject {
   path?: (typeof ROUTE_PATHS)[keyof typeof ROUTE_PATHS];
   index?: boolean;
@@ -47,10 +47,6 @@ const routes = [
       </GuestGuard>
     ),
   },
-  // {
-  //   path: "loginPage",
-  //   element: <LoginPage />,
-  // },
   {
     path: ROUTE_PATHS.SAMPLE_BUTTON,
     element: <Sample />,

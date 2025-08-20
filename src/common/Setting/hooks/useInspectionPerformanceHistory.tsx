@@ -176,9 +176,7 @@ export const useInspectionPerformanceHistory = () => {
         headerName: "상태",
         flex: 1,
         renderCell: ({ row }) => (
-          <span>
-            {formatDateKR(DateFormatEnum.MM_DD_YYYY_HH_MM_SS, row.createdAt)}
-          </span>
+          <span>{formatDateKR(DateFormatEnum.MMMM_D_YYYY, row.createdAt)}</span>
         ),
       },
       {

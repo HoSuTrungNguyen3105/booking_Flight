@@ -4,7 +4,6 @@ export interface IFlightIconProps {
   color?: string;
   size: number;
   className?: string;
-
   direction?: number;
 }
 
@@ -20,9 +19,6 @@ const FlightIcon: React.FunctionComponent<IFlightIconProps> = ({
       viewBox="0 0 19 19"
       height={size}
       width={size}
-      //   className={classNames({
-      //     [className]: className
-      //   })}
       className={className !== undefined ? className : ""}
       style={{ transform: `rotate(${direction || 0}deg)` }}
     >

@@ -21,10 +21,10 @@ export const useUpdateUser = ({
     role: user?.role,
     // password: user?.password,
     rank: user?.rank,
-    mfaEnabledYn: user?.mfaEnabledYn,
+    // mfaEnabledYn: user?.mfaEnabledYn,
     name: user?.name,
     userAlias: user?.userAlias,
-    email: user?.email,
+    // email: user?.email,
   });
   // function generateRandomPassword(length: number = 8): string {
   //   const chars =
@@ -78,8 +78,7 @@ export const useUpdateUser = ({
 
   const enableUpdateBtn = useMemo(
     () =>
-      updateInfo.userAlias?.trim() !== "" ||
-      updateInfo?.mfaEnabledYn?.trim() !== "",
+      updateInfo.userAlias?.trim() !== "" || updateInfo?.name?.trim() !== "",
     [updateInfo]
   );
 

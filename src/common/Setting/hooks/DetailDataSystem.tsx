@@ -98,15 +98,6 @@ const DetailDataSystemModal = ({
         <Typography variant="caption" color="text.secondary" sx={{ mb: 1 }}>
           {functionText}
         </Typography>
-        {/* <Box display="flex" flexDirection="row" width="100%">
-          {files?.name?.length > 0 && (
-            <Box display="flex" flexDirection="column" gap={1} flex={1} mr={2}>
-              {files.name.map((item, i) => (
-                <InputField key={i} value={item} />
-              ))}
-            </Box>
-          )}
-        </Box> */}
         <Grid container size={12}>
           <Grid size={4}>
             <Typography variant="body2" color="grey.500">

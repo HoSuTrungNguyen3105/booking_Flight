@@ -16,6 +16,7 @@ import type { MenuData } from "../BreadCrumb/BreadcrumbV2";
 import Breadcrumb from "../BreadCrumb/BreadcrumbV2";
 import InputTextField from "../Input/InputTextField";
 import AddUserModal from "./hooks/AddUserModal";
+import InspectionSearchBar from "../SearchPopup/InspectionSearchBar";
 // import DetailDataSystemModal from "./hooks/DetailDataSystemModal";
 // FIX: Update the import path or create the missing file if necessary
 
@@ -325,7 +326,12 @@ const DataSecure = () => {
       /> */}
       <Box overflow={"auto"} minHeight={"50vh"}>
         {/* <TableInfo title="Table" description="" content={mappedContent} /> */}
-        <DetailSection data={detailData} />
+        {/* <DetailSection data={detailData} /> */}
+        <InspectionSearchBar
+          startDate={1734560400.0}
+          endDate={1734560400.0}
+          onClickFirst={() => {}}
+        />
         <Box borderTop={1} paddingTop={2} borderColor={"grey.200"}>
           <Box
             bgcolor={"white"}
@@ -385,23 +391,24 @@ const DataSecure = () => {
             largeThan
           />
           {open && (
-            <DetailedInformationModal
+            <DetailDataSystemModal
               onSuccess={() => {}}
-              onClose={closeModal}
+              onClose={closeModalSubfile}
               selectedRows={selectedRow}
+              // files={numberOfFile}
               detailData={inspectionData}
               open={open}
             />
           )}
 
-          <DetailDataSystemModal
+          {/* <DetailDataSystemModal
             onSuccess={() => {}}
             onClose={closeModalSubfile}
             selectedRows={selectedRow}
             // files={numberOfFile}
             detailData={inspectionData}
             open={openSubfile}
-          />
+          /> */}
           <AddUserModal
             onSuccess={() => {}}
             onClose={closeModalSubfile}

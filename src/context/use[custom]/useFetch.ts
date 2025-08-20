@@ -56,14 +56,6 @@ export const useFetch = <T extends Partial<ResponseMessage>, P>({
         signal: controller?.signal,
       };
       try {
-        // const fetchMethod =
-        //   method === MethodType.POST
-        //     ? post<T, P>(finalUrl, extra ?? params, finalConfig)
-        //     : method === MethodType.PUT || method === MethodType.PATCH
-        //     ? update<T, P>(finalUrl, extra ?? params, finalConfig)
-        //     : method === MethodType.DELETE
-        //     ? del<T>(finalUrl, extra ?? finalConfig)
-        //     : get<T, P>(finalUrl, extra ?? params, finalConfig);
         const fetchMethod =
           method === MethodType.POST
             ? post<T, P>(finalUrl, extra ?? currentParams, finalConfig)

@@ -30,10 +30,12 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
   const toast = useToast();
   const { refetchLogin } = useLoginUser();
+
   const isAdminLogin = useMemo(() => {
     const userAdmin = user?.role === UserRole.ADMIN;
     return userAdmin;
   }, [user]);
+
   const updateLocalStorage = (
     isAuthenticated: boolean,
     user: UserData | null,

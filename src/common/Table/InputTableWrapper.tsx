@@ -22,7 +22,7 @@ export interface InputTableProps<T extends TInfoTableTemp> {
   handleSelectAll?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const InputTableWrapperCustom = <T extends TInfoTableTemp>({
+export const InputTableWrapperCustom = <T extends TInfoTableTemp>({
   headersColumn,
   children,
   hasCheckbox = true,
