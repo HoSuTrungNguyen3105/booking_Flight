@@ -1,4 +1,4 @@
-import { Box, FormControl, Stack, Typography } from "@mui/material";
+import { Box, Chip, FormControl, Stack, Typography } from "@mui/material";
 import React, { useState } from "react";
 import CSelect from "../../common/Dropdown/CSelect";
 import { Button } from "../../common/Button/Button";
@@ -7,36 +7,33 @@ import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "../../context/ToastContext";
 import { Controller, useForm } from "react-hook-form";
+import InputTextField from "../../common/Input/InputTextField";
+import MfaSetup from "./MFA";
+import ChangePassword from "./ChangePassword";
 
 interface ILoginForm {
   email: string;
   password: string;
   remember?: boolean;
 }
-type AuthType = "ID,PW" | "SSO" | "DEV";
+type AuthType = "ID,PW" | "SSO" | "DEV" | "MFA";
 export const LoginPage: React.FC = () => {
   const AUTH_TYPE_OPTIONS: { label: string; value: AuthType }[] = [
     { label: "ID,PW", value: "ID,PW" },
+    { label: "MFA", value: "MFA" },
     { label: "SSO", value: "SSO" },
     { label: "DEV", value: "DEV" },
   ];
   const [formData, setFormData] = React.useState({
     authType: AUTH_TYPE_OPTIONS[0].value,
-    //
     email: "",
     password: "",
   });
+  const [changePassword, setChangePassword] = useState(false);
 
-  const { login, user, isAuthenticated } = useAuth();
-  const navigate = useNavigate();
+  const { login } = useAuth();
   const [_, setLoading] = useState(false);
-  const toast = useToast();
-  const {
-    handleSubmit,
-    watch,
-    control,
-    formState: { errors },
-  } = useForm<ILoginForm>({
+  const { handleSubmit, watch, control } = useForm<ILoginForm>({
     defaultValues: {
       email: "",
       password: "",
@@ -45,22 +42,30 @@ export const LoginPage: React.FC = () => {
 
   const onSubmit = (data: ILoginForm) => {
     const email = watch("email");
-    const passwords = watch("password");
-    console.log("email", email);
-    console.log("email", passwords);
     setLoading(true);
     login({
       email,
       password: data.password,
       remember: data.remember,
     });
-    console.log("user", user);
+    // if(login. == '9'){
+    //   setChangePassword(true);
+    // }
     setLoading(false);
   };
 
   const handleChangeFormInput = (key: string, value: string) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
   };
+
+  if (formData.authType === "MFA") {
+    return <MfaSetup />;
+  }
+
+  if (changePassword) {
+    return <ChangePassword />;
+  }
+
   return (
     <Box
       component="form"
@@ -78,11 +83,10 @@ export const LoginPage: React.FC = () => {
           border: `1px solid ${theme.palette.grey[200]}`,
         })}
       >
-        {/* Header */}
         <Box
           sx={(theme) => ({
             backgroundColor: theme.palette.grey[50],
-            py: 4,
+            py: 2,
             borderBottom: `1px solid ${theme.palette.grey[200]}`,
           })}
         >
@@ -91,17 +95,14 @@ export const LoginPage: React.FC = () => {
           </Typography>
         </Box>
 
-        {/* Form content */}
         <Box sx={{ bgcolor: "common.white", px: 4.5, py: 4 }}>
           <Typography variant="h6" align="center">
             서비스설명
           </Typography>
           <Typography variant="body1" align="center" mt="20px" color="grey.500">
             서비스 설명은 이렇습니다. 서비스 설명은 이렇습니다. <br />
-            서비스 설명은 이렇습니다.
           </Typography>
 
-          {/* Auth Type */}
           <Stack direction="column" spacing={3} sx={{ mt: 3 }}>
             <FormControl fullWidth>
               <Typography variant="body1" mb={0.5}>
@@ -116,31 +117,18 @@ export const LoginPage: React.FC = () => {
                 options={AUTH_TYPE_OPTIONS}
               />
             </FormControl>
+            {/* <Chip label={formData.authType} /> */}
 
             {/* User ID Input */}
             <FormControl fullWidth>
               <Typography variant="body1" mb={0.5}>
                 아이디
               </Typography>
-              {/* <InputField
-                value={formData.email}
-                // disabled={loading}
-
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                  handleChangeFormInput("email", event.target.value)
-                }
-                placeholder="아이디를 입력하세요."
-                // error={!error}
-              /> */}
               <Controller
                 control={control}
                 name="email"
                 render={({ field }) => (
-                  <InputField
-                    {...field}
-                    placeholder="아이디를 입력하세요."
-                    // error={!!errors.email}
-                  />
+                  <InputField {...field} placeholder="아이디를 입력하세요." />
                 )}
               />
             </FormControl>
@@ -149,34 +137,18 @@ export const LoginPage: React.FC = () => {
               <Typography variant="body1" mb={0.5}>
                 아이디
               </Typography>
-              {/* <InputField
-                value={formData.password}
-                // disabled={loading}
-
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                  handleChangeFormInput("password", event.target.value)
-                }
-                placeholder="아이디를 입력하세요."
-                // error={!error}
-              /> */}
               <Controller
                 control={control}
                 name="password"
                 render={({ field }) => (
-                  <InputField
+                  <InputTextField
                     {...field}
                     placeholder="비밀번호를 입력하세요."
-                    // type="password"
-                    // error={!!errors.password}
+                    type="password"
                   />
                 )}
               />
             </FormControl>
-
-            {/* Error Message */}
-            {/* <LoginErrorMessage visible={!error} /> */}
-
-            {/* Submit Button */}
             <Box
               sx={{
                 display: "flex",
@@ -188,9 +160,8 @@ export const LoginPage: React.FC = () => {
                 label="로그인"
                 type="submit"
                 priority="normal"
-                //                appearance="outlined"
                 sx={{ minWidth: "30rem", margin: "0px" }}
-              ></Button>
+              />
             </Box>
           </Stack>
         </Box>

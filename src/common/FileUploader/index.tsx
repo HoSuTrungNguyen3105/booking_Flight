@@ -8,7 +8,6 @@ import {
   type DragEvent,
   type DragEventHandler,
   type FC,
-  type MouseEvent,
   type MouseEventHandler,
 } from "react";
 import { sumBy, uniqueId } from "lodash";
@@ -190,17 +189,6 @@ export const FileUpload: FC<FileUploaderProps> = ({
     // onChange?.(imageFiles.filter((_, i: number) => i !== index));
   };
 
-  // const onInputClick: MouseEventHandler<HTMLInputElement> = (
-  //   event: MouseEvent<HTMLInputElement>
-  // ) => {
-  //   event.stopPropagation;
-  //   if (currentInputType === INPUT_TYPE.READONLY) {
-  //     return toast.warning("Cant chose file in read only");
-  //   } else {
-  //     const element = event.target as HTMLInputElement;
-  //     element.value = "";
-  //   }
-  // };
   const onInputClick: MouseEventHandler<HTMLInputElement> = (event) => {
     event.stopPropagation();
     if (currentInputType === INPUT_TYPE.READONLY) {

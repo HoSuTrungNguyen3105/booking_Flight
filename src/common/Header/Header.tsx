@@ -198,7 +198,7 @@ export const Header = forwardRef<HTMLElement, React.HTMLProps<HTMLElement>>(
                   <SignOut />
                 </Box>
               ) : (
-                <Link to="/login">
+                <Link to="/init/loginPage">
                   <Button
                     size="small"
                     icon={<Login />}

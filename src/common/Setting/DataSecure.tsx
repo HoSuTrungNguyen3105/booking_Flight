@@ -7,7 +7,7 @@ import TableSection from "./TableSection";
 import DetailedInformationModal from "./hooks/DetailedInformationModal";
 import { FileUpload } from "../FileUploader";
 import DetailDataSystemModal from "./hooks/DetailDataSystem";
-import type { GridRowParams } from "@mui/x-data-grid";
+import type { GridColDef, GridRowParams } from "@mui/x-data-grid";
 import type { IDetailItem } from "../Dropdown/DetailSection";
 import DetailSection from "../Dropdown/DetailSection";
 import { Button } from "../Button/Button";
@@ -17,6 +17,9 @@ import Breadcrumb from "../BreadCrumb/BreadcrumbV2";
 import InputTextField from "../Input/InputTextField";
 import AddUserModal from "./hooks/AddUserModal";
 import InspectionSearchBar from "../SearchPopup/InspectionSearchBar";
+import { useLocation } from "react-router-dom";
+import theme from "../../scss/theme";
+import { useInspectionInformation } from "./hooks/useInspectionInformation";
 // import DetailDataSystemModal from "./hooks/DetailDataSystemModal";
 // FIX: Update the import path or create the missing file if necessary
 
@@ -52,6 +55,14 @@ export interface Detail {
 }
 
 const DataSecure = () => {
+  const location = useLocation();
+  const rowData = location.state?.data;
+  const typeData = location.state?.type;
+
+  const { detailsData } = useInspectionInformation({
+    data: rowData,
+    type: typeData,
+  });
   // State management
   const [isLoading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
@@ -191,29 +202,6 @@ const DataSecure = () => {
       title: "Demo",
       description: "None",
     },
-    // {
-    //   title: "Demo",
-    //   description: "None",
-    // },
-    // {
-    //   title: "Demo",
-    //   description: "None",
-    // },
-    // {
-    //   title: "Demo",
-    //   description: "",
-    // },
-
-    // {
-    //   title: "Demo",
-    //   description: renderFilesAndButton(),
-    //   size: 5,
-    // },
-    // {
-    //   title: "Demo",
-    //   description: renderButtonAddFile(),
-    //   size: 1,
-    // },
   ];
 
   function getRandomFiles(count: number) {
@@ -264,9 +252,7 @@ const DataSecure = () => {
     ],
     []
   );
-  const numberOfFile = {
-    name: ["dkdkdkdk.tsx", "dkdkdkdk.tsx", "dkdkdkdk.tsx"],
-  };
+
   // Mock data generation
   const rowsSubfileList = useMemo(
     () =>
@@ -310,7 +296,44 @@ const DataSecure = () => {
       })),
     []
   );
-  const [valuePw, setValuePw] = useState("wdwdmwdwdmwdmwdwmdwkdk");
+
+  const renderDataSection = useCallback(
+    (
+      name: string,
+      columns: GridColDef[],
+      rows: GridRowDef[],
+      isLoading: boolean,
+      handleRowClick?: (row: GridRowDef) => void
+    ) => {
+      return (
+        <Box borderTop={1} borderColor={theme.palette.grey[200]}>
+          <Box
+            bgcolor="white"
+            px="16px"
+            py="12px"
+            border={1}
+            borderTop={0}
+            borderBottom={0}
+          >
+            <Typography variant="subtitle1" sx={{ gap: "10px" }}>
+              {name}
+            </Typography>
+          </Box>
+          <Box sx={{ padding: "8px" }}>
+            <TableSection
+              setRows={setDataHistory}
+              rows={rows}
+              columns={columns}
+              isLoading={isLoading}
+              handleRowClick={handleRowClick}
+            />
+          </Box>
+        </Box>
+      );
+    },
+    []
+  );
+
   return (
     <Box minHeight={"50vh"}>
       <Typography>
@@ -326,89 +349,43 @@ const DataSecure = () => {
       /> */}
       <Box overflow={"auto"} minHeight={"50vh"}>
         {/* <TableInfo title="Table" description="" content={mappedContent} /> */}
-        {/* <DetailSection data={detailData} /> */}
+        <DetailSection data={detailsData} />
         <InspectionSearchBar
           startDate={1734560400.0}
           endDate={1734560400.0}
           onClickFirst={() => {}}
         />
         <Box borderTop={1} paddingTop={2} borderColor={"grey.200"}>
-          <Box
-            bgcolor={"white"}
-            px={"16px"}
-            py={"12px"}
-            border={1}
-            borderColor={"grey.200"}
-          >
-            <Typography>Name of Function</Typography>
-          </Box>
-          <TableSection
-            rows={rowsCheckItems}
-            columns={columnCheckItem}
-            setRows={setRelatedItems}
-            isLoading={false}
-            nextRowClick={true}
-            largeThan
-          />
-        </Box>
-        <Box borderTop={1} borderColor={"grey.200"}>
-          <Box
-            bgcolor={"white"}
-            px={"16px"}
-            py={"12px"}
-            border={1}
-            borderColor={"grey.200"}
-          >
-            <Typography>Name of Function</Typography>
-          </Box>
-          <TableSection
-            rows={rowsSubfileList}
-            columns={columnSubfileList}
-            handleRowClick={openModalSubfile}
-            setRows={setSubfileList}
-            isLoading={false}
-            nextRowClick={true}
-            largeThan
-          />
-        </Box>
-        <Box borderTop={1} borderColor={"grey.200"}>
-          <Box
-            bgcolor={"white"}
-            px={"16px"}
-            py={"12px"}
-            border={1}
-            borderColor={"grey.200"}
-          >
-            <Typography>Name of Function</Typography>
-          </Box>
-          <TableSection
-            rows={rowsDataHistory}
-            columns={columnDataHistory}
-            handleRowClick={openModal}
-            setRows={setDataHistory}
-            isLoading={false}
-            nextRowClick={true}
-            largeThan
-          />
+          {renderDataSection(
+            "하위 파일 목록",
+            columnSubfileList,
+            rowsSubfileList,
+            isLoading
+          )}
+          {renderDataSection(
+            "데이터 이력",
+            columnDataHistory,
+            rowsDataHistory,
+            isLoading,
+            openModalSubfile
+          )}
+          {renderDataSection(
+            "연관 점검 항목",
+            columnCheckItem,
+            rowsCheckItems,
+            isLoading,
+            openModal
+          )}
           {open && (
-            <DetailDataSystemModal
+            <DetailedInformationModal
+              open={open}
               onSuccess={() => {}}
               onClose={closeModalSubfile}
               selectedRows={selectedRow}
               // files={numberOfFile}
               detailData={inspectionData}
-              open={open}
             />
           )}
-
-          {/* <DetailDataSystemModal
-            onSuccess={() => {}}
-            onClose={closeModalSubfile}
-            selectedRows={selectedRow}
-            // files={numberOfFile}
-            detailData={inspectionData}
-            open={openSubfile}
-          /> */}
           <AddUserModal
             onSuccess={() => {}}
             onClose={closeModalSubfile}

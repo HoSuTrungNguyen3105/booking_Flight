@@ -31,7 +31,7 @@ const ManageMyInformation = () => {
         <Button
           variant="outlined"
           disabled={!hasChanges}
-          onClick={toggleOpenModal}
+          // onClick={toggleOpenModal}
         >
           Save Changes
         </Button>

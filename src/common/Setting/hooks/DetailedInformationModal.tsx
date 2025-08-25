@@ -14,14 +14,6 @@ interface IModalStatisticalDataLearningProps {
   selectedRows: IDataHistoryProps | null;
 }
 
-// const customLabels: Record<Detail, string> = {
-//   creationUser: "데이터 이름",
-//   collectionDate: "수집 시간",
-//   collectionMethod: "데이터 형태",
-//   collectionType: "Loại thu thập",
-
-// };
-
 const customLabels: Record<keyof Detail, string> = {
   TITLE: "제목", // Tiêu đề
   status: "상태", // Trạng thái

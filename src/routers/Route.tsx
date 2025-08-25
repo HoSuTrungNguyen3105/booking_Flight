@@ -6,7 +6,7 @@ import Home from "../components/Home/Home";
 import Setting from "../common/Setting/Setting";
 import Registration from "../components/Auth/Registration";
 import { FileUpload } from "../common/FileUploader";
-import Login from "../components/Auth/Login";
+// import Login from "../components/Auth/Login";
 import Register from "../components/Auth/Register";
 import Hero from "../components/Hero/Hero";
 import SignOut from "../components/Auth/SignOut";
@@ -30,6 +30,7 @@ import FullLayout from "../components/Layout/FullLayout";
 import CheckboxUI from "../common/Checkbox/CheckboxUI";
 import Setting_flight from "../components/Admin/Setting_flight";
 import MealList from "../common/Setting/MealList";
+import SecurityManage from "../common/Setting/hooks/SecurityManage";
 
 interface IRouteObject {
   path?: (typeof ROUTE_PATHS)[keyof typeof ROUTE_PATHS];
@@ -39,14 +40,14 @@ interface IRouteObject {
   children?: IRouteObject[];
 }
 const routes = [
-  {
-    path: ROUTE_PATHS.LOGIN,
-    element: (
-      <GuestGuard>
-        <Login />,
-      </GuestGuard>
-    ),
-  },
+  // {
+  //   path: ROUTE_PATHS.LOGIN,
+  //   element: (
+  //     <GuestGuard>
+  //       <Login />,
+  //     </GuestGuard>
+  //   ),
+  // },
   {
     path: ROUTE_PATHS.SAMPLE_BUTTON,
     element: <Sample />,
@@ -156,7 +157,7 @@ const routes = [
       },
       {
         path: "domestic",
-        element: <DataSecure />,
+        element: <SecurityManage />,
       },
       {
         path: "flightmeals",
@@ -173,6 +174,10 @@ const routes = [
       {
         path: ROUTE_PATHS.TIME_PICKER.replace("/", ""),
         element: <SampleTimePicker />,
+      },
+      {
+        path: "data-secure",
+        element: <DataSecure />,
       },
       {
         path: ROUTE_PATHS.LOGOUT.replace("/", ""),

@@ -89,7 +89,7 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
                   sx={{
                     zIndex: 1300,
                     maxWidth: 500,
-                    minWidth: 280,
+                    width: "fit-content", // tự co theo nội dung
                     padding: "8px 12px",
                     borderRadius: "20px",
                     border: "1px solid white",
@@ -104,6 +104,7 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
                     alignItems: "center",
                     gap: 1.5,
                     pointerEvents: "auto",
+                    mx: "auto", // căn giữa ngang toàn màn hình nếu cần
                   }}
                 >
                   <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -113,11 +114,12 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
                   </Box>
                   <Box
                     sx={{
+                      flex: 1,
                       display: "flex",
-                      alignContent: "center",
+                      justifyContent: "center",
                       alignItems: "center",
                       fontSize: 16,
-                      width: "auto",
+                      textAlign: "center",
                     }}
                   >
                     {toast.message}

@@ -3,6 +3,7 @@ import { AccountCircle } from "@mui/icons-material";
 import GppBadIcon from "@mui/icons-material/GppBad";
 import WifiPasswordRoundedIcon from "@mui/icons-material/WifiPasswordRounded";
 import OtherHousesTwoToneIcon from "@mui/icons-material/OtherHousesTwoTone";
+
 type SideBarValueTypes =
   | "security"
   | "setting"
@@ -70,7 +71,11 @@ export const menuData: MenuSection[] = [
             label: "Timepicker",
             icon: <WifiPasswordRoundedIcon />,
           },
-          { id: "sampleButton", label: "Chuyến bay hôm nay" },
+          {
+            id: "sampleButton",
+            label: "Chuyến bay hôm nay",
+            icon: <GppBadIcon />,
+          },
           {
             id: "setting",
             label: "Bảng mẫu",
@@ -107,6 +112,7 @@ export const menuData: MenuSection[] = [
             label: "Tài khoản",
             subItems: [
               { id: "customers", label: "Khách hàng" },
+              { id: "setting", label: "Setting" },
               { id: "staffs", label: "Nhân viên" },
             ],
           },

@@ -18,7 +18,11 @@ import type {
 } from "../../utils/type.ts";
 import { MethodType } from "../../hooks/type";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
-import type { FlightDetailResponse, UserSearchType } from "../User/type.ts";
+import type {
+  FlightDetailResponse,
+  MFAAuthResponse,
+  UserSearchType,
+} from "../User/type.ts";
 import { useFetch } from "../../context/use[custom]/useFetch.ts";
 
 const postMethod = {
@@ -171,23 +175,6 @@ export const useLoginUser = () => {
     refetchLogin,
   };
 };
-// export const useFlightUpdate = (data:Dat) => {
-//   const { data: updateFlightId, refetch:refetchUpdateFlightId } = useFetch<FlightDetailApiResponse, DataFlight>({
-//     url: `/sys/flights/flights/${data.flightId}`,
-//     defaultValue: { resultCode: '', resultMessage: '' },
-//     autoFetch: false,
-//     config: putMethod,
-//     message: messageMethod,
-//     showToast: true,
-//   });
-//   // const refetchUpdateFlightId = (data: DataFlight) => {
-//   //   return refetch(data, `/sys/flights/flights/${data.flightId}`);
-//   // };
-//   return {
-//     updateFlightId,
-//     refetchUpdateFlightId,
-//   };
-// };
 
 export const useFlightDelete = () => {
   const { data: deleteFlightId, refetch: refetchDeleteFlight } = useFetch<
@@ -308,6 +295,79 @@ export const useTicketById = (flightParams: UserSearchType) => {
   return {
     flightBookingData,
     refetchFlightBookingDataData,
+  };
+};
+interface MfaRequest {
+  // userId: number;
+  email: string;
+}
+
+interface MfaCodeRequest {
+  email: string;
+  code: string;
+}
+export const useSetUpMfa = () => {
+  const { data: setUpMfa, refetch: refetchSetUpMfa } = useFetch<
+    MFAAuthResponse,
+    MfaRequest
+  >({
+    url: "/auth/setmfa",
+    // defaultValue: { resultCode: "", resultMessage: "" },
+    autoFetch: false,
+    config: postMethod,
+    // message: messageMethod,
+  });
+  return {
+    setUpMfa,
+    refetchSetUpMfa,
+  };
+};
+
+export const useRegisterUser = () => {
+  const { data: register, refetch: refetchRegister } = useFetch<
+    MFAAuthResponse,
+    MfaRequest
+  >({
+    url: "/auth/register",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    register,
+    refetchRegister,
+  };
+};
+export const useVerifyMfa = () => {
+  const { data: verifyMfa, refetch: refetchVerifyMfa } = useFetch<
+    MFAAuthResponse,
+    MfaCodeRequest
+  >({
+    url: "/auth/verifymfa",
+    // defaultValue: { resultCode: "", resultMessage: "" },
+    autoFetch: false,
+    config: postMethod,
+    // message: messageMethod,
+  });
+  return {
+    verifyMfa,
+    refetchVerifyMfa,
+  };
+};
+
+export const useLoginByMfa = () => {
+  const { data: setLoginMfa, refetch: refetchSetLoginMfa } = useFetch<
+    MFAAuthResponse,
+    MfaRequest
+  >({
+    url: "/auth/loginmfa",
+    // defaultValue: { resultCode: "", resultMessage: "" },
+    autoFetch: false,
+    config: postMethod,
+    // message: messageMethod,
+  });
+  return {
+    setLoginMfa,
+    refetchSetLoginMfa,
   };
 };
 export const useCreateUserByAdmin = () => {

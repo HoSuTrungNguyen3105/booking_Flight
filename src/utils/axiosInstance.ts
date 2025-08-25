@@ -14,6 +14,5 @@ const axiosInstance = axios.create({
     "Content-Type": "application/json",
   },
 });
-console.log("BASE_URL =", baseURL);
 
 export default axiosInstance;

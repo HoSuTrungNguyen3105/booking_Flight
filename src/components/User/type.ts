@@ -1,3 +1,5 @@
+import type { DetailResponseMessage } from "../../utils/type";
+
 export type FareConditions = "Business" | "Economy" | "Comfort";
 
 export type UserSearchType = {
@@ -22,8 +24,16 @@ export type FlightDetailResponse = {
   resultMessage: string;
 };
 
-type Formatter<P> = string | ((params?: P) => string);
+// type Formatter<P> = string | ((params?: P) => string);
 
-export const format1: Formatter<number> = "Giá trị mặc định";
+// export const format1: Formatter<number> = "Giá trị mặc định";
 
-export const format2: Formatter<number> = (num) => `Số là: ${num}`;
+// export const format2: Formatter<number> = (num) => `Số là: ${num}`;
+
+interface MfaResponse {
+  userId: number;
+  secret: string;
+  qrCodeDataURL: string;
+}
+
+export type MFAAuthResponse = DetailResponseMessage<MfaResponse>;

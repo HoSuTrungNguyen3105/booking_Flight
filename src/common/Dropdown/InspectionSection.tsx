@@ -1,11 +1,12 @@
 import { Box, Stack, Tab, Tabs, Typography } from "@mui/material";
 import type { GridColDef, GridSortModel } from "@mui/x-data-grid";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import DataTable from "../DataGrid/index";
+import DataTable, { type GridRowDef } from "../DataGrid/index";
 import { Button } from "../Button/Button";
 import SearchIcon from "../../svgs/phone.png";
 import Pagination from "../DataGrid/Pagination";
 import SearchBar from "../CustomRender/SearchBar";
+
 type ISecurityTabSectionProps = {
   totalResult?: number;
   currentPage?: number;
@@ -15,6 +16,7 @@ type ISecurityTabSectionProps = {
   onPageSizeChange?: (size: number) => void;
   onSortModelChange?: (model: GridSortModel) => void;
   sortModel?: GridSortModel;
+  onRowClick: (rowData: GridRowDef) => void;
   handleAction?: () => void;
   columns: GridColDef[];
   tabs?: {
@@ -31,6 +33,7 @@ const InspectionSection = ({
   currentPage = 1,
   totalPage = 5,
   pageSize = 10,
+  onRowClick,
   onChangePage = () => {},
   onPageSizeChange = () => {},
   onSortModelChange = () => {},
@@ -143,9 +146,8 @@ const InspectionSection = ({
               </Typography>
             </Typography>
             <Button
-              priority="normal"
               onClick={() => handleAction()}
-              label={<Typography variant="button">지금 검색</Typography>}
+              label={<Typography variant="caption">지금 검색</Typography>}
             ></Button>
           </Box>
         </Box>
@@ -159,7 +161,10 @@ const InspectionSection = ({
             columns={columns}
             rows={rows}
             loading={loading}
-            // emptyContent={<EmptyRowsOverlay />}
+            onRowClick={onRowClick}
+            // emptyContent={
+            //   <Typography variant="body2">No data available</Typography>
+            // }
           />
         </Box>
         <Pagination

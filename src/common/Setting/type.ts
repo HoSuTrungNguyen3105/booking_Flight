@@ -14,6 +14,29 @@ export type DataDetail = {
   isDeleted: boolean; // 삭제 여부 (true = Y, false = N)
 };
 
+export interface IDataDetail extends GridRowDef {
+  dataName: string; // 데이터 이름
+  managementId: string; // 관리 ID
+  dataType: string; // 데이터 형태
+  datasource: string; // 데이터 출처
+  collectionMethod: string; // 수집 방법
+  evaluationHistoryLink: string; // 평가 이력 링크
+  collectionTime: string; // 수집 시간
+  description: string; // 설명
+  metadataDescription: string; // 메타데이터(Description)
+  hash: string; // HASH
+  isDeleted: boolean; // 삭제 여부(true = Y, false = N)
+
+  // optional fields
+  categoryName?: string;
+  documentId?: string;
+  documentName?: string;
+  modifiedAt?: string;
+  sourceSystem?: string; // 데이터 출처 (e.g.)
+  version?: string;
+  // dataInfo?: string;
+}
+
 export const customLabels: Record<keyof DataDetail, string> = {
   dataName: "데이터 이름",
   managementId: "관리 ID",
