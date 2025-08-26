@@ -15,10 +15,10 @@ const SignOut = () => {
   const [open, setOpen] = useState(false);
 
   const handleClick = () => {
-    if (user === null) {
-      toast("You are not logged in!", "error");
-      return;
-    }
+    // if (user === null) {
+    //   toast("You are not logged in!", "error");
+    //   return;
+    // }
     setOpen(true);
   };
   const submitLogout = () => {

@@ -325,7 +325,7 @@ interface ChangePassword {
 
 export const useChangePassword = () => {
   const { data: changePassword, refetch: refetchChangePassword } = useFetch<
-    MFAAuthResponse,
+    ResponseMessage,
     ChangePassword
   >({
     url: "/auth/change-password",
@@ -385,6 +385,23 @@ export const useLoginByMfa = () => {
     refetchSetLoginMfa,
   };
 };
+
+// export const useChangePassword = () => {
+//   const { data: setLoginMfa, refetch: refetchSetLoginMfa } = useFetch<
+//     MFAAuthResponse,
+//     MfaRequest
+//   >({
+//     url: "/auth/loginmfa",
+//     // defaultValue: { resultCode: "", resultMessage: "" },
+//     autoFetch: false,
+//     config: postMethod,
+//     // message: messageMethod,
+//   });
+//   return {
+//     setLoginMfa,
+//     refetchSetLoginMfa,
+//   };
+// };
 export const useCreateUserByAdmin = () => {
   // const isValid = !!id;
   const {

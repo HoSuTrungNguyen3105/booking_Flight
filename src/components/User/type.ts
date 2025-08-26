@@ -32,6 +32,7 @@ export type FlightDetailResponse = {
 
 interface MfaResponse {
   userId: number;
+  hasVerified: string;
   secret: string;
   qrCodeDataURL: string;
 }

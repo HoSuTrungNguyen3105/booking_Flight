@@ -1,32 +1,44 @@
 import { useEffect, useState } from "react";
-import { useSetUpMfa, useVerifyMfa } from "../Api/usePostApi";
+import { useLoginByMfa, useSetUpMfa, useVerifyMfa } from "../Api/usePostApi";
 import { Box, Button } from "@mui/material";
 import InputField from "../../common/Input/InputField";
 import { useToast } from "../../context/ToastContext";
 import InputTextField from "../../common/Input/InputTextField";
+import { useAuth } from "../../context/AuthContext";
 
 export default function MfaSetup() {
   const [qrCode, setQrCode] = useState<string | null>(null);
   const [email, setEmail] = useState<string>("");
-  // const { user } = useAuth();
   const [code, setCode] = useState("");
-  const [loginMfa, setLoginMfa] = useState(false);
+  const [loginMfa, setLoginMfaUi] = useState(false);
+  const { login } = useAuth();
+  const { setLoginMfa, refetchSetLoginMfa } = useLoginByMfa();
   const { refetchVerifyMfa } = useVerifyMfa();
   const { refetchSetUpMfa } = useSetUpMfa();
   const toast = useToast();
+  const [isSetMfa, setIsSetMfa] = useState(false);
+
   const fetchQrCode = async () => {
     if (!email) {
       toast("Vui lòng nhập email để tạo MFA");
       return;
     }
-
-    const data = await refetchSetUpMfa({ email });
-
-    if (data?.data?.qrCodeDataURL) {
-      setQrCode(data.data.qrCodeDataURL);
-    } else {
-      setQrCode(null);
-      toast("Không lấy được QR code từ server");
+    try {
+      const data = await refetchSetUpMfa({ email });
+      if (data?.data?.hasVerified === "Y") {
+        // Nếu MFA đã được kích hoạt
+        setLoginMfaUi(true);
+        setIsSetMfa(true);
+        setQrCode(null);
+        return;
+      } else if (data?.data?.hasVerified === "N" && data?.data?.qrCodeDataURL) {
+        // MFA chưa bật, tạo QR code để user quét
+        setQrCode(data.data.qrCodeDataURL);
+        setLoginMfaUi(false);
+        setIsSetMfa(false);
+      }
+    } catch (err) {
+      toast("Có lỗi khi tạo MFA");
     }
   };
 
@@ -41,15 +53,19 @@ export default function MfaSetup() {
       toast("Vui lòng nhập mã MFA");
       return;
     }
+    if (isSetMfa) {
+      refetchSetLoginMfa();
+      return;
+    }
     // let res = "09";
     const res = await refetchVerifyMfa({
       email,
       code: code,
     });
     if (res?.resultCode === "00") {
-      toast("Đăng nhập thành công 🎉");
+      // toast("Đăng nhập thành công 🎉");
       setQrCode(null);
-      setLoginMfa(true);
+      setLoginMfaUi(true);
     } else {
       toast("Sai mã MFA, thử lại!");
     }
@@ -65,10 +81,11 @@ export default function MfaSetup() {
       email,
       code: code,
     });
+
     if (res?.resultCode === "00") {
       toast("Đăng nhập thành công 🎉");
       setQrCode(null);
-      setLoginMfa(true);
+      setLoginMfaUi(true);
     } else {
       toast("Sai mã MFA, thử lại!");
     }

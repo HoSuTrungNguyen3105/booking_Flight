@@ -3,9 +3,7 @@ import "./index.scss";
 import { Box } from "@mui/material";
 import { Button } from "../../common/Button/Button";
 import Input from "../../common/CustomRender/Input";
-import { Controller, useForm } from "react-hook-form";
-import { FileUpload } from "../../common/FileUploader";
-import { INPUT_TYPE, type TFileUploader } from "../../common/FileUploader/type";
+import { useForm } from "react-hook-form";
 import { useToast } from "../../context/ToastContext";
 
 interface FormDataType {
@@ -14,7 +12,7 @@ interface FormDataType {
 }
 
 const ChangePassword = () => {
-  const { control, handleSubmit, watch, getValues } = useForm<FormDataType>({
+  const { control, handleSubmit, watch } = useForm<FormDataType>({
     defaultValues: {
       password: "",
       confirmPassword: "",

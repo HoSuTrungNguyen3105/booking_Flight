@@ -1,11 +1,11 @@
 import { defer } from "lodash";
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import { useLoginUser } from "../../Api/usePostApi";
 import { getMessage, ResponseCode } from "../../../utils/response";
 import { useToast } from "../../../context/ToastContext";
+import { useChangePassword } from "../../Api/usePostApi";
 
 interface IUseSettingPasswordProps {
-  userId: string;
+  userId: number;
   successMessage: string;
   onSuccess: () => void;
 }
@@ -20,11 +20,12 @@ export const useSettingPassword = ({
   //   const { mutateAsync: updateUserPW, isLoading } = useMutation(
   //     (payload: IUpdUserPwReq) => apis.common.updateUserPW(payload),
   //   );
+
   const toast = useToast();
-  const { loginUserData, refetchLogin } = useLoginUser();
+  // const { refetchLogin } = useLoginUser();
   const passwordRef = useRef<HTMLInputElement>(null);
   const confirmPasswordRef = useRef<HTMLInputElement>(null);
-
+  const { refetchChangePassword } = useChangePassword();
   const [errorPassword, setErrorPassword] = useState<string>("");
   const [errorConfirmPassword, setErrorConfirmPassword] = useState<string>("");
 
@@ -68,9 +69,9 @@ export const useSettingPassword = ({
       e.preventDefault();
 
       try {
-        const result = await refetchLogin({
+        const result = await refetchChangePassword({
           userId,
-          ...formData,
+          newPassword: formData.password,
         });
 
         switch (result) {
@@ -97,7 +98,10 @@ export const useSettingPassword = ({
             );
             break;
           default:
-            handleUpdateError(getMessage(result), "password");
+            handleUpdateError(
+              getMessage(result?.resultMessage as string),
+              "password"
+            );
             break;
         }
       } catch (err) {

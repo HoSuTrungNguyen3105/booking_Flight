@@ -16,6 +16,7 @@ export type User = {
   password: string;
   remember?: boolean;
 };
+
 export type AuthType = "DEV" | "IDPW";
 
 interface AuthContextType {
@@ -25,7 +26,6 @@ interface AuthContextType {
   isAdmin: boolean;
   authType: AuthType;
   login: (userData: User) => Promise<void>;
-  register: (userData: UserData) => void;
   logout: () => void;
 }
 
@@ -33,11 +33,12 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userId, setUserId] = useState<number>(0); // BI loi goi khi chay
   const [user, setUser] = useState<UserData | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const toast = useToast();
   const { refetchLogin } = useLoginUser();
-  const { getMyInfo, refetchGetMyInfo } = useGetMyInfo(user?.id ?? 0);
+  const { getMyInfo, refetchGetMyInfo } = useGetMyInfo(userId);
 
   const isAdminLogin = useMemo(() => user?.role === UserRole.ADMIN, [user]);
 
@@ -49,133 +50,33 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     localStorage.setItem("token", token || "");
   };
 
-  const fetchMyInfo = useCallback(async () => {
-    const res = await refetchGetMyInfo();
-    if (res?.resultCode === "00" && res.data) {
-      setUser(res.data);
-      updateLocalStorage(true, localStorage.getItem("token"));
-    }
-  }, [getMyInfo]);
-
   const login = async (userData: User) => {
     const res = await refetchLogin(userData);
     if (res?.resultCode === "00" && res.data) {
       const accessToken = res.accessToken;
-      // const userInfo: UserData = res.data;
-      // setUser(userInfo);
       setIsAuthenticated(true);
-      // setUser(userInfo);
       setToken(accessToken ?? null);
       updateLocalStorage(true, accessToken ?? null);
-      // toast("Đăng nhập thành công!", "success");
+      setUserId(res.data.id);
+      await fetchMyInfo();
     } else if (res?.resultCode === "NETWORK_ERROR") {
-      toast(
-        "Không thể kết nối đến server. Vui lòng kiểm tra kết nối mạng.",
-        "info"
-      );
+      toast("Không thể kết nối đến server. Vui lòng thử lại.", "info");
     } else {
       toast(res?.resultMessage || "Đăng nhập thất bại", "error");
     }
   };
 
-  // const login = async (userData: User) => {
-  //   const res = await refetchLogin(userData);
-  //   console.log("🚀 ~ file: AuthContext.tsx:57 ~ login ~ res:", res);
-  //   if (!res) {
-  //     toast("Không thể kết nối đến server . Xem lại kết nối mạng.", "error");
-  //   } else if (res?.resultCode === "00" && res.user) {
-  //     const accessToken = res.accessToken;
-  //     const userInfo: UserData = res.user;
-  //     setUser(res.user);
-  //     setIsAuthenticated(true);
-  //     // setUser(userInfo);
-  //     setToken(accessToken ?? null);
-  //     updateLocalStorage(true, userInfo, accessToken ?? null);
-  //     toast("Đăng nhập thành công!", "success");
-  //   } else if (res?.resultCode === "NETWORK_ERROR") {
-  //     toast("Không thể kết nối đến server . Xem lại kết nối mạng.", "error");
-  //   } else if (res?.resultCode === "9") {
-  //     toast("Bạn cần đổi mật khẩu trước khi tiếp tục", "info");
-  //   } else {
-  //     toast(res?.resultMessage || "Đăng nhập thất bại", "error");
-  //   }
-  // };
-
-  //   const login = async (userData: User) => {
-  //   try {
-  //     const res = await refetchLogin(userData);
-
-  //     if (!res) {
-  //       toast("Không thể kết nối đến server. Xem lại kết nối mạng.", "error");
-  //       return { resultCode: "NETWORK_ERROR" };
-  //     }
-
-  //     if (res?.resultCode === "00" && res.user) {
-  //       const accessToken = res.accessToken;
-  //       const userInfo: UserData = res.user;
-
-  //       setUser(res.user);
-  //       setIsAuthenticated(true);
-  //       setToken(accessToken ?? null);
-  //       updateLocalStorage(true, userInfo, accessToken ?? null);
-
-  //       toast("Đăng nhập thành công!", "success");
-  //     } else if (res?.resultCode === "NETWORK_ERROR") {
-  //       toast("Không thể kết nối đến server. Xem lại kết nối mạng.", "error");
-  //     } else if (res?.resultCode === "9") {
-  //       // 🔥 nếu server trả về code '9' (bắt đổi mật khẩu)
-  //       toast("Bạn cần đổi mật khẩu trước khi tiếp tục", "info");
-  //     } else {
-  //       toast(res?.resultMessage || "Đăng nhập thất bại", "error");
-  //     }
-
-  //     // return res; // ✅ Quan trọng: trả về cho LoginPage xử lý
-  //   } catch (error) {
-  //     console.error("🔥 Lỗi login:", error);
-  //     toast("Có lỗi xảy ra khi đăng nhập", "error");
-  //     return { resultCode: "ERROR" };
-  //   }
-  // };
-
-  // const loginAndGetResponse = async (userData: User) => {
-  //   return await refetchLogin(userData); // khi cần raw response
-  // };
-
-  // const login = async (userData: User) => {
-  //   const res = await refetchLogin(userData);
-
-  //   if (!res) {
-  //     toast(
-  //       "Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại backend hoặc kết nối mạng.",
-  //       "error"
-  //     );
-  //   } else if (res?.resultCode === "00" && res.user) {
-  //     const accessToken = res.accessToken;
-  //     const userInfo: UserData = res.user;
-  //     setUser({
-  //       ...userInfo,
-  //       authType: "ID,PW", // nếu cần thêm field cho frontend
-  //       name: "",
-  //       firstname: "",
-  //       lastname: "",
-  //       password: userData.password,
-  //     });
-  //     setIsAuthenticated(true);
-  //     setToken(accessToken ?? null);
-  //     updateLocalStorage(true, userInfo, accessToken ?? null);
-  //     toast("Đăng nhập thành công!", "success");
-  //   } else if (res?.resultCode === "NETWORK_ERROR") {
-  //     toast(
-  //       "Không thể kết nối đến . Vui lòng kiểm tra lại kết nối mạng.",
-  //       "error"
-  //     );
-  //   } else {
-  //     toast(res?.resultMessage || "Đăng nhập thất bại", "error");
-  //   }
-  // };
+  const fetchMyInfo = useCallback(async () => {
+    const res = await refetchGetMyInfo();
+    if (res?.resultCode === "00" && res.data) {
+      setUser(getMyInfo?.data || null);
+      updateLocalStorage(true, token);
+    }
+  }, [refetchGetMyInfo, token]);
 
   const logout = () => {
     setIsAuthenticated(false);
+    setUser(null);
     setToken(null);
     localStorage.removeItem("isAuthenticated");
     localStorage.removeItem("token");
@@ -183,10 +84,10 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const savedToken = localStorage.getItem("token");
-    // const savedUser = localStorage.getItem("user");
     if (savedToken) {
       setIsAuthenticated(true);
       setToken(savedToken);
+      // fetchMyInfo();
     }
   }, []);
 
@@ -197,7 +98,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         user,
         token,
         login,
-        register,
         logout,
         isAdmin: isAdminLogin,
         authType: "IDPW",
