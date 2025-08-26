@@ -323,6 +323,11 @@ interface ChangePassword {
   newPassword: string;
 }
 
+interface ResetPasswordByMfa {
+  email: string;
+  mfaCode: string;
+}
+
 export const useChangePassword = () => {
   const { data: changePassword, refetch: refetchChangePassword } = useFetch<
     ResponseMessage,
@@ -334,6 +339,20 @@ export const useChangePassword = () => {
   });
   return {
     changePassword,
+    refetchChangePassword,
+  };
+};
+
+export const useResetPasswordByMfa = () => {
+  const { refetch: refetchChangePassword } = useFetch<
+    ResponseMessage,
+    ResetPasswordByMfa
+  >({
+    url: "/auth/forgot-password-with-mfa",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
     refetchChangePassword,
   };
 };

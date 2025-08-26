@@ -300,6 +300,7 @@ import {
   Fade,
   Slide,
 } from "@mui/material";
+import Image from "../../svgs/wallpaper.jpg";
 import {
   Search,
   FlightTakeoff,
@@ -387,408 +388,67 @@ const Hero: React.FC = () => {
     <Box
       sx={{
         minHeight: "100vh",
-        background:
-          "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)",
-        position: "relative",
-        overflow: "hidden",
+        bgcolor: "#f9f9f9",
         display: "flex",
         alignItems: "center",
         py: 4,
       }}
     >
-      {/* Animated Background Elements */}
-      <Box
-        sx={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          "&::before": {
-            content: '""',
-            position: "absolute",
-            top: "10%",
-            left: "10%",
-            width: 100,
-            height: 100,
-            borderRadius: "50%",
-            background: "rgba(255, 255, 255, 0.1)",
-            animation: "float 6s ease-in-out infinite",
-          },
-          "&::after": {
-            content: '""',
-            position: "absolute",
-            top: "60%",
-            right: "15%",
-            width: 80,
-            height: 80,
-            borderRadius: "50%",
-            background: "rgba(255, 255, 255, 0.08)",
-            animation: "float 8s ease-in-out infinite reverse",
-          },
-          "@keyframes float": {
-            "0%, 100%": {
-              transform: "translateY(0px)",
-            },
-            "50%": {
-              transform: "translateY(-20px)",
-            },
-          },
-        }}
-      />
+      <Container maxWidth="lg" sx={{ mt: 8 }}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+          }}
+        >
+          {/* Left text */}
+          <Box sx={{ maxWidth: "500px" }}>
+            <Typography
+              variant="subtitle2"
+              color="text.secondary"
+              gutterBottom
+              sx={{ letterSpacing: 1 }}
+            >
+              ELEVATE YOUR TRAVEL JOURNEY
+            </Typography>
 
-      <Container maxWidth="xl">
-        <Grid container spacing={4} alignItems="center">
-          {/* Hero Text */}
-          <Grid size={12}>
-            <Fade in timeout={1000}>
-              <Box textAlign="center" mb={6}>
-                <Typography
-                  variant={isMobile ? "h2" : "h1"}
-                  component="h1"
-                  sx={{
-                    fontWeight: 800,
-                    color: "white",
-                    mb: 3,
-                    textShadow: "2px 2px 4px rgba(0,0,0,0.3)",
-                    background: "linear-gradient(45deg, #fff 30%, #f0f8ff 90%)",
-                    backgroundClip: "text",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                  }}
-                >
-                  Khám Phá Thế Giới
-                  <br />
-                  <Typography
-                    component="span"
-                    sx={{
-                      background:
-                        "linear-gradient(45deg, #FFD700 30%, #FFA500 90%)",
-                      backgroundClip: "text",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                      fontSize: "inherit",
-                      fontWeight: "inherit",
-                    }}
-                  >
-                    Cùng SkyTravel
-                  </Typography>
-                </Typography>
-                <Typography
-                  variant="h5"
-                  sx={{
-                    color: "rgba(255, 255, 255, 0.9)",
-                    maxWidth: 800,
-                    mx: "auto",
-                    fontWeight: 300,
-                    lineHeight: 1.6,
-                  }}
-                >
-                  Đặt vé máy bay dễ dàng với giá tốt nhất. Hành trình của bạn
-                  bắt đầu từ đây.
-                </Typography>
-              </Box>
-            </Fade>
-          </Grid>
+            <Typography
+              variant="h3"
+              fontWeight="bold"
+              sx={{ mb: 3, lineHeight: 1.2 }}
+            >
+              Experience <br /> The Magic Of Flight!
+            </Typography>
 
-          {/* Search Form */}
-          <Grid size={12}>
-            <Slide direction="up" in timeout={1200}>
-              <Paper
-                elevation={24}
-                sx={{
-                  p: 4,
-                  borderRadius: 4,
-                  background: "rgba(255, 255, 255, 0.95)",
-                  backdropFilter: "blur(20px)",
-                  maxWidth: 1200,
-                  mx: "auto",
-                }}
-              >
-                {/* Flight Type Toggle */}
-                <Box display="flex" justifyContent="center" mb={4}>
-                  <ToggleButtonGroup
-                    value={searchForm.flightType}
-                    exclusive
-                    onChange={handleFlightTypeChange}
-                    sx={{
-                      "& .MuiToggleButton-root": {
-                        px: 4,
-                        py: 1.5,
-                        borderRadius: 3,
-                        fontWeight: 600,
-                        textTransform: "none",
-                        fontSize: "1rem",
-                      },
-                    }}
-                  >
-                    <ToggleButton value="roundtrip">Khứ hồi</ToggleButton>
-                    <ToggleButton value="oneway">Một chiều</ToggleButton>
-                  </ToggleButtonGroup>
-                </Box>
+            <Button
+              variant="contained"
+              sx={{
+                bgcolor: "#1976d2",
+                borderRadius: "25px",
+                px: 4,
+                py: 1.5,
+                textTransform: "none",
+                fontSize: "16px",
+              }}
+            >
+              Book A Trip Now
+            </Button>
+          </Box>
 
-                {/* Search Inputs */}
-                <Grid container spacing={3} mb={3}>
-                  <Grid size={12}>
-                    <TextField
-                      fullWidth
-                      label="Từ"
-                      placeholder="Thành phố khởi hành"
-                      value={searchForm.from}
-                      onChange={(e) =>
-                        handleInputChange("from", e.target.value)
-                      }
-                      InputProps={{
-                        startAdornment: (
-                          <FlightTakeoff
-                            sx={{ mr: 1, color: "primary.main" }}
-                          />
-                        ),
-                      }}
-                      sx={{
-                        "& .MuiOutlinedInput-root": {
-                          borderRadius: 2,
-                        },
-                      }}
-                    />
-                  </Grid>
-
-                  <Grid size={12}>
-                    <TextField
-                      fullWidth
-                      label="Đến"
-                      placeholder="Thành phố đến"
-                      value={searchForm.to}
-                      onChange={(e) => handleInputChange("to", e.target.value)}
-                      InputProps={{
-                        startAdornment: (
-                          <FlightLand sx={{ mr: 1, color: "primary.main" }} />
-                        ),
-                      }}
-                      sx={{
-                        "& .MuiOutlinedInput-root": {
-                          borderRadius: 2,
-                        },
-                      }}
-                    />
-                  </Grid>
-
-                  <Grid size={12}>
-                    <TextField
-                      fullWidth
-                      type="date"
-                      label="Ngày đi"
-                      value={searchForm.departDate}
-                      onChange={(e) =>
-                        handleInputChange("departDate", e.target.value)
-                      }
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      InputProps={{
-                        startAdornment: (
-                          <CalendarToday
-                            sx={{ mr: 1, color: "primary.main" }}
-                          />
-                        ),
-                      }}
-                      sx={{
-                        "& .MuiOutlinedInput-root": {
-                          borderRadius: 2,
-                        },
-                      }}
-                    />
-                  </Grid>
-
-                  {searchForm.flightType === "roundtrip" && (
-                    <Grid size={12}>
-                      <TextField
-                        fullWidth
-                        type="date"
-                        label="Ngày về"
-                        value={searchForm.returnDate}
-                        onChange={(e) =>
-                          handleInputChange("returnDate", e.target.value)
-                        }
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        InputProps={{
-                          startAdornment: (
-                            <CalendarToday
-                              sx={{ mr: 1, color: "primary.main" }}
-                            />
-                          ),
-                        }}
-                        sx={{
-                          "& .MuiOutlinedInput-root": {
-                            borderRadius: 2,
-                          },
-                        }}
-                      />
-                    </Grid>
-                  )}
-
-                  <Grid
-                    size={12}
-                    left={searchForm.flightType === "roundtrip" ? 2.4 : 4.8}
-                  >
-                    <Grid container spacing={2}>
-                      <Grid size={6}>
-                        <TextField
-                          fullWidth
-                          select
-                          label="Hành khách"
-                          value={searchForm.passengers}
-                          onChange={(e) =>
-                            handleInputChange(
-                              "passengers",
-                              parseInt(e.target.value)
-                            )
-                          }
-                          InputProps={{
-                            startAdornment: (
-                              <People sx={{ mr: 1, color: "primary.main" }} />
-                            ),
-                          }}
-                          sx={{
-                            "& .MuiOutlinedInput-root": {
-                              borderRadius: 2,
-                            },
-                          }}
-                        >
-                          {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
-                            <MenuItem key={num} value={num}>
-                              {num} người
-                            </MenuItem>
-                          ))}
-                        </TextField>
-                      </Grid>
-                      <Grid size={6}>
-                        <TextField
-                          fullWidth
-                          select
-                          label="Hạng ghế"
-                          value={searchForm.cabinClass}
-                          onChange={(e) =>
-                            handleInputChange(
-                              "cabinClass",
-                              e.target.value as any
-                            )
-                          }
-                          sx={{
-                            "& .MuiOutlinedInput-root": {
-                              borderRadius: 2,
-                            },
-                          }}
-                        >
-                          {cabinOptions.map((option) => (
-                            <MenuItem key={option.value} value={option.value}>
-                              {option.label}
-                            </MenuItem>
-                          ))}
-                        </TextField>
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                </Grid>
-
-                {/* Search Button */}
-                <Button
-                  fullWidth
-                  variant="contained"
-                  size="large"
-                  onClick={handleSearch}
-                  startIcon={<Search />}
-                  sx={{
-                    py: 2,
-                    borderRadius: 3,
-                    background:
-                      "linear-gradient(45deg, #667eea 30%, #764ba2 90%)",
-                    fontSize: "1.1rem",
-                    fontWeight: 600,
-                    textTransform: "none",
-                    boxShadow: "0 8px 32px rgba(102, 126, 234, 0.4)",
-                    "&:hover": {
-                      background:
-                        "linear-gradient(45deg, #5a6fd8 30%, #6a4190 90%)",
-                      boxShadow: "0 12px 40px rgba(102, 126, 234, 0.6)",
-                      transform: "translateY(-2px)",
-                    },
-                    transition: "all 0.3s ease",
-                  }}
-                >
-                  Tìm chuyến bay tốt nhất
-                </Button>
-              </Paper>
-            </Slide>
-          </Grid>
-
-          {/* Features */}
-          <Grid size={12}>
-            <Fade in timeout={1500}>
-              <Box mt={8}>
-                <Grid container spacing={4} justifyContent="center">
-                  {features.map((feature, index) => (
-                    <Grid size={12} key={index}>
-                      <Card
-                        elevation={8}
-                        sx={{
-                          textAlign: "center",
-                          p: 3,
-                          borderRadius: 3,
-                          background: "rgba(255, 255, 255, 0.1)",
-                          backdropFilter: "blur(10px)",
-                          border: "1px solid rgba(255, 255, 255, 0.2)",
-                          transition: "all 0.3s ease",
-                          "&:hover": {
-                            transform: "translateY(-8px)",
-                            boxShadow: "0 20px 40px rgba(0, 0, 0, 0.1)",
-                          },
-                        }}
-                      >
-                        <CardContent>
-                          <Avatar
-                            sx={{
-                              width: 80,
-                              height: 80,
-                              mx: "auto",
-                              mb: 2,
-                              background: "rgba(255, 255, 255, 0.2)",
-                              color: "white",
-                            }}
-                          >
-                            {feature.icon}
-                          </Avatar>
-                          <Typography
-                            variant="h6"
-                            component="h3"
-                            sx={{
-                              color: "white",
-                              fontWeight: 600,
-                              mb: 2,
-                            }}
-                          >
-                            {feature.title}
-                          </Typography>
-                          <Typography
-                            variant="body1"
-                            sx={{
-                              color: "rgba(255, 255, 255, 0.8)",
-                              lineHeight: 1.6,
-                            }}
-                          >
-                            {feature.description}
-                          </Typography>
-                        </CardContent>
-                      </Card>
-                    </Grid>
-                  ))}
-                </Grid>
-              </Box>
-            </Fade>
-          </Grid>
-        </Grid>
+          {/* Right image */}
+          <Box
+            component="img"
+            src={Image}
+            alt="Airplane"
+            sx={{
+              width: { xs: "100%", md: "50%" },
+              borderRadius: "20px",
+              mt: { xs: 4, md: 0 },
+            }}
+          />
+        </Box>
       </Container>
     </Box>
   );

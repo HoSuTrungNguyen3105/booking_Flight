@@ -3,7 +3,7 @@ import DataGridInTab from "../../common/Dropdown/Data";
 import InspectionSection from "../../common/Dropdown/InspectionSection";
 import type { GridColDef } from "@mui/x-data-grid";
 import Hero from "../../components/Hero/Hero";
-import type { IDetailItem } from "./DetailSection";
+
 const DataV2 = () => {
   type RowData = {
     id: number;
@@ -17,12 +17,14 @@ const DataV2 = () => {
     "미완료@gmail.com",
     "진행중@gmail.com",
   ] as const;
+
   const initialData: RowData[] = Array.from({ length: 25 }).map((_, i) => ({
     id: i + 1,
     age: Math.floor(Math.random() * 100),
     name: typeList[Math.floor(Math.random() * typeList.length)],
     email: statusList[Math.floor(Math.random() * statusList.length)],
   }));
+
   const row = [
     {
       id: 1,
@@ -50,22 +52,19 @@ const DataV2 = () => {
       content: <Hero />,
     },
   ];
+
   const columns: GridColDef[] = [
     { field: "id", headerName: "ID", flex: 1 },
     { field: "name", headerName: "Name", flex: 1 },
     { field: "age", headerName: "Age", flex: 1 },
     { field: "email", headerName: "Email", flex: 1 },
   ];
+
   return (
-    // <Box className="hero-section">
-    //   <Box className="hero-container">
-    //     <Typography className="hero-title">Find your next stay</Typography>
-    //     <Typography className="hero-subtitle">
-    //       Search low prices on hotels for your dream vacation...
-    //     </Typography>
     <Box>
       <Box paddingTop={2}>
         <InspectionSection
+          onRowClick={() => {}}
           handleAction={() => {}}
           columns={columns}
           tabs={[]}

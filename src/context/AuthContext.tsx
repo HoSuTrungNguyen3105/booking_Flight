@@ -38,7 +38,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
   const toast = useToast();
   const { refetchLogin } = useLoginUser();
-  const { getMyInfo, refetchGetMyInfo } = useGetMyInfo(userId);
+  const { getMyInfo, refetchGetMyInfo } = useGetMyInfo(userId ?? undefined);
 
   const isAdminLogin = useMemo(() => user?.role === UserRole.ADMIN, [user]);
 
@@ -58,6 +58,13 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setToken(accessToken ?? null);
       updateLocalStorage(true, accessToken ?? null);
       setUserId(res.data.id);
+      // gọi API lấy thông tin user
+      // const { refetchGetMyInfo } = useGetMyInfo(res.data.id);
+      // const myInfo = await refetchGetMyInfo();
+      // console.log("MyInfo after login:", myInfo);
+      // if (myInfo?.resultCode === "00") {
+      //   setUser(myInfo.data || null);
+      // }
       await fetchMyInfo();
     } else if (res?.resultCode === "NETWORK_ERROR") {
       toast("Không thể kết nối đến server. Vui lòng thử lại.", "info");
@@ -67,12 +74,33 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const fetchMyInfo = useCallback(async () => {
-    const res = await refetchGetMyInfo();
-    if (res?.resultCode === "00" && res.data) {
-      setUser(getMyInfo?.data || null);
-      updateLocalStorage(true, token);
+    try {
+      // const { refetchGetMyInfo } = useGetMyInfo(id);
+      const resquests = await refetchGetMyInfo();
+      console.log("MyInfo after login:", resquests);
+      if (resquests?.resultCode === "00") {
+        setUser(resquests.data || null);
+      } else {
+        setUser(null);
+      }
+    } catch (err) {
+      console.error("🔥 Backend lỗi khi fetch user:", err);
+      logout(); // ❌ server ngắt thì signout
     }
-  }, [refetchGetMyInfo, token]);
+  }, []);
+
+  // const fetchMyInfo = useCallback(async () => {
+  //   // const res = await refetchGetMyInfo();
+  //   // if (res?.resultCode === "00" && res.data) {
+  //   //   setUser(getMyInfo?.data || null);
+  //   //   updateLocalStorage(true, token);
+  //   // }
+  //   const myInfo = await refetchGetMyInfo();
+  //     console.log("MyInfo after login:", myInfo);
+  //     if (myInfo?.resultCode === "00") {
+  //       setUser(myInfo.data || null);
+  //     }
+  // }, [refetchGetMyInfo, token]);
 
   const logout = () => {
     setIsAuthenticated(false);
@@ -87,9 +115,15 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (savedToken) {
       setIsAuthenticated(true);
       setToken(savedToken);
-      // fetchMyInfo();
+      fetchMyInfo();
     }
-  }, []);
+  }, [fetchMyInfo]);
+
+  useEffect(() => {
+    if (getMyInfo) {
+      setUser(getMyInfo.data ?? null);
+    }
+  }, [getMyInfo]);
 
   return (
     <AuthContext.Provider

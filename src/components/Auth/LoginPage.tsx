@@ -31,16 +31,9 @@ export const LoginPage: React.FC = () => {
   });
   const [changePassword, setChangePassword] = useState(false);
 
-  const { login, user, isAuthenticated } = useAuth();
-  const navigate = useNavigate();
+  const { login } = useAuth();
   const [_, setLoading] = useState(false);
-  const toast = useToast();
-  const {
-    handleSubmit,
-    watch,
-    control,
-    formState: { errors },
-  } = useForm<ILoginForm>({
+  const { handleSubmit, watch, control } = useForm<ILoginForm>({
     defaultValues: {
       email: "",
       password: "",
@@ -153,6 +146,10 @@ export const LoginPage: React.FC = () => {
                 )}
               />
             </FormControl>
+            <Button
+              label="Change Password"
+              onClick={() => setChangePassword(true)}
+            ></Button>
             <Box
               sx={{
                 display: "flex",

@@ -21,7 +21,6 @@ export interface ActionType {
   onClick?: () => void;
 }
 interface OptionDropdown {
-  // label: string;
   placeholder?: string;
   options: ActionType[];
   sx?: SxProps;
@@ -37,10 +36,7 @@ interface OptionDropdown {
 const CSelect: FC<OptionDropdown> = ({
   value,
   options,
-  withBorder = false,
   onChange,
-  sx,
-  disabled,
   placeholder,
   variant = "outlined",
   defaultValue,
@@ -70,71 +66,40 @@ const CSelect: FC<OptionDropdown> = ({
     }
   };
 
-  const selected = options.find((o) => o.value === value);
   return (
     <FormControl fullWidth error={error}>
       <StyledSelect
         value={value}
-        // onChange={(e) => {
-        //   const val = e.target.value;
-        //   onChange?.(val);
-        // }}
         variant={variant}
         onChange={handleChange}
         onOpen={() => setSelectOpen(true)}
         onClose={() => setSelectOpen(false)}
-        // disableUnderline={!withBorder}
-        // displayEmpty
         size="small"
         IconComponent={CustomSelectIcon}
-        // renderValue={() => (
-        //   <Box
-        //     display="flex"
-        //     alignItems="center"
-        //     justifyContent={withBorder ? "space-between" : "flex-start"}
-        //     width="100%"
-        //   >
-        //     <Typography variant="body2">
-        //       {selected ? selected.label : "Chọn option"}
-        //     </Typography>
-        //     <CustomSelectIcon />
-        //   </Box>
-        // )}
       >
-        {/* {placeholder && (
-          <Box component="option" value="" disabled sx={{ color: "grey.500" }}>
-            {placeholder}
-          </Box>
+        {defaultValue && (
+          <MenuItem sx={{ display: "none" }} value={defaultValue}>
+            {defaultValue}
+          </MenuItem>
         )}
-        {options.map(({ value, disabled, label, color }) => (
+
+        {/* Render placeholder if provided */}
+        {placeholder && (
+          <MenuItem sx={{ color: "grey.800" }} value="">
+            {placeholder}
+          </MenuItem>
+        )}
+
+        {options.map(({ label, value, color, disabled }) => (
           <MenuItem
             key={value}
-            value={value}
             disabled={disabled}
+            value={value}
             sx={{ color: color }}
           >
-            {label || value}
+            {label}
           </MenuItem>
-        ))} */}
-        {/* Render default value as a hidden menu item */}
-      {defaultValue && (
-        <MenuItem sx={{ display: 'none' }} value={defaultValue}>
-          {defaultValue}
-        </MenuItem>
-      )}
-
-      {/* Render placeholder if provided */}
-      {placeholder && (
-        <MenuItem sx={{ color: 'grey.800' }} value="">
-          {placeholder}
-        </MenuItem>
-      )}
-
-      {options.map(({ label, value, color, disabled }) => (
-        <MenuItem key={value} disabled={disabled} value={value} sx={{ color: color }}>
-          {label}
-        </MenuItem>
-      ))}
+        ))}
       </StyledSelect>
     </FormControl>
   );

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import "./index.scss";
 import { Box } from "@mui/material";
 import { Button } from "../../common/Button/Button";
 import Input from "../../common/CustomRender/Input";
@@ -40,12 +39,9 @@ const ChangePassword = () => {
   };
 
   return (
-    <Box className="register">
-      <Box className="register_content">
-        <form
-          className="register_content_form"
-          onSubmit={handleSubmit(onSubmit)}
-        >
+    <Box>
+      <Box>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <Input
             name="password"
             control={control}
@@ -59,17 +55,7 @@ const ChangePassword = () => {
             isPassword
           />
 
-          {/* Hiển thị preview ảnh */}
-          {/* {getValues("profileImage") && (
-            <Box
-              component={"img"}
-              src={URL.createObjectURL(getValues("profileImage")!)}
-              alt="profile"
-              sx={{ maxWidth: "80px", borderRadius: "8px" }}
-            />
-          )} */}
-
-          <Button label="REGISTER" type="submit" disabled={passwordMismatch} />
+          <Button label="Change" type="submit" disabled={passwordMismatch} />
         </form>
         <a href="/login">Already have an account? Log In Here</a>
       </Box>

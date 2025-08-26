@@ -19,7 +19,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { LanguageDropdown } from "../Dropdown/Changelng";
 import { ImageThumbnail } from "../Profile/ImageThumbnail";
 import UserInfo from "../../svgs/eye.png";
-import { useGetUserById } from "../../components/Api/useGetApi";
 export const Header = forwardRef<HTMLElement, React.HTMLProps<HTMLElement>>(
   (props, ref) => {
     const { isAuthenticated } = useAuth();
@@ -43,49 +42,12 @@ export const Header = forwardRef<HTMLElement, React.HTMLProps<HTMLElement>>(
         className="header"
         ref={ref}
         position="static"
-        sx={{
-          background: "transparent",
-          boxShadow: "none",
-          position: "relative",
-        }}
+        color="transparent"
+        elevation={0}
+        sx={{ px: 4, py: 2 }}
       >
-        {/* Nền Gradient + Bóng Tròn */}
-        <Box
-          sx={{
-            position: "absolute",
-            inset: 0,
-            background:
-              "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)",
-            "&::before": {
-              content: '""',
-              position: "absolute",
-              top: "10%",
-              left: "10%",
-              width: 100,
-              height: 100,
-              borderRadius: "50%",
-              background: "rgba(255, 255, 255, 0.1)",
-              animation: "float 6s ease-in-out infinite",
-            },
-            "&::after": {
-              content: '""',
-              position: "absolute",
-              top: "60%",
-              right: "15%",
-              width: 80,
-              height: 80,
-              borderRadius: "50%",
-              background: "rgba(255, 255, 255, 0.08)",
-              animation: "float 8s ease-in-out infinite reverse",
-            },
-            "@keyframes float": {
-              "0%, 100%": { transform: "translateY(0px)" },
-              "50%": { transform: "translateY(-20px)" },
-            },
-          }}
-        />
-
-        <Toolbar sx={{ position: "relative", zIndex: 1 }}>
+        <Box />
+        <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
           <Box
             sx={{
               display: "flex",
@@ -94,27 +56,26 @@ export const Header = forwardRef<HTMLElement, React.HTMLProps<HTMLElement>>(
               gap: 10,
             }}
           >
-            {/* Logo + Menu */}
             <Box sx={{ display: "flex", width: "30%", alignItems: "center" }}>
               <IconButton
                 size="large"
                 edge="start"
                 onClick={toggleSidebar}
-                sx={{ mr: 2, color: "white" }}
+                // sx={{ mr: 2, color: "white" }}
               >
                 <LocalAirportSharpIcon />
               </IconButton>
               <Typography
                 fontWeight="bold"
                 fontSize="2.2rem"
-                sx={{
-                  ml: 2,
-                  cursor: "pointer",
-                  background: "linear-gradient(45deg, #fff 30%, #f0f8ff 90%)",
-                  backgroundClip: "text",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                }}
+                // sx={{
+                //   ml: 2,
+                //   cursor: "pointer",
+                //   background: "linear-gradient(45deg, #fff 30%, #f0f8ff 90%)",
+                //   backgroundClip: "text",
+                //   WebkitBackgroundClip: "text",
+                //   WebkitTextFillColor: "transparent",
+                // }}
               >
                 HSTN
               </Typography>
@@ -193,7 +154,7 @@ export const Header = forwardRef<HTMLElement, React.HTMLProps<HTMLElement>>(
                     size="large"
                     appearance="contained"
                     icon={<ImageThumbnail url={UserInfo} />}
-                    label={user?.name}
+                    label={user?.email}
                   />
                   <SignOut />
                 </Box>

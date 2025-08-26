@@ -156,25 +156,6 @@ interface Airport {
   city: string;
 }
 
-// interface Aircraft {
-//   code: string;
-//   model: string;
-//   range: number;
-// }
-// types.ts
-// export interface Flight {
-//   flightId: number;
-//   flightNo: string;
-//   scheduledDeparture: string;
-//   scheduledArrival: string;
-//   departureAirport: Airport;
-//   arrivalAirport: Airport;
-//   status: string;
-//   aircraftCode: Aircraft;
-//   actualDeparture?: string | null;
-//   actualArrival?: string | null;
-// }
-
 export interface FlightMeal {
   id: number;
   flightId: number;
@@ -219,6 +200,7 @@ export type FlightDetailApiResponse = DetailResponseMessage<DataFlight>;
 export type FlightMealDetailApiResponse = DetailResponseMessage<FlightMeal>;
 export type UserListManageResponse = DetailResponseMessage<UserData>;
 export type FlightListApiResponse = DetailResponseMessage<Flight>;
+
 export type ResponseMessage = {
   resultCode?: string;
   resultMessage?: string;

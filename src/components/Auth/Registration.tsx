@@ -40,7 +40,7 @@ const Registration = () => {
       sx={{ maxWidth: 700, margin: "auto", mt: 4, p: 3 }}
     >
       <Typography variant="h6" gutterBottom>
-        Passenger Registration
+        Registration
       </Typography>
 
       <form onSubmit={handleSubmit(onSubmit)}>
