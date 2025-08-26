@@ -336,6 +336,21 @@ export const useGetFlightData = () => {
     refetchGetFlightData,
   };
 };
+export const useGetMyInfo = (id: number) => {
+  const { data: getMyInfo, refetch: refetchGetMyInfo } = useFetch<
+    DetailResponseMessage<UserData>,
+    UserData
+  >({
+    url: `/sys/users/${id}`,
+    autoFetch: true,
+    config: getMethod,
+  });
+  return {
+    getMyInfo,
+    refetchGetMyInfo,
+  };
+};
+
 export const useFlightList = () => {
   const { data: fetchFlightList, refetch: refetchFlightList } = useFetch<
     FlightListApiResponse,

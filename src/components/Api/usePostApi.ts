@@ -9,8 +9,6 @@ import type {
   AvailableAircraft,
   ResponseMessage,
   UserListResponse,
-  UserListManageResponse,
-  UserData,
   UserCreateResponse,
   UserDataNoGrid,
   DetailResponseMessage,
@@ -157,14 +155,14 @@ export const useLoginUser = () => {
     defaultValue: {
       resultCode: "",
       resultMessage: "",
-      user: {
-        id: 0,
-        userId: 0,
-        email: "",
-        name: "",
-        password: "",
-      },
-      accessToken: "",
+      // user: {
+      //   id: 0,
+      //   // userId: 0,
+      //   email: "",
+      //   name: "",
+      //   password: "",
+      // },
+      // accessToken: "",
     },
     autoFetch: false,
     config: postMethod,
@@ -312,14 +310,31 @@ export const useSetUpMfa = () => {
     MfaRequest
   >({
     url: "/auth/setmfa",
-    // defaultValue: { resultCode: "", resultMessage: "" },
     autoFetch: false,
     config: postMethod,
-    // message: messageMethod,
   });
   return {
     setUpMfa,
     refetchSetUpMfa,
+  };
+};
+interface ChangePassword {
+  userId: number;
+  newPassword: string;
+}
+
+export const useChangePassword = () => {
+  const { data: changePassword, refetch: refetchChangePassword } = useFetch<
+    MFAAuthResponse,
+    ChangePassword
+  >({
+    url: "/auth/change-password",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    changePassword,
+    refetchChangePassword,
   };
 };
 

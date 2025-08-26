@@ -31,9 +31,16 @@ export const LoginPage: React.FC = () => {
   });
   const [changePassword, setChangePassword] = useState(false);
 
-  const { login } = useAuth();
+  const { login, user, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const [_, setLoading] = useState(false);
-  const { handleSubmit, watch, control } = useForm<ILoginForm>({
+  const toast = useToast();
+  const {
+    handleSubmit,
+    watch,
+    control,
+    formState: { errors },
+  } = useForm<ILoginForm>({
     defaultValues: {
       email: "",
       password: "",
@@ -48,9 +55,6 @@ export const LoginPage: React.FC = () => {
       password: data.password,
       remember: data.remember,
     });
-    // if(login. == '9'){
-    //   setChangePassword(true);
-    // }
     setLoading(false);
   };
 

@@ -1,7 +1,7 @@
 import { defer } from "lodash";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { useLoginUser } from "../../Api/usePostApi";
-import { ResponseCode } from "../../../utils/response";
+import { getMessage, ResponseCode } from "../../../utils/response";
 import { useToast } from "../../../context/ToastContext";
 
 interface IUseSettingPasswordProps {
@@ -21,7 +21,7 @@ export const useSettingPassword = ({
   //     (payload: IUpdUserPwReq) => apis.common.updateUserPW(payload),
   //   );
   const toast = useToast();
-  const { refetchLogin } = useLoginUser();
+  const { loginUserData, refetchLogin } = useLoginUser();
   const passwordRef = useRef<HTMLInputElement>(null);
   const confirmPasswordRef = useRef<HTMLInputElement>(null);
 
@@ -68,7 +68,7 @@ export const useSettingPassword = ({
       e.preventDefault();
 
       try {
-        const result = await updateUserPW({
+        const result = await refetchLogin({
           userId,
           ...formData,
         });
@@ -104,14 +104,7 @@ export const useSettingPassword = ({
         handleUpdateError(getMessage(ResponseCode.UNKNOWN), "password");
       }
     },
-    [
-      formData,
-      handleUpdateError,
-      onSuccess,
-      successMessage,
-      updateUserPW,
-      userId,
-    ]
+    [formData, handleUpdateError, onSuccess, successMessage, userId]
   );
 
   return {
@@ -121,7 +114,6 @@ export const useSettingPassword = ({
     passwordRef,
     confirmPasswordRef,
     enabledBtn,
-    isLoading,
     onChangeFormData: handleChangeFormData,
     onSubmit: handleSubmit,
   } as const;

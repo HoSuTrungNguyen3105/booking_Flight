@@ -78,7 +78,7 @@ export type FlightListResponse<T> = {
 export type UserDataResponse<T> = {
   resultCode: string;
   resultMessage: string;
-  user?: T;
+  data?: T;
   accessToken?: string | null;
 };
 export enum UserRole {
@@ -110,7 +110,7 @@ export type UserData = GridRowDef & {
   mfaSecretKey?: string;
 };
 export type UserDataNoGrid = {
-  // userId: number;
+  userId?: number;
   id: string;
   email: string;
   name?: string;

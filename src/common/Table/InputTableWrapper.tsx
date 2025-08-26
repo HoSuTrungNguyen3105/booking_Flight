@@ -3,7 +3,7 @@ import RequiredIcon from "assets/images/icon/required_icon.svg";
 import { Table } from "react-bootstrap"; // 2.7k (gzipped: 1.3k)
 import { useTranslation } from "react-i18next"; // 5.3k (gzipped: 2.3k)
 import { Checkbox } from "../Checkbox/Checkbox";
-// import { InputTableProps, TInfoTableTemp } from "./constant";
+
 export type TInfoTableTemp = {
   [key: string]: any;
 };
