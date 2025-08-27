@@ -200,6 +200,7 @@ export const useGetMeal = () => {
       url: "/sys/meals",
       autoFetch: false,
       config: getMethod,
+      showToast: false,
     });
   return {
     flightBookingData,
@@ -220,20 +221,62 @@ export const useGetFlightData = () => {
     refetchGetFlightData,
   };
 };
-export const useGetMyInfo = (id: number) => {
-  const { data: getMyInfo, refetch: refetchGetMyInfo } = useFetch<
+
+export const useGetMyInfo = () => {
+  const { data: getMyInfo, refetch } = useFetch<
     DetailResponseMessage<UserData>,
     UserData
   >({
-    url: id ? `/sys/users/${id}` : "",
-    autoFetch: !!id,
+    url: "", // khởi tạo rỗng
+    autoFetch: false, // không fetch khi mount
     config: getMethod,
+    showToast: false,
   });
+
+  // refetch với id động
+  const refetchGetMyInfo = (id: number) => {
+    return refetch(undefined, `/sys/users/getUserInfo/${id}`);
+  };
+
   return {
     getMyInfo,
     refetchGetMyInfo,
   };
 };
+
+// export const useGetMyInfo = (id: number) => {
+//   const { data: getMyInfo, refetch: refetchGetMyInfo } = useFetch<
+//     DetailResponseMessage<UserData>,
+//     UserData
+//   >({
+//     url: id ? `/sys/users/${id}` : "",
+//     autoFetch: !!id,
+//     config: getMethod,
+//   });
+//   return {
+//     getMyInfo,
+//     refetchGetMyInfo,
+//   };
+// };
+
+// export const useGetMyInfo = () => {
+//   const { data: getMyInfo, refetch: refetchGetMyInfo } = useFetch<
+//     DetailResponseMessage<UserData>,
+//     UserData
+//   >({
+//     url: "",   // ban đầu để trống
+//     autoFetch: false,
+//     config: getMethod,
+//   });
+
+//   // cho phép gọi refetch với id động
+//   const fetchWithId = (id: number) => refetchGetMyInfo(`/sys/users/${id}`);
+
+//   return {
+//     getMyInfo,
+//     refetchGetMyInfo: fetchWithId,
+//   };
+// };
 
 export const useFlightList = () => {
   const { data: fetchFlightList, refetch: refetchFlightList } = useFetch<

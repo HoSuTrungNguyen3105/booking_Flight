@@ -29,7 +29,6 @@ const useClientPagination = <T>({
   initialSortField = "",
   initialSortDirection,
 }: IUseClientPaginationProps<T>): IUseClientPaginationReturn<T> => {
-  // Internal state uses 0-based index
   const [internalPage, setInternalPage] = useState(0);
   const [pageSize, setPageSize] = useState(initialPageSize);
 

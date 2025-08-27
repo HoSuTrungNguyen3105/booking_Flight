@@ -391,7 +391,6 @@ const Hero: React.FC = () => {
         bgcolor: "#f9f9f9",
         display: "flex",
         alignItems: "center",
-        py: 4,
       }}
     >
       <Container maxWidth="lg" sx={{ mt: 8 }}>
@@ -404,13 +403,8 @@ const Hero: React.FC = () => {
           }}
         >
           {/* Left text */}
-          <Box sx={{ maxWidth: "500px" }}>
-            <Typography
-              variant="subtitle2"
-              color="text.secondary"
-              gutterBottom
-              sx={{ letterSpacing: 1 }}
-            >
+          <Box sx={{ maxWidth: "300px" }}>
+            <Typography variant="subtitle2" color="text.secondary" gutterBottom>
               ELEVATE YOUR TRAVEL JOURNEY
             </Typography>
 

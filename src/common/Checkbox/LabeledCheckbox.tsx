@@ -1,4 +1,3 @@
-// LabeledCheckbox.tsx
 import { forwardRef } from "react";
 import {
   Checkbox as MuiCheckbox,

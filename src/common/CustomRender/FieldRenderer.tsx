@@ -1,4 +1,3 @@
-import { Dropdown } from "../Dropdown/Dropdown";
 import InputTextArea from "../Input/InputTextArea";
 import type { DropdownOptions } from "../Dropdown/type";
 import Android12Switch from "../Switch/Switch";
@@ -17,6 +16,7 @@ export enum FieldType {
   DATE = "date",
   CHECKBOX_SELECT = "checkbox_select",
 }
+
 type FormField = {
   id: string;
   label?: string;
@@ -28,12 +28,14 @@ type FormField = {
   sx?: SxProps<Theme>;
   disabled?: boolean;
   onChange?: (value: any) => void;
-  customProps?: Record<string, any>; // ✅ Thêm dòng này
+  customProps?: Record<string, any>;
 };
+
 export type IFormField = {
   disabled?: boolean;
   fields: FormField;
 };
+
 interface IFieldRendererProps extends Omit<FormField, "id"> {
   error?: boolean | string;
   disabled?: boolean;
@@ -65,7 +67,7 @@ const FieldRenderer = ({
     case FieldType.DROPDOWN:
       return (
         <CSelect
-          sx={{ width: "100%" }} //
+          sx={{ width: "100%" }}
           placeholder={placeholder}
           options={options}
           value={value}
@@ -78,14 +80,10 @@ const FieldRenderer = ({
     case FieldType.INPUT_WITH_TYPE_PASSWORD:
       return (
         <InputTextField
-          // placeholder={placeholder}
-          // value={value}
-          // disabled={disabled}
-          // onChange={(e) => onChange(e.target.value)}
+          {...sx}
           type="password"
           canCopy
           realease3phrase
-          // readOnly
           showEyeIcon
           value={value}
           onChange={onChange}
@@ -95,10 +93,7 @@ const FieldRenderer = ({
     case FieldType.INPUT_WITH_TYPE_TEXT:
       return (
         <InputTextField
-          // placeholder={placeholder}
-          // value={value}
-          // disabled={disabled}
-          // onChange={(e) => onChange(e.target.value)}
+          {...sx}
           error={error as boolean}
           type="text"
           clearable
@@ -111,13 +106,10 @@ const FieldRenderer = ({
       return (
         <JobTypeSelector
           valueInCheckBox={valueIncheckbox}
-          // placeholder={placeholder}
-          // value={value}
-          // disabled={disabled}
-          // onChange={(e) => onChange(e.target.value)}
           error={error as boolean}
           value={value}
           onChange={onChange}
+          {...sx}
           {...(customProps || {})} // ✅ Truyền toàn bộ prop riêng vào
         />
       );
@@ -128,12 +120,8 @@ const FieldRenderer = ({
           placeholder={placeholder}
           value={value}
           disabled={disabled}
-          //onChange={(e) => onChange(e.target.value)}
         />
       );
-
-    default:
-      return null;
   }
 };
 export default FieldRenderer;

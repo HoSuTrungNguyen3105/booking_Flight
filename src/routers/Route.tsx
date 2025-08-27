@@ -29,6 +29,7 @@ import CheckboxUI from "../common/Checkbox/CheckboxUI";
 import Setting_flight from "../components/Admin/Setting_flight";
 import MealList from "../common/Setting/MealList";
 import SecurityManage from "../common/Setting/hooks/SecurityManage";
+import ProfileUser from "../common/Profile";
 
 interface IRouteObject {
   path?: (typeof ROUTE_PATHS)[keyof typeof ROUTE_PATHS];
@@ -91,10 +92,6 @@ const routes = [
         ],
       },
       {
-        path: "overview/revenue",
-        element: <Typography>Xin chào</Typography>,
-      },
-      {
         path: "airport-list/domestic",
         element: <Typography>Xin chào</Typography>,
       },
@@ -102,10 +99,6 @@ const routes = [
         path: "profile",
         element: <InspectionDetails />,
       },
-      // {
-      //   path: ROUTE_PATHS.FOOD.replace("/", ""),
-      //   element: <Food />,
-      // },
       {
         path: ROUTE_PATHS.SAMPLE_FORM.replace("/", ""),
         element: <CheckboxUI />,
@@ -113,10 +106,6 @@ const routes = [
       {
         path: ROUTE_PATHS.TIME_PICKER.replace("/", ""),
         element: <SampleTimePicker />,
-      },
-      {
-        path: ROUTE_PATHS.LOGOUT.replace("/", ""),
-        element: <SignOut />,
       },
       {
         path: "/sampleFormData",
@@ -183,7 +172,7 @@ const routes = [
       },
       {
         path: "hero",
-        element: <Hero />,
+        element: <ProfileUser />,
       },
       {
         path: "setting",

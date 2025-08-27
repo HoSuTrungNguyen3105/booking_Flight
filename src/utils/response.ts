@@ -19,15 +19,18 @@ export const Message = {
 export type ResponseCode = (typeof ResponseCode)[keyof typeof ResponseCode];
 
 export const formatMessage = (
-  message: string,
+  responseMessage: string,
   ...values: (string | number)[]
 ): string => {
   // Replace placeholders {0}, {1}, {2}... with values
   values.forEach((value, index) => {
     const placeholder = `{${index}}`;
-    message = message.replace(new RegExp(placeholder, "g"), String(value));
+    responseMessage = responseMessage.replace(
+      new RegExp(placeholder, "g"),
+      String(value)
+    );
   });
-  return message;
+  return responseMessage;
 };
 
 export const getMessage = (code: ResponseCode): string => {

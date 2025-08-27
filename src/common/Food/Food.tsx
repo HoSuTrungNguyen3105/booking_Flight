@@ -19,7 +19,6 @@ const Food = () => {
     }
   }, [fetchFlightMeals]);
 
-  // ==== Bảng 1: Flight Meals ====
   const flightMealCols: GridColDef<FlightMeal>[] = [
     { field: "id", headerName: "ID", width: 80 },
     { field: "flightId", headerName: "Flight ID", width: 100 },
@@ -28,7 +27,6 @@ const Food = () => {
     { field: "price", headerName: "Giá ($)", width: 120 },
   ];
 
-  // ==== Bảng 2: Flight Info ====
   const flightCols: GridColDef[] = [
     { field: "flightId", headerName: "Flight ID", width: 100 },
     { field: "flightNo", headerName: "Số hiệu", width: 120 },
@@ -62,7 +60,6 @@ const Food = () => {
 
   return (
     <Box p={2} display="flex" flexDirection="column" gap={4}>
-      {/* Bảng 1 */}
       <Box>
         <Typography variant="h6" mb={1}>
           Flight Meals
@@ -75,13 +72,11 @@ const Food = () => {
         />
       </Box>
 
-      {/* Bảng 2 */}
       <Box>
         <Typography variant="h6" mb={1}>
           Flight Info
         </Typography>
         <DataTable
-          // rows={rows.map((r) => r.flight)}
           rows={rows.map((r) => ({
             ...r.flight,
             id: r.flight.flightId, // Thêm id cho DataGrid
@@ -91,7 +86,6 @@ const Food = () => {
         />
       </Box>
 
-      {/* Bảng 3 */}
       <Box>
         <Typography variant="h6" mb={1}>
           Meal Info

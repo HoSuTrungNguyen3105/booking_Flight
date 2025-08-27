@@ -26,7 +26,7 @@ const MUIButtonBaseClassName = {
   priority: {
     [PriorityEnum.Primary]: "MuiButton-colorPrimary",
     [PriorityEnum.Normal]: "MuiButton-colorNormal",
-    [PriorityEnum.Custom]: "MuiButton-colorCustom", // ➕ nếu cần className riêng
+    [PriorityEnum.Custom]: "MuiButton-colorCustom",
   },
   size: {
     [SizeEnum.Small]: "MuiButton-sizeSmall",
@@ -136,7 +136,7 @@ export const Button = ({
     <MuiButton
       sx={{
         padding: label ? "8px 12px" : 0,
-        px: 4, // 👈 tăng padding ngang
+        px: 4,
         mr: 2,
         minWidth: 160,
         ...(priority === "custom" &&

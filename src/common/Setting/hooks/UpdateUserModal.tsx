@@ -14,6 +14,7 @@ interface IModalStatisticalDataLearningProps {
 }
 
 const UpdateUserModal = ({
+  data,
   open,
   onClose,
   onSuccess,
@@ -22,6 +23,7 @@ const UpdateUserModal = ({
     useUpdateUser({
       onClose,
       onSuccess,
+      data,
     });
   // const handleSubmit = () => {}
   const renderActions = useCallback(() => {
@@ -33,23 +35,14 @@ const UpdateUserModal = ({
       </Box>
     );
   }, [handleSubmit]);
-  // console.log("Đang gửi:", JSON.stringify(formData));
-
-  // console.log("Sending payload:", {
-  //   name: formData.name,
-  //   password: formData.password,
-  //   email: formData.email,
-  //   role: formData.role,
-  // });
 
   const renderContent = useCallback(() => {
-    // hook lấy từ net nhgko thấy mẫu cũ
     const renderRows = () => {
       return (
         <Stack>
           <Typography variant="body1">데이터 목록</Typography>
           {formDetailConfig
-            .filter((fieldItem) => !fieldItem.disabled) // 🔥 Chỉ render nếu không bị disable
+            .filter((fieldItem) => !fieldItem.disabled)
             .map(({ disabled, fields }) => (
               <Box key={fields.id}>
                 <Typography variant="body1" sx={{ mb: 1 }}>

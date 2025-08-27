@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { memo, useCallback, useState } from "react";
 import {
   ICON_BY_STATUS,
   INPUT_HEIGHT_BY_SIZE,
@@ -75,9 +75,6 @@ const InputField = React.forwardRef(
               ""
             );
             break;
-          // case "text":
-          //   event.target.value = event.target.value.replace(/[^\d,]/g, "");
-          //   break;
           default:
             break;
         }
@@ -113,24 +110,20 @@ const InputField = React.forwardRef(
           formHelperText: { error: true },
           input: {
             inputProps: {
-              readOnly, // ✅ Đúng chỗ rồi nè
+              readOnly,
               style: {
                 textAlign,
                 border: "none",
-                color: "black", // 💥 Thêm dòng này để chữ hiện rõ ra
+                color: "black",
                 fontSize: "15px",
               },
             },
             autoComplete: isPassword && !showPassword ? "new-password" : "off",
             className: `${className} ${status}`,
             placeholder,
-            // readOnly,
             startAdornment: startAdorment ? (
               <InputAdornment position="start">{startAdorment}</InputAdornment>
             ) : null,
-            // inputProps: {
-            //   style: { textAlign, border: "none" },
-            // },
             endAdornment: (
               <InputAdornment position="end">
                 <Box className="flex color-[#5B5C5B] cursor-pointer gap-1">
@@ -158,4 +151,4 @@ const InputField = React.forwardRef(
   }
 );
 
-export default InputField;
+export default memo(InputField);

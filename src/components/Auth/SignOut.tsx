@@ -1,24 +1,13 @@
-// import { useMutation, useQueryClient } from "@tanstack/react-query";
-// import * as apiClient from "../../context/AuthContext";
-// import { useAppContext } from "../contexts/AppContext";
 import { useState } from "react";
 import { Button } from "../../common/Button/Button";
 import { useAuth } from "../../context/AuthContext";
-import { useToast } from "../../context/ToastContext";
-import { Typography } from "@mui/material";
-import Modal from "../../common/Modal/Modal";
-// import { toast } from "react-toastify";
+import DialogConfirm from "../../common/Modal/DialogConfirm";
 
 const SignOut = () => {
-  const { user, logout } = useAuth();
-  const toast = useToast();
+  const { logout } = useAuth();
   const [open, setOpen] = useState(false);
 
   const handleClick = () => {
-    // if (user === null) {
-    //   toast("You are not logged in!", "error");
-    //   return;
-    // }
     setOpen(true);
   };
   const submitLogout = () => {
@@ -31,18 +20,15 @@ const SignOut = () => {
   return (
     <>
       <Button size="large" onClick={handleClick} label="Sign Out" />
-      <Modal
-        handleSubmit={submitLogout}
-        handleClose={closeModal}
-        submitLabel="Confirm"
-        closeLabel="Exit"
+      <DialogConfirm
+        onConfirm={submitLogout}
+        onClose={closeModal}
+        confirmLabel="Confirm"
+        cancelLabel="Exit"
         open={open}
-        contentArea={
-          <>
-            <Typography> Are you want to log out ? </Typography>
-          </>
-        }
-      ></Modal>
+        title="Logout confirm"
+        message="You will be logged out from your account."
+      />
     </>
   );
 };

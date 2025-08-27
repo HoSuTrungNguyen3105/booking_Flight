@@ -10,13 +10,15 @@ export const ImageThumbnail: FC<ImageThumbnailProps> = ({ url }) => {
     <Box
       width={32}
       height={32}
+      component={"img"}
       sx={{
-        background: `url(${url}) no-repeat center`,
-        backgroundSize: "cover",
+        // background: `url(${url}) no-repeat center`,
+        // backgroundSize: "cover",
         borderRadius: "50%", // Nếu muốn ảnh tròn
         border: "1px solid #ccc",
         flexShrink: 0,
       }}
+      src={url}
     />
   ) : null;
 };

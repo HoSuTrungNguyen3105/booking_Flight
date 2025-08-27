@@ -68,18 +68,16 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
       onChange("");
     }, [onChange]);
 
-    const getMaskedPassword = (val: string) => {
-      if (!val) return "";
-      if (val.length <= 3) return val;
-      const maskedLength = val.length - 3;
-      return "•".repeat(maskedLength) + val.slice(-3);
+    const getMaskedPassword = (val: string, visibleCount: number = 3) => {
+      if (!val || val.length <= visibleCount) return val;
+      const visible = val.slice(-visibleCount);
+      const hidden = "*".repeat(visible.length - visibleCount);
+      return hidden + visible;
     };
 
     const handleCopyText = () => {
       navigator.clipboard.writeText(value || "");
       setHasCopy(true);
-
-      // Tự reset lại sau 2 giây (2000ms)
       setTimeout(() => {
         setHasCopy(false);
       }, 2000);

@@ -67,9 +67,6 @@ const AccountLockModal = ({
           onChange={setSelectedJobs}
           valueInCheckBox={jobOptions}
         />
-        <div style={{ marginTop: 10 }}>
-          <strong>Giá trị đã chọn:</strong> {selectedJobs.join(", ")}
-        </div>
       </Box>
     );
   }, []);

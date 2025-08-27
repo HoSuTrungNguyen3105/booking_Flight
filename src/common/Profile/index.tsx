@@ -1,35 +1,62 @@
-import DataTable from "../DataGrid/index.tsx";
-import Icon from "../../svgs/local.png";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { Box } from "@mui/material";
-import { useLocation } from "react-router-dom";
-const Profile = () => {
-  const location = useLocation();
-  const { id } = location.state || {};
+import DetailSection, { type IDetailItem } from "../Dropdown/DetailSection.tsx";
+import { useAuth } from "../../context/AuthContext.tsx";
+import { DateFormatEnum, formatDate } from "../../hooks/format.ts";
+import UpdateUserModal from "../Setting/hooks/UpdateUserModal.tsx";
+import { Button } from "../Button/Button.tsx";
+import type { UserData } from "../../utils/type.ts";
+
+const ProfileUser = () => {
+  const { user } = useAuth();
+  const [open, setOpen] = useState(false);
 
   const renderDataGrid = useCallback(() => {
-    const columns = [
-      { field: "id", headerName: "ID", width: 90 },
-      { field: "name", headerName: "Name", width: 150 },
-      { field: "age", headerName: "Age", width: 110 },
-      { field: "email", headerName: "Email", width: 200 },
+    const detailInfoProfile: IDetailItem[] = [
+      { title: "id", description: user?.id },
+      { title: "name", description: user?.name },
+      { title: "mfaEnabledYn", description: user?.mfaEnabledYn },
+      { title: "email", description: user?.email },
+      { title: "role", description: user?.role },
+      {
+        title: "createdAt",
+        description: formatDate(
+          DateFormatEnum.DD_MM_YYYY_HH_MM_SS,
+          user?.createdAt
+        ),
+      },
+      {
+        title: "updatedAt",
+        description: formatDate(
+          DateFormatEnum.DD_MM_YYYY_HH_MM_SS,
+          user?.updatedAt
+        ),
+      },
     ];
     return (
       <Box sx={{ height: "auto", width: "100%" }}>
-        <DataTable
-          rows={[]}
-          columns={[]}
-          loading={false}
-          emptyContent="No data available"
-          emptyItemIcon={Icon}
-        />
-        <div>
-          <h2>ID: {id}</h2>
-        </div>
+        <DetailSection data={detailInfoProfile} />
+        <Button
+          label="Cập nhật thông tin"
+          sx={{ mt: 2 }}
+          // appearance="outlined"
+          // isHovered
+          onClick={() => setOpen(true)}
+        ></Button>
       </Box>
     );
-  }, [id]);
-  return <div>{renderDataGrid()}</div>;
+  }, []);
+  return (
+    <div>
+      {renderDataGrid()}
+      <UpdateUserModal
+        onSuccess={() => setOpen(false)}
+        open={open}
+        data={user as UserData}
+        onClose={() => setOpen(false)}
+      />
+    </div>
+  );
 };
 
-export default Profile;
+export default ProfileUser;

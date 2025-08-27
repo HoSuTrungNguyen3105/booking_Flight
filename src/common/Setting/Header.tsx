@@ -10,6 +10,7 @@ import { useAuth } from "../../context/AuthContext";
 import type { DropdownOption } from "../Dropdown/MultiDropdown";
 import { ROUTE_PATHS } from "../../routers/RoutePath";
 import CSelect from "../Dropdown/CSelect";
+import theme from "../../scss/theme";
 // import { Dropdown } from '../Dropdown/Dropdown';
 
 const Header = () => {
@@ -59,7 +60,10 @@ const Header = () => {
       >
         <Box>
           <CSelect
-            sx={{ backgroundColor: "primary.main", minWidth: 100 }}
+            sx={{
+              minWidth: 100,
+              height: 50,
+            }}
             value={jobCode}
             options={jobCodeOptions}
             onChange={(val) => handleChangeJobCodeList(val as string)}
@@ -79,8 +83,8 @@ const Header = () => {
             src={UserIcon}
             alt="Avatar"
           />
-          <Typography variant="subtitle1" color="white">
-            {user.userName || user.userId}
+          <Typography variant="subtitle1" color={theme.palette.grey[500]}>
+            {user.email}
           </Typography>
         </Box>
         <Menu

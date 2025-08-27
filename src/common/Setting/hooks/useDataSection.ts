@@ -107,7 +107,7 @@ import { FieldType, type IFormField } from "../../CustomRender/FieldRenderer";
 export type UseRCreate = {
   email: string;
   name?: string;
-  role?: UserRoleType; // hoặc nếu bạn có enum Role cụ thể, dùng nó
+  role?: UserRoleType;
   password: string;
 };
 export type UpdateUserForm = {
@@ -127,13 +127,13 @@ type FieldConfigs = Record<string, FieldConfig>;
 
 export const useDataSection = (
   data: Partial<UseRCreate & UpdateUserForm>,
+  formType?: "register" | "update",
   isDisable?: boolean,
   fieldConfigs: FieldConfigs = {}
 ): IFormField[] => {
   return useMemo(() => {
     const fields: IFormField[] = [
       {
-        // disabled: fieldConfigs["name"]?.disabled ?? isDisable ?? false,
         fields: {
           id: "name",
           label: "Tên đăng nhập",
@@ -142,7 +142,7 @@ export const useDataSection = (
             FieldType.INPUT_WITH_TYPE_TEXT,
           placeholder: "Nhập tên đăng nhập...",
           options: [],
-          value: data.name,
+          value: data,
         },
       },
       {

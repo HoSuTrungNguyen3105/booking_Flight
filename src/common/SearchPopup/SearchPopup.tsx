@@ -215,14 +215,14 @@ const SearchPopup: React.FC = () => {
                   navigate(`/users/${row.id}`);
                 }}
                 selectedRows={[...selectedIdsModel.ids]} // convert Set → Array
-                onRowSelectionModelChange={(model) => {
-                  //setSelectedIdsModel(model);
+                // onRowSelectionModelChange={(model) => {
+                //   //setSelectedIdsModel(model);
 
-                  const selected = filteredResults.filter((row) =>
-                    model.ids.has(row.id)
-                  );
-                  setSelectedItems(selected);
-                }}
+                //   const selected = filteredResults.filter((row) =>
+                //     model.ids.has(row.id)
+                //   );
+                //   setSelectedItems(selected);
+                // }}
                 // onRowSelectionModelChange={(newSelection: { ids: Set<GridRowId> }) => {
                 //   const selectedIdSet = new Set(newSelection.ids);
                 //   setSelectedIdsModel({

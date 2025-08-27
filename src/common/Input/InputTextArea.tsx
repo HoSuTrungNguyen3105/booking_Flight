@@ -8,7 +8,7 @@ interface IInputTextAreaProps
 
 const TextAreaStyled = styled(TextareaAutosize)(({ theme }) => ({
   width: "100%",
-  padding: "10px 12px", // 👈 padding top nhiều hơn để nội dung nằm sát trên
+  padding: "10px 12px",
   border: `1px solid ${theme.palette.grey[200]}`,
   outline: "none",
   resize: "none",

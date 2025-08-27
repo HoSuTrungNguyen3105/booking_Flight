@@ -16,14 +16,12 @@ import {
   House,
   StarBorder,
 } from "@mui/icons-material";
-// import { MessageOption, type DataFlight, type SearchType } from "";
 import type { SelectionChangedEvent } from "ag-grid-community";
 import { useFlightUpdate, useSearchFlight } from "../Api/usePostApi";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import { Button } from "../../common/Button/Button";
 import ContentModal from "../../common/Modal/ContentModal";
 import "../../scss/_ag-grid.scss";
-// import TextArea from "../../common/Input/TextArea";
 import type { BreadcrumbItem } from "../../common/BreadCrumb/type";
 import { toast } from "react-toastify";
 import {
@@ -31,8 +29,7 @@ import {
   type DataFlight,
   type SearchType,
 } from "../../utils/type";
-import Input from "../../common/CustomRender/Input";
-// import { useFlightSearchContext } from "../../context/SearchContext";
+import Input from "./component/Input";
 type FlightId = {
   id: number;
 };
@@ -172,50 +169,19 @@ const Search_layout: React.FC = () => {
       setShowDelete(true);
     }
   };
-  // const { fetchFlightId, refetchFlightId } = useFlightById(flightId ?? {});
-  // const rowDataFlight = React.useMemo(() => {
-  //   if (!flightList) return [];
-  //   return Array.isArray(flightList.flightList)
-  //     ? flightList.flightList
-  //     : flightList.flightList
-  //     ? [flightList.flightList]
-  //     : [];
-  // }, [flightList]);
 
-  // React.useEffect(() => {
-  //   const fetchData = async () => {
-  //     if (!flightId) return;
-  //     setLoading(true);
-  //     try {
-  //       await refetchFlightId();
-  //     } catch (error) {
-  //       console.error("Error", error);
-  //       setError("Error");
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-  //   fetchData();
-  // }, [flightId]);
-
-  // React.useEffect(() => {
-  //   setDisplayDataFlight(rowDataFlight);
-  // }, [rowDataFlight]);
-  // React.useEffect(() => {
-  //   if (fetchFlightId) {
-  //     setFlightData(fetchFlightId?.flightList);
-  //   }
-  // }, [fetchFlightId]);
   const formatDate = (dateValue: string | undefined) => {
     if (!dateValue) return null;
     const date = new Date(dateValue);
     return date.toLocaleString("en-EN");
   };
+
   const onResetForm = (): void => {
     if (isReset) return;
     resetSearch();
     refetchFlightList(flightParams);
   };
+
   const handleOpenUpdateConfirm = () => setOpenUpdateConfirm(true);
   const defaultColDef = { resizable: true, sortable: true, flex: 1 };
   const rowData: DataFlight[] = [

@@ -1,11 +1,9 @@
-import { Box, Chip, FormControl, Stack, Typography } from "@mui/material";
-import React, { useState } from "react";
+import { Box, FormControl, Stack, Typography } from "@mui/material";
+import { useState } from "react";
 import CSelect from "../../common/Dropdown/CSelect";
 import { Button } from "../../common/Button/Button";
 import InputField from "../../common/Input/InputField";
 import { useAuth } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
-import { useToast } from "../../context/ToastContext";
 import { Controller, useForm } from "react-hook-form";
 import InputTextField from "../../common/Input/InputTextField";
 import MfaSetup from "./MFA";
@@ -16,6 +14,7 @@ interface ILoginForm {
   password: string;
   remember?: boolean;
 }
+
 type AuthType = "ID,PW" | "SSO" | "DEV" | "MFA";
 export const LoginPage: React.FC = () => {
   const AUTH_TYPE_OPTIONS: { label: string; value: AuthType }[] = [
@@ -24,15 +23,19 @@ export const LoginPage: React.FC = () => {
     { label: "SSO", value: "SSO" },
     { label: "DEV", value: "DEV" },
   ];
-  const [formData, setFormData] = React.useState({
+
+  const [formData, setFormData] = useState({
     authType: AUTH_TYPE_OPTIONS[0].value,
     email: "",
     password: "",
   });
+
   const [changePassword, setChangePassword] = useState(false);
 
   const { login } = useAuth();
+  const [userId, setUserId] = useState(0);
   const [_, setLoading] = useState(false);
+
   const { handleSubmit, watch, control } = useForm<ILoginForm>({
     defaultValues: {
       email: "",
@@ -40,14 +43,20 @@ export const LoginPage: React.FC = () => {
     },
   });
 
-  const onSubmit = (data: ILoginForm) => {
+  const onSubmit = async (data: ILoginForm) => {
     const email = watch("email");
     setLoading(true);
-    login({
+    const loginRes = await login({
       email,
       password: data.password,
       remember: data.remember,
     });
+    if (loginRes.requireChangePassword && loginRes.userId) {
+      setChangePassword(true);
+      setUserId(loginRes.userId);
+      setLoading(false);
+      return;
+    }
     setLoading(false);
   };
 
@@ -60,7 +69,12 @@ export const LoginPage: React.FC = () => {
   }
 
   if (changePassword) {
-    return <ChangePassword />;
+    return (
+      <ChangePassword
+        onClose={() => setChangePassword(false)} // 👉 callback để quay lại
+        userId={userId}
+      />
+    );
   }
 
   return (
@@ -149,7 +163,7 @@ export const LoginPage: React.FC = () => {
             <Button
               label="Change Password"
               onClick={() => setChangePassword(true)}
-            ></Button>
+            />
             <Box
               sx={{
                 display: "flex",

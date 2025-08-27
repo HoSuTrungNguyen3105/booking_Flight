@@ -113,7 +113,7 @@ export const menuData: MenuSection[] = [
             subItems: [
               { id: "customers", label: "Khách hàng" },
               { id: "setting", label: "Setting" },
-              { id: "staffs", label: "Nhân viên" },
+              { id: "hero", label: "Nhân viên" },
             ],
           },
         ],

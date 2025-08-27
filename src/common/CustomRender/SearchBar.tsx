@@ -1,6 +1,4 @@
 import { Box, Chip, Stack, Typography } from "@mui/material";
-// import CalendarCard from "components/atoms/CalendarCard";
-// import InputTextField from "components/atoms/InputTextField";
 import {
   memo,
   useCallback,
@@ -10,6 +8,7 @@ import {
   type KeyboardEvent,
 } from "react";
 import InputField from "../Input/InputField";
+import InputTextField from "../Input/InputTextField";
 
 export interface ISearchQuery {
   text: string[];
@@ -23,7 +22,6 @@ interface ISearchBarProps {
 }
 
 const SearchBar = ({ disabled = false, onSearch }: ISearchBarProps) => {
-  // Unified state management
   const [searchText, setSearchText] = useState<string>("");
   const [searchTerms, setSearchTerms] = useState<string[]>([]);
   const [startDate, setStartDate] = useState<string>("");
@@ -115,14 +113,11 @@ const SearchBar = ({ disabled = false, onSearch }: ISearchBarProps) => {
     >
       <Stack gap={1} flexGrow={1}>
         <Box sx={{ maxHeight: "20rem" }}>
-          <InputField
-            //   startIcon={
-            //     <img src={SearchIcon} alt="Search" width={16} height={16} />
-            //   }
+          <InputTextField
             value={searchText}
             disabled={disabled}
             //onChange={handleSearchTextChange}
-            //   onKeyDown={handleKeyDown}
+            onKeyDown={handleKeyDown}
             placeholder="검색 단어를 입력해주세요."
           />
         </Box>
@@ -151,7 +146,7 @@ const SearchBar = ({ disabled = false, onSearch }: ISearchBarProps) => {
           disabled={disabled}
           placeholder="Start date"
           value={startDate}
-          //   onChange={handleStartDateChange}
+          // onChange={handleStartDateChange}
         />
         -
         <InputField

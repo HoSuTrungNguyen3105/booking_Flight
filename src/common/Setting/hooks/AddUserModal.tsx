@@ -72,7 +72,7 @@ const AddUserModal = ({
     onClose,
     onSuccess,
   });
-  // const handleSubmit = () => {}
+
   const renderActions = useCallback(() => {
     return (
       <Box display="flex" gap={1} justifyContent="flex-end" alignItems="center">
@@ -82,43 +82,12 @@ const AddUserModal = ({
       </Box>
     );
   }, [handleSubmit]);
-  // console.log("Đang gửi:", JSON.stringify(formData));
-
-  // console.log("Sending payload:", {
-  //   name: formData.name,
-  //   password: formData.password,
-  //   email: formData.email,
-  //   role: formData.role,
-  // });
 
   const renderContent = useCallback(() => {
-    // hook lấy từ net nhgko thấy mẫu cũ
     const renderRows = () => {
       return (
-        // <Stack>
-        //   <Typography variant="body1">데이터 목록</Typography>
-        //   {formDetailConfig.map((field) => (
-        //     <Box key={field.id}>
-        //       <Typography variant="body1" sx={{ mb: 1 }}>
-        //         {field.label}
-        //       </Typography>
-
-        //       <FieldRenderer
-        //         type={field.type}
-        //         placeholder={field.placeholder}
-        //         options={field.options}
-        //         // value={formData?.[field.id] ?? ""}
-        //         value={formData[field.id as keyof typeof formData] ?? ""}
-        //         // value={formData[field.id as keyof typeof formData]}
-        //         disabled={false}
-        //         onChange={(val) => handleChange(field.id, val)}
-        //       />
-        //     </Box>
-        //   ))}
-        // </Stack>
         <Stack>
           <Typography variant="body1">데이터 목록</Typography>
-
           {formDetailConfig
             .filter((fieldItem) => !fieldItem.disabled) // 🔥 Chỉ render nếu không bị disable
             .map(({ disabled, fields }) => (

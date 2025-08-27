@@ -32,7 +32,6 @@ const MainLayout = () => {
         minHeight: "100vh",
       }}
     >
-      {/* Header cố định */}
       <Box
         ref={headerRef}
         sx={{
@@ -56,16 +55,11 @@ const MainLayout = () => {
           paddingTop: `${headerHeight}px`,
           paddingBottom: `${footerHeight}px`,
           width: "100%",
-          background:
-            "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)", // giống style hero
         }}
       >
         <Outlet />
       </Box>
-
-      {/* Footer */}
       <Footer />
-
       <Loading />
     </Box>
   );

@@ -8,8 +8,9 @@ import {
 } from "react";
 import { useLoginUser } from "../components/Api/usePostApi";
 import { useToast } from "./ToastContext";
-import { UserRole, type UserData } from "../utils/type";
+import { UserRole, type UserData, type UserListResponse } from "../utils/type";
 import { useGetMyInfo } from "../components/Api/useGetApi";
+import { getMessage } from "../utils/response";
 
 export type User = {
   email: string;
@@ -25,7 +26,7 @@ interface AuthContextType {
   token: string | null;
   isAdmin: boolean;
   authType: AuthType;
-  login: (userData: User) => Promise<void>;
+  login: (userData: User) => Promise<UserListResponse>;
   logout: () => void;
 }
 
@@ -33,74 +34,85 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userId, setUserId] = useState<number>(0); // BI loi goi khi chay
   const [user, setUser] = useState<UserData | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const toast = useToast();
   const { refetchLogin } = useLoginUser();
-  const { getMyInfo, refetchGetMyInfo } = useGetMyInfo(userId ?? undefined);
+  const { refetchGetMyInfo } = useGetMyInfo();
 
-  const isAdminLogin = useMemo(() => user?.role === UserRole.ADMIN, [user]);
+  const isAdminLogin = useMemo(
+    () => user?.role === UserRole.ADMIN,
+    [user, refetchGetMyInfo]
+  );
 
   const updateLocalStorage = (
     isAuthenticated: boolean,
-    token: string | null
+    token: string | null,
+    userId?: number
   ) => {
     localStorage.setItem("isAuthenticated", String(isAuthenticated));
     localStorage.setItem("token", token || "");
+    if (userId) localStorage.setItem("userId", String(userId));
   };
 
-  const login = async (userData: User) => {
+  const login = async (userData: User): Promise<UserListResponse> => {
     const res = await refetchLogin(userData);
     if (res?.resultCode === "00" && res.data) {
       const accessToken = res.accessToken;
+      const id = res.data.id;
       setIsAuthenticated(true);
       setToken(accessToken ?? null);
-      updateLocalStorage(true, accessToken ?? null);
-      setUserId(res.data.id);
-      // gọi API lấy thông tin user
-      // const { refetchGetMyInfo } = useGetMyInfo(res.data.id);
-      // const myInfo = await refetchGetMyInfo();
-      // console.log("MyInfo after login:", myInfo);
-      // if (myInfo?.resultCode === "00") {
-      //   setUser(myInfo.data || null);
-      // }
-      await fetchMyInfo();
-    } else if (res?.resultCode === "NETWORK_ERROR") {
-      toast("Không thể kết nối đến server. Vui lòng thử lại.", "info");
+      updateLocalStorage(true, accessToken ?? null, id);
+      await fetchMyInfo(id);
+      return res;
     } else {
-      toast(res?.resultMessage || "Đăng nhập thất bại", "error");
+      toast(
+        getMessage(res?.resultMessage as string) || "Đăng nhập thất bại",
+        "error"
+      );
+      return res as UserListResponse;
     }
   };
 
-  const fetchMyInfo = useCallback(async () => {
-    try {
-      // const { refetchGetMyInfo } = useGetMyInfo(id);
-      const resquests = await refetchGetMyInfo();
-      console.log("MyInfo after login:", resquests);
-      if (resquests?.resultCode === "00") {
-        setUser(resquests.data || null);
-      } else {
-        setUser(null);
-      }
-    } catch (err) {
-      console.error("🔥 Backend lỗi khi fetch user:", err);
-      logout(); // ❌ server ngắt thì signout
-    }
-  }, []);
+  const fetchMyInfo = useCallback(
+    async (id?: number) => {
+      if (!id) return;
+      try {
+        const requests = await refetchGetMyInfo(id);
 
-  // const fetchMyInfo = useCallback(async () => {
-  //   // const res = await refetchGetMyInfo();
-  //   // if (res?.resultCode === "00" && res.data) {
-  //   //   setUser(getMyInfo?.data || null);
-  //   //   updateLocalStorage(true, token);
-  //   // }
-  //   const myInfo = await refetchGetMyInfo();
-  //     console.log("MyInfo after login:", myInfo);
-  //     if (myInfo?.resultCode === "00") {
-  //       setUser(myInfo.data || null);
-  //     }
-  // }, [refetchGetMyInfo, token]);
+        if (requests?.resultCode === "00" && requests.data) {
+          setUser(requests.data);
+          setIsAuthenticated(true);
+        } else {
+          setIsAuthenticated(false);
+          setUser(null);
+        }
+
+        return requests;
+      } catch (err) {
+        setIsAuthenticated(false);
+        return undefined;
+      }
+    },
+    [refetchGetMyInfo]
+  );
+
+  const refreshUser = useCallback(async () => {
+    const savedUserId = localStorage.getItem("userId");
+    if (!savedUserId) return;
+
+    try {
+      const res = await refetchGetMyInfo(Number(savedUserId));
+      if (res?.resultCode === "00" && res.data) {
+        setUser(res.data);
+        setIsAuthenticated(true);
+      }
+      return res;
+    } catch (err) {
+      console.error("refreshUser error:", err);
+      return null;
+    }
+  }, [refetchGetMyInfo]);
 
   const logout = () => {
     setIsAuthenticated(false);
@@ -108,22 +120,37 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setToken(null);
     localStorage.removeItem("isAuthenticated");
     localStorage.removeItem("token");
+    localStorage.removeItem("userId");
   };
 
   useEffect(() => {
     const savedToken = localStorage.getItem("token");
-    if (savedToken) {
-      setIsAuthenticated(true);
-      setToken(savedToken);
-      fetchMyInfo();
-    }
-  }, [fetchMyInfo]);
+    const savedUserId = localStorage.getItem("userId");
 
-  useEffect(() => {
-    if (getMyInfo) {
-      setUser(getMyInfo.data ?? null);
+    if (!savedToken || !savedUserId) {
+      logout();
+      return;
     }
-  }, [getMyInfo]);
+    setToken(savedToken);
+
+    const verifyUser = async () => {
+      try {
+        setToken(savedToken);
+        const res = await fetchMyInfo(Number(savedUserId));
+
+        if (res?.resultCode === "00" && res.data) {
+          setIsAuthenticated(true);
+          setUser(res.data);
+        } else {
+          setIsAuthenticated(false);
+        }
+      } catch (err) {
+        logout();
+      }
+    };
+
+    verifyUser();
+  }, []);
 
   return (
     <AuthContext.Provider
@@ -141,7 +168,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     </AuthContext.Provider>
   );
 };
-// ✅ Custom hook: Định nghĩa & export riêng
+
 const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (!context) {

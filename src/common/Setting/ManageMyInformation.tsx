@@ -3,9 +3,11 @@ import { useCallback, useState } from "react";
 import DataAccessPermissionSection from "./DataAccessPermissionSection";
 import DialogConfirm from "../Modal/DialogConfirm";
 import { Loading } from "../Loading/Loading";
+import UserInfoSection from "./UserInfoSection";
+import type { UserData } from "../../utils/type";
 
 const ManageMyInformation = () => {
-  const [myInfo, setMyInfo] = useState(null);
+  const [myInfo, setMyInfo] = useState<UserData | null>(null);
   const [isFetching, setIsFetching] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
   const [toggleOpenModal, setToggleOpenModal] = useState(false);

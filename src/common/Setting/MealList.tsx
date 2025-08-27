@@ -1,58 +1,4 @@
-// import React, { useEffect, useState } from "react";
-// import { useGetMeal } from "../../components/Api/useGetApi";
-// import type { Meal, MealResponse } from "../../utils/type";
-
-// export default function MealList() {
-//   const [data, setData] = useState<Meal[]>([]);
-//   const { refetchFlightBookingDataData } = useGetMeal();
-
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       try {
-//         const res = await refetchFlightBookingDataData();
-//         if (res) {
-//           setData(res.list ?? []);
-//         }
-//       } catch (error) {
-//         console.error("Lỗi khi lấy dữ liệu:", error);
-//       }
-//     };
-
-//     fetchData();
-//   }, [refetchFlightBookingDataData]);
-
-//   if (data.length === 0) return <p>Đang tải dữ liệu...</p>;
-
-//   return (
-//     <div>
-//       <h2>{data[0].description}</h2>
-//       <ul>
-//         {data.map((meal) => (
-//           <li key={meal.id}>
-//             <strong>{meal.name}</strong> ({meal.mealType}) - ${meal.price}
-//             <br />
-//             {meal.description}
-//             <br />
-//             <em>Flight Meals:</em>
-//             <ul>
-//               {meal.flightMeals.length > 0 ? (
-//                 meal.flightMeals.map((fm) => (
-//                   <li key={fm.id}>
-//                     Flight {fm.flightId} - Qty: {fm.quantity} - Price: $
-//                     {fm.price}
-//                   </li>
-//                 ))
-//               ) : (
-//                 <li>Không có chuyến bay nào</li>
-//               )}
-//             </ul>
-//           </li>
-//         ))}
-//       </ul>
-//     </div>
-//   );
-// }
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import { useGetFlightData, useGetMeal } from "../../components/Api/useGetApi";
 import type { Meal } from "../../utils/type";
@@ -63,9 +9,7 @@ import type { Flight } from "./type";
 export default function MealList() {
   const [data, setData] = useState<Meal[]>([]);
   const [dataFlight, setDataFlight] = useState<Flight[]>([]);
-
   const { refetchFlightBookingDataData } = useGetMeal();
-
   const { refetchGetFlightData } = useGetFlightData();
 
   useEffect(() => {
@@ -98,7 +42,7 @@ export default function MealList() {
     };
 
     fetchData();
-  }, [refetchFlightBookingDataData]);
+  }, [refetchGetFlightData]); // ✅ sửa lại dependency đúng
 
   if (data.length === 0) return <p>Đang tải dữ liệu...</p>;
 

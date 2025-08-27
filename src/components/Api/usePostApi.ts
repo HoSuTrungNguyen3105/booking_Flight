@@ -142,28 +142,17 @@ export const useFlightUpdate = () => {
     refetchUpdateFlightId,
   };
 };
-type loginData = {
+type LoginData = {
   email: string;
   password: string;
 };
 export const useLoginUser = () => {
   const { data: loginUserData, refetch: refetchLogin } = useFetch<
     UserListResponse,
-    loginData
+    LoginData
   >({
     url: "/auth/login",
-    defaultValue: {
-      resultCode: "",
-      resultMessage: "",
-      // user: {
-      //   id: 0,
-      //   // userId: 0,
-      //   email: "",
-      //   name: "",
-      //   password: "",
-      // },
-      // accessToken: "",
-    },
+    defaultValue: { resultCode: "", resultMessage: "", userId: 0 },
     autoFetch: false,
     config: postMethod,
     showToast: true,
@@ -321,6 +310,7 @@ export const useSetUpMfa = () => {
 interface ChangePassword {
   userId: number;
   newPassword: string;
+  confirmPassword: string;
 }
 
 interface ResetPasswordByMfa {
@@ -334,6 +324,7 @@ export const useChangePassword = () => {
     ChangePassword
   >({
     url: "/auth/change-password",
+    defaultValue: { resultCode: "", resultMessage: "" },
     autoFetch: false,
     config: postMethod,
   });
