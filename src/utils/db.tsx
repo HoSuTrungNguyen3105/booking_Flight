@@ -26,7 +26,7 @@ type SideBarValueTypes =
   | "overview"
   | "food"
   | "sampleTimepicker"
-  | "sampleButton"
+  | "manage-my-info"
   | "hero"
   | "airports"
   | "airport-list"
@@ -72,7 +72,7 @@ export const menuData: MenuSection[] = [
             icon: <WifiPasswordRoundedIcon />,
           },
           {
-            id: "sampleButton",
+            id: "manage-my-info",
             label: "Chuyến bay hôm nay",
             icon: <GppBadIcon />,
           },

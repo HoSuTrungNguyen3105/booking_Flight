@@ -1,17 +1,12 @@
 import { Box, Menu, MenuItem, Stack, Typography } from "@mui/material";
 import Logo from "../../svgs/logo-github.svg";
 import UserIcon from "../../svgs/user-icon.svg";
-// import Dropdown, { IDropdownOption } from 'components/atoms/Dropdown';
-// import { ROUTE_PATHS } from 'constants/routes';
-// import { useAuth } from 'contexts/AuthProvider';
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import type { DropdownOption } from "../Dropdown/MultiDropdown";
 import { ROUTE_PATHS } from "../../routers/RoutePath";
-import CSelect from "../Dropdown/CSelect";
 import theme from "../../scss/theme";
-// import { Dropdown } from '../Dropdown/Dropdown';
+import SelectDropdown, { type ActionType } from "../Dropdown/SelectDropdown";
 
 const Header = () => {
   const { isAdmin, logout, user } = useAuth();
@@ -21,7 +16,22 @@ const Header = () => {
   const open = useMemo(() => Boolean(anchorEl), [anchorEl]);
 
   const [jobCode, setJobCode] = useState<string>("");
-  const [jobCodeOptions, setJobCodeOptions] = useState<DropdownOption[]>([]);
+  // const [jobCodeOptions, setJobCodeOptions] = useState<DropdownOption[]>([]);
+
+  const jobCodeOptions: ActionType[] = [
+    {
+      label: "Trang chủ",
+      value: "",
+    },
+    {
+      label: "Khách hàng",
+      value: "flightmeals",
+    },
+    {
+      label: "Báo cáo",
+      value: "notifications",
+    },
+  ];
 
   const handleClick = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
     setAnchorEl(event.currentTarget);
@@ -43,13 +53,13 @@ const Header = () => {
   const handleChangeJobCodeList = useCallback(
     (value: string) => {
       setJobCode(value);
-      navigate(ROUTE_PATHS.PROFILE);
+      navigate(value);
     },
     [navigate]
   );
 
   const renderUserMenu = useCallback(() => {
-    if (!user) return null;
+    // if (!user) return null;
 
     return (
       <Box
@@ -58,17 +68,14 @@ const Header = () => {
         alignItems="center"
         flexGrow={1}
       >
-        <Box>
-          <CSelect
-            sx={{
-              minWidth: 100,
-              height: 50,
-            }}
+        <Stack direction="column" spacing={3} sx={{ pt: 2, pb: 2 }}>
+          <SelectDropdown
+            defaultValue={jobCodeOptions[0].value}
             value={jobCode}
             options={jobCodeOptions}
             onChange={(val) => handleChangeJobCodeList(val as string)}
           />
-        </Box>
+        </Stack>
         <Box
           display="flex"
           justifyContent="center"
@@ -84,7 +91,7 @@ const Header = () => {
             alt="Avatar"
           />
           <Typography variant="subtitle1" color={theme.palette.grey[500]}>
-            {user.email}
+            {user?.email}
           </Typography>
         </Box>
         <Menu

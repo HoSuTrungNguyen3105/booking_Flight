@@ -5,7 +5,7 @@ interface FormRowProps {
   label: string;
   children: React.ReactElement;
   direction?: "row" | "column";
-  mt?: number; // mặc định là 2 nếu không truyền vào
+  mt?: number;
 }
 
 const FormRow: React.FC<FormRowProps> = ({

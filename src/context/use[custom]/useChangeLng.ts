@@ -9,11 +9,8 @@ export const useChangeLanguage = () => {
       null
   );
 
-  const handleLanguageChange = (
-    _: React.SyntheticEvent,
-    newValue: DropdownOptions | DropdownOptions[] | null
-  ) => {
-    const selected = Array.isArray(newValue) ? newValue[0] : newValue;
+  const handleLanguageChange = (newValue: string | number) => {
+    const selected = optionLanguage.find((o) => o.value === newValue);
     if (!selected) return;
 
     setSelectedLang(selected);

@@ -67,7 +67,6 @@ export const useFlightCode = (
     defaultValue: { resultCode: "", resultMessage: "" },
     autoFetch: true,
     config: getMethod,
-    showToast: false,
   });
   const { data: airportData, refetch: refetchAirportData } = useFetch<
     FlightDetailApiResponse,
@@ -75,18 +74,14 @@ export const useFlightCode = (
   >({
     url: "/sys/flights/getAirportCode",
     params: { code: "", codeName: "", acodeName: "" },
-    defaultValue: { resultCode: "", resultMessage: "" },
     autoFetch: true,
     config: getMethod,
-    showToast: false,
   });
   const { data: statusData } = useFetch<FlightDetailApiResponse, CodeItem>({
     url: "/sys/flights/getStatus",
     params: { code: "", codeName: "" },
-    defaultValue: { resultCode: "", resultMessage: "" },
     autoFetch: true,
     config: getMethod,
-    showToast: false,
   });
   const { data: fareConditionsData } = useFetch<
     FlightDetailApiResponse,
@@ -94,19 +89,15 @@ export const useFlightCode = (
   >({
     url: "/sys/flights/getFareConditions",
     params: { code: "", codeName: "" },
-    defaultValue: { resultCode: "", resultMessage: "" },
     autoFetch: true,
     config: getMethod,
-    showToast: false,
   });
   const { data: optionAirportCodeData, refetch: refetchOptionAirport } =
     useFetch<FlightDetailApiResponse, CodeItem>({
       url: "",
       params: { code: "", codeName: "" },
-      defaultValue: { resultCode: "", resultMessage: "" },
       autoFetch: false,
       config: getMethod,
-      showToast: false,
     });
   return {
     airport,
@@ -136,10 +127,8 @@ export const useRandomPassword = () => {
     setParams: setParamsUser,
   } = useFetch<DetailResponseMessage, DetailResponseMessage>({
     url: "/sys/users/getRandomPw",
-    // params: ,
     autoFetch: true,
     config: getMethod,
-    showToast: false,
   });
   return {
     fetchUserPw,
@@ -158,7 +147,6 @@ export const useFlightById = ({ id }: FlightId) => {
     params: {},
     autoFetch: false,
     config: getMethod,
-    showToast: false,
   });
   return {
     fetchFlightId,
@@ -174,7 +162,6 @@ export const useFlightMeals = () => {
     url: `/sys/flight-meals`,
     autoFetch: false,
     config: getMethod,
-    showToast: false,
   });
   return {
     fetchFlightMeals,
@@ -187,7 +174,6 @@ export const useFlightMealsById = (id: string) => {
       url: `/sys/flight-meals/${id}`,
       autoFetch: false,
       config: getMethod,
-      showToast: false,
     });
   return {
     fetchFlightMealsById,
@@ -200,7 +186,6 @@ export const useGetMeal = () => {
       url: "/sys/meals",
       autoFetch: false,
       config: getMethod,
-      showToast: false,
     });
   return {
     flightBookingData,
@@ -230,7 +215,6 @@ export const useGetMyInfo = () => {
     url: "", // khởi tạo rỗng
     autoFetch: false, // không fetch khi mount
     config: getMethod,
-    showToast: false,
   });
 
   // refetch với id động
@@ -244,40 +228,6 @@ export const useGetMyInfo = () => {
   };
 };
 
-// export const useGetMyInfo = (id: number) => {
-//   const { data: getMyInfo, refetch: refetchGetMyInfo } = useFetch<
-//     DetailResponseMessage<UserData>,
-//     UserData
-//   >({
-//     url: id ? `/sys/users/${id}` : "",
-//     autoFetch: !!id,
-//     config: getMethod,
-//   });
-//   return {
-//     getMyInfo,
-//     refetchGetMyInfo,
-//   };
-// };
-
-// export const useGetMyInfo = () => {
-//   const { data: getMyInfo, refetch: refetchGetMyInfo } = useFetch<
-//     DetailResponseMessage<UserData>,
-//     UserData
-//   >({
-//     url: "",   // ban đầu để trống
-//     autoFetch: false,
-//     config: getMethod,
-//   });
-
-//   // cho phép gọi refetch với id động
-//   const fetchWithId = (id: number) => refetchGetMyInfo(`/sys/users/${id}`);
-
-//   return {
-//     getMyInfo,
-//     refetchGetMyInfo: fetchWithId,
-//   };
-// };
-
 export const useFlightList = () => {
   const { data: fetchFlightList, refetch: refetchFlightList } = useFetch<
     FlightListApiResponse,
@@ -286,16 +236,17 @@ export const useFlightList = () => {
     url: `/sys/flights`,
     autoFetch: true,
     config: getMethod,
-    showToast: false,
   });
   return {
     fetchFlightList,
     refetchFlightList,
   };
 };
+
 type CheckMfaProps = {
   email: string;
 };
+
 export const useCheckMfaAvailable = () => {
   const { refetch: refetchMfaCheck } = useFetch<ResponseMessage, CheckMfaProps>(
     {
@@ -319,7 +270,6 @@ export const useGetUserList = () => {
     // params: ,
     autoFetch: true,
     config: getMethod,
-    showToast: false,
   });
   return {
     fetchUser,
@@ -338,7 +288,6 @@ export const useGetUserById = (id: string) => {
     // params: ,
     autoFetch: false,
     config: getMethod,
-    showToast: false,
   });
   return {
     fetchUserById,

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import { useState } from "react";
 import type { TabItem } from "../../../components/Layout/SearchLayout";
 import SearchLayout from "../../../components/Layout/SearchLayout";
 import InspectionSection from "../../Dropdown/InspectionSection";
@@ -7,6 +7,7 @@ import { Typography } from "@mui/material";
 import { DateFormatEnum, formatDateKR } from "../../../hooks/format";
 import { useNavigate } from "react-router-dom";
 import type { GridRowDef } from "../../DataGrid";
+
 const columnsSubfileList: GridColDef[] = [
   { field: "fileName", headerName: "파일 이름", flex: 1 },
   { field: "type", headerName: "파일 경로", flex: 1 },
@@ -34,7 +35,7 @@ const columnsSubfileList: GridColDef[] = [
     ),
   },
 ];
-// dữ liệu mẫu
+
 const rowsSubfileList = [
   {
     id: 1,
@@ -97,7 +98,6 @@ const SecurityManage = () => {
     {
       label: "InspectionSection",
       value: "auto",
-      // content: <InspectionSection />,
       content: (
         <InspectionSection
           onRowClick={onRowSelect}
@@ -125,41 +125,3 @@ const SecurityManage = () => {
 };
 
 export default SecurityManage;
-
-// import { GridColDef } from "@mui/x-data-grid";
-// import { Typography } from "@mui/material";
-
-// // config mô tả cột
-// const columnConfigs = [
-//   { field: "fileName", headerName: "파일 이름" },
-//   { field: "type", headerName: "파일 경로" },
-//   {
-//     field: "createDate",
-//     headerName: "수정 날짜",
-//     renderCell: (value: any) => (
-//       <Typography variant="body2">
-//         {formatDateKR(DateFormatEnum.MMMM_D_YYYY, value)}
-//       </Typography>
-//     ),
-//   },
-//   { field: "uploaderId", headerName: "유형" },
-//   {
-//     field: "fileSize",
-//     headerName: "Size",
-//     renderCell: (value: any) => (
-//       <Typography variant="body2">{value || "-"}MB</Typography>
-//     ),
-//   },
-// ];
-
-// // sinh ra mảng GridColDef bằng map
-// const columnsSubfileList: GridColDef[] = columnConfigs.map((col) => ({
-//   field: col.field,
-//   headerName: col.headerName,
-//   flex: 1,
-//   ...(col.renderCell
-//     ? {
-//         renderCell: ({ value }) => col.renderCell(value),
-//       }
-//     : {}),
-// }));

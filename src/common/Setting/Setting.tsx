@@ -1,164 +1,203 @@
-// import React from "react";
-// import {
-//   Box,
-//   Typography,
-//   Divider,
-//   Switch,
-//   FormControlLabel,
-// } from "@mui/material";
-// import Android12Switch from "../Switch/Switch";
-
-// const Setting = () => {
-//   const [darkMode, setDarkMode] = React.useState(false);
-//   const [notifications, setNotifications] = React.useState(true);
-
-//   return (
-//     <Box>
-//       <Typography variant="h3" gutterBottom>
-//         Cài đặt
-//       </Typography>
-//       <Divider sx={{ my: 3 }} />
-//       <Box sx={{ mb: 3 }}>
-//         <Typography variant="subtitle1">Giao diện</Typography>
-//         {<Android12Switch hasLabel labelOn="Night" labelOff="Day" />}
-//       </Box>
-//       <Divider sx={{ my: 3 }} />
-//       <Box>
-//         <Typography variant="subtitle1">Thông báo</Typography>
-//         <FormControlLabel
-//           control={
-//             <Switch
-//               checked={notifications}
-//               onChange={(e) => setNotifications(e.target.checked)}
-//             />
-//           }
-//           label="Bật thông báo"
-//         />
-//       </Box>
-//     </Box>
-//   );
-// };
-
-// export default Setting;
-import React from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import {
-  Box,
-  Typography,
-  Divider,
-  Switch,
-  FormControlLabel,
   Button,
+  Card,
+  CardContent,
+  TextField,
+  Typography,
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
-import Android12Switch from "../Switch/Switch";
-import { PlainSwitch } from "../Switch/PlainSwitch";
-import { LanguageDropdown } from "../Dropdown/Changelng";
+import { UserRole, type UserData } from "../../utils/type";
+import { useGetUserList } from "../../components/Api/useGetApi";
 
-const Setting = () => {
-  const [darkMode, setDarkMode] = React.useState(false);
-  const [notifications, setNotifications] = React.useState(true);
-  const [autoDelete, setAutoDelete] = React.useState(false);
-  const [bookingCount, setBookingCount] = React.useState(12); // ví dụ giả lập
+interface CreateUserDto {
+  username: string;
+  email: string;
+  password: string;
+}
+const mockUsers: UserData[] = [
+  {
+    id: 1,
+    email: "nguyen@example.com",
+    name: "Nguyễn Văn A",
+    userAlias: "nguyenvana",
+    firstname: "Nguyễn",
+    lastname: "Văn A",
+    role: UserRole.ADMIN, // giả sử UserRoleType là union: "ADMIN" | "USER"
+    password: "123456",
+    createdAt: "2025-08-01T10:00:00Z",
+    accountLockYn: "N",
+    loginFailCnt: 0,
+    mfaEnabledYn: "N",
+    mfaSecretKey: "",
+    pictureUrl: "https://via.placeholder.com/50",
+    rank: "Gold",
+    authType: "LOCAL",
+    remember: false,
+  },
+  {
+    id: 2,
+    email: "yhi@example.com",
+    name: "Ý Nhị",
+    userAlias: "be_y_nhi",
+    firstname: "Ý",
+    lastname: "Nhị",
+    role: UserRole.ADMIN, // giả sử UserRoleType là union: "ADMIN" | "USER"
+    password: "abcdef",
+    createdAt: "2025-07-20T08:30:00Z",
+    accountLockYn: "Y",
+    loginFailCnt: 2,
+    mfaEnabledYn: "Y",
+    mfaSecretKey: "SECRET123",
+    pictureUrl: "https://via.placeholder.com/50",
+    rank: "Silver",
+    authType: "LOCAL",
+    remember: true,
+  },
+  {
+    id: 3,
+    email: "tam@example.com",
+    name: "Minh Tâm",
+    userAlias: "tamminh",
+    firstname: "Minh",
+    lastname: "Tâm",
+    role: UserRole.ADMIN, // giả sử UserRoleType là union: "ADMIN" | "USER"
+    password: "tam123",
+    createdAt: "2025-08-10T12:15:00Z",
+    accountLockYn: "N",
+    loginFailCnt: 0,
+    mfaEnabledYn: "N",
+    mfaSecretKey: "",
+    pictureUrl: "https://via.placeholder.com/50",
+    rank: "Bronze",
+    authType: "OAUTH",
+    remember: false,
+  },
+];
+export default function UserManagement() {
+  const [users, setUsers] = useState<UserData[]>(mockUsers);
+  const [open, setOpen] = useState(false);
+  const [newUser, setNewUser] = useState<CreateUserDto>({
+    username: "",
+    email: "",
+    password: "",
+  });
 
-  const handleCancelAll = () => {
-    // xử lý hủy tất cả booking
-    setBookingCount(0);
+  // Khóa / mở khóa tài khoản
+  const toggleLock = async (id: number) => {
+    await axios.post("/sys/users/setAccountLock", { id });
   };
 
-  const handleSyncBooking = () => {
-    // xử lý đồng bộ dữ liệu booking
+  // Xóa user
+  const deleteUser = async (id: number) => {
+    await axios.post("/sys/users/deleteUser", { id });
   };
 
   return (
-    <Box sx={{ p: 4 }}>
-      <Typography variant="h4" gutterBottom>
-        Cài đặt hệ thống
-      </Typography>
-
-      <Divider sx={{ my: 3 }} />
-
-      {/* Giao diện */}
-      <Box sx={{ mb: 3 }}>
-        <Typography variant="subtitle1">Giao diện</Typography>
-        <Android12Switch
-          hasLabel
-          labelOn="Tối"
-          labelOff="Sáng"
-          checked={darkMode}
-          onChange={(e) => setDarkMode(e.target.checked)}
-        />
-        <PlainSwitch />
-        <Switch />
-      </Box>
-
-      {/* Ngôn ngữ */}
-      <Box sx={{ mb: 3 }}>
-        <Typography variant="subtitle1">Ngôn ngữ</Typography>
-        <LanguageDropdown />
-        {/* <Select
-          value={language}
-          onChange={(e) => setLanguage(e.target.value)}
-          sx={{ mt: 1, width: 200 }}
-        >
-          <MenuItem value="en">English</MenuItem>
-          <MenuItem value="vi">Tiếng Việt</MenuItem>
-          <MenuItem value="ja">日本語</MenuItem>
-        </Select> */}
-      </Box>
-
-      {/* Thông báo */}
-      <Box sx={{ mb: 3 }}>
-        <Typography variant="subtitle1">Thông báo</Typography>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={notifications}
-              onChange={(e) => setNotifications(e.target.checked)}
-            />
-          }
-          label="Bật thông báo"
-        />
-      </Box>
-
-      <Divider sx={{ my: 3 }} />
-
-      {/* Booking */}
-      <Box sx={{ mb: 3 }}>
-        <Typography variant="subtitle1">Quản lý đặt vé</Typography>
-        <Typography color="text.secondary" sx={{ mb: 1 }}>
-          Số lượng booking đã lưu: {bookingCount}
+    <Card className="p-4 shadow-lg rounded-2xl">
+      <CardContent>
+        <Typography variant="h5" gutterBottom>
+          Quản lý người dùng
         </Typography>
 
-        <FormControlLabel
-          control={
-            <Switch
-              checked={autoDelete}
-              onChange={(e) => setAutoDelete(e.target.checked)}
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => setOpen(true)}
+        >
+          + Tạo User
+        </Button>
+
+        {/* Bảng danh sách user */}
+        <Table className="mt-4">
+          <TableHead>
+            <TableRow>
+              <TableCell>ID</TableCell>
+              <TableCell>Tên tài khoản</TableCell>
+              <TableCell>Email</TableCell>
+              <TableCell>Trạng thái</TableCell>
+              <TableCell>Hành động</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {users.map((u) => (
+              <TableRow key={u.id}>
+                <TableCell>{u.id}</TableCell>
+                <TableCell>{u.username}</TableCell>
+                <TableCell>{u.email}</TableCell>
+                <TableCell>{u.isLocked ? "Đang khóa" : "Hoạt động"}</TableCell>
+                <TableCell>
+                  <Button
+                    onClick={() => toggleLock(u.id)}
+                    color="warning"
+                    variant="outlined"
+                    size="small"
+                  >
+                    {u.isLocked ? "Mở khóa" : "Khóa"}
+                  </Button>
+                  <Button
+                    onClick={() => deleteUser(u.id)}
+                    color="error"
+                    variant="outlined"
+                    size="small"
+                    className="ml-2"
+                  >
+                    Xóa
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+
+        {/* Popup tạo user */}
+        <Dialog open={open} onClose={() => setOpen(false)}>
+          <DialogTitle>Tạo User mới</DialogTitle>
+          <DialogContent>
+            <TextField
+              margin="dense"
+              label="Tên tài khoản"
+              fullWidth
+              value={newUser.username}
+              onChange={(e) =>
+                setNewUser({ ...newUser, username: e.target.value })
+              }
             />
-          }
-          label="Tự động xoá booking quá hạn"
-        />
-
-        <Box sx={{ mt: 2, display: "flex", gap: 2 }}>
-          <Button
-            variant="outlined"
-            color="error"
-            onClick={handleCancelAll}
-            disabled={bookingCount === 0}
-          >
-            Hủy tất cả booking
-          </Button>
-
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleSyncBooking}
-          >
-            Đồng bộ dữ liệu
-          </Button>
-        </Box>
-      </Box>
-    </Box>
+            <TextField
+              margin="dense"
+              label="Email"
+              fullWidth
+              value={newUser.email}
+              onChange={(e) =>
+                setNewUser({ ...newUser, email: e.target.value })
+              }
+            />
+            <TextField
+              margin="dense"
+              label="Mật khẩu"
+              type="password"
+              fullWidth
+              value={newUser.password}
+              onChange={(e) =>
+                setNewUser({ ...newUser, password: e.target.value })
+              }
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setOpen(false)}>Hủy</Button>
+            <Button variant="contained">Tạo</Button>
+          </DialogActions>
+        </Dialog>
+      </CardContent>
+    </Card>
   );
-};
-
-export default Setting;
+}

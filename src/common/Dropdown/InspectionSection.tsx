@@ -6,16 +6,17 @@ import { Button } from "../Button/Button";
 import SearchIcon from "../../svgs/phone.png";
 import Pagination from "../DataGrid/Pagination";
 import SearchBar from "../CustomRender/SearchBar";
+import useClientPagination from "../../context/use[custom]/useClientPagination";
 
 type ISecurityTabSectionProps = {
-  totalResult?: number;
-  currentPage?: number;
-  totalPage?: number;
-  pageSize?: number;
-  onChangePage?: (page: number) => void;
-  onPageSizeChange?: (size: number) => void;
-  onSortModelChange?: (model: GridSortModel) => void;
-  sortModel?: GridSortModel;
+  // totalResult?: number;
+  // currentPage?: number;
+  // totalPage?: number;
+  // pageSize?: number;
+  // onChangePage?: (page: number) => void;
+  // onPageSizeChange?: (size: number) => void;
+  // onSortModelChange?: (model: GridSortModel) => void;
+  // sortModel?: GridSortModel;
   onRowClick: (rowData: GridRowDef) => void;
   handleAction?: () => void;
   columns: GridColDef[];
@@ -29,15 +30,7 @@ type ISecurityTabSectionProps = {
   onSearch?: (query: string) => void;
 };
 const InspectionSection = ({
-  totalResult = 0,
-  currentPage = 1,
-  totalPage = 5,
-  pageSize = 10,
   onRowClick,
-  onChangePage = () => {},
-  onPageSizeChange = () => {},
-  onSortModelChange = () => {},
-  sortModel = [],
   handleAction = () => {},
   columns,
   tabs,
@@ -57,6 +50,18 @@ const InspectionSection = ({
   const [unsavedChanges, setUnsavedChanges] = useState(false);
   const [showUnsavedChangesDialog, setShowUnsavedChangesDialog] =
     useState(false);
+
+  const {
+    totalElements,
+    paginatedData,
+    pageSize,
+    onPageChange,
+    sortModel,
+    onPageSizeChange,
+    currentPage,
+    totalPages,
+    onSortModelChange,
+  } = useClientPagination({ data: rows });
 
   const handleChangeTab = useCallback(
     (tabIndex: number) => {
@@ -159,7 +164,7 @@ const InspectionSection = ({
             sortModel={sortModel}
             onSortModelChange={onSortModelChange}
             columns={columns}
-            rows={rows}
+            rows={paginatedData}
             loading={loading}
             onRowClick={onRowClick}
             // emptyContent={
@@ -169,15 +174,23 @@ const InspectionSection = ({
         </Box>
         <Pagination
           currentPage={currentPage}
-          totalResult={totalResult}
-          totalPage={totalPage}
+          totalResult={totalElements}
+          totalPage={totalPages}
           pageSize={pageSize}
-          onPageChange={onChangePage}
+          onPageChange={onPageChange}
           onPageSizeChange={onPageSizeChange}
         />
       </Box>
     );
-  }, [tabs, totalResult, rows, columns, loading, onSortModelChange, sortModel]);
+  }, [
+    tabs,
+    totalElements,
+    rows,
+    columns,
+    loading,
+    onSortModelChange,
+    sortModel,
+  ]);
 
   return (
     <Stack gap="10px" height="100%">

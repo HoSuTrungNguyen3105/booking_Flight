@@ -1,6 +1,5 @@
 import { Box, FormControl, Stack, Typography } from "@mui/material";
 import { useState } from "react";
-import CSelect from "../../common/Dropdown/CSelect";
 import { Button } from "../../common/Button/Button";
 import InputField from "../../common/Input/InputField";
 import { useAuth } from "../../context/AuthContext";
@@ -8,6 +7,9 @@ import { Controller, useForm } from "react-hook-form";
 import InputTextField from "../../common/Input/InputTextField";
 import MfaSetup from "./MFA";
 import ChangePassword from "./ChangePassword";
+import SelectDropdown from "../../common/Dropdown/SelectDropdown";
+import RequestUnlock from "./RequestUnlock";
+import Registration from "./Registration";
 
 interface ILoginForm {
   email: string;
@@ -16,6 +18,7 @@ interface ILoginForm {
 }
 
 type AuthType = "ID,PW" | "SSO" | "DEV" | "MFA";
+
 export const LoginPage: React.FC = () => {
   const AUTH_TYPE_OPTIONS: { label: string; value: AuthType }[] = [
     { label: "ID,PW", value: "ID,PW" },
@@ -31,7 +34,8 @@ export const LoginPage: React.FC = () => {
   });
 
   const [changePassword, setChangePassword] = useState(false);
-
+  const [unlockAccount, setUnlockAccount] = useState(false);
+  const [registerUser, setRegisterUser] = useState(false);
   const { login } = useAuth();
   const [userId, setUserId] = useState(0);
   const [_, setLoading] = useState(false);
@@ -43,6 +47,10 @@ export const LoginPage: React.FC = () => {
     },
   });
 
+  const handleRegisterUser = () => {
+    setRegisterUser(true);
+  };
+
   const onSubmit = async (data: ILoginForm) => {
     const email = watch("email");
     setLoading(true);
@@ -51,6 +59,11 @@ export const LoginPage: React.FC = () => {
       password: data.password,
       remember: data.remember,
     });
+    if (loginRes.requireUnlock) {
+      setUnlockAccount(true);
+      setUserId(loginRes.userId);
+      return;
+    }
     if (loginRes.requireChangePassword && loginRes.userId) {
       setChangePassword(true);
       setUserId(loginRes.userId);
@@ -75,6 +88,13 @@ export const LoginPage: React.FC = () => {
         userId={userId}
       />
     );
+  }
+  if (unlockAccount) {
+    return <RequestUnlock userId={userId} />;
+  }
+
+  if (registerUser) {
+    return <Registration onClose={() => setRegisterUser(false)} />;
   }
 
   return (
@@ -119,9 +139,8 @@ export const LoginPage: React.FC = () => {
               <Typography variant="body1" mb={0.5}>
                 인증 방법
               </Typography>
-              <CSelect
+              <SelectDropdown
                 value={formData.authType}
-                // disabled={loading}
                 onChange={(val) =>
                   handleChangeFormInput("authType", val as AuthType)
                 }
@@ -129,8 +148,6 @@ export const LoginPage: React.FC = () => {
               />
             </FormControl>
             {/* <Chip label={formData.authType} /> */}
-
-            {/* User ID Input */}
             <FormControl fullWidth>
               <Typography variant="body1" mb={0.5}>
                 아이디
@@ -163,6 +180,17 @@ export const LoginPage: React.FC = () => {
             <Button
               label="Change Password"
               onClick={() => setChangePassword(true)}
+              appearance="outlined"
+            />
+            <Button
+              label="Request unlock account"
+              onClick={() => setUnlockAccount(true)}
+              priority="normal"
+            />
+            <Button
+              label="Register"
+              appearance="unfilled"
+              onClick={handleRegisterUser}
             />
             <Box
               sx={{

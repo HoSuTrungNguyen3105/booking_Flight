@@ -5,15 +5,13 @@ import { SingleInputDateRangeField } from "@mui/x-date-pickers-pro/SingleInputDa
 import { InputAdornment, Box } from "@mui/material";
 import CalendarIcon from "@mui/icons-material/Event";
 import moment, { type Moment } from "moment";
-require("moment/locale/ko");
-// import 'moment/locale/ko';
-// import 'moment/locale/en-au';
+import "moment";
 import { koKR, enUS } from "@mui/x-date-pickers/locales";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+
 interface Props {
   language: "en" | "ko";
 }
-
 const DateRangePickerComponent: React.FC<Props> = ({ language }) => {
   const [value, setValue] = useState<[Moment | null, Moment | null]>([
     null,

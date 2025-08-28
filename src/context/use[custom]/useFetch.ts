@@ -17,8 +17,6 @@ type TUseFetch<T, P> = {
   config?: AxiosRequestConfig;
   defaultValue?: T;
   autoFetch?: boolean;
-  showToast?: boolean;
-  message?: ToastMessage;
   onSuccess?: (res?: T) => void;
   onError?: () => void;
 };
@@ -28,10 +26,8 @@ export const useFetch = <T extends Partial<ResponseMessage>, P>({
   config,
   defaultValue,
   autoFetch,
-  message,
   onSuccess,
   onError,
-  showToast = true,
 }: TUseFetch<T, P>) => {
   const { get, post, delete: del, update } = useApi();
   const [data, setData] = useState<T | undefined>(defaultValue);
@@ -68,36 +64,18 @@ export const useFetch = <T extends Partial<ResponseMessage>, P>({
         const res = await fetchMethod;
         setData(res);
         setSuccess(true);
-        if (showToast) {
-          const isSuccess = res?.resultCode === "00";
-          if (isSuccess && (res?.resultMessage || message?.success)) {
-            toast(
-              res?.resultMessage ?? message?.success ?? "Thành công",
-              "success"
-            );
-          }
-        }
         onSuccess?.(res);
         return res;
       } catch (err: any) {
         if (err.name === "AbortError") return;
         setError(true);
-        const backendMessage = err?.response?.data?.resultMessage;
-        if (showToast) {
-          if (backendMessage) {
-            toast(backendMessage, "error");
-          } else if (message?.error) {
-            toast(message.error, "error");
-          }
-        }
-
         onError?.();
         return undefined;
       } finally {
         setLoading(false);
       }
     },
-    [url, params, config, showToast, message, onSuccess, onError]
+    [url, params, config, onSuccess, onError]
   );
   useEffect(() => {
     if (autoFetch) {

@@ -1,12 +1,8 @@
-import { useState, useMemo, useEffect, useCallback, useRef } from "react";
+import { useState, useMemo, useCallback, useRef } from "react";
 import type { GridRowDef } from "../DataGrid";
-import TableInfo from "../Dropdown/TableInfo";
-import type { ContentBlock } from "../Dropdown/type";
 import { Box, Typography } from "@mui/material";
 import TableSection from "./TableSection";
 import DetailedInformationModal from "./hooks/DetailedInformationModal";
-import { FileUpload } from "../FileUploader";
-import DetailDataSystemModal from "./hooks/DetailDataSystem";
 import type { GridColDef, GridRowParams } from "@mui/x-data-grid";
 import type { IDetailItem } from "../Dropdown/DetailSection";
 import DetailSection from "../Dropdown/DetailSection";
@@ -14,16 +10,13 @@ import { Button } from "../Button/Button";
 import InputField from "../Input/InputField";
 import type { MenuData } from "../BreadCrumb/BreadcrumbV2";
 import Breadcrumb from "../BreadCrumb/BreadcrumbV2";
-import InputTextField from "../Input/InputTextField";
 import AddUserModal from "./hooks/AddUserModal";
 import InspectionSearchBar from "../SearchPopup/InspectionSearchBar";
 import { useLocation } from "react-router-dom";
 import theme from "../../scss/theme";
 import { useInspectionInformation } from "./hooks/useInspectionInformation";
-// import DetailDataSystemModal from "./hooks/DetailDataSystemModal";
 // FIX: Update the import path or create the missing file if necessary
 
-// Interface định nghĩa cấu trúc dữ liệu
 export interface IDataHistoryProps extends GridRowDef {
   collectionMethod: string;
   dataId: string;
@@ -78,18 +71,12 @@ const DataSecure = () => {
     setSelectedRow(row as IDataHistoryProps);
     setOpen(true);
   };
+
   const openModalSubfile = (row: GridRowDef) => {
     setSelectedRow(row as IDataHistoryProps);
     setOpenUserModal(true);
   };
-  const handleRowClick = (params: GridRowParams) => {
-    const row = params.row as IDataHistoryProps;
-    setSelectedRow(row);
-    setOpenSubefile(true);
-  };
-  const closeModal = () => {
-    setOpen(false);
-  };
+
   const closeModalSubfile = () => {
     setOpenUserModal(false);
   };
@@ -115,25 +102,14 @@ const DataSecure = () => {
     "image01.jpg",
   ];
   type InputFieldValue = { id: number; value: string };
-  const [fieldsValue, setFieldsValue] = useState<InputFieldValue[]>([
-    { id: Date.now(), value: "" },
-  ]);
-  const [value, setValue] = useState("");
-  const handleChange = (id: number, value: string) => {
-    setFieldsValue((prev) =>
-      prev.map((f) => (f.id === id ? { ...f, value } : f))
-    );
-  };
-  const handleSubmit = () => {
-    setFieldsValue((prev) => [...prev, { id: Date.now(), value: "" }]);
-  };
+
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [showInputs, setShowInputs] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
 
   const handleAddClick = () => {
     if (fileInputRef.current) {
-      fileInputRef.current.click(); // Mở hộp thoại chọn file
+      fileInputRef.current.click();
     }
   };
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -339,17 +315,11 @@ const DataSecure = () => {
       <Typography>
         <Breadcrumb data={dataBread} maxLength={3} limitWidth={120} />
       </Typography>
-      {/* <InputTextField
-        type="password"
-        canCopy
-        value={valuePw}
-        realease3phrase
-        showEyeIcon
-        onChange={setValuePw}
-      /> */}
+
       <Box overflow={"auto"} minHeight={"50vh"}>
         {/* <TableInfo title="Table" description="" content={mappedContent} /> */}
         <DetailSection data={detailsData} />
+
         <InspectionSearchBar
           startDate={1734560400.0}
           endDate={1734560400.0}
@@ -394,7 +364,6 @@ const DataSecure = () => {
         </Box>
       </Box>
     </Box>
-    /* JSX for component */
   );
 };
 export default DataSecure;

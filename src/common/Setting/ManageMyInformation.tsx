@@ -5,9 +5,12 @@ import DialogConfirm from "../Modal/DialogConfirm";
 import { Loading } from "../Loading/Loading";
 import UserInfoSection from "./UserInfoSection";
 import type { UserData } from "../../utils/type";
+import TransferAuthoritySection from "./hooks/TransferAuthoritySection";
+import { useAuth } from "../../context/AuthContext";
 
 const ManageMyInformation = () => {
-  const [myInfo, setMyInfo] = useState<UserData | null>(null);
+  const { user } = useAuth();
+  const [myInfo, setMyInfo] = useState<UserData | null>(user);
   const [isFetching, setIsFetching] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
   const [toggleOpenModal, setToggleOpenModal] = useState(false);
@@ -51,27 +54,30 @@ const ManageMyInformation = () => {
         borderColor: "divider",
       }}
     >
-      <UserInfoSection info={myInfo} onChange={handleUpdateMyInfo} />
-      <ManagePathAdminSection />
+      <UserInfoSection
+        myInfo={myInfo as UserData}
+        onChange={handleUpdateMyInfo}
+      />
+      {/* <ManagePathAdminSection /> */}
       <DataAccessPermissionSection />
       <TransferAuthoritySection
-        info={myInfo}
-        onOpenModal={() => setToggleOpenModal(!toggleOpenModal)}
+        myInfo={myInfo as UserData}
+        setOpenModal={() => setToggleOpenModal(!toggleOpenModal)}
       />
-      <TimeInfoSection />
+      {/* <TimeInfoSection /> */}
       {renderButtonSection()}
       <DialogConfirm
         icon="warning"
         cancelLabel="Exit"
         open={toggleOpenModal}
         onClose={() => setToggleOpenModal(false)}
-        onConfirm={async () => {
-          // Confirm logic
-          const response = await api.requestTransferAdmin({ data: myInfo });
-          if (response.approve) {
-            handleRefresh();
-          }
-        }}
+        onConfirm={() => {}}
+        // onConfirm={async () => {
+        // const response = await requestTransferAdmin({ data: myInfo });
+        //   if (response.approve) {
+        //     handleRefresh();
+        //   }
+        // }}
         title="Xác nhận"
         message="Bạn có chắc chắn muốn thực hiện hành động này không?"
         confirmLabel="Xác nhận"

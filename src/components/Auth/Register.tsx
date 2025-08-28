@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import "./index.scss";
 import { Box } from "@mui/material";
 import { Button } from "../../common/Button/Button";
 import { Controller, useForm } from "react-hook-form";
@@ -42,37 +41,8 @@ const Register = () => {
     }
   }, [password, confirmPassword]);
 
-  // const [passwordMismatch, setPasswordMismatch] = useState(false);
-
-  // useEffect(() => {
-  //   if (confirmPassword !== "") {
-  //     if (password !== confirmPassword) {
-  //       setPasswordMismatch(true);
-  //       toast("Passwords do not match!", "error");
-  //     } else {
-  //       setPasswordMismatch(false);
-  //     }
-  //   }
-  // }, [password, confirmPassword]);
-
-  const onSubmit = async (data: FormDataType) => {
+  const onSubmit = async () => {
     try {
-      // const registerForm = new FormData();
-      // for (const key in data) {
-      //   const value = data[key as keyof FormDataType];
-      //   if (value !== null) {
-      //     registerForm.append(key, value);
-      //   }
-      // }
-      // const response = await fetch("http://localhost:3000/auth/register", {
-      //   method: "POST",
-      //   body: registerForm,
-      // });
-      // if (response.ok) {
-      //   navigate("/login");
-      // } else {
-      //   console.error("Registration failed", await response.text());
-      // }
     } catch (err: any) {
       console.error("Registration error:", err.message);
     }

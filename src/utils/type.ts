@@ -84,6 +84,7 @@ export type UserDataResponse<T> = {
   resultMessage: string;
   data?: T;
   requireChangePassword?: boolean;
+  requireUnlock?: boolean;
   accessToken?: string | null;
   userId: number;
 };

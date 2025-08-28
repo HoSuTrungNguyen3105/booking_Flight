@@ -7,16 +7,9 @@ import {
 } from "@mui/x-data-grid";
 import DataTable from "../DataGrid/index.tsx";
 import OrderButton from "../Button/OrderButton.tsx";
-import CSelect, { type ActionType } from "./CSelect.tsx";
 import Pagination from "../DataGrid/Pagination.tsx";
-
-interface OptionType {
-  label: string;
-  value: string;
-  type: "admin" | "user" | "sys_guest";
-  icon?: string;
-  description?: string;
-}
+import type { ActionType } from "./SelectDropdown.tsx";
+import SelectDropdown from "./SelectDropdown.tsx";
 
 interface RowData {
   id: number;
@@ -65,7 +58,6 @@ export default function DataGridInTab() {
   const [selectedValue, setSelectedValue] = useState<string | number>("");
 
   const handleChange = (val: string | number) => {
-    console.log("Giá trị đã chọn:", val);
     setSelectedValue(val);
   };
 
@@ -74,8 +66,6 @@ export default function DataGridInTab() {
     { value: 15, label: "15 sản phẩm" },
     { value: 20, label: "20 sản phẩm" },
   ];
-  // const CustomSelectIcon = () =>
-  //   selectOpen !== null ? <ArrowBack /> : <ArrowDownward />;
 
   const columns: GridColDef[] = [
     {
@@ -105,11 +95,10 @@ export default function DataGridInTab() {
       flex: 1,
       renderCell: () => {
         return (
-          <CSelect
+          <SelectDropdown
             value={selectedValue}
             onChange={handleChange}
             options={options}
-            // onChange={handleChange(row.id)}
           />
         );
       },
@@ -210,9 +199,5 @@ export default function DataGridInTab() {
     );
   }, [data, columns]);
 
-  return (
-    <>
-      <Box sx={{ width: "100%", p: 2 }}>{renderGridData}</Box>
-    </>
-  );
+  return <Box sx={{ width: "100%", p: 2 }}>{renderGridData}</Box>;
 }

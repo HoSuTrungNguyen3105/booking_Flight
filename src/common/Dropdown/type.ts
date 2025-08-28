@@ -3,7 +3,7 @@ import type { AutocompleteCloseReason, SxProps } from "@mui/material";
 export type DropdownOptions = {
   label: string;
   value: string | number;
-  [key: string]: any; // Cho phép thêm các thuộc tính mở rộng
+  [key: string]: any;
 };
 
 export type DropdownStatus = "error" | "confirmed" | "warning" | "default";

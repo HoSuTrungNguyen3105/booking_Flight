@@ -1,10 +1,8 @@
 import {
-  Box,
   FormControl,
   MenuItem,
   Select,
   styled,
-  Typography,
   type SelectChangeEvent,
   type SxProps,
 } from "@mui/material";
@@ -17,10 +15,10 @@ export interface ActionType {
   icon?: ReactNode;
   label?: string;
   disabled?: boolean;
-  color?: string; // Màu sắc của option
+  color?: string;
   onClick?: () => void;
 }
-interface OptionDropdown {
+interface OptionSelectDropdownProps {
   placeholder?: string;
   options: ActionType[];
   sx?: SxProps;
@@ -30,10 +28,10 @@ interface OptionDropdown {
   value?: string | number;
   defaultValue?: string | number;
   onChange?: (event: string | number) => void;
-  withBorder?: boolean; // ✅ Prop để xác định có border hay không
+  withBorder?: boolean;
 }
 
-const CSelect: FC<OptionDropdown> = ({
+const SelectDropdown: FC<OptionSelectDropdownProps> = ({
   value,
   options,
   onChange,
@@ -105,4 +103,4 @@ const CSelect: FC<OptionDropdown> = ({
   );
 };
 
-export default memo(CSelect);
+export default memo(SelectDropdown);

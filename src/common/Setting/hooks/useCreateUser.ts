@@ -30,7 +30,7 @@ export const useCreateUser = ({
 
   const [formData, setFormData] = useState<UseRCreate>(updateInfo);
   //   const formDetailConfig = useDataSection(formData, false);
-  const formDetailConfig = useDataSection(formData, false);
+  const formDetailConfig = useDataSection(formData, "register", false);
 
   // Hàm cập nhật value
   const handleChange = (key: string, value: any) => {
@@ -45,8 +45,6 @@ export const useCreateUser = ({
       password: formData.password,
       role: formData.role, // đảm bảo đúng kiểu
     };
-    // Khi có password random mới thì set lại formData.password
-    // setParamsUser(payload);
 
     const res = await refetchCreateUser(payload); // ✅ Truyền trực tiếp
 

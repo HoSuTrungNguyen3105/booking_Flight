@@ -4,8 +4,8 @@ import Android12Switch from "../Switch/Switch";
 import InputTextField from "../Input/InputTextField";
 import type { Theme } from "@mui/material/styles";
 import type { SxProps } from "@mui/system";
-import CSelect from "../Dropdown/CSelect";
 import JobTypeSelector from "../Setting/JobTypeSelector";
+import SelectDropdown from "../Dropdown/SelectDropdown";
 
 export enum FieldType {
   SWITCH = "switch",
@@ -66,7 +66,7 @@ const FieldRenderer = ({
 
     case FieldType.DROPDOWN:
       return (
-        <CSelect
+        <SelectDropdown
           sx={{ width: "100%" }}
           placeholder={placeholder}
           options={options}

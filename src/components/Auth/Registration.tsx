@@ -12,26 +12,31 @@ import {
   Typography,
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
-
-type PassengerFormData = {
-  fullName: string;
-  email: string;
-  password: string;
-  phone: string;
-  passport: string;
-};
-
-const Registration = () => {
+import { useRegisterUser, type PassengerFormData } from "../Api/usePostApi";
+import { useToast } from "../../context/ToastContext";
+interface RegisterProps {
+  onClose: () => void;
+}
+const Registration = ({ onClose }: RegisterProps) => {
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm<PassengerFormData>();
-
+  const { refetchRegister } = useRegisterUser();
+  const toast = useToast();
   const onSubmit = async (data: PassengerFormData) => {
-    console.log("Form Data:", data);
-    // call API create Passenger
-    // await passengerApi.register(data);
+    try {
+      const res = await refetchRegister(data);
+      if (res?.resultCode === "00") {
+        toast(res.resultMessage || "Yêu cầu đã gửi thành công!");
+        onClose();
+      } else {
+        toast(res?.resultMessage || "Yêu cầu thất bại, vui lòng thử lại.");
+      }
+    } catch (error) {
+      toast("Có lỗi xảy ra, vui lòng thử lại.");
+    }
   };
 
   return (

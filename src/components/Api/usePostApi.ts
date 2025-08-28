@@ -162,6 +162,24 @@ export const useLoginUser = () => {
     refetchLogin,
   };
 };
+interface RequestUnlock {
+  userId: number;
+  reason: string;
+}
+export const useRequestUnlockAccount = () => {
+  const { data: requestUnlockAccount, refetch: refetchRequestUnlockAccount } =
+    useFetch<ResponseMessage, RequestUnlock>({
+      url: "/sys/users/request-unlock",
+      defaultValue: { resultCode: "", resultMessage: "" },
+      autoFetch: false,
+      config: postMethod,
+      showToast: true,
+    });
+  return {
+    requestUnlockAccount,
+    refetchRequestUnlockAccount,
+  };
+};
 
 export const useFlightDelete = () => {
   const { data: deleteFlightId, refetch: refetchDeleteFlight } = useFetch<
@@ -347,11 +365,18 @@ export const useResetPasswordByMfa = () => {
     refetchChangePassword,
   };
 };
+export type PassengerFormData = {
+  fullName: string;
+  email: string;
+  password: string;
+  phone: string;
+  passport: string;
+};
 
 export const useRegisterUser = () => {
   const { data: register, refetch: refetchRegister } = useFetch<
-    MFAAuthResponse,
-    MfaRequest
+    ResponseMessage,
+    PassengerFormData
   >({
     url: "/auth/register",
     autoFetch: false,
@@ -442,7 +467,7 @@ export const useUpdateUserById = () => {
     loading: loadingUser,
     setParams: setParamsUser,
   } = useFetch<UserCreateResponse, UserDataNoGrid>({
-    url: "/sys/users/createUserByAdmin",
+    url: "/sys/users/updateUser",
     // params: ,
     autoFetch: false,
     config: postMethod,

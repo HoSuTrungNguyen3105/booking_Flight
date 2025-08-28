@@ -8,57 +8,37 @@ import Registration from "../components/Auth/Registration";
 import { FileUpload } from "../common/FileUploader";
 import Register from "../components/Auth/Register";
 import Hero from "../components/Hero/Hero";
-import SignOut from "../components/Auth/SignOut";
 import BookTicket from "../components/User/BookTicket";
 import { Typography } from "@mui/material";
 import Food from "../common/Food/Food";
 import SampleTimePicker from "../common/Sample/SampleTimePicker";
-import Sample from "../common/Sample";
 import TableCustom from "../common/Table/Table";
 import { ROUTE_PATHS } from "./RoutePath";
 import ManageLayout from "../components/Layout/ResizeLayout";
 import Search_layout from "../components/Admin/Search_layout";
 import GuestGuard from "../components/Layout/GuardLayout";
 import InspectionDetails from "../components/User/Profile";
-import type { JSX } from "react";
 import DataSecure from "../common/Setting/DataSecure";
 import { LoginPage } from "../components/Auth/LoginPage";
 import Security from "../common/Setting/Security";
 import FullLayout from "../components/Layout/FullLayout";
 import CheckboxUI from "../common/Checkbox/CheckboxUI";
-import Setting_flight from "../components/Admin/Setting_flight";
 import MealList from "../common/Setting/MealList";
 import SecurityManage from "../common/Setting/hooks/SecurityManage";
 import ProfileUser from "../common/Profile";
+import ManageMyInformation from "../common/Setting/ManageMyInformation";
+import ManageMyInfo from "../common/Setting/ManageMyInfo";
+import AuthGuard from "../components/Layout/AuthGuard";
 
-interface IRouteObject {
-  path?: (typeof ROUTE_PATHS)[keyof typeof ROUTE_PATHS];
-  index?: boolean;
-  element: JSX.Element;
-  errorElement?: JSX.Element;
-  children?: IRouteObject[];
-}
 const routes = [
-  // {
-  //   path: ROUTE_PATHS.LOGIN,
-  //   element: (
-  //     <GuestGuard>
-  //       <Login />,
-  //     </GuestGuard>
-  //   ),
-  // },
-  {
-    path: ROUTE_PATHS.SAMPLE_BUTTON,
-    element: <Sample />,
-  },
   {
     path: ROUTE_PATHS.TABLE,
     element: <TableCustom />,
   },
-  {
-    path: ROUTE_PATHS.REGISTRATION_FORM,
-    element: <Registration />,
-  },
+  // {
+  //   path: ROUTE_PATHS.REGISTRATION_FORM,
+  //   element: <Registration />,
+  // },
   {
     path: ROUTE_PATHS.REGISTER,
     element: <Register />,
@@ -115,10 +95,6 @@ const routes = [
         path: "/sampleFormData",
         element: <TableCustom />,
       },
-      // {
-      //   path: ROUTE_PATHS.PROFILE.replace("/", ""),
-      //   element: <App />,
-      // },
       {
         path: ROUTE_PATHS.FILE_UPLOAD.replace("/", ""),
         element: <FileUpload name="fileUploader" />,
@@ -135,7 +111,11 @@ const routes = [
   },
   {
     path: ROUTE_PATHS.ADMIN,
-    element: <ManageLayout />,
+    element: (
+      // <AuthGuard allowedRoles={["ADMIN"]}>
+      <ManageLayout />
+      // </AuthGuard>
+    ),
     errorElement: <ErrorPage />,
     children: [
       {
@@ -155,10 +135,6 @@ const routes = [
         element: <Food />,
       },
       {
-        path: ROUTE_PATHS.SAMPLE_BUTTON.replace("/", ""),
-        element: <Sample />,
-      },
-      {
         path: ROUTE_PATHS.TIME_PICKER.replace("/", ""),
         element: <SampleTimePicker />,
       },
@@ -167,8 +143,8 @@ const routes = [
         element: <DataSecure />,
       },
       {
-        path: ROUTE_PATHS.LOGOUT.replace("/", ""),
-        element: <SignOut />,
+        path: ROUTE_PATHS.NOTIFICATIONS,
+        element: <Search_layout />,
       },
       {
         path: "hero",
@@ -176,7 +152,7 @@ const routes = [
       },
       {
         path: "setting",
-        element: <Setting_flight />,
+        element: <ManageMyInformation />,
       },
       {
         path: ROUTE_PATHS.FILE_UPLOAD.replace("/", ""),
@@ -187,7 +163,11 @@ const routes = [
         element: <BookTicket />,
       },
       {
-        path: ROUTE_PATHS.SAMPLE.replace("/", ""),
+        path: "manage-my-info",
+        element: <ManageMyInfo />,
+      },
+      {
+        path: ROUTE_PATHS.SAMPLE_BUTTON.replace("/", ""),
         element: <Home />,
       },
     ],

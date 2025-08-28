@@ -1,6 +1,6 @@
 import { Box, Pagination, styled, Typography } from "@mui/material";
 import { memo, useCallback } from "react";
-import CSelect from "../Dropdown/CSelect";
+import SelectDropdown from "../Dropdown/SelectDropdown";
 
 interface ICustomPaginationProps {
   totalText?: string;
@@ -77,7 +77,7 @@ const DataTablePagination = ({
 
       {onPageSizeChange && (
         <Box>
-          <CSelect
+          <SelectDropdown
             sx={{ maxHeight: "30px" }}
             options={[
               { label: "10개씩 보기", value: 10 },

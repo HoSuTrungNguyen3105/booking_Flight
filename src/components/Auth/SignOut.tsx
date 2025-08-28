@@ -7,15 +7,9 @@ const SignOut = () => {
   const { logout } = useAuth();
   const [open, setOpen] = useState(false);
 
-  const handleClick = () => {
-    setOpen(true);
-  };
-  const submitLogout = () => {
-    logout();
-  };
-  const closeModal = () => {
-    setOpen(false);
-  };
+  const handleClick = () => setOpen(true);
+  const submitLogout = () => logout();
+  const closeModal = () => setOpen(false);
 
   return (
     <>

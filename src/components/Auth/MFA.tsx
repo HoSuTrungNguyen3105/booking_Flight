@@ -11,7 +11,6 @@ export default function MfaSetup() {
   const [email, setEmail] = useState<string>("");
   const [code, setCode] = useState("");
   const [loginMfa, setLoginMfaUi] = useState(false);
-  const { login } = useAuth();
   const { setLoginMfa, refetchSetLoginMfa } = useLoginByMfa();
   const { refetchVerifyMfa } = useVerifyMfa();
   const { refetchSetUpMfa } = useSetUpMfa();

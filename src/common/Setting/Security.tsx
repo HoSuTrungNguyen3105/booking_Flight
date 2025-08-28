@@ -4,6 +4,7 @@ import SearchLayout, {
 } from "../../components/Layout/SearchLayout";
 import DataSecure from "./DataSecure";
 import ManageMyInfo from "./ManageMyInfo";
+import { Typography } from "@mui/material";
 
 const Security = () => {
   const [tabX, setTab] = useState(0);
@@ -11,7 +12,7 @@ const Security = () => {
     {
       label: "Security",
       value: "auto",
-      content: <DataSecure />,
+      content: <Typography variant="h6">Security Settings</Typography>,
     },
     {
       label: "InspectionSection",

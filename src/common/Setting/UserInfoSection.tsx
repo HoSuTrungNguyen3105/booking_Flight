@@ -4,7 +4,7 @@ import type { UserData } from "../../utils/type";
 import InputTextField from "../Input/InputTextField";
 
 interface IUserInfoSectionProps {
-  myInfo: UserData;
+  myInfo?: UserData;
   onChange: (field: keyof UserData, value: string) => void;
 }
 
@@ -44,7 +44,7 @@ const UserInfoSection = ({ myInfo, onChange }: IUserInfoSectionProps) => (
           <Typography variant="body2" mb={0.5}>
             아이디
           </Typography>
-          <InputTextField value={myInfo.userId} disabled />
+          <InputTextField value={myInfo?.email} disabled />
         </FormControl>
 
         {/* 인증 방식 */}
@@ -52,7 +52,7 @@ const UserInfoSection = ({ myInfo, onChange }: IUserInfoSectionProps) => (
           <Typography variant="body2" mb={0.5}>
             인증 방식
           </Typography>
-          <InputTextField value={myInfo.authType} disabled />
+          <InputTextField value={myInfo?.authType} disabled />
         </FormControl>
 
         {/* 권한 */}
@@ -60,7 +60,7 @@ const UserInfoSection = ({ myInfo, onChange }: IUserInfoSectionProps) => (
           <Typography variant="body2" mb={0.5}>
             권한
           </Typography>
-          <InputTextField value={myInfo.userRole} disabled />
+          <InputTextField value={myInfo?.role} disabled />
         </FormControl>
 
         {/* 이름 */}
@@ -69,8 +69,8 @@ const UserInfoSection = ({ myInfo, onChange }: IUserInfoSectionProps) => (
             이름
           </Typography>
           <InputTextField
-            value={myInfo.userName}
-            onChange={(val) => onChange("userName", val)}
+            value={myInfo?.name}
+            onChange={(val) => onChange("name", val)}
           />
         </FormControl>
 
@@ -80,7 +80,7 @@ const UserInfoSection = ({ myInfo, onChange }: IUserInfoSectionProps) => (
             닉네임 (선택)
           </Typography>
           <InputTextField
-            value={myInfo.userAlias}
+            value={myInfo?.userAlias}
             onChange={(val) => onChange("userAlias", val)}
           />
         </FormControl>

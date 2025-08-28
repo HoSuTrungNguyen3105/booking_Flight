@@ -10,16 +10,8 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import Grid from "@mui/material/Grid"; // ✅ phải viết như thế này
 import { useTranslation } from "react-i18next";
 import moment from "moment";
-import {
-  OnlyDatePicker,
-  DatePickerMonth,
-  DatePickerYear,
-  BasicDateField,
-} from "./date-picker";
-import DateRangePickerComponent from "./date-range-picker";
 import "../../i18n";
 import { CusDateField } from "./date-field";
 import SingleDateRangePickerComponent from "./date-range-field";
@@ -55,32 +47,6 @@ const SampleDatePicker: React.FC = () => {
           Korean
         </Button>
       </Box>
-
-      {/* Date Pickers */}
-      {/* <Grid container spacing={2}>
-        <Grid item xs={12} md={4}>
-          <TableCell>Date Picker</TableCell>
-          <OnlyDatePicker language={language} />
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <TableCell>Date Range Picker</TableCell>
-          <DateRangePickerComponent language={language} data-testid="date-range-picker" />
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <TableCell>Date Picker Month</TableCell>
-          <DatePickerMonth size="small" />
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <TableCell>Date Picker Year</TableCell>
-          <DatePickerYear size="small" />
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <TableCell>Date Picker Focused</TableCell>
-          <BasicDateField />
-        </Grid>
-      </Grid> */}
-
-      {/* Date Field Table */}
       <TableContainer component={Paper} sx={{ mt: 4 }}>
         <Table>
           <TableHead>
@@ -163,8 +129,6 @@ const SampleDatePicker: React.FC = () => {
           </TableBody>
         </Table>
       </TableContainer>
-
-      {/* Single Date Range Picker Table */}
       <TableContainer component={Paper} sx={{ mt: 4 }}>
         <Table>
           <TableHead>

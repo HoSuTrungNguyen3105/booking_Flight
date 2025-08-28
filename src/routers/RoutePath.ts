@@ -20,7 +20,7 @@ export const ROUTE_PATHS = {
   SETTINGS: "/settings",
   DASHBOARD: "/dashboard",
   SUPPORT: "/support",
-  NOTIFICATIONS: "/notifications",
+  NOTIFICATIONS: "notifications",
 };
 
 // export const ROUTE_PATHS = {

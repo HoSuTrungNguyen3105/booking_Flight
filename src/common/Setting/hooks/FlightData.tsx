@@ -12,7 +12,7 @@ type Props = {
 
 const FlightTable: React.FC<Props> = ({ flights }) => {
   const rows = flights.map((f) => ({
-    id: f.flightId, // 👈 DataGrid bắt buộc phải có
+    id: f.flightId,
     ...f,
   }));
   const columns: GridColDef[] = [

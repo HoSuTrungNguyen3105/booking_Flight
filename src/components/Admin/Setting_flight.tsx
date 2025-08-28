@@ -4,8 +4,8 @@ import type { GridColDef } from "@mui/x-data-grid";
 import { Typography } from "@mui/material";
 import DataTable from "../../common/DataGrid/index";
 import theme from "../../scss/theme";
-import CSelect from "../../common/Dropdown/CSelect";
 import type { Flight } from "../../common/Setting/type";
+import SelectDropdown from "../../common/Dropdown/SelectDropdown";
 
 const Setting_flight = () => {
   const [rows, setRows] = useState<Flight[]>([]);
@@ -42,7 +42,7 @@ const Setting_flight = () => {
       sortable: false,
       renderCell: ({ row }) => (
         //   row.id !== user?.id && (
-        <CSelect
+        <SelectDropdown
           key={row.id}
           defaultValue="관리"
           value="관리"
@@ -102,7 +102,6 @@ const Setting_flight = () => {
         Flight Info
       </Typography>
       <DataTable
-        // rows={rows.map((r) => r.flight)}
         rows={rows.map((r) => ({
           ...r,
           id: r.flightId, // Thêm id cho DataGrid

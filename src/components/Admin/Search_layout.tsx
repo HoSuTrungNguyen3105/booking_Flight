@@ -9,7 +9,6 @@ import {
   TableContainer,
   Typography,
 } from "@mui/material";
-import { AgGridReact } from "ag-grid-react";
 import {
   AdminPanelSettings,
   DeleteForever,
@@ -21,7 +20,6 @@ import { useFlightUpdate, useSearchFlight } from "../Api/usePostApi";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import { Button } from "../../common/Button/Button";
 import ContentModal from "../../common/Modal/ContentModal";
-import "../../scss/_ag-grid.scss";
 import type { BreadcrumbItem } from "../../common/BreadCrumb/type";
 import { toast } from "react-toastify";
 import {
@@ -30,19 +28,18 @@ import {
   type SearchType,
 } from "../../utils/type";
 import Input from "./component/Input";
+import FormRow from "../../common/CustomRender/FormRow";
+import type { GridColDef, GridRowId } from "@mui/x-data-grid";
+import DataTable from "../../common/DataGrid/index.tsx";
 type FlightId = {
   id: number;
 };
+
 const Search_layout: React.FC = () => {
-  const [flightData, setFlightData] = React.useState<DataFlight>();
+  const [flightData, setFlightData] = React.useState<DataFlight[]>([]);
   const [flightId, setFlightId] = React.useState<FlightId | null>(null);
   const [selectId, setSelectId] = React.useState<number[]>([]);
   const [updateFlight, setUpdateFlight] = React.useState<boolean>(false);
-  // const [displayDataFlight, setDisplayDataFlight] = React.useState<
-  //   DataFlight[]
-  // >([]);
-  // const search = useSearchContext();
-
   const [openUpdateConfirm, setOpenUpdateConfirm] =
     React.useState<boolean>(false);
   const [isUpdate, setIsUpdate] = React.useState<boolean>(false);
@@ -67,73 +64,46 @@ const Search_layout: React.FC = () => {
   } = useForm<SearchType>({
     defaultValues: flightParams,
   });
+
   React.useEffect(() => {
     if (!flightList) return;
   }, [flightList]);
-  //   const useFlight = React.useMemo(
-  //     ()=>({
-  //     })
-  //     return;
-  //   )
-  //   const {
-  //     airportName,
-  //     aircraftName,
-  //     aircraft,
-  //     status,
-  //     departureAirportList,
-  //     arrivalAirportList,
-  //     handleDepartureChange,
-  //     handleArrivalChange,
-  //   } = useFlightCode(resetFieldSearch, getValues);
+
   const { refetchUpdateFlightId } = useFlightUpdate();
-  const {
-    control,
-    handleSubmit: handleUpdateSubmit,
-    reset: resetUpdate,
-  } = useForm<DataFlight>({
+  const { handleSubmit: handleUpdateSubmit, reset: resetUpdate } = useForm<
+    DataFlight[]
+  >({
     defaultValues: flightData,
   });
-  const onSelectionChanged = (event: SelectionChangedEvent): void => {
-    try {
-      const selectRows = event.api.getSelectedRows();
-      const ids = selectRows
-        .map((row: DataFlight) => row.flightId)
-        .filter((id): id is number => id !== undefined);
-      setSelectId(ids);
-    } catch (error) {
-      console.error("Error", error);
-    }
-  };
-  const rowClassStyle = {
-    "black-row": (params: any) => params.node.rowIndex % 2 !== 0,
-    "white-row": (params: any) => params.node.rowIndex % 2 === 0,
-  };
+
   const onSubmitValue = (values: SearchType): void => {
     if (isReset) return;
-    // search.saveSearchValues({
-
-    // })
     setFlightParams(values);
     refetchFlightList(values);
     setIsSearch(true);
   };
+
   const handleOpen = (data: DataFlight): void => {
     try {
-      setFlightData(data);
-      resetUpdate(data);
+      // setFlightData(data);
+      // resetUpdate(data);
       setFlightId(data.flightId ? { id: data.flightId } : null);
       setUpdateFlight(true);
     } catch (err) {
       console.error("Error", err);
     }
   };
+
   const handleClose = (): void => {
     setUpdateFlight(false);
     setFlightId(null);
     setSelectId([]);
   };
-  const handleCloseUpdate = (): void => setOpenUpdateConfirm(false);
-  const handleCloseDelete = (): void => setShowDelete(false);
+
+  const handleCloseUpdate = () => setOpenUpdateConfirm(false);
+
+  const handleCloseDelete = () => setShowDelete(false);
+
   const onSubmitUpdate = async (data: DataFlight) => {
     if (!data?.flightId) return;
     try {
@@ -154,18 +124,17 @@ const Search_layout: React.FC = () => {
       setOpenUpdateConfirm(true);
     }
   };
+
   const resetUpdateField = async () => {
     await resetUpdate(flightData);
   };
+
   const handleDeleteClick = (): void => {
     if (isUpdate) return;
     if (selectId.length === 0) {
-      //   showWarning(Toast, setIsUpdate, 'Please select a flight to delete!');
       toast.warning("Please select a flight to delete!");
     } else if (selectId.length > 1) {
-      //   showWarning(Toast, setIsUpdate, `${t('content1')}`);
     } else {
-      // navigate(`/admin/deleteFlight/${selectId[0]}`);
       setShowDelete(true);
     }
   };
@@ -183,7 +152,7 @@ const Search_layout: React.FC = () => {
   };
 
   const handleOpenUpdateConfirm = () => setOpenUpdateConfirm(true);
-  const defaultColDef = { resizable: true, sortable: true, flex: 1 };
+
   const rowData: DataFlight[] = [
     {
       flightId: 1,
@@ -220,247 +189,157 @@ const Search_layout: React.FC = () => {
       aircraftCode: "A350",
     },
   ];
-  const [colDefs] = React.useState<any[]>([
+
+  const colDefs: GridColDef[] = [
     {
       headerName: "",
-      headerCheckboxSelection: true,
-      checkboxSelection: true,
-      pinned: "left",
-      width: 50,
+      field: "checkbox",
     },
     {
-      headerName: "이름",
       field: "flightId",
-      tooltipField: "flightId",
-      cellRenderer: (params: { data: DataFlight }) => {
-        const { flightId } = params.data;
-        return (
-          <Typography
-            onClick={() => handleOpen(params.data)}
-            style={{
-              cursor: "pointer",
-              padding: 0,
-              margin: 0,
-              lineHeight: "normal",
-              display: "inline-block",
-            }}
-          >
-            {flightId}
-          </Typography>
-        );
-      },
+      headerName: "Mã chuyến bay",
+      width: 150,
+      renderCell: (params) => (
+        <Typography
+          onClick={() => handleOpen(params.row)}
+          sx={{ cursor: "pointer" }}
+        >
+          {params.row.flightId}
+        </Typography>
+      ),
     },
     {
-      headerName: "이름",
       field: "flightNo",
-      tooltipField: "flightNo",
-      cellRenderer: (params: { data: DataFlight }) => {
-        const { flightNo } = params.data;
-        return (
-          <Typography
-            onClick={() => handleOpen(params.data)}
-            style={{
-              cursor: "pointer",
-              padding: 0,
-              margin: 0,
-              lineHeight: "normal",
-              display: "inline-block",
-            }}
-          >
-            {flightNo}
-          </Typography>
-        );
-      },
+      headerName: "Số hiệu",
+      width: 120,
+      renderCell: (params) => (
+        <Typography
+          onClick={() => handleOpen(params.row)}
+          sx={{ cursor: "pointer" }}
+        >
+          {params.row.flightNo}
+        </Typography>
+      ),
     },
     {
-      headerName: "이름",
       field: "scheduledDeparture",
-      tooltipValueGetter: (params: any) => formatDate(params.value),
-      valueFormatter: (params: { value: string }) => formatDate(params.value),
-      cellRenderer: (params: { data: DataFlight }) => {
-        const { scheduledDeparture } = params.data;
-        return (
-          <Typography
-            onClick={() => handleOpen(params.data)}
-            style={{
-              cursor: "pointer",
-              whiteSpace: "nowrap",
-              padding: 0,
-              margin: 0,
-              lineHeight: "normal",
-              display: "inline-block",
-            }}
-          >
-            {formatDate(scheduledDeparture)}
-          </Typography>
-        );
-      },
+      headerName: "Giờ khởi hành dự kiến",
+      width: 200,
+      renderCell: (params) => (
+        <Typography
+          onClick={() => handleOpen(params.row)}
+          sx={{ cursor: "pointer", whiteSpace: "nowrap" }}
+        >
+          {formatDate(params.row.scheduledDeparture)}
+        </Typography>
+      ),
     },
     {
-      headerName: "이름",
       field: "scheduledArrival",
-      tooltipValueGetter: (params: any) => formatDate(params.value),
-      valueFormatter: (params: { value: string }) => formatDate(params.value),
-      cellRenderer: (params: { data: DataFlight }) => {
-        const { scheduledArrival } = params.data;
-        return (
-          <Typography
-            onClick={() => handleOpen(params.data)}
-            style={{
-              cursor: "pointer",
-              whiteSpace: "nowrap",
-              padding: 0,
-              margin: 0,
-              lineHeight: "normal",
-              display: "inline-block",
-            }}
-          >
-            {formatDate(scheduledArrival)}
-          </Typography>
-        );
-      },
+      headerName: "Giờ đến dự kiến",
+      width: 200,
+      renderCell: (params) => (
+        <Typography
+          onClick={() => handleOpen(params.row)}
+          sx={{ cursor: "pointer", whiteSpace: "nowrap" }}
+        >
+          {formatDate(params.row.scheduledArrival)}
+        </Typography>
+      ),
     },
     {
-      headerName: "이름",
       field: "departureAirport",
-      tooltipField: "departureAirport",
-      minWidth: 100,
-      maxWidth: 150,
-      cellRenderer: (params: { data: DataFlight }) => {
-        const { departureAirport } = params.data;
-        return (
-          <Typography
-            onClick={() => handleOpen(params.data)}
-            style={{
-              cursor: "pointer",
-              padding: 0,
-              margin: 0,
-              lineHeight: "normal",
-              display: "inline-block",
-            }}
-          >
-            {departureAirport}
-          </Typography>
-        );
-      },
+      headerName: "Sân bay đi",
+      width: 150,
+      renderCell: (params) => (
+        <Typography
+          onClick={() => handleOpen(params.row)}
+          sx={{ cursor: "pointer" }}
+        >
+          {params.row.departureAirport}
+        </Typography>
+      ),
     },
     {
-      headerName: "이름",
       field: "arrivalAirport",
-      tooltipField: "arrivalAirport",
-      minWidth: 100,
-      maxWidth: 150,
-      cellRenderer: (params: { data: DataFlight }) => {
-        const { arrivalAirport } = params.data;
-        return (
-          <Typography
-            onClick={() => handleOpen(params.data)}
-            style={{
-              cursor: "pointer",
-              padding: 0,
-              margin: 0,
-              lineHeight: "normal",
-              display: "inline-block",
-            }}
-          >
-            {arrivalAirport}
-          </Typography>
-        );
-      },
+      headerName: "Sân bay đến",
+      width: 150,
+      renderCell: (params) => (
+        <Typography
+          onClick={() => handleOpen(params.row)}
+          sx={{ cursor: "pointer" }}
+        >
+          {params.row.arrivalAirport}
+        </Typography>
+      ),
     },
     {
-      headerName: "이름",
       field: "status",
-      tooltipField: "status",
-      cellRenderer: (params: { data: DataFlight }) => {
-        const { status } = params.data;
-        return (
-          <Typography
-            onClick={() => handleOpen(params.data)}
-            style={{
-              cursor: "pointer",
-              padding: 0,
-              margin: 0,
-              lineHeight: "normal",
-              display: "inline-block",
-            }}
-          >
-            {status}
-          </Typography>
-        );
-      },
+      headerName: "Trạng thái",
+      width: 120,
+      renderCell: (params) => (
+        <Typography
+          onClick={() => handleOpen(params.row)}
+          sx={{ cursor: "pointer" }}
+        >
+          {params.row.status}
+        </Typography>
+      ),
     },
     {
-      headerName: "이름",
       field: "aircraftCode",
-      tooltipField: "aircraftCode",
-      cellRenderer: (params: { data: DataFlight }) => {
-        const { aircraftCode } = params.data;
-        return (
-          <Typography
-            onClick={() => handleOpen(params.data)}
-            style={{
-              cursor: "pointer",
-              padding: 0,
-              margin: 0,
-              lineHeight: "normal",
-              display: "inline-block",
-            }}
-          >
-            {aircraftCode}
-          </Typography>
-        );
-      },
+      headerName: "Mã máy bay",
+      width: 120,
+      renderCell: (params) => (
+        <Typography
+          onClick={() => handleOpen(params.row)}
+          sx={{ cursor: "pointer" }}
+        >
+          {params.row.aircraftCode}
+        </Typography>
+      ),
     },
     {
-      headerName: "이름",
       field: "actualDeparture",
-      tooltipValueGetter: (params: any) => formatDate(params.value),
-      valueFormatter: (params: { value: string }) => formatDate(params.value),
-      cellRenderer: (params: { data: DataFlight }) => {
-        const { actualDeparture } = params.data;
-        return (
-          <Typography
-            onClick={() => handleOpen(params.data)}
-            style={{
-              cursor: "pointer",
-              whiteSpace: "nowrap",
-              padding: 0,
-              margin: 0,
-              lineHeight: "normal",
-              display: "inline-block",
-            }}
-          >
-            {formatDate(actualDeparture)}
-          </Typography>
-        );
-      },
+      headerName: "Giờ khởi hành thực tế",
+      width: 200,
+      renderCell: (params) => (
+        <Typography
+          onClick={() => handleOpen(params.row)}
+          sx={{ cursor: "pointer", whiteSpace: "nowrap" }}
+        >
+          {formatDate(params.row.actualDeparture)}
+        </Typography>
+      ),
     },
     {
-      headerName: "이름",
       field: "actualArrival",
-      tooltipValueGetter: (params: any) => formatDate(params.value),
-      valueFormatter: (params: { value: string }) => formatDate(params.value),
-      cellRenderer: (params: { data: DataFlight }) => {
-        const { actualArrival } = params.data;
-        return (
-          <Typography
-            onClick={() => handleOpen(params.data)}
-            style={{
-              cursor: "pointer",
-              whiteSpace: "nowrap",
-              padding: 0,
-              margin: 0,
-              lineHeight: "normal",
-              display: "inline-block",
-            }}
-          >
-            {formatDate(actualArrival)}
-          </Typography>
-        );
-      },
+      headerName: "Giờ đến thực tế",
+      width: 200,
+      renderCell: (params) => (
+        <Typography
+          onClick={() => handleOpen(params.row)}
+          sx={{ cursor: "pointer", whiteSpace: "nowrap" }}
+        >
+          {formatDate(params.row.actualArrival)}
+        </Typography>
+      ),
     },
-  ]);
+  ];
+
+  // const rowDataGrid = React.useCallback(()=>{
+
+  //   const data = rowData.map((item, index) => ({ ...item, id: index + 1 }));
+  //   return setFlightData(data);
+
+  // },[rowData])
+
+  // React.useEffect(() => {
+  //   if (rowData && rowData.length > 0) {
+  //     setFlightData(data);
+  //   }
+  // }, [rowData]);
+
   if (!selectId) {
     return (
       <Box
@@ -520,55 +399,65 @@ const Search_layout: React.FC = () => {
           <Box sx={{ borderRadius: 1, border: "solid 3px #f2f3f8" }}>
             <Box className="search-status">
               <Box className="left-element">
-                <Input
-                  name="status"
-                  control={controlSearch}
-                  placeholder="Select"
-                  isPassword={false}
-                  isEditable={true}
-                />
-
-                <Input
-                  name="aircraftCode"
-                  control={controlSearch}
-                  placeholder="Select"
-                  isPassword={false}
-                  isEditable={true}
-                />
+                <FormRow label="Status">
+                  <Input
+                    name="status"
+                    control={controlSearch}
+                    placeholder="Select"
+                    isPassword={false}
+                    isEditable={true}
+                  />
+                </FormRow>
+                <FormRow label="Aircraft Code">
+                  <Input
+                    name="aircraftCode"
+                    control={controlSearch}
+                    placeholder="Select"
+                    isPassword={false}
+                    isEditable={true}
+                  />
+                </FormRow>
               </Box>
               <Box className="bottom-element">
-                <Input
-                  name="status"
-                  control={controlSearch}
-                  placeholder="Select"
-                  isPassword={false}
-                  isEditable={true}
-                />
+                <FormRow label="Status">
+                  <Input
+                    name="status"
+                    control={controlSearch}
+                    placeholder="Select"
+                    isPassword={false}
+                    isEditable={true}
+                  />
+                </FormRow>
 
-                <Input
-                  name="aircraftCode"
-                  control={controlSearch}
-                  placeholder="Select"
-                  isPassword={false}
-                  isEditable={true}
-                />
+                <FormRow label="Aircraft Code">
+                  <Input
+                    name="aircraftCode"
+                    control={controlSearch}
+                    placeholder="Select"
+                    isPassword={false}
+                    isEditable={true}
+                  />
+                </FormRow>
               </Box>
               <Box className="right-element">
-                <Input
-                  name="status"
-                  control={controlSearch}
-                  placeholder="Select"
-                  isPassword={false}
-                  isEditable={true}
-                />
-
-                <Input
-                  name="aircraftCode"
-                  control={controlSearch}
-                  placeholder="Select"
-                  isPassword={false}
-                  isEditable={true}
-                />
+                <FormRow label="Aircraft Code">
+                  <Input
+                    name="status"
+                    control={controlSearch}
+                    placeholder="Select"
+                    isPassword={false}
+                    isEditable={true}
+                  />
+                </FormRow>
+                <FormRow label="Aircraft Code">
+                  <Input
+                    name="aircraftCode"
+                    control={controlSearch}
+                    placeholder="Select"
+                    isPassword={false}
+                    isEditable={true}
+                  />
+                </FormRow>
               </Box>
               <Box
                 sx={{
@@ -608,22 +497,17 @@ const Search_layout: React.FC = () => {
           </Box>
 
           <Box className="agrid-theme" mt={1.5} sx={{ height: "66vh" }}>
-            <AgGridReact
-              rowSelection="multiple"
-              onSelectionChanged={onSelectionChanged}
-              rowData={rowData}
-              columnDefs={colDefs}
-              defaultColDef={defaultColDef}
-              pagination={true}
-              rowClassRules={rowClassStyle}
-              rowMultiSelectWithClick={true}
-              suppressRowClickSelection={true}
+            <DataTable
+              rows={rowData.map((r) => ({
+                ...r,
+                id: (r.flightId ?? r.flightId) as GridRowId, // đảm bảo luôn có id dạng number/string
+              }))}
+              columns={colDefs}
             />
             <ContentModal
               open={updateFlight}
               closeLabel="Close"
               submitLabel="Save"
-              title={`Flight ${flightData?.flightNo}`}
               handleSubmit={handleOpenUpdateConfirm}
               handleClose={handleClose}
               middleBtns={[
@@ -640,7 +524,6 @@ const Search_layout: React.FC = () => {
                     closeLabel="Cancel"
                     submitLabel="Confirm Update"
                     handleClose={handleCloseUpdate}
-                    handleSubmit={handleUpdateSubmit(onSubmitUpdate)}
                     contentArea={
                       <Typography>
                         Do you want to confirm the information of flight and

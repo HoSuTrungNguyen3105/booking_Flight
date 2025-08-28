@@ -64,12 +64,10 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setToken(accessToken ?? null);
       updateLocalStorage(true, accessToken ?? null, id);
       await fetchMyInfo(id);
+      console.log("login", res);
       return res;
     } else {
-      toast(
-        getMessage(res?.resultMessage as string) || "Đăng nhập thất bại",
-        "error"
-      );
+      toast((res?.resultMessage as string) || "Đăng nhập thất bại", "error");
       return res as UserListResponse;
     }
   };

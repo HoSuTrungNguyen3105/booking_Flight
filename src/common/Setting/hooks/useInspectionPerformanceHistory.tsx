@@ -3,11 +3,11 @@ import useClientPagination from "../../../context/use[custom]/useClientPaginatio
 import type { GridColDef } from "@mui/x-data-grid";
 import type { GridRowDef } from "../../DataGrid";
 import { UserRole, type UserData } from "../../../utils/type";
-import CSelect from "../../Dropdown/CSelect";
 import { useAuth } from "../../../context/AuthContext";
 import theme from "../../../scss/theme";
 import { useGetUserList } from "../../../components/Api/useGetApi";
 import { DateFormatEnum, formatDateKR } from "../../../hooks/format";
+import SelectDropdown from "../../Dropdown/SelectDropdown";
 
 const dummyRows = Array.from({ length: 20 }, (_, index) => {
   const id = index + 1;
@@ -72,7 +72,7 @@ type IInspectionPerformanceHistoryItem = GridRowDef;
 export const useInspectionPerformanceHistory = () => {
   const dataTableViewRef = useRef<HTMLDivElement>(null);
   const [headerHeight, setHeaderHeight] = useState(0);
-  const { fetchUser, loadingUser, refetchUser } = useGetUserList();
+  const { fetchUser, refetchUser } = useGetUserList();
 
   // const [rows, setRows] = useState(dummyRows);
   const [openCheckNow, setOpenCheckNow] = useState(false);
@@ -191,7 +191,7 @@ export const useInspectionPerformanceHistory = () => {
         sortable: false,
         renderCell: ({ row }) =>
           row.id !== user?.id && (
-            <CSelect
+            <SelectDropdown
               key={row.id}
               defaultValue="관리"
               value="관리"
