@@ -15,22 +15,18 @@ import {
   House,
   StarBorder,
 } from "@mui/icons-material";
-import type { SelectionChangedEvent } from "ag-grid-community";
 import { useFlightUpdate, useSearchFlight } from "../Api/usePostApi";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import { Button } from "../../common/Button/Button";
 import ContentModal from "../../common/Modal/ContentModal";
 import type { BreadcrumbItem } from "../../common/BreadCrumb/type";
 import { toast } from "react-toastify";
-import {
-  MessageOption,
-  type DataFlight,
-  type SearchType,
-} from "../../utils/type";
+import { type DataFlight, type SearchType } from "../../utils/type";
 import Input from "./component/Input";
 import FormRow from "../../common/CustomRender/FormRow";
 import type { GridColDef, GridRowId } from "@mui/x-data-grid";
 import DataTable from "../../common/DataGrid/index.tsx";
+import { FileUpload } from "../../common/FileUploader/index.tsx";
 type FlightId = {
   id: number;
 };
@@ -109,7 +105,7 @@ const Search_layout: React.FC = () => {
     try {
       const response = await refetchUpdateFlightId(data);
       await new Promise((resolve) => setTimeout(resolve, 200));
-      if (response?.resultCode === MessageOption.Option00) {
+      if (response?.resultCode === "00") {
         await refetchFlightList(flightParams);
         setUpdateFlight(false);
         setOpenUpdateConfirm(false);
@@ -394,6 +390,7 @@ const Search_layout: React.FC = () => {
             </Box>
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <BreadCrumb items={breadCrumbText} />
+              <FileUpload name="fileUploader" />
             </Box>
           </Box>
           <Box sx={{ borderRadius: 1, border: "solid 3px #f2f3f8" }}>

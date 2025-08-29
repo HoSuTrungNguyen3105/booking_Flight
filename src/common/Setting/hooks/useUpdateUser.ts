@@ -22,10 +22,10 @@ export const useUpdateUser = ({
   // formData là nguồn truth, khởi tạo từ data nếu có, hoặc defaults
   const [formData, setFormData] = useState<UpdateUserForm>(() => ({
     role: data?.role,
-    rank: data?.rank ?? "",
-    name: data?.name ?? "",
-    userAlias: data?.userAlias ?? "",
-    pictureUrl: (data as any)?.pictureUrl ?? "",
+    rank: data?.rank,
+    name: data?.name,
+    userAlias: data?.createdAt,
+    pictureUrl: (data as any)?.pictureUrl,
   }));
 
   const handleChange = (key: string, value: any) => {

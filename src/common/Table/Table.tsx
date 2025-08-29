@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { Button } from "../Button/Button";
+import { FileUpload } from "../FileUploader";
 // import Select from "react-select";
 const columns = [
   {
@@ -107,7 +108,6 @@ const TableCustom = () => {
             sx={{ fontWeight: "bold", fontSize: "1rem" }}
           />
         </Box>
-
         <TableContainer className="flight-container">
           <Box
             sx={{

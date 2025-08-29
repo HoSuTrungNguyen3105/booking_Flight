@@ -3,16 +3,17 @@ import {
   Breadcrumbs,
   Card,
   CardContent,
+  Chip,
   CircularProgress,
   FormControl,
   Grid,
   TableContainer,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import type { FareConditions, UserSearchType } from "./type";
-import { useFlightBooking } from "../Api/usePostApi";
+import { useFlightBooking, useFlightList } from "../Api/usePostApi";
 import { Button } from "../../common/Button/Button";
 import {
   FlightOutlined,
@@ -20,6 +21,9 @@ import {
   SearchRounded,
 } from "@mui/icons-material";
 import Zigzag from "../../common/CustomRender/Zigzag";
+import FormRow from "../../common/CustomRender/FormRow";
+import { Dropdown } from "../../common/Dropdown/Dropdown";
+import type { Flight } from "../../common/Setting/type";
 
 const BookTicket = () => {
   const [flightParams, setFlightParams] = React.useState<UserSearchType>({
@@ -30,9 +34,22 @@ const BookTicket = () => {
     arrivalAirport: "",
     passengerCount: 0,
   });
-  const { reset: resetSearch } = useForm<UserSearchType>({
-    defaultValues: flightParams,
-  });
+  const { reset: resetSearch, control: controlSearch } =
+    useForm<UserSearchType>({
+      defaultValues: flightParams,
+    });
+
+  const { flightList } = useFlightList();
+  const [flightListData, setFlightList] = React.useState<Flight[]>([]);
+
+  React.useEffect(() => {
+    if (flightList?.list) {
+      setFlightList(flightList.list);
+    }
+  }, [flightList]); // chạy lại mỗi khi flightList đổi
+
+  console.log("flightListData", flightListData);
+  console.log("flightList", flightList);
   const onResetForm = () => {
     resetSearch();
   };
@@ -55,34 +72,12 @@ const BookTicket = () => {
         return "#f5f5f5";
     }
   };
-  const sampleDataFlight = [
-    {
-      ticketNo: "FL12345",
-      flightId: "FL12345",
-      departureAirport: "JFK",
-      arrivalAirport: "LAX",
-      scheduledDeparture: "2025-06-28T08:30:00",
-      scheduledArrival: "2025-06-28T12:15:00",
-      fareConditions: "Economy",
-      aircraftName: "Boeing 737 MAX",
-      totalAmount: 480,
-      amount: 160,
-      status: "Confirmed",
-    },
-    {
-      ticketNo: "FL67890",
-      flightId: "FL67890",
-      departureAirport: "SGN",
-      arrivalAirport: "HAN",
-      scheduledDeparture: "2025-06-29T14:00:00",
-      scheduledArrival: "2025-06-29T16:10:00",
-      fareConditions: "Business",
-      aircraftName: "Airbus A320",
-      totalAmount: 820,
-      amount: 410,
-      status: "Pending",
-    },
+  const fareConditions = [
+    { label: "Economy", value: "ECONOMY" },
+    { label: "Business", value: "BUSINESS" },
+    { label: "First Class", value: "FIRST" },
   ];
+
   const onSubmitValue = async (values: UserSearchType) => {
     if (!values) return;
     setLoadingFlightBookingData(true);
@@ -90,27 +85,27 @@ const BookTicket = () => {
     setFlightParams(values);
     await refetchFlightBookingDataData(values);
   };
-  React.useEffect(() => {
-    if (flightBookingData) {
-      const list = Array.isArray(flightBookingData.flightList)
-        ? flightBookingData.flightList
-        : flightBookingData.flightList
-        ? [flightBookingData.flightList]
-        : [];
-      setDisplayDataFlight(list);
-      setLoadingFlightBookingData(false);
-    }
-  }, [flightBookingData]);
+
+  // React.useEffect(() => {
+  //   if (flightBookingData) {
+  //     const list = Array.isArray(flightBookingData.flightList)
+  //       ? flightBookingData.flightList
+  //       : flightBookingData.flightList
+  //       ? [flightBookingData.flightList]
+  //       : [];
+  //     setDisplayDataFlight(list);
+  //     setLoadingFlightBookingData(false);
+  //   }
+  // }, [flightBookingData]);
   const formatDate = (dateValue: string | undefined) => {
     if (!dateValue) return "";
     const date = new Date(dateValue);
     return date.toTimeString().split(" ")[0];
   };
   return (
-    //  <form onSubmit={handleSearchSubmit(onSubmitValue)}>
     <form>
       <FormControl sx={{ width: "100%" }}>
-        <TableContainer className="flight-container" sx={{ p: 3 }}>
+        <TableContainer sx={{ p: 1 }}>
           <Box
             sx={{
               display: "flex",
@@ -136,63 +131,69 @@ const BookTicket = () => {
               className="search-status"
             >
               <Grid container spacing={3}>
-                {/* Left column */}
                 {/* <Grid item xs={12} md={6}> */}
-                {/* <FormRow label="Fare Conditions">
-                    {/* <DropdownField
-              name="fareConditions"
-              control={controlSearch}
-              options={fareConditions}
-              placeholder="Select"
-            /> 
-                  </FormRow>
+                <FormRow label="Fare Conditions">
+                  <Dropdown
+                    value={controlSearch._getWatch("fareConditions")}
+                    onChange={() => {}}
+                    options={fareConditions}
+                    placeholder="Select"
+                  />
+                </FormRow>
 
-                  <FormRow label="Passenger Count">
-                    <DropdownField
-                      name="passengerCount"
-                      control={controlSearch}
-                      options={[]} // Replace with real data
-                      placeholder="Choose number"
-                    />
-                  </FormRow> */}
+                <FormRow label="Passenger Count">
+                  <Dropdown
+                    options={[]} // Replace with real data
+                    placeholder="Choose number"
+                    value={controlSearch._getWatch("passengerCount")}
+                    onChange={() => {}}
+                  />
+                </FormRow>
               </Grid>
 
               {/* Middle column */}
-              {/* <FormRow label="Departure Airport">
-                    <DropdownField
-                      name="departureAirport"
-                      control={controlSearch}
-                      options={airportName}
-                      placeholder="Select"
-                    />
-                  </FormRow>
+              {/* <Grid container spacing={3}> */}
+              <Grid size={12}>
+                <FormRow label="Departure Airport">
+                  <Dropdown
+                    options={fareConditions}
+                    placeholder="Select"
+                    value={controlSearch._getWatch("fareConditions")}
+                    onChange={() => {}}
+                  />
+                </FormRow>
 
-                  <FormRow label="Arrival Airport">
-                    <DropdownField
-                      name="arrivalAirport"
-                      control={controlSearch}
-                      options={airportName}
-                      placeholder="Select"
-                    />
-                  </FormRow> */}
+                <FormRow label="Arrival Airport">
+                  <Dropdown
+                    options={fareConditions}
+                    placeholder="Select"
+                    value={controlSearch._getWatch("fareConditions")}
+                    onChange={() => {}}
+                  />
+                </FormRow>
+              </Grid>
 
               {/* Right column */}
-              {/* <Grid item xs={12} md={4}>
-                  <FormRow label="Scheduled Departure">
-                    <DatetimePicker
-                      name="scheduledDeparture"
-                      control={controlSearch}
-                    />
-                  </FormRow>
+              <Grid size={12}>
+                {/* Middle column */}
+                <FormRow label="Departure Airport">
+                  <Dropdown
+                    options={fareConditions}
+                    placeholder="Select"
+                    value={controlSearch._getWatch("fareConditions")}
+                    onChange={() => {}}
+                  />
+                </FormRow>
 
-                  <FormRow label="Scheduled Arrival">
-                    <DatetimePicker
-                      name="scheduledArrival"
-                      control={controlSearch}
-                    />
-                  </FormRow>
-                </Grid>
-              </Grid> */}
+                <FormRow label="Arrival Airport">
+                  <Dropdown
+                    options={fareConditions}
+                    placeholder="Select"
+                    value={controlSearch._getWatch("fareConditions")}
+                    onChange={() => {}}
+                  />
+                </FormRow>
+              </Grid>
               <Box
                 sx={{
                   display: "flex",
@@ -216,12 +217,7 @@ const BookTicket = () => {
                   priority="normal"
                   size="large"
                   type="submit"
-                  label={
-                    <Typography>
-                      <SearchRounded sx={{ color: "white" }} />
-                      선택
-                    </Typography>
-                  }
+                  label="선택"
                 />
               </Box>
             </Box>
@@ -229,8 +225,8 @@ const BookTicket = () => {
           <Box mt={2}>
             <Grid container spacing={2}>
               {/* Render flight data trước, luôn hiển thị */}
-              {sampleDataFlight.length > 0 ? (
-                sampleDataFlight.map((flight) => (
+              {flightListData?.length > 0 ? (
+                flightListData.map((flight) => (
                   <Box>
                     {/* item xs={12} key={flight.ticketNo} */}
                     <Box>
@@ -260,27 +256,24 @@ const BookTicket = () => {
                               sx={{ fontSize: 100, transform: "rotate(50deg)" }}
                             />
                             <Typography variant="body1" color="black">
-                              Flight Number: {flight.ticketNo}
+                              Flight Number: {flight.flightNo}
                             </Typography>
                           </Box>
                           <Box sx={{ alignContent: "center", minWidth: 160 }}>
-                            <Box
-                              sx={{
-                                px: 1,
-                                py: 1,
-                                backgroundColor: getFareConditionColor(
-                                  flight.fareConditions as FareConditions
-                                ),
-                                border: "solid 1px #f2f3f8",
-                                borderRadius: 1,
-                                textAlign: "center",
-                                alignContent: "center",
-                              }}
-                            >
-                              {flight.fareConditions}
-                            </Box>
+                            {fareConditions.map((fare) => (
+                              <Chip
+                                key={fare.value}
+                                label={fare.label}
+                                style={{
+                                  backgroundColor: getFareConditionColor(
+                                    fare.label as FareConditions
+                                  ),
+                                }}
+                              />
+                            ))}
+
                             <Typography variant="h5" color="text.secondary">
-                              {flight.aircraftName}
+                              {flight.aircraftCode}
                             </Typography>
                           </Box>
                           <Box
@@ -360,11 +353,11 @@ const BookTicket = () => {
                               fontWeight="bold"
                               color="black"
                             >
-                              {flight.totalAmount} dollar
+                              {flight.aircraftCode} dollar
                             </Typography>
 
                             <Typography variant="body1" color="black">
-                              Total: {flight.amount} / person dollar
+                              Total: {flight.arrivalAirport} / person dollar
                             </Typography>
                           </Box>
                           <Box sx={{ alignContent: "center" }}>

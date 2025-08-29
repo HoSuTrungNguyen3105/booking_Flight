@@ -100,10 +100,10 @@ const routes = [
         path: "/sampleFormData",
         element: <TableCustom />,
       },
-      {
-        path: ROUTE_PATHS.FILE_UPLOAD.replace("/", ""),
-        element: <FileUpload name="fileUploader" />,
-      },
+      // {
+      //   path: ROUTE_PATHS.FILE_UPLOAD.replace("/", ""),
+      //   element: <FileUpload name="fileUploader" />,
+      // },
       {
         path: ROUTE_PATHS.BOOK_TICKET.replace("/", ""),
         element: <BookTicket />,
@@ -165,7 +165,11 @@ const routes = [
       },
       {
         path: ROUTE_PATHS.FILE_UPLOAD.replace("/", ""),
-        element: <FileUpload name="fileUploaderV2" />,
+        element: <FileUpload name="fileUploader" />,
+      },
+      {
+        path: ROUTE_PATHS.BOOK_TICKET.replace("/", ""),
+        element: <BookTicket />,
       },
       {
         path: ROUTE_PATHS.BOOK_TICKET.replace("/", ""),

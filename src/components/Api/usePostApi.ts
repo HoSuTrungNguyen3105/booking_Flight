@@ -41,9 +41,11 @@ const putMethod = {
   headers: { "Content-Type": "application/json" },
 };
 const messageMethod = { success: "Success action", error: "Error action" };
+
 type FlightId = {
   id?: number;
 };
+
 export const mapToDropdown = (
   list: CodeItem[],
   key: keyof CodeItem,
@@ -54,6 +56,7 @@ export const mapToDropdown = (
     value: item[valueKey] || "",
   }));
 };
+
 export const useCreateFlight = () => {
   const { data: createFlightData, refetch: refetchCreateFlightData } = useFetch<
     FlightListApiResponse,
@@ -63,7 +66,6 @@ export const useCreateFlight = () => {
     defaultValue: { resultCode: "", resultMessage: "" },
     autoFetch: false,
     config: postMethod,
-    showToast: true,
   });
   return {
     createFlightData,
@@ -79,7 +81,6 @@ export const useGetFlightNo = () => {
     defaultValue: { resultCode: "", resultMessage: "" },
     autoFetch: false,
     config: postMethod,
-    showToast: false,
   });
   return {
     getFlightNoData,
@@ -98,7 +99,6 @@ export const useSearchFlight = (flightParams: SearchType) => {
     defaultValue: { resultCode: "", resultMessage: "" },
     autoFetch: true,
     config: postMethod,
-    showToast: false,
   });
   return {
     flightList,
@@ -115,7 +115,6 @@ export const useFlightById = ({ id }: FlightId) => {
     params: {},
     autoFetch: false,
     config: getMethod,
-    showToast: false,
   });
   return {
     fetchFlightId,
@@ -132,8 +131,6 @@ export const useFlightUpdate = () => {
     defaultValue: { resultCode: "", resultMessage: "" },
     autoFetch: false,
     config: putMethod,
-    message: messageMethod,
-    showToast: true,
   });
   const refetchUpdateFlightId = (data: DataFlight) => {
     return refetch(data, `/sys/flights/flights/${data.flightId}`);
@@ -173,7 +170,6 @@ export const useRequestUnlockAccount = () => {
       defaultValue: { resultCode: "", resultMessage: "" },
       autoFetch: false,
       config: postMethod,
-      showToast: true,
     });
   return {
     requestUnlockAccount,
@@ -191,8 +187,6 @@ export const useFlightDelete = () => {
     defaultValue: { resultCode: "", resultMessage: "" },
     autoFetch: false,
     config: deleteMethod,
-    message: messageMethod,
-    showToast: true,
   });
   const deleteFlightById = async ({ id }: FlightId) => {
     const res = await refetchDeleteFlight({}, `/sys/flights/flights/${id}`);
@@ -219,30 +213,28 @@ export const useAirCraftList = (craftParams: AvailableAircraft) => {
     },
     autoFetch: false,
     config: postMethod,
-    showToast: false,
   });
   return {
     aircraftList,
     refetchAircraftList,
   };
 };
-export const useFlightList = (flightParams: DataFlight) => {
+export const useFlightList = () => {
   const { data: flightList, refetch: refetchFlightList } = useFetch<
     FlightListApiResponse,
-    DataFlight
+    null
   >({
     url: "/sys/flights",
-    params: flightParams, // 🔧 THIẾU dòng này
     defaultValue: { resultCode: "", resultMessage: "" },
     autoFetch: true,
-    config: postMethod,
-    showToast: false,
+    config: getMethod,
   });
   return {
     flightList,
     refetchFlightList,
   };
 };
+
 export const useSelectIdFlight = (id: string | number | undefined) => {
   const { data: selectIdFlight, refetch: refetchSelectIdFlight } = useFetch<
     FlightDetailApiResponse,
@@ -252,7 +244,6 @@ export const useSelectIdFlight = (id: string | number | undefined) => {
     defaultValue: { resultCode: "", resultMessage: "" },
     autoFetch: true,
     config: postMethod,
-    showToast: false,
   });
   return {
     selectIdFlight,
@@ -260,13 +251,6 @@ export const useSelectIdFlight = (id: string | number | undefined) => {
   };
 };
 
-// import { useFetch } from 'hooks/useFetch';
-// import { FlightDetailResponse, UserSearchType } from './type';
-// const postMethod = { method: 'POST', headers: { 'Content-Type': 'application/json' }, timeout: 3000 };
-// const getMethod = { method: 'GET', headers: { 'Content-Type': 'application/json' }, timeout: 3000 };
-// const deleteMethod = { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, timeout: 3000 };
-// const putMethod = { method: 'PUT', headers: { 'Content-Type': 'application/json' }, timeout: 3000 };
-// const messageMethod = { success: 'Success', error: 'Error' };
 export const useFlightBooking = (flightParams: UserSearchType) => {
   const { data: flightBookingData, refetch: refetchFlightBookingDataData } =
     useFetch<FlightDetailResponse, UserSearchType>({
@@ -277,7 +261,6 @@ export const useFlightBooking = (flightParams: UserSearchType) => {
       defaultValue: { resultCode: "", resultMessage: "" },
       autoFetch: false,
       config: postMethod,
-      message: messageMethod,
     });
   return {
     flightBookingData,
@@ -295,7 +278,6 @@ export const useTicketById = (flightParams: UserSearchType) => {
       defaultValue: { resultCode: "", resultMessage: "" },
       autoFetch: false,
       config: postMethod,
-      message: messageMethod,
     });
   return {
     flightBookingData,
@@ -303,7 +285,6 @@ export const useTicketById = (flightParams: UserSearchType) => {
   };
 };
 interface MfaRequest {
-  // userId: number;
   email: string;
 }
 
@@ -422,22 +403,6 @@ export const useLoginByMfa = () => {
   };
 };
 
-// export const useChangePassword = () => {
-//   const { data: setLoginMfa, refetch: refetchSetLoginMfa } = useFetch<
-//     MFAAuthResponse,
-//     MfaRequest
-//   >({
-//     url: "/auth/loginmfa",
-//     // defaultValue: { resultCode: "", resultMessage: "" },
-//     autoFetch: false,
-//     config: postMethod,
-//     // message: messageMethod,
-//   });
-//   return {
-//     setLoginMfa,
-//     refetchSetLoginMfa,
-//   };
-// };
 export const useCreateUserByAdmin = () => {
   // const isValid = !!id;
   const {
@@ -447,10 +412,8 @@ export const useCreateUserByAdmin = () => {
     setParams: setParamsUser,
   } = useFetch<UserCreateResponse, UseRCreate>({
     url: "/sys/users/createUserByAdmin",
-    // params: ,
     autoFetch: false,
     config: postMethod,
-    showToast: true,
   });
   return {
     fetchCreateUser,
@@ -469,10 +432,8 @@ export const useUpdateUserById = () => {
     setParams: setParamsUser,
   } = useFetch<UserCreateResponse, UserDataNoGrid>({
     url: "/sys/users/updateUser",
-    // params: ,
     autoFetch: false,
     config: postMethod,
-    showToast: true,
   });
   return {
     fetchUpdateUserById,
@@ -487,7 +448,6 @@ export interface ILockAccountProps {
 }
 
 export const useAccountLock = () => {
-  // const isValid = !!id;
   const {
     data: fetchAccountLock,
     refetch: refetchAccountLock,
@@ -498,7 +458,6 @@ export const useAccountLock = () => {
     // params: ,
     autoFetch: false,
     config: postMethod,
-    showToast: false,
   });
   return {
     loadingAccountLock,

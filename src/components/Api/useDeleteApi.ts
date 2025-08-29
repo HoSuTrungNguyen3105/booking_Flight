@@ -6,16 +6,13 @@ const deleteMethod = {
   method: MethodType.DELETE,
   headers: { "Content-Type": "application/json" },
 };
+
 export const useDeleteUserById = (id?: number) => {
   const isValid = !!id;
-  const { refetch: refetchDeleteUser } = useFetch<
-    DetailResponseMessage,
-    DetailResponseMessage
-  >({
+  const { refetch: refetchDeleteUser } = useFetch<DetailResponseMessage, null>({
     url: isValid ? `/sys/users/${id}` : "",
     autoFetch: false,
     config: deleteMethod,
-    showToast: true,
   });
   return {
     refetchDeleteUser,

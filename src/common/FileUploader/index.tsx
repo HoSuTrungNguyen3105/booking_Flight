@@ -46,9 +46,6 @@ export const FileUpload: FC<FileUploaderProps> = ({
   const [selectedFile, setSelectedFile] = useState<TFileUploader | null>(null);
 
   const [_, setIsDragging] = useState(false);
-  useEffect(() => {
-    setImageFiles(value || []);
-  }, [value]);
 
   const toggleInputType = () => {
     setCurrentInputType((prev) => {
@@ -99,6 +96,9 @@ export const FileUpload: FC<FileUploaderProps> = ({
     [imageFiles]
   );
 
+  console.log("imageFiles", imageFiles);
+  console.log("files");
+
   const handleDuplicateName = (
     currentFile: TFileUploader[],
     fileList: File[],
@@ -127,20 +127,24 @@ export const FileUpload: FC<FileUploaderProps> = ({
     );
   };
 
-  const handleChange: ChangeEventHandler<HTMLInputElement> = (
-    event: ChangeEvent<HTMLInputElement>
-  ) => {
-    if (!event.target.files?.length) return;
-    const newFile: File[] = Array.from(event.target.files);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+    const newFile: File[] = Array.from(e.target.files);
     const isValid = validateFiles(newFile);
     if (!isValid || disabled) return;
     const fileSrc: TFileUploader[] = newFile.map((file: File) => ({
-      preview: URL.createObjectURL(file),
+      // preview: URL.createObjectURL(file),
+      // raw: file,
+      // size: file.size,
+      // name: getFileInformation(file.name).name,
+      // type: getFileInformation(file.name).type,
+      // fileName: handleDuplicateName(imageFiles, newFile, file, multiple),
       raw: file,
+      preview: URL.createObjectURL(file),
       size: file.size,
-      name: getFileInformation(file.name).name,
-      type: getFileInformation(file.name).type,
-      fileName: handleDuplicateName(imageFiles, newFile, file, multiple),
+      name: file.name,
+      type: file.type,
+      fileName: file.name,
     }));
     const updatedFiles = multiple ? [...imageFiles, ...fileSrc] : fileSrc;
     setImageFiles(updatedFiles);
@@ -155,27 +159,29 @@ export const FileUpload: FC<FileUploaderProps> = ({
     setOpenImage(false);
     setSelectedFile(null);
   };
-  const handleDrop: DragEventHandler<HTMLDivElement> = (
-    event: DragEvent<HTMLDivElement>
-  ) => {
-    event.preventDefault();
-    event.stopPropagation();
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
     setIsDragging(false);
 
     if (disabled) return;
-    if (!event.dataTransfer.files.length) return;
+    if (!e.dataTransfer.files.length) return;
 
-    const newFile: File[] = Array.from(event.dataTransfer.files);
+    const newFile: File[] = Array.from(e.dataTransfer.files);
     const isValid = validateFiles(newFile);
     if (!isValid) return;
 
     const fileSrc: TFileUploader[] = newFile.map((file: File) => ({
-      preview: URL.createObjectURL(file),
       raw: file,
+      preview: URL.createObjectURL(file),
       size: file.size,
-      name: getFileInformation(file.name).name,
-      type: getFileInformation(file.name).type,
-      fileName: handleDuplicateName(imageFiles, newFile, file, multiple),
+      name: file.name,
+      type: file.type,
+      fileName: file.name,
+      // size: file.size,
+      // name: getFileInformation(file.name).name,
+      // type: getFileInformation(file.name).type,
+      // fileName: handleDuplicateName(imageFiles, newFile, file, multiple),
     }));
     const updatedFiles = multiple ? [...imageFiles, ...fileSrc] : fileSrc;
     setImageFiles(updatedFiles);
@@ -263,7 +269,7 @@ export const FileUpload: FC<FileUploaderProps> = ({
                 {imageFiles.map((file, index) => (
                   <Box
                     data-testid="file-item-1"
-                    key={uniqueId()}
+                    key={index}
                     className="group-img"
                     sx={{
                       "&:hover": {
@@ -317,7 +323,7 @@ export const FileUpload: FC<FileUploaderProps> = ({
               <Box>
                 {imageFiles.map((file, index: number) => (
                   <Box
-                    key={uniqueId()}
+                    key={index}
                     className="group-file"
                     data-testid="file-item"
                     onClick={() => openImageModal(file)}
@@ -330,7 +336,7 @@ export const FileUpload: FC<FileUploaderProps> = ({
                       <span>{bytesToSize(file.size)}</span>
                       <CancelIcon
                         onClick={(e) => {
-                          e.stopPropagation(); // 👈 Ngăn không cho click ảnh
+                          e.stopPropagation();
                           handleRemoveFile(index);
                         }}
                         sx={{ cursor: "pointer" }}
@@ -366,9 +372,9 @@ export const FileUpload: FC<FileUploaderProps> = ({
               </Box>
             ) : (
               <Box>
-                {imageFiles.map((file) => (
+                {imageFiles.map((file, index) => (
                   <Box
-                    key={uniqueId()}
+                    key={index}
                     className="group-file"
                     data-testid="file-item-2"
                   >

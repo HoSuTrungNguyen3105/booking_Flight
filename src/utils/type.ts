@@ -2,22 +2,12 @@ import type { GridRowDef } from "../common/DataGrid";
 import type { Flight } from "../common/Setting/type";
 
 export enum MethodConfig {
-  GET = "GET",
-  POST = "POST",
   DELETE = "DELETE",
   PATCH = "PATCH",
   UPDATE = "UPDATE",
+  GET = "GET",
+  POST = "POST",
 }
-
-export enum MessageOption {
-  Option00 = "00",
-  Option01 = "01",
-  Option02 = "02",
-  Option03 = "03",
-  Option04 = "05",
-}
-
-export type OptionalNumber = number | undefined;
 
 export type CodeItem = {
   code: string;
@@ -26,7 +16,7 @@ export type CodeItem = {
 };
 
 export type DataFlight = {
-  flightId?: OptionalNumber;
+  flightId?: number;
   flightNo?: string;
   scheduledDeparture: string;
   scheduledArrival: string;

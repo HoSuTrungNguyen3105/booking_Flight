@@ -2,9 +2,9 @@ import { useState } from "react";
 import SearchLayout, {
   type TabItem,
 } from "../../components/Layout/SearchLayout";
-import DataSecure from "./DataSecure";
 import ManageMyInfo from "./ManageMyInfo";
-import { Typography } from "@mui/material";
+import { Box } from "@mui/material";
+import { FileUpload } from "../FileUploader";
 
 const Security = () => {
   const [tabX, setTab] = useState(0);
@@ -12,7 +12,11 @@ const Security = () => {
     {
       label: "Security",
       value: "auto",
-      content: <Typography variant="h6">Security Settings</Typography>,
+      content: (
+        <Box width={"20rem"}>
+          <FileUpload name="file" />
+        </Box>
+      ),
     },
     {
       label: "InspectionSection",
@@ -23,10 +27,10 @@ const Security = () => {
   return (
     <div>
       <SearchLayout
-        onChangeTab={setTab}
-        activeTab={tabX}
         title="Layout"
         tabs={tabs}
+        onChangeTab={setTab}
+        activeTab={tabX}
       />
     </div>
   );

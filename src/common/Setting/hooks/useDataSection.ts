@@ -142,7 +142,7 @@ export const useDataSection = (
             FieldType.INPUT_WITH_TYPE_TEXT,
           placeholder: "Nhập tên đăng nhập...",
           options: [],
-          value: data,
+          value: data.name,
         },
       },
       {

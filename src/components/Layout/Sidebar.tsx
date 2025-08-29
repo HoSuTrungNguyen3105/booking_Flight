@@ -82,11 +82,6 @@ const Sidebar = ({ children }: PropsWithChildren) => {
         resizeHandles={["e"]}
         onResize={(_, { size }) => handleWidthChange(size.width)}
         handle={resizeHandleBox}
-        // style={{
-        //   position: "relative", // ✅ rất quan trọng để handle dùng absolute bên trong
-        //   display: "flex",
-        //   flexDirection: "column",
-        // }}
       >
         <NavContainer>
           <Box component="nav" height="100%">

@@ -1,6 +1,6 @@
 import React, { memo } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import AsideLnb from "./../Admin/Sidebar";
+import AsideLnb from "./Sidebar";
 import {
   Box,
   List,

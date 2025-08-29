@@ -7,6 +7,8 @@ import UserInfoSection from "./UserInfoSection";
 import type { UserData } from "../../utils/type";
 import TransferAuthoritySection from "./hooks/TransferAuthoritySection";
 import { useAuth } from "../../context/AuthContext";
+import { FileUpload } from "../FileUploader";
+import { Controller } from "react-hook-form";
 
 const ManageMyInformation = () => {
   const { user } = useAuth();
@@ -65,7 +67,9 @@ const ManageMyInformation = () => {
         setOpenModal={() => setToggleOpenModal(!toggleOpenModal)}
       />
       {/* <TimeInfoSection /> */}
+
       {renderButtonSection()}
+
       <DialogConfirm
         icon="warning"
         cancelLabel="Exit"
