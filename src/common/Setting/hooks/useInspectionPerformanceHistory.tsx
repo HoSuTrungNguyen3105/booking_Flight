@@ -84,7 +84,6 @@ export const useInspectionPerformanceHistory = () => {
 
   const rows = fetchUser?.list ?? [];
 
-  // TODO: Replace with useServerPagination
   const {
     currentPage,
     sortModel,
@@ -196,12 +195,6 @@ export const useInspectionPerformanceHistory = () => {
               defaultValue="관리"
               value="관리"
               onChange={(value) => handleSelectAction(row, value as ActionType)}
-              sx={{
-                width: "20px",
-                "& .MuiOutlinedInput-notchedOutline": {
-                  border: "none",
-                },
-              }}
               options={[
                 { label: "정보 수정", value: "addUser" },
                 { label: "MFA 설정 삭제", value: "editUser" },

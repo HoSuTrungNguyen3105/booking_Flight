@@ -1,44 +1,69 @@
-import { useState } from "react";
-import { Button, Card, CardContent } from "@mui/material";
+import { useEffect, useState } from "react";
+import { Box, Button, Card, CardContent, Typography } from "@mui/material";
 import TextArea from "../../common/Input/TextArea";
 import { useRequestUnlockAccount } from "../Api/usePostApi";
+import InputTextField from "../../common/Input/InputTextField";
+import InputTextArea from "../../common/Input/InputTextArea";
 
-const RequestUnlock = ({ userId }: { userId: number }) => {
+const RequestUnlock = ({
+  userId,
+  onClose,
+}: {
+  userId: number;
+  onClose: () => void;
+}) => {
   const [reason, setReason] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const { refetchRequestUnlockAccount } = useRequestUnlockAccount();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setMessage(null);
-
     try {
       const res = await refetchRequestUnlockAccount({ userId, reason });
-      console.log("res", res);
-      setMessage(res?.resultMessage || null);
+      if (res?.resultCode !== "00") {
+        setMessage(res?.resultMessage || null);
+        setError(null);
+      } else {
+        setMessage(res?.resultMessage || null);
+        setError(null);
+        onClose();
+      }
     } catch (error) {
       setMessage("Có lỗi xảy ra, vui lòng thử lại.");
+      setError(null);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Card>
-      <CardContent>
-        <h2>Tài khoản bị khóa</h2>
-        <p>Vui lòng gửi lý do để yêu cầu mở khóa tài khoản của bạn.</p>
+    <Card sx={{ mx: "auto", borderRadius: 2 }}>
+      <CardContent sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+        <Box sx={{ textAlign: "center" }}>
+          <Typography
+            sx={{ fontSize: "1.25rem", fontWeight: 600, color: "#1e293b" }}
+          >
+            Tài khoản đã bị khóa
+          </Typography>
+          <Typography sx={{ fontSize: "0.9rem", color: "#64748b" }}>
+            Vui lòng nhập lý do để gửi yêu cầu mở khóa tài khoản.
+          </Typography>
+        </Box>
         <form onSubmit={handleSubmit} className="space-y-3">
-          <TextArea
+          <InputTextArea
             placeholder="Nhập lý do..."
             value={reason}
-            onChange={(e) => setReason(e.target.value)}
-            required
+            onChange={(e) => {
+              setReason(e);
+              if (error) setError(null); // 👈 nhập lại thì clear error
+            }}
           />
           <Button
             type="submit"
-            className="w-full"
+            variant="contained"
             disabled={loading || reason.trim() === ""}
           >
             {loading ? "Đang gửi..." : "Gửi yêu cầu"}
@@ -46,7 +71,11 @@ const RequestUnlock = ({ userId }: { userId: number }) => {
         </form>
 
         {message && (
-          <p className="text-center text-sm text-green-600">{message}</p>
+          <Box sx={{ textAlign: "start", mt: 2 }}>
+            <Typography variant="body2" color="success.main">
+              {message}
+            </Typography>
+          </Box>
         )}
       </CardContent>
     </Card>

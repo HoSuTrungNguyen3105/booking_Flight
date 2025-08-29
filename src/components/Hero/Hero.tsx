@@ -22,9 +22,12 @@ import {
   CardContent,
   useMediaQuery,
   useTheme,
+  InputAdornment,
+  TextField,
 } from "@mui/material";
 import Image from "../../svgs/wallpaper.jpg";
 import { Speed, Security, SupportAgent } from "@mui/icons-material";
+import { GridSearchIcon } from "@mui/x-data-grid";
 
 interface FlightSearchForm {
   from: string;
@@ -180,71 +183,88 @@ const Hero: React.FC = () => {
       {/* Hero Section */}
       <Box
         sx={{
-          height: "500px",
+          height: "500px", // Tăng chiều cao
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
-          alignItems: "flex-start",
+          alignItems: "center",
           px: 6,
+          textAlign: "center",
           color: "white",
+          position: "relative",
+          overflow: "hidden",
+          backgroundImage:
+            "url(https://images.unsplash.com/photo-1490730101735-85e8a7056461?q=80&w=2670&auto=format&fit=crop)",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          "&::before": {
+            content: '""',
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0, 0, 0, 0.5)", // Lớp phủ mờ
+          },
         }}
       >
-        <Typography
-          variant="h3"
-          color={theme.palette.grey[500]}
-          fontWeight="bold"
-        >
-          Experience The Magic Of Flight!
-        </Typography>
-        <Typography color={theme.palette.grey[500]} variant="h6" sx={{ mt: 2 }}>
-          Elevate your travel journey
-        </Typography>
-        <Button
-          variant="contained"
-          sx={{ mt: 4, borderRadius: "25px", px: 4, py: 1.5 }}
-        >
-          Book A Trip Now
-        </Button>
+        <Box sx={{ position: "relative", zIndex: 2 }}>
+          <Typography
+            variant="h2"
+            fontWeight="bold"
+            sx={{
+              color: "white",
+              textShadow: "2px 2px 4px rgba(0,0,0,0.7)",
+            }}
+          >
+            Find Your Next Adventure
+          </Typography>
+          <Typography
+            variant="h5"
+            sx={{ mt: 2, color: theme.palette.grey[300] }}
+          >
+            Book flights, discover destinations, and start your journey with
+            ease.
+          </Typography>
+
+          <Box
+            sx={{
+              mt: 5,
+              width: "100%",
+              maxWidth: "800px",
+              mx: "auto",
+              backgroundColor: "rgba(255, 255, 255, 0.9)",
+              borderRadius: "16px",
+              p: 2,
+              boxShadow: 3,
+            }}
+          >
+            <TextField
+              fullWidth
+              variant="outlined"
+              placeholder="Search flights, destinations..."
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <GridSearchIcon color="primary" />
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <Button variant="contained" sx={{ borderRadius: "12px" }}>
+                      Search
+                    </Button>
+                  </InputAdornment>
+                ),
+                sx: {
+                  borderRadius: "12px",
+                  bgcolor: "white",
+                },
+              }}
+            />
+          </Box>
+        </Box>
       </Box>
-
-      {/* Popular Destination */}
-      <Container sx={{ py: 8 }}>
-        <Typography variant="h4" align="center" fontWeight="bold" gutterBottom>
-          Popular Destination
-        </Typography>
-        <Typography variant="subtitle1" align="center" sx={{ mb: 4 }}>
-          Unleash Your Wanderlust With Skywings
-        </Typography>
-
-        <Grid container spacing={4} justifyContent="center">
-          {destinations.map((dest, index) => (
-            <Grid key={index} size={12}>
-              <Card
-                sx={{
-                  borderRadius: "20px",
-                  overflow: "hidden",
-                  boxShadow: 3,
-                  transition: "0.3s",
-                  "&:hover": { transform: "scale(1.05)" },
-                }}
-              >
-                <CardMedia
-                  component="img"
-                  height="200"
-                  image={dest.image}
-                  alt={dest.title}
-                />
-                <CardContent>
-                  <Typography variant="h6" fontWeight="bold">
-                    {dest.title}
-                  </Typography>
-                  <Typography color="text.secondary">{dest.reviews}</Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      </Container>
     </>
   );
 };

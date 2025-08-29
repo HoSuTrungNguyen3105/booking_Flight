@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Box, Typography } from "@mui/material";
 import { Button } from "../../common/Button/Button";
-import Input from "../../common/CustomRender/Input";
 import { useForm } from "react-hook-form";
 import { useToast } from "../../context/ToastContext";
 import { useCheckMfaAvailable } from "../Api/useGetApi";
 import { useResetPasswordByMfa } from "../Api/usePostApi";
+import Input from "../Admin/component/Input";
 
 interface FormDataType {
   email: string;
@@ -13,7 +13,7 @@ interface FormDataType {
 }
 
 const ForgetPassword = () => {
-  const { control, handleSubmit, watch } = useForm<FormDataType>({
+  const { control, watch } = useForm<FormDataType>({
     defaultValues: { email: "", mfaCode: "" },
   });
   const toast = useToast();

@@ -22,26 +22,6 @@ const SpinnerOrbit = styled(Box)(() => ({
 }));
 
 export const LoadingOrbit = () => (
-  //   <Box
-  //     sx={{
-  //       //   height: "100vh",
-  //       display: "flex",
-  //       justifyContent: "center",
-  //       alignItems: "center",
-  //       //   backgroundColor: "#f9f9f9",
-  //     }}
-  //   >
-  //     <SpinnerOrbit>
-  //       <Dot sx={{ top: 0, left: "50%", transform: "translateX(-50%)" }} />
-  //       <Dot sx={{ right: 0, top: "50%", transform: "translateY(-50%)" }} />
-  //       <Dot sx={{ bottom: 0, left: "50%", transform: "translateX(-50%)" }} />
-  //       <Dot sx={{ left: 0, top: "50%", transform: "translateY(-50%)" }} />
-  //       <Dot sx={{ top: 0, left: "50%", transform: "translateX(-50%)" }} />
-  //       <Dot sx={{ right: 0, top: "50%", transform: "translateY(-50%)" }} />
-  //       <Dot sx={{ bottom: 0, left: "50%", transform: "translateX(-50%)" }} />
-  //       <Dot sx={{ left: 0, top: "50%", transform: "translateY(-50%)" }} />
-  //     </SpinnerOrbit>
-  //   </Box>
   <Box
     sx={{
       height: "100vh",
@@ -62,4 +42,3 @@ export const LoadingOrbit = () => (
     </SpinnerOrbit>
   </Box>
 );
-// export const LoadingOrbit;

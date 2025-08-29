@@ -89,6 +89,16 @@ export type UserDataResponse<T> = {
   userId: number;
 };
 
+export type DataResponseId = {
+  resultCode: string;
+  resultMessage: string;
+  data?: { id: number };
+  requireChangePassword?: boolean;
+  requireUnlock?: boolean;
+  accessToken?: string | null;
+  userId: number;
+};
+
 export enum UserRole {
   ADMIN = "ADMIN",
   USER = "USER",

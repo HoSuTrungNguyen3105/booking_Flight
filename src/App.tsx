@@ -8,9 +8,10 @@ import { I18nextProvider } from "react-i18next";
 import "./i18n";
 import i18n from "./i18n";
 import { ToastProvider } from "./context/ToastContext";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
 import theme from "./scss/theme";
+
 // const theme = createTheme({
 //   palette: {
 //     text: {

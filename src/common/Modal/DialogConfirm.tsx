@@ -8,6 +8,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import { memo } from "react";
 
 interface DialogConfirmProps {
   icon?: string;
@@ -64,4 +65,4 @@ const DialogConfirm = ({
   );
 };
 
-export default DialogConfirm;
+export default memo(DialogConfirm);

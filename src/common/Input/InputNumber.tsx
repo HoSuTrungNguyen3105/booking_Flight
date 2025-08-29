@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { INPUT_HEIGHT_BY_SIZE, type InputNumberProps } from "./type";
 import clsx from "clsx";
 import { TextField } from "@mui/material";
 
-export const InputNumber = ({
+const InputNumber = ({
   placeholder = "",
   value,
   sx,
@@ -79,3 +79,4 @@ export const InputNumber = ({
     />
   );
 };
+export default memo(InputNumber);

@@ -98,30 +98,9 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
       };
     }, [readOnly, sx]);
 
-    // const mergedSx = useMemo(() => {
-    //   return {
-    //     ...sx,
-    //     ...(readOnly ? readonlyStyles : {}),
-    //     ...(hasCopy
-    //       ? {
-    //           "& .MuiOutlinedInput-root": {
-    //             border: "2px solid #4caf50",
-    //             borderRadius: "8px", // hoặc theo thiết kế của bạn
-    //           },
-    //         }
-    //       : {}),
-    //   };
-    // }, [readOnly, hasCopy, sx]);
-
     return (
       <TextField
-        type={
-          type === "password"
-            ? showPassword
-              ? "text"
-              : "text" // vẫn là text để dùng `•••` che
-            : type
-        }
+        type={type}
         value={
           type === "password" && realease3phrase && !showPassword
             ? getMaskedPassword(value || "")
@@ -134,9 +113,6 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
         disabled={disabled}
         sx={mergedSx}
         {...restProps}
-        // inputProps={{
-        //   readOnly: realease3phrase && !showPassword,
-        // }}
         slotProps={{
           input: {
             startAdornment: !!startIcon && (

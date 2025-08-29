@@ -13,6 +13,7 @@ import type {
   UserDataNoGrid,
   DetailResponseMessage,
   UseRCreate,
+  DataResponseId,
 } from "../../utils/type.ts";
 import { MethodType } from "../../hooks/type";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
@@ -155,7 +156,6 @@ export const useLoginUser = () => {
     defaultValue: { resultCode: "", resultMessage: "", userId: 0 },
     autoFetch: false,
     config: postMethod,
-    showToast: true,
   });
   return {
     loginUserData,
@@ -307,6 +307,11 @@ interface MfaRequest {
   email: string;
 }
 
+interface MfaRequestLogin {
+  email: string;
+  code: string;
+}
+
 interface MfaCodeRequest {
   email: string;
   code: string;
@@ -393,10 +398,8 @@ export const useVerifyMfa = () => {
     MfaCodeRequest
   >({
     url: "/auth/verifymfa",
-    // defaultValue: { resultCode: "", resultMessage: "" },
     autoFetch: false,
     config: postMethod,
-    // message: messageMethod,
   });
   return {
     verifyMfa,
@@ -406,14 +409,12 @@ export const useVerifyMfa = () => {
 
 export const useLoginByMfa = () => {
   const { data: setLoginMfa, refetch: refetchSetLoginMfa } = useFetch<
-    MFAAuthResponse,
-    MfaRequest
+    DataResponseId,
+    MfaRequestLogin
   >({
     url: "/auth/loginmfa",
-    // defaultValue: { resultCode: "", resultMessage: "" },
     autoFetch: false,
     config: postMethod,
-    // message: messageMethod,
   });
   return {
     setLoginMfa,

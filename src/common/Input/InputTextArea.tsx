@@ -1,5 +1,5 @@
 import { styled, TextareaAutosize } from "@mui/material";
-import type { ComponentProps } from "react";
+import type { ComponentProps, memo } from "react";
 
 interface IInputTextAreaProps
   extends Omit<ComponentProps<typeof TextareaAutosize>, "onChange"> {

@@ -7,7 +7,6 @@ export const Loading = () => {
     <Backdrop
       sx={(theme) => ({
         zIndex: theme.zIndex.drawer + 1,
-        // backgroundColor: "#f7f9f8",
         color: "#fff",
       })}
       open={loading}

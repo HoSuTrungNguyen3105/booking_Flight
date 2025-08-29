@@ -46,7 +46,6 @@ const DetailedInformationModal = ({
           priority="normal"
           label="삭제"
           onClick={() => {}}
-          // disabled={true}
         />
       </Box>
     );

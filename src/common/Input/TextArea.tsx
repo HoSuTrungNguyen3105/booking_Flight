@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { TextField, type TextFieldProps } from "@mui/material";
 
 const TextArea: React.FC<TextFieldProps> = ({
@@ -40,5 +40,4 @@ const TextArea: React.FC<TextFieldProps> = ({
 };
 
 TextArea.displayName = "TextArea";
-
-export default TextArea;
+export default memo(TextArea);

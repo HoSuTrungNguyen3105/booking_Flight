@@ -11,8 +11,9 @@ export default function MfaSetup() {
   const [email, setEmail] = useState<string>("");
   const [code, setCode] = useState("");
   const [loginMfa, setLoginMfaUi] = useState(false);
-  const { setLoginMfa, refetchSetLoginMfa } = useLoginByMfa();
+  const { refetchSetLoginMfa } = useLoginByMfa();
   const { refetchVerifyMfa } = useVerifyMfa();
+  const { loginWithGGAuthenticator } = useAuth();
   const { refetchSetUpMfa } = useSetUpMfa();
   const toast = useToast();
   const [isSetMfa, setIsSetMfa] = useState(false);
@@ -41,11 +42,11 @@ export default function MfaSetup() {
     }
   };
 
-  useEffect(() => {
-    if (code.length > 6) {
-      toast("Mã MFA chỉ gồm 6 chữ số");
-    }
-  }, [code]);
+  // useEffect(() => {
+  //   if (code.length > 6) {
+  //     toast("Mã MFA chỉ gồm 6 chữ số");
+  //   }
+  // }, [code]);
 
   const handleVerify = async () => {
     if (!code) {
@@ -76,7 +77,7 @@ export default function MfaSetup() {
       return;
     }
     // let res = "09";
-    const res = await refetchVerifyMfa({
+    const res = await loginWithGGAuthenticator({
       email,
       code: code,
     });

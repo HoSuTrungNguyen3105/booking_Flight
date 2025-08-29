@@ -8,17 +8,16 @@ type ImageThumbnailProps = {
 export const ImageThumbnail: FC<ImageThumbnailProps> = ({ url }) => {
   return url ? (
     <Box
+      component="img"
+      src={url}
       width={32}
       height={32}
-      component={"img"}
       sx={{
-        // background: `url(${url}) no-repeat center`,
-        // backgroundSize: "cover",
-        borderRadius: "50%", // Nếu muốn ảnh tròn
+        borderRadius: "50%",
         border: "1px solid #ccc",
         flexShrink: 0,
+        objectFit: "cover",
       }}
-      src={url}
     />
   ) : null;
 };

@@ -7,6 +7,8 @@ import { useAuth } from "../../context/AuthContext";
 import { ROUTE_PATHS } from "../../routers/RoutePath";
 import theme from "../../scss/theme";
 import SelectDropdown, { type ActionType } from "../Dropdown/SelectDropdown";
+import { LanguageDropdown } from "../Dropdown/Changelng";
+import RadioUI from "../Radio/RadioUI";
 
 const Header = () => {
   const { isAdmin, logout, user } = useAuth();
@@ -69,12 +71,7 @@ const Header = () => {
         flexGrow={1}
       >
         <Stack direction="column" spacing={3} sx={{ pt: 2, pb: 2 }}>
-          <SelectDropdown
-            defaultValue={jobCodeOptions[0].value}
-            value={jobCode}
-            options={jobCodeOptions}
-            onChange={(val) => handleChangeJobCodeList(val as string)}
-          />
+          <LanguageDropdown />
         </Stack>
         <Box
           display="flex"
@@ -146,7 +143,7 @@ const Header = () => {
       alignItems="center"
       spacing={2}
       sx={{
-        height: "48px",
+        height: "56px",
         background: "var(--bg-header)",
         px: "15px",
       }}

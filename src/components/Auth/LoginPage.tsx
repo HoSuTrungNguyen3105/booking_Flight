@@ -90,7 +90,9 @@ export const LoginPage: React.FC = () => {
     );
   }
   if (unlockAccount) {
-    return <RequestUnlock userId={userId} />;
+    return (
+      <RequestUnlock userId={userId} onClose={() => setUnlockAccount(false)} />
+    );
   }
 
   if (registerUser) {
@@ -177,11 +179,11 @@ export const LoginPage: React.FC = () => {
                 )}
               />
             </FormControl>
-            <Button
+            {/* <Button
               label="Change Password"
               onClick={() => setChangePassword(true)}
               appearance="outlined"
-            />
+            /> */}
             <Button
               label="Request unlock account"
               onClick={() => setUnlockAccount(true)}

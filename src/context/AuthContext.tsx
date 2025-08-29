@@ -6,16 +6,26 @@ import {
   useMemo,
   useState,
 } from "react";
-import { useLoginUser } from "../components/Api/usePostApi";
+import { useLoginByMfa, useLoginUser } from "../components/Api/usePostApi";
 import { useToast } from "./ToastContext";
-import { UserRole, type UserData, type UserListResponse } from "../utils/type";
+import {
+  UserRole,
+  type DataResponseId,
+  type UserData,
+  type UserDataResponse,
+  type UserListResponse,
+} from "../utils/type";
 import { useGetMyInfo } from "../components/Api/useGetApi";
-import { getMessage } from "../utils/response";
 
 export type User = {
   email: string;
   password: string;
   remember?: boolean;
+};
+
+export type UserWithMFA = {
+  email: string;
+  code: string; // mã 6 số từ Google Authenticator
 };
 
 export type AuthType = "DEV" | "IDPW";
@@ -27,6 +37,7 @@ interface AuthContextType {
   isAdmin: boolean;
   authType: AuthType;
   login: (userData: User) => Promise<UserListResponse>;
+  loginWithGGAuthenticator: (userData: UserWithMFA) => Promise<DataResponseId>;
   logout: () => void;
 }
 
@@ -38,6 +49,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
   const toast = useToast();
   const { refetchLogin } = useLoginUser();
+  const { refetchSetLoginMfa } = useLoginByMfa();
   const { refetchGetMyInfo } = useGetMyInfo();
 
   const isAdminLogin = useMemo(
@@ -57,6 +69,30 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const login = async (userData: User): Promise<UserListResponse> => {
     const res = await refetchLogin(userData);
+    if (res?.resultCode === "00" && res.data) {
+      const accessToken = res.accessToken;
+      const id = res.data.id;
+      setIsAuthenticated(true);
+      setToken(accessToken ?? null);
+      updateLocalStorage(true, accessToken ?? null, id);
+      await fetchMyInfo(id);
+      console.log("login", res);
+      return res;
+    } else {
+      toast((res?.resultMessage as string) || "Đăng nhập thất bại", "error");
+      return res as UserListResponse;
+    }
+  };
+
+  const loginWithGGAuthenticator = async (
+    userData: UserWithMFA
+  ): Promise<DataResponseId> => {
+    // const res = await refetchLogin(userData);
+
+    const res = await refetchSetLoginMfa({
+      email: userData.email,
+      code: userData.code,
+    });
     if (res?.resultCode === "00" && res.data) {
       const accessToken = res.accessToken;
       const id = res.data.id;
@@ -95,22 +131,22 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     [refetchGetMyInfo]
   );
 
-  const refreshUser = useCallback(async () => {
-    const savedUserId = localStorage.getItem("userId");
-    if (!savedUserId) return;
+  // const refreshUser = useCallback(async () => {
+  //   const savedUserId = localStorage.getItem("userId");
+  //   if (!savedUserId) return;
 
-    try {
-      const res = await refetchGetMyInfo(Number(savedUserId));
-      if (res?.resultCode === "00" && res.data) {
-        setUser(res.data);
-        setIsAuthenticated(true);
-      }
-      return res;
-    } catch (err) {
-      console.error("refreshUser error:", err);
-      return null;
-    }
-  }, [refetchGetMyInfo]);
+  //   try {
+  //     const res = await refetchGetMyInfo(Number(savedUserId));
+  //     if (res?.resultCode === "00" && res.data) {
+  //       setUser(res.data);
+  //       setIsAuthenticated(true);
+  //     }
+  //     return res;
+  //   } catch (err) {
+  //     console.error("refreshUser error:", err);
+  //     return null;
+  //   }
+  // }, [refetchGetMyInfo]);
 
   const logout = () => {
     setIsAuthenticated(false);
@@ -141,6 +177,10 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           setUser(res.data);
         } else {
           setIsAuthenticated(false);
+          toast(
+            (res?.resultMessage as string) || "Xác thực người dùng thất bại",
+            "info"
+          );
         }
       } catch (err) {
         logout();
@@ -157,6 +197,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         user,
         token,
         login,
+        loginWithGGAuthenticator,
         logout,
         isAdmin: isAdminLogin,
         authType: "IDPW",

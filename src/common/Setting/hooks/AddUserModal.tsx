@@ -1,29 +1,18 @@
-import { Box, Button, Divider, Grid, Stack, Typography } from "@mui/material";
-import { memo, useCallback, useMemo, useState } from "react";
+import { Box, Button, Divider, Stack, Typography } from "@mui/material";
+import { memo, useCallback, useState } from "react";
 import type { GridRowDef } from "../../DataGrid";
-import type { DataDetail, IDataHistoryProps, ISubfileListProps } from "../type";
+import type { DataDetail, ISubfileListProps } from "../type";
 import BaseModal from "../../Modal/BaseModal";
 import AddIcon from "@mui/icons-material/Add";
-import SearchIcon from "../../../svgs/icon-search.svg";
-import FieldRenderer, {
-  FieldType,
-  type IFormField,
-} from "../../CustomRender/FieldRenderer";
-import { useUpdateUser } from "./useUpdateUser";
-import { useCreateUserByAdmin } from "../../../components/Api/usePostApi";
+import FieldRenderer from "../../CustomRender/FieldRenderer";
 import { useCreateUser } from "./useCreateUser";
+import RadioUI from "../../Radio/RadioUI";
 
 interface IModalStatisticalDataLearningProps {
   open: boolean;
   onClose: () => void;
   onSuccess: () => void;
-  //   detailData: ISomeDataDataHistory | null;
-  //   selectedRows: IDataHistoryProps | null;
-  //   subfileList: ISubfileListProps[];
 }
-
-type ISomeDataInSubfilelist = GridRowDef &
-  Pick<ISubfileListProps, "type" | "fileName">;
 
 export type ISomeDataDataHistory = Omit<
   DataDetail,
@@ -44,13 +33,6 @@ export const customLabelsInModal: Record<keyof ISomeDataDataHistory, string> = {
   evaluationHistoryLink: "평가 이력 링크",
   metadataDescription: "메타데이터 설명",
 };
-const SERVICE_TYPE_OPTIONS = [
-  { label: "admin", value: "admin" },
-  { label: "admin", value: "admin" },
-  { label: "admin", value: "admin" },
-  { label: "admin", value: "admin" },
-  { label: "admin", value: "admin" },
-];
 
 const AddUserModal = ({
   open,
@@ -85,9 +67,23 @@ const AddUserModal = ({
 
   const renderContent = useCallback(() => {
     const renderRows = () => {
+      const [selected, setSelected] = useState("male");
+
       return (
         <Stack>
           <Typography variant="body1">데이터 목록</Typography>
+          <RadioUI
+            label="Chọn giới tính"
+            name="gender"
+            selectedValue={selected}
+            onChange={(value) => setSelected(value)}
+            options={[
+              { label: "Nam", value: "male" },
+              { label: "Nữ", value: "female" },
+              { label: "Khác", value: "other" }, // ví dụ có disable
+            ]}
+            color="primary"
+          />
           {formDetailConfig
             .filter((fieldItem) => !fieldItem.disabled) // 🔥 Chỉ render nếu không bị disable
             .map(({ disabled, fields }) => (
@@ -108,10 +104,10 @@ const AddUserModal = ({
     };
 
     return (
-      <Box>
+      <>
         <Divider sx={{ mb: 2, marginTop: 0, marginBottom: "22px" }} />
         {renderRows()}
-      </Box>
+      </>
     );
   }, [formDetailConfig, formData]);
 
@@ -119,7 +115,7 @@ const AddUserModal = ({
     <BaseModal
       open={open}
       onClose={onClose}
-      title={`원본 데이터, 통계 데이터 학습 Seq$ 상세 정보`}
+      title="원본 데이터, 통계 데이터 학습 Seq$ 상세 정보"
       subtitle="-선택된 원본 데이터의 상세 정보를 확인합니다.-"
       Icon={AddIcon}
       slots={{ content: renderContent(), actions: renderActions() }}

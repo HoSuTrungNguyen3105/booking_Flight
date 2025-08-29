@@ -7,7 +7,7 @@ import type { IDetailItem } from "../../Dropdown/DetailSection";
 
 type DataDetailProps = {
   data: IDataDetail;
-  type: number;
+  type: string;
 };
 
 export const useInspectionInformation = ({ data, type }: DataDetailProps) => {
@@ -17,9 +17,6 @@ export const useInspectionInformation = ({ data, type }: DataDetailProps) => {
     []
   );
   const [isLoading] = useState(false);
-
-  const randomTimestamp = 1754620000 + Math.random() * 10000;
-  const typeData = type === 1;
 
   // Thông tin inspectionData
   const inspectionData = useState<IDataDetail>({

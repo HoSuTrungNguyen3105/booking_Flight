@@ -29,6 +29,7 @@ import ProfileUser from "../common/Profile";
 import ManageMyInformation from "../common/Setting/ManageMyInformation";
 import ManageMyInfo from "../common/Setting/ManageMyInfo";
 import AuthGuard from "../components/Layout/AuthGuard";
+import Special from "../common/Setting/hooks/Special";
 
 const routes = [
   {
@@ -70,6 +71,10 @@ const routes = [
           { index: true, element: <Hero /> },
           { path: "setting", element: <Setting /> },
         ],
+      },
+      {
+        path: "special",
+        element: <Special />,
       },
       {
         path: "airport-list/domestic",
@@ -141,6 +146,10 @@ const routes = [
       {
         path: "data-secure",
         element: <DataSecure />,
+      },
+      {
+        path: "special",
+        element: <Special />,
       },
       {
         path: ROUTE_PATHS.NOTIFICATIONS,

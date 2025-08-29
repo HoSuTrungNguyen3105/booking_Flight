@@ -31,7 +31,6 @@ const BaseModal = ({
   onClose,
   slots,
 }: IBaseModalProps) => {
-  // Default header rendering
   const defaultHeader = useMemo(
     () => (
       <Box display="flex" justifyContent="space-between" alignItems="center">

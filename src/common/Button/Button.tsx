@@ -13,7 +13,7 @@ enum AppearanceEnum {
 enum PriorityEnum {
   Primary = "primary",
   Normal = "normal",
-  Custom = "custom", // ➕
+  Custom = "custom",
 }
 
 enum SizeEnum {
