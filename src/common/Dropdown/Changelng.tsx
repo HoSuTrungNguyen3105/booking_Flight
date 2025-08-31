@@ -10,7 +10,7 @@ export const LanguageDropdown = () => {
   return (
     <SelectDropdown
       options={optionLanguage}
-      value={selectedLang?.value ?? ""}
+      value={selectedLang?.value}
       onChange={handleLanguageChange}
       placeholder={t("home")}
     />

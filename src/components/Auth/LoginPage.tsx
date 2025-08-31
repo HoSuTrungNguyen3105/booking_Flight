@@ -1,6 +1,5 @@
-import { Box, FormControl, Stack, Typography } from "@mui/material";
+import { Box, Button, FormControl, Stack, Typography } from "@mui/material";
 import { useState } from "react";
-import { Button } from "../../common/Button/Button";
 import InputField from "../../common/Input/InputField";
 import { useAuth } from "../../context/AuthContext";
 import { Controller, useForm } from "react-hook-form";
@@ -84,11 +83,12 @@ export const LoginPage: React.FC = () => {
   if (changePassword) {
     return (
       <ChangePassword
-        onClose={() => setChangePassword(false)} // 👉 callback để quay lại
+        onClose={() => setChangePassword(false)}
         userId={userId}
       />
     );
   }
+
   if (unlockAccount) {
     return (
       <RequestUnlock userId={userId} onClose={() => setUnlockAccount(false)} />
@@ -179,21 +179,13 @@ export const LoginPage: React.FC = () => {
                 )}
               />
             </FormControl>
-            {/* <Button
-              label="Change Password"
-              onClick={() => setChangePassword(true)}
-              appearance="outlined"
-            /> */}
-            <Button
-              label="Request unlock account"
-              onClick={() => setUnlockAccount(true)}
-              priority="normal"
-            />
-            <Button
-              label="Register"
-              appearance="unfilled"
-              onClick={handleRegisterUser}
-            />
+            <Button onClick={() => setChangePassword(true)}>
+              Change Password
+            </Button>
+            <Button onClick={() => setUnlockAccount(true)}>
+              Request unlock account
+            </Button>
+            <Button onClick={handleRegisterUser}>Register</Button>
             <Box
               sx={{
                 display: "flex",
@@ -201,12 +193,9 @@ export const LoginPage: React.FC = () => {
                 alignItems: "center",
               }}
             >
-              <Button
-                label="로그인"
-                type="submit"
-                priority="normal"
-                sx={{ minWidth: "30rem", margin: "0px" }}
-              />
+              <Button type="submit" sx={{ minWidth: "30rem", margin: "0px" }}>
+                Submit
+              </Button>
             </Box>
           </Stack>
         </Box>

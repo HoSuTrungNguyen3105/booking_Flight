@@ -14,6 +14,7 @@ import {
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { menuData, type MenuItem } from "./../../utils/db";
 import Header from "../../common/Setting/Header";
+import theme from "../../scss/theme";
 
 const ResizeLayout = () => {
   const navigate = useNavigate();
@@ -40,6 +41,7 @@ const ResizeLayout = () => {
             key={item.label}
             sx={(theme) => ({
               borderBottom: `1px solid ${theme.palette.grey[200]}`,
+              pl: 2 + level * 2,
             })}
             onClick={() => {
               if (hasSubItems) {
@@ -50,7 +52,9 @@ const ResizeLayout = () => {
             }}
           >
             {item.icon && (
-              <ListItemIcon sx={{ minWidth: 32 }}>{item.icon}</ListItemIcon>
+              <ListItemIcon sx={{ minWidth: 32, fontSize: `${14 - level}px` }}>
+                {item.icon}
+              </ListItemIcon>
             )}
             <ListItemText primary={item.label} />
             {hasSubItems &&
@@ -81,13 +85,36 @@ const ResizeLayout = () => {
           py: "20px",
           bgcolor: theme.palette.background.default,
           border: `1px solid ${theme.palette.grey[200]}`,
+          overflowY: "auto",
+          display: "flex",
+          flexDirection: "column",
+          minHeight: 0,
+
+          scrollbarWidth: "none",
+          "&::-webkit-scrollbar": {
+            display: "none",
+          },
+          msOverflowStyle: "none",
         })}
       >
         {menuData.map((section, index) => (
           <List
             key={index}
             subheader={
-              <Typography variant="subtitle2">{section.title}</Typography>
+              <Typography
+                sx={{
+                  display: "block",
+                  px: 2,
+                  py: 0.5,
+                  letterSpacing: 0.5,
+                  bgcolor: theme.palette.grey[50],
+                  borderRadius: 1,
+                  mb: 0.5,
+                }}
+                variant="subtitle2"
+              >
+                {section.title}
+              </Typography>
             }
           >
             {renderMenuItems(section.items)}

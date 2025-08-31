@@ -192,6 +192,27 @@ export const useGetMeal = () => {
     refetchFlightBookingDataData,
   };
 };
+interface EmailUserProps {
+  email: string;
+}
+interface UserIdResponse {
+  userId: number;
+}
+export const useGetUserId = () => {
+  const { data: userIdData, refetch: refetchUserIdData } = useFetch<
+    DetailResponseMessage<UserIdResponse>,
+    EmailUserProps
+  >({
+    url: "/sys/users/getUserIdByEmail",
+    autoFetch: false,
+    config: getMethod,
+  });
+  return {
+    userIdData,
+    refetchUserIdData,
+  };
+};
+
 export const useGetFlightData = () => {
   const { data: getFlightData, refetch: refetchGetFlightData } = useFetch<
     FlightResponse,

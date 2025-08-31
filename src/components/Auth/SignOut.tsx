@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Button } from "../../common/Button/Button";
 import { useAuth } from "../../context/AuthContext";
 import DialogConfirm from "../../common/Modal/DialogConfirm";
+import { Button } from "@mui/material";
 
 const SignOut = () => {
   const { logout } = useAuth();
@@ -13,7 +13,7 @@ const SignOut = () => {
 
   return (
     <>
-      <Button size="large" onClick={handleClick} label="Sign Out" />
+      <Button onClick={handleClick}>Sign Out</Button>
       <DialogConfirm
         onConfirm={submitLogout}
         onClose={closeModal}

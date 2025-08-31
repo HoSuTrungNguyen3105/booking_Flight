@@ -10,16 +10,12 @@ import {
   TableContainer,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import type { FareConditions, UserSearchType } from "./type";
 import { useFlightBooking, useFlightList } from "../Api/usePostApi";
 import { Button } from "../../common/Button/Button";
-import {
-  FlightOutlined,
-  RefreshOutlined,
-  SearchRounded,
-} from "@mui/icons-material";
+import { FlightOutlined, RefreshOutlined } from "@mui/icons-material";
 import Zigzag from "../../common/CustomRender/Zigzag";
 import FormRow from "../../common/CustomRender/FormRow";
 import { Dropdown } from "../../common/Dropdown/Dropdown";
@@ -46,10 +42,8 @@ const BookTicket = () => {
     if (flightList?.list) {
       setFlightList(flightList.list);
     }
-  }, [flightList]); // chạy lại mỗi khi flightList đổi
+  }, [flightList]);
 
-  console.log("flightListData", flightListData);
-  console.log("flightList", flightList);
   const onResetForm = () => {
     resetSearch();
   };
@@ -86,22 +80,12 @@ const BookTicket = () => {
     await refetchFlightBookingDataData(values);
   };
 
-  // React.useEffect(() => {
-  //   if (flightBookingData) {
-  //     const list = Array.isArray(flightBookingData.flightList)
-  //       ? flightBookingData.flightList
-  //       : flightBookingData.flightList
-  //       ? [flightBookingData.flightList]
-  //       : [];
-  //     setDisplayDataFlight(list);
-  //     setLoadingFlightBookingData(false);
-  //   }
-  // }, [flightBookingData]);
   const formatDate = (dateValue: string | undefined) => {
     if (!dateValue) return "";
     const date = new Date(dateValue);
     return date.toTimeString().split(" ")[0];
   };
+
   return (
     <form>
       <FormControl sx={{ width: "100%" }}>

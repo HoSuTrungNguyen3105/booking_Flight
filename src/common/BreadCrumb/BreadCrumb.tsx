@@ -1,3 +1,4 @@
+import { memo } from "react";
 import type { BreadcrumbItem } from "./type";
 interface CustomBreadCrumb {
   items: BreadcrumbItem[];
@@ -30,4 +31,4 @@ const BreadCrumb: React.FC<CustomBreadCrumb> = ({ items, separator = "/" }) => {
   );
 };
 
-export default BreadCrumb;
+export default memo(BreadCrumb);

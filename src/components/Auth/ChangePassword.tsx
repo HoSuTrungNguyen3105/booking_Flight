@@ -9,11 +9,14 @@ import {
 import { Controller, useForm } from "react-hook-form";
 import InputTextField from "../../common/Input/InputTextField";
 import { useChangePassword } from "../Api/usePostApi";
+import { useGetUserId } from "../Api/useGetApi";
+import { useState } from "react";
 
 interface FormDataType {
   userId: number;
   newPassword: string;
   confirmPassword: string;
+  email: string;
 }
 
 interface IUserIdNumber {
@@ -23,17 +26,31 @@ interface IUserIdNumber {
 
 const ChangePassword = ({ userId, onClose }: IUserIdNumber) => {
   const { refetchChangePassword } = useChangePassword();
-  const { control, handleSubmit } = useForm<FormDataType>({
+  const { refetchUserIdData } = useGetUserId();
+  const [hasAccount, setHasAccount] = useState(false);
+  const { control, handleSubmit, getValues } = useForm<FormDataType>({
     defaultValues: {
       userId: userId,
+      email: "",
       newPassword: "",
       confirmPassword: "",
     },
   });
 
+  const findUserByEmail = async (email: string) => {
+    try {
+      const response = await refetchUserIdData({ email });
+      console.log("getValues", response);
+      if (response?.resultCode === "00") {
+        setHasAccount(true);
+      }
+    } catch (err: any) {
+      console.error("error:", err.message);
+    }
+  };
+
   const onSubmit = async (data: FormDataType) => {
     try {
-      console.log("data:", data);
       const response = await refetchChangePassword(data);
       if (response?.resultCode === "00") {
         onClose();
@@ -73,57 +90,86 @@ const ChangePassword = ({ userId, onClose }: IUserIdNumber) => {
             신규 비밀번호를 생성합니다.
           </Typography>
 
-          {/* Nhập mật khẩu */}
-          <FormControl fullWidth>
-            <Typography variant="body1" mb={0.5}>
-              비밀번호
-            </Typography>
-            <Controller
-              control={control}
-              name="newPassword"
-              render={({ field }) => (
-                <InputTextField
-                  {...field}
-                  type="password"
-                  placeholder="Mật khẩu mới"
-                />
-              )}
-            />
-          </FormControl>
-
-          {/* Nhập lại mật khẩu */}
-          <FormControl fullWidth>
-            <Typography variant="body1" mb={0.5}>
-              비밀번호 확인
-            </Typography>
-            <Controller
-              control={control}
-              name="confirmPassword"
-              render={({ field }) => (
-                <InputTextField
-                  {...field}
-                  type="password"
-                  placeholder="Xác nhận mật khẩu"
-                />
-              )}
-            />
-            <Box display="flex" alignItems="flex-start" gap={1} mt={1}>
-              {/* <img src="/assets/icons/error.svg" alt="error" /> */}
-              <Typography variant="subtitle2" color="error">
-                비밀번호는 영문 대/소문자, 숫자, 특수문자 조합 <br />
-                8자 이상 ~ 20자 이하
+          {/* Nếu chưa có userId thì nhập email */}
+          {!userId && (
+            <FormControl fullWidth>
+              <Typography variant="body1" mb={0.5}>
+                Email
               </Typography>
-            </Box>
-          </FormControl>
+              <Controller
+                control={control}
+                name="email"
+                render={({ field }) => (
+                  <InputTextField {...field} placeholder="Nhập email của bạn" />
+                )}
+              />
+            </FormControl>
+          )}
+
+          {hasAccount && (
+            <>
+              <FormControl fullWidth>
+                <Typography variant="body1" mb={0.5}>
+                  비밀번호
+                </Typography>
+                <Controller
+                  control={control}
+                  name="newPassword"
+                  render={({ field }) => (
+                    <InputTextField
+                      {...field}
+                      type="password"
+                      placeholder="Mật khẩu mới"
+                    />
+                  )}
+                />
+              </FormControl>
+
+              <FormControl fullWidth>
+                <Typography variant="body1" mb={0.5}>
+                  비밀번호 확인
+                </Typography>
+                <Controller
+                  control={control}
+                  name="confirmPassword"
+                  render={({ field }) => (
+                    <InputTextField
+                      {...field}
+                      type="password"
+                      placeholder="Xác nhận mật khẩu"
+                    />
+                  )}
+                />
+                <Box display="flex" alignItems="flex-start" gap={1} mt={1}>
+                  {/* <img src="/assets/icons/error.svg" alt="error" /> */}
+                  <Typography variant="subtitle2" color="error">
+                    비밀번호는 영문 대/소문자, 숫자, 특수문자 조합 <br />
+                    8자 이상 ~ 20자 이하
+                  </Typography>
+                </Box>
+              </FormControl>
+            </>
+          )}
+
           <Box
             sx={{
               display: "flex",
               justifyContent: "flex-end",
             }}
           >
-            <Button variant="contained" type="submit">
-              설정
-            </Button>
+            {!userId ? (
+              <Button
+                variant="contained"
+                type="button"
+                onClick={() => findUserByEmail(getValues("email"))}
+              >
+                Tìm tài khoản
+              </Button>
+            ) : (
+              <Button variant="contained" type="submit">
+                Đổi mật khẩu
+              </Button>
+            )}
           </Box>
 
           <Typography

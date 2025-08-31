@@ -172,8 +172,8 @@ const routes = [
         element: <BookTicket />,
       },
       {
-        path: ROUTE_PATHS.BOOK_TICKET.replace("/", ""),
-        element: <BookTicket />,
+        path: "checkboxui",
+        element: <CheckboxUI />,
       },
       {
         path: "manage-my-info",

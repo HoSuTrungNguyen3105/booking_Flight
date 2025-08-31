@@ -1,6 +1,5 @@
 import { Outlet } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import styles from "./index.module.scss";
 import { Box } from "@mui/material";
 import { Header } from "../../common/Header/Header";
 import { Loading } from "../../common/Loading/Loading";
@@ -24,14 +23,7 @@ const MainLayout = () => {
   }, []);
 
   return (
-    <Box
-      className={styles.mainLayout}
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        minHeight: "100vh",
-      }}
-    >
+    <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <Box
         ref={headerRef}
         sx={{
@@ -47,7 +39,6 @@ const MainLayout = () => {
         <Header />
       </Box>
 
-      {/* Nội dung chính */}
       <Box
         component="main"
         sx={{

@@ -20,7 +20,7 @@ const HeaderPage = () => {
     <>
       <Box>
         <SidebarProvider>
-          <Header ref={headerRef} />
+          <Header />
           <main
             className={clsx("flex gap-10 flex-1 overflow-auto")}
             style={{ maxHeight: maxHeight }}

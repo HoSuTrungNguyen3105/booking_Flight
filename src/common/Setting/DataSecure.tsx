@@ -3,11 +3,7 @@ import type { GridRowDef } from "../DataGrid";
 import { Box, Typography } from "@mui/material";
 import TableSection from "./TableSection";
 import DetailedInformationModal from "./hooks/DetailedInformationModal";
-import type { GridColDef, GridRowParams } from "@mui/x-data-grid";
-import type { IDetailItem } from "../Dropdown/DetailSection";
-import DetailSection from "../Dropdown/DetailSection";
-import { Button } from "../Button/Button";
-import InputField from "../Input/InputField";
+import type { GridColDef } from "@mui/x-data-grid";
 import type { MenuData } from "../BreadCrumb/BreadcrumbV2";
 import Breadcrumb from "../BreadCrumb/BreadcrumbV2";
 import AddUserModal from "./hooks/AddUserModal";
@@ -15,7 +11,8 @@ import InspectionSearchBar from "../SearchPopup/InspectionSearchBar";
 import { useLocation } from "react-router-dom";
 import theme from "../../scss/theme";
 import { useInspectionInformation } from "./hooks/useInspectionInformation";
-// FIX: Update the import path or create the missing file if necessary
+import type { IDetailItem } from "../DetailSection";
+import DetailSection from "../DetailSection";
 
 export interface IDataHistoryProps extends GridRowDef {
   collectionMethod: string;
@@ -35,6 +32,7 @@ export const customLabels: Record<keyof Detail, string> = {
   itemsStatus: "항목 상태", // Trạng thái mục
   itemsScope: "항목 범위", // Phạm vi mục
 };
+
 export interface Detail {
   TITLE: string;
   status: string;
@@ -56,7 +54,7 @@ const DataSecure = () => {
     data: rowData,
     type: typeData,
   });
-  // State management
+
   const [isLoading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [openSubfile, setOpenSubefile] = useState(false);
@@ -117,45 +115,6 @@ const DataSecure = () => {
     setShowInputs(true); // Hiện các InputField
     setFiles((prevFiles) => [...prevFiles, ...newFiles]);
   };
-  const renderFilesAndButton = () => {
-    return (
-      <Box display="flex" flexDirection="column" minHeight="20vh">
-        <Typography variant="caption" color="text.secondary" sx={{ mb: 1 }}>
-          점검 설명
-        </Typography>
-        <Box display="flex" flexDirection="row" width="100%">
-          {showInputs && files.length > 0 && (
-            <Box display="flex" flexDirection="column" gap={1} flex={1} mr={2}>
-              {files.map((item, i) => (
-                <InputField key={i} value={item.name} />
-              ))}
-            </Box>
-          )}
-        </Box>
-      </Box>
-    );
-  };
-  const renderButtonAddFile = useCallback(() => {
-    return (
-      <Box
-        display="flex"
-        justifyContent="flex-end"
-        alignItems="center"
-        minHeight="30vh"
-        pr={2}
-      >
-        <Button onClick={handleAddClick} label="Tải tệp" />
-
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept=".jpg,.png,.pdf"
-          style={{ display: "none" }}
-          onChange={handleFileChange}
-        />
-      </Box>
-    );
-  }, [handleAddClick, handleFileChange]);
 
   const detailData: IDetailItem[] = [
     {
@@ -185,7 +144,6 @@ const DataSecure = () => {
     return shuffled.slice(0, count);
   }
 
-  // Column definitions for tables
   const columnSubfileList = useMemo(
     () => [
       { field: "fileName", headerName: "파일 이름", flex: 1 },
@@ -317,7 +275,6 @@ const DataSecure = () => {
       </Typography>
 
       <Box overflow={"auto"} minHeight={"50vh"}>
-        {/* <TableInfo title="Table" description="" content={mappedContent} /> */}
         <DetailSection data={detailsData} />
 
         <InspectionSearchBar
@@ -325,6 +282,7 @@ const DataSecure = () => {
           endDate={1734560400.0}
           onClickFirst={() => {}}
         />
+
         <Box borderTop={1} paddingTop={2} borderColor={"grey.200"}>
           {renderDataSection(
             "하위 파일 목록",

@@ -1,11 +1,12 @@
 import { useCallback, useState } from "react";
 import { Box } from "@mui/material";
-import DetailSection, { type IDetailItem } from "../Dropdown/DetailSection.tsx";
 import { useAuth } from "../../context/AuthContext.tsx";
 import { DateFormatEnum, formatDate } from "../../hooks/format.ts";
 import UpdateUserModal from "../Setting/hooks/UpdateUserModal.tsx";
 import { Button } from "../Button/Button.tsx";
 import type { UserData } from "../../utils/type.ts";
+import type { IDetailItem } from "../DetailSection/index.tsx";
+import DetailSection from "../DetailSection/index.tsx";
 
 const ProfileUser = () => {
   const { user } = useAuth();
@@ -39,10 +40,8 @@ const ProfileUser = () => {
         <Button
           label="Cập nhật thông tin"
           sx={{ mt: 2 }}
-          // appearance="outlined"
-          // isHovered
           onClick={() => setOpen(true)}
-        ></Button>
+        />
       </Box>
     );
   }, []);

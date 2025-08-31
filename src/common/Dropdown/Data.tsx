@@ -155,7 +155,7 @@ export default function DataGridInTab() {
                 padding: "4px 12px",
                 borderRadius: "3px",
                 color: textColor,
-                width: "70px", // hoặc width: 64
+                width: "70px",
                 justifyContent: "center",
                 textAlign: "center",
                 alignItems: "center",

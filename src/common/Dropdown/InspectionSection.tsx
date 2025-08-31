@@ -9,16 +9,6 @@ import SearchBar from "../CustomRender/SearchBar";
 import useClientPagination from "../../context/use[custom]/useClientPagination";
 
 type ISecurityTabSectionProps = {
-  // totalResult?: number;
-  // currentPage?: number;
-  // totalPage?: number;
-  // pageSize?: number;
-  // onChangePage?: (page: number) => void;
-  // onPageSizeChange?: (size: number) => void;
-  // onSortModelChange?: (model: GridSortModel) => void;
-  // sortModel?: GridSortModel;
-  onRowClick: (rowData: GridRowDef) => void;
-  handleAction?: () => void;
   columns: GridColDef[];
   tabs?: {
     label: string;
@@ -26,17 +16,21 @@ type ISecurityTabSectionProps = {
     content: React.ReactNode;
   }[];
   rows: any[];
+  name?: string;
   loading?: boolean;
   onSearch?: (query: string) => void;
+  onRowClick: (rowData: GridRowDef) => void;
+  handleAction?: () => void;
 };
 const InspectionSection = ({
-  onRowClick,
-  handleAction = () => {},
   columns,
   tabs,
   rows,
   loading,
+  name = "Total",
   onSearch = () => {},
+  onRowClick,
+  handleAction = () => {},
 }: ISecurityTabSectionProps) => {
   const headerRef = useRef<HTMLDivElement>(null);
   const [headerHeight, setHeaderHeight] = useState(0);
@@ -145,7 +139,7 @@ const InspectionSection = ({
           />
           <Box justifyContent="space-between" display="flex" width="100%">
             <Typography variant="body2">
-              결과{" "}
+              {name}
               <Typography component="span" color="primary">
                 {rows.length}
               </Typography>

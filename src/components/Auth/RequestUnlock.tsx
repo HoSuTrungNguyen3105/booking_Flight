@@ -1,8 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Box, Button, Card, CardContent, Typography } from "@mui/material";
-import TextArea from "../../common/Input/TextArea";
 import { useRequestUnlockAccount } from "../Api/usePostApi";
-import InputTextField from "../../common/Input/InputTextField";
 import InputTextArea from "../../common/Input/InputTextArea";
 
 const RequestUnlock = ({
@@ -58,7 +56,7 @@ const RequestUnlock = ({
             value={reason}
             onChange={(e) => {
               setReason(e);
-              if (error) setError(null); // 👈 nhập lại thì clear error
+              if (error) setError(null);
             }}
           />
           <Button
