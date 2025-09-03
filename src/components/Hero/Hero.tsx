@@ -8,6 +8,7 @@ import {
   TextField,
 } from "@mui/material";
 import { GridSearchIcon } from "@mui/x-data-grid";
+import { useGetUnlockRequests } from "../Api/useGetApi";
 
 interface FlightSearchForm {
   from: string;
@@ -41,20 +42,7 @@ const Hero: React.FC = () => {
       [field]: value,
     }));
   };
-
-  const handleFlightTypeChange = (
-    event: React.MouseEvent<HTMLElement>,
-    newFlightType: "oneway" | "roundtrip"
-  ) => {
-    if (newFlightType !== null) {
-      handleInputChange("flightType", newFlightType);
-    }
-  };
-
-  const handleSearch = () => {
-    console.log("Searching flights with:", searchForm);
-    // Handle search logic here
-  };
+  const { getUnlockRequests } = useGetUnlockRequests();
 
   return (
     <>
@@ -100,8 +88,9 @@ const Hero: React.FC = () => {
             variant="h5"
             sx={{ mt: 2, color: theme.palette.grey[300] }}
           >
-            Book flights, discover destinations, and start your journey with
-            ease.
+            {/* Book flights, discover destinations, and start your journey with
+            ease. */}
+            {JSON.stringify(getUnlockRequests)}
           </Typography>
 
           <Box

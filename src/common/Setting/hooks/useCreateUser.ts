@@ -20,7 +20,7 @@ export const useCreateUser = ({
   //   const api = useApi5();
   const [error, setError] = useState<string>("");
   const { fetchUser, loadingUser, refetchUser } = useGetUserList();
-  const { refetchUserPw, fetchUserPw } = useRandomPassword();
+  const { fetchUserPw } = useRandomPassword();
   const [updateInfo, setUpdateInfo] = useState<UseRCreate>({
     role: user?.role,
     password: fetchUserPw?.data,
@@ -32,7 +32,6 @@ export const useCreateUser = ({
   //   const formDetailConfig = useDataSection(formData, false);
   const formDetailConfig = useDataSection(formData, "register", false);
 
-  // Hàm cập nhật value
   const handleChange = (key: string, value: any) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
   };
@@ -43,10 +42,10 @@ export const useCreateUser = ({
       name: formData.name,
       email: formData.email,
       password: formData.password,
-      role: formData.role, // đảm bảo đúng kiểu
+      role: formData.role,
     };
 
-    const res = await refetchCreateUser(payload); // ✅ Truyền trực tiếp
+    const res = await refetchCreateUser(payload);
 
     if (res?.resultCode === "00") {
       console.log("Tạo user thành công", res.data);
@@ -63,9 +62,9 @@ export const useCreateUser = ({
     }
   }, [fetchUserPw]);
 
-  useEffect(() => {
-    refetchUserPw();
-  }, [refetchUserPw, user]);
+  // useEffect(() => {
+  //   refetchUserPw();
+  // }, [refetchUserPw, user]);
 
   const enableUpdateBtn = useMemo(
     () => updateInfo.name?.trim() !== "" || updateInfo?.email?.trim() !== "",

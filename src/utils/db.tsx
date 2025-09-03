@@ -12,6 +12,7 @@ type SideBarValueTypes =
   | "airplane"
   | "airport"
   | "ticket"
+  | "bookseat"
   | "user"
   | "flightSchedule"
   | "flightStatus"
@@ -112,7 +113,7 @@ export const menuData: MenuSection[] = [
             label: "Tài khoản",
             subItems: [
               { id: "customers", label: "Khách hàng" },
-              { id: "setting", label: "Setting" },
+              { id: "bookseat", label: "Đặt chỗ" },
               { id: "hero", label: "Nhân viên" },
             ],
           },

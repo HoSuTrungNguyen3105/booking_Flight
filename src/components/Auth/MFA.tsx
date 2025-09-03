@@ -26,13 +26,11 @@ export default function MfaSetup() {
     try {
       const data = await refetchSetUpMfa({ email });
       if (data?.data?.hasVerified === "Y") {
-        // Nếu MFA đã được kích hoạt
         setLoginMfaUi(true);
         setIsSetMfa(true);
         setQrCode(null);
         return;
       } else if (data?.data?.hasVerified === "N" && data?.data?.qrCodeDataURL) {
-        // MFA chưa bật, tạo QR code để user quét
         setQrCode(data.data.qrCodeDataURL);
         setLoginMfaUi(false);
         setIsSetMfa(false);
@@ -41,12 +39,6 @@ export default function MfaSetup() {
       toast("Có lỗi khi tạo MFA");
     }
   };
-
-  // useEffect(() => {
-  //   if (code.length > 6) {
-  //     toast("Mã MFA chỉ gồm 6 chữ số");
-  //   }
-  // }, [code]);
 
   const handleVerify = async () => {
     if (!code) {
@@ -57,13 +49,11 @@ export default function MfaSetup() {
       refetchSetLoginMfa();
       return;
     }
-    // let res = "09";
     const res = await refetchVerifyMfa({
       email,
       code: code,
     });
     if (res?.resultCode === "00") {
-      // toast("Đăng nhập thành công 🎉");
       setQrCode(null);
       setLoginMfaUi(true);
     } else {
@@ -76,7 +66,6 @@ export default function MfaSetup() {
       toast("Vui lòng nhập mã MFA");
       return;
     }
-    // let res = "09";
     const res = await loginWithGGAuthenticator({
       email,
       code: code,
@@ -86,6 +75,7 @@ export default function MfaSetup() {
       toast("Đăng nhập thành công 🎉");
       setQrCode(null);
       setLoginMfaUi(true);
+    } else if (res.requireUnlock) {
     } else {
       toast("Sai mã MFA, thử lại!");
     }

@@ -89,6 +89,17 @@ export type DataResponseId = {
   userId: number;
 };
 
+export type Seat = {
+  id: number;
+  row: number;
+  column: string;
+  isBooked: boolean;
+  flightId: number;
+  bookingId: number;
+};
+
+export type SeatResponseMessage = DetailResponseMessage<Seat>;
+
 export enum UserRole {
   ADMIN = "ADMIN",
   USER = "USER",

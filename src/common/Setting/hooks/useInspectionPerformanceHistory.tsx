@@ -140,6 +140,7 @@ export const useInspectionPerformanceHistory = () => {
     },
     [toggleOpenModal]
   );
+
   // const handleRefetchUserList = useCallback(() => {
   //   refetchUser();
   // }, [refetchUser]);
@@ -163,7 +164,7 @@ export const useInspectionPerformanceHistory = () => {
         field: "rank",
         headerName: "생성시간",
         flex: 1,
-        renderCell: ({ row }) => <span>{row.rank ? "Member" : "-"}</span>,
+        renderCell: ({ row }) => <span>{row.rank ? row.rank : "-"}</span>,
       },
       {
         field: "accountLockYn",
@@ -187,17 +188,19 @@ export const useInspectionPerformanceHistory = () => {
         field: "actions",
         headerName: "설정",
         flex: 1,
-        sortable: false,
         renderCell: ({ row }) =>
           row.id !== user?.id && (
             <SelectDropdown
               key={row.id}
               defaultValue="관리"
               value="관리"
-              onChange={(value) => handleSelectAction(row, value as ActionType)}
+              onChange={(value) => {
+                console.log(value);
+                handleSelectAction(row, value as ActionType);
+              }}
               options={[
                 { label: "정보 수정", value: "addUser" },
-                { label: "MFA 설정 삭제", value: "editUser" },
+                { label: "MFA 설정 삭제", value: "deleteMfaSettings" },
                 { label: "잠금/해금", value: "lock_unlockAccount" },
                 { label: "비밀번호 초기화", value: "resetPassword" },
                 { label: "관리자 권한 이전", value: "transferAdminPermission" },
@@ -211,7 +214,7 @@ export const useInspectionPerformanceHistory = () => {
           ),
       },
     ],
-    [user, handleSelectAction]
+    [handleSelectAction, theme]
   );
 
   const handleSearch = useCallback(() => {}, []);
@@ -244,6 +247,7 @@ export const useInspectionPerformanceHistory = () => {
   // useEffect(() => {
   //   refetchUser();
   // }, [refetchUser]);
+
   const handleRefetchUserList = useCallback(() => {
     refetchUser();
   }, [refetchUser]);

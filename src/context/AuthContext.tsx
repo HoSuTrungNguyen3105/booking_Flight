@@ -87,8 +87,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const loginWithGGAuthenticator = async (
     userData: UserWithMFA
   ): Promise<DataResponseId> => {
-    // const res = await refetchLogin(userData);
-
     const res = await refetchSetLoginMfa({
       email: userData.email,
       code: userData.code,
@@ -100,7 +98,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setToken(accessToken ?? null);
       updateLocalStorage(true, accessToken ?? null, id);
       await fetchMyInfo(id);
-      console.log("login", res);
       return res;
     } else {
       toast((res?.resultMessage as string) || "Đăng nhập thất bại", "error");

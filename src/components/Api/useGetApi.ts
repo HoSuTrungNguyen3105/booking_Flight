@@ -10,6 +10,7 @@ import type {
   MealResponse,
   FlightResponse,
   ResponseMessage,
+  SeatResponseMessage,
 } from "../../utils/type.ts";
 import React from "react";
 import { MethodType } from "../../hooks/type.ts";
@@ -24,10 +25,7 @@ const getMethod = {
 type FlightId = {
   id?: number;
 };
-type AirportCode = {
-  arrivalCode?: string;
-  departureCode?: string;
-};
+
 export const mapToDropdown = (
   list: CodeItem[],
   key: keyof CodeItem,
@@ -192,26 +190,6 @@ export const useGetMeal = () => {
     refetchFlightBookingDataData,
   };
 };
-interface EmailUserProps {
-  email: string;
-}
-interface UserIdResponse {
-  userId: number;
-}
-export const useGetUserId = () => {
-  const { data: userIdData, refetch: refetchUserIdData } = useFetch<
-    DetailResponseMessage<UserIdResponse>,
-    EmailUserProps
-  >({
-    url: "/sys/users/getUserIdByEmail",
-    autoFetch: false,
-    config: getMethod,
-  });
-  return {
-    userIdData,
-    refetchUserIdData,
-  };
-};
 
 export const useGetFlightData = () => {
   const { data: getFlightData, refetch: refetchGetFlightData } = useFetch<
@@ -225,6 +203,48 @@ export const useGetFlightData = () => {
   return {
     getFlightData,
     refetchGetFlightData,
+  };
+};
+
+export const useGetSeatsData = () => {
+  const { data: getSeatData, refetch: refetchGetSeatData } = useFetch<
+    SeatResponseMessage,
+    null
+  >({
+    url: "/sys/seats",
+    autoFetch: true,
+    config: getMethod,
+  });
+  return {
+    getSeatData,
+    refetchGetSeatData,
+  };
+};
+
+export type UnlockStatus = "PENDING" | "APPROVED" | "REJECTED";
+
+export interface UnlockRequest {
+  id: number;
+  userId: number;
+  reason: string;
+  status: UnlockStatus;
+  createdAt: string;
+  approvedAt?: string | null;
+  user: {
+    id: number;
+  };
+}
+
+export const useGetUnlockRequests = () => {
+  const { data: getUnlockRequests, refetch: refetchGetUnlockRequests } =
+    useFetch<DetailResponseMessage<UnlockRequest>, null>({
+      url: "/auth/unlock-requests",
+      autoFetch: true,
+      config: getMethod,
+    });
+  return {
+    getUnlockRequests,
+    refetchGetUnlockRequests,
   };
 };
 

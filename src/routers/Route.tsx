@@ -30,6 +30,8 @@ import ManageMyInformation from "../common/Setting/ManageMyInformation";
 import ManageMyInfo from "../common/Setting/ManageMyInfo";
 import AuthGuard from "../components/Layout/AuthGuard";
 import Special from "../common/Setting/hooks/Special";
+import ChangePassword from "../components/Auth/ChangePassword";
+import SeatBooking from "../components/User/SeatBooking";
 
 const routes = [
   {
@@ -130,6 +132,10 @@ const routes = [
       {
         path: "domestic",
         element: <SecurityManage />,
+      },
+      {
+        path: "bookseat",
+        element: <SeatBooking />,
       },
       {
         path: "flightmeals",

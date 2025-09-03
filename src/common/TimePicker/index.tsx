@@ -28,7 +28,6 @@ const MUITimePickertypeIcon = {
 export const MultiTimepicker = ({
   type,
   status = "Default",
-  size = "medium",
 }: TimePickerProps) => {
   const gettypeIcon = () => {
     if (!type) {
@@ -149,7 +148,6 @@ export const MultiTimepicker = ({
 export const Single24Timepicker = ({
   type,
   status = "Default",
-  size = "medium",
 }: TimePickerProps) => {
   const gettypeIcon = () => {
     if (!type) {
@@ -233,7 +231,6 @@ export const Single24Timepicker = ({
 export const Single12Timepicker = ({
   type,
   status = "Default",
-  size = "medium",
   language = "en",
 }: TimePickerProps) => {
   const gettypeIcon = () => {
@@ -267,16 +264,8 @@ export const Single12Timepicker = ({
       );
     }
   };
-  const [ReadOnly, setReadOnly] = useState(
-    status === "ReadOnly" ? true : false
-  );
-  const [Disable, setDisable] = useState(status === "Disable" ? true : false);
-  const [value, setValue] = useState<Moment | null>(null);
 
-  // useEffect(() => {
-  //   moment.locale(language);
-  //   setValue(moment());
-  // }, [language]);
+  const [value, setValue] = useState<Moment | null>(null);
 
   useEffect(() => {
     moment.locale(language);
@@ -284,9 +273,9 @@ export const Single12Timepicker = ({
 
     const timer = setInterval(() => {
       setValue(moment());
-    }, 60 * 1000); // Cập nhật mỗi phút
+    }, 60 * 1000);
 
-    return () => clearInterval(timer); // Dọn dẹp khi unmount
+    return () => clearInterval(timer);
   }, [language]);
 
   const localeText =
@@ -299,7 +288,6 @@ export const Single12Timepicker = ({
   return (
     <LocalizationProvider dateAdapter={AdapterMoment} localeText={localeText}>
       <Box className="container" data-testid="Single12">
-        {/*Single type (12h)*/}
         <TimePicker
           enableAccessibleFieldDOMStructure={false}
           readOnly={status === "ReadOnly"}
@@ -309,16 +297,6 @@ export const Single12Timepicker = ({
           className={gettypeIcon()}
           slotProps={{
             textField: () => ({
-              // textField: {
-              //   sx: {
-              //     "& .container MuiBox-root": {
-              //       border: "none",
-              //     },
-              //     "& .MuiOutlinedInput-notchedOutline": {
-              //       border: "none",
-              //     },
-              //   },
-              // },
               InputProps: {
                 endAdornment: (
                   <>

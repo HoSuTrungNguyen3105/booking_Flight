@@ -6,6 +6,7 @@ import { useToast } from "../../context/ToastContext";
 import { useCheckMfaAvailable } from "../Api/useGetApi";
 import { useResetPasswordByMfa } from "../Api/usePostApi";
 import Input from "../Admin/component/Input";
+import { Link } from "react-router-dom";
 
 interface FormDataType {
   email: string;
@@ -20,7 +21,6 @@ const ForgetPassword = () => {
   const [loading, setLoading] = useState(false);
   const [requireMfa, setRequireMfa] = useState(false);
   const { refetchMfaCheck } = useCheckMfaAvailable();
-  const { refetchChangePassword } = useResetPasswordByMfa();
   const email = watch("email");
 
   const onHandleValueHasValid = async () => {
@@ -40,25 +40,6 @@ const ForgetPassword = () => {
       setLoading(false);
     }
   };
-
-  //   const onSubmitSendMfaCode = async () => {
-  //     try {
-  //       setLoading(true);
-  //         // const res = await refetchChangePassword({ email });
-
-  //         if (res?.resultCode === "00") {
-  //           setRequireMfa(true);
-  //           toast("Tài khoản này có bật MFA, vui lòng nhập mã xác thực", "info");
-  //           return;
-  //         }
-
-  //     } catch (err: any) {
-  //       console.error("Reset error:", err.message);
-  //       toast("Không thể đặt lại mật khẩu", "error");
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
 
   return (
     <Box sx={{ textAlign: "center", mt: 4 }}>
@@ -90,7 +71,7 @@ const ForgetPassword = () => {
       </form>
 
       <Box sx={{ mt: 2 }}>
-        <a href="/login">Đã có tài khoản? Đăng nhập ngay</a>
+        <Link to="/init/loginPage">Đã có tài khoản? Đăng nhập ngay</Link>
       </Box>
     </Box>
   );

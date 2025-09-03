@@ -24,28 +24,32 @@ const ManageMyInfo = () => {
     onPageChange,
     onPageSizeChange,
     openModal,
-    onRowClick,
+    totalCount,
+    pageInfo,
+    sortModel,
   } = useInspectionPerformanceHistory();
+
   if (loading) {
     return <Loading />;
   }
+
   return (
     <Box>
       <DataTable
+        checkboxSelection={false}
+        onSortModelChange={onSortModelChange}
+        sortModel={sortModel}
+        loading={loading}
         rows={rows}
         columns={columns}
-        checkboxSelection={false}
-        // onRowClick={onRowClick}
-        onSortModelChange={onSortModelChange}
-        loading={loading}
       />
       <Box sx={{ flexShrink: 0 }}>
         <Pagination
           totalPage={totalPages}
-          totalResult={2}
+          totalResult={totalCount}
           onPageChange={onPageChange}
-          currentPage={totalPages}
-          pageSize={2}
+          currentPage={pageInfo.page}
+          pageSize={pageInfo.size}
           onPageSizeChange={onPageSizeChange}
         />
       </Box>
