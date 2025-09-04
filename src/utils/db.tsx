@@ -8,7 +8,7 @@ type SideBarValueTypes =
   | "security"
   | "setting"
   | "sampleFileUploader"
-  | "flight"
+  | "flight-book"
   | "airplane"
   | "airport"
   | "ticket"
@@ -19,6 +19,7 @@ type SideBarValueTypes =
   | "flightManagement"
   | "airplaneManagement"
   | "airplaneType"
+  | "aircraft"
   | "flightmeals"
   | "airplaneSchedule"
   | "airplaneTicket"
@@ -112,9 +113,10 @@ export const menuData: MenuSection[] = [
             id: "user-list",
             label: "Tài khoản",
             subItems: [
-              { id: "customers", label: "Khách hàng" },
+              { id: "flight-book", label: "Khách hàng" },
               { id: "bookseat", label: "Đặt chỗ" },
               { id: "hero", label: "Nhân viên" },
+              { id: "aircraft", label: "aircraft" },
             ],
           },
         ],

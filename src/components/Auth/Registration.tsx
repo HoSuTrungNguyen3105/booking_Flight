@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Button,
   TextField,
@@ -14,6 +14,7 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import { useRegisterUser, type PassengerFormData } from "../Api/usePostApi";
 import { useToast } from "../../context/ToastContext";
+import VerifyOpt from "./components/VerifyOpt";
 interface RegisterProps {
   onClose: () => void;
 }
@@ -24,20 +25,26 @@ const Registration = ({ onClose }: RegisterProps) => {
     formState: { errors },
   } = useForm<PassengerFormData>();
   const { refetchRegister } = useRegisterUser();
+  const [verifyOTPcode, setVerifyOTPcode] = useState(false);
   const toast = useToast();
   const onSubmit = async (data: PassengerFormData) => {
     try {
       const res = await refetchRegister(data);
       if (res?.resultCode === "00") {
         toast(res.resultMessage || "Yêu cầu đã gửi thành công!");
-        onClose();
+        setVerifyOTPcode(true);
       } else {
         toast(res?.resultMessage || "Yêu cầu thất bại, vui lòng thử lại.");
+        // onClose();
       }
     } catch (error) {
       toast("Có lỗi xảy ra, vui lòng thử lại.");
     }
   };
+
+  if (verifyOTPcode) {
+    return <VerifyOpt />;
+  }
 
   return (
     <TableContainer
@@ -56,7 +63,7 @@ const Registration = ({ onClose }: RegisterProps) => {
               <TableCell>Full Name</TableCell>
               <TableCell>
                 <Controller
-                  name="fullName"
+                  name="name"
                   control={control}
                   rules={{ required: "Full name is required" }}
                   render={({ field }) => (
@@ -64,8 +71,8 @@ const Registration = ({ onClose }: RegisterProps) => {
                       {...field}
                       placeholder="Enter your name"
                       fullWidth
-                      error={!!errors.fullName}
-                      helperText={errors.fullName?.message}
+                      error={!!errors.name}
+                      helperText={errors.name?.message}
                     />
                   )}
                 />

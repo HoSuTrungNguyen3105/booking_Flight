@@ -374,8 +374,9 @@ export const useResetPasswordByMfa = () => {
   };
 };
 export type PassengerFormData = {
-  fullName: string;
+  name: string;
   email: string;
+  role: string;
   password: string;
   phone: string;
   passport: string;

@@ -12,7 +12,6 @@ import {
   UserRole,
   type DataResponseId,
   type UserData,
-  type UserDataResponse,
   type UserListResponse,
 } from "../utils/type";
 import { useGetMyInfo } from "../components/Api/useGetApi";

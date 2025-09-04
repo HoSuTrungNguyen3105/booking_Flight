@@ -96,7 +96,32 @@ export type Seat = {
   isBooked: boolean;
   flightId: number;
   bookingId: number;
+  type: string;
 };
+
+// export type Seat = {
+//   id: number;
+//   row: number;
+//   column: string;
+//   type: "VIP" | "ECONOMY" | "BUSINESS"; // tuỳ anh có thể thêm các loại khác
+//   isBooked: boolean;
+// };
+
+export type FlightSeat = {
+  flightId: number;
+  flightNo: string;
+  seats: Seat[];
+};
+
+export type FlightSeatByAircraftResponseMessage =
+  DetailResponseMessage<FlightSeat>;
+
+interface AircraftCodeName {
+  code: string;
+  model: string;
+  range: number;
+}
+export type AircraftResponseMessage = DetailResponseMessage<AircraftCodeName>;
 
 export type SeatResponseMessage = DetailResponseMessage<Seat>;
 

@@ -32,6 +32,8 @@ import AuthGuard from "../components/Layout/AuthGuard";
 import Special from "../common/Setting/hooks/Special";
 import ChangePassword from "../components/Auth/ChangePassword";
 import SeatBooking from "../components/User/SeatBooking";
+import FlightBooking from "../components/User/FlightBooking";
+import AircraftPage from "../components/User/AircraftPage";
 
 const routes = [
   {
@@ -182,8 +184,16 @@ const routes = [
         element: <CheckboxUI />,
       },
       {
+        path: "flight-book",
+        element: <FlightBooking />,
+      },
+      {
         path: "manage-my-info",
         element: <ManageMyInfo />,
+      },
+      {
+        path: "aircraft",
+        element: <AircraftPage />,
       },
       {
         path: ROUTE_PATHS.SAMPLE_BUTTON.replace("/", ""),
