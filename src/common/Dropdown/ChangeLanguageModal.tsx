@@ -43,7 +43,7 @@ const ChangeLanguageModal = ({
         </Button>
       </Box>
     );
-  }, [onSuccess]);
+  }, [handleSaveChange, t]);
 
   const renderContent = useCallback(() => {
     return (
@@ -73,7 +73,9 @@ const ChangeLanguageModal = ({
     );
   }, [
     selectedLang,
+    optionPayMoney,
     selectedPayMoney,
+    optionLanguage,
     handlePayMoneySelect,
     handleLanguageSelect,
   ]);

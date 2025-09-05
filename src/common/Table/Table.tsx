@@ -15,8 +15,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { Button } from "../Button/Button";
-import { FileUpload } from "../FileUploader";
-// import Select from "react-select";
+
 const columns = [
   {
     id: "id",
@@ -40,9 +39,11 @@ const columns = [
     minWidth: 120,
   },
 ];
+
 type Props = {
   className?: string;
 };
+
 const ArrowDownIcon: React.FC<Props> = ({ className }) => {
   return (
     <span
@@ -61,6 +62,7 @@ const ArrowDownIcon: React.FC<Props> = ({ className }) => {
     />
   );
 };
+
 const TableCustom = () => {
   const rows = Array.from({ length: 30 }, (_, index) => ({
     id: index + 1,

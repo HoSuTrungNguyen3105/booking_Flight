@@ -22,7 +22,7 @@ import { useAuth } from "../../context/AuthContext";
 import SignOut from "../../components/Auth/SignOut";
 import ImageThumbnailIcon from "../../svgs/account-avatar-profile-user-11.svg";
 import { Link, useNavigate } from "react-router-dom";
-import { LanguageDropdown } from "../Dropdown/Changelng";
+import { LanguageButton } from "../Dropdown/Changelng";
 import { GridMenuIcon, GridSearchIcon } from "@mui/x-data-grid";
 import { ImageThumbnail } from "../Profile/ImageThumbnail";
 
@@ -136,23 +136,6 @@ export const Header = () => {
                   {item}
                 </Button>
               ))}
-              <TextField
-                variant="outlined"
-                placeholder="Search..."
-                size="small"
-                sx={{ ml: 4, width: "250px" }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <GridSearchIcon />
-                    </InputAdornment>
-                  ),
-                  sx: {
-                    borderRadius: "25px",
-                    bgcolor: theme.palette.grey[100],
-                  },
-                }}
-              />
             </Stack>
           )}
 
@@ -182,7 +165,7 @@ export const Header = () => {
             )}
 
             <Stack direction="row" alignItems="center" spacing={1}>
-              <LanguageDropdown />
+              <LanguageButton />
               {isAuthenticated ? (
                 <Stack direction="row" alignItems="center">
                   <ImageThumbnail url={ImageThumbnailIcon} />

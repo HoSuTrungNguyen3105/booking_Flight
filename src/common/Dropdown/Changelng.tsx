@@ -3,7 +3,7 @@ import { Box, Button } from "@mui/material";
 import { useCallback, useState } from "react";
 import ChangeLanguageModal from "./ChangeLanguageModal";
 
-export const LanguageDropdown = () => {
+export const LanguageButton = () => {
   const [openModal, setOpenModal] = useState(false);
   const renderButton = useCallback(() => {
     return (

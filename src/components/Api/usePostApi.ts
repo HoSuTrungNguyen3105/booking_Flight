@@ -15,8 +15,7 @@ import type {
   UseRCreate,
   DataResponseId,
   RegisterResponseMessage,
-  UserDataResponse,
-  OTPCodeVerify,
+  RegisterOTPCodeVerifyResponse,
 } from "../../utils/type.ts";
 import { MethodType } from "../../hooks/type";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
@@ -404,7 +403,7 @@ type VerifyOTPProps = {
 };
 export const useVerifyOTPCode = () => {
   const { refetch: refetchVerifyOTPcode } = useFetch<
-    OTPCodeVerify,
+    RegisterOTPCodeVerifyResponse,
     VerifyOTPProps
   >({
     url: "/auth/verifyOtp",

@@ -7,7 +7,7 @@ import { useAuth } from "../../context/AuthContext";
 import { ROUTE_PATHS } from "../../routers/RoutePath";
 import theme from "../../scss/theme";
 import SelectDropdown, { type ActionType } from "../Dropdown/SelectDropdown";
-import { LanguageDropdown } from "../Dropdown/Changelng";
+import { LanguageButton } from "../Dropdown/Changelng";
 import RadioUI from "../Radio/RadioUI";
 
 const Header = () => {
@@ -63,6 +63,10 @@ const Header = () => {
   const renderUserMenu = useCallback(() => {
     // if (!user) return null;
 
+    //   "passengerId": 5,
+    // "flightId": 5,
+    // "seatIds": [6]
+
     return (
       <Box
         display="flex"
@@ -71,7 +75,7 @@ const Header = () => {
         flexGrow={1}
       >
         <Stack direction="column" spacing={3} sx={{ pt: 2, pb: 2 }}>
-          <LanguageDropdown />
+          <LanguageButton />
         </Stack>
         <Box
           display="flex"

@@ -1,6 +1,12 @@
-import { TableBody, TableCell, TableHead, TableRow } from "@mui/material";
-import RequiredIcon from "assets/images/icon/required_icon.svg";
-import { Table } from "react-bootstrap"; // 2.7k (gzipped: 1.3k)
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+} from "@mui/material";
+// import RequiredIcon from "../../svgs/add-svg.svg";
+// import { Table } from "react-bootstrap"; // 2.7k (gzipped: 1.3k)
 import { useTranslation } from "react-i18next"; // 5.3k (gzipped: 2.3k)
 import { Checkbox } from "../Checkbox/Checkbox";
 
@@ -46,7 +52,7 @@ export const InputTableWrapperCustom = <T extends TInfoTableTemp>({
               sx={{ minWidth, width }}
               style={{ flexShrink: 0, marginTop: "-4px" }}
             >
-              {required && !hiddenRequired && <RequiredIcon />}
+              {/* {required && !hiddenRequired && <RequiredIcon />} */}
               {t(label)}
             </TableCell>
           ))}

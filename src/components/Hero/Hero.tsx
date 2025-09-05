@@ -3,12 +3,12 @@ import {
   Typography,
   Button,
   Box,
-  useTheme,
-  InputAdornment,
   TextField,
+  ToggleButton,
+  ToggleButtonGroup,
+  MenuItem,
+  Grid,
 } from "@mui/material";
-import { GridSearchIcon } from "@mui/x-data-grid";
-import { useGetUnlockRequests } from "../Api/useGetApi";
 
 interface FlightSearchForm {
   from: string;
@@ -21,8 +21,6 @@ interface FlightSearchForm {
 }
 
 const Hero: React.FC = () => {
-  const theme = useTheme();
-
   const [searchForm, setSearchForm] = useState<FlightSearchForm>({
     from: "",
     to: "",
@@ -33,105 +31,149 @@ const Hero: React.FC = () => {
     cabinClass: "economy",
   });
 
-  const handleInputChange = (
+  const handleChange = (
     field: keyof FlightSearchForm,
     value: string | number
   ) => {
-    setSearchForm((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+    setSearchForm((prev) => ({ ...prev, [field]: value }));
   };
-  const { getUnlockRequests } = useGetUnlockRequests();
 
   return (
-    <>
-      <Box
-        sx={{
-          height: "500px",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          px: 6,
-          textAlign: "center",
-          color: "white",
-          position: "relative",
-          overflow: "hidden",
-          backgroundImage:
-            "url(https://images.unsplash.com/photo-1490730101735-85e8a7056461?q=80&w=2670&auto=format&fit=crop)",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          "&::before": {
-            content: '""',
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-          },
-        }}
-      >
-        <Box sx={{ position: "relative", zIndex: 2 }}>
-          <Typography
-            variant="h2"
-            fontWeight="bold"
-            sx={{
-              color: "white",
-              textShadow: "2px 2px 4px rgba(0,0,0,0.7)",
-            }}
-          >
-            Find Your Next Adventure
-          </Typography>
-          <Typography
-            variant="h5"
-            sx={{ mt: 2, color: theme.palette.grey[300] }}
-          >
-            {/* Book flights, discover destinations, and start your journey with
-            ease. */}
-            {JSON.stringify(getUnlockRequests)}
-          </Typography>
+    <Box
+      sx={{
+        height: "700px",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        px: 4,
+        textAlign: "center",
+        color: "white",
+        position: "relative",
+        overflow: "hidden",
+        backgroundImage:
+          "url(https://images.unsplash.com/photo-1502920917128-1aa500764b8a?q=80&w=2670&auto=format&fit=crop)",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        "&::before": {
+          content: '""',
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          backgroundColor: "rgba(0, 0, 0, 0.55)",
+        },
+      }}
+    >
+      <Box sx={{ position: "relative", zIndex: 2, maxWidth: "900px" }}>
+        <Typography
+          variant="h3"
+          fontWeight="bold"
+          sx={{
+            color: "white",
+            textShadow: "2px 2px 6px rgba(0,0,0,0.7)",
+          }}
+        >
+          Find Your Next Adventure
+        </Typography>
 
-          <Box
-            sx={{
-              mt: 5,
-              width: "100%",
-              maxWidth: "800px",
-              mx: "auto",
-              backgroundColor: "rgba(255, 255, 255, 0.9)",
-              borderRadius: "16px",
-              p: 2,
-              boxShadow: 3,
-            }}
+        <Box
+          sx={{
+            mt: 5,
+            p: 3,
+            bgcolor: "rgba(255, 255, 255, 0.95)",
+            borderRadius: 4,
+            boxShadow: 4,
+          }}
+        >
+          {/* Flight Type Toggle */}
+          <ToggleButtonGroup
+            value={searchForm.flightType}
+            exclusive
+            onChange={(_, val) => val && handleChange("flightType", val)}
+            sx={{ mb: 3 }}
           >
-            <TextField
-              fullWidth
-              variant="outlined"
-              placeholder="Search flights, destinations..."
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <GridSearchIcon color="primary" />
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <Button variant="contained" sx={{ borderRadius: "12px" }}>
-                      Search
-                    </Button>
-                  </InputAdornment>
-                ),
-                sx: {
-                  borderRadius: "12px",
-                  bgcolor: "white",
-                },
-              }}
-            />
-          </Box>
+            <ToggleButton value="oneway">One Way</ToggleButton>
+            <ToggleButton value="roundtrip">Round Trip</ToggleButton>
+          </ToggleButtonGroup>
+
+          {/* Form Fields */}
+          <Grid container spacing={2}>
+            <Grid size={12}>
+              <TextField
+                fullWidth
+                label="From"
+                value={searchForm.from}
+                onChange={(e) => handleChange("from", e.target.value)}
+              />
+            </Grid>
+            <Grid size={12}>
+              <TextField
+                fullWidth
+                label="To"
+                value={searchForm.to}
+                onChange={(e) => handleChange("to", e.target.value)}
+              />
+            </Grid>
+            <Grid size={12}>
+              <TextField
+                fullWidth
+                type="date"
+                label="Departure"
+                InputLabelProps={{ shrink: true }}
+                value={searchForm.departDate}
+                onChange={(e) => handleChange("departDate", e.target.value)}
+              />
+            </Grid>
+            {searchForm.flightType === "roundtrip" && (
+              <Grid size={12}>
+                <TextField
+                  fullWidth
+                  type="date"
+                  label="Return"
+                  InputLabelProps={{ shrink: true }}
+                  value={searchForm.returnDate}
+                  onChange={(e) => handleChange("returnDate", e.target.value)}
+                />
+              </Grid>
+            )}
+            <Grid size={12}>
+              <TextField
+                fullWidth
+                type="number"
+                label="Passengers"
+                value={searchForm.passengers}
+                onChange={(e) => handleChange("passengers", +e.target.value)}
+              />
+            </Grid>
+            <Grid size={12}>
+              <TextField
+                fullWidth
+                select
+                label="Cabin Class"
+                value={searchForm.cabinClass}
+                onChange={(e) => handleChange("cabinClass", e.target.value)}
+              >
+                <MenuItem value="economy">Economy</MenuItem>
+                <MenuItem value="business">Business</MenuItem>
+                <MenuItem value="first">First</MenuItem>
+              </TextField>
+            </Grid>
+            <Grid size={12} sx={{ display: "flex", alignItems: "center" }}>
+              <Button
+                variant="contained"
+                color="primary"
+                size="large"
+                sx={{ borderRadius: "12px", px: 4, width: "100%" }}
+              >
+                Search Flights
+              </Button>
+            </Grid>
+          </Grid>
         </Box>
       </Box>
-    </>
+    </Box>
   );
 };
 

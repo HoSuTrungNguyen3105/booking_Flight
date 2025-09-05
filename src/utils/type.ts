@@ -18,14 +18,50 @@ export type CodeItem = {
 export type DataFlight = {
   flightId?: number;
   flightNo?: string;
-  scheduledDeparture: string;
-  scheduledArrival: string;
+  flightType?: string; // one-way / roundtrip
   departureAirport: string;
   arrivalAirport: string;
   status: string;
   aircraftCode: string;
-  actualDeparture?: string;
-  actualArrival?: string;
+
+  priceEconomy?: number;
+  priceBusiness?: number;
+  priceFirst?: number;
+  maxCapacity?: number;
+
+  scheduledDeparture: string; // timestamp dạng string (decimal epoch)
+  scheduledArrival: string; // timestamp dạng string
+  actualDeparture?: string | null;
+  actualArrival?: string | null;
+
+  gate?: string;
+  terminal?: string;
+  isCancelled?: boolean;
+  delayMinutes?: number | null;
+
+  aircraft?: {
+    code: string;
+    model: string;
+    range: number;
+  };
+
+  departureAirportRel?: {
+    code: string;
+    name: string;
+    city: string;
+    coordinates: string;
+    timezone: string;
+  };
+
+  arrivalAirportRel?: {
+    code: string;
+    name: string;
+    city: string;
+    coordinates: string;
+    timezone: string;
+  };
+
+  meals?: any[]; // nếu có định nghĩa riêng thì thay `any[]` bằng type cụ thể
 };
 
 export type FlightTimeFields = Pick<
@@ -79,11 +115,13 @@ export type UserDataResponse<T> = {
   userId: number;
 };
 
-export type DataResponse = {
+export type RegisterOTPCodeVerifyResponse = {
+  resultCode: string;
+  resultMessage: string;
   requireChangePassword?: boolean;
   userId: number;
 };
-export type OTPCodeVerify = DetailResponseMessage<DataResponse>;
+// export type OTPCodeVerify = DetailResponseMessage<DataResponse>;
 
 export type DataResponseId = {
   resultCode: string;

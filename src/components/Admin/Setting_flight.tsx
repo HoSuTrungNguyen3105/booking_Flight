@@ -9,7 +9,8 @@ import SelectDropdown from "../../common/Dropdown/SelectDropdown";
 
 const Setting_flight = () => {
   const [rows, setRows] = useState<Flight[]>([]);
-  const { fetchFlightList, refetchFlightList } = useFlightList();
+  const { fetchFlightList } = useFlightList();
+
   useEffect(() => {
     if (fetchFlightList?.list) {
       setRows(fetchFlightList.list);

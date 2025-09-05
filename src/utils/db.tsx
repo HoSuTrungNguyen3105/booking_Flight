@@ -36,6 +36,7 @@ type SideBarValueTypes =
   | "users"
   | "user-list"
   | "customers"
+  | "unlock_request"
   | "staffs";
 
 export type MenuItem = {
@@ -114,7 +115,7 @@ export const menuData: MenuSection[] = [
             label: "Tài khoản",
             subItems: [
               { id: "flight-book", label: "Khách hàng" },
-              { id: "bookseat", label: "Đặt chỗ" },
+              { id: "unlock_request", label: "Đặt chỗ" },
               { id: "hero", label: "Nhân viên" },
               { id: "aircraft", label: "aircraft" },
             ],

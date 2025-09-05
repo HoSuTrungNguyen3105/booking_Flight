@@ -6,12 +6,12 @@ import { useFlightMeals } from "../../components/Api/useGetApi";
 import DataTable from "../DataGrid/index.tsx";
 
 const Food = () => {
-  const { fetchFlightMeals, refetchFlightMeals } = useFlightMeals();
+  const { fetchFlightMeals } = useFlightMeals();
   const [rows, setRows] = useState<FlightMeal[]>([]);
 
-  useEffect(() => {
-    refetchFlightMeals();
-  }, []);
+  // useEffect(() => {
+  //   refetchFlightMeals();
+  // }, []);
 
   useEffect(() => {
     if (fetchFlightMeals?.list) {

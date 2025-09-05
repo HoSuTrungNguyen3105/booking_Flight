@@ -15,14 +15,6 @@ export const quickValue = <T, K>(
 };
 
 export const extractSizeInfo = (size: string) => {
-  // const sizeRegex = /(\d+(?:\.\d+)?)([KMGTPEZY]?B)/;
-  // const match = sizeRegex.exec(size);
-  // if (match) {
-  //   return {
-  //     amount: convertToString(parseFloat(match[1])),
-  //     unit: match[2].toUpperCase(),
-  //   };
-  // }
   const match = size.split(" ");
   if (match) {
     return {

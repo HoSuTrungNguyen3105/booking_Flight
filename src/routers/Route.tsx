@@ -29,6 +29,7 @@ import ManageMyInfo from "../common/Setting/ManageMyInfo";
 import Special from "../common/Setting/hooks/Special";
 import FlightBooking from "../components/User/FlightBooking";
 import AircraftPage from "../components/User/AircraftPage";
+import UnlockRequestTable from "../common/DetailSection/UnlockRequestTable";
 
 const routes = [
   {
@@ -123,8 +124,8 @@ const routes = [
         element: <SecurityManage />,
       },
       {
-        path: "bookseat",
-        // element: <SeatBooking />,
+        path: "unlock_request", //bookseat
+        element: <UnlockRequestTable />,
       },
       {
         path: "flightmeals",

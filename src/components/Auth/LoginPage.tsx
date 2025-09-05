@@ -179,13 +179,25 @@ export const LoginPage: React.FC = () => {
                 )}
               />
             </FormControl>
-            <Button onClick={() => setChangePassword(true)}>
-              Change Password
-            </Button>
-            <Button onClick={() => setUnlockAccount(true)}>
-              Request unlock account
-            </Button>
-            <Button onClick={handleRegisterUser}>Register</Button>
+            <Stack
+              spacing={2}
+              direction="row"
+              justifyContent="flex-end"
+              alignItems="center"
+            >
+              <Button variant="text" onClick={() => setUnlockAccount(true)}>
+                Request unlock account
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() => setChangePassword(true)}
+              >
+                Change Password
+              </Button>
+              <Button variant="contained" onClick={handleRegisterUser}>
+                Register
+              </Button>
+            </Stack>
             <Box
               sx={{
                 display: "flex",
@@ -193,9 +205,7 @@ export const LoginPage: React.FC = () => {
                 alignItems: "center",
               }}
             >
-              <Button type="submit" sx={{ minWidth: "30rem", margin: "0px" }}>
-                Submit
-              </Button>
+              <Button type="submit">Submit</Button>
             </Box>
           </Stack>
         </Box>

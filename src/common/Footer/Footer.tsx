@@ -27,15 +27,7 @@ export const Footer = forwardRef<HTMLElement, React.HTMLProps<HTMLElement>>(
         </Box>
       ));
     }, [dataFooter]);
-    //   import { forwardRef } from "react";
 
-    // export const Footer = forwardRef<HTMLElement, React.HTMLProps<HTMLElement>>((props, ref) => {
-    //   return (
-    //     <footer ref={ref} {...props}>
-    //       {/* Footer content */}
-    //     </footer>
-    //   );
-    // });
     return (
       <footer ref={ref} {...props}>
         <Box

@@ -33,11 +33,13 @@ const Registration = ({ onClose }: RegisterProps) => {
   const onSubmit = async (data: PassengerFormData) => {
     try {
       const res = await refetchRegister(data);
+      // console.log("res", res);
       if (res?.resultCode === "00") {
         toast(res.resultMessage || "Yêu cầu đã gửi thành công!");
         setVerifyOTPcode(true);
         setEmail(res.data?.email);
         setUserId(res.data?.userId);
+        // console.log("res", res.data);
       } else {
         toast(res?.resultMessage || "Yêu cầu thất bại, vui lòng thử lại.");
         // onClose();
@@ -46,7 +48,6 @@ const Registration = ({ onClose }: RegisterProps) => {
       toast("Có lỗi xảy ra, vui lòng thử lại.");
     }
   };
-  console.log("user", userId);
 
   if (verifyOTPcode) {
     return <VerifyOpt userId={userId} email={email} />;

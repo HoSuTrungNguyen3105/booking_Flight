@@ -1,4 +1,15 @@
 import React, { useState } from "react";
+import {
+  Box,
+  Typography,
+  Card,
+  CardContent,
+  CardActions,
+  Button,
+  TextField,
+  Grid,
+} from "@mui/material";
+import { useFlightList } from "../Api/useGetApi";
 
 type Flight = {
   id: number;
@@ -33,6 +44,7 @@ const mockFlights: Flight[] = [
 
 const FlightBooking: React.FC = () => {
   const [flights] = useState<Flight[]>(mockFlights);
+  const { fetchFlightList } = useFlightList();
   const [selectedFlight, setSelectedFlight] = useState<Flight | null>(null);
   const [passengerName, setPassengerName] = useState("");
   const [message, setMessage] = useState("");
@@ -55,67 +67,131 @@ const FlightBooking: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: "20px", maxWidth: "600px", margin: "auto" }}>
-      <h2>✈️ Flight Booking</h2>
+    <Box p={3} maxWidth="1000px" mx="auto">
+      <Typography
+        variant="h4"
+        fontWeight="bold"
+        mb={4}
+        textAlign="center"
+        color="primary"
+      >
+        ✈️ Flight Booking {JSON.stringify(fetchFlightList)}
+      </Typography>
 
       {/* Flight List */}
-      <h3>Available Flights</h3>
-      <ul style={{ listStyle: "none", padding: 0 }}>
+      <Typography variant="h6" gutterBottom>
+        Available Flights
+      </Typography>
+      <Grid container spacing={3}>
         {flights.map((flight) => (
-          <li
-            key={flight.id}
-            style={{
-              border: "1px solid #ccc",
-              padding: "10px",
-              marginBottom: "10px",
-              cursor: "pointer",
-              background:
-                selectedFlight?.id === flight.id ? "#e0f7fa" : "white",
-            }}
-            onClick={() => handleSelectFlight(flight)}
-          >
-            <strong>{flight.flightNumber}</strong> - {flight.from} → {flight.to}{" "}
-            <br />
-            🕑 {flight.departureTime} → {flight.arrivalTime} <br />
-            💲 {flight.price} USD
-          </li>
+          <Grid size={12} key={flight.id}>
+            <Card
+              onClick={() => handleSelectFlight(flight)}
+              sx={{
+                cursor: "pointer",
+                borderRadius: "16px",
+                border:
+                  selectedFlight?.id === flight.id
+                    ? "2px solid #0288d1"
+                    : "1px solid #e0e0e0",
+                boxShadow:
+                  selectedFlight?.id === flight.id
+                    ? "0px 6px 16px rgba(2,136,209,0.3)"
+                    : "0px 3px 8px rgba(0,0,0,0.1)",
+                transition: "0.3s",
+                "&:hover": {
+                  transform: "translateY(-4px)",
+                  boxShadow: "0px 6px 14px rgba(0,0,0,0.15)",
+                },
+              }}
+            >
+              <CardContent>
+                <Box display="flex" justifyContent="space-between" mb={1}>
+                  <Typography variant="h6" color="primary" fontWeight="bold">
+                    {flight.flightNumber}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    💺 {flight.departureTime} seats left
+                  </Typography>
+                </Box>
+
+                <Box display="flex" justifyContent="space-between" mb={1}>
+                  <Typography variant="body1">🛫 {flight.from}</Typography>
+                  <Typography variant="body1">🛬 {flight.to}</Typography>
+                </Box>
+
+                <Typography variant="body2" color="text.secondary">
+                  🕑 {flight.departureTime} → {flight.arrivalTime}
+                </Typography>
+
+                <Typography
+                  variant="subtitle1"
+                  mt={1.5}
+                  fontWeight="bold"
+                  color="success.main"
+                >
+                  💲 {flight.price} USD
+                </Typography>
+
+                <Button
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 2, borderRadius: "12px" }}
+                  onClick={() => handleSelectFlight(flight)}
+                >
+                  Book Now
+                </Button>
+              </CardContent>
+            </Card>
+          </Grid>
         ))}
-      </ul>
+      </Grid>
 
       {/* Booking Form */}
       {selectedFlight && (
-        <div style={{ marginTop: "20px" }}>
-          <h3>Booking for Flight {selectedFlight.flightNumber}</h3>
-          <input
-            type="text"
-            placeholder="Enter passenger name"
-            value={passengerName}
-            onChange={(e) => setPassengerName(e.target.value)}
-            style={{
-              padding: "8px",
-              marginRight: "10px",
-              border: "1px solid #ccc",
-              borderRadius: "4px",
-            }}
-          />
-          <button
-            onClick={handleBooking}
-            style={{
-              padding: "8px 12px",
-              background: "blue",
-              color: "white",
-              border: "none",
-              borderRadius: "4px",
-            }}
-          >
-            Book Ticket
-          </button>
-        </div>
+        <Box
+          mt={5}
+          p={3}
+          borderRadius="16px"
+          boxShadow="0px 4px 12px rgba(0,0,0,0.1)"
+          bgcolor="white"
+          sx={{ animation: "fadeIn 0.5s ease-in-out" }}
+        >
+          <Typography variant="h6" mb={2} color="primary">
+            Booking for Flight {selectedFlight.flightNumber}
+          </Typography>
+          <Box display="flex" gap={2} flexWrap="wrap">
+            <TextField
+              label="Passenger Name"
+              value={passengerName}
+              onChange={(e) => setPassengerName(e.target.value)}
+              sx={{ flex: 1, minWidth: "250px" }}
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{ borderRadius: "12px" }}
+              onClick={handleBooking}
+            >
+              Confirm Booking
+            </Button>
+          </Box>
+        </Box>
       )}
 
       {/* Message */}
-      {message && <p style={{ marginTop: "20px" }}>{message}</p>}
-    </div>
+      {message && (
+        <Typography
+          variant="body1"
+          color="success.main"
+          mt={3}
+          textAlign="center"
+          fontWeight="bold"
+        >
+          ✅ {message}
+        </Typography>
+      )}
+    </Box>
   );
 };
 
