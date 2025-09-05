@@ -1,14 +1,15 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useLoginByMfa, useSetUpMfa, useVerifyMfa } from "../Api/usePostApi";
 import { Box, Button } from "@mui/material";
 import InputField from "../../common/Input/InputField";
 import { useToast } from "../../context/ToastContext";
 import InputTextField from "../../common/Input/InputTextField";
 import { useAuth } from "../../context/AuthContext";
+import type { EmailProps } from "../../utils/type";
 
-export default function MfaSetup() {
+export default function MfaSetup({ email }: EmailProps) {
   const [qrCode, setQrCode] = useState<string | null>(null);
-  const [email, setEmail] = useState<string>("");
+  // const [email, setEmail] = useState<string>("");
   const [code, setCode] = useState("");
   const [loginMfa, setLoginMfaUi] = useState(false);
   const { refetchSetLoginMfa } = useLoginByMfa();
@@ -50,7 +51,7 @@ export default function MfaSetup() {
       return;
     }
     const res = await refetchVerifyMfa({
-      email,
+      email: email ?? "",
       code: code,
     });
     if (res?.resultCode === "00") {
@@ -67,7 +68,7 @@ export default function MfaSetup() {
       return;
     }
     const res = await loginWithGGAuthenticator({
-      email,
+      email: email ?? "",
       code: code,
     });
 
@@ -92,7 +93,8 @@ export default function MfaSetup() {
       <InputField
         sx={{ width: "50%" }}
         value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        disabled
+        // onChange={(e) => setEmail(e.target.value)}
         placeholder="Nhập email"
       />
       <Button variant="contained" onClick={fetchQrCode}>

@@ -8,17 +8,22 @@ import {
 } from "@mui/material";
 import { useGetAircraftCode, useGetSeatByAircraftCode } from "../Api/useGetApi";
 import { useState } from "react";
+import SeatBooking from "./SeatBooking";
 
 const AircraftPage = () => {
   const { getAircraftCodeData } = useGetAircraftCode();
   const [aircraftCodeState, setAircraftCodeState] = useState("");
-  const { refetchGetSeatByAircraftCodeData } =
-    useGetSeatByAircraftCode(aircraftCodeState);
-
+  //   const { refetchGetSeatByAircraftCodeData } =
+  //     useGetSeatByAircraftCode(aircraftCodeState);
+  const [pageDetail, setPageDetail] = useState(false);
   const handleViewSeats = (code: string) => {
     setAircraftCodeState(code); // gán mã máy bay
-    refetchGetSeatByAircraftCodeData(); // gọi API
+    setPageDetail(true);
+    // refetchGetSeatByAircraftCodeData(); // gọi API
   };
+  if (pageDetail) {
+    return <SeatBooking code={aircraftCodeState} />;
+  }
   return (
     <Box p={3}>
       <Typography variant="h5" mb={3} fontWeight="bold">

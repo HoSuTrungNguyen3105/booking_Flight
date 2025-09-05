@@ -1,14 +1,17 @@
 import React, { useState } from "react";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import type { Seat } from "../../utils/type";
-import { useGetSeatsData } from "../Api/useGetApi";
+import { useGetSeatByAircraftCode, useGetSeatsData } from "../Api/useGetApi";
 import DialogConfirm from "../../common/Modal/DialogConfirm";
 import { Chair, StarBorder, StarHalfSharp } from "@mui/icons-material";
-
-const SeatBooking: React.FC = () => {
+type AircraftCodeProps = {
+  code: string;
+};
+const SeatBooking: React.FC<AircraftCodeProps> = ({ code }) => {
   const { getSeatData } = useGetSeatsData();
   const seats: Seat[] = getSeatData?.list ?? [];
   const [selectedSeats, setSelectedSeats] = useState<number[]>([]);
+  const { getSeatByAircraftCodeData } = useGetSeatByAircraftCode(code);
   const [message, setMessage] = useState("");
   const [openModal, setOpenModal] = useState(false);
   const handleSelectSeat = (seatId: number) => {
@@ -40,67 +43,12 @@ const SeatBooking: React.FC = () => {
     setOpenModal(false);
   };
 
-  // const renderSeatButton = (seat: Seat) => {
-  //   const isSelected = selectedSeats.includes(seat.id);
-  //   const isBooked = seat.isBooked;
-
-  //   return (
-  //     <Button
-  //       key={seat.id}
-  //       onClick={() => !isBooked && handleSelectSeat(seat.id)}
-  //       disabled={isBooked}
-  //       sx={{
-  //         width: "50px",
-  //         height: "50px",
-  //         borderRadius: "8px",
-  //         margin: "4px",
-  //         transition: "all 0.2s ease-in-out",
-  //         boxShadow: isSelected ? "0 0 10px rgba(0, 255, 0, 0.7)" : "none",
-  //         backgroundColor: isBooked
-  //           ? "#d3d3d3"
-  //           : isSelected
-  //           ? "#4caf50"
-  //           : "#f5f5f5",
-  //         color: isBooked ? "#9e9e9e" : isSelected ? "white" : "#333",
-  //         border: `1px solid ${
-  //           isBooked ? "#bdbdbd" : isSelected ? "#388e3c" : "#ccc"
-  //         }`,
-  //         cursor: isBooked ? "not-allowed" : "pointer",
-  //         position: "relative",
-  //         "&:hover": {
-  //           backgroundColor: isBooked
-  //             ? "#d3d3d3"
-  //             : isSelected
-  //             ? "#43a047"
-  //             : "#e0e0e0",
-  //           transform: isBooked ? "none" : "scale(1.05)",
-  //         },
-  //       }}
-  //     >
-  //       {isBooked ? (
-  //         <span
-  //           style={{
-  //             position: "absolute",
-  //             top: "50%",
-  //             left: "50%",
-  //             transform: "translate(-50%, -50%)",
-  //             color: "#616161",
-  //             fontSize: "20px",
-  //           }}
-  //         >
-  //           ✖
-  //         </span>
-  //       ) : (
-  //         `${seat.row}${seat.column}`
-  //       )}
-  //     </Button>
-  //   );
-  // };
   type LegendItemProps = {
     color: string;
     label: string;
     icon?: React.ReactNode;
   };
+
   const LegendItem = ({ color, label, icon }: LegendItemProps) => (
     <Box sx={{ display: "flex", alignItems: "center", gap: "8px" }}>
       <Box
@@ -127,7 +75,6 @@ const SeatBooking: React.FC = () => {
     const isSelected = selectedSeats.includes(seat.id);
     const isBooked = seat.isBooked;
 
-    // Determine seat styles based on type
     let seatColor = "#f5f5f5"; // Available
     let icon = null;
 
@@ -244,6 +191,7 @@ const SeatBooking: React.FC = () => {
         sx={{ fontWeight: "bold", marginBottom: "24px" }}
       >
         Chọn Chỗ Ngồi
+        {JSON.stringify(code)}
       </Typography>
       <Box
         sx={{
@@ -271,6 +219,8 @@ const SeatBooking: React.FC = () => {
           border: "1px solid #e0e0e0",
           borderRadius: "12px",
           padding: "16px",
+          maxHeight: "450px", // chiều cao tối đa
+          overflowY: "auto", // scroll dọc
         }}
       >
         {Array.from(new Set(seats.map((s) => s.row))).map((row) => {

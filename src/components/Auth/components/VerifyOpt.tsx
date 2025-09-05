@@ -1,9 +1,27 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import OTPInput from "../../User/OTPInput";
 import { Box, Button, Typography } from "@mui/material";
+import type { EmailProps } from "../../../utils/type";
+import { useVerifyOTPCode } from "../../Api/usePostApi";
+import MfaSetup from "../MFA";
 
-const VerifyOpt = () => {
+const VerifyOpt = ({ email, userId }: EmailProps) => {
   const [otpText, setOtpText] = useState<string>("");
+  const { refetchVerifyOTPcode } = useVerifyOTPCode();
+  const [hasValidate, sethasValidate] = useState(false);
+  const handleCheckOTPYn = useCallback(async () => {
+    const res = await refetchVerifyOTPcode({
+      otp: otpText,
+      userId: userId,
+    });
+    if (res?.resultCode == "00") {
+      sethasValidate(true);
+    }
+  }, []);
+  console.log("user", userId);
+  if (hasValidate) {
+    return <MfaSetup userId={userId} email={email} />;
+  }
   return (
     <Box
       component="form"
@@ -38,10 +56,14 @@ const VerifyOpt = () => {
             borderBottom: `1px solid ${theme.palette.grey[200]}`,
           })}
         >
-          <OTPInput value={otpText} />
+          <OTPInput
+            value={otpText}
+            onChange={setOtpText}
+            onComplete={(val) => console.log("Done OTP:", val)}
+          />
         </Box>
         <Box>
-          <Button>Confirm</Button>
+          <Button onClick={handleCheckOTPYn}>Confirm</Button>
         </Box>
       </Box>
     </Box>

@@ -15,6 +15,7 @@ import { useForm, Controller } from "react-hook-form";
 import { useRegisterUser, type PassengerFormData } from "../Api/usePostApi";
 import { useToast } from "../../context/ToastContext";
 import VerifyOpt from "./components/VerifyOpt";
+import { BackHand } from "@mui/icons-material";
 interface RegisterProps {
   onClose: () => void;
 }
@@ -26,6 +27,8 @@ const Registration = ({ onClose }: RegisterProps) => {
   } = useForm<PassengerFormData>();
   const { refetchRegister } = useRegisterUser();
   const [verifyOTPcode, setVerifyOTPcode] = useState(false);
+  const [email, setEmail] = useState<string | undefined>(undefined);
+  const [userId, setUserId] = useState<number | undefined>(undefined);
   const toast = useToast();
   const onSubmit = async (data: PassengerFormData) => {
     try {
@@ -33,6 +36,8 @@ const Registration = ({ onClose }: RegisterProps) => {
       if (res?.resultCode === "00") {
         toast(res.resultMessage || "Yêu cầu đã gửi thành công!");
         setVerifyOTPcode(true);
+        setEmail(res.data?.email);
+        setUserId(res.data?.userId);
       } else {
         toast(res?.resultMessage || "Yêu cầu thất bại, vui lòng thử lại.");
         // onClose();
@@ -41,9 +46,10 @@ const Registration = ({ onClose }: RegisterProps) => {
       toast("Có lỗi xảy ra, vui lòng thử lại.");
     }
   };
+  console.log("user", userId);
 
   if (verifyOTPcode) {
-    return <VerifyOpt />;
+    return <VerifyOpt userId={userId} email={email} />;
   }
 
   return (
@@ -52,13 +58,15 @@ const Registration = ({ onClose }: RegisterProps) => {
       sx={{ maxWidth: 700, margin: "auto", mt: 4, p: 3 }}
     >
       <Typography variant="h6" gutterBottom>
+        <Button onClick={onClose}>
+          <BackHand />
+        </Button>{" "}
         Registration
       </Typography>
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <Table>
           <TableBody>
-            {/* Full Name */}
             <TableRow>
               <TableCell>Full Name</TableCell>
               <TableCell>
@@ -79,7 +87,6 @@ const Registration = ({ onClose }: RegisterProps) => {
               </TableCell>
             </TableRow>
 
-            {/* Email */}
             <TableRow>
               <TableCell>Email</TableCell>
               <TableCell>
@@ -103,7 +110,6 @@ const Registration = ({ onClose }: RegisterProps) => {
               </TableCell>
             </TableRow>
 
-            {/* Password */}
             <TableRow>
               <TableCell>Password</TableCell>
               <TableCell>
@@ -125,7 +131,6 @@ const Registration = ({ onClose }: RegisterProps) => {
               </TableCell>
             </TableRow>
 
-            {/* Phone */}
             <TableRow>
               <TableCell>Phone</TableCell>
               <TableCell>
@@ -146,7 +151,6 @@ const Registration = ({ onClose }: RegisterProps) => {
               </TableCell>
             </TableRow>
 
-            {/* Passport */}
             <TableRow>
               <TableCell>Passport</TableCell>
               <TableCell>

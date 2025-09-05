@@ -4,9 +4,7 @@ import ErrorPage from "../components/Layout/ErrorPage";
 import Guard from "../guard/Guard";
 import Home from "../components/Home/Home";
 import Setting from "../common/Setting/Setting";
-import Registration from "../components/Auth/Registration";
 import { FileUpload } from "../common/FileUploader";
-import Register from "../components/Auth/Register";
 import Hero from "../components/Hero/Hero";
 import BookTicket from "../components/User/BookTicket";
 import { Typography } from "@mui/material";
@@ -28,10 +26,7 @@ import SecurityManage from "../common/Setting/hooks/SecurityManage";
 import ProfileUser from "../common/Profile";
 import ManageMyInformation from "../common/Setting/ManageMyInformation";
 import ManageMyInfo from "../common/Setting/ManageMyInfo";
-import AuthGuard from "../components/Layout/AuthGuard";
 import Special from "../common/Setting/hooks/Special";
-import ChangePassword from "../components/Auth/ChangePassword";
-import SeatBooking from "../components/User/SeatBooking";
 import FlightBooking from "../components/User/FlightBooking";
 import AircraftPage from "../components/User/AircraftPage";
 
@@ -39,14 +34,6 @@ const routes = [
   {
     path: ROUTE_PATHS.TABLE,
     element: <TableCustom />,
-  },
-  // {
-  //   path: ROUTE_PATHS.REGISTRATION_FORM,
-  //   element: <Registration />,
-  // },
-  {
-    path: ROUTE_PATHS.REGISTER,
-    element: <Register />,
   },
   {
     path: ROUTE_PATHS.INIT,
@@ -137,7 +124,7 @@ const routes = [
       },
       {
         path: "bookseat",
-        element: <SeatBooking />,
+        // element: <SeatBooking />,
       },
       {
         path: "flightmeals",

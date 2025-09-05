@@ -1,9 +1,9 @@
 import { Box, TextField } from "@mui/material";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 interface OTPInputProps {
   length?: number;
-  value?: string;
+  value: string;
   onChange?: (val: string) => void;
   onComplete?: (val: string) => void;
 }
@@ -14,18 +14,33 @@ export default function OTPInput({
   onChange,
   onComplete,
 }: OTPInputProps) {
-  const [internal, setInternal] = useState<string>("".padEnd(length, ""));
-  const vals = (value ?? internal)
-    .slice(0, length)
-    .padEnd(length, "")
-    .split("");
+  const [internal, setInternal] = useState("");
   const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
+
+  // đảm bảo luôn là string, tránh undefined -> không bị warning controlled/uncontrolled
+  const source = (value ?? internal) || "";
+  const vals = Array.from({ length }, (_, i) => source[i] ?? "");
+  const val = (value ?? internal).slice(0, length).padEnd(length, "").split("");
+  console.log("value", value);
+  // const setVal = (next: string) => {
+  //   const clean = next.replace(/\D/g, "").slice(0, length);
+  //   if (!value) setInternal(clean);
+  //   onChange?.(clean);
+  //   if (clean.length === length) onComplete?.(clean);
+  // };
 
   const setVal = (next: string) => {
     const clean = next.replace(/\D/g, "").slice(0, length);
-    if (!value) setInternal(clean);
+
+    if (value === undefined) {
+      setInternal(clean);
+    }
+
     onChange?.(clean);
-    if (clean.length === length) onComplete?.(clean);
+
+    if (clean.length === length) {
+      onComplete?.(clean);
+    }
   };
 
   const handleChange = (idx: number, ch: string) => {
@@ -55,6 +70,22 @@ export default function OTPInput({
     }
   };
 
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const paste = e.clipboardData
+      .getData("Text")
+      .replace(/\D/g, "")
+      .slice(0, length);
+    setVal(paste);
+    const focusIndex = Math.min(paste.length, length - 1);
+    inputsRef.current[focusIndex]?.focus();
+  };
+
+  useEffect(() => {
+    if (value === undefined) return;
+    setInternal(value.slice(0, length));
+  }, [value, length]);
+
   return (
     <Box display="flex" gap={1} justifyContent="center">
       {Array.from({ length }).map((_, i) => (
@@ -64,6 +95,7 @@ export default function OTPInput({
           value={vals[i]}
           onChange={(e) => handleChange(i, e.target.value)}
           onKeyDown={(e) => handleKeyDown(i, e)}
+          onPaste={handlePaste}
           inputProps={{
             maxLength: 1,
             style: {

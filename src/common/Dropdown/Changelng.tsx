@@ -1,18 +1,38 @@
-import { optionLanguage } from "../../i18n/resource";
-import { useChangeLanguage } from "../../context/use[custom]/useChangeLng";
-import SelectDropdown from "./SelectDropdown";
-import { useTranslation } from "react-i18next";
+import Language from "../../svgs/globe-svgrepo.svg";
+import { Box, Button } from "@mui/material";
+import { useCallback, useState } from "react";
+import ChangeLanguageModal from "./ChangeLanguageModal";
 
 export const LanguageDropdown = () => {
-  const { t } = useTranslation();
-  const { selectedLang, handleLanguageChange } = useChangeLanguage();
-
+  const [openModal, setOpenModal] = useState(false);
+  const renderButton = useCallback(() => {
+    return (
+      <Button
+        variant="contained"
+        sx={{
+          borderRadius: "20px",
+          textTransform: "none",
+          fontWeight: "bold",
+          px: 2,
+        }}
+        onClick={() => setOpenModal(true)}
+      >
+        <Box component={"img"} sx={{ width: 24, height: 24 }} src={Language} />
+      </Button>
+    );
+  }, []);
   return (
-    <SelectDropdown
-      options={optionLanguage}
-      value={selectedLang?.value}
-      onChange={handleLanguageChange}
-      placeholder={t("home")}
-    />
+    <>
+      {renderButton()}
+      <ChangeLanguageModal
+        open={openModal}
+        onClose={() => {
+          setOpenModal(false);
+        }}
+        onSuccess={() => {
+          setOpenModal(false);
+        }}
+      />
+    </>
   );
 };

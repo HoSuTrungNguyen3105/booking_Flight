@@ -14,6 +14,9 @@ import type {
   DetailResponseMessage,
   UseRCreate,
   DataResponseId,
+  RegisterResponseMessage,
+  UserDataResponse,
+  OTPCodeVerify,
 } from "../../utils/type.ts";
 import { MethodType } from "../../hooks/type";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
@@ -383,8 +386,8 @@ export type PassengerFormData = {
 };
 
 export const useRegisterUser = () => {
-  const { data: register, refetch: refetchRegister } = useFetch<
-    ResponseMessage,
+  const { refetch: refetchRegister } = useFetch<
+    RegisterResponseMessage,
     PassengerFormData
   >({
     url: "/auth/register",
@@ -392,8 +395,24 @@ export const useRegisterUser = () => {
     config: postMethod,
   });
   return {
-    register,
     refetchRegister,
+  };
+};
+type VerifyOTPProps = {
+  userId?: number;
+  otp: string;
+};
+export const useVerifyOTPCode = () => {
+  const { refetch: refetchVerifyOTPcode } = useFetch<
+    OTPCodeVerify,
+    VerifyOTPProps
+  >({
+    url: "/auth/verifyOtp",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchVerifyOTPcode,
   };
 };
 export const useVerifyMfa = () => {

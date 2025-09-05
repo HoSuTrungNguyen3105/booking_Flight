@@ -181,13 +181,10 @@ export const Header = () => {
               </Button>
             )}
 
-            {/* Login/User info section - Keep original logic */}
-
             <Stack direction="row" alignItems="center" spacing={1}>
               <LanguageDropdown />
-              {/* <PlainSwitch defaultChecked /> */}
               {isAuthenticated ? (
-                <Stack direction="row" alignItems="center" spacing={1}>
+                <Stack direction="row" alignItems="center">
                   <ImageThumbnail url={ImageThumbnailIcon} />
                   <Button
                     onClick={handleOpenProfile}

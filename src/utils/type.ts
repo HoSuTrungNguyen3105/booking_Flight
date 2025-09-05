@@ -79,6 +79,12 @@ export type UserDataResponse<T> = {
   userId: number;
 };
 
+export type DataResponse = {
+  requireChangePassword?: boolean;
+  userId: number;
+};
+export type OTPCodeVerify = DetailResponseMessage<DataResponse>;
+
 export type DataResponseId = {
   resultCode: string;
   resultMessage: string;
@@ -230,6 +236,11 @@ export type FlightDetailApiResponse = DetailResponseMessage<DataFlight>;
 export type FlightMealDetailApiResponse = DetailResponseMessage<FlightMeal>;
 export type UserListManageResponse = DetailResponseMessage<UserData>;
 export type FlightListApiResponse = DetailResponseMessage<Flight>;
+export type EmailProps = {
+  email?: string;
+  userId?: number;
+};
+export type RegisterResponseMessage = DetailResponseMessage<EmailProps>;
 
 export type ResponseMessage = {
   resultCode: string;
