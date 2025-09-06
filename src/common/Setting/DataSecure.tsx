@@ -4,8 +4,6 @@ import { Box, Typography } from "@mui/material";
 import TableSection from "./TableSection";
 import DetailedInformationModal from "./hooks/DetailedInformationModal";
 import type { GridColDef } from "@mui/x-data-grid";
-import type { MenuData } from "../BreadCrumb/BreadcrumbV2";
-import Breadcrumb from "../BreadCrumb/BreadcrumbV2";
 import AddUserModal from "./hooks/AddUserModal";
 import InspectionSearchBar from "../SearchPopup/InspectionSearchBar";
 import { useLocation } from "react-router-dom";
@@ -155,15 +153,6 @@ const DataSecure = () => {
     ],
     []
   );
-  const dataBread: MenuData[] = [
-    { label: "Home", url: "/" },
-    { label: "Message", url: "/profile" },
-    { label: "Admin", url: "/profile" },
-    { label: "Adv", url: "/profile" },
-    { label: "Adv", url: "/profile" },
-    { label: "Adv", url: "/profile" },
-    { label: "Adv", url: "/profile" },
-  ];
   const columnCheckItem = useMemo(
     () => [
       { field: "directoryType", headerName: "파일 이름", flex: 1 },
@@ -271,7 +260,7 @@ const DataSecure = () => {
   return (
     <Box minHeight={"50vh"}>
       <Typography>
-        <Breadcrumb data={dataBread} maxLength={3} limitWidth={120} />
+        {/* <Breadcrumb data={dataBread} maxLength={3} limitWidth={120} /> */}
       </Typography>
 
       <Box overflow={"auto"} minHeight={"50vh"}>

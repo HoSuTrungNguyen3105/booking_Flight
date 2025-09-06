@@ -6,9 +6,10 @@ import DataTable from "../../common/DataGrid/index";
 import theme from "../../scss/theme";
 import type { Flight } from "../../common/Setting/type";
 import SelectDropdown from "../../common/Dropdown/SelectDropdown";
+import type { DataFlight } from "../../utils/type";
 
 const Setting_flight = () => {
-  const [rows, setRows] = useState<Flight[]>([]);
+  const [rows, setRows] = useState<DataFlight[]>([]);
   const { fetchFlightList } = useFlightList();
 
   useEffect(() => {
@@ -103,9 +104,9 @@ const Setting_flight = () => {
         Flight Info
       </Typography>
       <DataTable
-        rows={rows.map((r) => ({
+        rows={rows.map((r, index) => ({
+          id: r.flightId ?? index,
           ...r,
-          id: r.flightId, // Thêm id cho DataGrid
         }))}
         columns={flightCols}
         checkboxSelection

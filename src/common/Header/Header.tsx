@@ -8,13 +8,12 @@ import LocalAirportSharpIcon from "@mui/icons-material/LocalAirportSharp";
 import {
   Button,
   Drawer,
-  InputAdornment,
   List,
   ListItem,
   ListItemButton,
   ListItemText,
+  Popover,
   Stack,
-  TextField,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
@@ -23,8 +22,9 @@ import SignOut from "../../components/Auth/SignOut";
 import ImageThumbnailIcon from "../../svgs/account-avatar-profile-user-11.svg";
 import { Link, useNavigate } from "react-router-dom";
 import { LanguageButton } from "../Dropdown/Changelng";
-import { GridMenuIcon, GridSearchIcon } from "@mui/x-data-grid";
+import { GridMenuIcon } from "@mui/x-data-grid";
 import { ImageThumbnail } from "../Profile/ImageThumbnail";
+import CustomPopover from "../Button/Popover";
 
 export const Header = () => {
   const navItems = ["About", "Tour", "Package", "Contact"];
@@ -33,9 +33,18 @@ export const Header = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
 
   const handleDrawerToggle = () => {
     setDrawerOpen(!drawerOpen);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
   };
 
   const drawer = React.useCallback(
@@ -138,6 +147,7 @@ export const Header = () => {
               ))}
             </Stack>
           )}
+          <CustomPopover icon="Profile" handleAction={handleOpenProfile} />
 
           {/* Right section - Actions and Login */}
           <Stack direction="row" alignItems="center" spacing={2}>
@@ -169,15 +179,6 @@ export const Header = () => {
               {isAuthenticated ? (
                 <Stack direction="row" alignItems="center">
                   <ImageThumbnail url={ImageThumbnailIcon} />
-                  <Button
-                    onClick={handleOpenProfile}
-                    sx={{
-                      color: theme.palette.text.primary,
-                      textTransform: "none",
-                    }}
-                  >
-                    {user?.email}
-                  </Button>
                   <SignOut />
                 </Stack>
               ) : (

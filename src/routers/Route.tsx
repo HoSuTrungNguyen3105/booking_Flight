@@ -30,6 +30,7 @@ import Special from "../common/Setting/hooks/Special";
 import FlightBooking from "../components/User/FlightBooking";
 import AircraftPage from "../components/User/AircraftPage";
 import UnlockRequestTable from "../common/DetailSection/UnlockRequestTable";
+import FlightPage from "../components/Admin/component/FlightPage";
 
 const routes = [
   {
@@ -67,6 +68,10 @@ const routes = [
       {
         path: "special",
         element: <Special />,
+      },
+      {
+        path: "FlightPage",
+        element: <FlightPage />,
       },
       {
         path: "airport-list/domestic",

@@ -14,6 +14,22 @@ export const Footer = forwardRef<HTMLElement, React.HTMLProps<HTMLElement>>(
           title: "Contact Us",
           child: "For inquiries, please contact us at info@myflight.com",
         },
+        {
+          title: "Footer",
+          child: "This is the footer section of the application.",
+        },
+        {
+          title: "Contact Us",
+          child: "For inquiries, please contact us at info@myflight.com",
+        },
+        {
+          title: "Footer",
+          child: "This is the footer section of the application.",
+        },
+        {
+          title: "Contact Us",
+          child: "For inquiries, please contact us at info@myflight.com",
+        },
       ],
       []
     );

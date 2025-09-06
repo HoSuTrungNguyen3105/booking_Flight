@@ -331,8 +331,8 @@ interface UserIdResponse {
   userId: number;
 }
 
-export const useGetUserId = () => {
-  const { data: userIdData, refetch: refetchUserIdData } = useFetch<
+export const getUserIdByEmail = () => {
+  const { refetch: refetchUserEmailData } = useFetch<
     DetailResponseMessage<UserIdResponse>,
     EmailUserProps
   >({
@@ -341,8 +341,7 @@ export const useGetUserId = () => {
     config: postMethod,
   });
   return {
-    userIdData,
-    refetchUserIdData,
+    refetchUserEmailData,
   };
 };
 

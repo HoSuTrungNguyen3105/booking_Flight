@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import {
   Typography,
   Button,
@@ -37,6 +37,46 @@ const Hero: React.FC = () => {
   ) => {
     setSearchForm((prev) => ({ ...prev, [field]: value }));
   };
+  const removeVietnameseTones = (str: string) => {
+    return str
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "") // remove diacritics
+      .replace(/đ/g, "d")
+      .replace(/Đ/g, "D")
+      .replace(/\s+/g, "");
+  };
+
+  // Hàm lấy địa chỉ hiện tại
+  const getCurrentLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+          console.log(latitude);
+
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=3&addressdetails=1`
+          );
+
+          const data = await res.json();
+
+          let country = data?.address?.country || "Unknown";
+          country = removeVietnameseTones(country);
+
+          handleChange("from", country);
+        },
+        (error) => {
+          console.error("Error getting location:", error);
+        }
+      );
+    } else {
+      alert("Trình duyệt không hỗ trợ lấy vị trí.");
+    }
+  };
+
+  useEffect(() => {
+    getCurrentLocation();
+  }, []);
 
   return (
     <Box
@@ -51,8 +91,6 @@ const Hero: React.FC = () => {
         color: "white",
         position: "relative",
         overflow: "hidden",
-        backgroundImage:
-          "url(https://images.unsplash.com/photo-1502920917128-1aa500764b8a?q=80&w=2670&auto=format&fit=crop)",
         backgroundSize: "cover",
         backgroundPosition: "center",
         "&::before": {

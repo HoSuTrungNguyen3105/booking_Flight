@@ -29,8 +29,8 @@ export type DataFlight = {
   priceFirst?: number;
   maxCapacity?: number;
 
-  scheduledDeparture: string; // timestamp dạng string (decimal epoch)
-  scheduledArrival: string; // timestamp dạng string
+  scheduledDeparture: string;
+  scheduledArrival: string;
   actualDeparture?: string | null;
   actualArrival?: string | null;
 
@@ -61,7 +61,7 @@ export type DataFlight = {
     timezone: string;
   };
 
-  meals?: any[]; // nếu có định nghĩa riêng thì thay `any[]` bằng type cụ thể
+  meals?: any[];
 };
 
 export type FlightTimeFields = Pick<
@@ -121,7 +121,6 @@ export type RegisterOTPCodeVerifyResponse = {
   requireChangePassword?: boolean;
   userId: number;
 };
-// export type OTPCodeVerify = DetailResponseMessage<DataResponse>;
 
 export type DataResponseId = {
   resultCode: string;
@@ -142,14 +141,6 @@ export type Seat = {
   bookingId: number;
   type: string;
 };
-
-// export type Seat = {
-//   id: number;
-//   row: number;
-//   column: string;
-//   type: "VIP" | "ECONOMY" | "BUSINESS"; // tuỳ anh có thể thêm các loại khác
-//   isBooked: boolean;
-// };
 
 export type FlightSeat = {
   flightId: number;
@@ -177,29 +168,7 @@ export enum UserRole {
 
 export type UserRoleType = UserRole.ADMIN | UserRole.USER | UserRole.MONITOR;
 
-export type UserData = GridRowDef & {
-  id: number;
-  email: string;
-  name?: string;
-  authType?: string;
-  userAlias?: string;
-  remember?: boolean;
-  firstname?: string;
-  lastname?: string;
-  pictureUrl?: string;
-  rank?: string;
-  role?: UserRoleType; // hoặc nếu bạn có enum Role cụ thể, dùng nó
-  password: string;
-  createdAt?: string;
-  prevPassword?: string;
-  loginFailCnt?: number;
-  accountLockYn?: string;
-  mfaEnabledYn?: string;
-  mfaSecretKey?: string;
-};
-export type UserDataNoGrid = {
-  userId?: number;
-  id: string;
+export type BaseUserData = {
   email: string;
   name?: string;
   authType?: string;
@@ -218,12 +187,24 @@ export type UserDataNoGrid = {
   mfaEnabledYn?: string;
   mfaSecretKey?: string;
 };
+
+export type UserData = BaseUserData &
+  GridRowDef & {
+    id: number;
+  };
+
+export type UserDataNoGrid = BaseUserData & {
+  userId?: number;
+  id: string;
+};
+
 export type UseRCreate = {
   email?: string;
   name?: string;
   role?: UserRoleType;
   password?: string;
 };
+
 export type UserUpdateProps = {
   userAlias?: string;
   name?: string;
@@ -231,14 +212,15 @@ export type UserUpdateProps = {
   rank?: string;
   pictureUrl?: string;
 };
-export type DetailResponseMessage<T = any> = {
+
+export type DetailResponseMessage<T = null> = {
   data?: T;
   list?: T[];
   resultCode: string;
   resultMessage: string;
 };
 
-interface Airport {
+export interface Airport {
   code: string;
   name: string;
   city: string;
@@ -273,7 +255,7 @@ export type FlightResponse = DetailResponseMessage<Flight>;
 export type FlightDetailApiResponse = DetailResponseMessage<DataFlight>;
 export type FlightMealDetailApiResponse = DetailResponseMessage<FlightMeal>;
 export type UserListManageResponse = DetailResponseMessage<UserData>;
-export type FlightListApiResponse = DetailResponseMessage<Flight>;
+export type FlightListApiResponse = DetailResponseMessage<DataFlight>;
 export type EmailProps = {
   email?: string;
   userId?: number;

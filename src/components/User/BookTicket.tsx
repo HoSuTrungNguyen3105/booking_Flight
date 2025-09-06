@@ -20,6 +20,7 @@ import Zigzag from "../../common/CustomRender/Zigzag";
 import FormRow from "../../common/CustomRender/FormRow";
 import { Dropdown } from "../../common/Dropdown/Dropdown";
 import type { Flight } from "../../common/Setting/type";
+import type { DataFlight } from "../../utils/type";
 
 const BookTicket = () => {
   const [flightParams, setFlightParams] = React.useState<UserSearchType>({
@@ -36,7 +37,7 @@ const BookTicket = () => {
     });
 
   const { flightList } = useFlightList();
-  const [flightListData, setFlightList] = React.useState<Flight[]>([]);
+  const [flightListData, setFlightList] = React.useState<DataFlight[]>([]);
 
   React.useEffect(() => {
     if (flightList?.list) {

@@ -1,6 +1,7 @@
 import { type ReactNode, type ElementType } from "react";
 import { type SxProps, type Theme } from "@mui/material";
 import type { ButtonProps } from "../Button/type";
+
 export type ModalProps = {
   type?: "modal" | "modaless";
   position?: "basic" | "overflow";

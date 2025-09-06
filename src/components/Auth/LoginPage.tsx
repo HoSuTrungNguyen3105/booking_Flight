@@ -9,6 +9,7 @@ import ChangePassword from "./ChangePassword";
 import SelectDropdown from "../../common/Dropdown/SelectDropdown";
 import RequestUnlock from "./RequestUnlock";
 import Registration from "./Registration";
+import FindAccount from "./components/FindAccount";
 
 interface ILoginForm {
   email: string;
@@ -81,12 +82,7 @@ export const LoginPage: React.FC = () => {
   }
 
   if (changePassword) {
-    return (
-      <ChangePassword
-        onClose={() => setChangePassword(false)}
-        userId={userId}
-      />
-    );
+    return <FindAccount onClose={() => setChangePassword(false)} />;
   }
 
   if (unlockAccount) {

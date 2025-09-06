@@ -1,9 +1,16 @@
 import { memo } from "react";
-import type { BreadcrumbItem } from "./type";
+
+export type BreadcrumbItem = {
+  label: string;
+  href?: string;
+  icon?: React.ReactNode;
+};
+
 interface CustomBreadCrumb {
   items: BreadcrumbItem[];
   separator?: React.ReactNode;
 }
+
 const BreadCrumb: React.FC<CustomBreadCrumb> = ({ items, separator = "/" }) => {
   return (
     <nav aria-label="breadcrumb">

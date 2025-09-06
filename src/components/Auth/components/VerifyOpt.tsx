@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import OTPInput from "../../User/OTPInput";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Paper, Typography } from "@mui/material";
 import type { EmailProps } from "../../../utils/type";
 import { useVerifyOTPCode } from "../../Api/usePostApi";
 import MfaSetup from "../MFA";
@@ -30,7 +30,7 @@ const VerifyOpt = ({ email, userId }: EmailProps) => {
     } catch (error) {
       console.error("Error during OTP verification:", error);
     }
-  }, [otpText, userId, sethasValidate, refetchVerifyOTPcode, toast]); // Đảm bảo các dependencies được khai báo đúng
+  }, [otpText, userId, sethasValidate, refetchVerifyOTPcode, toast]);
 
   if (hasValidate) {
     return <MfaSetup userId={userId} email={email} />;
@@ -41,45 +41,47 @@ const VerifyOpt = ({ email, userId }: EmailProps) => {
       component="form"
       height="100vh"
       display="flex"
-      flexDirection="column"
       justifyContent="center"
       alignItems="center"
+      bgcolor="background.default"
     >
-      <Box
-        sx={(theme) => ({
-          width: "456px",
-          mx: "auto",
-          border: `1px solid ${theme.palette.grey[200]}`,
-        })}
+      <Paper
+        elevation={3}
+        sx={{
+          width: 420,
+          p: 4,
+          borderRadius: 3,
+          display: "flex",
+          flexDirection: "column",
+          gap: 3,
+        }}
       >
-        <Box
-          sx={(theme) => ({
-            backgroundColor: theme.palette.grey[50],
-            py: 2,
-            borderBottom: `1px solid ${theme.palette.grey[200]}`,
-          })}
-        >
-          <Typography variant="h4" component="h4" align="center">
-            Service {userId}
+        <Box textAlign="center">
+          <Typography variant="h5" fontWeight={600}>
+            Xác thực OTP
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Vui lòng nhập mã OTP được gửi đến email/sđt cho tài khoản #{userId}
           </Typography>
         </Box>
-        <Box
-          sx={(theme) => ({
-            backgroundColor: theme.palette.grey[50],
-            py: 2,
-            borderBottom: `1px solid ${theme.palette.grey[200]}`,
-          })}
-        >
+
+        <Box display="flex" justifyContent="center">
           <OTPInput
             value={otpText}
             onChange={setOtpText}
             onComplete={(val) => console.log("Done OTP:", val)}
           />
         </Box>
-        <Box>
-          <Button onClick={handleCheckOTPYn}>Confirm</Button>
-        </Box>
-      </Box>
+
+        <Button
+          onClick={handleCheckOTPYn}
+          variant="contained"
+          size="large"
+          sx={{ borderRadius: 2 }}
+        >
+          Xác nhận
+        </Button>
+      </Paper>
     </Box>
   );
 };
