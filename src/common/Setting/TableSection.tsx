@@ -3,8 +3,9 @@ import type { GridRowDef } from "../DataGrid";
 import DataTable from "../DataGrid/index";
 import useClientPagination from "../../context/use[custom]/useClientPagination";
 import type { GridColDef, GridRowId } from "@mui/x-data-grid";
-import { useCallback, useMemo } from "react";
+import { memo, useCallback, useMemo } from "react";
 import Pagination from "../DataGrid/Pagination";
+
 type ITableSectionProps = {
   rows: GridRowDef[];
   columns: GridColDef[];
@@ -15,6 +16,7 @@ type ITableSectionProps = {
   largeThan?: boolean;
   hideColumnHeaderCheckbox?: boolean;
 };
+
 const TableSection = ({
   rows,
   columns,
@@ -87,4 +89,4 @@ const TableSection = ({
   );
 };
 
-export default TableSection;
+export default memo(TableSection);

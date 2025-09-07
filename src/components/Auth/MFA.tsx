@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLoginByMfa, useSetUpMfa, useVerifyMfa } from "../Api/usePostApi";
-import { Box, Button } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import InputField from "../../common/Input/InputField";
 import { useToast } from "../../context/ToastContext";
 import InputTextField from "../../common/Input/InputTextField";
@@ -38,6 +38,7 @@ export default function MfaSetup({ email }: EmailProps) {
       }
     } catch (err) {
       toast("Có lỗi khi tạo MFA");
+      setCode("");
     }
   };
 
@@ -57,8 +58,10 @@ export default function MfaSetup({ email }: EmailProps) {
     if (res?.resultCode === "00") {
       setQrCode(null);
       setLoginMfaUi(true);
+      setCode("");
     } else {
       toast("Sai mã MFA, thử lại!");
+      setCode("");
     }
   };
 
@@ -102,8 +105,8 @@ export default function MfaSetup({ email }: EmailProps) {
       </Button>
 
       {qrCode && (
-        <div style={{ marginTop: 20 }}>
-          <p>Quét QR code với Google Authenticator:</p>
+        <Box sx={{ marginTop: 20 }}>
+          <Typography>Quét QR code với Google Authenticator:</Typography>
           <Box component="img" src={qrCode} alt="QR Code MFA" />
           <Box>
             <InputTextField
@@ -115,7 +118,7 @@ export default function MfaSetup({ email }: EmailProps) {
               Xác thực
             </Button>
           </Box>
-        </div>
+        </Box>
       )}
       {loginMfa && (
         <Box>

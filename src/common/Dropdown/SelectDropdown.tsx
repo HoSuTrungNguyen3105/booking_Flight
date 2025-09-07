@@ -41,6 +41,9 @@ const SelectDropdown: FC<OptionSelectDropdownProps> = ({
   error,
 }) => {
   const [selectOpen, setSelectOpen] = useState<boolean>(false);
+  // const [internalValue, setInternalValue] = useState<string | number>(
+  //   defaultValue || ""
+  // );
   const CustomSelectIcon = useCallback(() => {
     return selectOpen ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />;
   }, [selectOpen]);
@@ -58,7 +61,8 @@ const SelectDropdown: FC<OptionSelectDropdownProps> = ({
   }));
   const handleChange = (val: SelectChangeEvent<unknown>) => {
     const newValue = val.target.value as string | number;
-
+    // setInternalValue(newValue);
+    // onChange?.(newValue);
     if (onChange) {
       onChange(newValue);
     }
@@ -74,6 +78,9 @@ const SelectDropdown: FC<OptionSelectDropdownProps> = ({
         onClose={() => setSelectOpen(false)}
         size="small"
         IconComponent={CustomSelectIcon}
+        MenuProps={{
+          disableScrollLock: true,
+        }}
       >
         {defaultValue && (
           <MenuItem sx={{ display: "none" }} value={defaultValue}>
@@ -81,7 +88,6 @@ const SelectDropdown: FC<OptionSelectDropdownProps> = ({
           </MenuItem>
         )}
 
-        {/* Render placeholder if provided */}
         {placeholder && (
           <MenuItem sx={{ color: "grey.800" }} value="">
             {placeholder}

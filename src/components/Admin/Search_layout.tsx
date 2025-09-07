@@ -19,7 +19,6 @@ import { useFlightUpdate, useSearchFlight } from "../Api/usePostApi";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import { Button } from "../../common/Button/Button";
 import ContentModal from "../../common/Modal/ContentModal";
-import type { BreadcrumbItem } from "../../common/BreadCrumb/type";
 import { toast } from "react-toastify";
 import { type DataFlight, type SearchType } from "../../utils/type";
 import Input from "./component/Input";
@@ -367,11 +366,11 @@ const Search_layout: React.FC = () => {
       </Box>
     );
   }
-  const breadCrumbText: BreadcrumbItem[] = [
-    { label: "Home", href: "/", icon: <House /> },
-    { label: "Admin", href: "/admin", icon: <AdminPanelSettings /> },
-    { label: "Search" },
-  ];
+  // const breadCrumbText: BreadcrumbItem[] = [
+  //   { label: "Home", href: "/", icon: <House /> },
+  //   { label: "Admin", href: "/admin", icon: <AdminPanelSettings /> },
+  //   { label: "Search" },
+  // ];
   return (
     <form onSubmit={handleSearchSubmit(onSubmitValue)}>
       <FormControl fullWidth>
@@ -389,7 +388,7 @@ const Search_layout: React.FC = () => {
               <Typography>Search Flight</Typography>
             </Box>
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              <BreadCrumb items={breadCrumbText} />
+              {/* <BreadCrumb items={breadCrumbText} /> */}
               <FileUpload name="fileUploader" />
             </Box>
           </Box>

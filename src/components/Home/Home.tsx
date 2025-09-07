@@ -1,13 +1,13 @@
-import { Box, Typography } from "@mui/material";
-import { useAuth } from "../../context/AuthContext";
-import { Link } from "react-router-dom";
-import styles from "./index.module.scss";
+// import { Box, Typography } from "@mui/material";
+// import { useAuth } from "../../context/AuthContext";
+// import { Link } from "react-router-dom";
+// import styles from "./index.module.scss";
 
 const Home = () => {
-  const { user, isAuthenticated } = useAuth();
+  // const { user, isAuthenticated } = useAuth();
   return (
     <div>
-      {isAuthenticated ? (
+      {/* {isAuthenticated ? (
         <>
           <div>Welcome,{user?.email}</div>
           <div className={styles.hero}>
@@ -30,7 +30,7 @@ const Home = () => {
             <Link to="/RegistrationForm">Register?</Link>
           </Typography>
         </Box>
-      )}
+      )} */}
     </div>
   );
 };

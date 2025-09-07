@@ -72,6 +72,7 @@ export const useSettingPassword = ({
         const result = await refetchChangePassword({
           userId,
           newPassword: formData.password,
+          confirmPassword: formData.confirmPassword,
         });
 
         switch (result) {

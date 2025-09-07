@@ -137,7 +137,7 @@ const Hero: React.FC = () => {
           </ToggleButtonGroup>
 
           {/* Form Fields */}
-          <Grid container spacing={2}>
+          {/* <Grid container spacing={2}>
             <Grid size={12}>
               <TextField
                 fullWidth
@@ -186,7 +186,7 @@ const Hero: React.FC = () => {
               />
             </Grid>
             <Grid size={12}>
-              <TextField
+              {/* <TextField
                 fullWidth
                 select
                 label="Cabin Class"
@@ -196,19 +196,19 @@ const Hero: React.FC = () => {
                 <MenuItem value="economy">Economy</MenuItem>
                 <MenuItem value="business">Business</MenuItem>
                 <MenuItem value="first">First</MenuItem>
-              </TextField>
+              </TextField> 
             </Grid>
             <Grid size={12} sx={{ display: "flex", alignItems: "center" }}>
-              <Button
+              {/* <Button
                 variant="contained"
                 color="primary"
                 size="large"
                 sx={{ borderRadius: "12px", px: 4, width: "100%" }}
               >
                 Search Flights
-              </Button>
+              </Button> 
             </Grid>
-          </Grid>
+          </Grid> */}
         </Box>
       </Box>
     </Box>

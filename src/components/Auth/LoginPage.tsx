@@ -5,7 +5,6 @@ import { useAuth } from "../../context/AuthContext";
 import { Controller, useForm } from "react-hook-form";
 import InputTextField from "../../common/Input/InputTextField";
 import MfaSetup from "./MFA";
-import ChangePassword from "./ChangePassword";
 import SelectDropdown from "../../common/Dropdown/SelectDropdown";
 import RequestUnlock from "./RequestUnlock";
 import Registration from "./Registration";
@@ -17,13 +16,12 @@ interface ILoginForm {
   remember?: boolean;
 }
 
-type AuthType = "ID,PW" | "SSO" | "DEV" | "MFA";
+type AuthType = "ID,PW" | "DEV" | "MFA";
 
 export const LoginPage: React.FC = () => {
   const AUTH_TYPE_OPTIONS: { label: string; value: AuthType }[] = [
     { label: "ID,PW", value: "ID,PW" },
     { label: "MFA", value: "MFA" },
-    { label: "SSO", value: "SSO" },
     { label: "DEV", value: "DEV" },
   ];
 
@@ -91,9 +89,9 @@ export const LoginPage: React.FC = () => {
     );
   }
 
-  if (registerUser) {
-    return <Registration onClose={() => setRegisterUser(false)} />;
-  }
+  // if (registerUser) {
+  //   return <Registration onClose={() => setRegisterUser(false)} />;
+  // }
 
   return (
     <Box

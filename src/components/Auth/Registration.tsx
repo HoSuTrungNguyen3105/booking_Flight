@@ -17,17 +17,22 @@ import { useToast } from "../../context/ToastContext";
 import VerifyOpt from "./components/VerifyOpt";
 import { BackHand } from "@mui/icons-material";
 interface RegisterProps {
+  email: string;
   onClose: () => void;
 }
-const Registration = ({ onClose }: RegisterProps) => {
+const Registration = ({ email, onClose }: RegisterProps) => {
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<PassengerFormData>();
+  } = useForm<PassengerFormData>({
+    defaultValues: {
+      email: email,
+    },
+  });
   const { refetchRegister } = useRegisterUser();
   const [verifyOTPcode, setVerifyOTPcode] = useState(false);
-  const [email, setEmail] = useState<string | undefined>(undefined);
+  // const [email, setEmail] = useState<string | undefined>(undefined);
   const [userId, setUserId] = useState<number | undefined>(undefined);
   const toast = useToast();
   const onSubmit = async (data: PassengerFormData) => {
@@ -35,9 +40,9 @@ const Registration = ({ onClose }: RegisterProps) => {
       const res = await refetchRegister(data);
       // console.log("res", res);
       if (res?.resultCode === "00") {
-        toast(res.resultMessage || "Yêu cầu đã gửi thành công!");
+        toast(res.resultMessage);
         setVerifyOTPcode(true);
-        setEmail(res.data?.email);
+        // setEmail(res.data?.email);
         setUserId(res.data?.userId);
         // console.log("res", res.data);
       } else {
@@ -101,6 +106,7 @@ const Registration = ({ onClose }: RegisterProps) => {
                   render={({ field }) => (
                     <TextField
                       {...field}
+                      // value={email}
                       placeholder="Enter your email"
                       fullWidth
                       error={!!errors.email}

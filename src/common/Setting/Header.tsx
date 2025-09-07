@@ -104,6 +104,7 @@ const Header = () => {
               },
             },
           }}
+          disableScrollLock
           anchorEl={anchorEl}
           open={open}
           onClose={handleClose}

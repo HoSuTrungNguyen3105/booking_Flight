@@ -10,8 +10,6 @@ import "./index.scss";
 import { Button } from "../Button/Button";
 import { useNavigate } from "react-router-dom";
 
-import { toast } from "react-toastify";
-const REACT_APP_URL_TRANSFER = "http://localhost:5173";
 export const Sidebar = () => {
   const [tab1Items, setTab1Items] = useState<TSidebarItem[]>([]);
   const [tab2Items, setTab2Items] = useState<TSidebarItem[]>([]);
@@ -30,11 +28,9 @@ export const Sidebar = () => {
     setActiveTab(newValue);
   };
   useEffect(() => {
-    // console.log("Fetching JSON from:", getJsonFile(selectedMenu));
     fetch(getJsonFile(selectedMenu))
       .then((response) => response.json())
       .then((data) => {
-        // console.log("Loaded Data:", data);
         setTab1Items(data.tab1Items || []);
         setTab2Items(data.tab2Items || []);
       })
@@ -76,10 +72,9 @@ export const Sidebar = () => {
         p: 2,
         overflowY: "auto",
         scrollbarWidth: "none",
-        "&::-webkit-scrollbar": { display: "none" }, // ẩn scrollbar cho Chrome
+        "&::-webkit-scrollbar": { display: "none" },
       }}
     >
-      {/* Header */}
       <Box
         sx={{
           p: 2,
@@ -100,11 +95,7 @@ export const Sidebar = () => {
           icon={<SettingsRoundedIcon sx={{ color: "#135678" }} />}
         />
       </Box>
-
-      {/* Search */}
       <SearchPopup />
-
-      {/* Tabs */}
       <Tabs
         value={activeTab}
         onChange={handleTabChange}
@@ -132,12 +123,9 @@ export const Sidebar = () => {
           }}
         />
       </Tabs>
-
-      {/* Sidebar Items */}
       <Box data-testid="list-item">
         {items.map((item) => (
           <Box key={item.id} mb={1}>
-            {/* Parent Item */}
             <Box
               sx={{
                 display: "flex",
@@ -177,8 +165,6 @@ export const Sidebar = () => {
                 </IconButton>
               )}
             </Box>
-
-            {/* Sub Items */}
             {openSubMenus.includes(item.id) && item.subItems && (
               <Box ml={3} mt={1}>
                 {item.subItems.map((subItem: TSidebarSubItem) => {

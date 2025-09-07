@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { memo, useState } from "react";
 import SearchLayout, {
   type TabItem,
 } from "../../components/Layout/SearchLayout";
@@ -27,7 +27,7 @@ const Security = () => {
   return (
     <div>
       <SearchLayout
-        title="Layout"
+        title="Security"
         tabs={tabs}
         onChangeTab={setTab}
         activeTab={tabX}
@@ -36,4 +36,4 @@ const Security = () => {
   );
 };
 
-export default Security;
+export default memo(Security);

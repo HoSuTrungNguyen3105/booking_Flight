@@ -1,7 +1,5 @@
-import React from "react";
 import { useInspectionPerformanceHistory } from "./hooks/useInspectionPerformanceHistory";
 import { Box } from "@mui/material";
-import TableSection from "./TableSection";
 import DataTable from "../DataGrid/index";
 import Pagination from "../DataGrid/Pagination";
 import AddUserModal from "./hooks/AddUserModal";
@@ -53,6 +51,7 @@ const ManageMyInfo = () => {
           onPageSizeChange={onPageSizeChange}
         />
       </Box>
+
       {openModal.addUser && (
         <AddUserModal
           open={openModal.addUser}
@@ -60,6 +59,7 @@ const ManageMyInfo = () => {
           onClose={() => {}}
         />
       )}
+
       {openModal.editUser && selectedRow && (
         <UpdateUserModal
           open={openModal.editUser}
@@ -71,6 +71,7 @@ const ManageMyInfo = () => {
           onClose={() => {}}
         />
       )}
+
       {openModal.deleteUser && selectedRow && (
         <DeleteUserModal
           open={openModal.deleteUser}
@@ -82,6 +83,7 @@ const ManageMyInfo = () => {
           onClose={() => {}}
         />
       )}
+
       {openModal.lock_unlockAccount && selectedRow && (
         <AccountLock
           open={openModal.lock_unlockAccount}

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useClientPagination from "../../../context/use[custom]/useClientPagination";
 import type { GridColDef } from "@mui/x-data-grid";
 import type { GridRowDef } from "../../DataGrid";
@@ -80,8 +80,7 @@ export const useInspectionPerformanceHistory = () => {
   const [selectedItemDetailRow, setSelectedItemDetailRow] =
     useState<IInspectionPerformanceHistoryItem | null>(null);
 
-  const { user } = useAuth();
-
+  const { user, isAuthenticated } = useAuth();
   const rows = fetchUser?.list ?? [];
 
   const {
@@ -118,7 +117,7 @@ export const useInspectionPerformanceHistory = () => {
     transferAdminPermission: false,
     deleteUser: false,
   });
-  // const [seletedRow, setSelectedRowUser] = useState<UserData>();
+
   const toggleOpenModal = useCallback((action: ActionType) => {
     setOpenModal((prev) => ({
       ...prev,
@@ -141,9 +140,42 @@ export const useInspectionPerformanceHistory = () => {
     [toggleOpenModal]
   );
 
-  // const handleRefetchUserList = useCallback(() => {
-  //   refetchUser();
-  // }, [refetchUser]);
+  // console.log("currentUserId", currentUserId);
+  console.log("row.id", user?.id);
+
+  const DropdownCell = memo(
+    ({
+      row,
+      currentUserId,
+    }: {
+      row: UserData;
+      currentUserId?: number;
+      isAuthenticated: boolean;
+    }) => {
+      if (!isAuthenticated) return null;
+      if (!currentUserId) return null;
+      if (row.id === currentUserId) return null;
+      return (
+        <SelectDropdown
+          defaultValue="관리"
+          value="관리"
+          onChange={(value) => handleSelectAction(row, value as ActionType)}
+          options={[
+            { label: "정보 수정", value: "addUser" },
+            { label: "MFA 설정 삭제", value: "deleteMfaSettings" },
+            { label: "잠금/해금", value: "lock_unlockAccount" },
+            { label: "비밀번호 초기화", value: "resetPassword" },
+            { label: "관리자 권한 이전", value: "transferAdminPermission" },
+            {
+              label: "삭제",
+              value: "deleteUser",
+              color: theme.palette.error.main,
+            },
+          ]}
+        />
+      );
+    }
+  );
 
   const columns: GridColDef[] = useMemo(
     () => [
@@ -188,33 +220,16 @@ export const useInspectionPerformanceHistory = () => {
         field: "actions",
         headerName: "설정",
         flex: 1,
-        renderCell: ({ row }) =>
-          row.id !== user?.id && (
-            <SelectDropdown
-              key={row.id}
-              defaultValue="관리"
-              value="관리"
-              onChange={(value) => {
-                console.log(value);
-                handleSelectAction(row, value as ActionType);
-              }}
-              options={[
-                { label: "정보 수정", value: "addUser" },
-                { label: "MFA 설정 삭제", value: "deleteMfaSettings" },
-                { label: "잠금/해금", value: "lock_unlockAccount" },
-                { label: "비밀번호 초기화", value: "resetPassword" },
-                { label: "관리자 권한 이전", value: "transferAdminPermission" },
-                {
-                  label: "삭제",
-                  value: "deleteUser",
-                  color: theme.palette.error.main,
-                },
-              ]}
-            />
-          ),
+        renderCell: ({ row }) => (
+          <DropdownCell
+            row={row}
+            currentUserId={user?.id}
+            isAuthenticated={isAuthenticated}
+          />
+        ),
       },
     ],
-    [handleSelectAction, theme]
+    [handleSelectAction, user]
   );
 
   const handleSearch = useCallback(() => {}, []);
@@ -225,7 +240,6 @@ export const useInspectionPerformanceHistory = () => {
 
   useEffect(() => {
     if (!dataTableViewRef.current) return;
-
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
         const height =
@@ -243,10 +257,6 @@ export const useInspectionPerformanceHistory = () => {
       resizeObserver.disconnect();
     };
   }, []);
-
-  // useEffect(() => {
-  //   refetchUser();
-  // }, [refetchUser]);
 
   const handleRefetchUserList = useCallback(() => {
     refetchUser();

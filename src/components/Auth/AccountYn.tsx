@@ -1,19 +1,14 @@
 import { Box, Button, FormControl, Paper, Typography } from "@mui/material";
 import { Controller, useForm, useWatch } from "react-hook-form";
-import InputTextField from "../../../common/Input/InputTextField";
-import ChangePassword from "../ChangePassword";
-import { getUserIdByEmail } from "../../Api/usePostApi";
 import { useCallback, useState } from "react";
-import { useToast } from "../../../context/ToastContext";
+import Registration from "./Registration";
+import InputTextField from "../../common/Input/InputTextField";
+import { useToast } from "../../context/ToastContext";
+import { getUserIdByEmail } from "../Api/usePostApi";
 
-interface FindAccountProps {
-  onClose: () => void;
-}
-
-const FindAccount = ({ onClose }: FindAccountProps) => {
-  const { control } = useForm();
-  const [hasValidate, setHasValidate] = useState(false);
-  const [userId, setUserId] = useState<number | undefined>();
+const AccountYn = () => {
+  const { control, handleSubmit } = useForm();
+  const [registerUser, setRegisterUser] = useState(false);
   const { refetchUserEmailData } = getUserIdByEmail();
   const toast = useToast();
   const email = useWatch({ control, name: "email" });
@@ -21,15 +16,16 @@ const FindAccount = ({ onClose }: FindAccountProps) => {
     if (!email) return;
     const res = await refetchUserEmailData({ email });
     if (res?.resultCode === "00") {
-      setUserId(res?.data?.userId);
-      setHasValidate(true);
+      setRegisterUser(true);
     } else {
       toast(res?.resultMessage as string, "info");
     }
   }, [email, refetchUserEmailData]);
 
-  if (hasValidate && userId) {
-    return <ChangePassword onClose={onClose} email={email} userId={userId} />;
+  if (registerUser) {
+    return (
+      <Registration email={email} onClose={() => setRegisterUser(false)} />
+    );
   }
 
   return (
@@ -68,7 +64,7 @@ const FindAccount = ({ onClose }: FindAccountProps) => {
           />
         </FormControl>
         <Button
-          onClick={handleSubmitEmailValue}
+          onClick={handleSubmit(handleSubmitEmailValue)}
           variant="contained"
           sx={{ mt: 1 }}
         >
@@ -79,4 +75,4 @@ const FindAccount = ({ onClose }: FindAccountProps) => {
   );
 };
 
-export default FindAccount;
+export default AccountYn;

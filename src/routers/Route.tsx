@@ -31,6 +31,7 @@ import FlightBooking from "../components/User/FlightBooking";
 import AircraftPage from "../components/User/AircraftPage";
 import UnlockRequestTable from "../common/DetailSection/UnlockRequestTable";
 import FlightPage from "../components/Admin/component/FlightPage";
+import AccountYn from "../components/Auth/AccountYn";
 
 const routes = [
   {
@@ -47,6 +48,14 @@ const routes = [
         element: (
           <GuestGuard>
             <LoginPage />
+          </GuestGuard>
+        ),
+      },
+      {
+        path: "registerPage",
+        element: (
+          <GuestGuard>
+            <AccountYn />
           </GuestGuard>
         ),
       },

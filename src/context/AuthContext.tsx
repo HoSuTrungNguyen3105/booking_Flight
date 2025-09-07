@@ -6,7 +6,11 @@ import {
   useMemo,
   useState,
 } from "react";
-import { useLoginByMfa, useLoginUser } from "../components/Api/usePostApi";
+import {
+  useLoginByMfa,
+  useLoginUser,
+  useUpdateUserRank,
+} from "../components/Api/usePostApi";
 import { useToast } from "./ToastContext";
 import {
   UserRole,
@@ -46,6 +50,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<UserData | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const { refetchUpdateUserRank } = useUpdateUserRank();
   const toast = useToast();
   const { refetchLogin } = useLoginUser();
   const { refetchSetLoginMfa } = useLoginByMfa();
@@ -113,6 +118,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         if (requests?.resultCode === "00" && requests.data) {
           setUser(requests.data);
           setIsAuthenticated(true);
+          await refetchUpdateUserRank({ userId: id });
         } else {
           setIsAuthenticated(false);
           setUser(null);

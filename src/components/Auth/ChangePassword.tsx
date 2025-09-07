@@ -9,6 +9,8 @@ import {
 import { Controller, useForm } from "react-hook-form";
 import InputTextField from "../../common/Input/InputTextField";
 import { useChangePassword } from "../Api/usePostApi";
+import { useState } from "react";
+import VerifyOpt from "./components/VerifyOpt";
 
 interface FormDataType {
   userId: number;
@@ -19,10 +21,14 @@ interface FormDataType {
 interface IUserIdNumber {
   onClose: () => void;
   userId: number;
+  email: string;
 }
 
-const ChangePassword = ({ userId, onClose }: IUserIdNumber) => {
+const ChangePassword = ({ userId, email }: IUserIdNumber) => {
   const { refetchChangePassword } = useChangePassword();
+  // const [userId, setUserId] = useState<number | undefined>(undefined);
+  const [verifyOTPcode, setVerifyOTPcode] = useState(false);
+
   const { control, handleSubmit } = useForm<FormDataType>({
     defaultValues: {
       userId: userId,
@@ -33,15 +39,19 @@ const ChangePassword = ({ userId, onClose }: IUserIdNumber) => {
 
   const onSubmit = async (data: FormDataType) => {
     try {
-      console.log("data:", data);
       const response = await refetchChangePassword(data);
       if (response?.resultCode === "00") {
-        onClose();
+        // onClose();
+        setVerifyOTPcode(true);
       }
     } catch (err: any) {
       console.error("error:", err.message);
     }
   };
+
+  if (verifyOTPcode) {
+    return <VerifyOpt userId={userId} email={email} />;
+  }
 
   return (
     <Box

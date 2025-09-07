@@ -236,6 +236,23 @@ export const useFlightList = () => {
     refetchFlightList,
   };
 };
+interface UpdateUserRankProps {
+  userId: number;
+}
+export const useUpdateUserRank = () => {
+  const { refetch: refetchUpdateUserRank } = useFetch<
+    ResponseMessage,
+    UpdateUserRankProps
+  >({
+    url: "/sys/users/promoteRank",
+    defaultValue: { resultCode: "", resultMessage: "" },
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchUpdateUserRank,
+  };
+};
 
 export const useSelectIdFlight = (id: string | number | undefined) => {
   const { data: selectIdFlight, refetch: refetchSelectIdFlight } = useFetch<
