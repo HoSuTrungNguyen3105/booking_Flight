@@ -1,4 +1,5 @@
 import type { GridRowDef } from "../common/DataGrid";
+import type { TFileUploader } from "../common/FileUploader/type";
 import type { Flight } from "../common/Setting/type";
 
 export enum MethodConfig {
@@ -179,6 +180,10 @@ export type BaseUserData = {
   pictureUrl?: string;
   rank?: string;
   role?: UserRoleType;
+  passport?: string;
+  baseSalary?: number;
+  hireDate?: number;
+  phone?: string;
   password: string;
   createdAt?: string;
   prevPassword?: string;
@@ -198,7 +203,7 @@ export type UserDataNoGrid = BaseUserData & {
   id: string;
 };
 
-export type UseRCreate = {
+export type UserCreateProps = {
   email?: string;
   name?: string;
   role?: UserRoleType;
@@ -206,11 +211,12 @@ export type UseRCreate = {
 };
 
 export type UserUpdateProps = {
-  userAlias?: string;
   name?: string;
+  userAlias?: string;
   role?: UserRoleType;
-  rank?: string;
   pictureUrl?: string;
+  passport?: string;
+  phone?: string;
 };
 
 export type DetailResponseMessage<T = null> = {

@@ -56,7 +56,7 @@ const ManageMyInfo = () => {
         <AddUserModal
           open={openModal.addUser}
           onSuccess={() => toggleOpenModal("addUser")}
-          onClose={() => {}}
+          onClose={() => closeModal("addUser")}
         />
       )}
 
@@ -68,7 +68,7 @@ const ManageMyInfo = () => {
             handleRefetchUserList();
             closeModal("editUser");
           }}
-          onClose={() => {}}
+          onClose={() => closeModal("editUser")}
         />
       )}
 
@@ -80,7 +80,7 @@ const ManageMyInfo = () => {
             handleRefetchUserList();
             closeModal("deleteUser");
           }}
-          onClose={() => {}}
+          onClose={() => closeModal("deleteUser")}
         />
       )}
 
@@ -92,7 +92,7 @@ const ManageMyInfo = () => {
             handleRefetchUserList();
             closeModal("lock_unlockAccount");
           }}
-          onClose={() => toggleOpenModal("lock_unlockAccount")}
+          onClose={() => closeModal("lock_unlockAccount")}
         />
       )}
     </Box>

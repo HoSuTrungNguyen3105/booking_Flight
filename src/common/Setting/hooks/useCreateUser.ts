@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
-import { type UseRCreate, type UserData } from "../../../utils/type";
+import { type UserCreateProps, type UserData } from "../../../utils/type";
 import {
   useGetUserList,
   useRandomPassword,
 } from "../../../components/Api/useGetApi";
-import { useDataSection, type UpdateUserForm } from "./useDataSection";
+import { useDataSection } from "./useDataSection";
 import { useCreateUserByAdmin } from "../../../components/Api/usePostApi";
 
 interface IUseUpdateUserProps {
@@ -21,14 +21,14 @@ export const useCreateUser = ({
   const [error, setError] = useState<string>("");
   const { fetchUser, loadingUser, refetchUser } = useGetUserList();
   const { fetchUserPw } = useRandomPassword();
-  const [updateInfo, setUpdateInfo] = useState<UseRCreate>({
+  const [updateInfo, setUpdateInfo] = useState<UserCreateProps>({
     role: user?.role,
-    password: fetchUserPw?.data,
+    // password: fetchUserPw?.data,
     email: user?.email,
     name: user?.name,
   });
 
-  const [formData, setFormData] = useState<UseRCreate>(updateInfo);
+  const [formData, setFormData] = useState<UserCreateProps>(updateInfo);
   //   const formDetailConfig = useDataSection(formData, false);
   const formDetailConfig = useDataSection(formData, "register", false);
 
@@ -38,7 +38,7 @@ export const useCreateUser = ({
   const { fetchCreateUser, refetchCreateUser } = useCreateUserByAdmin();
   const handleSubmit = async () => {
     // JSON.stringify(formData);
-    const payload: UseRCreate = {
+    const payload: UserCreateProps = {
       name: formData.name,
       email: formData.email,
       password: formData.password,
@@ -53,14 +53,15 @@ export const useCreateUser = ({
       console.error("Tạo user thất bại", res);
     }
   };
-  useEffect(() => {
-    if (fetchUserPw?.data) {
-      setFormData((prev) => ({
-        ...prev,
-        password: fetchUserPw.data,
-      }));
-    }
-  }, [fetchUserPw]);
+
+  // useEffect(() => {
+  //   if (fetchUserPw?.data) {
+  //     setFormData((prev) => ({
+  //       ...prev,
+  //       password: fetchUserPw.data,
+  //     }));
+  //   }
+  // }, [fetchUserPw]);
 
   // useEffect(() => {
   //   refetchUserPw();

@@ -116,6 +116,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const requests = await refetchGetMyInfo(id);
 
         if (requests?.resultCode === "00" && requests.data) {
+          console.log("user info", user);
           setUser(requests.data);
           setIsAuthenticated(true);
           await refetchUpdateUserRank({ userId: id });
@@ -130,25 +131,10 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         return undefined;
       }
     },
-    [refetchGetMyInfo]
+    [refetchUpdateUserRank, refetchGetMyInfo]
   );
 
-  // const refreshUser = useCallback(async () => {
-  //   const savedUserId = localStorage.getItem("userId");
-  //   if (!savedUserId) return;
-
-  //   try {
-  //     const res = await refetchGetMyInfo(Number(savedUserId));
-  //     if (res?.resultCode === "00" && res.data) {
-  //       setUser(res.data);
-  //       setIsAuthenticated(true);
-  //     }
-  //     return res;
-  //   } catch (err) {
-  //     console.error("refreshUser error:", err);
-  //     return null;
-  //   }
-  // }, [refetchGetMyInfo]);
+  console.log("user in win", user);
 
   const logout = () => {
     setIsAuthenticated(false);
@@ -171,9 +157,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const verifyUser = async () => {
       try {
-        setToken(savedToken);
         const res = await fetchMyInfo(Number(savedUserId));
-
         if (res?.resultCode === "00" && res.data) {
           setIsAuthenticated(true);
           setUser(res.data);

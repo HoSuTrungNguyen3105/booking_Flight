@@ -103,13 +103,13 @@ const routes = [
         element: <Search_layout />,
       },
       {
-        path: "/sampleFormData",
+        path: "/TableCustom",
         element: <TableCustom />,
       },
-      // {
-      //   path: ROUTE_PATHS.FILE_UPLOAD.replace("/", ""),
-      //   element: <FileUpload name="fileUploader" />,
-      // },
+      {
+        path: ROUTE_PATHS.FILE_UPLOAD.replace("/", ""),
+        element: <FileUpload name="fileUploader" />,
+      },
       {
         path: ROUTE_PATHS.BOOK_TICKET.replace("/", ""),
         element: <BookTicket />,

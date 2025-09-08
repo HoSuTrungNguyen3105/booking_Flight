@@ -47,7 +47,7 @@ const BaseModal = ({
   );
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={onClose} disableScrollLock>
       <Box width="456px" p="16px">
         <DialogTitle>{slots?.header || defaultHeader}</DialogTitle>
         <DialogContent>

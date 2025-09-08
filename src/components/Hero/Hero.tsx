@@ -1,14 +1,15 @@
-import React, { memo, useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Typography,
   Button,
   Box,
+  useMediaQuery,
+  useTheme,
+  InputAdornment,
   TextField,
-  ToggleButton,
-  ToggleButtonGroup,
-  MenuItem,
-  Grid,
 } from "@mui/material";
+import { Speed, Security, SupportAgent } from "@mui/icons-material";
+import { GridSearchIcon } from "@mui/x-data-grid";
 
 interface FlightSearchForm {
   from: string;
@@ -21,6 +22,25 @@ interface FlightSearchForm {
 }
 
 const Hero: React.FC = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const destinations = [
+    {
+      title: "Forest Wild Life",
+      image: "https://source.unsplash.com/400x300/?forest",
+      reviews: "4.8 ★",
+    },
+    {
+      title: "Beach Paradise",
+      image: "https://source.unsplash.com/400x300/?beach",
+      reviews: "4.7 ★",
+    },
+    {
+      title: "Mountain Escape",
+      image: "https://source.unsplash.com/400x300/?mountain",
+      reviews: "4.9 ★",
+    },
+  ];
   const [searchForm, setSearchForm] = useState<FlightSearchForm>({
     from: "",
     to: "",
@@ -31,188 +51,204 @@ const Hero: React.FC = () => {
     cabinClass: "economy",
   });
 
-  const handleChange = (
+  const handleInputChange = (
     field: keyof FlightSearchForm,
     value: string | number
   ) => {
-    setSearchForm((prev) => ({ ...prev, [field]: value }));
-  };
-  const removeVietnameseTones = (str: string) => {
-    return str
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "") // remove diacritics
-      .replace(/đ/g, "d")
-      .replace(/Đ/g, "D")
-      .replace(/\s+/g, "");
+    setSearchForm((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
   };
 
-  // Hàm lấy địa chỉ hiện tại
-  const getCurrentLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const { latitude, longitude } = position.coords;
-          console.log(latitude);
-
-          const res = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=3&addressdetails=1`
-          );
-
-          const data = await res.json();
-
-          let country = data?.address?.country || "Unknown";
-          country = removeVietnameseTones(country);
-
-          handleChange("from", country);
-        },
-        (error) => {
-          console.error("Error getting location:", error);
-        }
-      );
-    } else {
-      alert("Trình duyệt không hỗ trợ lấy vị trí.");
+  const handleFlightTypeChange = (
+    event: React.MouseEvent<HTMLElement>,
+    newFlightType: "oneway" | "roundtrip"
+  ) => {
+    if (newFlightType !== null) {
+      handleInputChange("flightType", newFlightType);
     }
   };
 
-  useEffect(() => {
-    getCurrentLocation();
-  }, []);
+  const handleSearch = () => {
+    console.log("Searching flights with:", searchForm);
+    // Handle search logic here
+  };
 
+  const cabinOptions = [
+    { value: "economy", label: "Phổ thông" },
+    { value: "business", label: "Thương gia" },
+    { value: "first", label: "Hạng nhất" },
+  ];
+
+  const features = [
+    {
+      icon: <Speed sx={{ fontSize: 40 }} />,
+      title: "Đặt vé nhanh chóng",
+      description: "Chỉ với vài bước đơn giản để có vé máy bay",
+    },
+    {
+      icon: <Security sx={{ fontSize: 40 }} />,
+      title: "Bảo mật tuyệt đối",
+      description: "Thông tin cá nhân được bảo vệ hoàn toàn",
+    },
+    {
+      icon: <SupportAgent sx={{ fontSize: 40 }} />,
+      title: "Hỗ trợ 24/7",
+      description: "Đội ngũ tư vấn sẵn sàng hỗ trợ mọi lúc",
+    },
+  ];
+
+  //return (
+  // <Box
+  //   sx={{
+  //     minHeight: "100vh",
+  //     bgcolor: "#f9f9f9",
+  //     display: "flex",
+  //     alignItems: "center",
+  //   }}
+  // >
+  //   <Container maxWidth="lg" sx={{ mt: 8 }}>
+  //     <Box
+  //       sx={{
+  //         display: "flex",
+  //         alignItems: "center",
+  //         justifyContent: "space-between",
+  //         flexWrap: "wrap",
+  //       }}
+  //     >
+  //       {/* Left text */}
+  //       <Box sx={{ maxWidth: "300px" }}>
+  //         <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+  //           ELEVATE YOUR TRAVEL JOURNEY
+  //         </Typography>
+
+  //         <Typography
+  //           variant="h3"
+  //           fontWeight="bold"
+  //           sx={{ mb: 3, lineHeight: 1.2 }}
+  //         >
+  //           Experience <br /> The Magic Of Flight!
+  //         </Typography>
+
+  //         <Button
+  //           variant="contained"
+  //           sx={{
+  //             bgcolor: "#1976d2",
+  //             borderRadius: "25px",
+  //             px: 4,
+  //             py: 1.5,
+  //             textTransform: "none",
+  //             fontSize: "16px",
+  //           }}
+  //         >
+  //           Book A Trip Now
+  //         </Button>
+  //       </Box>
+
+  //       {/* Right image */}
+  //       <Box
+  //         component="img"
+  //         src={Image}
+  //         alt="Airplane"
+  //         sx={{
+  //           width: { xs: "100%", md: "50%" },
+  //           borderRadius: "20px",
+  //           mt: { xs: 4, md: 0 },
+  //         }}
+  //       />
+  //     </Box>
+  //   </Container>
+  // </Box>
   return (
-    <Box
-      sx={{
-        height: "700px",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        px: 4,
-        textAlign: "center",
-        color: "white",
-        position: "relative",
-        overflow: "hidden",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        "&::before": {
-          content: '""',
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          backgroundColor: "rgba(0, 0, 0, 0.55)",
-        },
-      }}
-    >
-      <Box sx={{ position: "relative", zIndex: 2, maxWidth: "900px" }}>
-        <Typography
-          variant="h3"
-          fontWeight="bold"
-          sx={{
-            color: "white",
-            textShadow: "2px 2px 6px rgba(0,0,0,0.7)",
-          }}
-        >
-          Find Your Next Adventure
-        </Typography>
-
-        <Box
-          sx={{
-            mt: 5,
-            p: 3,
-            bgcolor: "rgba(255, 255, 255, 0.95)",
-            borderRadius: 4,
-            boxShadow: 4,
-          }}
-        >
-          {/* Flight Type Toggle */}
-          <ToggleButtonGroup
-            value={searchForm.flightType}
-            exclusive
-            onChange={(_, val) => val && handleChange("flightType", val)}
-            sx={{ mb: 3 }}
+    <>
+      {/* Hero Section */}
+      <Box
+        sx={{
+          height: "500px", // Tăng chiều cao
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          px: 6,
+          textAlign: "center",
+          color: "white",
+          position: "relative",
+          overflow: "hidden",
+          backgroundImage:
+            "url(https://images.unsplash.com/photo-1490730101735-85e8a7056461?q=80&w=2670&auto=format&fit=crop)",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          "&::before": {
+            content: '""',
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0, 0, 0, 0.5)", // Lớp phủ mờ
+          },
+        }}
+      >
+        <Box sx={{ position: "relative", zIndex: 2 }}>
+          <Typography
+            variant="h2"
+            fontWeight="bold"
+            sx={{
+              color: "white",
+              textShadow: "2px 2px 4px rgba(0,0,0,0.7)",
+            }}
           >
-            <ToggleButton value="oneway">One Way</ToggleButton>
-            <ToggleButton value="roundtrip">Round Trip</ToggleButton>
-          </ToggleButtonGroup>
+            Find Your Next Adventure
+          </Typography>
+          <Typography
+            variant="h5"
+            sx={{ mt: 2, color: theme.palette.grey[300] }}
+          >
+            Book flights, discover destinations, and start your journey with
+            ease.
+          </Typography>
 
-          {/* Form Fields */}
-          {/* <Grid container spacing={2}>
-            <Grid size={12}>
-              <TextField
-                fullWidth
-                label="From"
-                value={searchForm.from}
-                onChange={(e) => handleChange("from", e.target.value)}
-              />
-            </Grid>
-            <Grid size={12}>
-              <TextField
-                fullWidth
-                label="To"
-                value={searchForm.to}
-                onChange={(e) => handleChange("to", e.target.value)}
-              />
-            </Grid>
-            <Grid size={12}>
-              <TextField
-                fullWidth
-                type="date"
-                label="Departure"
-                InputLabelProps={{ shrink: true }}
-                value={searchForm.departDate}
-                onChange={(e) => handleChange("departDate", e.target.value)}
-              />
-            </Grid>
-            {searchForm.flightType === "roundtrip" && (
-              <Grid size={12}>
-                <TextField
-                  fullWidth
-                  type="date"
-                  label="Return"
-                  InputLabelProps={{ shrink: true }}
-                  value={searchForm.returnDate}
-                  onChange={(e) => handleChange("returnDate", e.target.value)}
-                />
-              </Grid>
-            )}
-            <Grid size={12}>
-              <TextField
-                fullWidth
-                type="number"
-                label="Passengers"
-                value={searchForm.passengers}
-                onChange={(e) => handleChange("passengers", +e.target.value)}
-              />
-            </Grid>
-            <Grid size={12}>
-              {/* <TextField
-                fullWidth
-                select
-                label="Cabin Class"
-                value={searchForm.cabinClass}
-                onChange={(e) => handleChange("cabinClass", e.target.value)}
-              >
-                <MenuItem value="economy">Economy</MenuItem>
-                <MenuItem value="business">Business</MenuItem>
-                <MenuItem value="first">First</MenuItem>
-              </TextField> 
-            </Grid>
-            <Grid size={12} sx={{ display: "flex", alignItems: "center" }}>
-              {/* <Button
-                variant="contained"
-                color="primary"
-                size="large"
-                sx={{ borderRadius: "12px", px: 4, width: "100%" }}
-              >
-                Search Flights
-              </Button> 
-            </Grid>
-          </Grid> */}
+          <Box
+            sx={{
+              mt: 5,
+              width: "100%",
+              maxWidth: "800px",
+              mx: "auto",
+              backgroundColor: "rgba(255, 255, 255, 0.9)",
+              borderRadius: "16px",
+              p: 2,
+              boxShadow: 3,
+            }}
+          >
+            <TextField
+              fullWidth
+              variant="outlined"
+              placeholder="Search flights, destinations..."
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <GridSearchIcon color="primary" />
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <Button variant="contained" sx={{ borderRadius: "12px" }}>
+                      Search
+                    </Button>
+                  </InputAdornment>
+                ),
+                sx: {
+                  borderRadius: "12px",
+                  bgcolor: "white",
+                },
+              }}
+            />
+          </Box>
         </Box>
       </Box>
-    </Box>
+    </>
   );
 };
 
-export default memo(Hero);
+export default Hero;

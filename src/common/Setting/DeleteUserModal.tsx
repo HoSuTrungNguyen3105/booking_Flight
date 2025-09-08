@@ -10,7 +10,7 @@ import { memo, useCallback, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import type { UserData } from "../../utils/type";
 import BaseModal from "../Modal/BaseModal";
-import { useDeleteUserById } from "../../components/Api/useDeleteApi";
+import { useDeleteUserById } from "../../components/Api/usePostApi";
 
 interface IModalStatisticalDataLearningProps {
   open: boolean;
@@ -25,14 +25,16 @@ const DeleteAccountModal = ({
   onSuccess,
   user,
 }: IModalStatisticalDataLearningProps) => {
-  const { refetchDeleteUser } = useDeleteUserById(user?.id);
-  const [inputId, setInputId] = useState("");
+  const { refetchDeleteUser } = useDeleteUserById();
+  const [inputId, setInputId] = useState<string>("");
 
   const onDeleteOnChange = useCallback(async () => {
-    await refetchDeleteUser();
-    onSuccess();
-    onClose();
-  }, [onSuccess, onClose, refetchDeleteUser]);
+    if (String(user?.id) === inputId) {
+      await refetchDeleteUser({ id: Number(inputId) });
+      onSuccess();
+      onClose();
+    }
+  }, [user?.id, inputId, onSuccess, onClose, refetchDeleteUser]);
 
   const renderActions = useCallback(() => {
     return (
@@ -48,7 +50,7 @@ const DeleteAccountModal = ({
 
   const renderContent = useCallback(() => {
     return (
-      <Box>
+      <>
         <Divider sx={{ mb: 2, marginTop: 0, marginBottom: "22px" }} />
         <Typography variant="body1">
           Nhập ID <strong>{user?.id}</strong> để xác nhận xóa tài khoản.
@@ -60,7 +62,7 @@ const DeleteAccountModal = ({
           placeholder="Nhập ID tại đây"
           sx={{ mt: 2 }}
         />
-      </Box>
+      </>
     );
   }, [user?.id, inputId]);
 

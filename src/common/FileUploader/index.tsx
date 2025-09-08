@@ -1,31 +1,123 @@
+import { Box, Button, Typography, IconButton } from "@mui/material";
+import AttachFileIcon from "@mui/icons-material/AttachFile";
+import CancelIcon from "@mui/icons-material/Cancel";
+import ImageIcon from "@mui/icons-material/Image";
+import { useToast } from "../../context/ToastContext";
 import {
   useCallback,
   useEffect,
   useState,
   useMemo,
-  type ChangeEvent,
-  type ChangeEventHandler,
-  type DragEvent,
-  type DragEventHandler,
   type FC,
   type MouseEventHandler,
 } from "react";
 import { sumBy, uniqueId } from "lodash";
 import { INPUT_TYPE, type FileUploaderProps, type TFileUploader } from "./type";
-import {
-  bytesToSize,
-  concatStrings,
-  getFileInformation,
-  sizeToBytes,
-} from "../../utils";
-import { Box, Button } from "@mui/material";
+import { concatStrings, getFileInformation, sizeToBytes } from "../../utils";
 import { Image } from "@mui/icons-material";
-import CancelIcon from "@mui/icons-material/Cancel";
-import AttachFileIcon from "@mui/icons-material/AttachFile";
-import "./index.scss";
-import FilePresentIcon from "@mui/icons-material/FilePresent";
-import { toast } from "react-toastify";
 import ContentModal from "../Modal/ContentModal";
+
+const FilePreview = ({
+  files,
+  type,
+  openImageModal,
+  handleRemoveFile,
+}: any) => {
+  const toast = useToast();
+  useEffect(() => {
+    if (files?.length > 0) {
+      toast(files.length, "success");
+    }
+  }, [files]);
+  switch (type) {
+    case "input":
+      return (
+        <Box display="flex" flexWrap="wrap" gap={2}>
+          {files.map((file: any, index: number) => (
+            <Box
+              key={uniqueId()}
+              sx={{
+                width: 120,
+                height: 120,
+                borderRadius: 2,
+                backgroundImage: `url(${file.preview})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                position: "relative",
+                cursor: "pointer",
+              }}
+              onClick={() => openImageModal(file)}
+            >
+              <IconButton
+                size="small"
+                sx={{
+                  position: "absolute",
+                  top: 4,
+                  right: 4,
+                  bgcolor: "white",
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleRemoveFile(index);
+                }}
+              >
+                <CancelIcon fontSize="small" />
+              </IconButton>
+            </Box>
+          ))}
+        </Box>
+      );
+
+    case "thumbnails":
+      return (
+        <Box display="flex" flexDirection="column" gap={1}>
+          {files.map((file: any, index: number) => (
+            <Box
+              key={uniqueId()}
+              display="flex"
+              alignItems="center"
+              justifyContent="space-between"
+              sx={{
+                p: 1,
+                borderRadius: 1,
+                bgcolor: "grey.100",
+              }}
+              onClick={() => openImageModal(file)}
+            >
+              <Box display="flex" alignItems="center" gap={1}>
+                <ImageIcon />
+                <Typography variant="body2">{file.fileName}</Typography>
+              </Box>
+              <IconButton
+                size="small"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleRemoveFile(index);
+                }}
+              >
+                <CancelIcon fontSize="small" />
+              </IconButton>
+            </Box>
+          ))}
+        </Box>
+      );
+
+    case "read-only":
+      return (
+        <Box display="flex" flexDirection="column" gap={1}>
+          {files.map((file: any) => (
+            <Typography key={uniqueId()} variant="body2">
+              {file.fileName}
+            </Typography>
+          ))}
+        </Box>
+      );
+
+    default:
+      return null;
+  }
+};
+
 export const FileUpload: FC<FileUploaderProps> = ({
   width = "100%",
   height = "auto",
@@ -70,7 +162,6 @@ export const FileUpload: FC<FileUploaderProps> = ({
         .map((item) => item.toLowerCase());
       const sizeFiles = sumBy(files, "size") + totalSize;
       if (sizeFiles > sizeToBytes(maxSize)) {
-        toast.error("Max size exceeded");
         return false;
       }
       if (
@@ -81,23 +172,18 @@ export const FileUpload: FC<FileUploaderProps> = ({
             )
         )
       ) {
-        toast.error("Not a valid file");
         return false;
       }
       if (
         Array.isArray(imageFiles) &&
         files.length + imageFiles.length > maxFiles
       ) {
-        toast.success("Maximum file limit reached");
         return false;
       }
       return true;
     },
     [imageFiles]
   );
-
-  console.log("imageFiles", imageFiles);
-  console.log("files");
 
   const handleDuplicateName = (
     currentFile: TFileUploader[],
@@ -133,23 +219,18 @@ export const FileUpload: FC<FileUploaderProps> = ({
     const isValid = validateFiles(newFile);
     if (!isValid || disabled) return;
     const fileSrc: TFileUploader[] = newFile.map((file: File) => ({
-      // preview: URL.createObjectURL(file),
-      // raw: file,
-      // size: file.size,
-      // name: getFileInformation(file.name).name,
-      // type: getFileInformation(file.name).type,
-      // fileName: handleDuplicateName(imageFiles, newFile, file, multiple),
-      raw: file,
       preview: URL.createObjectURL(file),
+      raw: file,
       size: file.size,
-      name: file.name,
-      type: file.type,
-      fileName: file.name,
+      name: getFileInformation(file.name).name,
+      type: getFileInformation(file.name).type,
+      fileName: handleDuplicateName(imageFiles, newFile, file, multiple),
     }));
     const updatedFiles = multiple ? [...imageFiles, ...fileSrc] : fileSrc;
     setImageFiles(updatedFiles);
     onChange?.(multiple ? [...imageFiles, ...fileSrc] : fileSrc);
   };
+
   const openImageModal = (file: any) => {
     setSelectedFile(file);
     setOpenImage(true);
@@ -159,13 +240,14 @@ export const FileUpload: FC<FileUploaderProps> = ({
     setOpenImage(false);
     setSelectedFile(null);
   };
+
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
+    // e.preventDefault();
     e.stopPropagation();
     setIsDragging(false);
 
     if (disabled) return;
-    if (!e.dataTransfer.files.length) return;
+    // if (!e.dataTransfer.files.length) return;
 
     const newFile: File[] = Array.from(e.dataTransfer.files);
     const isValid = validateFiles(newFile);
@@ -178,15 +260,12 @@ export const FileUpload: FC<FileUploaderProps> = ({
       name: file.name,
       type: file.type,
       fileName: file.name,
-      // size: file.size,
-      // name: getFileInformation(file.name).name,
-      // type: getFileInformation(file.name).type,
-      // fileName: handleDuplicateName(imageFiles, newFile, file, multiple),
     }));
     const updatedFiles = multiple ? [...imageFiles, ...fileSrc] : fileSrc;
     setImageFiles(updatedFiles);
     onChange?.(updatedFiles);
   };
+
   const handleRemoveFile = (index: number) => {
     if (currentInputType === "read-only") return;
     const updatedFiles = imageFiles.filter((_, i: number) => i !== index);
@@ -198,7 +277,6 @@ export const FileUpload: FC<FileUploaderProps> = ({
   const onInputClick: MouseEventHandler<HTMLInputElement> = (event) => {
     event.stopPropagation();
     if (currentInputType === INPUT_TYPE.READONLY) {
-      toast.warning("Can't choose file in read-only mode");
       event.preventDefault();
       return;
     }
@@ -207,191 +285,81 @@ export const FileUpload: FC<FileUploaderProps> = ({
   };
 
   const getFileIcon = (fileType: string) => {
-    if (fileType.includes("png")) return <FilePresentIcon />;
+    if (fileType.includes("png")) return null;
     return <Image />;
   };
 
   return (
-    <Box className="file-uploader-container">
-      <section className="upload-image-container" style={{ width, height }}>
-        <Button onClick={toggleInputType} data-testid="toggle-input-type">
-          Switch:
-          {currentInputType === INPUT_TYPE.INPUT
-            ? INPUT_TYPE.THUMBNAIL
-            : currentInputType === INPUT_TYPE.THUMBNAIL
-            ? INPUT_TYPE.INPUT
-            : INPUT_TYPE.READONLY}
-        </Button>
-        <Box
-          className={`image-uploader ${
-            imageFiles.length > 0 ? "upload-box active" : "upload box"
-          }`}
-          onDrop={handleDrop}
-          onDragOver={(event) => event.preventDefault()}
-          sx={{
-            pointerEvents: disabled ? "none" : "pointer",
-          }}
-        >
-          {!disabled && (
-            <input
-              type="file"
-              hidden
-              id={name}
-              onChange={handleChange}
-              onClick={onInputClick}
-              accept={accept}
-              multiple={multiple}
-              data-testid="file-input"
-            />
-          )}
-          <label className="mb-0" htmlFor={name}>
-            <Box className="upload-info">
-              <Box className="gap-[3px] flex items-center flex-grow">
-                <AttachFileIcon
-                  width={18}
-                  height={19}
-                  style={{ transform: "rotate(45deg)" }}
-                />
-                <label htmlFor={name}>Drag drop file here</label>
-              </Box>
-              <Box className="size">
-                <span>{bytesToSize(totalSize)}</span>
-                <span>/{maxSize}</span>
-              </Box>
-            </Box>
-          </label>
+    <Box sx={{ width }}>
+      <Button onClick={toggleInputType}>Switch view: {currentInputType}</Button>
+      <Box
+        sx={{
+          mt: 2,
+          p: 2,
+          border: "2px dashed grey",
+          borderRadius: 2,
+          height,
+          position: "relative",
+          display: "flex",
+          flexDirection: "column",
+          gap: 2,
+          justifyContent: "center",
+          alignItems: "center",
+          pointerEvents: disabled ? "none" : "auto",
+        }}
+        onDrop={handleDrop}
+        onDragOver={(e) => e.preventDefault()}
+      >
+        {!disabled && (
+          <input
+            type="file"
+            hidden
+            id={name}
+            accept={accept}
+            multiple={multiple}
+            onChange={handleChange}
+          />
+        )}
+        <label htmlFor={name} style={{ cursor: "pointer" }}>
+          <Box display="flex" alignItems="center" gap={1}>
+            <AttachFileIcon sx={{ transform: "rotate(45deg)" }} />
+            <Typography variant="body2">Kéo thả hoặc chọn file</Typography>
+          </Box>
+          <Typography variant="caption" color="text.secondary">
+            {totalSize}/{maxSize}
+          </Typography>
+        </label>
 
-          {Array.isArray(imageFiles) &&
-          imageFiles.length > 0 &&
-          !hidePreview ? (
-            currentInputType === "input" ? (
-              <Box className="container-img">
-                {imageFiles.map((file, index) => (
-                  <Box
-                    data-testid="file-item-1"
-                    key={index}
-                    className="group-img"
-                    sx={{
-                      "&:hover": {
-                        background: `url(${file.preview}), rgb(221, 224, 223)`,
-                      },
-                      background: `url(${file.preview}) 0% 0% / 100% 100% no-repeat`,
-                    }}
-                    onClick={() => openImageModal(file)}
-                  >
-                    <Box className="layout-img" />
-                    <Box className="info-img">
-                      <span className="size-img">{bytesToSize(file.size)}</span>
-                      <Box className="detail-img">
-                        <span>{file.name}</span>
-                        <span>{file.type}</span>
-                      </Box>
-                    </Box>
-                    <CancelIcon
-                      onClick={(e) => {
-                        e.stopPropagation(); // 👈 Ngăn không cho click ảnh
-                        handleRemoveFile(index);
-                      }}
-                      sx={{ cursor: "pointer" }}
-                      className="ic-delete"
-                      width={16}
-                      height={16}
-                      data-testid={`remove-file-${index}`}
-                    />
-                  </Box>
-                ))}
-                <ContentModal
-                  open={openImage}
-                  closeLabel="Exit"
-                  hideSubmit={true}
-                  hideCloseBtn={true}
-                  handleClose={closeImageModal}
-                  contentArea={
-                    selectedFile ? (
-                      <Box>
-                        <img
-                          src={selectedFile.preview}
-                          alt={selectedFile.fileName}
-                          style={{ width: "100%", height: "100%" }}
-                        />
-                      </Box>
-                    ) : null
-                  }
-                />
-              </Box>
-            ) : currentInputType === "thumbnails" ? (
-              <Box>
-                {imageFiles.map((file, index: number) => (
-                  <Box
-                    key={index}
-                    className="group-file"
-                    data-testid="file-item"
-                    onClick={() => openImageModal(file)}
-                  >
-                    <Box className="name-file">
-                      {getFileIcon(file.type)}
-                      <span>{file.fileName}</span>
-                    </Box>
-                    <Box className="size-file">
-                      <span>{bytesToSize(file.size)}</span>
-                      <CancelIcon
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleRemoveFile(index);
-                        }}
-                        sx={{ cursor: "pointer" }}
-                        width={16}
-                        height={16}
-                        data-testid={`remove-file-${index}`}
-                      />
-                    </Box>
-                  </Box>
-                ))}
-                <ContentModal
-                  open={openImage}
-                  closeLabel="Exit"
-                  hideSubmit={true}
-                  handleClose={closeImageModal}
-                  hideCloseBtn={true}
-                  contentArea={
-                    selectedFile ? (
-                      <Box className="image-modal">
-                        <img
-                          src={selectedFile.preview}
-                          alt={selectedFile.fileName}
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "contain",
-                          }}
-                        />
-                      </Box>
-                    ) : null
-                  }
-                />
-              </Box>
+        <FilePreview
+          files={imageFiles}
+          type={currentInputType}
+          openImageModal={openImageModal}
+          handleRemoveFile={handleRemoveFile}
+          selectedFile={selectedFile}
+          openImage={openImage}
+          closeImageModal={closeImageModal}
+        />
+
+        <ContentModal
+          open={openImage}
+          closeLabel="Exit"
+          hideSubmit={true}
+          hideCloseBtn={true}
+          handleClose={closeImageModal}
+          contentArea={
+            selectedFile ? (
+              <Box
+                component={"img"}
+                src={selectedFile.preview}
+                alt={selectedFile.fileName}
+                sx={{ width: "100%", height: "100%" }}
+              />
             ) : (
-              <Box>
-                {imageFiles.map((file, index) => (
-                  <Box
-                    key={index}
-                    className="group-file"
-                    data-testid="file-item-2"
-                  >
-                    <Box className="name-file">
-                      <Image width={20} height={20} />
-                      <span>{file.fileName}</span>
-                    </Box>
-                    <Box className="size-file">
-                      <span>{bytesToSize(file.size)}</span>
-                    </Box>
-                  </Box>
-                ))}
-              </Box>
+              "None Image"
             )
-          ) : null}
-        </Box>
-      </section>
+          }
+        />
+      </Box>
     </Box>
   );
 };

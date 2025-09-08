@@ -61,7 +61,7 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
       <Box
         sx={{
           position: "fixed",
-          top: 0,
+          top: "55px",
           left: "50%",
           transform: "translateX(-50%)",
           display: "flex",
@@ -72,6 +72,7 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
           gap: "8px",
           width: "100%",
           pointerEvents: "none",
+          zIndex: 1200,
         }}
       >
         <AnimatePresence>

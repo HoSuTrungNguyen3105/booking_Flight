@@ -281,14 +281,13 @@ export const useGetUnlockRequests = () => {
 export const useGetMyInfo = () => {
   const { data: getMyInfo, refetch } = useFetch<
     DetailResponseMessage<UserData>,
-    UserData
+    null
   >({
-    url: "", // khởi tạo rỗng
-    autoFetch: false, // không fetch khi mount
+    url: "",
+    autoFetch: false,
     config: getMethod,
   });
 
-  // refetch với id động
   const refetchGetMyInfo = (id: number) => {
     return refetch(undefined, `/sys/users/getUserInfo/${id}`);
   };

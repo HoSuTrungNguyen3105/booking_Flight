@@ -32,11 +32,9 @@ const TransferAuthoritySection = ({
     <Box
       sx={{
         backgroundColor: theme.palette.background.paper,
-        padding: "10px 16px",
+        padding: "8px 12px",
         border: `1px solid ${theme.palette.grey[200]}`,
-        marginBottom: "9px",
-        borderLeft: "none",
-        borderRight: "none",
+        marginBottom: "8px",
       }}
     >
       <Box mb={1}>

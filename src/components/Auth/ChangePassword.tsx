@@ -44,8 +44,8 @@ const ChangePassword = ({ userId, email }: IUserIdNumber) => {
         // onClose();
         setVerifyOTPcode(true);
       }
-    } catch (err: any) {
-      console.error("error:", err.message);
+    } catch (err) {
+      console.error("error:", err);
     }
   };
 

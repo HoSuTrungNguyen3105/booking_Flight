@@ -4,26 +4,56 @@ import DataAccessPermissionSection from "./DataAccessPermissionSection";
 import DialogConfirm from "../Modal/DialogConfirm";
 import { Loading } from "../Loading/Loading";
 import UserInfoSection from "./UserInfoSection";
-import type { UserData } from "../../utils/type";
+import { type UserData, type UserUpdateProps } from "../../utils/type";
 import TransferAuthoritySection from "./hooks/TransferAuthoritySection";
 import { useAuth } from "../../context/AuthContext";
-import { FileUpload } from "../FileUploader";
-import { Controller } from "react-hook-form";
+import { useUpdateUserInfo } from "../../components/Api/usePostApi";
+import type { TFileUploader } from "../FileUploader/type";
+// export class UpdateUserInfoDto extends UserUpdateProps{};
 
 const ManageMyInformation = () => {
   const { user } = useAuth();
-  const [myInfo, setMyInfo] = useState<UserData | null>(user);
+  // const [myInfo, setMyInfo] = useState<UserData | null>(user);
   const [isFetching, setIsFetching] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
   const [toggleOpenModal, setToggleOpenModal] = useState(false);
-
+  const { refetchUpdateUserInfo } = useUpdateUserInfo(user?.id as number);
   const handleRestore = useCallback(() => {
     // Logic to handle restore
   }, []);
 
-  const handleUpdateMyInfo = useCallback(() => {
-    // Logic to update myInfo
-  }, [myInfo]);
+  const [myInfo, setMyInfo] = useState<UserUpdateProps>(user as UserData);
+
+  const handleChange = (field: keyof UserData, value: string) => {
+    setMyInfo((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const handleImageUpload = (files: TFileUploader[]) => {
+    const file = files[0]?.raw;
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = async () => {
+      const base64Image = reader.result as string;
+
+      setMyInfo((prev) => ({
+        ...prev,
+        pictureUrl: base64Image,
+      }));
+    };
+  };
+
+  const handleUpdateMyInfo = useCallback(async () => {
+    // if ( myInfo?.pictureUrl){
+    //   handleImageUpload(myInfo?.pictureUrl)
+    // }
+    const res = await refetchUpdateUserInfo(myInfo);
+    console.log("res", res);
+  }, [myInfo, refetchUpdateUserInfo]);
 
   const handleRefresh = useCallback(() => {
     // Logic to refresh data
@@ -31,17 +61,24 @@ const ManageMyInformation = () => {
 
   const renderButtonSection = useCallback(() => {
     return (
-      <Stack direction="row" spacing={1}>
-        <Button variant="contained" onClick={handleRefresh}>
-          Refresh
-        </Button>
-        <Button
-          variant="outlined"
-          disabled={!hasChanges}
-          // onClick={toggleOpenModal}
-        >
-          Save Changes
-        </Button>
+      <Stack
+        direction="row"
+        spacing={1}
+        justifyContent={"flex-end"}
+        alignItems={"center"}
+      >
+        <Stack direction="row" spacing={1} justifyContent={"flex-end"}>
+          <Button variant="contained" onClick={handleRefresh}>
+            Refresh
+          </Button>
+          <Button
+            variant="outlined"
+            // disabled={!hasChanges}
+            onClick={handleUpdateMyInfo}
+          >
+            Save Changes
+          </Button>
+        </Stack>
       </Stack>
     );
   }, [hasChanges]);
@@ -54,18 +91,23 @@ const ManageMyInformation = () => {
         height: "100%",
         border: 1,
         borderColor: "divider",
+        overflowY: "auto", // bật scroll dọc
+        overflowX: "hidden",
       }}
     >
       <UserInfoSection
         myInfo={myInfo as UserData}
         onChange={handleUpdateMyInfo}
+        handleUploadFile={handleImageUpload}
       />
       {/* <ManagePathAdminSection /> */}
       <DataAccessPermissionSection />
+
       <TransferAuthoritySection
         myInfo={myInfo as UserData}
         setOpenModal={() => setToggleOpenModal(!toggleOpenModal)}
       />
+
       {/* <TimeInfoSection /> */}
 
       {renderButtonSection()}
@@ -76,12 +118,6 @@ const ManageMyInformation = () => {
         open={toggleOpenModal}
         onClose={() => setToggleOpenModal(false)}
         onConfirm={() => {}}
-        // onConfirm={async () => {
-        // const response = await requestTransferAdmin({ data: myInfo });
-        //   if (response.approve) {
-        //     handleRefresh();
-        //   }
-        // }}
         title="Xác nhận"
         message="Bạn có chắc chắn muốn thực hiện hành động này không?"
         confirmLabel="Xác nhận"

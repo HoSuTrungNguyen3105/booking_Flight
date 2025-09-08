@@ -24,7 +24,10 @@ const FindAccount = ({ onClose }: FindAccountProps) => {
       setUserId(res?.data?.userId);
       setHasValidate(true);
     } else {
-      toast(res?.resultMessage as string, "info");
+      toast(
+        (res?.resultMessage as string) || "Error while connect to server",
+        "info"
+      );
     }
   }, [email, refetchUserEmailData]);
 

@@ -1,67 +1,48 @@
-import { forwardRef, useMemo } from "react";
-import { Box, Typography } from "@mui/material";
-import { Link } from "react-router-dom";
+import { useMemo } from "react";
+import { Box, Stack, Typography } from "@mui/material";
 
-export const Footer = forwardRef<HTMLElement, React.HTMLProps<HTMLElement>>(
-  (props, ref) => {
-    const dataFooter = useMemo(
-      () => [
-        {
-          title: "Footer",
-          child: "This is the footer section of the application.",
-        },
-        {
-          title: "Contact Us",
-          child: "For inquiries, please contact us at info@myflight.com",
-        },
-        {
-          title: "Footer",
-          child: "This is the footer section of the application.",
-        },
-        {
-          title: "Contact Us",
-          child: "For inquiries, please contact us at info@myflight.com",
-        },
-        {
-          title: "Footer",
-          child: "This is the footer section of the application.",
-        },
-        {
-          title: "Contact Us",
-          child: "For inquiries, please contact us at info@myflight.com",
-        },
-      ],
-      []
-    );
-    const renderFooterCard = useMemo(() => {
-      return dataFooter.map((item, index) => (
-        <Box key={index} sx={{ mb: 2 }}>
-          <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-            {item.title}
-          </Typography>
-          <Typography variant="body2">{item.child}</Typography>
-        </Box>
-      ));
-    }, [dataFooter]);
+export const Footer = () => {
+  const dataFooter = useMemo(
+    () => [
+      {
+        title: "Footer",
+        child: "This is the footer section",
+      },
+      {
+        title: "Contact Us",
+        child: "For inquiries",
+      },
+    ],
+    []
+  );
+  const renderFooterCard = useMemo(() => {
+    return dataFooter.map((item, index) => (
+      <Box key={index} sx={{ mb: 2 }}>
+        <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+          {item.title}
+        </Typography>
+        <Typography variant="body2">{item.child}</Typography>
+      </Box>
+    ));
+  }, [dataFooter]);
 
-    return (
-      <footer ref={ref} {...props}>
-        <Box
-          sx={{
-            backgroundColor: "#f8f9fa",
-            padding: 2,
-            textAlign: "center",
-            position: "relative",
-            bottom: 0,
-            width: "100%",
-          }}
-        >
-          {renderFooterCard}
-          <Typography variant="body2" sx={{ mt: 2 }}>
-            Privacy Policy
-          </Typography>
-        </Box>
-      </footer>
-    );
-  }
-);
+  return (
+    <Stack component={"footer"}>
+      <Box
+        sx={{
+          backgroundColor: "#f8f9fa",
+          padding: 2,
+          textAlign: "center",
+          position: "relative",
+          bottom: 0,
+          width: "100%",
+        }}
+      >
+        {renderFooterCard}
+        <Typography variant="body2" sx={{ mt: 2 }}>
+          Privacy Policy
+        </Typography>
+      </Box>
+    </Stack>
+  );
+};

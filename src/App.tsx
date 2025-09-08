@@ -11,18 +11,18 @@ import i18n from "./i18n";
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
-      <I18nextProvider i18n={i18n}>
-        <ToastProvider>
+    <ToastProvider>
+      <ThemeProvider theme={theme}>
+        <I18nextProvider i18n={i18n}>
           <ApiProvider>
             <AuthProvider>
               <CssBaseline />
               <RouterProvider router={router} />
             </AuthProvider>
           </ApiProvider>
-        </ToastProvider>
-      </I18nextProvider>
-    </ThemeProvider>
+        </I18nextProvider>
+      </ThemeProvider>
+    </ToastProvider>
   );
 }
 

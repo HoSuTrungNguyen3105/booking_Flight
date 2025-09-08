@@ -1,20 +1,24 @@
 import { useFetch } from "../../context/use[custom]/useFetch";
 import { MethodType } from "../../hooks/type";
-import type { DetailResponseMessage } from "../../utils/type";
+import type { DetailResponseMessage, ResponseMessage } from "../../utils/type";
 
 const deleteMethod = {
   method: MethodType.DELETE,
   headers: { "Content-Type": "application/json" },
 };
-
-export const useDeleteUserById = (id?: number) => {
-  const isValid = !!id;
-  const { refetch: refetchDeleteUser } = useFetch<DetailResponseMessage, null>({
-    url: isValid ? `/sys/users/${id}` : "",
-    autoFetch: false,
-    config: deleteMethod,
-  });
-  return {
-    refetchDeleteUser,
-  };
-};
+// type DeleteUserProps = {
+//   id: number;
+// };
+// export const useDeleteUserById = () => {
+//   const { refetch: refetchDeleteUser } = useFetch<
+//     ResponseMessage,
+//     DeleteUserProps
+//   >({
+//     url: "/sys/users/deleteUser",
+//     autoFetch: false,
+//     config: deleteMethod,
+//   });
+//   return {
+//     refetchDeleteUser,
+//   };
+// };

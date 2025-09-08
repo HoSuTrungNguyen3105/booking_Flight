@@ -12,10 +12,11 @@ import type {
   UserCreateResponse,
   UserDataNoGrid,
   DetailResponseMessage,
-  UseRCreate,
+  UserCreateProps,
   DataResponseId,
   RegisterResponseMessage,
   RegisterOTPCodeVerifyResponse,
+  UserUpdateProps,
 } from "../../utils/type.ts";
 import { MethodType } from "../../hooks/type";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
@@ -362,6 +363,23 @@ export const getUserIdByEmail = () => {
   };
 };
 
+type DeleteUserProps = {
+  id: number;
+};
+export const useDeleteUserById = () => {
+  const { refetch: refetchDeleteUser } = useFetch<
+    ResponseMessage,
+    DeleteUserProps
+  >({
+    url: "/sys/users/deleteUser",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchDeleteUser,
+  };
+};
+
 export const useChangePassword = () => {
   const { data: changePassword, refetch: refetchChangePassword } = useFetch<
     ResponseMessage,
@@ -467,7 +485,7 @@ export const useCreateUserByAdmin = () => {
     refetch: refetchCreateUser,
     loading: loadingUser,
     setParams: setParamsUser,
-  } = useFetch<UserCreateResponse, UseRCreate>({
+  } = useFetch<UserCreateResponse, UserCreateProps>({
     url: "/sys/users/createUserByAdmin",
     autoFetch: false,
     config: postMethod,
@@ -480,7 +498,8 @@ export const useCreateUserByAdmin = () => {
   };
 };
 
-export const useUpdateUserById = () => {
+export const useUpdateUserFromAdmin = () => {
+  //TO_DO
   // const isValid = !!id;
   const {
     data: fetchUpdateUserById,
@@ -499,6 +518,21 @@ export const useUpdateUserById = () => {
     setParamsUser,
   };
 };
+
+export const useUpdateUserInfo = (id: number) => {
+  // const isValid = !!id;
+  const { refetch: refetchUpdateUserInfo, loading: loadingUpdateUserInfo } =
+    useFetch<ResponseMessage, UserUpdateProps>({
+      url: `/sys/users/updateUserInfo/${id}`,
+      autoFetch: false,
+      config: postMethod,
+    });
+  return {
+    refetchUpdateUserInfo,
+    loadingUpdateUserInfo,
+  };
+};
+
 export interface ILockAccountProps {
   id?: number;
   accountLockYn: string;
