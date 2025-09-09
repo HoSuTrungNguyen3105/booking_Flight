@@ -1,4 +1,3 @@
-// src/constants/languageConfig.ts
 export const locales = {
   vi: "Vietnam",
   en: "English",

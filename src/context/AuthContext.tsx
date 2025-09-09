@@ -134,8 +134,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     [refetchUpdateUserRank, refetchGetMyInfo]
   );
 
-  console.log("user in win", user);
-
   const logout = () => {
     setIsAuthenticated(false);
     setUser(null);

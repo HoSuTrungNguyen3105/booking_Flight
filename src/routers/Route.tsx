@@ -32,6 +32,8 @@ import AircraftPage from "../components/User/AircraftPage";
 import UnlockRequestTable from "../common/DetailSection/UnlockRequestTable";
 import FlightPage from "../components/Admin/component/FlightPage";
 import AccountYn from "../components/Auth/AccountYn";
+import SampleDatePicker from "../common/DayPicker/display-components";
+import UpdateUserForm from "../components/Admin/component/UpdateUserForm";
 
 const routes = [
   {
@@ -82,10 +84,10 @@ const routes = [
         path: "FlightPage",
         element: <FlightPage />,
       },
-      {
-        path: "airport-list/domestic",
-        element: <Typography>Xin chào</Typography>,
-      },
+      // {
+      //   path: "airport-list/domestic",
+      //   element: <BookTicket/>,
+      // },
       {
         path: "profile",
         element: <InspectionDetails />,
@@ -134,6 +136,10 @@ const routes = [
         element: <Security />,
       },
       {
+        path: "sampleDatePicker",
+        // element: <UpdateUserForm />,
+      },
+      {
         path: "domestic",
         element: <SecurityManage />,
       },
@@ -153,10 +159,10 @@ const routes = [
         path: ROUTE_PATHS.TIME_PICKER.replace("/", ""),
         element: <SampleTimePicker />,
       },
-      {
-        path: "data-secure",
-        element: <DataSecure />,
-      },
+      // {
+      //   path: "data-secure",
+      //   element: <DataSecure />,
+      // },
       {
         path: "special",
         element: <Special />,

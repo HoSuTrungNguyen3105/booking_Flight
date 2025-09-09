@@ -275,6 +275,7 @@ export const useInspectionPerformanceHistory = () => {
     rows: paginatedData,
     openModal,
     toggleOpenModal,
+    handleSelectAction,
     handleRefetchUserList,
     columns,
     closeModal,

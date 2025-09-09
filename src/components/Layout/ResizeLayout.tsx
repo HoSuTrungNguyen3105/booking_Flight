@@ -132,12 +132,7 @@ const ManageLayout = () => {
   return (
     <Stack direction={"column"} sx={{ height: "100vh" }}>
       <Header />
-      <Box
-        component="main"
-        sx={{ height: "calc(100vh - 48px)" }}
-        flexGrow={1}
-        bgcolor={"var(--bg-green-md)"}
-      >
+      <Box component="main" sx={{ height: "calc(100vh - 48px)" }} flexGrow={1}>
         <Box display="flex" height="100%">
           <ResizeLayout />
           <Box

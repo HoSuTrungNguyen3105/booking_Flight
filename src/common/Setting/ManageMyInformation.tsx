@@ -68,15 +68,15 @@ const ManageMyInformation = () => {
         alignItems={"center"}
       >
         <Stack direction="row" spacing={1} justifyContent={"flex-end"}>
-          <Button variant="contained" onClick={handleRefresh}>
-            Refresh
+          <Button variant="contained" onClick={handleUpdateMyInfo}>
+            Save Changes
           </Button>
           <Button
             variant="outlined"
             // disabled={!hasChanges}
-            onClick={handleUpdateMyInfo}
+            onClick={handleRefresh}
           >
-            Save Changes
+            Refresh
           </Button>
         </Stack>
       </Stack>

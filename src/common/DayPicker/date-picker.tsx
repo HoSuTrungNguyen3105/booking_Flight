@@ -45,6 +45,7 @@ export const DatePickerMonth = ({
           views={["month"]}
           format={format}
           disabled={disabled}
+          enableAccessibleFieldDOMStructure={false} // ← quan trọng
           readOnly={readOnly}
           minDate={minDate ? moment(minDate) : undefined}
           maxDate={maxDate ? moment(maxDate) : undefined}

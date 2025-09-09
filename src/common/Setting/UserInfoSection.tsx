@@ -1,5 +1,5 @@
-import { Box, Button, FormControl, Stack, Typography } from "@mui/material";
-import { memo, useState } from "react";
+import { Box, FormControl, Stack, Typography } from "@mui/material";
+import { memo } from "react";
 import type { UserData } from "../../utils/type";
 import InputTextField from "../Input/InputTextField";
 import { FileUpload } from "../FileUploader";

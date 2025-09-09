@@ -1,20 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DateRangePicker } from "@mui/x-date-pickers-pro";
-import { SingleInputDateRangeField } from "@mui/x-date-pickers-pro/SingleInputDateRangeField";
-import { InputAdornment, Box } from "@mui/material";
+import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import { Box, TextField, InputAdornment } from "@mui/material";
 import CalendarIcon from "@mui/icons-material/Event";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ErrorIcon from "@mui/icons-material/Error";
 import moment, { type Moment } from "moment";
 import { koKR, enUS } from "@mui/x-date-pickers/locales";
-import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import clsx from "clsx";
-import "./_datefield.scss";
-import "../../../scss/form/_text-field.scss";
 
 interface Props {
-  language: "en" | "ko";
+  language: "vn" | "en" | "kr" | "jp";
   status?: "default" | "error" | "warning" | "confirmed";
   size?: "small" | "medium" | "large";
   className?: string;
@@ -37,17 +33,12 @@ const SingleDateRangePickerComponent: React.FC<Props> = ({
   readOnly = false,
   disabledOpenPicker = true,
 }) => {
-  const [value, setValue] = useState<[Moment | null, Moment | null]>([
-    null,
-    null,
-  ]);
   const today = moment().format("YYYY.MM.DD");
+  const [dateRange, setDateRange] = useState<[Moment | null, Moment | null]>([
+    moment(today, "YYYY.MM.DD"),
+    moment(today, "YYYY.MM.DD"),
+  ]);
 
-  const [dateRange, setDateRange] = useState<[Moment | null, Moment | null]>(
-    value && value[0] && value[1]
-      ? [moment(value[0], "YYYY.MM.DD"), moment(value[1], "YYYY.MM.DD")]
-      : [moment(today, "YYYY.MM.DD"), moment("2023.08.28", "YYYY.MM.DD")]
-  );
   useEffect(() => {
     moment.locale(language);
   }, [language]);
@@ -55,27 +46,11 @@ const SingleDateRangePickerComponent: React.FC<Props> = ({
   const getStatusIcon = () => {
     switch (status) {
       case "error":
-        return (
-          <i
-            className="icon icon-ban"
-            data-testid="cus-error-icon"
-            aria-hidden="true"
-          ></i>
-        );
+        return <ErrorIcon className="icon datefield-icon--error" />;
       case "warning":
-        return (
-          <ErrorIcon
-            className="icon datefield-icon--warningIcon"
-            data-testid="cus-warning-icon"
-          />
-        );
+        return <ErrorIcon className="icon datefield-icon--warning" />;
       case "confirmed":
-        return (
-          <CheckCircleIcon
-            className="icon datefield-icon--confirmedIcon"
-            data-testid="cus-confirmed-icon"
-          />
-        );
+        return <CheckCircleIcon className="icon datefield-icon--confirmed" />;
       default:
         return null;
     }
@@ -85,7 +60,7 @@ const SingleDateRangePickerComponent: React.FC<Props> = ({
     <LocalizationProvider
       dateAdapter={AdapterMoment}
       localeText={
-        language === "ko"
+        language === "kr"
           ? koKR.components.MuiLocalizationProvider.defaultProps.localeText
           : enUS.components.MuiLocalizationProvider.defaultProps.localeText
       }
@@ -95,46 +70,77 @@ const SingleDateRangePickerComponent: React.FC<Props> = ({
           `date-range-field-container date-range-field--${status} date-range-picker--${size} ${className}`
         )}
       >
-        <DateRangePicker
-          data-testid="cus-date-range-picker"
-          value={dateRange}
-          onChange={(newValue) =>
-            setDateRange(newValue as [Moment | null, Moment | null])
-          }
+        <DatePicker
+          value={dateRange[0]}
+          onChange={(newValue) => setDateRange([newValue, dateRange[1]])}
+          disabled={disabled}
+          readOnly={readOnly}
+          enableAccessibleFieldDOMStructure={false} // ← quan trọng
+          slots={{
+            textField: (props) => (
+              <TextField
+                {...props}
+                className={clsx(
+                  "datefield-input",
+                  inputClassName,
+                  status === "error" ? "border-error" : "",
+                  status === "warning" ? "border-warning" : "",
+                  status === "confirmed" ? "border-confirmed" : ""
+                )}
+                InputProps={{
+                  ...props.InputProps,
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <CalendarIcon />
+                    </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      {getStatusIcon()}
+                    </InputAdornment>
+                  ),
+                }}
+                placeholder={placeHolder}
+              />
+            ),
+          }}
+        />
+
+        {/* End Date Picker */}
+        <DatePicker
+          value={dateRange[1]}
+          onChange={(newValue) => setDateRange([dateRange[0], newValue])}
           disabled={disabled}
           readOnly={readOnly}
           disableOpenPicker={disabledOpenPicker}
           slots={{
-            field: SingleInputDateRangeField,
+            textField: (props) => (
+              <TextField
+                {...props}
+                className={clsx(
+                  "datefield-input",
+                  inputClassName,
+                  status === "error" ? "border-error" : "",
+                  status === "warning" ? "border-warning" : "",
+                  status === "confirmed" ? "border-confirmed" : ""
+                )}
+                InputProps={{
+                  ...props.InputProps,
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <CalendarIcon />
+                    </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      {getStatusIcon()}
+                    </InputAdornment>
+                  ),
+                }}
+                placeholder={placeHolder}
+              />
+            ),
           }}
-          slotProps={{
-            textField: {
-              className: clsx(
-                "datefield-input",
-                inputClassName,
-                status === "error" ? "border-error" : "",
-                status === "warning" ? "border-warning" : "",
-                status === "confirmed" ? "border-confirmed" : ""
-              ),
-              InputProps: {
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <CalendarIcon data-testid="calendar-icon" />
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment position="end">
-                    {getStatusIcon()}
-                  </InputAdornment>
-                ),
-              },
-              inputProps: {
-                placeholder: placeHolder,
-                readOnly,
-              },
-            },
-          }}
-          calendars={1}
         />
       </Box>
     </LocalizationProvider>

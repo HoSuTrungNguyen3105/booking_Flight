@@ -6,6 +6,7 @@ import {
 } from "../../../components/Api/useGetApi";
 import { useDataSection } from "./useDataSection";
 import { useCreateUserByAdmin } from "../../../components/Api/usePostApi";
+import { useToast } from "../../../context/ToastContext";
 
 interface IUseUpdateUserProps {
   onClose: () => void;
@@ -22,12 +23,12 @@ export const useCreateUser = ({
   const { fetchUser, loadingUser, refetchUser } = useGetUserList();
   const { fetchUserPw } = useRandomPassword();
   const [updateInfo, setUpdateInfo] = useState<UserCreateProps>({
-    role: user?.role,
-    // password: fetchUserPw?.data,
     email: user?.email,
+    password: fetchUserPw?.data,
     name: user?.name,
+    role: user?.role,
   });
-
+  const toast = useToast();
   const [formData, setFormData] = useState<UserCreateProps>(updateInfo);
   //   const formDetailConfig = useDataSection(formData, false);
   const formDetailConfig = useDataSection(formData, "register", false);
@@ -37,7 +38,6 @@ export const useCreateUser = ({
   };
   const { fetchCreateUser, refetchCreateUser } = useCreateUserByAdmin();
   const handleSubmit = async () => {
-    // JSON.stringify(formData);
     const payload: UserCreateProps = {
       name: formData.name,
       email: formData.email,
@@ -46,26 +46,14 @@ export const useCreateUser = ({
     };
 
     const res = await refetchCreateUser(payload);
-
+    console.log("res", res);
     if (res?.resultCode === "00") {
-      console.log("Tạo user thành công", res.data);
+      toast(res.resultMessage, "success");
+      onSuccess();
     } else {
-      console.error("Tạo user thất bại", res);
+      toast(res?.resultMessage as string, "info");
     }
   };
-
-  // useEffect(() => {
-  //   if (fetchUserPw?.data) {
-  //     setFormData((prev) => ({
-  //       ...prev,
-  //       password: fetchUserPw.data,
-  //     }));
-  //   }
-  // }, [fetchUserPw]);
-
-  // useEffect(() => {
-  //   refetchUserPw();
-  // }, [refetchUserPw, user]);
 
   const enableUpdateBtn = useMemo(
     () => updateInfo.name?.trim() !== "" || updateInfo?.email?.trim() !== "",

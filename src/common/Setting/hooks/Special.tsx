@@ -65,51 +65,6 @@ const Special = () => {
 
   return (
     <>
-      {/* <Box
-        component="img"
-        src={FlightTheme}
-        alt="Flight Theme"
-        style={{ cursor: "pointer" }}
-        sx={{
-          width: "100%",
-          height: { xs: "20rem", md: "30rem", lg: "40rem" },
-          borderRadius: 2,
-        }}
-      /> */}
-      {/* <SwipeRight
-        modules={[Navigation, Autoplay]}
-        navigation
-        autoplay={{ delay: 3000 }}
-        spaceBetween={20}
-        slidesPerView={3} // hiện 3 panels (có thể đổi 5)
-        loop
-        style={{ padding: "20px 0" }}
-        breakpoints={{
-          320: { slidesPerView: 1 }, // mobile
-          768: { slidesPerView: 2 }, // tablet
-          1024: { slidesPerView: 3 }, // desktop
-          1440: { slidesPerView: 5 }, // màn hình lớn
-        }}
-      >
-        {images.map((src, index) => (
-          <SwiperSlide key={index}>
-            <Box
-              component="img"
-              src={src}
-              alt={`destination-${index}`}
-              sx={{
-                width: "100%",
-                height: "18rem",
-                borderRadius: 3,
-                objectFit: "cover",
-                boxShadow: 3,
-                transition: "transform 0.3s ease",
-                "&:hover": { transform: "scale(1.05)" },
-              }}
-            />
-          </SwiperSlide>
-        ))}
-      </Swiper> */}
       <Box
         sx={{
           display: "flex",
@@ -117,7 +72,7 @@ const Special = () => {
           overflowX: "auto",
           scrollSnapType: "x mandatory",
           px: 2,
-          "&::-webkit-scrollbar": { display: "none" }, // ẩn scrollbar
+          "&::-webkit-scrollbar": { display: "none" },
         }}
       >
         {items.map((item) => (

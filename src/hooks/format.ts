@@ -1,4 +1,7 @@
+import { isNaN } from "lodash";
 import moment, { type MomentInput } from "moment";
+
+export type Currency = "VND" | "USD" | "JPY" | "KRW";
 
 export enum DateFormatEnum {
   MMMM_D_YYYY_HH_MM_SS = "MMMM D, YYYY, HH:mm:ss",
@@ -79,3 +82,47 @@ export const getYesterday = (
 export const getToday = (format: DateFormatEnum = DateFormatEnum.ISO_8601) => {
   return moment().endOf("day").format(format);
 };
+
+export function convertCurrency(
+  amountVND: number,
+  targetCurrency: Currency,
+  rates: Record<Currency, number> = {
+    USD: 0.000043, // giả sử 1 VND = 0.000043 USD (~1 USD = 23k VND)
+    JPY: 0.0061, // 1 VND = 0.0061 JPY (~1 JPY = 164 VND)
+    KRW: 0.053, // 1 VND = 0.053 KRW (~1 KRW = 18.9 VND)
+    VND: 1, // VND giữ nguyên
+  }
+): string {
+  if (isNaN(amountVND)) return "";
+
+  const amount = amountVND * (rates[targetCurrency] || 1);
+
+  let locale = "vi-VN";
+  let minimumFractionDigits = 0;
+
+  switch (targetCurrency) {
+    case "USD":
+      locale = "en-US";
+      minimumFractionDigits = 2;
+      break;
+    case "JPY":
+      locale = "ja-JP";
+      minimumFractionDigits = 0;
+      break;
+    case "KRW":
+      locale = "ko-KR";
+      minimumFractionDigits = 0;
+      break;
+    case "VND":
+      locale = "vi-VN";
+      minimumFractionDigits = 0;
+      break;
+  }
+
+  return new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency: targetCurrency,
+    minimumFractionDigits,
+    maximumFractionDigits: 2,
+  }).format(amount);
+}

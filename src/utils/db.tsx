@@ -29,7 +29,8 @@ type SideBarValueTypes =
   | "food"
   | "sampleTimepicker"
   | "manage-my-info"
-  | "hero"
+  | "special"
+  | "data-secure"
   | "airports"
   | "airport-list"
   | "domestic"
@@ -37,7 +38,7 @@ type SideBarValueTypes =
   | "user-list"
   | "customers"
   | "unlock_request"
-  | "staffs";
+  | "sampleDatePicker";
 
 export type MenuItem = {
   id: SideBarValueTypes;
@@ -102,6 +103,7 @@ export const menuData: MenuSection[] = [
               { id: "flightmeals", label: "Nhân viên" },
               { id: "domestic", label: "Nội địa" },
               { id: "international", label: "Quốc tế" },
+              { id: "sampleDatePicker", label: "secure" },
             ],
           },
         ],
@@ -116,7 +118,7 @@ export const menuData: MenuSection[] = [
             subItems: [
               { id: "flight-book", label: "Khách hàng" },
               { id: "unlock_request", label: "Đặt chỗ" },
-              { id: "hero", label: "Nhân viên" },
+              { id: "special", label: "Nhân viên" },
               { id: "aircraft", label: "aircraft" },
             ],
           },

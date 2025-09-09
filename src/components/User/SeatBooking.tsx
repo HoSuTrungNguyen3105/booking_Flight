@@ -49,6 +49,20 @@ const SeatBooking: React.FC<AircraftCodeProps> = ({ code }) => {
     icon?: React.ReactNode;
   };
 
+  // Lấy danh sách số ghế (1..N) từ dữ liệu, sort tăng dần
+  const seatNumbers = Array.from(new Set(seats.map((s) => s.seatNumber)))
+    .map((n) => Number(n))
+    .sort((a, b) => a - b);
+
+  // const handleSelectSeat = (seatId: number) => {
+  //   const seat = seats.find((s) => s.id === seatId);
+  //   if (!seat || seat.isBooked) return;
+
+  //   setSelectedSeats((prev) =>
+  //     prev.includes(seatId) ? prev.filter((id) => id !== seatId) : [...prev, seatId]
+  //   );
+  // };
+
   const LegendItem = ({ color, label, icon }: LegendItemProps) => (
     <Box sx={{ display: "flex", alignItems: "center", gap: "8px" }}>
       <Box
@@ -99,59 +113,35 @@ const SeatBooking: React.FC<AircraftCodeProps> = ({ code }) => {
         onClick={() => !isBooked && handleSelectSeat(seat.id)}
         disabled={isBooked}
         sx={{
-          width: "55px",
-          height: "55px",
-          borderRadius: "8px",
+          width: "45px",
+          height: "45px",
+          borderRadius: "6px",
           margin: "4px",
-          transition: "all 0.2s ease-in-out",
-          boxShadow: isSelected ? "0 0 10px rgba(0, 255, 0, 0.7)" : "none",
-          backgroundColor: seatColor,
-          color: isBooked ? "#9e9e9e" : isSelected ? "white" : "#333",
-          border: `1px solid ${
-            isBooked ? "#bdbdbd" : isSelected ? "#388e3c" : "#ccc"
-          }`,
+          fontSize: "13px",
+          fontWeight: 600,
+          backgroundColor: isBooked
+            ? "#bdbdbd"
+            : isSelected
+            ? "#4caf50"
+            : seat.type === "VIP"
+            ? "#f9a825"
+            : "#29b6f6",
+          color: isBooked ? "#757575" : isSelected ? "white" : "#212121",
           cursor: isBooked ? "not-allowed" : "pointer",
-          position: "relative",
+          transition: "all 0.2s ease",
+          boxShadow: isSelected ? "0px 0px 8px rgba(76, 175, 80, 0.7)" : "none",
           "&:hover": {
             backgroundColor: isBooked
-              ? "#d3d3d3"
+              ? "#bdbdbd"
               : isSelected
-              ? "#43a047"
-              : "#e0e0e0",
-            transform: isBooked ? "none" : "scale(1.05)",
+              ? "#388e3c"
+              : "#81d4fa",
+            transform: isBooked ? "none" : "scale(1.08)",
           },
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
         }}
       >
-        {isBooked ? (
-          <span style={{ fontSize: "20px", color: "#616161" }}>✖</span>
-        ) : (
-          <>
-            <Typography
-              variant="caption"
-              sx={{ fontSize: "12px", lineHeight: 1 }}
-            >
-              {seat.row}
-              {seat.column}
-            </Typography>
-            {(isWindow ||
-              isAisle ||
-              seat.type === "VIP" ||
-              seat.type === "ECONOMY") && (
-              <span
-                style={{ fontSize: "10px", marginTop: "2px", opacity: 0.8 }}
-              >
-                {isWindow && "Window"}
-                {isAisle && "Aisle"}
-                {seat.type === "VIP"}
-                {seat.type === "ECONOMY"}
-              </span>
-            )}
-          </>
-        )}
+        {seat.seatRow}
+        {seat.seatNumber}
       </Button>
     );
   };
@@ -177,6 +167,8 @@ const SeatBooking: React.FC<AircraftCodeProps> = ({ code }) => {
       </Box>
     );
   }
+  const columns = ["A", "B", "C", "D", "E", "F"];
+  const rows = Array.from({ length: 30 }, (_, i) => i + 1);
 
   return (
     <Box
@@ -223,13 +215,13 @@ const SeatBooking: React.FC<AircraftCodeProps> = ({ code }) => {
           overflowY: "auto", // scroll dọc
         }}
       >
-        {Array.from(new Set(seats.map((s) => s.row))).map((row) => {
-          const rowSeats = seats.filter((s) => s.row === row);
+        {/* {Array.from(new Set(seats.map((s) => s.seatNumber))).map((row) => {
+          const rowSeats = seats.filter((s) => s.seatNumber === row);
           const leftSide = rowSeats.filter((s) =>
-            ["A", "B", "C"].includes(s.column)
+            ["A", "B", "C"].includes(s.seatRow)
           );
           const rightSide = rowSeats.filter((s) =>
-            ["D", "E", "F"].includes(s.column)
+            ["D", "E", "F"].includes(s.seatRow)
           );
 
           return (
@@ -259,7 +251,127 @@ const SeatBooking: React.FC<AircraftCodeProps> = ({ code }) => {
               </Box>
             </Box>
           );
-        })}
+        })} */}
+        <Stack
+          spacing={1}
+          sx={{
+            border: "1px solid #e0e0e0",
+            borderRadius: "12px",
+            padding: "16px",
+            maxHeight: "450px",
+            overflowY: "auto",
+            backgroundColor: "#fafafa",
+          }}
+        >
+          <Typography
+            align="center"
+            sx={{ color: "#1976d2", fontWeight: "bold" }}
+          >
+            ✈️ Đầu máy bay
+          </Typography>
+
+          {/* render theo hàng chữ (A, B, C ...) — mỗi hàng ngang hiển thị tất cả số ghế */}
+          {columns.map((col) => (
+            <Box
+              key={col}
+              sx={{ display: "flex", alignItems: "center", gap: 2, py: 0.5 }}
+            >
+              {/* label hàng chữ */}
+              <Box sx={{ width: 28, textAlign: "center", fontWeight: 700 }}>
+                {col}
+              </Box>
+
+              {/* danh sách số ghế theo hàng chữ */}
+              <Box
+                sx={{ display: "flex", flexWrap: "wrap", alignItems: "center" }}
+              >
+                {seatNumbers.length === 0 ? (
+                  <Typography variant="body2" sx={{ color: "#999" }}>
+                    No seats
+                  </Typography>
+                ) : (
+                  seatNumbers.map((num) => {
+                    const seat = seats.find(
+                      (s) => s.seatRow === col && s.seatNumber === num
+                    );
+                    return seat ? (
+                      renderSeatButton(seat)
+                    ) : (
+                      <Box
+                        key={`${col}-${num}`}
+                        sx={{
+                          width: 44,
+                          height: 44,
+                          m: "4px",
+                          borderRadius: 1,
+                        }}
+                      />
+                    );
+                  })
+                )}
+              </Box>
+            </Box>
+          ))}
+
+          {/* Đuôi máy bay */}
+          <Typography
+            align="center"
+            sx={{ color: "#1976d2", fontWeight: "bold", mt: 1 }}
+          >
+            🛫 Đuôi máy bay
+          </Typography>
+        </Stack>
+        {/* Đầu máy bay */}
+        {/* <Typography
+            variant="h6"
+            align="center"
+            sx={{ mb: 2, fontWeight: "bold", color: "#1976d2" }}
+          >
+            ✈️ Đầu máy bay
+          </Typography>
+
+          {rows.map((row) => (
+            <Box
+              key={row}
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              mb={1}
+            >
+
+              {columns.slice(0, 3).map((col) => {
+                const seat = seats.find(
+                  (s) => s.seatNumber === row && s.seatRow === col
+                );
+                return seat ? (
+                  renderSeatButton(seat)
+                ) : (
+                  <Box key={col} width={45} />
+                );
+              })}
+
+              <Box width={40} />
+
+              {columns.slice(3).map((col) => {
+                const seat = seats.find(
+                  (s) => s.seatNumber === row && s.seatRow === col
+                );
+                return seat ? (
+                  renderSeatButton(seat)
+                ) : (
+                  <Box key={col} width={45} />
+                );
+              })}
+            </Box>
+          ))}
+        </Stack>
+        <Typography
+          variant="h6"
+          align="center"
+          sx={{ mt: 2, fontWeight: "bold", color: "#1976d2" }}
+        >
+          🛫 Đuôi máy bay
+        </Typography> */}
       </Stack>
 
       <Box

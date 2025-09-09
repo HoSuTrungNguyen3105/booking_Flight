@@ -17,6 +17,7 @@ import type {
   RegisterResponseMessage,
   RegisterOTPCodeVerifyResponse,
   UserUpdateProps,
+  AdminUpdateUserForm,
 } from "../../utils/type.ts";
 import { MethodType } from "../../hooks/type";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
@@ -43,7 +44,6 @@ const putMethod = {
   method: MethodType.PUT,
   headers: { "Content-Type": "application/json" },
 };
-const messageMethod = { success: "Success action", error: "Error action" };
 
 type FlightId = {
   id?: number;
@@ -497,27 +497,46 @@ export const useCreateUserByAdmin = () => {
     setParamsUser,
   };
 };
-
+interface ResAdminUpdateUserProps {
+  userId: number;
+}
 export const useUpdateUserFromAdmin = () => {
-  //TO_DO
   // const isValid = !!id;
-  const {
-    data: fetchUpdateUserById,
-    refetch: refetchCreateUser,
-    loading: loadingUser,
-    setParams: setParamsUser,
-  } = useFetch<UserCreateResponse, UserDataNoGrid>({
-    url: "/sys/users/updateUser",
-    autoFetch: false,
-    config: postMethod,
-  });
+  const { refetch: refetchUpdateUserFromAdmin, loading: loadingUser } =
+    useFetch<
+      DetailResponseMessage<ResAdminUpdateUserProps>,
+      AdminUpdateUserForm
+    >({
+      url: "/sys/users/updateUserFromAdmin",
+      autoFetch: false,
+      config: postMethod,
+    });
   return {
-    fetchUpdateUserById,
-    refetchCreateUser,
+    refetchUpdateUserFromAdmin,
     loadingUser,
-    setParamsUser,
   };
 };
+
+// export const useUpdateUserFromAdmin = () => {
+//   //TO_DO
+//   // const isValid = !!id;
+//   const {
+//     data: fetchUpdateUserById,
+//     refetch: refetchCreateUser,
+//     loading: loadingUser,
+//     setParams: setParamsUser,
+//   } = useFetch<UserCreateResponse, UserDataNoGrid>({
+//     url: "/sys/users/updateUser",
+//     autoFetch: false,
+//     config: postMethod,
+//   });
+//   return {
+//     fetchUpdateUserById,
+//     refetchCreateUser,
+//     loadingUser,
+//     setParamsUser,
+//   };
+// };
 
 export const useUpdateUserInfo = (id: number) => {
   // const isValid = !!id;

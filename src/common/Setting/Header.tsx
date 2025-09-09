@@ -129,17 +129,6 @@ const Header = () => {
     user,
   ]);
 
-  //   useEffect(() => {
-  //     const jobCodeOptions =
-  //       user?.jobTypeListForHeader.map((job) => ({
-  //         label: job.codeName,
-  //         value: job.code,
-  //       })) || [];
-
-  //     setJobCode(jobCodeOptions[0]?.value ?? '');
-  //     setJobCodeOptions(jobCodeOptions);
-  //   }, [userInfo]);
-
   return (
     <Stack
       component="header"
@@ -149,7 +138,6 @@ const Header = () => {
       spacing={2}
       sx={{
         height: "56px",
-        background: "var(--bg-header)",
         px: "15px",
       }}
     >

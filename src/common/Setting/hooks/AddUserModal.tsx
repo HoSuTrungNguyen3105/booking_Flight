@@ -41,7 +41,6 @@ const AddUserModal = ({
 }: IModalStatisticalDataLearningProps) => {
   const {
     formDetailConfig,
-    handleChangeFormInput,
     enableUpdateBtn,
     formData,
     error,
@@ -67,25 +66,10 @@ const AddUserModal = ({
 
   const renderContent = useCallback(() => {
     const renderRows = () => {
-      const [selected, setSelected] = useState("male");
-
       return (
-        <Stack>
-          <Typography variant="body1">데이터 목록</Typography>
-          <RadioUI
-            label="Chọn giới tính"
-            name="gender"
-            selectedValue={selected}
-            onChange={(value) => setSelected(value)}
-            options={[
-              { label: "Nam", value: "male" },
-              { label: "Nữ", value: "female" },
-              { label: "Khác", value: "other" }, // ví dụ có disable
-            ]}
-            color="primary"
-          />
+        <>
           {formDetailConfig
-            .filter((fieldItem) => !fieldItem.disabled) // 🔥 Chỉ render nếu không bị disable
+            .filter((fieldItem) => !fieldItem.disabled)
             .map(({ disabled, fields }) => (
               <Box key={fields.id}>
                 <Typography variant="body1" sx={{ mb: 1 }}>
@@ -99,7 +83,7 @@ const AddUserModal = ({
                 />
               </Box>
             ))}
-        </Stack>
+        </>
       );
     };
 

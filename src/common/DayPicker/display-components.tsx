@@ -12,16 +12,16 @@ import {
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import moment from "moment";
-import "../../i18n";
+// import "../../i18n";
 import { CusDateField } from "./date-field";
 import SingleDateRangePickerComponent from "./date-range-field";
 
 const SampleDatePicker: React.FC = () => {
   const { i18n } = useTranslation();
-  const [language, setLanguage] = useState<"en" | "ko">("en");
+  const [language, setLanguage] = useState<"en" | "kr">("en");
   const [value, setValue] = useState<string | null>("2023-08-08");
 
-  const changeLanguage = (lng: "en" | "ko") => {
+  const changeLanguage = (lng: "en" | "kr") => {
     i18n.changeLanguage(lng);
     moment.locale(lng);
     setLanguage(lng);
@@ -42,7 +42,7 @@ const SampleDatePicker: React.FC = () => {
         <Button
           data-testid="language-button-ko"
           variant="contained"
-          onClick={() => changeLanguage("ko")}
+          onClick={() => changeLanguage("kr")}
         >
           Korean
         </Button>

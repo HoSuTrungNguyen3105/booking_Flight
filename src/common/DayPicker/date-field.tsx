@@ -4,13 +4,14 @@ import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { DateField } from "@mui/x-date-pickers/DateField";
 import { InputAdornment, Box, TextField } from "@mui/material";
 import moment, { type Moment } from "moment";
-import "./_datefield.scss";
+// import "./_datefield.scss";
 import clsx from "clsx";
-import "../../../scss/form/_text-field.scss";
+// import "../../../scss/form/_text-field.scss";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ErrorIcon from "@mui/icons-material/Error";
 import DateRangeIcon from "@mui/icons-material/DateRange";
 import type { DatePickerProps } from "./type";
+
 export const CusDateField: React.FC<DatePickerProps> = ({
   size = "medium",
   className = "",
@@ -64,10 +65,11 @@ export const CusDateField: React.FC<DatePickerProps> = ({
         <DateField
           value={momentValue}
           onChange={handleChange}
+          enableAccessibleFieldDOMStructure={false} // ← quan trọng
           format={format}
           disabled={disabled}
           slotProps={{
-            inputProps: {
+            inputAdornment: {
               className: clsx(
                 "datefield-input",
                 inputClassName,
@@ -75,11 +77,11 @@ export const CusDateField: React.FC<DatePickerProps> = ({
                 status === "warning" ? "border-warning" : "",
                 status === "confirmed" ? "border-confirmed" : ""
               ),
-              inputProps: {
-                placeholder: placeHolder,
-                readOnly,
-                "data-testid": "cus-datefield-input",
-              },
+              // inputProps: {
+              //   placeholder: placeHolder,
+              //   readOnly,
+              //   "data-testid": "cus-datefield-input",
+              // },
             },
           }}
           slots={{

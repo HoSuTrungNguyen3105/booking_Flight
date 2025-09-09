@@ -5,6 +5,7 @@ import type { Meal } from "../../utils/type";
 import { Typography } from "@mui/material";
 import FlightTable from "./hooks/FlightData";
 import type { Flight } from "./type";
+import DateRangePickerComponent from "../DayPicker/date-range-picker";
 
 export default function MealList() {
   const [data, setData] = useState<Meal[]>([]);
@@ -83,6 +84,7 @@ export default function MealList() {
         }}
         disableRowSelectionOnClick
       />
+      <DateRangePickerComponent language="kr" />
       <Typography>Flight list</Typography>
       <FlightTable flights={dataFlight} />;
     </div>

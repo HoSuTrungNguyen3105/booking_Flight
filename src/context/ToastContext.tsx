@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useRef, useState } from "react";
 import { Box, SvgIcon, type SvgIconProps } from "@mui/material";
 import { motion, AnimatePresence } from "framer-motion";
+import theme from "../scss/theme";
+// import theme from "../scss/theme";
 
 type ToastType = "success" | "error" | "info";
 
@@ -59,9 +61,9 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
     <ToastContext.Provider value={showToast}>
       {children}
       <Box
-        sx={{
+        sx={(theme) => ({
           position: "fixed",
-          top: "55px",
+          top: "10px",
           left: "50%",
           transform: "translateX(-50%)",
           display: "flex",
@@ -72,8 +74,16 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
           gap: "8px",
           width: "100%",
           pointerEvents: "none",
-          zIndex: 1200,
-        }}
+          zIndex: theme.zIndex.modal + 1,
+          // zIndex: (theme) => theme.zIndex.modal + 1,
+          // ...(theme
+          //   ? { top: "55px" } // khi có modal thì toast lên trên
+          //   : { top: "24px" }), // khi bình thường thì toast xuống dưới
+          // zIndex: theme.zIndex.modal + 1,
+          // ...(theme.zIndex.modal
+          //   ? { top: "55px", bottom: "auto" } // có modal thì toast nhảy lên
+          //   : { bottom: "24px", top: "auto" }), // bình thường thì toast ở dưới
+        })}
       >
         <AnimatePresence>
           {toasts.map((toast) => {
@@ -90,7 +100,7 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
                   sx={{
                     zIndex: 1300,
                     maxWidth: 500,
-                    width: "fit-content", // tự co theo nội dung
+                    width: "fit-content",
                     padding: "8px 12px",
                     borderRadius: "20px",
                     border: "1px solid white",
@@ -105,7 +115,7 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
                     alignItems: "center",
                     gap: 1.5,
                     pointerEvents: "auto",
-                    mx: "auto", // căn giữa ngang toàn màn hình nếu cần
+                    mx: "auto",
                   }}
                 >
                   <Box sx={{ display: "flex", alignItems: "center" }}>

@@ -125,7 +125,7 @@ export const useRandomPassword = () => {
     refetch: refetchUserPw,
     loading: loadingUser,
     setParams: setParamsUser,
-  } = useFetch<DetailResponseMessage, DetailResponseMessage>({
+  } = useFetch<DetailResponseMessage<string>, null>({
     url: "/sys/users/getRandomPw",
     autoFetch: true,
     config: getMethod,
@@ -347,13 +347,12 @@ export const useGetUserList = () => {
     loadingUser,
   };
 };
-export const useGetUserById = (id: string) => {
+export const useGetUserById = (id: number) => {
   // const isValid = !!id;
-  const {
-    data: fetchUserById,
-    refetch: refetchUserById,
-    loading: loadingUserById,
-  } = useFetch<UserListManageResponse, UserData>({
+  const { data: fetchUserById, refetch: refetchUserById } = useFetch<
+    UserListManageResponse,
+    null
+  >({
     url: `/sys/users/${id}`,
     // params: ,
     autoFetch: false,
@@ -362,6 +361,5 @@ export const useGetUserById = (id: string) => {
   return {
     fetchUserById,
     refetchUserById,
-    loadingUserById,
   };
 };

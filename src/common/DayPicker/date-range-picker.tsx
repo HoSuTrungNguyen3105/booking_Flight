@@ -1,62 +1,80 @@
 import React, { useState, useEffect } from "react";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DateRangePicker } from "@mui/x-date-pickers-pro";
-import { SingleInputDateRangeField } from "@mui/x-date-pickers-pro/SingleInputDateRangeField";
-import { InputAdornment, Box } from "@mui/material";
+import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import { koKR, enUS } from "@mui/x-date-pickers/locales";
+import { Box, TextField, InputAdornment } from "@mui/material";
 import CalendarIcon from "@mui/icons-material/Event";
 import moment, { type Moment } from "moment";
-import "moment";
-import { koKR, enUS } from "@mui/x-date-pickers/locales";
-import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 
 interface Props {
-  language: "en" | "ko";
+  language: "vn" | "en" | "kr" | "jp";
+  onChange?: (value: number) => void; // callback để trả về decimal timestamp
+  value?: string; //timestamp data
 }
-const DateRangePickerComponent: React.FC<Props> = ({ language }) => {
-  const [value, setValue] = useState<[Moment | null, Moment | null]>([
-    null,
-    null,
-  ]);
+
+const DateTimePickerComponent: React.FC<Props> = ({
+  language,
+  onChange,
+  value,
+}) => {
+  const [date, setDate] = useState<Moment | null>(
+    value ? moment.unix(parseFloat(value)) : moment()
+  );
 
   useEffect(() => {
     moment.locale(language);
   }, [language]);
 
+  useEffect(() => {
+    if (value) {
+      setDate(moment.unix(parseFloat(value)));
+    }
+  }, [value]);
+
+  const handleChange = (newValue: Moment | null) => {
+    setDate(newValue);
+
+    if (newValue && onChange) {
+      // Lấy timestamp (ms) → giây → decimal(20,3)
+      const timestampMs = newValue.valueOf();
+      const decimalValue = parseFloat((timestampMs / 1000).toFixed(3));
+      onChange(decimalValue);
+    }
+  };
+
   return (
     <LocalizationProvider
       dateAdapter={AdapterMoment}
       localeText={
-        language === "ko"
+        language === "kr"
           ? koKR.components.MuiLocalizationProvider.defaultProps.localeText
           : enUS.components.MuiLocalizationProvider.defaultProps.localeText
       }
     >
-      <Box className="date-range-picker-container">
-        <DateRangePicker
-          value={value}
-          onChange={(newValue) =>
-            setValue(newValue as [Moment | null, Moment | null])
-          }
-          format="YYYY.MM.DD"
+      <Box display="flex" gap={2}>
+        <DatePicker
+          value={date}
+          onChange={handleChange}
+          enableAccessibleFieldDOMStructure={false} // ← quan trọng
           slots={{
-            field: SingleInputDateRangeField,
+            textField: (props) => (
+              <TextField
+                {...props}
+                InputProps={{
+                  ...props.InputProps,
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <CalendarIcon />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            ),
           }}
-          slotProps={{
-            textField: {
-              InputProps: {
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <CalendarIcon data-testid="calendar-icon" />
-                  </InputAdornment>
-                ),
-              },
-            },
-          }}
-          calendars={2}
         />
       </Box>
     </LocalizationProvider>
   );
 };
 
-export default DateRangePickerComponent;
+export default DateTimePickerComponent;

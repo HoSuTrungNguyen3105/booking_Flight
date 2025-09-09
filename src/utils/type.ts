@@ -9,7 +9,9 @@ export enum MethodConfig {
   GET = "GET",
   POST = "POST",
 }
-
+export interface ReqUserIDProps {
+  id: number;
+}
 export type CodeItem = {
   code: string;
   codeName?: string;
@@ -135,8 +137,8 @@ export type DataResponseId = {
 
 export type Seat = {
   id: number;
-  row: number;
-  column: string;
+  seatNumber: number;
+  seatRow: string;
   isBooked: boolean;
   flightId: number;
   bookingId: number;
@@ -208,6 +210,22 @@ export type UserCreateProps = {
   name?: string;
   role?: UserRoleType;
   password?: string;
+};
+
+export enum EmployeeStatus {
+  ACTIVE = "ACTIVE",
+  INACTIVE = "INACTIVE",
+  SUSPENDED = "SUSPENDED",
+  TERMINATED = "TERMINATED",
+}
+
+export type AdminUpdateUserForm = {
+  id: number;
+  department?: string;
+  position?: string;
+  hireDate?: number;
+  status?: EmployeeStatus;
+  baseSalary?: number;
 };
 
 export type UserUpdateProps = {
