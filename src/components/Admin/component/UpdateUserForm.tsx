@@ -20,8 +20,8 @@ import InputTextField from "../../../common/Input/InputTextField";
 const departmentOptions = [
   { label: "IT", value: "IT" },
   { label: "HR", value: "HR" },
-  { label: "Finance", value: "Finance" },
-  { label: "Marketing", value: "Marketing" },
+  { label: "Finance", value: "FINANCE" },
+  { label: "Marketing", value: "MARKETING" },
 ];
 
 // Danh sách option chức vụ
@@ -45,16 +45,16 @@ type AdminUpdateUserFormProps = {
 };
 
 export default function UpdateUserForm({ data }: AdminUpdateUserFormProps) {
-  const [userState, setUserState] = useState<AdminUpdateUserForm>(data);
+  console.log("Form received data:", data); // Kiểm tra data đầu vào
 
   const { handleSubmit, control, setValue } = useForm({
     defaultValues: {
       id: data.id,
-      department: data.department ?? "", // nếu có thì bind, ko thì rỗng
+      department: data.department ?? "",
       position: data.position ?? "",
       status: data.status ?? EmployeeStatus.ACTIVE,
-      baseSalary: data.baseSalary ?? undefined,
-      hireDate: data.hireDate ?? Math.floor(Date.now() / 1000), // default now
+      baseSalary: data.baseSalary ?? 0,
+      hireDate: data.hireDate ?? Math.floor(Date.now() / 1000),
     },
   });
 
@@ -63,16 +63,17 @@ export default function UpdateUserForm({ data }: AdminUpdateUserFormProps) {
   const { refetchUpdateUserFromAdmin } = useUpdateUserFromAdmin();
 
   const onSubmit = async (formData: AdminUpdateUserForm) => {
-    const payload = {
-      ...formData,
-      // convert hireDate từ string yyyy-MM-dd -> timestamp (giây)
-      // hireDate: formData.hireDate
-      //   ? Math.floor(new Date(formData.hireDate).getTime() / 1000)
-      //   : 0,
-    };
-    await refetchUpdateUserFromAdmin(payload);
-    console.log("spe", payload);
-    toast(`Cập nhật nhân viên #${data.id} thành công`, "success");
+    console.log("Form submitted with:", formData);
+
+    try {
+      const result = await refetchUpdateUserFromAdmin(formData);
+      console.log("API call result:", result);
+      console.log("Form data after API:", formData);
+      toast(`Cập nhật nhân viên #${formData.id} thành công`, "success");
+    } catch (error) {
+      console.error("Error updating user:", error);
+      toast("Cập nhật thất bại", "error");
+    }
   };
 
   return (
@@ -87,14 +88,18 @@ export default function UpdateUserForm({ data }: AdminUpdateUserFormProps) {
       }}
     >
       <Box pr={2} mb={2}>
-        {JSON.stringify(data)}
+        <Typography variant="h6">Raw data:</Typography>
+        <pre>{JSON.stringify(data, null, 2)}</pre>
       </Box>
 
-      <Box component={"form"} onSubmit={handleSubmit(onSubmit)}>
-        {/* onSubmit={handleSubmit(onSubmit)} */}
+      <Box
+        component="form"
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSubmit(onSubmit)(e);
+        }}
+      >
         <Stack spacing={2}>
-          {/* Department */}
-
           {/* Department */}
           <Controller
             name="department"
@@ -129,24 +134,23 @@ export default function UpdateUserForm({ data }: AdminUpdateUserFormProps) {
             control={control}
             render={({ field }) => (
               <DateTimePickerComponent
-                {...field}
+                value={field.value}
                 language="vn"
-                onChange={(val) => setValue("hireDate", val)} // parent update value
+                onChange={(val) => setValue("hireDate", val)}
               />
             )}
           />
 
-          {/* Base Salary */}
+          {/* Base Salary - Sử dụng TextField tạm để test */}
           <Controller
             name="baseSalary"
             control={control}
             render={({ field }) => (
               <InputTextField
                 {...field}
+                type="number"
                 value={String(field.value)}
-                clearable
-                type="password"
-                showEyeIcon
+                onChange={(e) => field.onChange(parseFloat(e) || 0)}
               />
             )}
           />
@@ -156,13 +160,6 @@ export default function UpdateUserForm({ data }: AdminUpdateUserFormProps) {
             name="status"
             control={control}
             render={({ field }) => (
-              // <TextField {...field} select label="Trạng thái" fullWidth>
-              //   {statusOptions.map((opt) => (
-              //     <MenuItem key={opt.value} value={opt.value}>
-              //       {opt.label}
-              //     </MenuItem>
-              //   ))}
-              // </TextField>
               <SelectDropdown
                 {...field}
                 options={statusOptions}

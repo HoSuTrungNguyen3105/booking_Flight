@@ -34,6 +34,7 @@ import FlightPage from "../components/Admin/component/FlightPage";
 import AccountYn from "../components/Auth/AccountYn";
 import SampleDatePicker from "../common/DayPicker/display-components";
 import UpdateUserForm from "../components/Admin/component/UpdateUserForm";
+import LeaveRequestGrid from "../components/Admin/component/LeaveRequestGrid";
 
 const routes = [
   {
@@ -137,7 +138,7 @@ const routes = [
       },
       {
         path: "sampleDatePicker",
-        // element: <UpdateUserForm />,
+        element: <LeaveRequestGrid />,
       },
       {
         path: "domestic",

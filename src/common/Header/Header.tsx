@@ -148,7 +148,11 @@ export const Header = () => {
             </Stack>
           )}
 
-          <CustomPopover icon="Profile" handleAction={handleOpenProfile} />
+          <CustomPopover
+            icon="Profile"
+            option={["Dashboard"]}
+            handleAction={handleOpenProfile}
+          />
 
           {/* Right section - Actions and Login */}
           <Stack direction="row" alignItems="center" spacing={2}>

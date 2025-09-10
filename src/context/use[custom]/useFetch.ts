@@ -1,16 +1,13 @@
 import type { AxiosRequestConfig } from "axios";
 import { useApi } from "../../context/ApiContext";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useToast } from "../../context/ToastContext";
 import { MethodType } from "../../hooks/type";
-type ToastMessage = {
-  success?: string;
-  error?: string;
-};
+
 type ResponseMessage = {
   resultCode?: string;
   resultMessage?: string;
 };
+
 type TUseFetch<T, P> = {
   url: string;
   params?: P;
@@ -20,6 +17,7 @@ type TUseFetch<T, P> = {
   onSuccess?: (res?: T) => void;
   onError?: () => void;
 };
+
 export const useFetch = <T extends Partial<ResponseMessage>, P>({
   url,
   params,
@@ -35,7 +33,6 @@ export const useFetch = <T extends Partial<ResponseMessage>, P>({
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
   const [currentParams, setCurrentParams] = useState<P | undefined>(params);
-  const toast = useToast();
   const abortController = useRef<AbortController | null>(null);
   const refetch = useCallback(
     async (extra?: P, overrideUrl?: string): Promise<T | undefined> => {
@@ -77,6 +74,7 @@ export const useFetch = <T extends Partial<ResponseMessage>, P>({
     },
     [url, params, config, onSuccess, onError]
   );
+
   useEffect(() => {
     if (autoFetch) {
       refetch();

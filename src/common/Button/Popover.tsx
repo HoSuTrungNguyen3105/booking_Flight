@@ -3,10 +3,10 @@ import React, { useMemo, useState } from "react";
 import theme from "../../scss/theme";
 
 export interface IButtonSettingProps {
-  option?: string;
+  option?: string[]; // nhieu option
   icon: string;
   buttonProps?: React.ComponentProps<typeof Button>;
-  handleAction: () => void;
+  handleAction: (opt: string) => void; // sửa: truyền option khi click
 }
 const StyledPopover = styled(Popover)<{}>(() => ({
   "& .MuiPaper-root": {
@@ -19,6 +19,7 @@ const CustomPopover: React.FC<IButtonSettingProps> = ({
   buttonProps,
   icon,
   handleAction,
+  option = [],
 }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
@@ -33,6 +34,9 @@ const CustomPopover: React.FC<IButtonSettingProps> = ({
     () => (anchorEl ? "simple-popover" : undefined),
     [anchorEl]
   );
+
+  const options = Array.isArray(option) ? option : [];
+
   return (
     <div>
       <Button
@@ -60,15 +64,21 @@ const CustomPopover: React.FC<IButtonSettingProps> = ({
           horizontal: "left",
         }}
       >
-        <Button
-          onClick={handleAction}
-          sx={{
-            color: theme.palette.text.primary,
-            textTransform: "none",
-          }}
-        >
-          DashBoard
-        </Button>
+        {options.map((i) => (
+          <Button
+            key={i}
+            onClick={() => {
+              handleAction(i); // truyền option khi click
+              handleClose();
+            }}
+            sx={{
+              color: theme.palette.text.primary,
+              textTransform: "none",
+            }}
+          >
+            {i}
+          </Button>
+        ))}
       </StyledPopover>
     </div>
   );

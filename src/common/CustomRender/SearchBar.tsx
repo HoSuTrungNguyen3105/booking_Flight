@@ -9,6 +9,7 @@ import {
 } from "react";
 import InputField from "../Input/InputField";
 import InputTextField from "../Input/InputTextField";
+import DateTimePickerComponent from "../DayPicker/date-range-picker";
 
 export interface ISearchQuery {
   text: string[];
@@ -142,7 +143,7 @@ const SearchBar = ({ disabled = false, onSearch }: ISearchBarProps) => {
           value={endDate}
           onChange={handleEndDateChange}
         /> */}
-        <InputField
+        {/* <InputField
           disabled={disabled}
           placeholder="Start date"
           value={startDate}
@@ -154,7 +155,10 @@ const SearchBar = ({ disabled = false, onSearch }: ISearchBarProps) => {
           placeholder="End date"
           value={endDate}
           //   onChange={handleEndDateChange}
-        />
+        /> */}
+        <DateTimePickerComponent language="jp" />
+        -
+        <DateTimePickerComponent language="jp" />
       </Stack>
     </Stack>
   );

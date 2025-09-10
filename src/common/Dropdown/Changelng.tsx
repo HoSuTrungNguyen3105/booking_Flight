@@ -5,6 +5,7 @@ import ChangeLanguageModal from "./ChangeLanguageModal";
 
 export const LanguageButton = () => {
   const [openModal, setOpenModal] = useState(false);
+
   const renderButton = useCallback(() => {
     return (
       <Button
@@ -21,17 +22,14 @@ export const LanguageButton = () => {
       </Button>
     );
   }, []);
+
   return (
     <>
       {renderButton()}
       <ChangeLanguageModal
         open={openModal}
-        onClose={() => {
-          setOpenModal(false);
-        }}
-        onSuccess={() => {
-          setOpenModal(false);
-        }}
+        onClose={() => setOpenModal(false)}
+        onSuccess={() => setOpenModal(false)}
       />
     </>
   );

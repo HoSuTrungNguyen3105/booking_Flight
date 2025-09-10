@@ -2,14 +2,13 @@ import React, { useState, useEffect } from "react";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { koKR, enUS } from "@mui/x-date-pickers/locales";
-import { Box, TextField, InputAdornment } from "@mui/material";
-import CalendarIcon from "@mui/icons-material/Event";
+import { Box, TextField } from "@mui/material";
 import moment, { type Moment } from "moment";
 
 interface Props {
   language: "vn" | "en" | "kr" | "jp";
-  onChange?: (value: number) => void; // callback để trả về decimal timestamp
-  value?: number; //timestamp data
+  onChange?: (value: number) => void; // callback để trả về decimal timestamp (20,3)
+  value?: number; // Giá trị decimal (20,3) đại diện cho timestamp
 }
 
 const DateTimePickerComponent: React.FC<Props> = ({
@@ -17,30 +16,69 @@ const DateTimePickerComponent: React.FC<Props> = ({
   onChange,
   value,
 }) => {
-  const [date, setDate] = useState<Moment | null>(
-    value ? moment.unix(value) : moment()
-  );
+  const [date, setDate] = useState<Moment | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
     moment.locale(language);
   }, [language]);
 
   useEffect(() => {
-    if (value) {
-      setDate(moment.unix(value));
+    if (!isInitialized && value !== undefined && value !== null && value > 0) {
+      try {
+        const momentDate = moment(value * 1000);
+        if (momentDate.isValid()) {
+          setDate(momentDate);
+          setIsInitialized(true);
+        } else {
+          console.warn("Invalid date value:", value);
+          setDate(moment());
+          setIsInitialized(true);
+        }
+      } catch (error) {
+        console.error("Error parsing date:", error);
+        setDate(moment());
+        setIsInitialized(true);
+      }
     }
-  }, [value]);
+  }, [value, isInitialized]);
+
+  useEffect(() => {
+    if (
+      !isInitialized &&
+      (value === 0 || value === null || value === undefined)
+    ) {
+      setDate(moment());
+      setIsInitialized(true);
+    }
+  }, [value, isInitialized]);
 
   const handleChange = (newValue: Moment | null) => {
     setDate(newValue);
 
     if (newValue && onChange) {
-      // Lấy timestamp (ms) → giây → decimal(20,3)
-      const timestampMs = newValue.valueOf();
-      const decimalValue = parseFloat((timestampMs / 1000).toFixed(3));
-      onChange(decimalValue);
+      try {
+        const timestampMs = newValue.valueOf();
+        const decimalValue = parseFloat((timestampMs / 1000).toFixed(3));
+
+        if (!isNaN(decimalValue) && isFinite(decimalValue)) {
+          onChange(decimalValue);
+        } else {
+          console.error("Invalid decimal value calculated:", decimalValue);
+          onChange(0);
+        }
+      } catch (error) {
+        console.error("Error in handleChange:", error);
+        onChange(0);
+      }
+    } else if (onChange) {
+      onChange(0);
     }
   };
+
+  if (!isInitialized) {
+    return <TextField label="Loading date..." disabled fullWidth />;
+  }
 
   return (
     <LocalizationProvider
@@ -55,19 +93,14 @@ const DateTimePickerComponent: React.FC<Props> = ({
         <DatePicker
           value={date}
           onChange={handleChange}
-          enableAccessibleFieldDOMStructure={false} // ← quan trọng
+          enableAccessibleFieldDOMStructure={false}
           slots={{
-            textField: (props) => (
+            textField: (params) => (
               <TextField
-                {...props}
-                InputProps={{
-                  ...props.InputProps,
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <CalendarIcon />
-                    </InputAdornment>
-                  ),
-                }}
+                {...params}
+                fullWidth
+                error={!date || !date.isValid()}
+                helperText={!date || !date.isValid() ? "Invalid date" : ""}
               />
             ),
           }}

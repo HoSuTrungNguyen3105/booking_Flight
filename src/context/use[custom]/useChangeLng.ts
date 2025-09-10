@@ -3,7 +3,7 @@ import type { DropdownOptions } from "../../common/Dropdown/type";
 import i18n from "../../i18n";
 import { optionLanguage } from "../../i18n/resource";
 
-const optionPayMoney: DropdownOptions[] = [
+const currencyOptions: DropdownOptions[] = [
   { label: "USD ($)", value: "usd" },
   { label: "KRW (₩)", value: "krw" },
   { label: "VND (₫)", value: "vnd" },
@@ -17,9 +17,9 @@ export const useChangeLanguage = () => {
 
   const [selectedPayMoney, setSelectedPayMoney] =
     useState<DropdownOptions | null>(
-      optionPayMoney.find(
-        (o) => o.value === localStorage.getItem("paymoney")
-      ) || optionPayMoney[0]
+      currencyOptions.find(
+        (o) => o.value === localStorage.getItem("currencyOptions")
+      ) || currencyOptions[0]
     );
 
   const [pendingLang, setPendingLang] = useState<DropdownOptions | null>(null);
@@ -33,7 +33,7 @@ export const useChangeLanguage = () => {
   };
 
   const handlePayMoneySelect = (newValue: string | number) => {
-    const selected = optionPayMoney.find((o) => o.value === newValue);
+    const selected = currencyOptions.find((o) => o.value === newValue);
     if (!selected) return;
     setPendingPayMoney(selected);
   };
@@ -67,6 +67,6 @@ export const useChangeLanguage = () => {
     confirmSaveChange,
 
     optionLanguage,
-    optionPayMoney,
+    currencyOptions,
   };
 };

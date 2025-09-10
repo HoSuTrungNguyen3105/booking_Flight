@@ -18,6 +18,7 @@ import type {
   RegisterOTPCodeVerifyResponse,
   UserUpdateProps,
   AdminUpdateUserForm,
+  LeaveRequest,
 } from "../../utils/type.ts";
 import { MethodType } from "../../hooks/type";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
@@ -552,6 +553,19 @@ export const useUpdateUserInfo = (id: number) => {
   };
 };
 
+export const useGetLeaveRequest = () => {
+  const { data: dataGetLeaveRequest, loading: loadingGetLeaveRequest } =
+    useFetch<DetailResponseMessage<LeaveRequest>, UserUpdateProps>({
+      url: "/sys/users/leave-requests/all",
+      autoFetch: true,
+      config: getMethod,
+    });
+  return {
+    dataGetLeaveRequest,
+    loadingGetLeaveRequest,
+  };
+};
+
 export interface ILockAccountProps {
   id?: number;
   accountLockYn: string;
@@ -563,7 +577,7 @@ export const useAccountLock = () => {
     refetch: refetchAccountLock,
     loading: loadingAccountLock,
     setParams: setParamsUser,
-  } = useFetch<DetailResponseMessage, ILockAccountProps>({
+  } = useFetch<ResponseMessage, ILockAccountProps>({
     url: "/sys/users/setAccountLock",
     // params: ,
     autoFetch: false,

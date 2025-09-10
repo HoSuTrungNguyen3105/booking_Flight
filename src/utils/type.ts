@@ -144,6 +144,34 @@ export type Seat = {
   bookingId?: number;
   type: string;
 };
+// Định nghĩa type cho Employee
+interface Employee {
+  id: number;
+  name: string;
+  email: string;
+}
+
+// Định nghĩa type cho LeaveRequest
+export interface LeaveRequest {
+  id: number;
+  employeeId: number;
+  leaveType: string; // "ANNUAL" | "SICK" | "UNPAID"
+  startDate: string;
+  endDate: string;
+  days: number;
+  reason?: string | null;
+  status: "PENDING" | "APPROVED" | "REJECTED" | "CANCELLED";
+  approverId?: number | null;
+  approverNote?: string | null;
+  appliedAt: string;
+  decidedAt?: string | null;
+  employee: Employee;
+}
+
+// Props cho component
+// interface LeaveRequestProps {
+//   data: LeaveRequest;
+// }
 
 export type FlightSeat = {
   flightId: number;
