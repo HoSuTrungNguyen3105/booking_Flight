@@ -13,6 +13,8 @@ import { useUpdateUserFromAdmin } from "../../Api/usePostApi";
 import { useToast } from "../../../context/ToastContext";
 import DateTimePickerComponent from "../../../common/DayPicker/date-range-picker";
 import { useGetUserById } from "../../Api/useGetApi";
+import SelectDropdown from "../../../common/Dropdown/SelectDropdown";
+import InputTextField from "../../../common/Input/InputTextField";
 
 // Danh sách option phòng ban
 const departmentOptions = [
@@ -45,7 +47,7 @@ type AdminUpdateUserFormProps = {
 export default function UpdateUserForm({ data }: AdminUpdateUserFormProps) {
   const [userState, setUserState] = useState<AdminUpdateUserForm>(data);
 
-  const { handleSubmit, control } = useForm({
+  const { handleSubmit, control, setValue } = useForm({
     defaultValues: {
       id: data.id,
       department: data.department ?? "", // nếu có thì bind, ko thì rỗng
@@ -53,12 +55,6 @@ export default function UpdateUserForm({ data }: AdminUpdateUserFormProps) {
       status: data.status ?? EmployeeStatus.ACTIVE,
       baseSalary: data.baseSalary ?? undefined,
       hireDate: data.hireDate ?? Math.floor(Date.now() / 1000), // default now
-      // hireDate: data.hireDate ?? null,     // decimal timestamp hoặc null
-
-      // hireDate cần convert sang yyyy-MM-dd để bind vào input date
-      // hireDate: userState.hireDate
-      //   ? new Date(userState.hireDate * 1000).toISOString().split("T")[0]
-      //   : "",
     },
   });
 
@@ -74,8 +70,8 @@ export default function UpdateUserForm({ data }: AdminUpdateUserFormProps) {
       //   ? Math.floor(new Date(formData.hireDate).getTime() / 1000)
       //   : 0,
     };
-
     await refetchUpdateUserFromAdmin(payload);
+    console.log("spe", payload);
     toast(`Cập nhật nhân viên #${data.id} thành công`, "success");
   };
 
@@ -98,17 +94,18 @@ export default function UpdateUserForm({ data }: AdminUpdateUserFormProps) {
         {/* onSubmit={handleSubmit(onSubmit)} */}
         <Stack spacing={2}>
           {/* Department */}
+
+          {/* Department */}
           <Controller
             name="department"
             control={control}
             render={({ field }) => (
-              <TextField {...field} select label="Phòng ban" fullWidth>
-                {departmentOptions.map((opt) => (
-                  <MenuItem key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </MenuItem>
-                ))}
-              </TextField>
+              <SelectDropdown
+                {...field}
+                options={departmentOptions}
+                value={field.value}
+                onChange={(val) => setValue("department", String(val))}
+              />
             )}
           />
 
@@ -117,13 +114,12 @@ export default function UpdateUserForm({ data }: AdminUpdateUserFormProps) {
             name="position"
             control={control}
             render={({ field }) => (
-              <TextField {...field} select label="Chức vụ" fullWidth>
-                {positionOptions.map((opt) => (
-                  <MenuItem key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </MenuItem>
-                ))}
-              </TextField>
+              <SelectDropdown
+                {...field}
+                options={positionOptions}
+                value={field.value}
+                onChange={(val) => setValue("position", String(val))}
+              />
             )}
           />
 
@@ -132,17 +128,10 @@ export default function UpdateUserForm({ data }: AdminUpdateUserFormProps) {
             name="hireDate"
             control={control}
             render={({ field }) => (
-              // <TextField
-              //   {...field}
-              //   type="date"
-              //   label="Ngày tuyển dụng"
-              //   InputLabelProps={{ shrink: true }}
-              //   fullWidth
-              // />
               <DateTimePickerComponent
                 {...field}
                 language="vn"
-                onChange={(val) => console.log("Timestamp decimal:", val)}
+                onChange={(val) => setValue("hireDate", val)} // parent update value
               />
             )}
           />
@@ -152,12 +141,12 @@ export default function UpdateUserForm({ data }: AdminUpdateUserFormProps) {
             name="baseSalary"
             control={control}
             render={({ field }) => (
-              <TextField
+              <InputTextField
                 {...field}
-                type="number"
-                label="Lương cơ bản (VNĐ)"
-                variant="outlined"
-                fullWidth
+                value={String(field.value)}
+                clearable
+                type="password"
+                showEyeIcon
               />
             )}
           />
@@ -167,13 +156,19 @@ export default function UpdateUserForm({ data }: AdminUpdateUserFormProps) {
             name="status"
             control={control}
             render={({ field }) => (
-              <TextField {...field} select label="Trạng thái" fullWidth>
-                {statusOptions.map((opt) => (
-                  <MenuItem key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </MenuItem>
-                ))}
-              </TextField>
+              // <TextField {...field} select label="Trạng thái" fullWidth>
+              //   {statusOptions.map((opt) => (
+              //     <MenuItem key={opt.value} value={opt.value}>
+              //       {opt.label}
+              //     </MenuItem>
+              //   ))}
+              // </TextField>
+              <SelectDropdown
+                {...field}
+                options={statusOptions}
+                value={field.value}
+                onChange={(val) => setValue("status", val as EmployeeStatus)}
+              />
             )}
           />
 

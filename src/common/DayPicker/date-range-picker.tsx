@@ -9,7 +9,7 @@ import moment, { type Moment } from "moment";
 interface Props {
   language: "vn" | "en" | "kr" | "jp";
   onChange?: (value: number) => void; // callback để trả về decimal timestamp
-  value?: string; //timestamp data
+  value?: number; //timestamp data
 }
 
 const DateTimePickerComponent: React.FC<Props> = ({
@@ -18,7 +18,7 @@ const DateTimePickerComponent: React.FC<Props> = ({
   value,
 }) => {
   const [date, setDate] = useState<Moment | null>(
-    value ? moment.unix(parseFloat(value)) : moment()
+    value ? moment.unix(value) : moment()
   );
 
   useEffect(() => {
@@ -27,7 +27,7 @@ const DateTimePickerComponent: React.FC<Props> = ({
 
   useEffect(() => {
     if (value) {
-      setDate(moment.unix(parseFloat(value)));
+      setDate(moment.unix(value));
     }
   }, [value]);
 

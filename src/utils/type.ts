@@ -140,8 +140,8 @@ export type Seat = {
   seatNumber: number;
   seatRow: string;
   isBooked: boolean;
-  flightId: number;
-  bookingId: number;
+  flightId?: number;
+  bookingId?: number;
   type: string;
 };
 

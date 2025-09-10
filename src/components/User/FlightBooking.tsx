@@ -75,7 +75,7 @@ const FlightBooking: React.FC = () => {
         textAlign="center"
         color="primary"
       >
-        ✈️ Flight Booking {JSON.stringify(fetchFlightList)}
+        Flight Booking
       </Typography>
 
       {/* Flight List */}

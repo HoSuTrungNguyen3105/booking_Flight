@@ -68,16 +68,18 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
       onChange("");
     }, [onChange]);
 
-    const getMaskedPassword = (val: string, visibleCount: number = 3) => {
-      if (!val || val.length <= visibleCount) return val;
-      const visible = val.slice(-visibleCount);
-      const hidden = "*".repeat(visible.length - visibleCount);
-      return hidden + visible;
+    const getMaskedPassword = (val: string) => {
+      if (!val) return "";
+      if (val.length <= 3) return val;
+      const maskedLength = val.length - 3;
+      return "•".repeat(maskedLength) + val.slice(-3);
     };
 
     const handleCopyText = () => {
       navigator.clipboard.writeText(value || "");
       setHasCopy(true);
+
+      // Tự reset lại sau 2 giây (2000ms)
       setTimeout(() => {
         setHasCopy(false);
       }, 2000);
@@ -98,9 +100,30 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
       };
     }, [readOnly, sx]);
 
+    // const mergedSx = useMemo(() => {
+    //   return {
+    //     ...sx,
+    //     ...(readOnly ? readonlyStyles : {}),
+    //     ...(hasCopy
+    //       ? {
+    //           "& .MuiOutlinedInput-root": {
+    //             border: "2px solid #4caf50",
+    //             borderRadius: "8px", // hoặc theo thiết kế của bạn
+    //           },
+    //         }
+    //       : {}),
+    //   };
+    // }, [readOnly, hasCopy, sx]);
+
     return (
       <TextField
-        type={type}
+        type={
+          type === "password"
+            ? showPassword
+              ? "text"
+              : "text" // vẫn là text để dùng `•••` che
+            : type
+        }
         value={
           type === "password" && realease3phrase && !showPassword
             ? getMaskedPassword(value || "")
@@ -113,6 +136,9 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
         disabled={disabled}
         sx={mergedSx}
         {...restProps}
+        // inputProps={{
+        //   readOnly: realease3phrase && !showPassword,
+        // }}
         slotProps={{
           input: {
             startAdornment: !!startIcon && (

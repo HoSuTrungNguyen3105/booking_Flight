@@ -8,6 +8,7 @@ export type UseRCreate = {
   role?: UserRoleType;
   password: string;
 };
+
 export type UpdateUserForm = {
   pictureUrl?: string;
   rank?: string;
@@ -15,6 +16,7 @@ export type UpdateUserForm = {
   name?: string;
   userAlias?: string;
 };
+
 type FieldConfig = {
   disabled?: boolean;
   hidden?: boolean;
@@ -35,67 +37,44 @@ export const useDataSection = (
         fields: {
           id: "name",
           label: "Tên đăng nhập",
-          type:
-            // fieldConfigs["name"]?.overrideType ??
-            FieldType.INPUT_WITH_TYPE_TEXT,
+          type: FieldType.INPUT_WITH_TYPE_TEXT,
           placeholder: "Nhập tên đăng nhập...",
           options: [],
           value: data.name,
         },
       },
       {
-        // disabled: fieldConfigs["password"]?.disabled ?? isDisable ?? false,
         fields: {
           id: "password",
           label: "Mật khẩu",
-          type:
-            // fieldConfigs["password"]?.overrideType ??
-            FieldType.INPUT_WITH_TYPE_PASSWORD,
+          type: FieldType.INPUT_WITH_TYPE_PASSWORD,
           placeholder: "Nhập mật khẩu...",
           options: [],
           value: data.password,
         },
       },
       {
-        // disabled: fieldConfigs["email"]?.disabled ?? isDisable ?? false,
         fields: {
           id: "email",
           label: "Email",
-          type:
-            // fieldConfigs["email"]?.overrideType ??
-            FieldType.INPUT_WITH_TYPE_TEXT,
+          type: FieldType.INPUT_WITH_TYPE_TEXT,
           placeholder: "Nhập email...",
           options: [],
           value: data.email,
         },
       },
       {
-        // disabled: fieldConfigs["email"]?.disabled ?? isDisable ?? false,
         fields: {
           id: "rank",
           label: "Rank",
-          type:
-            // fieldConfigs["email"]?.overrideType ??
-            FieldType.INPUT_WITH_TYPE_TEXT,
+          disabled: formType === "register",
+          type: FieldType.INPUT_WITH_TYPE_TEXT,
           placeholder: "Nhập email...",
           options: [],
           value: data.rank,
         },
       },
-      // {
-      //   // disabled: fieldConfigs["email"]?.disabled ?? isDisable ?? false,
-      //   fields: {
-      //     id: "mfaEnabledYn",
-      //     label: "Mfa EnabledYn",
-      //     type: FieldType.CHECKBOX_SELECT,
-      //     placeholder: "EnabledYn",
-      //     options: [],
-      //     value: data.mfaEnabledYn,
-      //     valueIncheckbox: [],
-      //   },
-      // },
       {
-        // disabled: fieldConfigs["role"]?.disabled ?? isDisable ?? false,
         fields: {
           id: "role",
           label: "Chọn vai trò",
