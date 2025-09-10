@@ -87,10 +87,10 @@ export default function UpdateUserForm({ data }: AdminUpdateUserFormProps) {
         mx: "auto",
       }}
     >
-      <Box pr={2} mb={2}>
+      {/* <Box pr={2} mb={2}>
         <Typography variant="h6">Raw data:</Typography>
         <pre>{JSON.stringify(data, null, 2)}</pre>
-      </Box>
+      </Box> */}
 
       <Box
         component="form"

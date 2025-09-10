@@ -62,6 +62,12 @@ export const LoginPage: React.FC = () => {
       setUserId(loginRes.userId);
       return;
     }
+    if (loginRes.requireVerified && loginRes.userId) {
+      setChangePassword(true);
+      setUserId(loginRes.userId);
+      setLoading(false);
+      return;
+    }
     if (loginRes.requireChangePassword && loginRes.userId) {
       setChangePassword(true);
       setUserId(loginRes.userId);

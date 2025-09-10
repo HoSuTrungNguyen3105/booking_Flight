@@ -13,8 +13,8 @@ const VerifyOpt = ({ email, userId }: EmailProps) => {
   const toast = useToast();
   const handleCheckOTPYn = useCallback(async () => {
     if (typeof otpText !== "string" || otpText.trim() === "") {
-      toast("Invalid OTP", "error"); // Hoặc một thông báo lỗi phù hợp hơn
-      return; // Dừng hàm nếu OTP không hợp lệ
+      toast("Invalid OTP", "error");
+      return;
     }
     try {
       const res = await refetchVerifyOTPcode({

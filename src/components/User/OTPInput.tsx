@@ -17,17 +17,8 @@ export default function OTPInput({
   const [internal, setInternal] = useState("");
   const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
 
-  // đảm bảo luôn là string, tránh undefined -> không bị warning controlled/uncontrolled
   const source = (value ?? internal) || "";
   const vals = Array.from({ length }, (_, i) => source[i] ?? "");
-  const val = (value ?? internal).slice(0, length).padEnd(length, "").split("");
-  console.log("value", value);
-  // const setVal = (next: string) => {
-  //   const clean = next.replace(/\D/g, "").slice(0, length);
-  //   if (!value) setInternal(clean);
-  //   onChange?.(clean);
-  //   if (clean.length === length) onComplete?.(clean);
-  // };
 
   const setVal = (next: string) => {
     const clean = next.replace(/\D/g, "").slice(0, length);

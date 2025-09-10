@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback, memo } from "react";
 import {
   Box,
   Paper,
@@ -8,6 +8,7 @@ import {
   Tooltip,
   useTheme,
   useMediaQuery,
+  Button,
 } from "@mui/material";
 import {
   type GridColDef,
@@ -32,6 +33,9 @@ import {
 } from "../../../hooks/format";
 import CustomPopover from "../../../common/Button/Popover";
 import { useToast } from "../../../context/ToastContext";
+import RequestLeaveActionModal from "./RequestLeaveActionModal";
+import type { LeaveRequest } from "../../../utils/type";
+import CreateLeaveRequestForm from "../../User/CreateLeaveRequestForm";
 // Mock data - trong thực tế sẽ lấy từ API
 // const leaveRequests = [
 //   {
@@ -55,7 +59,7 @@ const LeaveRequestGrid = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [pageSize, setPageSize] = useState(10);
 
-  const { dataGetLeaveRequest } = useGetLeaveRequest();
+  const { dataGetLeaveRequest, refetchGetLeaveRequest } = useGetLeaveRequest();
 
   const rowData = useCallback(() => {
     return (
@@ -76,42 +80,26 @@ const LeaveRequestGrid = () => {
   //   };
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [modalType, setModalType] = useState<"view" | "edit" | "delete" | null>(
+  const [modalType, setModalType] = useState<"view" | null>(null);
+  const [selectedRow, setSelectedRow] = useState<LeaveRequest | null>(null);
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState<number | null>(
     null
   );
-  const [selectedRow, setSelectedRow] = useState<any>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const toast = useToast();
-
-  const handleView = (row: any) => {
+  const handleView = (row: LeaveRequest) => {
     setSelectedRow(row);
     setModalType("view");
-    toast("view");
-    setOpen(true);
-  };
-
-  const handleEdit = (row: any) => {
-    setSelectedRow(row);
-    setModalType("edit");
-    toast("edit");
-    setOpen(true);
-  };
-
-  const handleDelete = (row: any) => {
-    setSelectedRow(row);
-    setModalType("delete");
-    toast("delete");
     setOpen(true);
   };
 
   const handleClose = () => {
     setOpen(false);
     setModalType(null);
-    setSelectedRow(null);
+    // setSelectedRow(null);
   };
 
   // Hàm lấy màu cho trạng thái
@@ -149,32 +137,17 @@ const LeaveRequestGrid = () => {
       flex: 1,
       renderCell: (params) => params.row.employee?.name,
     },
-
-    // {
-    //   field: "leaveType",
-    //   headerName: "Loại nghỉ",
-    //   flex: 1,
-    //   renderCell: (params: GridRenderCellParams) => (
-    //     <Chip
-    //       label={getLeaveTypeLabel(params.value)}
-    //       size="small"
-    //       color="primary"
-    //       variant="outlined"
-    //     />
-    //   ),
-    // },
     {
       field: "startDate",
       headerName: "Ngày bắt đầu",
-      flex: 2,
-      //   valueGetter: (value, row) => formatDate(row.startDate),
+      flex: 1.5,
       valueFormatter: (value) =>
         formatDateKR(DateFormatEnum.MM_DD_YYYY_HH_MM_SS, value),
     },
     {
       field: "endDate",
       headerName: "Ngày kết thúc",
-      flex: 2,
+      flex: 1.5,
       valueFormatter: (value) =>
         formatDateKR(DateFormatEnum.MM_DD_YYYY_HH_MM_SS, value),
     },
@@ -198,15 +171,6 @@ const LeaveRequestGrid = () => {
           option={params.value}
         />
       ),
-      //   renderCell: (params) => (
-      //     <Tooltip title={params.value} placement="top">
-      //       <Typography
-      //         variant="body2"
-      //       >
-      //         {params.value}
-      //       </Typography>
-      //     </Tooltip>
-      //   ),
     },
     {
       field: "status",
@@ -221,73 +185,25 @@ const LeaveRequestGrid = () => {
       ),
     },
     {
-      field: "leaveType",
-      headerName: "Trạng thái",
-      flex: 1,
-    },
-    {
       field: "appliedAt",
       headerName: "Ngày đăng ký",
       flex: 1,
-      renderCell: (params: GridRenderCellParams) => (
-        <Box display="flex" alignItems="center" gap={1}>
-          <AccessTime color="action" fontSize="small" />
-          <Typography variant="body2">
-            {formatDateKR(DateFormatEnum.MMMM_D_YYYY_HH_MM_SS, params.value)}{" "}
-          </Typography>
-        </Box>
-      ),
+      renderCell: (params: GridRenderCellParams) =>
+        formatDateKR(DateFormatEnum.MMMM_D_YYYY_HH_MM_SS, params.value),
     },
     {
       field: "actions",
-      //   type: "actions",
       flex: 1,
       headerName: "Thao tác",
       renderCell: (params: GridRenderCellParams) => (
         <CustomPopover
           icon="Detail"
           handleAction={(opt) => {
-            if (opt === "View") handleView(params);
-            if (opt === "Edit") handleEdit(params);
-            if (opt === "Delete") handleDelete(params);
+            if (opt === "View") handleView(params.row);
           }}
-          option={["View", "Edit", "Delete"]}
+          option={["View"]}
         />
       ),
-      //   renderCell: (params) => [
-      //     <GridActionsCellItem
-      //       icon={
-      //         <Tooltip title="Xem chi tiết">
-      //           <Visibility />
-      //         </Tooltip>
-      //       }
-      //       label="View"
-      //       onClick={() => handleView(params.row)}
-      //       color="primary"
-      //     />,
-      //     <GridActionsCellItem
-      //       icon={
-      //         <Tooltip title="Chỉnh sửa">
-      //           <Edit />
-      //         </Tooltip>
-      //       }
-      //       label="Edit"
-      //       onClick={() => handleEdit(params.row)}
-      //       //   color="warning"
-      //       disabled={params.row.status !== "PENDING"}
-      //     />,
-      //     <GridActionsCellItem
-      //       icon={
-      //         <Tooltip title="Xóa">
-      //           <Delete />
-      //         </Tooltip>
-      //       }
-      //       label="Delete"
-      //       onClick={() => handleDelete(params.row)}
-      //       //   color="error"
-      //       disabled={params.row.status !== "PENDING"}
-      //     />,
-      //   ],
     },
   ];
 
@@ -296,6 +212,20 @@ const LeaveRequestGrid = () => {
     { key: "APPROVED", label: "Approved", color: "success" as const },
     { key: "REJECTED", label: "Rejected", color: "error" as const },
   ];
+
+  const [onCreateRequest, setOnCreateRequest] = useState(false);
+
+  const employees: Array<{ id: number; name: string; email: string }> = [
+    { id: 1, name: "Nguyen Ho", email: "nguyenho@example.com" },
+    { id: 2, name: "Be Y Nhi", email: "beynhi@example.com" },
+    { id: 3, name: "Tran An", email: "tran.an@example.com" },
+    { id: 4, name: "Le Minh", email: "le.minh@example.com" },
+    { id: 5, name: "Pham Lan", email: "pham.lan@example.com" },
+  ];
+
+  if (onCreateRequest) {
+    return <CreateLeaveRequestForm employees={employees} />;
+  }
 
   return (
     <Paper
@@ -310,9 +240,9 @@ const LeaveRequestGrid = () => {
         <Typography variant="h5" fontWeight="bold" color="primary.main">
           Danh sách đơn xin nghỉ phép
         </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Quản lý và theo dõi các đơn xin nghỉ phép của nhân viên
-        </Typography>
+        <Box>
+          <Button onClick={() => setOnCreateRequest(true)} />
+        </Box>
       </Box>
 
       <Box
@@ -347,8 +277,18 @@ const LeaveRequestGrid = () => {
       <Box sx={{ height: "30rem", width: "100%" }}>
         <TableData rows={rowData()} columns={columns} />
       </Box>
+
+      <RequestLeaveActionModal
+        selectedRows={selectedRow}
+        open={open}
+        onClose={() => setOpen(false)}
+        onSuccess={() => {
+          setOpen(false);
+          refetchGetLeaveRequest();
+        }}
+      />
     </Paper>
   );
 };
 
-export default LeaveRequestGrid;
+export default memo(LeaveRequestGrid);

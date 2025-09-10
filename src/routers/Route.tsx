@@ -35,6 +35,7 @@ import AccountYn from "../components/Auth/AccountYn";
 import SampleDatePicker from "../common/DayPicker/display-components";
 import UpdateUserForm from "../components/Admin/component/UpdateUserForm";
 import LeaveRequestGrid from "../components/Admin/component/LeaveRequestGrid";
+import CreateLeaveRequestForm from "../components/User/CreateLeaveRequestForm";
 
 const routes = [
   {

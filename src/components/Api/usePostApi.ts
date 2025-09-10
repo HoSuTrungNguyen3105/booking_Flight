@@ -552,17 +552,86 @@ export const useUpdateUserInfo = (id: number) => {
     loadingUpdateUserInfo,
   };
 };
+export enum LeaveType {
+  ANNUAL = "ANNUAL",
+  SICK = "SICK",
+  UNPAID = "UNPAID",
+}
 
-export const useGetLeaveRequest = () => {
-  const { data: dataGetLeaveRequest, loading: loadingGetLeaveRequest } =
-    useFetch<DetailResponseMessage<LeaveRequest>, UserUpdateProps>({
-      url: "/sys/users/leave-requests/all",
-      autoFetch: true,
-      config: getMethod,
-    });
+export type CreateLeaveRequestDto = {
+  employeeId: number;
+  leaveType: LeaveType;
+  startDate: number;
+  endDate: number;
+  days: number;
+  reason?: string;
+};
+export const useCreateLeaveRequest = () => {
+  const {
+    data: dataGetLeaveRequest,
+    refetch: refetchGetLeaveRequest,
+    loading: loadingGetLeaveRequest,
+  } = useFetch<DetailResponseMessage<LeaveRequest>, CreateLeaveRequestDto>({
+    url: "/sys/users/leave-requests",
+    autoFetch: false,
+    config: postMethod,
+  });
   return {
     dataGetLeaveRequest,
     loadingGetLeaveRequest,
+    refetchGetLeaveRequest,
+  };
+};
+export const useGetLeaveRequest = () => {
+  const {
+    data: dataGetLeaveRequest,
+    refetch: refetchGetLeaveRequest,
+    loading: loadingGetLeaveRequest,
+  } = useFetch<DetailResponseMessage<LeaveRequest>, UserUpdateProps>({
+    url: "/sys/users/leave-requests/all",
+    autoFetch: true,
+    config: getMethod,
+  });
+  return {
+    dataGetLeaveRequest,
+    loadingGetLeaveRequest,
+    refetchGetLeaveRequest,
+  };
+};
+
+export type SendRequestProps = {
+  requestId: number;
+  approverId: number;
+  note?: string;
+};
+
+export const useApproveLeaveRequest = (id: number) => {
+  const {
+    refetch: fetchApproveLeaveRequest,
+    loading: loadingApproveLeaveRequest,
+  } = useFetch<ResponseMessage, SendRequestProps>({
+    url: `/sys/users/leave-requests/approve/${id}`,
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    fetchApproveLeaveRequest,
+    loadingApproveLeaveRequest,
+  };
+};
+
+export const useRejectLeaveRequest = (id: number) => {
+  const {
+    refetch: fetchRejectLeaveRequest,
+    loading: loadingRejectLeaveRequest,
+  } = useFetch<ResponseMessage, SendRequestProps>({
+    url: `/sys/users/leave-requests/reject/${id}`,
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    fetchRejectLeaveRequest,
+    loadingRejectLeaveRequest,
   };
 };
 

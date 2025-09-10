@@ -15,7 +15,7 @@ const AccountYn = () => {
   const handleSubmitEmailValue = useCallback(async () => {
     if (!email) return;
     const res = await refetchUserEmailData({ email });
-    if (res?.resultCode === "00") {
+    if (res?.resultCode !== "00") {
       setRegisterUser(true);
     } else {
       toast(res?.resultMessage as string, "info");

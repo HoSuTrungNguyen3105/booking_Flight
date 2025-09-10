@@ -114,6 +114,7 @@ export type UserDataResponse<T> = {
   data?: T;
   requireChangePassword?: boolean;
   requireUnlock?: boolean;
+  requireVerified?: boolean;
   accessToken?: string | null;
   userId: number;
 };
