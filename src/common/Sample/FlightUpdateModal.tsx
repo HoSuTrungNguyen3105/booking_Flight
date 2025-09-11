@@ -72,10 +72,10 @@ const FlightUpdateModal = ({
     id: flightId,
   });
 
-  // Helper function
   const createFlightFormData = (data?: Partial<Flight>) => {
     return {
-      flightNo: data?.flightNo,
+      flightNo: data?.flightNo as string,
+      flightId: data?.flightId as number,
       flightType: data?.flightType,
       departureAirport: data?.departureAirport,
       arrivalAirport: data?.arrivalAirport,
@@ -93,55 +93,30 @@ const FlightUpdateModal = ({
       terminal: data?.terminal ?? "",
       isCancelled: data?.isCancelled ?? false,
       delayMinutes: data?.delayMinutes ?? 0,
+      meals: data?.meals,
+      aircraft: data?.aircraft,
+      departureAirportRel: data?.departureAirportRel,
+      arrivalAirportRel: data?.arrivalAirportRel,
     };
   };
 
-  const [formData, setFormData] = useState(() =>
+  const [formData, setFormData] = useState<Partial<Flight>>(
     createFlightFormData(getFlightByIdData?.data)
   );
 
-  //   const [formData, setFormData] = useState({
-  //     // ...getFlightByIdData?.data,
-  //     ...Object.fromEntries(
-  //     Object.entries(getFlightByIdData?.data || {}).filter(
-  //       ([_, value]) => value !== null && value !== undefined
-  //     )
-  //   )
-  //   });
-
-  //   useEffect(() => {
-  //     if (getFlightByIdData?.data) {
-  //       setFormData({
-  //         flightNo: getFlightByIdData.data.flightNo || "",
-  //         flightType: getFlightByIdData.data.flightType || "oneway",
-  //         departureAirport: getFlightByIdData.data.departureAirport || "",
-  //         arrivalAirport: getFlightByIdData.data.arrivalAirport || "",
-  //         status: getFlightByIdData.data.status || "scheduled",
-  //         aircraftCode: getFlightByIdData.data.aircraftCode || "",
-  //         scheduledDeparture: getFlightByIdData.data.scheduledDeparture,
-  //         scheduledArrival: getFlightByIdData.data.scheduledArrival || null,
-  //         actualDeparture: getFlightByIdData.data.actualDeparture || null,
-  //         actualArrival: getFlightByIdData.data.actualArrival || null,
-  //         priceEconomy: getFlightByIdData.data.priceEconomy || 0,
-  //         priceBusiness: getFlightByIdData.data.priceBusiness || 0,
-  //         priceFirst: getFlightByIdData.data.priceFirst || 0,
-  //         maxCapacity: getFlightByIdData.data.maxCapacity || 180,
-  //         gate: getFlightByIdData.data.gate || "",
-  //         terminal: getFlightByIdData.data.terminal || "",
-  //         isCancelled: getFlightByIdData.data.isCancelled || false,
-  //         delayMinutes: getFlightByIdData.data.delayMinutes || 0,
-  //       });
-  //     }
-  //   }, [getFlightByIdData?.data]);
-
   const { refetchUpdateFlightId } = useFlightUpdate({ id: flightId });
+
   const handleUpdate = useCallback(async () => {
-    const response = await refetchUpdateFlightId();
+    if (!formData) return;
+    const response = await refetchUpdateFlightId(formData);
+    console.log("res", response);
     await new Promise((resolve) => setTimeout(resolve, 200));
     if (response?.resultCode === "00") {
       await refetchGetFlightData();
+      onSuccess();
     }
-  }, []);
+  }, [onSuccess, refetchGetFlightData]);
+
   const optionWay = [
     {
       value: "oneway",
@@ -181,6 +156,12 @@ const FlightUpdateModal = ({
   const handleSubmit = () => {
     handleUpdate();
   };
+
+  useEffect(() => {
+    if (getFlightByIdData?.data) {
+      setFormData(createFlightFormData(getFlightByIdData.data));
+    }
+  }, [getFlightByIdData?.data]);
 
   const stepTopRef = useRef<HTMLDivElement | null>(null);
 

@@ -133,7 +133,7 @@ export const useFlightUpdate = ({ id }: ReqUserIDProps) => {
     FlightDetailApiResponse,
     Flight
   >({
-    url: `/sys/flights/flights/${id}`,
+    url: `/sys/flights/updateFlight/${id}`,
     autoFetch: false,
     config: postMethod,
   });
