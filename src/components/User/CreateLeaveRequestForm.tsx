@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   Box,
   Paper,
@@ -20,6 +20,7 @@ import {
   Stepper,
   Step,
   StepLabel,
+  IconButton,
 } from "@mui/material";
 import {
   Person,
@@ -28,11 +29,22 @@ import {
   Description,
   Send,
   RestartAlt,
+  X,
 } from "@mui/icons-material";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { vi } from "date-fns/locale";
-import { LeaveType, type CreateLeaveRequestDto } from "../Api/usePostApi";
+import {
+  getUserIdByEmail,
+  LeaveType,
+  type CreateLeaveRequestDto,
+} from "../Api/usePostApi";
+import DateTimePickerComponent from "../../common/DayPicker/date-range-picker";
+import InputTextField from "../../common/Input/InputTextField";
+import InputTextArea from "../../common/Input/InputTextArea";
+import SelectDropdown from "../../common/Dropdown/SelectDropdown";
+import { useWatch } from "react-hook-form";
+import { useToast } from "../../context/ToastContext";
 
 interface CreateLeaveRequestFormProps {
   //   onSubmit: (data: CreateLeaveRequestDto) => void;
@@ -81,17 +93,17 @@ const CreateLeaveRequestForm: React.FC<CreateLeaveRequestFormProps> = ({
 
   const handleDateChange = (
     field: "startDate" | "endDate",
-    date: Date | null
+    date: number | null
   ) => {
     if (date) {
-      const timestamp = date.getTime();
-      handleInputChange(field, timestamp);
+      // const timestamp = date.getTime();
+      handleInputChange(field, date);
 
       // Auto-calculate days if both dates are selected
       if (field === "startDate" && formData.endDate) {
-        calculateDays(timestamp, formData.endDate);
+        calculateDays(date, formData.endDate);
       } else if (field === "endDate" && formData.startDate) {
-        calculateDays(formData.startDate, timestamp);
+        calculateDays(formData.startDate, date);
       }
     }
   };
@@ -101,36 +113,36 @@ const CreateLeaveRequestForm: React.FC<CreateLeaveRequestFormProps> = ({
     handleInputChange("days", daysDiff > 0 ? daysDiff : 0);
   };
 
-  const validateForm = (): boolean => {
-    const newErrors: Partial<Record<keyof CreateLeaveRequestDto, string>> = {};
+  // const validateForm = (): boolean => {
+  //   const newErrors: Partial<Record<keyof CreateLeaveRequestDto, string>> = {};
 
-    if (!formData.employeeId) {
-      newErrors.employeeId = "Vui lòng chọn nhân viên";
-    }
+  //   if (!formData.employeeId) {
+  //     newErrors.employeeId = "Vui lòng chọn nhân viên";
+  //   }
 
-    if (!formData.startDate) {
-      newErrors.startDate = "Vui lòng chọn ngày bắt đầu";
-    }
+  //   if (!formData.startDate) {
+  //     newErrors.startDate = "Vui lòng chọn ngày bắt đầu";
+  //   }
 
-    if (!formData.endDate) {
-      newErrors.endDate = "Vui lòng chọn ngày kết thúc";
-    }
+  //   if (!formData.endDate) {
+  //     newErrors.endDate = "Vui lòng chọn ngày kết thúc";
+  //   }
 
-    if (
-      formData.startDate &&
-      formData.endDate &&
-      formData.startDate > formData.endDate
-    ) {
-      newErrors.endDate = "Ngày kết thúc phải sau ngày bắt đầu";
-    }
+  //   if (
+  //     formData.startDate &&
+  //     formData.endDate &&
+  //     formData.startDate > formData.endDate
+  //   ) {
+  //     newErrors.endDate = "Ngày kết thúc phải sau ngày bắt đầu";
+  //   }
 
-    if (!formData.days || formData.days <= 0) {
-      newErrors.days = "Số ngày nghỉ không hợp lệ";
-    }
+  //   if (!formData.days || formData.days <= 0) {
+  //     newErrors.days = "Số ngày nghỉ không hợp lệ";
+  //   }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  //   setErrors(newErrors);
+  //   return Object.keys(newErrors).length === 0;
+  // };
 
   const validateStep = (step: number): boolean => {
     const newErrors: Partial<Record<keyof CreateLeaveRequestDto, string>> = {};
@@ -182,7 +194,7 @@ const CreateLeaveRequestForm: React.FC<CreateLeaveRequestFormProps> = ({
   };
 
   const handleSubmit = () => {
-    if (validateForm()) {
+    if (1) {
       //onSubmit(formData);
     }
   };
@@ -204,6 +216,24 @@ const CreateLeaveRequestForm: React.FC<CreateLeaveRequestFormProps> = ({
     return new Date(timestamp).toLocaleDateString("vi-VN");
   };
 
+  const [emailEmployee, setEmailEmployee] = useState("");
+  const [userId, setUserId] = useState<number | undefined>();
+  const { refetchUserEmailData } = getUserIdByEmail();
+  // const email = useWatch({ control, name: "email" });
+  const toast = useToast();
+  const handleSubmitEmailValue = useCallback(async () => {
+    if (!emailEmployee) return;
+    const res = await refetchUserEmailData({ email: emailEmployee });
+    if (res?.resultCode === "00") {
+      setUserId(res?.data?.userId);
+    } else {
+      toast(
+        (res?.resultMessage as string) || "Error while connect to server",
+        "info"
+      );
+    }
+  }, [emailEmployee, refetchUserEmailData]);
+
   const getSelectedEmployee = () => {
     return employees.find((emp) => emp.id === formData.employeeId);
   };
@@ -216,32 +246,41 @@ const CreateLeaveRequestForm: React.FC<CreateLeaveRequestFormProps> = ({
             <Grid size={12}>
               <FormControl fullWidth error={!!errors.employeeId}>
                 <InputLabel>Nhân viên</InputLabel>
-                <Select
-                  value={formData.employeeId}
-                  onChange={(e) =>
-                    handleInputChange("employeeId", Number(e.target.value))
-                  }
-                  startAdornment={
-                    <InputAdornment position="start">
-                      <Person color="primary" />
-                    </InputAdornment>
-                  }
-                  label="Nhân viên"
-                >
-                  <MenuItem value={0}>
-                    <em>Chọn nhân viên</em>
-                  </MenuItem>
-                  {employees.map((employee) => (
-                    <MenuItem key={employee.id} value={employee.id}>
-                      {employee.name} - {employee.email}
-                    </MenuItem>
-                  ))}
-                </Select>
-                {errors.employeeId && (
-                  <Typography variant="caption" color="error">
-                    {errors.employeeId}
-                  </Typography>
+                {/* <InputTextField
+                  value={emailEmployee}
+                  onChange={(e) => handleInputChange("employeeId", e)}
+                /> */}
+
+                <InputTextField
+                  type="email"
+                  value={emailEmployee}
+                  onChange={(e) => setEmailEmployee(e)}
+                  disabled={loading}
+                />
+
+                {userId && (
+                  <Alert
+                    severity="success"
+                    sx={{ mb: 2 }}
+                    action={
+                      <IconButton size="small" onClick={() => setUserId(0)}>
+                        <X />
+                      </IconButton>
+                    }
+                  >
+                    <Typography variant="body2">
+                      <strong>UserID tìm thấy:</strong> {userId}
+                    </Typography>
+                  </Alert>
                 )}
+
+                <Button
+                  onClick={handleSubmitEmailValue}
+                  variant="contained"
+                  sx={{ mt: 1 }}
+                >
+                  Find User
+                </Button>
               </FormControl>
             </Grid>
           </Grid>
@@ -253,122 +292,43 @@ const CreateLeaveRequestForm: React.FC<CreateLeaveRequestFormProps> = ({
             <Grid size={12}>
               <FormControl fullWidth error={!!errors.leaveType}>
                 <InputLabel>Loại nghỉ phép</InputLabel>
-                <Select
+                <SelectDropdown
                   value={formData.leaveType}
-                  onChange={(e) =>
-                    handleInputChange("leaveType", e.target.value)
-                  }
-                  label="Loại nghỉ phép"
-                >
-                  {leaveTypes.map((type) => (
-                    <MenuItem key={type.value} value={type.value}>
-                      <Chip
-                        label={type.label}
-                        size="small"
-                        color={type.color as any}
-                        variant="outlined"
-                      />
-                    </MenuItem>
-                  ))}
-                </Select>
+                  options={leaveTypes}
+                  onChange={(e) => handleInputChange("leaveType", e)}
+                />
               </FormControl>
             </Grid>
 
             <Grid size={12}>
-              <LocalizationProvider
-                dateAdapter={AdapterDateFns}
-                adapterLocale={vi}
-              >
-                <DatePicker
-                  label="Ngày bắt đầu"
-                  value={
-                    formData.startDate ? new Date(formData.startDate) : null
-                  }
-                  onChange={(date) => handleDateChange("startDate", date)}
-                  slotProps={{
-                    textField: {
-                      fullWidth: true,
-                      error: !!errors.startDate,
-                      helperText: errors.startDate,
-                      InputProps: {
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <CalendarToday color="action" />
-                          </InputAdornment>
-                        ),
-                      },
-                    },
-                  }}
-                />
-              </LocalizationProvider>
-            </Grid>
-
-            <Grid size={12}>
-              <LocalizationProvider
-                dateAdapter={AdapterDateFns}
-                adapterLocale={vi}
-              >
-                <DatePicker
-                  label="Ngày kết thúc"
-                  value={formData.endDate ? new Date(formData.endDate) : null}
-                  onChange={(date) => handleDateChange("endDate", date)}
-                  slotProps={{
-                    textField: {
-                      fullWidth: true,
-                      error: !!errors.endDate,
-                      helperText: errors.endDate,
-                      InputProps: {
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <CalendarToday color="action" />
-                          </InputAdornment>
-                        ),
-                      },
-                    },
-                  }}
-                />
-              </LocalizationProvider>
-            </Grid>
-
-            <Grid size={12}>
-              <TextField
-                fullWidth
-                label="Số ngày nghỉ"
-                type="number"
-                value={formData.days}
-                onChange={(e) =>
-                  handleInputChange("days", Number(e.target.value))
-                }
-                error={!!errors.days}
-                helperText={errors.days}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Calculate color="action" />
-                    </InputAdornment>
-                  ),
-                  endAdornment: (
-                    <InputAdornment position="end">ngày</InputAdornment>
-                  ),
-                }}
+              <DateTimePickerComponent
+                value={formData.startDate ?? null}
+                language="vn"
+                onChange={(val) => handleDateChange("startDate", val)}
               />
             </Grid>
 
             <Grid size={12}>
-              <TextField
-                fullWidth
-                multiline
-                rows={4}
-                label="Lý do nghỉ phép"
+              <DateTimePickerComponent
+                value={formData.endDate ?? null}
+                language="vn"
+                onChange={(val) => handleDateChange("endDate", val)}
+              />{" "}
+            </Grid>
+
+            <Grid size={12}>
+              <InputTextField
+                type="number"
+                value={String(formData.days)}
+                onChange={(e) => handleInputChange("days", Number(e))}
+                error={!!errors.days}
+              />
+            </Grid>
+
+            <Grid size={12}>
+              <InputTextArea
                 value={formData.reason}
-                onChange={(e) => handleInputChange("reason", e.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Description color="action" />
-                    </InputAdornment>
-                  ),
-                }}
+                onChange={(e) => handleInputChange("reason", e)}
                 placeholder="Mô tả lý do xin nghỉ phép..."
               />
             </Grid>

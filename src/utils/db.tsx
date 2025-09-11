@@ -35,6 +35,7 @@ type SideBarValueTypes =
   | "airport-list"
   | "domestic"
   | "users"
+  | "flight_update"
   | "user-list"
   | "customers"
   | "unlock_request"
@@ -104,6 +105,7 @@ export const menuData: MenuSection[] = [
               { id: "domestic", label: "Nội địa" },
               { id: "international", label: "Quốc tế" },
               { id: "sampleDatePicker", label: "secure" },
+              { id: "flight_update", label: "flight_update" },
             ],
           },
         ],

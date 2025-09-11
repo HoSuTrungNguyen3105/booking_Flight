@@ -53,22 +53,45 @@ const DateTimePickerComponent: React.FC<Props> = ({
     }
   }, [value, isInitialized]);
 
-  const handleChange = (newValue: Moment | null) => {
-    setDate(newValue);
+  // Sửa lại hàm handleChange để phù hợp với type definition mới
+  // const handleChange = (value: Moment | null, context: any) => {
+  //   setDate(value);
 
-    if (newValue && onChange) {
+  //   if (value && onChange) {
+  //     try {
+  //       const timestampMs = value.valueOf();
+  //       const decimalValue = parseFloat((timestampMs / 1000).toFixed(3));
+
+  //       if (!isNaN(decimalValue) && isFinite(decimalValue)) {
+  //         onChange(decimalValue);
+  //       } else {
+  //         console.error("Invalid decimal value calculated:", decimalValue);
+  //         onChange(0);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error in handleChange:", error);
+  //       onChange(0);
+  //     }
+  //   } else if (onChange) {
+  //     onChange(0);
+  //   }
+  // };
+
+  const handleChange = (newValue: unknown) => {
+    const momentValue = newValue as Moment | null;
+    setDate(momentValue);
+
+    if (momentValue && onChange) {
       try {
-        const timestampMs = newValue.valueOf();
+        const timestampMs = momentValue.valueOf();
         const decimalValue = parseFloat((timestampMs / 1000).toFixed(3));
 
         if (!isNaN(decimalValue) && isFinite(decimalValue)) {
           onChange(decimalValue);
         } else {
-          console.error("Invalid decimal value calculated:", decimalValue);
           onChange(0);
         }
       } catch (error) {
-        console.error("Error in handleChange:", error);
         onChange(0);
       }
     } else if (onChange) {

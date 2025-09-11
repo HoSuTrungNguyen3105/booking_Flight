@@ -99,14 +99,23 @@ export interface Airport {
 export type Flight = {
   flightId: number;
   flightNo: string;
-  scheduledDeparture: string;
-  scheduledArrival: string;
+  scheduledDeparture: number;
+  scheduledArrival: number;
   departureAirport: string;
   arrivalAirport: string;
-  status: string;
+  flightType: string;
+  status: string; //"ON_TIME" | "DELAYED" | "CANCELLED"
   aircraftCode: string;
-  actualDeparture?: string | null;
-  actualArrival?: string | null;
+  priceEconomy: number;
+  priceBusiness: number;
+  priceFirst: number;
+  maxCapacity: number;
+  actualDeparture?: number | null;
+  actualArrival?: number | null;
+  gate: string;
+  terminal: string;
+  isCancelled: boolean;
+  delayMinutes: number | null;
   aircraft: Aircraft;
   departureAirportRel: Airport;
   arrivalAirportRel: Airport;

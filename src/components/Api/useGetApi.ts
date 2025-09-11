@@ -184,7 +184,7 @@ export const useGetMeal = () => {
   const { data: flightBookingData, refetch: refetchFlightBookingDataData } =
     useFetch<MealResponse, MealResponse>({
       url: "/sys/meals",
-      autoFetch: false,
+      autoFetch: true,
       config: getMethod,
     });
   return {
@@ -196,7 +196,7 @@ export const useGetMeal = () => {
 export const useGetFlightData = () => {
   const { data: getFlightData, refetch: refetchGetFlightData } = useFetch<
     FlightResponse,
-    FlightResponse
+    null
   >({
     url: "/sys/flights",
     autoFetch: true,

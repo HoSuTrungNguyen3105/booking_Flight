@@ -75,7 +75,7 @@ const FlightBooking: React.FC = () => {
         textAlign="center"
         color="primary"
       >
-        Flight Booking
+        Flight Info
       </Typography>
 
       {/* Flight List */}
@@ -121,16 +121,7 @@ const FlightBooking: React.FC = () => {
                 </Box>
 
                 <Typography variant="body2" color="text.secondary">
-                  🕑 {flight.departureTime} → {flight.arrivalTime}
-                </Typography>
-
-                <Typography
-                  variant="subtitle1"
-                  mt={1.5}
-                  fontWeight="bold"
-                  color="success.main"
-                >
-                  💲 {flight.price} USD
+                  {flight.departureTime} → {flight.arrivalTime}
                 </Typography>
 
                 <Button
@@ -139,7 +130,7 @@ const FlightBooking: React.FC = () => {
                   sx={{ mt: 2, borderRadius: "12px" }}
                   onClick={() => handleSelectFlight(flight)}
                 >
-                  Book Now
+                  Info Flight
                 </Button>
               </CardContent>
             </Card>
@@ -158,7 +149,7 @@ const FlightBooking: React.FC = () => {
           sx={{ animation: "fadeIn 0.5s ease-in-out" }}
         >
           <Typography variant="h6" mb={2} color="primary">
-            Booking for Flight {selectedFlight.flightNumber}
+            Flight {selectedFlight.flightNumber}
           </Typography>
           <Box display="flex" gap={2} flexWrap="wrap">
             <TextField

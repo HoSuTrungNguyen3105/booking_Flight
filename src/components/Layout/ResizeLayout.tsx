@@ -130,7 +130,10 @@ const ResizeLayout = () => {
 
 const ManageLayout = () => {
   return (
-    <Stack direction={"column"} sx={{ height: "100vh" }}>
+    <Stack
+      direction="column"
+      sx={{ minHeight: "100vh", border: "1px solid red" }}
+    >
       <Header />
       <Box component="main" sx={{ height: "calc(100vh - 48px)" }} flexGrow={1}>
         <Box display="flex" height="100%">
@@ -143,6 +146,10 @@ const ManageLayout = () => {
             sx={{
               transition: "width 200ms",
               overflow: "auto",
+              scrollbarWidth: "none", // Firefox
+              "&::-webkit-scrollbar": {
+                display: "none", // Chrome, Safari
+              },
             }}
           >
             <Outlet />

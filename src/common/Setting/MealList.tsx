@@ -1,54 +1,38 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import { useGetFlightData, useGetMeal } from "../../components/Api/useGetApi";
-import type { Meal } from "../../utils/type";
-import { Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import FlightTable from "./hooks/FlightData";
 import type { Flight } from "./type";
 import DateRangePickerComponent from "../DayPicker/date-range-picker";
+import DataTable, { type GridRowDef } from "../DataGrid/index";
+import { DateFormatEnum, formatDateKR } from "../../hooks/format";
+import type { GridValueFormatter } from "@mui/x-data-grid";
 
 export default function MealList() {
-  const [data, setData] = useState<Meal[]>([]);
-  const [dataFlight, setDataFlight] = useState<Flight[]>([]);
-  const { refetchFlightBookingDataData } = useGetMeal();
-  const { refetchGetFlightData } = useGetFlightData();
+  const { flightBookingData } = useGetMeal();
+  const { getFlightData } = useGetFlightData();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await refetchFlightBookingDataData();
-        if (res) {
-          setData(res.list ?? []);
-        }
-      } catch (error) {
-        console.error("Lỗi khi lấy dữ liệu:", error);
-      }
-    };
+  const rowsFlightBookingData: GridRowDef[] = useMemo(
+    () =>
+      flightBookingData?.list?.map((f) => ({
+        ...f,
+        id: f.id,
+      })) ?? [],
+    [flightBookingData]
+  );
 
-    fetchData();
-  }, [refetchFlightBookingDataData]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await refetchGetFlightData();
-        if (res?.resultCode == "00") {
-          setDataFlight(res.list ?? []);
-        } else {
-          setDataFlight([]);
-        }
-      } catch (error) {
-        console.error("Lỗi khi lấy dữ liệu:", error);
-      }
-    };
-
-    fetchData();
-  }, [refetchGetFlightData]); // ✅ sửa lại dependency đúng
-
-  if (data.length === 0) return <p>Đang tải dữ liệu...</p>;
+  const rowsGetFlightData: GridRowDef[] = useMemo(
+    () =>
+      getFlightData?.list?.map((f) => ({
+        ...f,
+        id: f.flightId,
+      })) ?? [],
+    [flightBookingData]
+  );
 
   // Định nghĩa cột cho DataGrid
-  const columns: GridColDef[] = [
+  const columnFlightBookingData: GridColDef[] = [
     { field: "id", headerName: "ID", width: 80 },
     { field: "name", headerName: "Tên món", flex: 1 },
     { field: "mealType", headerName: "Loại", width: 130 },
@@ -58,10 +42,10 @@ export default function MealList() {
       field: "flightMeals",
       headerName: "Flight Meals",
       flex: 2,
-      renderCell: (params) =>
-        params.value && params.value.length > 0 ? (
+      renderCell: ({ value }) =>
+        Array.isArray(value) && value.length > 0 ? (
           <ul style={{ paddingLeft: 16, margin: 0 }}>
-            {params.value.map((fm: any) => (
+            {value.map((fm: any) => (
               <li key={fm.id}>
                 Flight {fm.flightId} - Qty: {fm.quantity} - Price: ${fm.price}
               </li>
@@ -73,20 +57,54 @@ export default function MealList() {
     },
   ];
 
+  const columnsFlightData: GridColDef[] = [
+    { field: "flightNo", headerName: "Flight No", flex: 1 },
+    {
+      field: "scheduledDeparture",
+      headerName: "Departure",
+      flex: 2,
+      valueFormatter: (params: number) =>
+        params
+          ? formatDateKR(DateFormatEnum.MMMM_D_YYYY_HH_MM_SS, params)
+          : "-",
+    },
+    {
+      field: "scheduledArrival",
+      headerName: "Arrival",
+      flex: 2,
+      valueFormatter: (params: number) =>
+        params
+          ? formatDateKR(DateFormatEnum.MMMM_D_YYYY_HH_MM_SS, params)
+          : "-",
+    },
+    { field: "departureAirport", headerName: "From", flex: 1 },
+    { field: "arrivalAirport", headerName: "To", flex: 1 },
+    { field: "status", headerName: "Status", flex: 1 },
+    {
+      field: "meals",
+      headerName: "Meals",
+      flex: 1,
+      renderCell: (params) => {
+        const meals = (params.value as { id: number }[] | undefined) ?? [];
+        return <Button>{meals.length > 0 ? "Info Meals" : "No meals"}</Button>;
+      },
+    },
+  ];
+
   return (
     <div style={{ height: 500, width: "100%" }}>
-      <DataGrid
-        rows={data}
-        columns={columns}
-        pageSizeOptions={[5, 10, 20]}
-        initialState={{
-          pagination: { paginationModel: { pageSize: 5, page: 0 } },
-        }}
-        disableRowSelectionOnClick
+      <DataTable
+        rows={rowsFlightBookingData}
+        columns={columnFlightBookingData}
       />
       <DateRangePickerComponent language="kr" />
       <Typography>Flight list</Typography>
-      <FlightTable flights={dataFlight} />;
+      <DataTable columns={columnsFlightData} rows={rowsGetFlightData} />
+      <pre
+        style={{ background: "#f5f5f5", padding: "10px", borderRadius: "8px" }}
+      >
+        {JSON.stringify(getFlightData, null, 2)}
+      </pre>
     </div>
   );
 }

@@ -37,7 +37,12 @@ const ManageMyInfo = () => {
   }
 
   if (isValidate) {
-    return <UpdateUserForm data={selectedRow as AdminUpdateUserForm} />;
+    return (
+      <UpdateUserForm
+        data={selectedRow as AdminUpdateUserForm}
+        onSuccess={() => setIsValidate(false)}
+      />
+    );
   }
 
   return (

@@ -42,9 +42,13 @@ const statusOptions = [
 
 type AdminUpdateUserFormProps = {
   data: AdminUpdateUserForm;
+  onSuccess: () => void;
 };
 
-export default function UpdateUserForm({ data }: AdminUpdateUserFormProps) {
+export default function UpdateUserForm({
+  data,
+  onSuccess,
+}: AdminUpdateUserFormProps) {
   console.log("Form received data:", data); // Kiểm tra data đầu vào
 
   const { handleSubmit, control, setValue } = useForm({
@@ -63,13 +67,10 @@ export default function UpdateUserForm({ data }: AdminUpdateUserFormProps) {
   const { refetchUpdateUserFromAdmin } = useUpdateUserFromAdmin();
 
   const onSubmit = async (formData: AdminUpdateUserForm) => {
-    console.log("Form submitted with:", formData);
-
     try {
-      const result = await refetchUpdateUserFromAdmin(formData);
-      console.log("API call result:", result);
-      console.log("Form data after API:", formData);
+      await refetchUpdateUserFromAdmin(formData);
       toast(`Cập nhật nhân viên #${formData.id} thành công`, "success");
+      onSuccess();
     } catch (error) {
       console.error("Error updating user:", error);
       toast("Cập nhật thất bại", "error");
@@ -87,11 +88,6 @@ export default function UpdateUserForm({ data }: AdminUpdateUserFormProps) {
         mx: "auto",
       }}
     >
-      {/* <Box pr={2} mb={2}>
-        <Typography variant="h6">Raw data:</Typography>
-        <pre>{JSON.stringify(data, null, 2)}</pre>
-      </Box> */}
-
       <Box
         component="form"
         onSubmit={(e) => {
@@ -174,13 +170,12 @@ export default function UpdateUserForm({ data }: AdminUpdateUserFormProps) {
             variant="contained"
             sx={{
               mt: 2,
-              borderRadius: 2,
               textTransform: "none",
               py: 1,
               fontWeight: "bold",
             }}
           >
-            Lưu thay đổi
+            Save
           </Button>
         </Stack>
       </Box>

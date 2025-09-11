@@ -11,21 +11,37 @@ type Props = {
 };
 
 const FlightTable: React.FC<Props> = ({ flights }) => {
-  const rows = flights.map((f) => ({
+  const rows: GridRowDef[] = flights.map((f) => ({
     id: f.flightId,
     ...f,
   }));
+
   const columns: GridColDef[] = [
     { field: "flightNo", headerName: "Flight No", flex: 1 },
-    { field: "scheduledDeparture", headerName: "Departure", flex: 1 },
+    {
+      field: "scheduledDeparture",
+      headerName: "Departure",
+      renderCell: (params) => {
+        const value = params.value as number;
+        return (
+          <Typography>
+            {value
+              ? formatDateKR(DateFormatEnum.MMMM_D_YYYY_HH_MM_SS, value)
+              : "-"}
+          </Typography>
+        );
+      },
+    },
     {
       field: "scheduledArrival",
       headerName: "Arrival",
       renderCell: (params) => {
-        console.log(params.value as number);
+        const value = params.value as number;
         return (
           <Typography>
-            {formatDateKR(DateFormatEnum.MMMM_D_YYYY_HH_MM_SS, params.value)}
+            {value
+              ? formatDateKR(DateFormatEnum.MMMM_D_YYYY_HH_MM_SS, value)
+              : "-"}
           </Typography>
         );
       },
@@ -45,6 +61,10 @@ const FlightTable: React.FC<Props> = ({ flights }) => {
       },
     },
   ];
+
+  if (!flights || flights.length === 0) {
+    return <div>No flight data</div>;
+  }
 
   return (
     <div style={{ height: 500, width: "100%" }}>

@@ -34,7 +34,7 @@ const SingleDateRangePickerComponent: React.FC<Props> = ({
   readOnly = false,
   value,
   onChange,
-  disabledOpenPicker = false, // Đổi thành false mặc định để cho phép mở picker
+  disabledOpenPicker = false,
 }) => {
   // Chuyển đổi giá trị decimal (20,3) sang Moment
   const parseDecimalToMoment = (
@@ -49,7 +49,6 @@ const SingleDateRangePickerComponent: React.FC<Props> = ({
     }
 
     try {
-      // Chuyển đổi decimal (giây) thành milliseconds cho moment
       const momentDate = moment(decimalValue * 1000);
       return momentDate.isValid() ? momentDate : null;
     } catch (error) {
@@ -65,7 +64,6 @@ const SingleDateRangePickerComponent: React.FC<Props> = ({
     }
 
     try {
-      // Lấy timestamp (ms) → chuyển đổi thành giây với 3 chữ số thập phân
       const timestampMs = momentDate.valueOf();
       return parseFloat((timestampMs / 1000).toFixed(3));
     } catch (error) {
@@ -80,7 +78,7 @@ const SingleDateRangePickerComponent: React.FC<Props> = ({
       if (value && Array.isArray(value) && value.length === 2) {
         return [parseDecimalToMoment(value[0]), parseDecimalToMoment(value[1])];
       }
-      return [null, null]; // Default to null thay vì moment()
+      return [null, null];
     }
   );
 
@@ -99,7 +97,6 @@ const SingleDateRangePickerComponent: React.FC<Props> = ({
       setDateRange([newStart, newEnd]);
       setIsInitialized(true);
     } else if (!isInitialized) {
-      // Chỉ set default một lần nếu không có giá trị từ props
       setDateRange([null, null]);
       setIsInitialized(true);
     }
@@ -111,7 +108,6 @@ const SingleDateRangePickerComponent: React.FC<Props> = ({
 
     setDateRange(newDateRange);
 
-    // Gọi callback với giá trị decimal (20,3)
     if (onChange) {
       const decimalValue: [number, number] = [
         convertMomentToDecimal(newDateRange[0]),
@@ -138,29 +134,16 @@ const SingleDateRangePickerComponent: React.FC<Props> = ({
     switch (language) {
       case "kr":
         return koKR.components.MuiLocalizationProvider.defaultProps.localeText;
-      case "vn":
-      case "jp":
       default:
         return enUS.components.MuiLocalizationProvider.defaultProps.localeText;
     }
   };
 
-  // Hiển thị loading nếu chưa khởi tạo xong
   if (!isInitialized) {
     return (
       <Box sx={{ display: "flex", gap: 1 }}>
-        <TextField
-          label="Loading..."
-          disabled
-          fullWidth
-          // size={size}
-        />
-        <TextField
-          label="Loading..."
-          disabled
-          fullWidth
-          // size={size}
-        />
+        <TextField label="Loading..." disabled fullWidth />
+        <TextField label="Loading..." disabled fullWidth />
       </Box>
     );
   }
@@ -174,10 +157,10 @@ const SingleDateRangePickerComponent: React.FC<Props> = ({
         {/* Start Date Picker */}
         <DatePicker
           value={dateRange[0]}
-          onChange={(newValue) => handleDateChange(0, newValue)}
+          onChange={(newValue) => handleDateChange(0, newValue as Moment)} // Sửa lại: truyền trực tiếp newValue (Moment | null)
           disabled={disabled}
           readOnly={readOnly}
-          enableAccessibleFieldDOMStructure={false} // Dòng này gây vấn đề
+          enableAccessibleFieldDOMStructure={false}
           slotProps={{
             textField: {
               className: clsx(
@@ -210,14 +193,13 @@ const SingleDateRangePickerComponent: React.FC<Props> = ({
         {/* End Date Picker */}
         <DatePicker
           value={dateRange[1]}
-          onChange={(newValue) => handleDateChange(1, newValue)}
+          onChange={(newValue) => handleDateChange(1, newValue as Moment)} // Sửa lại: truyền trực tiếp newValue (Moment | null)
           disabled={disabled}
           readOnly={readOnly}
-          enableAccessibleFieldDOMStructure={false} // Dòng này gây vấn đề
+          enableAccessibleFieldDOMStructure={false}
           disableOpenPicker={disabledOpenPicker}
           slotProps={{
             textField: {
-              // size,
               className: clsx(
                 "datefield-input",
                 inputClassName,
