@@ -43,49 +43,105 @@ import SelectDropdown from "../Dropdown/SelectDropdown";
 import DateTimePickerComponent from "../DayPicker/date-range-picker";
 import SingleDateRangePickerComponent from "../DayPicker/date-range-field";
 import Android12Switch from "../Switch/Switch";
-import { memo, useCallback, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import BaseModal from "../Modal/BaseModal";
 import SeatBooking from "../../components/User/SeatBooking";
+import { DateFormatEnum, formatDateKR } from "../../hooks/format";
+import { useGetFlightByIDData } from "../../components/Api/useGetApi";
+import { useFlightUpdate } from "../../components/Api/usePostApi";
 
 interface IModalStatisticalDataLearningProps {
   open: boolean;
   onClose: () => void;
   onSuccess: () => void;
-  flight: Flight;
+  flightId: number;
   onUpdate: () => void;
   onCancel: () => void;
 }
 
 const FlightUpdateModal = ({
-  flight,
+  flightId,
   open,
   onClose,
   onSuccess,
   onUpdate,
 }: IModalStatisticalDataLearningProps) => {
   const [activeStep, setActiveStep] = useState(0);
-  const [formData, setFormData] = useState({
-    flightNo: flight?.flightNo || "",
-    flightType: flight?.flightType || "oneway",
-    departureAirport: flight?.departureAirport || "",
-    arrivalAirport: flight?.arrivalAirport || "",
-    status: flight?.status || "scheduled",
-    aircraftCode: flight?.aircraftCode || "",
-    scheduledDeparture: flight?.scheduledDeparture,
-    scheduledArrival: flight?.scheduledArrival || Date.now() + 3600000,
-    actualDeparture: flight?.actualDeparture || null,
-    actualArrival: flight?.actualArrival || null,
-    priceEconomy: flight?.priceEconomy || 0,
-    priceBusiness: flight?.priceBusiness || 0,
-    priceFirst: flight?.priceFirst || 0,
-    maxCapacity: flight?.maxCapacity || 180,
-    gate: flight?.gate || "",
-    terminal: flight?.terminal || "",
-    isCancelled: flight?.isCancelled || false,
-    delayMinutes: flight?.delayMinutes || 0,
+  const { getFlightByIdData, refetchGetFlightData } = useGetFlightByIDData({
+    id: flightId,
   });
 
+  // Helper function
+  const createFlightFormData = (data?: Partial<Flight>) => {
+    return {
+      flightNo: data?.flightNo,
+      flightType: data?.flightType,
+      departureAirport: data?.departureAirport,
+      arrivalAirport: data?.arrivalAirport,
+      status: data?.status,
+      aircraftCode: data?.aircraftCode,
+      scheduledDeparture: data?.scheduledDeparture,
+      scheduledArrival: data?.scheduledArrival,
+      actualDeparture: data?.actualDeparture,
+      actualArrival: data?.actualArrival,
+      priceEconomy: data?.priceEconomy ?? 0,
+      priceBusiness: data?.priceBusiness ?? 0,
+      priceFirst: data?.priceFirst ?? 0,
+      maxCapacity: data?.maxCapacity ?? 180,
+      gate: data?.gate ?? "",
+      terminal: data?.terminal ?? "",
+      isCancelled: data?.isCancelled ?? false,
+      delayMinutes: data?.delayMinutes ?? 0,
+    };
+  };
+
+  const [formData, setFormData] = useState(() =>
+    createFlightFormData(getFlightByIdData?.data)
+  );
+
+  //   const [formData, setFormData] = useState({
+  //     // ...getFlightByIdData?.data,
+  //     ...Object.fromEntries(
+  //     Object.entries(getFlightByIdData?.data || {}).filter(
+  //       ([_, value]) => value !== null && value !== undefined
+  //     )
+  //   )
+  //   });
+
+  //   useEffect(() => {
+  //     if (getFlightByIdData?.data) {
+  //       setFormData({
+  //         flightNo: getFlightByIdData.data.flightNo || "",
+  //         flightType: getFlightByIdData.data.flightType || "oneway",
+  //         departureAirport: getFlightByIdData.data.departureAirport || "",
+  //         arrivalAirport: getFlightByIdData.data.arrivalAirport || "",
+  //         status: getFlightByIdData.data.status || "scheduled",
+  //         aircraftCode: getFlightByIdData.data.aircraftCode || "",
+  //         scheduledDeparture: getFlightByIdData.data.scheduledDeparture,
+  //         scheduledArrival: getFlightByIdData.data.scheduledArrival || null,
+  //         actualDeparture: getFlightByIdData.data.actualDeparture || null,
+  //         actualArrival: getFlightByIdData.data.actualArrival || null,
+  //         priceEconomy: getFlightByIdData.data.priceEconomy || 0,
+  //         priceBusiness: getFlightByIdData.data.priceBusiness || 0,
+  //         priceFirst: getFlightByIdData.data.priceFirst || 0,
+  //         maxCapacity: getFlightByIdData.data.maxCapacity || 180,
+  //         gate: getFlightByIdData.data.gate || "",
+  //         terminal: getFlightByIdData.data.terminal || "",
+  //         isCancelled: getFlightByIdData.data.isCancelled || false,
+  //         delayMinutes: getFlightByIdData.data.delayMinutes || 0,
+  //       });
+  //     }
+  //   }, [getFlightByIdData?.data]);
+
+  const { refetchUpdateFlightId } = useFlightUpdate({ id: flightId });
+  const handleUpdate = useCallback(async () => {
+    const response = await refetchUpdateFlightId();
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    if (response?.resultCode === "00") {
+      await refetchGetFlightData();
+    }
+  }, []);
   const optionWay = [
     {
       value: "oneway",
@@ -95,7 +151,7 @@ const FlightUpdateModal = ({
   ];
 
   const flightStatuses = [
-    { value: "SCHEDULED", label: "Theo lịch" },
+    { value: "scheduled", label: "Theo lịch" },
     { value: "BOARDING", label: "Đang lên máy bay" },
     { value: "DEPARTED", label: "Đã khởi hành" },
     { value: "IN_AIR", label: "Đang bay" },
@@ -107,6 +163,7 @@ const FlightUpdateModal = ({
   const steps = [
     "Thông tin cơ bản",
     "Thời gian bay",
+    "Seat",
     "Giá vé & Dung lượng",
     "Cổng & Trạng thái",
   ];
@@ -122,8 +179,16 @@ const FlightUpdateModal = ({
   };
 
   const handleSubmit = () => {
-    onUpdate();
+    handleUpdate();
   };
+
+  const stepTopRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (stepTopRef.current) {
+      stepTopRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [activeStep]);
 
   const renderBasicInfo = useCallback(
     () => (
@@ -175,23 +240,25 @@ const FlightUpdateModal = ({
           <FormControl fullWidth>
             <SelectDropdown
               options={flightStatuses}
-              value={formData.status}
+              value={formData?.status}
               onChange={(e) => handleInputChange("status", e as string)}
             />
           </FormControl>
         </Grid>
       </Grid>
     ),
-    [formData, handleInputChange]
+    [handleInputChange]
   );
 
   const renderTimeInfo = useCallback(
     () => (
       <Grid container spacing={3}>
         <Grid size={12}>
-          <InputLabel>Trạng thái</InputLabel>
           <SingleDateRangePickerComponent
-            value={[formData.scheduledDeparture, formData.scheduledArrival]}
+            value={[
+              formData.scheduledDeparture as number,
+              formData?.scheduledArrival as number,
+            ]}
             onChange={(range) => {
               handleInputChange("scheduledDeparture", range[0]);
               handleInputChange("scheduledArrival", range[1]);
@@ -225,7 +292,7 @@ const FlightUpdateModal = ({
         </Grid>
       </Grid>
     ),
-    [formData, handleInputChange]
+    [, handleInputChange]
   );
 
   const renderPriceCapacity = useCallback(
@@ -274,7 +341,7 @@ const FlightUpdateModal = ({
         </Grid>
       </Grid>
     ),
-    [formData, handleInputChange]
+    [, handleInputChange]
   );
 
   const renderGateStatus = useCallback(
@@ -329,7 +396,7 @@ const FlightUpdateModal = ({
         </Grid>
       </Grid>
     ),
-    [formData, handleInputChange]
+    [, handleInputChange]
   );
 
   const renderSeatBooking = useCallback(() => {
@@ -363,17 +430,17 @@ const FlightUpdateModal = ({
             variant="contained"
             startIcon={<Save />}
           >
-            {flight ? "Cập nhật" : "Tạo mới"}
+            {formData ? "Cập nhật" : "Tạo mới"}
           </Button>
         )}
       </Box>
     );
-  }, [handleSubmit, steps.length, flight, activeStep, onClose]);
+  }, [handleSubmit, steps.length, , activeStep, onClose]);
 
   const renderContent = useCallback(() => {
     const renderRows = () => {
       return (
-        <Box sx={{ maxHeight: "25rem" }}>
+        <Box ref={stepTopRef} sx={{ maxHeight: "25rem" }}>
           <Stepper activeStep={activeStep} sx={{ mb: 4, mt: 2 }}>
             {steps.map((label) => (
               <Step key={label}>
@@ -390,7 +457,7 @@ const FlightUpdateModal = ({
             {activeStep === 4 && renderGateStatus()}
           </Box>
 
-          {flight && (
+          {formData && (
             <Card sx={{ mt: 3, bgcolor: "grey.50" }}>
               <CardContent>
                 <Typography
@@ -398,22 +465,25 @@ const FlightUpdateModal = ({
                   color="text.secondary"
                   gutterBottom
                 >
-                  Thông tin hiện tại:
+                  Information of this flight:
                 </Typography>
                 <Box display="flex" gap={1} flexWrap="wrap">
-                  <Chip label={`Số hiệu: ${flight.flightNo}`} size="small" />
+                  <Chip label={`Số hiệu: ${formData.flightNo}`} size="small" />
                   <Chip
-                    label={`Từ: ${flight.departureAirport}`}
+                    label={`From: ${formData.departureAirport}`}
                     size="small"
                     variant="outlined"
                   />
                   <Chip
-                    label={`Đến: ${flight.arrivalAirport}`}
+                    label={`To: ${formData.arrivalAirport}`}
                     size="small"
                     variant="outlined"
                   />
                   <Chip
-                    label={`Khởi hành: ${flight.scheduledDeparture}`}
+                    label={`Time: ${formatDateKR(
+                      DateFormatEnum.MMMM_D_YYYY_HH_MM_SS,
+                      formData.scheduledDeparture
+                    )}`}
                     size="small"
                     color="info"
                   />
@@ -426,13 +496,17 @@ const FlightUpdateModal = ({
     };
 
     return <>{renderRows()}</>;
-  }, [activeStep, steps, flight]);
+  }, [activeStep, steps, formData]);
 
   return (
     <BaseModal
       open={open}
       onClose={onClose}
-      title={flight ? "Cập nhật Chuyến bay" : "Tạo Chuyến bay Mới"}
+      title={
+        formData
+          ? `Cập nhật ${flightId} Chuyến bay`
+          : `${flightId}Tạo Chuyến bay Mới`
+      }
       Icon={AddIcon}
       slots={{ content: renderContent(), actions: renderActions() }}
       maxWidth="lg"

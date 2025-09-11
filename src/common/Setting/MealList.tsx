@@ -1,13 +1,11 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { DataGrid, type GridColDef } from "@mui/x-data-grid";
+import { useMemo } from "react";
+import { type GridColDef } from "@mui/x-data-grid";
 import { useGetFlightData, useGetMeal } from "../../components/Api/useGetApi";
 import { Button, Typography } from "@mui/material";
-import FlightTable from "./hooks/FlightData";
-import type { Flight } from "./type";
 import DateRangePickerComponent from "../DayPicker/date-range-picker";
 import DataTable, { type GridRowDef } from "../DataGrid/index";
 import { DateFormatEnum, formatDateKR } from "../../hooks/format";
-import type { GridValueFormatter } from "@mui/x-data-grid";
+import FlightUpdateManagement from "./FlightUpdateManagement";
 
 export default function MealList() {
   const { flightBookingData } = useGetMeal();
@@ -31,7 +29,6 @@ export default function MealList() {
     [flightBookingData]
   );
 
-  // Định nghĩa cột cho DataGrid
   const columnFlightBookingData: GridColDef[] = [
     { field: "id", headerName: "ID", width: 80 },
     { field: "name", headerName: "Tên món", flex: 1 },
@@ -89,6 +86,14 @@ export default function MealList() {
         return <Button>{meals.length > 0 ? "Info Meals" : "No meals"}</Button>;
       },
     },
+    {
+      field: "update",
+      headerName: "Update",
+      flex: 1,
+      renderCell: (params) => {
+        return <Button>{<FlightUpdateManagement id={params.row.id} />}</Button>;
+      },
+    },
   ];
 
   return (
@@ -100,11 +105,11 @@ export default function MealList() {
       <DateRangePickerComponent language="kr" />
       <Typography>Flight list</Typography>
       <DataTable columns={columnsFlightData} rows={rowsGetFlightData} />
-      <pre
+      {/* <pre
         style={{ background: "#f5f5f5", padding: "10px", borderRadius: "8px" }}
       >
         {JSON.stringify(getFlightData, null, 2)}
-      </pre>
+      </pre> */}
     </div>
   );
 }

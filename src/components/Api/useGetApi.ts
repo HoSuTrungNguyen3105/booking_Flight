@@ -13,6 +13,7 @@ import type {
   SeatResponseMessage,
   AircraftResponseMessage,
   FlightSeatByAircraftResponseMessage,
+  ReqUserIDProps,
 } from "../../utils/type.ts";
 import React from "react";
 import { MethodType } from "../../hooks/type.ts";
@@ -220,6 +221,21 @@ export const useGetSeatsData = () => {
   return {
     getSeatData,
     refetchGetSeatData,
+  };
+};
+
+export const useGetFlightByIDData = ({ id }: ReqUserIDProps) => {
+  const { data: getFlightByIdData, refetch: refetchGetFlightData } = useFetch<
+    FlightResponse,
+    null
+  >({
+    url: `/sys/flights/getFlight/${id}`,
+    autoFetch: true,
+    config: getMethod,
+  });
+  return {
+    getFlightByIdData,
+    refetchGetFlightData,
   };
 };
 

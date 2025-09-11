@@ -1,5 +1,4 @@
 import type { GridRowDef } from "../common/DataGrid";
-import type { TFileUploader } from "../common/FileUploader/type";
 import type { Flight } from "../common/Setting/type";
 
 export enum MethodConfig {
@@ -305,7 +304,7 @@ export type UserCreateResponse = DetailResponseMessage<UserDataNoGrid>;
 export type MealResponse = DetailResponseMessage<Meal>;
 export type FlightResponse = DetailResponseMessage<Flight>;
 
-export type FlightDetailApiResponse = DetailResponseMessage<DataFlight>;
+export type FlightDetailApiResponse = DetailResponseMessage<Flight>;
 export type FlightMealDetailApiResponse = DetailResponseMessage<FlightMeal>;
 export type UserListManageResponse = DetailResponseMessage<UserData>;
 export type FlightListApiResponse = DetailResponseMessage<DataFlight>;

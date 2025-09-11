@@ -63,7 +63,7 @@ const Search_layout: React.FC = () => {
     if (!flightList) return;
   }, [flightList]);
 
-  const { refetchUpdateFlightId } = useFlightUpdate();
+  // const { refetchUpdateFlightId } = useFlightUpdate();
   const { handleSubmit: handleUpdateSubmit, reset: resetUpdate } = useForm<
     DataFlight[]
   >({
@@ -101,16 +101,16 @@ const Search_layout: React.FC = () => {
   const onSubmitUpdate = async (data: DataFlight) => {
     if (!data?.flightId) return;
     try {
-      const response = await refetchUpdateFlightId(data);
-      await new Promise((resolve) => setTimeout(resolve, 200));
-      if (response?.resultCode === "00") {
-        await refetchFlightList(flightParams);
-        setUpdateFlight(false);
-        setOpenUpdateConfirm(false);
-      } else {
-        setUpdateFlight(true);
-        setOpenUpdateConfirm(false);
-      }
+      // const response = await refetchUpdateFlightId(data);
+      // await new Promise((resolve) => setTimeout(resolve, 200));
+      // if (response?.resultCode === "00") {
+      //   await refetchFlightList(flightParams);
+      //   setUpdateFlight(false);
+      //   setOpenUpdateConfirm(false);
+      // } else {
+      //   setUpdateFlight(true);
+      //   setOpenUpdateConfirm(false);
+      // }
     } catch (err) {
       console.error(err);
       setError("Update error");

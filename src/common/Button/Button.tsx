@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { darken, Button as MuiButton, SvgIcon } from "@mui/material";
-import "../../scss/form/_button.scss";
+// import "../../scss/form/_button.scss";
 import type { ButtonProps } from "./type";
 
 enum AppearanceEnum {

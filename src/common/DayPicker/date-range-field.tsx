@@ -12,7 +12,6 @@ import clsx from "clsx";
 interface Props {
   language: "vn" | "en" | "kr" | "jp";
   status?: "default" | "error" | "warning" | "confirmed";
-  size?: "small" | "medium" | "large";
   sx?: SxProps;
   inputClassName?: string;
   placeHolder?: string;
@@ -26,7 +25,6 @@ interface Props {
 const SingleDateRangePickerComponent: React.FC<Props> = ({
   language,
   status = "default",
-  size = "medium",
   sx,
   inputClassName = "",
   placeHolder = "YYYY.MM.DD",

@@ -19,6 +19,7 @@ import type {
   UserUpdateProps,
   AdminUpdateUserForm,
   LeaveRequest,
+  ReqUserIDProps,
 } from "../../utils/type.ts";
 import { MethodType } from "../../hooks/type";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
@@ -28,6 +29,7 @@ import type {
   UserSearchType,
 } from "../User/type.ts";
 import { useFetch } from "../../context/use[custom]/useFetch.ts";
+import type { Flight } from "../../common/Setting/type.ts";
 
 const postMethod = {
   method: MethodType.POST,
@@ -126,19 +128,18 @@ export const useFlightById = ({ id }: FlightId) => {
   };
 };
 
-export const useFlightUpdate = () => {
-  const { data: updateFlightId, refetch } = useFetch<
+export const useFlightUpdate = ({ id }: ReqUserIDProps) => {
+  const { data: updateFlightId, refetch: refetchUpdateFlightId } = useFetch<
     FlightDetailApiResponse,
-    DataFlight
+    Flight
   >({
-    url: "",
-    defaultValue: { resultCode: "", resultMessage: "" },
+    url: `/sys/flights/flights/${id}`,
     autoFetch: false,
-    config: putMethod,
+    config: postMethod,
   });
-  const refetchUpdateFlightId = (data: DataFlight) => {
-    return refetch(data, `/sys/flights/flights/${data.flightId}`);
-  };
+  // const refetchUpdateFlightId = (data: Flight) => {
+  //   return refetch(data, `/sys/flights/flights/${data.flightId}`);
+  // };
   return {
     updateFlightId,
     refetchUpdateFlightId,

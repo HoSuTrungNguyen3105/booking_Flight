@@ -7,7 +7,6 @@ import Setting from "../common/Setting/Setting";
 import { FileUpload } from "../common/FileUploader";
 import Hero from "../components/Hero/Hero";
 import BookTicket from "../components/User/BookTicket";
-import { Typography } from "@mui/material";
 import Food from "../common/Food/Food";
 import SampleTimePicker from "../common/Sample/SampleTimePicker";
 import TableCustom from "../common/Table/Table";
@@ -16,7 +15,6 @@ import ManageLayout from "../components/Layout/ResizeLayout";
 import Search_layout from "../components/Admin/Search_layout";
 import GuestGuard from "../components/Layout/GuardLayout";
 import InspectionDetails from "../components/User/Profile";
-import DataSecure from "../common/Setting/DataSecure";
 import { LoginPage } from "../components/Auth/LoginPage";
 import Security from "../common/Setting/Security";
 import FullLayout from "../components/Layout/FullLayout";
@@ -32,13 +30,7 @@ import AircraftPage from "../components/User/AircraftPage";
 import UnlockRequestTable from "../common/DetailSection/UnlockRequestTable";
 import FlightPage from "../components/Admin/component/FlightPage";
 import AccountYn from "../components/Auth/AccountYn";
-import SampleDatePicker from "../common/DayPicker/display-components";
-import UpdateUserForm from "../components/Admin/component/UpdateUserForm";
 import LeaveRequestGrid from "../components/Admin/component/LeaveRequestGrid";
-import CreateLeaveRequestForm from "../components/User/CreateLeaveRequestForm";
-import FlightUpdateForm from "../common/Sample/FlightUpdateForm";
-import type { Flight } from "../common/Setting/type";
-import FlightUpdateModal from "../common/Sample/FlightUpdateModal";
 import FlightUpdateManagement from "../common/Setting/FlightUpdateManagement";
 
 const routes = [
@@ -173,10 +165,10 @@ const routes = [
         path: "special",
         element: <Special />,
       },
-      {
-        path: "flight_update",
-        element: <FlightUpdateManagement />,
-      },
+      // {
+      //   path: "flight_update",
+      //   element: <FlightUpdateManagement />,
+      // },
       {
         path: ROUTE_PATHS.NOTIFICATIONS,
         element: <Search_layout />,

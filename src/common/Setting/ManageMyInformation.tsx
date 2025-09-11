@@ -52,7 +52,7 @@ const ManageMyInformation = () => {
     //   handleImageUpload(myInfo?.pictureUrl)
     // }
     const res = await refetchUpdateUserInfo(myInfo);
-    console.log("res", res);
+    //console.log("res", res);
   }, [myInfo, refetchUpdateUserInfo]);
 
   const handleRefresh = useCallback(() => {
