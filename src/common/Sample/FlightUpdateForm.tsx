@@ -44,6 +44,7 @@ import InputTextField from "../Input/InputTextField";
 import SelectDropdown from "../Dropdown/SelectDropdown";
 import DateTimePickerComponent from "../DayPicker/date-range-picker";
 import SingleDateRangePickerComponent from "../DayPicker/date-range-field";
+import Android12Switch from "../Switch/Switch";
 type FlightProps = {
   flight: Flight;
   onUpdate: () => void;
@@ -138,14 +139,6 @@ const FlightUpdateForm = ({ flight, onUpdate, onCancel }: FlightProps) => {
             value={formData.flightType}
             onChange={(e) => handleInputChange("flightType", e as string)}
           />
-          {/* <Select
-            value={formData.flightType}
-            label="Loại chuyến bay"
-            onChange={(e) => handleInputChange("flightType", e.target.value)}
-          >
-            <MenuItem value="oneway">Một chiều</MenuItem>
-            <MenuItem value="roundtrip">Khứ hồi</MenuItem>
-          </Select> */}
         </FormControl>
       </Grid>
 
@@ -155,22 +148,6 @@ const FlightUpdateForm = ({ flight, onUpdate, onCancel }: FlightProps) => {
           onChange={(e) => handleInputChange("departureAirport", e)}
           startIcon={<FlightTakeoff color="primary" />}
         />
-        {/* <TextField
-          fullWidth
-          label="Sân bay đi"
-          value={formData.departureAirport}
-          onChange={(e) =>
-            handleInputChange("departureAirport", e.target.value)
-          }
-          required
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <FlightTakeoff color="primary" />
-              </InputAdornment>
-            ),
-          }}
-        /> */}
       </Grid>
 
       <Grid size={12}>
@@ -179,20 +156,6 @@ const FlightUpdateForm = ({ flight, onUpdate, onCancel }: FlightProps) => {
           onChange={(e) => handleInputChange("arrivalAirport", e)}
           startIcon={<FlightLand color="primary" />}
         />
-        {/* <TextField
-          fullWidth
-          label="Sân bay đến"
-          value={formData.arrivalAirport}
-          onChange={(e) => handleInputChange("arrivalAirport", e.target.value)}
-          required
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <FlightLand color="primary" />
-              </InputAdornment>
-            ),
-          }}
-        /> */}
       </Grid>
 
       <Grid size={12}>
@@ -210,19 +173,6 @@ const FlightUpdateForm = ({ flight, onUpdate, onCancel }: FlightProps) => {
             value={formData.status}
             onChange={(e) => handleInputChange("status", e as string)}
           />
-          {/* <Select
-            value={formData.status}
-            label="Trạng thái"
-            onChange={(e) => handleInputChange("status", e.target.value)}
-          >
-            <MenuItem value="scheduled">Theo lịch</MenuItem>
-            <MenuItem value="boarding">Đang lên máy bay</MenuItem>
-            <MenuItem value="departed">Đã khởi hành</MenuItem>
-            <MenuItem value="in-air">Đang bay</MenuItem>
-            <MenuItem value="landed">Đã hạ cánh</MenuItem>
-            <MenuItem value="arrived">Đã đến</MenuItem>
-            <MenuItem value="delayed">Bị trễ</MenuItem>
-          </Select> */}
         </FormControl>
       </Grid>
     </Grid>
@@ -230,33 +180,6 @@ const FlightUpdateForm = ({ flight, onUpdate, onCancel }: FlightProps) => {
 
   const renderTimeInfo = () => (
     <Grid container spacing={3}>
-      <Grid size={12}>
-        {/* <DateTimePickerComponent
-          value={formData.scheduledDeparture}
-          onChange={(e) => handleInputChange("scheduledDeparture", e)}
-          language="en"
-        /> */}
-        {/* <TextField
-          fullWidth
-          label="Giờ khởi hành dự kiến"
-          type="datetime-local"
-          value={new Date(formData.scheduledDeparture)
-            .toISOString()
-            .slice(0, 16)}
-          onChange={(e) =>
-            handleInputChange("scheduledDeparture", e.target.value)
-          }
-          InputLabelProps={{ shrink: true }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Schedule color="primary" />
-              </InputAdornment>
-            ),
-          }}
-        /> */}
-      </Grid>
-
       <Grid size={12}>
         <InputLabel>Trạng thái</InputLabel>
         <SingleDateRangePickerComponent
@@ -267,16 +190,6 @@ const FlightUpdateForm = ({ flight, onUpdate, onCancel }: FlightProps) => {
           }}
           language="en"
         />
-        {/* <TextField
-          fullWidth
-          label="Giờ đến dự kiến"
-          type="datetime-local"
-          value={new Date(formData.scheduledArrival).toISOString().slice(0, 16)}
-          onChange={(e) =>
-            handleInputChange("scheduledArrival", e.target.value)
-          }
-          InputLabelProps={{ shrink: true }}
-        /> */}
       </Grid>
 
       <Grid size={12}>
@@ -285,18 +198,6 @@ const FlightUpdateForm = ({ flight, onUpdate, onCancel }: FlightProps) => {
           onChange={(e) => handleInputChange("actualDeparture", e)}
           language="en"
         />
-        {/* <TextField
-          fullWidth
-          label="Giờ khởi hành thực tế"
-          type="datetime-local"
-          value={
-            formData.actualDeparture
-              ? new Date(formData.actualDeparture).toISOString().slice(0, 16)
-              : ""
-          }
-          onChange={(e) => handleInputChange("actualDeparture", e.target.value)}
-          InputLabelProps={{ shrink: true }}
-        /> */}
       </Grid>
 
       <Grid size={12}>
@@ -305,18 +206,6 @@ const FlightUpdateForm = ({ flight, onUpdate, onCancel }: FlightProps) => {
           onChange={(e) => handleInputChange("actualArrival", e)}
           language="en"
         />
-        {/* <TextField
-          fullWidth
-          label="Giờ đến thực tế"
-          type="datetime-local"
-          value={
-            formData.actualArrival
-              ? new Date(formData.actualArrival).toISOString().slice(0, 16)
-              : ""
-          }
-          onChange={(e) => handleInputChange("actualArrival", e.target.value)}
-          InputLabelProps={{ shrink: true }}
-        /> */}
       </Grid>
 
       <Grid size={12}>
@@ -325,18 +214,6 @@ const FlightUpdateForm = ({ flight, onUpdate, onCancel }: FlightProps) => {
           value={String(formData.delayMinutes)}
           onChange={(e) => handleInputChange("delayMinutes", parseInt(e))}
         />
-        {/* <TextField
-          fullWidth
-          label="Thời gian trễ (phút)"
-          type="number"
-          value={formData.delayMinutes}
-          onChange={(e) =>
-            handleInputChange("delayMinutes", parseInt(e.target.value))
-          }
-          InputProps={{
-            endAdornment: <InputAdornment position="end">phút</InputAdornment>,
-          }}
-        /> */}
       </Grid>
     </Grid>
   );
@@ -344,23 +221,17 @@ const FlightUpdateForm = ({ flight, onUpdate, onCancel }: FlightProps) => {
   const renderPriceCapacity = () => (
     <Grid container spacing={3}>
       <Grid size={12}>
-        <TextField
-          fullWidth
-          label="Giá vé Phổ thông"
+        <InputTextField
           type="number"
-          value={formData.priceEconomy}
-          onChange={(e) =>
-            handleInputChange("priceEconomy", parseFloat(e.target.value))
-          }
-          InputProps={{
-            startAdornment: <InputAdornment position="start">$</InputAdornment>,
-            endAdornment: <InputAdornment position="end">USD</InputAdornment>,
-          }}
+          value={String(formData.priceEconomy)}
+          onChange={(e) => handleInputChange("priceEconomy", parseInt(e))}
+          startIcon={<InputAdornment position="start">$</InputAdornment>}
+          endIcon={<InputAdornment position="end">USD</InputAdornment>}
         />
       </Grid>
 
       <Grid size={12}>
-        <TextField
+        {/* <TextField
           fullWidth
           label="Giá vé Thương gia"
           type="number"
@@ -372,11 +243,27 @@ const FlightUpdateForm = ({ flight, onUpdate, onCancel }: FlightProps) => {
             startAdornment: <InputAdornment position="start">$</InputAdornment>,
             endAdornment: <InputAdornment position="end">USD</InputAdornment>,
           }}
+        /> */}
+        <InputTextField
+          type="number"
+          name="Giá vé Thương gia"
+          value={String(formData.priceBusiness)}
+          onChange={(e) => handleInputChange("priceBusiness", parseInt(e))}
+          startIcon={<InputAdornment position="start">$</InputAdornment>}
+          endIcon={<InputAdornment position="end">USD</InputAdornment>}
         />
       </Grid>
 
       <Grid size={12}>
-        <TextField
+        <InputTextField
+          type="number"
+          name="Giá vé Thương gia"
+          value={String(formData.priceFirst)}
+          onChange={(e) => handleInputChange("priceFirst", parseInt(e))}
+          startIcon={<Typography>$</Typography>}
+          endIcon={<Typography>USD</Typography>}
+        />
+        {/* <TextField
           fullWidth
           label="Giá vé Hạng nhất"
           type="number"
@@ -388,23 +275,16 @@ const FlightUpdateForm = ({ flight, onUpdate, onCancel }: FlightProps) => {
             startAdornment: <InputAdornment position="start">$</InputAdornment>,
             endAdornment: <InputAdornment position="end">USD</InputAdornment>,
           }}
-        />
+        /> */}
       </Grid>
 
       <Grid size={12}>
-        <TextField
-          fullWidth
-          label="Sức chứa tối đa"
+        <InputTextField
           type="number"
-          value={formData.maxCapacity}
-          onChange={(e) =>
-            handleInputChange("maxCapacity", parseInt(e.target.value))
-          }
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">hành khách</InputAdornment>
-            ),
-          }}
+          name="Giá vé Thương gia"
+          value={String(formData.maxCapacity)}
+          onChange={(e) => handleInputChange("maxCapacity", parseInt(e))}
+          endIcon={<Typography>Hành khách</Typography>}
         />
       </Grid>
     </Grid>
@@ -435,7 +315,7 @@ const FlightUpdateForm = ({ flight, onUpdate, onCancel }: FlightProps) => {
       <Grid size={12}>
         <FormControlLabel
           control={
-            <Switch
+            <Android12Switch
               checked={formData.isCancelled}
               onChange={(e) =>
                 handleInputChange("isCancelled", e.target.checked)
