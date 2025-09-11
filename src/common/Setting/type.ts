@@ -1,3 +1,4 @@
+import type { Seat } from "../../utils/type";
 import type { GridRowDef } from "../DataGrid";
 
 export type DataDetail = {
@@ -120,4 +121,5 @@ export type Flight = {
   departureAirportRel: Airport;
   arrivalAirportRel: Airport;
   meals: Meal[];
+  seats?: Seat[];
 };

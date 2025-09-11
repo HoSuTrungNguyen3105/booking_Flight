@@ -38,48 +38,9 @@ import LeaveRequestGrid from "../components/Admin/component/LeaveRequestGrid";
 import CreateLeaveRequestForm from "../components/User/CreateLeaveRequestForm";
 import FlightUpdateForm from "../common/Sample/FlightUpdateForm";
 import type { Flight } from "../common/Setting/type";
-// Dữ liệu mẫu cho chuyến bay
-const sampleFlight: Flight = {
-  flightId: 3,
-  flightNo: "VN123",
-  flightType: "oneway",
-  departureAirport: "SGN",
-  arrivalAirport: "HAN",
-  status: "scheduled",
-  aircraftCode: "A321",
-  aircraft: {
-    code: "A321",
-    model: "Airbus A321neo",
-    range: 7400,
-  },
-  departureAirportRel: {
-    code: "SGN",
-    name: "Tân Sơn Nhất International Airport",
-    city: "Ho Chi Minh City",
-    coordinates: "10.8188° N, 106.6520° E",
-    timezone: "GMT+7",
-  },
-  arrivalAirportRel: {
-    code: "HAN",
-    name: "Nội Bài International Airport",
-    city: "Hanoi",
-    coordinates: "21.2211° N, 105.8072° E",
-    timezone: "GMT+7",
-  },
-  scheduledDeparture: 1757045077000,
-  scheduledArrival: 1757052277000,
-  actualDeparture: null,
-  actualArrival: null,
-  priceEconomy: 1500000,
-  priceBusiness: 3000000,
-  priceFirst: 5000000,
-  maxCapacity: 180,
-  gate: "A12",
-  terminal: "T1",
-  isCancelled: false,
-  delayMinutes: 15,
-  meals: [{ id: 1 }, { id: 2 }, { id: 3 }],
-};
+import FlightUpdateModal from "../common/Sample/FlightUpdateModal";
+import FlightUpdateManagement from "../common/Setting/FlightUpdateManagement";
+
 const routes = [
   {
     path: ROUTE_PATHS.TABLE,
@@ -214,13 +175,7 @@ const routes = [
       },
       {
         path: "flight_update",
-        element: (
-          <FlightUpdateForm
-            flight={sampleFlight}
-            onCancel={() => {}}
-            onUpdate={() => {}}
-          />
-        ),
+        element: <FlightUpdateManagement />,
       },
       {
         path: ROUTE_PATHS.NOTIFICATIONS,

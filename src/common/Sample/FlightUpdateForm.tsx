@@ -1,20 +1,13 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Box,
-  Paper,
   Typography,
-  TextField,
   Button,
   Grid,
-  MenuItem,
   FormControl,
   InputLabel,
-  Select,
-  Switch,
   FormControlLabel,
-  Divider,
   Chip,
-  Alert,
   Card,
   CardContent,
   Stepper,
@@ -30,7 +23,6 @@ import {
 import {
   FlightTakeoff,
   FlightLand,
-  Schedule,
   AttachMoney,
   AirplaneTicket,
   Cancel,
@@ -225,31 +217,18 @@ const FlightUpdateForm = ({ flight, onUpdate, onCancel }: FlightProps) => {
           type="number"
           value={String(formData.priceEconomy)}
           onChange={(e) => handleInputChange("priceEconomy", parseInt(e))}
-          startIcon={<InputAdornment position="start">$</InputAdornment>}
+          startIcon={<AttachMoney />}
           endIcon={<InputAdornment position="end">USD</InputAdornment>}
         />
       </Grid>
 
       <Grid size={12}>
-        {/* <TextField
-          fullWidth
-          label="Giá vé Thương gia"
-          type="number"
-          value={formData.priceBusiness}
-          onChange={(e) =>
-            handleInputChange("priceBusiness", parseFloat(e.target.value))
-          }
-          InputProps={{
-            startAdornment: <InputAdornment position="start">$</InputAdornment>,
-            endAdornment: <InputAdornment position="end">USD</InputAdornment>,
-          }}
-        /> */}
         <InputTextField
           type="number"
           name="Giá vé Thương gia"
           value={String(formData.priceBusiness)}
           onChange={(e) => handleInputChange("priceBusiness", parseInt(e))}
-          startIcon={<InputAdornment position="start">$</InputAdornment>}
+          startIcon={<AttachMoney />}
           endIcon={<InputAdornment position="end">USD</InputAdornment>}
         />
       </Grid>
@@ -260,22 +239,9 @@ const FlightUpdateForm = ({ flight, onUpdate, onCancel }: FlightProps) => {
           name="Giá vé Thương gia"
           value={String(formData.priceFirst)}
           onChange={(e) => handleInputChange("priceFirst", parseInt(e))}
-          startIcon={<Typography>$</Typography>}
+          startIcon={<AttachMoney />}
           endIcon={<Typography>USD</Typography>}
         />
-        {/* <TextField
-          fullWidth
-          label="Giá vé Hạng nhất"
-          type="number"
-          value={formData.priceFirst}
-          onChange={(e) =>
-            handleInputChange("priceFirst", parseFloat(e.target.value))
-          }
-          InputProps={{
-            startAdornment: <InputAdornment position="start">$</InputAdornment>,
-            endAdornment: <InputAdornment position="end">USD</InputAdornment>,
-          }}
-        /> */}
       </Grid>
 
       <Grid size={12}>
@@ -293,22 +259,19 @@ const FlightUpdateForm = ({ flight, onUpdate, onCancel }: FlightProps) => {
   const renderGateStatus = () => (
     <Grid container spacing={3}>
       <Grid size={12}>
-        <TextField
-          fullWidth
-          label="Cổng"
+        <InputTextField
+          name="Cổng"
           value={formData.gate}
-          onChange={(e) => handleInputChange("gate", e.target.value)}
+          onChange={(e) => handleInputChange("gate", e)}
           placeholder="Ví dụ: A12"
         />
       </Grid>
 
       <Grid size={12}>
-        <TextField
-          fullWidth
-          label="Nhà ga"
+        <InputTextField
+          name="Nhà ga"
           value={formData.terminal}
-          onChange={(e) => handleInputChange("terminal", e.target.value)}
-          placeholder="Ví dụ: T1"
+          onChange={(e) => handleInputChange("terminal", e)}
         />
       </Grid>
 
@@ -316,6 +279,10 @@ const FlightUpdateForm = ({ flight, onUpdate, onCancel }: FlightProps) => {
         <FormControlLabel
           control={
             <Android12Switch
+              label="Enable Feature"
+              hasLabel
+              labelOn="YES"
+              labelOff="NO"
               checked={formData.isCancelled}
               onChange={(e) =>
                 handleInputChange("isCancelled", e.target.checked)

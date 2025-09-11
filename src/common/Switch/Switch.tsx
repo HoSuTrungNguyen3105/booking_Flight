@@ -62,11 +62,11 @@ const CustomSwitch = styled(Switch, {
     width: 65,
     height: 44,
     "& .Mui-checked + .MuiSwitch-track": {
-      backgroundColor: "lightgrey !important",
+      backgroundColor: customColor ?? "lightgrey !important",
       opacity: 1,
     },
     "& .Mui-checked .MuiSwitch-thumb": {
-      backgroundColor: "#ffffff !important",
+      backgroundColor: customColor ?? "#ffffff !important",
     },
     // "& .MuiSwitch-track": {
     //   borderRadius: 22,

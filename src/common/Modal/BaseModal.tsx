@@ -6,16 +6,22 @@ import {
   DialogTitle,
   IconButton,
   Typography,
+  useMediaQuery,
+  type SxProps,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import React, { memo, useMemo } from "react";
+import theme from "../../scss/theme";
 
 interface IBaseModalProps {
   open: boolean;
   onClose: () => void;
   title?: string;
+  sx?: SxProps;
   subtitle?: string;
   Icon: React.ElementType;
+  maxWidth?: "xs" | "sm" | "md" | "lg" | "xl" | false;
+  fullWidth?: boolean;
   slots?: {
     header?: React.ReactNode;
     content?: React.ReactNode;
@@ -27,10 +33,15 @@ const BaseModal = ({
   open,
   Icon,
   title,
+  sx,
   subtitle,
   onClose,
+  maxWidth,
+  fullWidth,
   slots,
 }: IBaseModalProps) => {
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
   const defaultHeader = useMemo(
     () => (
       <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -47,10 +58,42 @@ const BaseModal = ({
   );
 
   return (
-    <Dialog open={open} onClose={onClose} disableScrollLock>
-      <Box width="456px" p="16px">
+    <Dialog
+      open={open}
+      onClose={onClose}
+      disableScrollLock
+      maxWidth={maxWidth}
+      fullWidth={fullWidth}
+      PaperProps={{
+        sx: {
+          borderRadius: "12px",
+          backgroundImage: "none",
+          ...(isMobile && {
+            margin: "16px",
+            maxHeight: "calc(100% - 32px)",
+          }),
+        },
+      }}
+    >
+      <Box
+        sx={{
+          p: { xs: 2, sm: 3 },
+          ...sx,
+        }}
+      >
         <DialogTitle>{slots?.header || defaultHeader}</DialogTitle>
-        <DialogContent>
+        <DialogContent
+          sx={{
+            overflow: "auto", // cho phép cuộn
+            scrollbarWidth: "none", // ẩn scrollbar (Firefox)
+            msOverflowStyle: "none", // ẩn scrollbar (IE/Edge)
+            "&::-webkit-scrollbar": {
+              display: "none", // ẩn scrollbar (Chrome/Safari)
+            },
+            scrollBehavior: "smooth", // cuộn mượt
+            ...sx,
+          }}
+        >
           {subtitle && (
             <Typography color="grey.600" variant="body1">
               {subtitle}
