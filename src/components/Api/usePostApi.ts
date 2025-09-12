@@ -136,12 +136,33 @@ export const useFlightUpdate = ({ id }: ReqUserIDProps) => {
     autoFetch: false,
     config: postMethod,
   });
-  // const refetchUpdateFlightId = (data: Flight) => {
-  //   return refetch(data, `/sys/flights/flights/${data.flightId}`);
-  // };
   return {
     updateFlightId,
     refetchUpdateFlightId,
+  };
+};
+export const SeatType = {
+  VIP: "VIP",
+  BUSINESS: "BUSINESS",
+  ECONOMY: "ECONOMY",
+};
+export type SeatUpdateProps = {
+  seatIds: number[];
+  type?: typeof SeatType;
+  seatRow?: string;
+  seatNumber?: number;
+};
+export const useSeatUpdateByIds = () => {
+  const { refetch: refetchUpdateSeatByIds } = useFetch<
+    FlightDetailApiResponse,
+    SeatUpdateProps
+  >({
+    url: "/sys/seats/updateMultipleSeatsByIds",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchUpdateSeatByIds,
   };
 };
 type LoginData = {

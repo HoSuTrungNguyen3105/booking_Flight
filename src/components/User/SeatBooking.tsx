@@ -23,6 +23,7 @@ import {
   Checkbox,
   Snackbar,
   Alert,
+  type SelectChangeEvent,
 } from "@mui/material";
 import {
   Chair,
@@ -40,9 +41,12 @@ import type { Seat } from "../../utils/type";
 import DialogConfirm from "../../common/Modal/DialogConfirm";
 import InputTextField from "../../common/Input/InputTextField";
 import {
+  SeatType,
   useGetSeatByFlightId,
   useSeatCreate,
+  useSeatUpdateByIds,
   type CreateSeatDto,
+  type SeatUpdateProps,
 } from "../Api/usePostApi";
 
 type AircraftSeatTypeProps = "ALL" | "VIP" | "ECONOMY" | "WINDOW";
@@ -73,13 +77,16 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({ seats, flightId }) => {
   );
   const [createFormOpen, setCreateFormOpen] = useState(false);
   const [newSeat, setNewSeat] = useState<CreateSeatDto>({
-    seatNumber: 2,
+    seatNumber: 0,
     seatRow: "",
     flightId: flightId,
-    // isWindow: false,
-    // nearRestroom: false,
-    // type: "ECONOMY",
     isBooked: false,
+  });
+  const [updateSeat, setUpdateSeat] = useState<SeatUpdateProps>({
+    seatNumber: 0,
+    seatRow: "",
+    seatIds: selectedSeats,
+    type: typeof SeatType.ECONOMY,
   });
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -120,7 +127,7 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({ seats, flightId }) => {
 
   const columns = ["A", "B", "C", "D", "E", "F"];
   const rows = Array.from({ length: 40 }, (_, i) => i + 1); //todo
-
+  const { refetchUpdateSeatByIds } = useSeatUpdateByIds();
   // Show snackbar notification
   const showSnackbar = (
     message: string,
@@ -157,12 +164,48 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({ seats, flightId }) => {
     }
   };
 
+  const handleUpdateSeatByIds = async () => {
+    try {
+      if (selectedSeats.length === 0) {
+        showSnackbar("Please select at least one seat to update", "error");
+        return;
+      }
+
+      const updateData = {
+        seatIds: selectedSeats,
+        type: updateSeat.type,
+        seatRow: updateSeat.seatRow,
+        seatNumber: updateSeat.seatNumber,
+      };
+
+      const response = await refetchUpdateSeatByIds(updateData);
+
+      if (response?.resultCode === "00") {
+        showSnackbar(response.resultMessage);
+        setOpenModal(false);
+        setSelectedSeats([]);
+        await refetchGetSeatByFlightId();
+      } else {
+        showSnackbar(response?.resultMessage as string, "error");
+      }
+    } catch (error) {
+      console.error("Error updating seats:", error);
+      showSnackbar("An error occurred while updating the seats", "error");
+    }
+  };
+
+  const handleTypeChange = (event: SelectChangeEvent<string>) => {
+    setUpdateSeat((prev) => ({
+      ...prev,
+      type: event.target.value,
+    }));
+  };
+
   // Handle generate all seats
   const handleGenerateAllSeats = async () => {
     try {
       const createSeatDto: CreateSeatDto = {
         flightId: flightId,
-        // No seatRow/seatNumber specified = generate all
       };
 
       const response = await refetchSeatCreate(createSeatDto);
@@ -186,6 +229,24 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({ seats, flightId }) => {
     showSnackbar(res?.resultMessage as string);
     setSelectedSeats([]);
     setMessage("");
+  };
+
+  const handleOpenUpdateModal = () => {
+    if (selectedSeats.length === 0) {
+      setMessage("Please select at least one seat to update.");
+      return;
+    }
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setUpdateSeat({
+      seatNumber: 1,
+      seatRow: "",
+      seatIds: [],
+      type: SeatType,
+    });
   };
 
   const handleConfirmUpdate = () => {
@@ -245,7 +306,6 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({ seats, flightId }) => {
           <Button onClick={resetSeatToGetData}>Reset</Button>
         </Box>
 
-        {/* Create Seat Dialog */}
         <Dialog
           open={createFormOpen}
           onClose={() => setCreateFormOpen(false)}
@@ -297,7 +357,6 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({ seats, flightId }) => {
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setCreateFormOpen(false)}>Cancel</Button>
-            {/* <Button onClick={resetSeatToGetData}>Reset</Button> */}
             <Button onClick={handleCreateSingleSeat} variant="contained">
               Create Seat
             </Button>
@@ -751,7 +810,7 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({ seats, flightId }) => {
             }}
           >
             <Typography variant="h6" sx={{ fontWeight: "700", mb: 2 }}>
-              Your Selection ({selectedSeats.length})
+              Your Selection ({selectedSeats})
             </Typography>
 
             {selectedSeats.length > 0 ? (
@@ -759,48 +818,53 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({ seats, flightId }) => {
                 <Stack spacing={1} sx={{ mb: 2 }}>
                   {selectedSeats.map((id) => {
                     const seat = seats.find((s) => s.id === id);
+                    if (!seat) return null;
+
+                    const getTypeColor = (type: string) => {
+                      switch (type) {
+                        case "FIRST":
+                          return "#ff9800";
+                        case "BUSINESS":
+                          return "#2196f3";
+                        default:
+                          return "#4caf50";
+                      }
+                    };
+
+                    const typeColor = getTypeColor(seat.type || "ECONOMY");
+
                     return (
                       <Box
                         key={id}
                         sx={{
                           display: "flex",
-                          justifyContent: "space-between",
                           alignItems: "center",
-                          backgroundColor: "#f5f5f5",
-                          padding: "8px 12px",
-                          borderRadius: "6px",
+                          gap: 1,
+                          padding: "4px 8px",
+                          borderRadius: "4px",
+                          backgroundColor: `${typeColor}10`,
                         }}
                       >
-                        <Box>
-                          <Typography fontWeight="600">
-                            Seat {seat?.seatNumber}
-                            {seat?.seatRow}
-                          </Typography>
-                          <Typography variant="caption" color="textSecondary">
-                            {seat?.id} • {seat?.isWindow ? "Window" : "Aisle"}
-                          </Typography>
-                        </Box>
-                        <Box>
-                          <Typography fontWeight="600">
-                            Change Type Seat
-                          </Typography>
+                        <Box
+                          sx={{
+                            width: 8,
+                            height: 8,
+                            borderRadius: "50%",
+                            backgroundColor: typeColor,
+                          }}
+                        />
+                        <Typography variant="body2">
+                          {seat.seatRow}
+                          {seat.seatNumber} - {seat.type}
+                        </Typography>
+                        {seat.isBooked && (
                           <Chip
-                            //color="#f9a825"
-                            clickable
-                            onClick={() => {
-                              setTypeState(seat?.type as string);
-                            }}
-                            label="VIP"
-                            icon={<StarHalfSharp />}
+                            label="Booked"
+                            size="small"
+                            color="error"
+                            sx={{ height: 20, fontSize: "0.7rem" }}
                           />
-                          <Chip
-                            label="Economy"
-                            icon={
-                              <Chair sx={{ color: "#29b6f6", fontSize: 16 }} />
-                            }
-                          />
-                          <Chip label="Window" icon={<WindowIcon />} />
-                        </Box>
+                        )}
                       </Box>
                     );
                   })}
@@ -829,7 +893,7 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({ seats, flightId }) => {
                 <Button
                   variant="contained"
                   fullWidth
-                  onClick={handleOpenModal}
+                  onClick={handleOpenUpdateModal}
                   disabled={selectedSeats.length === 0}
                   sx={{
                     py: 1.5,
@@ -846,6 +910,53 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({ seats, flightId }) => {
                 >
                   Update
                 </Button>
+                {/* Modal for updating seats */}
+                <Dialog open={openModal} onClose={handleCloseModal}>
+                  <DialogTitle>Update Selected Seats</DialogTitle>
+                  <DialogContent>
+                    <Box sx={{ pt: 2 }}>
+                      <FormControl fullWidth sx={{ mb: 2 }}>
+                        <InputLabel>Seat Type</InputLabel>
+                        <Select
+                          value={updateSeat.type || "ECONOMY"} // ← Direct string value
+                          onChange={handleTypeChange}
+                        >
+                          <MenuItem value="ECONOMY">Economy</MenuItem>
+                          <MenuItem value="BUSINESS">Business</MenuItem>
+                          <MenuItem value="FIRST">First Class</MenuItem>
+                        </Select>
+                      </FormControl>
+
+                      <InputTextField
+                        value={newSeat.seatRow}
+                        onChange={(e) => setNewSeat({ ...newSeat, seatRow: e })}
+                        sx={{ mb: 2 }}
+                      />
+
+                      <InputTextField
+                        type="number"
+                        value={String(newSeat.seatNumber)}
+                        onChange={(e) =>
+                          setNewSeat({
+                            ...newSeat,
+                            seatNumber: parseInt(e) || 1,
+                          })
+                        }
+                        sx={{ mb: 2 }}
+                      />
+
+                      <Typography variant="body2" color="text.secondary">
+                        Updating {selectedSeats.length} selected seats
+                      </Typography>
+                    </Box>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={handleCloseModal}>Cancel</Button>
+                    <Button onClick={handleUpdateSeatByIds} variant="contained">
+                      Update Seats
+                    </Button>
+                  </DialogActions>
+                </Dialog>
               </Box>
             ) : (
               <Box sx={{ textAlign: "center", py: 3 }}>

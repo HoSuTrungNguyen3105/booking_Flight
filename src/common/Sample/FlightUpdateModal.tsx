@@ -54,6 +54,7 @@ import {
   useFlightUpdate,
 } from "../../components/Api/usePostApi";
 import type { Seat } from "../../utils/type";
+import { useToast } from "../../context/ToastContext";
 // Thêm các type này
 
 export type FlightFormData = {
@@ -122,53 +123,18 @@ const FlightUpdateModal = ({
     id: mode === "update" && flightId ? flightId : undefined,
   });
 
+  const stepTopRef = useRef<HTMLDivElement | null>(null);
+
   const { refetchCreateFlightData } = useCreateFlight();
 
-  // const createFlightFormData = (data?: Partial<Flight>) => {
-  //   return {
-  //     flightNo: data?.flightNo as string,
-  //     flightId: data?.flightId as number,
-  //     flightType: data?.flightType,
-  //     departureAirport: data?.departureAirport,
-  //     arrivalAirport: data?.arrivalAirport,
-  //     status: data?.status,
-  //     aircraftCode: data?.aircraftCode,
-  //     scheduledDeparture: data?.scheduledDeparture,
-  //     scheduledArrival: data?.scheduledArrival,
-  //     actualDeparture: data?.actualDeparture,
-  //     actualArrival: data?.actualArrival,
-  //     priceEconomy: data?.priceEconomy ?? 0,
-  //     priceBusiness: data?.priceBusiness ?? 0,
-  //     priceFirst: data?.priceFirst ?? 0,
-  //     maxCapacity: data?.maxCapacity ?? 180,
-  //     gate: data?.gate ?? "",
-  //     terminal: data?.terminal ?? "",
-  //     isCancelled: data?.isCancelled ?? false,
-  //     delayMinutes: data?.delayMinutes ?? 0,
-  //     meals: data?.meals,
-  //     seats: data?.seats ?? [],
-  //     aircraft: data?.aircraft,
-  //     departureAirportRel: data?.departureAirportRel,
-  //     arrivalAirportRel: data?.arrivalAirportRel,
-  //   };
-  // };
-
-  // const [formData, setFormData] = useState<Partial<Flight>>(
-  //   createFlightFormData(getFlightByIdData?.data)
-  // );
-
-  // const { refetchUpdateFlightId } = useFlightUpdate({ id: flightId });
-
-  //  const { refetchCreateFlightData } = useCreateFlight();
   const { refetchUpdateFlightId } = useFlightUpdate({ id: flightId });
 
-  // Hàm tạo form data mặc định cho create
   const createDefaultFormData = (): FlightFormData => ({
     flightNo: "",
     flightType: "",
     departureAirport: "",
     arrivalAirport: "",
-    status: "SCHEDULED",
+    status: "scheduled",
     aircraftCode: "",
     scheduledDeparture: 0,
     scheduledArrival: 0,
@@ -182,7 +148,6 @@ const FlightUpdateModal = ({
     delayMinutes: 0,
   });
 
-  // Hàm map data từ API sang form data (chỉ các trường cần thiết)
   const mapFlightToFormData = (data?: Partial<Flight>): FlightFormData => {
     if (!data) return createDefaultFormData();
 
@@ -191,7 +156,7 @@ const FlightUpdateModal = ({
       flightType: data.flightType || "",
       departureAirport: data.departureAirport || "",
       arrivalAirport: data.arrivalAirport || "",
-      status: data.status || "SCHEDULED",
+      status: data.status || "scheduled",
       aircraftCode: data.aircraftCode || "",
       scheduledDeparture: data.scheduledDeparture
         ? Number(data.scheduledDeparture)
@@ -223,6 +188,8 @@ const FlightUpdateModal = ({
       : createDefaultFormData()
   );
 
+  const toast = useToast();
+
   const handleSave = useCallback(async () => {
     try {
       if (mode === "update" && flightId) {
@@ -251,11 +218,15 @@ const FlightUpdateModal = ({
         console.log("Creating flight with data:", updateData);
 
         const response = await refetchUpdateFlightId(updateData);
+        console.log("Creating response with data:", response);
+
         if (response?.resultCode === "00") {
           onSuccess();
+          onClose();
+        } else {
+          toast(response?.resultMessage || "Update flight failed", "error");
         }
       } else if (mode === "create") {
-        // Chỉ gửi các trường cần thiết cho create
         const createData = {
           flightNo: formData.flightNo,
           flightType: formData.flightType,
@@ -280,6 +251,9 @@ const FlightUpdateModal = ({
         const response = await refetchCreateFlightData(createData);
         if (response?.resultCode === "00") {
           onSuccess();
+          onClose();
+        } else {
+          toast(response?.resultMessage || "Update flight failed", "error");
         }
       }
     } catch (error) {
@@ -294,14 +268,12 @@ const FlightUpdateModal = ({
     onSuccess,
   ]);
 
-  // Cập nhật form data khi API data thay đổi (chỉ cho update mode)
   useEffect(() => {
     if (mode === "update" && getFlightByIdData?.data) {
       setFormData(mapFlightToFormData(getFlightByIdData.data));
     }
   }, [getFlightByIdData?.data, mode]);
 
-  // Reset form khi đóng modal hoặc chuyển mode
   useEffect(() => {
     if (!open) {
       setFormData(
@@ -312,30 +284,6 @@ const FlightUpdateModal = ({
       setActiveStep(0);
     }
   }, [open, mode, getFlightByIdData]);
-
-  //   if (!formData) return;
-  //   console.log("res", JSON.stringify(formData, null, 2));
-  //   if (mode === "update" && flightId) {
-  //     const response = await refetchUpdateFlightId(formData as BaseFlight);
-  //     console.log("res", response);
-  //     if (response?.resultCode === "00") {
-  //       const res = await refetchGetFlightData();
-  //       console.log("res", res);
-  //       onSuccess();
-  //     }
-  //   } else if (mode === "create") {
-  //     refetchCreateFlightData(formData);
-  //     console.log("Creating new flight...", formData);
-  //     onSuccess();
-  //   }
-  // }, [
-  //   formData,
-  //   mode,
-  //   flightId,
-  //   refetchUpdateFlightId,
-  //   refetchGetFlightData,
-  //   onSuccess,
-  // ]);
 
   const optionWay = [
     {
@@ -356,13 +304,21 @@ const FlightUpdateModal = ({
     { value: "cancelled", label: "Bị hủy" },
   ];
 
-  const steps = [
-    "Thông tin cơ bản",
-    "Thời gian bay",
-    "Seat",
-    "Giá vé & Dung lượng",
-    "Cổng & Trạng thái",
-  ];
+  const steps =
+    mode === "update"
+      ? [
+          "Thông tin cơ bản",
+          "Thời gian bay",
+          "Seat",
+          "Giá vé & Dung lượng",
+          "Cổng & Trạng thái",
+        ]
+      : [
+          "Thông tin cơ bản",
+          "Thời gian bay",
+          "Giá vé & Dung lượng",
+          "Cổng & Trạng thái",
+        ];
 
   const handleInputChange = <K extends keyof Flight>(
     field: K,
@@ -377,14 +333,6 @@ const FlightUpdateModal = ({
   const handleSubmit = () => {
     handleSave();
   };
-
-  // useEffect(() => {
-  //   if (getFlightByIdData?.data) {
-  //     setFormData(createFlightFormData(getFlightByIdData.data));
-  //   }
-  // }, [getFlightByIdData?.data]);
-
-  const stepTopRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (stepTopRef.current) {
@@ -401,7 +349,6 @@ const FlightUpdateModal = ({
             onChange={(e) => handleInputChange("flightNo", e)}
             startIcon={<AirplaneTicket color="primary" />}
           />
-          {/* {JSON.stringify(formData, null, 2)} */}
         </Grid>
 
         <Grid size={12}>
@@ -450,24 +397,13 @@ const FlightUpdateModal = ({
         </Grid>
       </Grid>
     ),
-    [handleInputChange]
+    [formData, handleInputChange]
   );
 
   const renderTimeInfo = useCallback(
     () => (
       <Grid container spacing={3}>
         <Grid size={12}>
-          {/* <SingleDateRangePickerComponent
-            value={[
-              formData.scheduledDeparture as number,
-              formData?.scheduledArrival as number,
-            ]}
-            onChange={(range) => {
-              handleInputChange("scheduledDeparture", range[0]);
-              handleInputChange("scheduledArrival", range[1]);
-            }}
-            language="en"
-          /> */}
           <DateTimePickerComponent
             value={formData.scheduledDeparture as number}
             onChange={(e) => handleInputChange("scheduledDeparture", e)}
@@ -508,7 +444,7 @@ const FlightUpdateModal = ({
         </Grid>
       </Grid>
     ),
-    [, handleInputChange]
+    [formData, handleInputChange]
   );
 
   const renderPriceCapacity = useCallback(
@@ -557,7 +493,7 @@ const FlightUpdateModal = ({
         </Grid>
       </Grid>
     ),
-    [, handleInputChange]
+    [formData, handleInputChange]
   );
 
   const renderGateStatus = useCallback(
@@ -673,9 +609,14 @@ const FlightUpdateModal = ({
           <Box sx={{ minHeight: "400px" }}>
             {activeStep === 0 && renderBasicInfo()}
             {activeStep === 1 && renderTimeInfo()}
-            {activeStep === 2 && renderSeatBooking()}
-            {activeStep === 3 && renderPriceCapacity()}
-            {activeStep === 4 && renderGateStatus()}
+
+            {mode === "update" && activeStep === 2 && renderSeatBooking()}
+            {mode === "create" && activeStep === 2 && renderPriceCapacity()}
+
+            {mode === "update" && activeStep === 3 && renderPriceCapacity()}
+            {mode === "create" && activeStep === 3 && renderGateStatus()}
+
+            {mode === "update" && activeStep === 4 && renderGateStatus()}
           </Box>
 
           {formData && (
