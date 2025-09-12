@@ -9,7 +9,6 @@ import type {
   ResponseMessage,
   UserListResponse,
   UserCreateResponse,
-  UserDataNoGrid,
   DetailResponseMessage,
   UserCreateProps,
   DataResponseId,
@@ -19,6 +18,7 @@ import type {
   AdminUpdateUserForm,
   LeaveRequest,
   ReqUserIDProps,
+  Seat,
 } from "../../utils/type.ts";
 import { MethodType } from "../../hooks/type";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
@@ -285,6 +285,38 @@ export const useFlightBooking = (flightParams: UserSearchType) => {
   return {
     flightBookingData,
     refetchFlightBookingDataData,
+  };
+};
+export interface CreateSeatDto {
+  flightId: number;
+  seatRow?: string;
+  seatNumber?: number;
+  isBooked?: boolean;
+}
+export const useSeatCreate = () => {
+  const { refetch: refetchSeatCreate } = useFetch<
+    ResponseMessage,
+    CreateSeatDto
+  >({
+    url: "/sys/seats",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchSeatCreate,
+  };
+};
+export const useGetSeatByFlightId = ({ id }: ReqUserIDProps) => {
+  const { refetch: refetchGetSeatByFlightId } = useFetch<
+    DetailResponseMessage<Seat>,
+    void
+  >({
+    url: `/sys/seats/getFlightSeat/${id}`,
+    autoFetch: false,
+    config: getMethod,
+  });
+  return {
+    refetchGetSeatByFlightId,
   };
 };
 

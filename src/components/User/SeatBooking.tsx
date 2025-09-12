@@ -21,6 +21,8 @@ import {
   MenuItem,
   FormControlLabel,
   Checkbox,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import {
   Chair,
@@ -32,10 +34,16 @@ import {
   RestartAlt,
   LocalAirport,
   WorkOutline,
+  Add,
 } from "@mui/icons-material";
 import type { Seat } from "../../utils/type";
 import DialogConfirm from "../../common/Modal/DialogConfirm";
 import InputTextField from "../../common/Input/InputTextField";
+import {
+  useGetSeatByFlightId,
+  useSeatCreate,
+  type CreateSeatDto,
+} from "../Api/usePostApi";
 
 type AircraftSeatTypeProps = "ALL" | "VIP" | "ECONOMY" | "WINDOW";
 
@@ -50,14 +58,6 @@ type AircraftSeatProps = {
   flightId: number;
 };
 
-interface CreateSeatDto {
-  flightId: number;
-  seatRow?: string;
-  seatNumber?: number;
-  isBooked?: boolean;
-  // type: string;
-}
-
 const SeatBooking: React.FC<AircraftSeatProps> = ({ seats, flightId }) => {
   const [seatsData, setSeatsData] = useState<Omit<Seat, "id">[]>([]);
   const [selectedSeats, setSelectedSeats] = useState<number[]>([]);
@@ -65,6 +65,7 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({ seats, flightId }) => {
   const [openModal, setOpenModal] = useState(false);
   const [filter, setFilter] = useState<AircraftSeatTypeProps>("ALL");
   // const [columns, setColumns] = useState(["A", "B", "C", "D", "E", "F"]);
+  const { refetchSeatCreate } = useSeatCreate();
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
@@ -102,6 +103,8 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({ seats, flightId }) => {
     setMessage("");
   };
 
+  const { refetchGetSeatByFlightId } = useGetSeatByFlightId({ id: flightId });
+
   const handleOpenModal = () => {
     if (selectedSeats.length === 0) {
       setMessage("Please select at least one seat.");
@@ -116,7 +119,7 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({ seats, flightId }) => {
   };
 
   const columns = ["A", "B", "C", "D", "E", "F"];
-  const rows = Array.from({ length: 40 }, (_, i) => i + 1); //todo
+  const rows = Array.from({ length: 80 }, (_, i) => i + 1); //todo
 
   // Handle create new seat
   const handleCreateSeat = () => {
@@ -165,22 +168,17 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({ seats, flightId }) => {
         isBooked: newSeat.isBooked,
       };
 
-      const response = await fetch("/api/seats", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(createSeatDto),
-      });
+      console.log("res", createSeatDto);
 
-      const result = await response.json();
+      const response = await refetchSeatCreate(createSeatDto);
 
-      if (result.resultCode === "00") {
-        showSnackbar(result.resultMessage);
+      if (response?.resultCode === "00") {
+        showSnackbar(response.resultMessage);
         setCreateFormOpen(false);
+        await refetchGetSeatByFlightId();
         //onSeatsUpdate(); // Refresh seats data
       } else {
-        showSnackbar(result.resultMessage, "error");
+        showSnackbar(response?.resultMessage as string, "error");
       }
     } catch (error) {
       console.error("Error creating seat:", error);
@@ -196,26 +194,27 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({ seats, flightId }) => {
         // No seatRow/seatNumber specified = generate all
       };
 
-      const response = await fetch("/api/seats", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(createSeatDto),
-      });
+      const response = await refetchSeatCreate(createSeatDto);
 
-      const result = await response.json();
-
-      if (result.resultCode === "00") {
-        showSnackbar(result.resultMessage);
+      if (response?.resultCode === "00") {
+        showSnackbar(response.resultMessage);
+        await refetchGetSeatByFlightId();
         // onSeatsUpdate(); // Refresh seats data
       } else {
-        showSnackbar(result.resultMessage, "error");
+        showSnackbar(response?.resultMessage as string, "error");
       }
     } catch (error) {
       console.error("Error generating seats:", error);
       showSnackbar("An error occurred while generating seats", "error");
     }
+  };
+
+  const resetSeatToGetData = async () => {
+    const res = await refetchGetSeatByFlightId();
+    console.log("res", res);
+    showSnackbar(res?.resultMessage as string);
+    setSelectedSeats([]);
+    setMessage("");
   };
 
   // Handle generate seats
@@ -265,7 +264,6 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({ seats, flightId }) => {
     setOpenModal(false);
   };
 
-  // If no seats, show creation form
   if (!seats || seats.length === 0) {
     return (
       <Box sx={{ p: 3, textAlign: "center" }}>
@@ -290,6 +288,7 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({ seats, flightId }) => {
             color="primary"
             onClick={() => setCreateFormOpen(true)}
             sx={{ mb: 2 }}
+            startIcon={<Add />}
           >
             Create Individual Seat
           </Button>
@@ -297,11 +296,12 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({ seats, flightId }) => {
           <Button
             variant="outlined"
             color="primary"
-            onClick={handleGenerateSeats}
+            onClick={handleGenerateAllSeats}
             sx={{ mb: 2 }}
           >
-            Generate All Seats
+            Generate All Seats (A-F × 1-40)
           </Button>
+          <Button onClick={resetSeatToGetData}>Reset</Button>
         </Box>
 
         {/* Create Seat Dialog */}
@@ -333,7 +333,7 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({ seats, flightId }) => {
                     setNewSeat({ ...newSeat, seatRow: e.target.value })
                   }
                 >
-                  {columns.map((col) => (
+                  {["A", "B", "C", "D", "E", "F"].map((col) => (
                     <MenuItem key={col} value={col}>
                       {col}
                     </MenuItem>
@@ -341,71 +341,45 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({ seats, flightId }) => {
                 </Select>
               </FormControl>
 
-              <FormControl fullWidth>
-                <InputLabel>Seat Type</InputLabel>
-                <Select
-                  value={newSeat.type}
-                  label="Seat Type"
-                  onChange={(e) =>
-                    setNewSeat({ ...newSeat, type: e.target.value })
-                  }
-                >
-                  <MenuItem value="ECONOMY">Economy</MenuItem>
-                  <MenuItem value="BUSINESS">Business</MenuItem>
-                  <MenuItem value="VIP">VIP</MenuItem>
-                </Select>
-              </FormControl>
-
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={newSeat.isWindow}
+                    checked={newSeat.isBooked}
                     onChange={(e) =>
-                      setNewSeat({ ...newSeat, isWindow: e.target.checked })
+                      setNewSeat({ ...newSeat, isBooked: e.target.checked })
                     }
                   />
                 }
-                label="Window Seat"
-              />
-
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={newSeat.nearRestroom}
-                    onChange={(e) =>
-                      setNewSeat({ ...newSeat, nearRestroom: e.target.checked })
-                    }
-                  />
-                }
-                label="Near Restroom"
+                label="Booked"
               />
             </Box>
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setCreateFormOpen(false)}>Cancel</Button>
-            <Button onClick={handleCreateSeat} variant="contained">
+            {/* <Button onClick={resetSeatToGetData}>Reset</Button> */}
+            <Button onClick={handleCreateSingleSeat} variant="contained">
               Create Seat
             </Button>
           </DialogActions>
         </Dialog>
+
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={6000}
+          onClose={() => setSnackbarOpen(false)}
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        >
+          <Alert
+            onClose={() => setSnackbarOpen(false)}
+            severity={snackbarSeverity}
+            sx={{ width: "100%" }}
+          >
+            {snackbarMessage}
+          </Alert>
+        </Snackbar>
       </Box>
     );
   }
-
-  // if (!seats || seats.length === 0) {
-  //   return (
-  //     <Box textAlign="center">
-  //       <Typography mb={2}>Chưa có ghế nào</Typography>
-  //       <Button
-  //         variant="contained"
-  //         color="primary"
-  //         onClick={() => console.log("Tạo seat mới")}
-  //       >
-  //         Tạo Seat
-  //       </Button>
-  //     </Box>
-  //   );
-  // }
 
   const LegendItem = ({ color, label, icon }: LegendItemProps) => (
     <Box sx={{ display: "flex", alignItems: "center", gap: "8px" }}>

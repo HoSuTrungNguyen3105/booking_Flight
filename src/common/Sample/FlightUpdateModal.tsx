@@ -417,7 +417,12 @@ const FlightUpdateModal = ({
   );
 
   const renderSeatBooking = useCallback(() => {
-    return <SeatBooking seats={(formData.seats as Seat[]) ?? []} />;
+    return (
+      <SeatBooking
+        flightId={formData.flightId as number}
+        seats={(formData.seats as Seat[]) ?? []}
+      />
+    );
   }, [formData.seats]);
 
   const renderActions = useCallback(() => {
