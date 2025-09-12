@@ -9,7 +9,7 @@ export enum MethodConfig {
   POST = "POST",
 }
 export interface ReqUserIDProps {
-  id: number;
+  id?: number;
 }
 export type CodeItem = {
   code: string;
@@ -82,10 +82,10 @@ export type SearchType = FlightTimeFields &
   FlightLocationFields &
   Pick<DataFlight, "status" | "aircraftCode">;
 
-export type CreateDataFlight = FlightTimeFields &
-  FlightLocationFields &
-  FlightBasicFields;
-
+// export type CreateDataFlight = FlightTimeFields &
+//   FlightLocationFields &
+//   FlightBasicFields;
+// export type CreateDataFlight = <Flight>;
 export type AvailableAircraft = FlightTimeFields;
 
 export type Aircraft = {
@@ -143,6 +143,10 @@ export type Seat = {
   flightId?: number;
   bookingId?: number;
   type: string;
+
+  //Add type
+  isWindow?: boolean;
+  nearRestroom?: boolean;
 };
 // Định nghĩa type cho Employee
 interface Employee {
@@ -307,7 +311,7 @@ export type FlightResponse = DetailResponseMessage<Flight>;
 export type FlightDetailApiResponse = DetailResponseMessage<Flight>;
 export type FlightMealDetailApiResponse = DetailResponseMessage<FlightMeal>;
 export type UserListManageResponse = DetailResponseMessage<UserData>;
-export type FlightListApiResponse = DetailResponseMessage<DataFlight>;
+export type FlightListApiResponse = DetailResponseMessage<Flight>;
 export type EmailProps = {
   email?: string;
   userId?: number;
@@ -319,4 +323,4 @@ export type ResponseMessage = {
   resultMessage: string;
 };
 
-export type Language = "en" | "kr" | "jp";
+export type Language = "en" | "ko" | "jp";

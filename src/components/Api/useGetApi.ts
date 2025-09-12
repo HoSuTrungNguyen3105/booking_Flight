@@ -227,10 +227,10 @@ export const useGetSeatsData = () => {
 export const useGetFlightByIDData = ({ id }: ReqUserIDProps) => {
   const { data: getFlightByIdData, refetch: refetchGetFlightData } = useFetch<
     FlightResponse,
-    null
+    void
   >({
-    url: `/sys/flights/getFlight/${id}`,
-    autoFetch: true,
+    url: id ? `/sys/flights/getFlight/${id}` : "",
+    autoFetch: !!id,
     config: getMethod,
   });
   return {

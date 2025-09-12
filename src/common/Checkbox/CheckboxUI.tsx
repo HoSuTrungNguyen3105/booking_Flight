@@ -21,7 +21,7 @@ const CheckboxUI: React.FC = () => {
 
   const changeLanguage = () => {
     if (i18n.language == "en") {
-      i18n.changeLanguage("kr");
+      i18n.changeLanguage("ko");
     } else {
       i18n.changeLanguage("en");
     }

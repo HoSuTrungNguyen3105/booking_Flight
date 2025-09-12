@@ -5,7 +5,7 @@ import { Button, Typography } from "@mui/material";
 import DateRangePickerComponent from "../DayPicker/date-range-picker";
 import DataTable, { type GridRowDef } from "../DataGrid/index";
 import { DateFormatEnum, formatDateKR } from "../../hooks/format";
-import FlightUpdateManagement from "./FlightUpdateManagement";
+import FlightModalTriggerManagement from "./FlightModalTriggerManagement";
 
 export default function MealList() {
   const { flightBookingData } = useGetMeal();
@@ -91,7 +91,7 @@ export default function MealList() {
       headerName: "Update",
       flex: 1,
       renderCell: (params) => {
-        return <Button>{<FlightUpdateManagement id={params.row.id} />}</Button>;
+        return <>{<FlightModalTriggerManagement id={params.row.id} />}</>;
       },
     },
   ];
@@ -102,6 +102,7 @@ export default function MealList() {
         rows={rowsFlightBookingData}
         columns={columnFlightBookingData}
       />
+      {<FlightModalTriggerManagement />}
       <DateRangePickerComponent language="kr" />
       <Typography>Flight list</Typography>
       <DataTable columns={columnsFlightData} rows={rowsGetFlightData} />

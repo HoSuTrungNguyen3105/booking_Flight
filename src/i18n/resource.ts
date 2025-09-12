@@ -2,14 +2,14 @@ import { locales } from "./languageConfig";
 import type { DropdownOptions } from "../common/Dropdown/type";
 import { en } from "./en";
 import { jp } from "./jp";
-import { kr } from "./kr";
 import { vi } from "./vi";
+import { ko } from "./ko";
 
 export const resources = {
   vi,
   en,
   jp,
-  kr,
+  ko,
 };
 export const optionLanguage: DropdownOptions[] = Object.entries(locales).map(
   ([value, label]) => ({

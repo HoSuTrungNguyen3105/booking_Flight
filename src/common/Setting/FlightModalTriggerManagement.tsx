@@ -3,10 +3,10 @@ import FlightUpdateModal from "../Sample/FlightUpdateModal";
 import { Box, Button } from "@mui/material";
 
 type FlightIdProps = {
-  id: number;
+  id?: number;
 };
 
-const FlightUpdateManagement = ({ id }: FlightIdProps) => {
+const FlightModalTriggerManagement = ({ id }: FlightIdProps) => {
   const [open, setOpen] = useState(false);
   return (
     <>
@@ -16,12 +16,13 @@ const FlightUpdateManagement = ({ id }: FlightIdProps) => {
           variant="contained"
           onClick={() => setOpen(true)}
         >
-          Update
+          {id ? "Update Flight" : "Create Flight"}
         </Button>
       </Box>
 
       {open && (
         <FlightUpdateModal
+          mode={id ? "update" : "create"}
           open={open}
           onClose={() => setOpen(false)}
           onSuccess={() => {}}
@@ -34,4 +35,4 @@ const FlightUpdateManagement = ({ id }: FlightIdProps) => {
   );
 };
 
-export default memo(FlightUpdateManagement);
+export default memo(FlightModalTriggerManagement);

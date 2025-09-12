@@ -1,6 +1,6 @@
 export const locales = {
   vi: "Vietnam",
   en: "English",
-  kr: "Korea",
+  ko: "Korea",
   jp: "Japan",
 } as const;

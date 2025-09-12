@@ -1,83 +1,36 @@
-import React, { useState, useMemo, useCallback, memo } from "react";
+import React, { useState, useCallback, memo } from "react";
 import {
   Box,
   Paper,
   Typography,
   Chip,
-  IconButton,
-  Tooltip,
   useTheme,
   useMediaQuery,
   Button,
 } from "@mui/material";
-import {
-  type GridColDef,
-  type GridRenderCellParams,
-  //  type  GridValueGetterParams,
-  GridActionsCellItem,
-} from "@mui/x-data-grid";
+import { type GridColDef, type GridRenderCellParams } from "@mui/x-data-grid";
 import TableData from "../../../common/DataGrid/index";
-import {
-  Visibility,
-  Edit,
-  Delete,
-  CalendarMonth,
-  Person,
-  AccessTime,
-} from "@mui/icons-material";
 import { useGetLeaveRequest } from "../../Api/usePostApi";
-import {
-  DateFormatEnum,
-  formatDate,
-  formatDateKR,
-} from "../../../hooks/format";
+import { DateFormatEnum, formatDateKR } from "../../../hooks/format";
 import CustomPopover from "../../../common/Button/Popover";
-import { useToast } from "../../../context/ToastContext";
 import RequestLeaveActionModal from "./RequestLeaveActionModal";
 import type { LeaveRequest } from "../../../utils/type";
 import CreateLeaveRequestForm from "../../User/CreateLeaveRequestForm";
-// Mock data - trong thực tế sẽ lấy từ API
-// const leaveRequests = [
-//   {
-//     id: 1,
-//     employeeId: 6,
-//     employeeName: "Nguyễn Văn A",
-//     leaveType: "ANNUAL",
-//     startDate: 20250915.92,
-//     endDate: 20250917.8,
-//     days: 3,
-//     reason: "Về quê thăm gia đình",
-//     status: "PENDING",
-//     appliedAt: 20250910.5,
-//     approverName: "Chưa duyệt",
-//   },
-//   // Thêm các request khác...
-// ];
 
 const LeaveRequestGrid = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const [pageSize, setPageSize] = useState(10);
-
   const { dataGetLeaveRequest, refetchGetLeaveRequest } = useGetLeaveRequest();
 
   const rowData = useCallback(() => {
     return (
       dataGetLeaveRequest?.list?.map((req) => ({
-        ...req, // giữ nguyên data
-        id: req.id, // đảm bảo DataGrid có id
+        ...req,
+        id: req.id,
       })) ?? []
-    ); // nếu list undefined thì trả mảng rỗng
+    );
   }, [dataGetLeaveRequest]);
 
-  // Hàm chuyển đổi decimal date thành định dạng ngày tháng
-  //   const formatDecimalDate = (decimalDate: number): string => {
-  //     const dateStr = decimalDate.toString();
-  //     const year = dateStr.substring(0, 4);
-  //     const month = dateStr.substring(4, 6);
-  //     const day = dateStr.substring(6, 8);
-  //     return `${day}/${month}/${year}`;
-  //   };
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [modalType, setModalType] = useState<"view" | null>(null);

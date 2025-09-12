@@ -10,15 +10,15 @@ import { koKR, enUS } from "@mui/x-date-pickers/locales";
 import clsx from "clsx";
 
 interface Props {
-  language: "vn" | "en" | "kr" | "jp";
+  language: "vn" | "en" | "ko" | "jp";
   status?: "default" | "error" | "warning" | "confirmed";
   sx?: SxProps;
   inputClassName?: string;
   placeHolder?: string;
   disabled?: boolean;
   readOnly?: boolean;
-  value?: [number, number]; // Giá trị decimal (20,3) đại diện cho timestamp [start, end]
-  onChange?: (value: [number, number]) => void; // Callback trả về decimal timestamp (20,3)
+  value?: [number, number];
+  onChange?: (value: [number, number]) => void;
   disabledOpenPicker?: boolean;
 }
 
@@ -34,7 +34,6 @@ const SingleDateRangePickerComponent: React.FC<Props> = ({
   onChange,
   disabledOpenPicker = false,
 }) => {
-  // Chuyển đổi giá trị decimal (20,3) sang Moment
   const parseDecimalToMoment = (
     decimalValue: number | undefined
   ): Moment | null => {
@@ -55,7 +54,6 @@ const SingleDateRangePickerComponent: React.FC<Props> = ({
     }
   };
 
-  // Chuyển đổi Moment sang giá trị decimal (20,3)
   const convertMomentToDecimal = (momentDate: Moment | null): number => {
     if (!momentDate || !momentDate.isValid()) {
       return 0;
@@ -70,7 +68,6 @@ const SingleDateRangePickerComponent: React.FC<Props> = ({
     }
   };
 
-  // Khởi tạo state với giá trị từ props
   const [dateRange, setDateRange] = useState<[Moment | null, Moment | null]>(
     () => {
       if (value && Array.isArray(value) && value.length === 2) {
@@ -86,7 +83,6 @@ const SingleDateRangePickerComponent: React.FC<Props> = ({
     moment.locale(language);
   }, [language]);
 
-  // Cập nhật state khi value prop thay đổi từ bên ngoài
   useEffect(() => {
     if (value && Array.isArray(value) && value.length === 2) {
       const newStart = parseDecimalToMoment(value[0]);
@@ -130,7 +126,7 @@ const SingleDateRangePickerComponent: React.FC<Props> = ({
 
   const getLocaleConfig = () => {
     switch (language) {
-      case "kr":
+      case "ko":
         return koKR.components.MuiLocalizationProvider.defaultProps.localeText;
       default:
         return enUS.components.MuiLocalizationProvider.defaultProps.localeText;
@@ -155,7 +151,7 @@ const SingleDateRangePickerComponent: React.FC<Props> = ({
         {/* Start Date Picker */}
         <DatePicker
           value={dateRange[0]}
-          onChange={(newValue) => handleDateChange(0, newValue as Moment)} // Sửa lại: truyền trực tiếp newValue (Moment | null)
+          onChange={(newValue) => handleDateChange(0, newValue as Moment)}
           disabled={disabled}
           readOnly={readOnly}
           enableAccessibleFieldDOMStructure={false}
@@ -188,10 +184,9 @@ const SingleDateRangePickerComponent: React.FC<Props> = ({
           }}
         />
 
-        {/* End Date Picker */}
         <DatePicker
           value={dateRange[1]}
-          onChange={(newValue) => handleDateChange(1, newValue as Moment)} // Sửa lại: truyền trực tiếp newValue (Moment | null)
+          onChange={(newValue) => handleDateChange(1, newValue as Moment)}
           disabled={disabled}
           readOnly={readOnly}
           enableAccessibleFieldDOMStructure={false}

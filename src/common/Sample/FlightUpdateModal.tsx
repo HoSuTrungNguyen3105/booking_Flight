@@ -49,28 +49,38 @@ import BaseModal from "../Modal/BaseModal";
 import SeatBooking from "../../components/User/SeatBooking";
 import { DateFormatEnum, formatDateKR } from "../../hooks/format";
 import { useGetFlightByIDData } from "../../components/Api/useGetApi";
-import { useFlightUpdate } from "../../components/Api/usePostApi";
+import {
+  useCreateFlight,
+  useFlightUpdate,
+} from "../../components/Api/usePostApi";
+import type { Seat } from "../../utils/type";
+
+type FlightFormMode = "create" | "update";
 
 interface IModalStatisticalDataLearningProps {
   open: boolean;
   onClose: () => void;
   onSuccess: () => void;
-  flightId: number;
+  flightId?: number;
   onUpdate: () => void;
   onCancel: () => void;
+  mode: FlightFormMode;
 }
 
 const FlightUpdateModal = ({
   flightId,
   open,
+  mode,
   onClose,
   onSuccess,
   onUpdate,
 }: IModalStatisticalDataLearningProps) => {
   const [activeStep, setActiveStep] = useState(0);
   const { getFlightByIdData, refetchGetFlightData } = useGetFlightByIDData({
-    id: flightId,
+    id: mode === "update" && flightId ? flightId : undefined,
   });
+
+  const { refetchCreateFlightData } = useCreateFlight();
 
   const createFlightFormData = (data?: Partial<Flight>) => {
     return {
@@ -94,6 +104,7 @@ const FlightUpdateModal = ({
       isCancelled: data?.isCancelled ?? false,
       delayMinutes: data?.delayMinutes ?? 0,
       meals: data?.meals,
+      seats: data?.seats ?? [],
       aircraft: data?.aircraft,
       departureAirportRel: data?.departureAirportRel,
       arrivalAirportRel: data?.arrivalAirportRel,
@@ -104,18 +115,41 @@ const FlightUpdateModal = ({
     createFlightFormData(getFlightByIdData?.data)
   );
 
-  const { refetchUpdateFlightId } = useFlightUpdate({ id: flightId });
+  const { refetchUpdateFlightId } = useFlightUpdate({ id: flightId ?? 0 });
 
-  const handleUpdate = useCallback(async () => {
+  // const handleUpdate = useCallback(async () => {
+  //   if (!formData) return;
+  //   const response = await refetchUpdateFlightId(formData);
+  //   await new Promise((resolve) => setTimeout(resolve, 200));
+  //   console.log("res", response);
+  //   if (response?.resultCode === "00") {
+  //     await refetchGetFlightData();
+  //     onSuccess();
+  //   }
+  // }, [onSuccess, refetchGetFlightData]);
+
+  const handleSave = useCallback(async () => {
     if (!formData) return;
-    const response = await refetchUpdateFlightId(formData);
-    console.log("res", response);
-    await new Promise((resolve) => setTimeout(resolve, 200));
-    if (response?.resultCode === "00") {
-      await refetchGetFlightData();
+
+    if (mode === "update" && flightId) {
+      const response = await refetchUpdateFlightId(formData);
+      if (response?.resultCode === "00") {
+        await refetchGetFlightData();
+        onSuccess();
+      }
+    } else if (mode === "create") {
+      refetchCreateFlightData(formData);
+      console.log("Creating new flight...", formData);
       onSuccess();
     }
-  }, [onSuccess, refetchGetFlightData]);
+  }, [
+    formData,
+    mode,
+    flightId,
+    refetchUpdateFlightId,
+    refetchGetFlightData,
+    onSuccess,
+  ]);
 
   const optionWay = [
     {
@@ -129,10 +163,11 @@ const FlightUpdateModal = ({
     { value: "scheduled", label: "Theo lịch" },
     { value: "BOARDING", label: "Đang lên máy bay" },
     { value: "DEPARTED", label: "Đã khởi hành" },
-    { value: "IN_AIR", label: "Đang bay" },
+    { value: "ON_TIME", label: "Đang bay" },
     { value: "LANDED", label: "Đã hạ cánh" },
     { value: "ARRIVED", label: "Đã đến" },
-    { value: "DELAYED", label: "Bị trễ" },
+    { value: "delayed", label: "Bị trễ" },
+    { value: "cancelled", label: "Bị hủy" },
   ];
 
   const steps = [
@@ -154,7 +189,7 @@ const FlightUpdateModal = ({
   };
 
   const handleSubmit = () => {
-    handleUpdate();
+    handleSave();
   };
 
   useEffect(() => {
@@ -175,18 +210,19 @@ const FlightUpdateModal = ({
     () => (
       <Grid container spacing={3}>
         <Grid size={12}>
-          <InputTextField
+          {/* <InputTextField
             value={formData.flightNo}
             onChange={(e) => handleInputChange("flightNo", e)}
             startIcon={<AirplaneTicket color="primary" />}
-          />
+          /> */}
+          {JSON.stringify(formData, null, 2)}
         </Grid>
 
         <Grid size={12}>
           <FormControl fullWidth>
             <SelectDropdown
               options={optionWay}
-              value={formData.flightType}
+              value={formData.flightType || ""}
               onChange={(e) => handleInputChange("flightType", e as string)}
             />
           </FormControl>
@@ -221,7 +257,7 @@ const FlightUpdateModal = ({
           <FormControl fullWidth>
             <SelectDropdown
               options={flightStatuses}
-              value={formData?.status}
+              value={formData?.status || ""}
               onChange={(e) => handleInputChange("status", e as string)}
             />
           </FormControl>
@@ -381,8 +417,8 @@ const FlightUpdateModal = ({
   );
 
   const renderSeatBooking = useCallback(() => {
-    return <SeatBooking code="2" />;
-  }, []);
+    return <SeatBooking seats={(formData.seats as Seat[]) ?? []} />;
+  }, [formData.seats]);
 
   const renderActions = useCallback(() => {
     return (
@@ -411,12 +447,12 @@ const FlightUpdateModal = ({
             variant="contained"
             startIcon={<Save />}
           >
-            {formData ? "Cập nhật" : "Tạo mới"}
+            {mode === "update" ? "Update" : "Create"}
           </Button>
         )}
       </Box>
     );
-  }, [handleSubmit, steps.length, , activeStep, onClose]);
+  }, [handleSubmit, steps.length, mode, activeStep, onClose]);
 
   const renderContent = useCallback(() => {
     const renderRows = () => {
@@ -484,9 +520,9 @@ const FlightUpdateModal = ({
       open={open}
       onClose={onClose}
       title={
-        formData
-          ? `Cập nhật ${flightId} Chuyến bay`
-          : `${flightId}Tạo Chuyến bay Mới`
+        mode === "update"
+          ? `Cập nhật chuyến bay #${flightId}`
+          : "Tạo chuyến bay mới"
       }
       Icon={AddIcon}
       slots={{ content: renderContent(), actions: renderActions() }}

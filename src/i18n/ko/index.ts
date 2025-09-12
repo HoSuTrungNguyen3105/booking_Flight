@@ -1,4 +1,4 @@
-export const kr = {
+export const ko = {
   translation: {
     title1: "체크박스 상태 및 색상 변형",
     description1:

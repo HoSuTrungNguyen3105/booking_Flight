@@ -4,7 +4,6 @@ import type {
   CodeItem,
   DataFlight,
   SearchType,
-  CreateDataFlight,
   AircraftList,
   AvailableAircraft,
   ResponseMessage,
@@ -66,10 +65,9 @@ export const mapToDropdown = (
 export const useCreateFlight = () => {
   const { data: createFlightData, refetch: refetchCreateFlightData } = useFetch<
     FlightListApiResponse,
-    CreateDataFlight
+    Partial<Flight>
   >({
-    url: "/sys/flights/createFlight",
-    defaultValue: { resultCode: "", resultMessage: "" },
+    url: "/sys/flights",
     autoFetch: false,
     config: postMethod,
   });
@@ -131,7 +129,7 @@ export const useFlightById = ({ id }: FlightId) => {
 export const useFlightUpdate = ({ id }: ReqUserIDProps) => {
   const { data: updateFlightId, refetch: refetchUpdateFlightId } = useFetch<
     FlightDetailApiResponse,
-    Flight
+    Partial<Flight>
   >({
     url: `/sys/flights/updateFlight/${id}`,
     autoFetch: false,

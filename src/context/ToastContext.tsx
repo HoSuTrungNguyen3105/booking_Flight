@@ -1,8 +1,6 @@
 import React, { createContext, useContext, useRef, useState } from "react";
 import { Box, SvgIcon, type SvgIconProps } from "@mui/material";
 import { motion, AnimatePresence } from "framer-motion";
-import theme from "../scss/theme";
-// import theme from "../scss/theme";
 
 type ToastType = "success" | "error" | "info";
 
@@ -21,6 +19,7 @@ const Success = (props: SvgIconProps) => (
     />
   </SvgIcon>
 );
+
 const Warning = (props: SvgIconProps) => (
   <SvgIcon {...props} viewBox="0 0 24 24" sx={{ fontSize: "20px" }}>
     <circle cx="12" cy="12" r="12" fill="#ffffff" />
@@ -30,16 +29,20 @@ const Warning = (props: SvgIconProps) => (
     />
   </SvgIcon>
 );
+
 const Info = (props: SvgIconProps) => (
   <SvgIcon {...props} viewBox="0 0 24 24" sx={{ fontSize: "20px" }}>
     <circle cx="12" cy="12" r="12" fill="#ffffff" />
     <path fill="#0288D1" d="M11 17h2v-6h-2v6zm0-8h2V7h-2v2z" />
   </SvgIcon>
 );
+
 const ToastContext = createContext<(msg: string, type?: ToastType) => void>(
   () => {}
 );
+
 export const useToast = () => useContext(ToastContext);
+
 export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
   const [toasts, setToasts] = useState<Toast[]>([]);
   const timeoutMap = useRef<Map<number, ReturnType<typeof setTimeout>>>(
@@ -75,14 +78,6 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
           width: "100%",
           pointerEvents: "none",
           zIndex: theme.zIndex.modal + 1,
-          // zIndex: (theme) => theme.zIndex.modal + 1,
-          // ...(theme
-          //   ? { top: "55px" } // khi có modal thì toast lên trên
-          //   : { top: "24px" }), // khi bình thường thì toast xuống dưới
-          // zIndex: theme.zIndex.modal + 1,
-          // ...(theme.zIndex.modal
-          //   ? { top: "55px", bottom: "auto" } // có modal thì toast nhảy lên
-          //   : { bottom: "24px", top: "auto" }), // bình thường thì toast ở dưới
         })}
       >
         <AnimatePresence>

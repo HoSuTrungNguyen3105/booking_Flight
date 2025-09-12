@@ -14,7 +14,7 @@ import { ROUTE_PATHS } from "./RoutePath";
 import ManageLayout from "../components/Layout/ResizeLayout";
 import Search_layout from "../components/Admin/Search_layout";
 import GuestGuard from "../components/Layout/GuardLayout";
-import InspectionDetails from "../components/User/Profile";
+// import InspectionDetails from "../components/User/Profile";
 import { LoginPage } from "../components/Auth/LoginPage";
 import Security from "../common/Setting/Security";
 import FullLayout from "../components/Layout/FullLayout";
@@ -31,7 +31,6 @@ import UnlockRequestTable from "../common/DetailSection/UnlockRequestTable";
 import FlightPage from "../components/Admin/component/FlightPage";
 import AccountYn from "../components/Auth/AccountYn";
 import LeaveRequestGrid from "../components/Admin/component/LeaveRequestGrid";
-import FlightUpdateManagement from "../common/Setting/FlightUpdateManagement";
 
 const routes = [
   {
@@ -86,10 +85,10 @@ const routes = [
       //   path: "airport-list/domestic",
       //   element: <BookTicket/>,
       // },
-      {
-        path: "profile",
-        element: <InspectionDetails />,
-      },
+      // {
+      //   path: "profile",
+      //   element: <InspectionDetails />,
+      // },
       {
         path: ROUTE_PATHS.SAMPLE_FORM.replace("/", ""),
         element: <CheckboxUI />,

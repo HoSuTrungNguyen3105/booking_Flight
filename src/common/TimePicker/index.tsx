@@ -279,7 +279,7 @@ export const Single12Timepicker = ({
   }, [language]);
 
   const localeText =
-    language === "kr"
+    language === "ko"
       ? koKR.components.MuiLocalizationProvider.defaultProps.localeText
       : language === "jp"
       ? jaJP.components.MuiLocalizationProvider.defaultProps.localeText

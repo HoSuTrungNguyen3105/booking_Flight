@@ -3,7 +3,7 @@ import { Box, Typography } from "@mui/material";
 import type { GridColDef } from "@mui/x-data-grid";
 import { DateFormatEnum, formatDateKR } from "../../../hooks/format";
 import type { IDataDetail } from "../type";
-import type { IDetailItem } from "../../Dropdown/DetailSection";
+import type { IDetailItem } from "../../DetailSection";
 
 type DataDetailProps = {
   data: IDataDetail;
