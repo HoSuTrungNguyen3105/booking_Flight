@@ -9,7 +9,7 @@ import FlightModalTriggerManagement from "./FlightModalTriggerManagement";
 
 export default function MealList() {
   const { flightBookingData } = useGetMeal();
-  const { getFlightData } = useGetFlightData();
+  const { getFlightData, refetchGetFlightData } = useGetFlightData();
 
   const rowsFlightBookingData: GridRowDef[] = useMemo(
     () =>
@@ -91,7 +91,16 @@ export default function MealList() {
       headerName: "Update",
       flex: 1,
       renderCell: (params) => {
-        return <>{<FlightModalTriggerManagement id={params.row.id} />}</>;
+        return (
+          <>
+            {
+              <FlightModalTriggerManagement
+                onSuccess={() => refetchGetFlightData()}
+                id={params.row.id}
+              />
+            }
+          </>
+        );
       },
     },
   ];
@@ -102,8 +111,12 @@ export default function MealList() {
         rows={rowsFlightBookingData}
         columns={columnFlightBookingData}
       />
-      {<FlightModalTriggerManagement />}
-      <DateRangePickerComponent language="kr" />
+      {
+        <FlightModalTriggerManagement
+          onSuccess={() => refetchGetFlightData()}
+        />
+      }
+      {/* <DateRangePickerComponent language="kr" /> */}
       <Typography>Flight list</Typography>
       <DataTable columns={columnsFlightData} rows={rowsGetFlightData} />
       {/* <pre

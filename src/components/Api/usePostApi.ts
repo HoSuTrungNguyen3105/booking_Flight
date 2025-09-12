@@ -28,7 +28,8 @@ import type {
   UserSearchType,
 } from "../User/type.ts";
 import { useFetch } from "../../context/use[custom]/useFetch.ts";
-import type { Flight } from "../../common/Setting/type.ts";
+import type { BaseFlight, Flight } from "../../common/Setting/type.ts";
+import type { FlightFormData } from "../../common/Sample/FlightUpdateModal.tsx";
 
 const postMethod = {
   method: MethodType.POST,
@@ -65,7 +66,7 @@ export const mapToDropdown = (
 export const useCreateFlight = () => {
   const { data: createFlightData, refetch: refetchCreateFlightData } = useFetch<
     FlightListApiResponse,
-    Partial<Flight>
+    FlightFormData
   >({
     url: "/sys/flights",
     autoFetch: false,
@@ -129,7 +130,7 @@ export const useFlightById = ({ id }: FlightId) => {
 export const useFlightUpdate = ({ id }: ReqUserIDProps) => {
   const { data: updateFlightId, refetch: refetchUpdateFlightId } = useFetch<
     FlightDetailApiResponse,
-    Partial<Flight>
+    Partial<FlightFormData>
   >({
     url: `/sys/flights/updateFlight/${id}`,
     autoFetch: false,
@@ -306,13 +307,14 @@ export const useSeatCreate = () => {
     refetchSeatCreate,
   };
 };
+
 export const useGetSeatByFlightId = ({ id }: ReqUserIDProps) => {
   const { refetch: refetchGetSeatByFlightId } = useFetch<
     DetailResponseMessage<Seat>,
     void
   >({
     url: `/sys/seats/getFlightSeat/${id}`,
-    autoFetch: false,
+    autoFetch: !!id,
     config: getMethod,
   });
   return {

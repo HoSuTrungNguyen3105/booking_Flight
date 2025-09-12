@@ -37,7 +37,7 @@ import {
   Save,
   Close,
 } from "@mui/icons-material";
-import type { Flight } from "../Setting/type";
+import type { BaseFlight, Flight } from "../Setting/type";
 import InputTextField from "../Input/InputTextField";
 import SelectDropdown from "../Dropdown/SelectDropdown";
 import DateTimePickerComponent from "../DayPicker/date-range-picker";
@@ -54,6 +54,48 @@ import {
   useFlightUpdate,
 } from "../../components/Api/usePostApi";
 import type { Seat } from "../../utils/type";
+// Thêm các type này
+
+export type FlightFormData = {
+  flightId?: number; // Chỉ dùng trong form, không gửi API
+  seats?: Seat[];
+  // flightNo: string;
+  // flightType: string;
+  // departureAirport: string;
+  // arrivalAirport: string;
+  // status: string;
+  // aircraftCode: string;
+  // scheduledDeparture: number;
+  // scheduledArrival: number;
+  // actualDeparture?: number;
+  // actualArrival?: number;
+  // priceEconomy?: number;
+  // priceBusiness?: number;
+  // priceFirst?: number;
+  // maxCapacity?: number;
+  // gate?: string;
+  // terminal?: string;
+  // isCancelled?: boolean;
+  // delayMinutes?: number;
+  flightNo: string;
+  scheduledDeparture: number;
+  scheduledArrival: number;
+  departureAirport: string;
+  arrivalAirport: string;
+  flightType: string;
+  status: string; //"ON_TIME" | "DELAYED" | "CANCELLED"
+  aircraftCode: string;
+  priceEconomy: number;
+  priceBusiness: number;
+  priceFirst: number;
+  maxCapacity: number;
+  actualDeparture?: number | null;
+  actualArrival?: number | null;
+  gate: string;
+  terminal: string;
+  isCancelled: boolean;
+  delayMinutes: number | null;
+};
 
 type FlightFormMode = "create" | "update";
 
@@ -82,74 +124,218 @@ const FlightUpdateModal = ({
 
   const { refetchCreateFlightData } = useCreateFlight();
 
-  const createFlightFormData = (data?: Partial<Flight>) => {
+  // const createFlightFormData = (data?: Partial<Flight>) => {
+  //   return {
+  //     flightNo: data?.flightNo as string,
+  //     flightId: data?.flightId as number,
+  //     flightType: data?.flightType,
+  //     departureAirport: data?.departureAirport,
+  //     arrivalAirport: data?.arrivalAirport,
+  //     status: data?.status,
+  //     aircraftCode: data?.aircraftCode,
+  //     scheduledDeparture: data?.scheduledDeparture,
+  //     scheduledArrival: data?.scheduledArrival,
+  //     actualDeparture: data?.actualDeparture,
+  //     actualArrival: data?.actualArrival,
+  //     priceEconomy: data?.priceEconomy ?? 0,
+  //     priceBusiness: data?.priceBusiness ?? 0,
+  //     priceFirst: data?.priceFirst ?? 0,
+  //     maxCapacity: data?.maxCapacity ?? 180,
+  //     gate: data?.gate ?? "",
+  //     terminal: data?.terminal ?? "",
+  //     isCancelled: data?.isCancelled ?? false,
+  //     delayMinutes: data?.delayMinutes ?? 0,
+  //     meals: data?.meals,
+  //     seats: data?.seats ?? [],
+  //     aircraft: data?.aircraft,
+  //     departureAirportRel: data?.departureAirportRel,
+  //     arrivalAirportRel: data?.arrivalAirportRel,
+  //   };
+  // };
+
+  // const [formData, setFormData] = useState<Partial<Flight>>(
+  //   createFlightFormData(getFlightByIdData?.data)
+  // );
+
+  // const { refetchUpdateFlightId } = useFlightUpdate({ id: flightId });
+
+  //  const { refetchCreateFlightData } = useCreateFlight();
+  const { refetchUpdateFlightId } = useFlightUpdate({ id: flightId });
+
+  // Hàm tạo form data mặc định cho create
+  const createDefaultFormData = (): FlightFormData => ({
+    flightNo: "",
+    flightType: "",
+    departureAirport: "",
+    arrivalAirport: "",
+    status: "SCHEDULED",
+    aircraftCode: "",
+    scheduledDeparture: 0,
+    scheduledArrival: 0,
+    priceEconomy: 0,
+    priceBusiness: 0,
+    priceFirst: 0,
+    maxCapacity: 180,
+    gate: "",
+    terminal: "",
+    isCancelled: false,
+    delayMinutes: 0,
+  });
+
+  // Hàm map data từ API sang form data (chỉ các trường cần thiết)
+  const mapFlightToFormData = (data?: Partial<Flight>): FlightFormData => {
+    if (!data) return createDefaultFormData();
+
     return {
-      flightNo: data?.flightNo as string,
-      flightId: data?.flightId as number,
-      flightType: data?.flightType,
-      departureAirport: data?.departureAirport,
-      arrivalAirport: data?.arrivalAirport,
-      status: data?.status,
-      aircraftCode: data?.aircraftCode,
-      scheduledDeparture: data?.scheduledDeparture,
-      scheduledArrival: data?.scheduledArrival,
-      actualDeparture: data?.actualDeparture,
-      actualArrival: data?.actualArrival,
-      priceEconomy: data?.priceEconomy ?? 0,
-      priceBusiness: data?.priceBusiness ?? 0,
-      priceFirst: data?.priceFirst ?? 0,
-      maxCapacity: data?.maxCapacity ?? 180,
-      gate: data?.gate ?? "",
-      terminal: data?.terminal ?? "",
-      isCancelled: data?.isCancelled ?? false,
-      delayMinutes: data?.delayMinutes ?? 0,
-      meals: data?.meals,
-      seats: data?.seats ?? [],
-      aircraft: data?.aircraft,
-      departureAirportRel: data?.departureAirportRel,
-      arrivalAirportRel: data?.arrivalAirportRel,
+      flightNo: data.flightNo || "",
+      flightType: data.flightType || "",
+      departureAirport: data.departureAirport || "",
+      arrivalAirport: data.arrivalAirport || "",
+      status: data.status || "SCHEDULED",
+      aircraftCode: data.aircraftCode || "",
+      scheduledDeparture: data.scheduledDeparture
+        ? Number(data.scheduledDeparture)
+        : 0,
+      scheduledArrival: data.scheduledArrival
+        ? Number(data.scheduledArrival)
+        : 0,
+      actualDeparture: data.actualDeparture
+        ? Number(data.actualDeparture)
+        : undefined,
+      actualArrival: data.actualArrival
+        ? Number(data.actualArrival)
+        : undefined,
+      priceEconomy: data.priceEconomy || 0,
+      priceBusiness: data.priceBusiness || 0,
+      priceFirst: data.priceFirst || 0,
+      maxCapacity: data.maxCapacity || 180,
+      gate: data.gate || "",
+      terminal: data.terminal || "",
+      isCancelled: data.isCancelled || false,
+      delayMinutes: data.delayMinutes || 0,
+      seats: data.seats || [],
     };
   };
 
-  const [formData, setFormData] = useState<Partial<Flight>>(
-    createFlightFormData(getFlightByIdData?.data)
+  const [formData, setFormData] = useState<FlightFormData>(
+    mode === "update"
+      ? mapFlightToFormData(getFlightByIdData?.data)
+      : createDefaultFormData()
   );
 
-  const { refetchUpdateFlightId } = useFlightUpdate({ id: flightId ?? 0 });
-
-  // const handleUpdate = useCallback(async () => {
-  //   if (!formData) return;
-  //   const response = await refetchUpdateFlightId(formData);
-  //   await new Promise((resolve) => setTimeout(resolve, 200));
-  //   console.log("res", response);
-  //   if (response?.resultCode === "00") {
-  //     await refetchGetFlightData();
-  //     onSuccess();
-  //   }
-  // }, [onSuccess, refetchGetFlightData]);
-
   const handleSave = useCallback(async () => {
-    if (!formData) return;
+    try {
+      if (mode === "update" && flightId) {
+        // Chỉ gửi các trường có thể update
+        const updateData = {
+          flightNo: formData.flightNo,
+          flightType: formData.flightType,
+          departureAirport: formData.departureAirport,
+          arrivalAirport: formData.arrivalAirport,
+          status: formData.status,
+          aircraftCode: formData.aircraftCode,
+          scheduledDeparture: formData.scheduledDeparture,
+          scheduledArrival: formData.scheduledArrival,
+          actualDeparture: formData.actualDeparture,
+          actualArrival: formData.actualArrival,
+          priceEconomy: formData.priceEconomy,
+          priceBusiness: formData.priceBusiness,
+          priceFirst: formData.priceFirst,
+          maxCapacity: formData.maxCapacity,
+          gate: formData.gate,
+          terminal: formData.terminal,
+          isCancelled: formData.isCancelled,
+          delayMinutes: formData.delayMinutes,
+        };
 
-    if (mode === "update" && flightId) {
-      const response = await refetchUpdateFlightId(formData);
-      if (response?.resultCode === "00") {
-        await refetchGetFlightData();
-        onSuccess();
+        console.log("Creating flight with data:", updateData);
+
+        const response = await refetchUpdateFlightId(updateData);
+        if (response?.resultCode === "00") {
+          onSuccess();
+        }
+      } else if (mode === "create") {
+        // Chỉ gửi các trường cần thiết cho create
+        const createData = {
+          flightNo: formData.flightNo,
+          flightType: formData.flightType,
+          departureAirport: formData.departureAirport,
+          arrivalAirport: formData.arrivalAirport,
+          status: formData.status,
+          aircraftCode: formData.aircraftCode,
+          scheduledDeparture: formData.scheduledDeparture,
+          scheduledArrival: formData.scheduledArrival,
+          priceEconomy: formData.priceEconomy,
+          priceBusiness: formData.priceBusiness,
+          priceFirst: formData.priceFirst,
+          maxCapacity: formData.maxCapacity,
+          gate: formData.gate,
+          terminal: formData.terminal,
+          isCancelled: formData.isCancelled,
+          delayMinutes: formData.delayMinutes,
+        };
+
+        console.log("Creating flight with data:", createData);
+
+        const response = await refetchCreateFlightData(createData);
+        if (response?.resultCode === "00") {
+          onSuccess();
+        }
       }
-    } else if (mode === "create") {
-      refetchCreateFlightData(formData);
-      console.log("Creating new flight...", formData);
-      onSuccess();
+    } catch (error) {
+      console.error("Error saving flight:", error);
     }
   }, [
     formData,
     mode,
     flightId,
     refetchUpdateFlightId,
-    refetchGetFlightData,
+    refetchCreateFlightData,
     onSuccess,
   ]);
+
+  // Cập nhật form data khi API data thay đổi (chỉ cho update mode)
+  useEffect(() => {
+    if (mode === "update" && getFlightByIdData?.data) {
+      setFormData(mapFlightToFormData(getFlightByIdData.data));
+    }
+  }, [getFlightByIdData?.data, mode]);
+
+  // Reset form khi đóng modal hoặc chuyển mode
+  useEffect(() => {
+    if (!open) {
+      setFormData(
+        mode === "update"
+          ? mapFlightToFormData(getFlightByIdData?.data)
+          : createDefaultFormData()
+      );
+      setActiveStep(0);
+    }
+  }, [open, mode, getFlightByIdData]);
+
+  //   if (!formData) return;
+  //   console.log("res", JSON.stringify(formData, null, 2));
+  //   if (mode === "update" && flightId) {
+  //     const response = await refetchUpdateFlightId(formData as BaseFlight);
+  //     console.log("res", response);
+  //     if (response?.resultCode === "00") {
+  //       const res = await refetchGetFlightData();
+  //       console.log("res", res);
+  //       onSuccess();
+  //     }
+  //   } else if (mode === "create") {
+  //     refetchCreateFlightData(formData);
+  //     console.log("Creating new flight...", formData);
+  //     onSuccess();
+  //   }
+  // }, [
+  //   formData,
+  //   mode,
+  //   flightId,
+  //   refetchUpdateFlightId,
+  //   refetchGetFlightData,
+  //   onSuccess,
+  // ]);
 
   const optionWay = [
     {
@@ -192,11 +378,11 @@ const FlightUpdateModal = ({
     handleSave();
   };
 
-  useEffect(() => {
-    if (getFlightByIdData?.data) {
-      setFormData(createFlightFormData(getFlightByIdData.data));
-    }
-  }, [getFlightByIdData?.data]);
+  // useEffect(() => {
+  //   if (getFlightByIdData?.data) {
+  //     setFormData(createFlightFormData(getFlightByIdData.data));
+  //   }
+  // }, [getFlightByIdData?.data]);
 
   const stepTopRef = useRef<HTMLDivElement | null>(null);
 
@@ -210,12 +396,12 @@ const FlightUpdateModal = ({
     () => (
       <Grid container spacing={3}>
         <Grid size={12}>
-          {/* <InputTextField
+          <InputTextField
             value={formData.flightNo}
             onChange={(e) => handleInputChange("flightNo", e)}
             startIcon={<AirplaneTicket color="primary" />}
-          /> */}
-          {JSON.stringify(formData, null, 2)}
+          />
+          {/* {JSON.stringify(formData, null, 2)} */}
         </Grid>
 
         <Grid size={12}>
@@ -271,7 +457,7 @@ const FlightUpdateModal = ({
     () => (
       <Grid container spacing={3}>
         <Grid size={12}>
-          <SingleDateRangePickerComponent
+          {/* <SingleDateRangePickerComponent
             value={[
               formData.scheduledDeparture as number,
               formData?.scheduledArrival as number,
@@ -280,6 +466,19 @@ const FlightUpdateModal = ({
               handleInputChange("scheduledDeparture", range[0]);
               handleInputChange("scheduledArrival", range[1]);
             }}
+            language="en"
+          /> */}
+          <DateTimePickerComponent
+            value={formData.scheduledDeparture as number}
+            onChange={(e) => handleInputChange("scheduledDeparture", e)}
+            language="en"
+          />
+        </Grid>
+
+        <Grid size={12}>
+          <DateTimePickerComponent
+            value={formData.scheduledArrival as number}
+            onChange={(e) => handleInputChange("scheduledArrival", e)}
             language="en"
           />
         </Grid>
@@ -419,7 +618,7 @@ const FlightUpdateModal = ({
   const renderSeatBooking = useCallback(() => {
     return (
       <SeatBooking
-        flightId={formData.flightId as number}
+        flightId={flightId as number}
         seats={(formData.seats as Seat[]) ?? []}
       />
     );

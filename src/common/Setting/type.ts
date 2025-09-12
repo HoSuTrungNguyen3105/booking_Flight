@@ -123,3 +123,13 @@ export type Flight = {
   meals: Meal[];
   seats?: Seat[];
 };
+
+export type BaseFlight = Omit<
+  Flight,
+  | "flightId"
+  | "aircraft"
+  | "departureAirportRel"
+  | "arrivalAirportRel"
+  | "meals"
+  | "seats"
+>;

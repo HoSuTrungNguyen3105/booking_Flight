@@ -119,34 +119,7 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({ seats, flightId }) => {
   };
 
   const columns = ["A", "B", "C", "D", "E", "F"];
-  const rows = Array.from({ length: 80 }, (_, i) => i + 1); //todo
-
-  // Handle create new seat
-  const handleCreateSeat = () => {
-    // const newSeatId = `seat-${newSeat.seatNumber}${newSeat.seatRow}`;
-    const seat: CreateSeatDto = {
-      // id: newSeatId,
-      seatNumber: newSeat.seatNumber,
-      seatRow: newSeat.seatRow,
-      // type: newSeat.type,
-      isBooked: false,
-      flightId: flightId,
-      // isWindow: newSeat.isWindow,
-      // nearRestroom: newSeat.nearRestroom,
-    };
-
-    //setSeatsData(prev => [...prev, seat]);
-    setNewSeat({
-      seatNumber: 1,
-      seatRow: "A",
-      flightId: flightId,
-      // type: "ECONOMY",
-      // isWindow: false,
-      // nearRestroom: false,
-      isBooked: false,
-    });
-    setCreateFormOpen(false);
-  };
+  const rows = Array.from({ length: 40 }, (_, i) => i + 1); //todo
 
   // Show snackbar notification
   const showSnackbar = (
@@ -167,8 +140,6 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({ seats, flightId }) => {
         seatNumber: newSeat.seatNumber,
         isBooked: newSeat.isBooked,
       };
-
-      console.log("res", createSeatDto);
 
       const response = await refetchSeatCreate(createSeatDto);
 
@@ -215,36 +186,6 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({ seats, flightId }) => {
     showSnackbar(res?.resultMessage as string);
     setSelectedSeats([]);
     setMessage("");
-  };
-
-  // Handle generate seats
-  const handleGenerateSeats = () => {
-    const newSeats: Omit<Seat, "id">[] = [];
-
-    // for (let i = 1; i <= rows; i++) {
-    //   for (const col of columns) {
-    //     // Determine seat type based on position
-    //     let type = "ECONOMY";
-    //     if (i <= 5) type = "BUSINESS";
-    //     if (i <= 2) type = "VIP";
-
-    //     // Determine if window seat (first or last column)
-    //     const isWindow = col === columns[0] || col === columns[columns.length - 1];
-
-    //     // Determine if near restroom (every 15 rows)
-    //     const nearRestroom = i % 15 === 0;
-
-    //     newSeats.push({
-    //       seatNumber: i,
-    //       seatRow: col,
-    //       type,
-    //       isBooked: Math.random() < 0.2, // 20% chance of being booked
-    //       isWindow,
-    //       nearRestroom
-    //     });
-    //   }
-    // }
-    //  setSeats(newSeats);
   };
 
   const handleConfirmUpdate = () => {
