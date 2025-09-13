@@ -61,19 +61,19 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
     const [showPassword, setShowPassword] = useState(false);
     const [hasCopy, setHasCopy] = useState(false);
     const handleTogglePasswordVisibility = useCallback(() => {
-      setShowPassword((prev) => !prev);
-    }, []);
+      setShowPassword(!showPassword);
+    }, [showPassword]);
 
     const handleClear = useCallback(() => {
       onChange("");
     }, [onChange]);
 
-    const getMaskedPassword = (val: string) => {
-      if (!val) return "";
-      if (val.length <= 3) return val;
-      const maskedLength = val.length - 3;
-      return "•".repeat(maskedLength) + val.slice(-3);
-    };
+    // const getMaskedPassword = (val: string) => {
+    //   if (!val) return "";
+    //   if (val.length <= 3) return val;
+    //   const maskedLength = val.length - 3;
+    //   return "•".repeat(maskedLength) + val.slice(-3);
+    // };
 
     const handleCopyText = () => {
       navigator.clipboard.writeText(value || "");
@@ -124,11 +124,7 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
               : "text" // vẫn là text để dùng `•••` che
             : type
         }
-        value={
-          type === "password" && realease3phrase && !showPassword
-            ? getMaskedPassword(value || "")
-            : value
-        }
+        value={value}
         inputRef={ref}
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={onKeyDown}

@@ -152,6 +152,7 @@ const ManageLayout = () => {
     <Stack
       direction="column"
       sx={{
+        height: "100vh",
         transition: "width 200ms",
         overflow: "auto",
         scrollbarWidth: "none",

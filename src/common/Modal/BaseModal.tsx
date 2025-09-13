@@ -84,12 +84,7 @@ const BaseModal = ({
         <DialogTitle>{slots?.header || defaultHeader}</DialogTitle>
         <DialogContent
           sx={{
-            overflow: "auto", // cho phép cuộn
-            scrollbarWidth: "none", // ẩn scrollbar (Firefox)
-            msOverflowStyle: "none", // ẩn scrollbar (IE/Edge)
-            "&::-webkit-scrollbar": {
-              display: "none", // ẩn scrollbar (Chrome/Safari)
-            },
+            overflow: "auto", // Cho phép cuộn
             scrollBehavior: "smooth", // cuộn mượt
             ...sx,
           }}

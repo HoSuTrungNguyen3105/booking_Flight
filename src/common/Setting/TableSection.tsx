@@ -3,7 +3,7 @@ import type { GridRowDef } from "../DataGrid";
 import DataTable from "../DataGrid/index";
 import useClientPagination from "../../context/use[custom]/useClientPagination";
 import type { GridColDef, GridRowId } from "@mui/x-data-grid";
-import { memo, useCallback, useMemo } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 import Pagination from "../DataGrid/Pagination";
 
 type ITableSectionProps = {
@@ -14,6 +14,7 @@ type ITableSectionProps = {
   handleRowClick?: (row: GridRowDef) => void;
   nextRowClick?: boolean;
   largeThan?: boolean;
+  onSelectedRowIdsChange?: (selectedIds: GridRowId[]) => void; // Thêm prop callback mới
 };
 
 const TableSection = ({
@@ -24,7 +25,10 @@ const TableSection = ({
   nextRowClick,
   largeThan,
   isLoading,
+  onSelectedRowIdsChange, // Nhận prop callback
 }: ITableSectionProps) => {
+  const [selectedRowIds, setSelectedRowIds] = useState<GridRowId[]>([]); // State để lưu selected IDs
+
   const {
     totalElements,
     paginatedData,
@@ -39,6 +43,18 @@ const TableSection = ({
 
   const handleRowSelect = useCallback(
     (selectedIds: Set<GridRowId>) => {
+      // Chuyển Set thành Array
+      const selectedIdsArray = Array.from(selectedIds);
+
+      // Cập nhật state selectedRowIds
+      setSelectedRowIds(selectedIdsArray);
+
+      // Gọi callback nếu có
+      if (onSelectedRowIdsChange) {
+        onSelectedRowIdsChange(selectedIdsArray);
+      }
+
+      // Cập nhật rows với trạng thái checkYn
       setRows((prev) =>
         prev.map((row) => ({
           ...row,
@@ -46,7 +62,7 @@ const TableSection = ({
         }))
       );
     },
-    [setRows]
+    [setRows, onSelectedRowIdsChange]
   );
 
   const selectedRow = useMemo(

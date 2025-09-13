@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect, useCallback } from "react";
 import { type GridColDef } from "@mui/x-data-grid";
 import { useGetFlightData, useGetMeal } from "../../components/Api/useGetApi";
 import { Box, Button, Typography } from "@mui/material";
@@ -16,6 +16,26 @@ export default function MealList() {
   const [selectedFlightRows, setSelectedFlightRows] = useState<GridRowDef[]>(
     []
   );
+  const [mealRows, setMealRows] = useState<GridRowDef[]>([]);
+  const [flightRows, setFlightRows] = useState<GridRowDef[]>([]);
+
+  const handleMealRowSelection = (selectedIds: any[]) => {
+    setSelectedMealRows((prev) => {
+      const newSelectedRows = mealRows.filter((row) =>
+        selectedIds.includes(row.id)
+      );
+      return newSelectedRows;
+    });
+  };
+
+  const handleFlightRowSelection = (selectedIds: any[]) => {
+    setSelectedFlightRows((prev) => {
+      const newSelectedRows = flightRows.filter((row) =>
+        selectedIds.includes(row.id)
+      );
+      return newSelectedRows;
+    });
+  };
 
   const rowsFlightBookingData: GridRowDef[] = useMemo(
     () =>
@@ -36,6 +56,34 @@ export default function MealList() {
       })) ?? [],
     [getFlightData]
   );
+
+  useEffect(() => {
+    setMealRows(rowsFlightBookingData);
+  }, [rowsFlightBookingData]);
+
+  useEffect(() => {
+    setFlightRows(rowsGetFlightData);
+  }, [rowsGetFlightData]);
+
+  useEffect(() => {
+    setSelectedMealRows((prev) =>
+      prev.filter((selectedRow) =>
+        mealRows.some((row) => row.id === selectedRow.id)
+      )
+    );
+  }, [mealRows]);
+
+  useEffect(() => {
+    setSelectedFlightRows((prev) =>
+      prev.filter((selectedRow) =>
+        flightRows.some((row) => row.id === selectedRow.id)
+      )
+    );
+  }, [flightRows]);
+
+  const handleDeleteMeals = useCallback((mealIds: GridRowDef[]) => {
+    console.log("Deleting meals with IDs:", mealIds);
+  }, []);
 
   const columnFlightBookingData: GridColDef[] = [
     { field: "id", headerName: "ID", flex: 1 },
@@ -102,15 +150,16 @@ export default function MealList() {
 
   return (
     <div style={{ height: 500, width: "100%" }}>
-      {/* Bảng Meal */}
       <Typography variant="h6" gutterBottom>
         Meal List
       </Typography>
+
       <TableSection
-        rows={rowsFlightBookingData}
+        rows={mealRows}
         columns={columnFlightBookingData}
         isLoading={loadingFlightBookingData}
-        setRows={setSelectedMealRows}
+        setRows={setMealRows}
+        onSelectedRowIdsChange={handleMealRowSelection}
         nextRowClick
         largeThan
       />
@@ -118,6 +167,11 @@ export default function MealList() {
       {selectedMealRows.length > 0 && (
         <Box sx={{ my: 2, p: 2, bgcolor: "grey.100" }}>
           <Typography>Selected Meals: {selectedMealRows.length}</Typography>
+          <ul>
+            {selectedMealRows.map((row) => (
+              <li key={row.id}>{row.name || row.id}</li>
+            ))}
+          </ul>
           <Button
             variant="outlined"
             onClick={() => setSelectedMealRows([])}
@@ -125,21 +179,27 @@ export default function MealList() {
           >
             Clear Meal Selection
           </Button>
+          <Button
+            variant="contained"
+            onClick={() => handleDeleteMeals(selectedMealRows)}
+            sx={{ mt: 1 }}
+          >
+            Delete Meal
+          </Button>
         </Box>
       )}
 
-      {/* Flight Modal Trigger */}
       <FlightModalTriggerManagement onSuccess={() => refetchGetFlightData()} />
 
-      {/* Bảng Flight */}
       <Typography variant="h6" gutterBottom sx={{ mt: 4 }}>
         Flight List
       </Typography>
       <TableSection
         columns={columnsFlightData}
-        setRows={setSelectedFlightRows}
+        setRows={setFlightRows}
         isLoading={loadingFlightData}
-        rows={rowsGetFlightData}
+        rows={flightRows}
+        onSelectedRowIdsChange={handleFlightRowSelection}
         nextRowClick
         largeThan
       />
@@ -147,6 +207,11 @@ export default function MealList() {
       {selectedFlightRows.length > 0 && (
         <Box sx={{ my: 2, p: 2, bgcolor: "grey.100" }}>
           <Typography>Selected Flights: {selectedFlightRows.length}</Typography>
+          <ul>
+            {selectedFlightRows.map((row) => (
+              <li key={row.id}>{row.flightNo || row.id}</li>
+            ))}
+          </ul>
           <Button
             variant="outlined"
             onClick={() => setSelectedFlightRows([])}

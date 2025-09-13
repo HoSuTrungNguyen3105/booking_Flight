@@ -47,8 +47,7 @@ const EmptyRowsOverlay = memo(
     <Stack
       justifyContent="center"
       alignItems="center"
-      spacing={2}
-      height="60vh"
+      height="100%"
       sx={{ width: "100%", textAlign: "center" }}
     >
       <Box

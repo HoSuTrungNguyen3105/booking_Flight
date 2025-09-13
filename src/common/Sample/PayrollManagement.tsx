@@ -34,7 +34,10 @@ import {
   GridActionsCellItem,
   type GridColDef,
 } from "@mui/x-data-grid";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import DataTable, { type GridRowDef } from "../../common/DataGrid/index";
+import TableSection from "../Setting/TableSection";
+import CreatePayrollModal from "./modal/CreatePayrollModal";
 
 interface Payroll {
   id: number;
@@ -57,12 +60,19 @@ interface Payroll {
   };
 }
 
+export type PayrollProps = {
+  baseSalary: number;
+  allowances: number;
+  deductions: number;
+  tax: number;
+};
+
 const PayrollManagement = () => {
   const [selectedEmployee, setSelectedEmployee] = useState<number>(0);
   const [month, setMonth] = useState<number>(new Date().getMonth() + 1);
   const [year, setYear] = useState<number>(new Date().getFullYear());
   const [openGenerateDialog, setOpenGenerateDialog] = useState(false);
-  const [payrollData, setPayrollData] = useState({
+  const [payrollData, setPayrollData] = useState<PayrollProps>({
     baseSalary: 0,
     allowances: 0,
     deductions: 0,
@@ -106,7 +116,7 @@ const PayrollManagement = () => {
     {
       field: "employee",
       headerName: "Nhân viên",
-      width: 200,
+      flex: 1,
       renderCell: (params) => (
         <Stack spacing={0.5}>
           <Typography variant="subtitle2">
@@ -121,7 +131,7 @@ const PayrollManagement = () => {
     {
       field: "period",
       headerName: "Kỳ lương",
-      width: 120,
+      flex: 1,
       renderCell: (params) => (
         <Typography>
           {params.row.month}/{params.row.year}
@@ -131,8 +141,7 @@ const PayrollManagement = () => {
     {
       field: "baseSalary",
       headerName: "Lương cơ bản",
-      width: 150,
-      type: "number",
+      flex: 1,
       renderCell: (params) => (
         <Typography fontWeight="medium">
           {params.value.toLocaleString()}đ
@@ -142,29 +151,25 @@ const PayrollManagement = () => {
     {
       field: "allowances",
       headerName: "Phụ cấp",
-      width: 130,
-      type: "number",
+      flex: 1,
       renderCell: (params) => `${params.value.toLocaleString()}đ`,
     },
     {
       field: "deductions",
       headerName: "Khấu trừ",
-      width: 130,
-      type: "number",
+      flex: 1,
       renderCell: (params) => `${params.value.toLocaleString()}đ`,
     },
     {
       field: "tax",
       headerName: "Thuế",
-      width: 130,
-      type: "number",
+      flex: 1,
       renderCell: (params) => `${params.value.toLocaleString()}đ`,
     },
     {
       field: "netPay",
       headerName: "Thực lĩnh",
-      width: 150,
-      type: "number",
+      flex: 1,
       renderCell: (params) => (
         <Typography variant="subtitle1" color="primary" fontWeight="bold">
           {params.value.toLocaleString()}đ
@@ -174,7 +179,7 @@ const PayrollManagement = () => {
     {
       field: "status",
       headerName: "Trạng thái",
-      width: 130,
+      flex: 1,
       renderCell: (params) => (
         <Chip
           label={params.value === "FINALIZED" ? "Đã thanh toán" : "Bản nháp"}
@@ -186,7 +191,7 @@ const PayrollManagement = () => {
     {
       field: "generatedAt",
       headerName: "Ngày tạo",
-      width: 150,
+      flex: 1,
       renderCell: (params) =>
         new Date(params.value).toLocaleDateString("vi-VN"),
     },
@@ -194,7 +199,7 @@ const PayrollManagement = () => {
       field: "actions",
       type: "actions",
       headerName: "Thao tác",
-      width: 150,
+      flex: 1,
       renderCell: (params) =>
         [
           <GridActionsCellItem
@@ -229,6 +234,31 @@ const PayrollManagement = () => {
   const handleFinalize = (id: number) => {
     console.log("Finalize:", id);
   };
+
+  const [mealRows, setMealRows] = useState<GridRowDef[]>([]);
+
+  const [selectedMealRows, setSelectedMealRows] = useState<GridRowDef[]>([]);
+
+  const handleMealRowSelection = (selectedIds: any[]) => {
+    setSelectedMealRows((prev) => {
+      const newSelectedRows = mealRows.filter((row) =>
+        selectedIds.includes(row.id)
+      );
+      return newSelectedRows;
+    });
+  };
+
+  // useEffect(() => {
+  //   setMealRows(payrolls);
+  // }, [payrolls]);
+
+  useEffect(() => {
+    setSelectedMealRows((prev) =>
+      prev.filter((selectedRow) =>
+        mealRows.some((row) => row.id === selectedRow.id)
+      )
+    );
+  }, [mealRows]);
 
   return (
     <Box sx={{ p: 3, height: "100vh" }}>
@@ -307,30 +337,25 @@ const PayrollManagement = () => {
       </Grid>
 
       {/* Data Grid */}
-      <Card sx={{ height: "calc(100vh - 250px)" }}>
-        <DataGrid
-          rows={payrolls}
-          columns={columns}
-          pageSizeOptions={[5, 10, 25]}
-          initialState={{
-            pagination: {
-              paginationModel: { page: 0, pageSize: 10 },
-            },
-          }}
-          sx={{
-            "& .MuiDataGrid-cell": {
-              borderBottom: "1px solid #f0f0f0",
-            },
-            "& .MuiDataGrid-columnHeaders": {
-              backgroundColor: "#f5f5f5",
-              borderBottom: "2px solid #e0e0e0",
-            },
-          }}
-        />
-      </Card>
+      <TableSection
+        rows={payrolls}
+        isLoading={false}
+        setRows={setMealRows}
+        onSelectedRowIdsChange={handleMealRowSelection}
+        nextRowClick
+        largeThan
+        columns={columns}
+      />
 
-      {/* Generate Payroll Dialog */}
-      <Dialog
+      <CreatePayrollModal
+        open={openGenerateDialog}
+        onClose={() => setOpenGenerateDialog(false)}
+        payrollData={payrollData}
+        onSuccess={() => setOpenGenerateDialog(false)}
+        // selectedRows={selectedMealRows}
+      />
+
+      {/* <Dialog
         open={openGenerateDialog}
         onClose={() => setOpenGenerateDialog(false)}
         maxWidth="md"
@@ -342,140 +367,7 @@ const PayrollManagement = () => {
           </Typography>
         </DialogTitle>
         <DialogContent>
-          <Grid container spacing={3} sx={{ mt: 1 }}>
-            <Grid size={12}>
-              <FormControl fullWidth>
-                <InputLabel>Nhân viên</InputLabel>
-                <Select
-                  value={selectedEmployee}
-                  onChange={(e) => setSelectedEmployee(Number(e.target.value))}
-                  label="Nhân viên"
-                >
-                  <MenuItem value={1}>Nguyễn Văn A (NV001)</MenuItem>
-                  <MenuItem value={2}>Trần Thị B (NV002)</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-
-            <Grid size={12}>
-              <FormControl fullWidth>
-                <InputLabel>Tháng</InputLabel>
-                <Select
-                  value={month}
-                  onChange={(e) => setMonth(Number(e.target.value))}
-                  label="Tháng"
-                >
-                  {Array.from({ length: 12 }, (_, i) => (
-                    <MenuItem key={i + 1} value={i + 1}>
-                      Tháng {i + 1}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-
-            <Grid size={12}>
-              <FormControl fullWidth>
-                <InputLabel>Năm</InputLabel>
-                <Select
-                  value={year}
-                  onChange={(e) => setYear(Number(e.target.value))}
-                  label="Năm"
-                >
-                  {[2023, 2024, 2025].map((year) => (
-                    <MenuItem key={year} value={year}>
-                      {year}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-
-            <Grid size={12}>
-              <TextField
-                fullWidth
-                label="Lương cơ bản"
-                type="number"
-                value={payrollData.baseSalary}
-                onChange={(e) =>
-                  setPayrollData({
-                    ...payrollData,
-                    baseSalary: Number(e.target.value),
-                  })
-                }
-                InputProps={{
-                  endAdornment: "đ",
-                }}
-              />
-            </Grid>
-
-            <Grid size={12}>
-              <TextField
-                fullWidth
-                label="Phụ cấp"
-                type="number"
-                value={payrollData.allowances}
-                onChange={(e) =>
-                  setPayrollData({
-                    ...payrollData,
-                    allowances: Number(e.target.value),
-                  })
-                }
-                InputProps={{
-                  endAdornment: "đ",
-                }}
-              />
-            </Grid>
-
-            <Grid size={12}>
-              <TextField
-                fullWidth
-                label="Khấu trừ"
-                type="number"
-                value={payrollData.deductions}
-                onChange={(e) =>
-                  setPayrollData({
-                    ...payrollData,
-                    deductions: Number(e.target.value),
-                  })
-                }
-                InputProps={{
-                  endAdornment: "đ",
-                }}
-              />
-            </Grid>
-
-            <Grid size={12}>
-              <TextField
-                fullWidth
-                label="Thuế"
-                type="number"
-                value={payrollData.tax}
-                onChange={(e) =>
-                  setPayrollData({
-                    ...payrollData,
-                    tax: Number(e.target.value),
-                  })
-                }
-                InputProps={{
-                  endAdornment: "đ",
-                }}
-              />
-            </Grid>
-
-            <Grid size={12}>
-              <Alert severity="info">
-                Thực lĩnh:{" "}
-                {(
-                  payrollData.baseSalary +
-                  payrollData.allowances -
-                  payrollData.deductions -
-                  payrollData.tax
-                ).toLocaleString()}
-                đ
-              </Alert>
-            </Grid>
-          </Grid>
+          
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenGenerateDialog(false)}>Hủy</Button>
@@ -486,7 +378,7 @@ const PayrollManagement = () => {
             Tạo Bảng Lương
           </Button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
     </Box>
   );
 };
