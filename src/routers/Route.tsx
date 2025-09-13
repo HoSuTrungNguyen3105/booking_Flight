@@ -2,7 +2,7 @@ import { createBrowserRouter, type RouteObject } from "react-router-dom";
 import MainLayout from "../components/Layout/MainLayout";
 import ErrorPage from "../components/Layout/ErrorPage";
 import Guard from "../guard/Guard";
-import Home from "../components/Home/Home";
+// import Home from "../components/Home/Home";
 // import Setting from "../common/Setting/Setting";
 import { FileUpload } from "../common/FileUploader";
 import Hero from "../components/Hero/Hero";
@@ -32,6 +32,7 @@ import FlightPage from "../components/Admin/component/FlightPage";
 import AccountYn from "../components/Auth/AccountYn";
 import LeaveRequestGrid from "../components/Admin/component/LeaveRequestGrid";
 import PayrollManagement from "../common/Sample/PayrollManagement";
+import DataSecure from "../common/Setting/DataSecure";
 
 const routes = [
   {
@@ -103,10 +104,10 @@ const routes = [
         path: ROUTE_PATHS.BOOK_TICKET.replace("/", ""),
         element: <BookTicket />,
       },
-      {
-        path: ROUTE_PATHS.SAMPLE.replace("/", ""),
-        element: <Home />,
-      },
+      // {
+      //   path: ROUTE_PATHS.SAMPLE.replace("/", ""),
+      //   element: <Home />,
+      // },
     ],
   },
   {
@@ -133,6 +134,10 @@ const routes = [
       {
         path: "unlock_request", //bookseat
         element: <UnlockRequestTable />,
+      },
+      {
+        path: "data-secure",
+        element: <DataSecure />,
       },
       {
         path: "flightmeals",
@@ -190,10 +195,10 @@ const routes = [
         path: "aircraft",
         element: <AircraftPage />,
       },
-      {
-        path: ROUTE_PATHS.SAMPLE_BUTTON.replace("/", ""),
-        element: <Home />,
-      },
+      // {
+      //   path: ROUTE_PATHS.SAMPLE_BUTTON.replace("/", ""),
+      //   element: <Home />,
+      // },
     ],
   },
   {

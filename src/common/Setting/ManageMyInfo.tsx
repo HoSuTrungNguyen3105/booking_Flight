@@ -63,8 +63,9 @@ const ManageMyInfo = () => {
           <Button onClick={() => toggleOpenModal("addUser")} />
         </Typography>
       </Box>
+
       <DataTable
-        checkboxSelection={false}
+        checkboxSelection={true}
         onSortModelChange={onSortModelChange}
         sortModel={sortModel}
         loading={loading}

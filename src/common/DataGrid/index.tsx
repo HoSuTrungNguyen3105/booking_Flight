@@ -3,7 +3,6 @@ import type {
   GridRowModel,
   GridColDef,
   GridSortModel,
-  GridRowSelectionModel,
 } from "@mui/x-data-grid";
 import { memo, useCallback, type ReactNode } from "react";
 import { Loading } from "../Loading/Loading";
@@ -22,11 +21,11 @@ interface IDataTableProps {
   columnHeaderHeight?: number;
   hideColumnHeaderCheckbox?: boolean;
   checkboxSelection?: boolean;
-  selectedRows?: GridRowSelectionModel; // thay vì GridRowId[]
+  selectedRows?: GridRowId[];
   sortModel?: GridSortModel;
   emptyContent?: ReactNode;
   emptyItemIcon?: string;
-  onRowSelect?: (rowIds: GridRowId[]) => void;
+  onRowSelect?: (row: Set<GridRowId>) => void;
   onRowClick?: (row: GridRowDef) => void;
   onSortModelChange?: (model: GridSortModel) => void;
 }
@@ -69,7 +68,6 @@ const EmptyRowsOverlay = memo(
     </Stack>
   )
 );
-EmptyRowsOverlay.displayName = "EmptyRowsOverlay";
 
 // Styled DataGrid
 const StyledDataGrid = styled(DataGrid)<{
@@ -128,24 +126,6 @@ const DataTable = ({
     [emptyContent]
   );
 
-  // Sửa hàm normalizeSelectionModel
-  const normalizeSelectionModel = useCallback(
-    (model: GridRowSelectionModel | undefined): GridRowId[] => {
-      if (!model) return [];
-      return Array.isArray(model) ? model : [model];
-    },
-    []
-  );
-
-  // Xử lý selection change
-  const handleSelectionModelChange = useCallback(
-    (newSelection: GridRowSelectionModel) => {
-      const ids = normalizeSelectionModel(newSelection);
-      onRowSelect(ids);
-    },
-    [onRowSelect, normalizeSelectionModel]
-  );
-
   return (
     <StyledDataGrid
       rows={rows}
@@ -158,10 +138,12 @@ const DataTable = ({
       hideColumnHeaderCheckbox={hideColumnHeaderCheckbox}
       sortModel={sortModel}
       onSortModelChange={(model) => onSortModelChange(model)}
-      rowSelectionModel={selectedRows} // kiểu GridRowSelectionModel
-      onRowSelectionModelChange={(newSelection: GridRowSelectionModel) => {
-        const ids = normalizeSelectionModel(newSelection);
-        onRowSelect?.(ids); // trả về GridRowId[] cho parent
+      rowSelectionModel={{
+        type: "include",
+        ids: new Set(selectedRows),
+      }}
+      onRowSelectionModelChange={(row) => {
+        onRowSelect(row.ids);
       }}
       slots={{
         noRowsOverlay: noRowOverlay,
@@ -173,5 +155,7 @@ const DataTable = ({
     />
   );
 };
+
+EmptyRowsOverlay.displayName = "EmptyRowsOverlay";
 
 export default memo(DataTable);

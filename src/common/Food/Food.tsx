@@ -110,13 +110,13 @@ const Food = () => {
 
   return (
     <Box p={2} display="flex" flexDirection="column" gap={4}>
-      <SeatManager
+      {/* <SeatManager
         flightList={flightList}
         fetchSeats={fetchSeats}
         addSeat={addSeat}
-      />
+      /> */}
 
-      {/* <Box>
+      <Box>
         <Typography variant="h6" mb={1}>
           Flight Meals
         </Typography>
@@ -152,7 +152,7 @@ const Food = () => {
           rows={rows.map((r) => r.meal)}
           columns={mealCols}
         />
-      </Box> */}
+      </Box>
     </Box>
   );
 };

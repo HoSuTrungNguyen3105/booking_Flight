@@ -54,7 +54,6 @@ const ChangeLanguageModal = ({
         maxHeight="30rem"
         sx={{
           padding: 2,
-          background: "linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%)",
           borderRadius: "12px",
           border: "1px solid",
           borderColor: "divider",
@@ -109,6 +108,7 @@ const ChangeLanguageModal = ({
             options={optionLanguage}
             value={pendingLang?.value || selectedLang?.value}
             onChange={handleLanguageSelect}
+            sx={{ minWidth: 700 }}
           />
         </Box>
 
@@ -203,6 +203,7 @@ const ChangeLanguageModal = ({
       title={"Language & Payment Setup"}
       Icon={PrivacyTipIcon}
       slots={{ content: renderContent(), actions: renderActions() }}
+      sx={{ maxWidth: "xs", width: "lg" }}
     />
   );
 };

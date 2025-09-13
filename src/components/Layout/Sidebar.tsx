@@ -21,7 +21,7 @@ const ResizeHandle = styled("div")({
   right: 0,
   transform: "translateY(-50%)",
   width: 6,
-  height: 40,
+  height: 35,
   backgroundColor: "#ccc",
   cursor: "col-resize",
   zIndex: 10,
@@ -30,6 +30,8 @@ const ResizeHandle = styled("div")({
 const NavContainer = styled(Box)({
   height: "100%",
   overflow: "hidden",
+  display: "flex",
+  flexDirection: "column",
 });
 
 const Sidebar = ({ children }: PropsWithChildren) => {
@@ -63,7 +65,7 @@ const Sidebar = ({ children }: PropsWithChildren) => {
       <Box
         sx={{
           width: "4px",
-          height: "40px",
+          height: "35px",
           bgcolor: "#999",
           borderRadius: "2px",
         }}

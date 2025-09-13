@@ -1,5 +1,5 @@
-import React, { memo } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import React, { memo, useEffect, useRef } from "react";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import AsideLnb from "./Sidebar";
 import {
   Box,
@@ -42,6 +42,8 @@ const ResizeLayout = () => {
             sx={(theme) => ({
               borderBottom: `1px solid ${theme.palette.grey[200]}`,
               pl: 2 + level * 2,
+              py: 0.5,
+              minHeight: "36px",
             })}
             onClick={() => {
               if (hasSubItems) {
@@ -52,7 +54,15 @@ const ResizeLayout = () => {
             }}
           >
             {item.icon && (
-              <ListItemIcon sx={{ minWidth: 32, fontSize: `${14 - level}px` }}>
+              <ListItemIcon
+                sx={{
+                  minWidth: 32,
+                  fontSize: `${14 - level}px`,
+                  "& .MuiSvgIcon-root": {
+                    fontSize: 18,
+                  },
+                }}
+              >
                 {item.icon}
               </ListItemIcon>
             )}
@@ -82,14 +92,13 @@ const ResizeLayout = () => {
       <Box
         sx={(theme) => ({
           height: "100%",
-          py: "20px",
+          py: 1,
           bgcolor: theme.palette.background.default,
           border: `1px solid ${theme.palette.grey[200]}`,
           overflowY: "auto",
           display: "flex",
           flexDirection: "column",
           minHeight: 0,
-
           scrollbarWidth: "none",
           "&::-webkit-scrollbar": {
             display: "none",
@@ -100,6 +109,7 @@ const ResizeLayout = () => {
         {menuData.map((section, index) => (
           <List
             key={index}
+            dense
             subheader={
               <Typography
                 sx={{
@@ -129,16 +139,37 @@ const ResizeLayout = () => {
 };
 
 const ManageLayout = () => {
+  const location = useLocation();
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (contentRef.current) {
+      contentRef.current.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [location.pathname]);
+
   return (
     <Stack
       direction="column"
-      sx={{ minHeight: "100vh", border: "1px solid red" }}
+      sx={{
+        transition: "width 200ms",
+        overflow: "auto",
+        scrollbarWidth: "none",
+        "&::-webkit-scrollbar": {
+          width: 6,
+        },
+        "&::-webkit-scrollbar-thumb": {
+          backgroundColor: "grey.400",
+          borderRadius: 2,
+        },
+      }}
     >
       <Header />
       <Box component="main" sx={{ height: "calc(100vh - 48px)" }} flexGrow={1}>
         <Box display="flex" height="100%">
           <ResizeLayout />
           <Box
+            ref={contentRef}
             component="article"
             flexGrow={1}
             p={2}
@@ -146,10 +177,17 @@ const ManageLayout = () => {
             sx={{
               transition: "width 200ms",
               overflow: "auto",
-              scrollbarWidth: "none", // Firefox
+              scrollbarWidth: "none",
               "&::-webkit-scrollbar": {
-                display: "none", // Chrome, Safari
+                width: 6,
               },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "grey.400",
+                borderRadius: 2,
+              },
+              border: `1px solid`,
+              borderColor: "grey.300",
+              borderRadius: 1,
             }}
           >
             <Outlet />

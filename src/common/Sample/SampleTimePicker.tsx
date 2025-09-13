@@ -29,7 +29,7 @@ const SampleTimePicker = () => {
         <Single12Timepicker status="ReadOnly" />
         <Single12Timepicker type="Confirmed" />
         <Single12Timepicker type="Error" />
-        <Single12Timepicker type="Warning" language="kr" />
+        <Single12Timepicker type="Warning" language="ko" />
       </Box>
     </Box>
   );

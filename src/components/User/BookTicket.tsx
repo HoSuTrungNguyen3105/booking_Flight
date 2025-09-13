@@ -19,8 +19,8 @@ import { FlightOutlined, RefreshOutlined } from "@mui/icons-material";
 import Zigzag from "../../common/CustomRender/Zigzag";
 import FormRow from "../../common/CustomRender/FormRow";
 import { Dropdown } from "../../common/Dropdown/Dropdown";
-import type { Flight } from "../../common/Setting/type";
 import type { DataFlight } from "../../utils/type";
+import type { Flight } from "../../common/Setting/type";
 
 const BookTicket = () => {
   const [flightParams, setFlightParams] = React.useState<UserSearchType>({
@@ -31,13 +31,14 @@ const BookTicket = () => {
     arrivalAirport: "",
     passengerCount: 0,
   });
+
   const { reset: resetSearch, control: controlSearch } =
     useForm<UserSearchType>({
       defaultValues: flightParams,
     });
 
   const { flightList } = useFlightList();
-  const [flightListData, setFlightList] = React.useState<DataFlight[]>([]);
+  const [flightListData, setFlightList] = React.useState<Flight[]>([]);
 
   React.useEffect(() => {
     if (flightList?.list) {
@@ -276,7 +277,7 @@ const BookTicket = () => {
                               }}
                             >
                               <Typography variant="h6">
-                                {formatDate(flight.scheduledDeparture)}
+                                {flight.scheduledDeparture}
                               </Typography>
                               <Box
                                 sx={{
@@ -313,7 +314,7 @@ const BookTicket = () => {
                               }}
                             >
                               <Typography variant="h6">
-                                {formatDate(flight.scheduledArrival)}
+                                {flight.scheduledArrival}
                               </Typography>
                               <Box
                                 sx={{

@@ -18,22 +18,6 @@ const Header = () => {
   const open = useMemo(() => Boolean(anchorEl), [anchorEl]);
 
   const [jobCode, setJobCode] = useState<string>("");
-  // const [jobCodeOptions, setJobCodeOptions] = useState<DropdownOption[]>([]);
-
-  const jobCodeOptions: ActionType[] = [
-    {
-      label: "Trang chủ",
-      value: "",
-    },
-    {
-      label: "Khách hàng",
-      value: "flightmeals",
-    },
-    {
-      label: "Báo cáo",
-      value: "notifications",
-    },
-  ];
 
   const handleClick = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
     setAnchorEl(event.currentTarget);
@@ -61,12 +45,6 @@ const Header = () => {
   );
 
   const renderUserMenu = useCallback(() => {
-    // if (!user) return null;
-
-    //   "passengerId": 5,
-    // "flightId": 5,
-    // "seatIds": [6]
-
     return (
       <Box
         display="flex"
@@ -123,7 +101,6 @@ const Header = () => {
     handleClickProfile,
     handleClose,
     jobCode,
-    jobCodeOptions,
     logout,
     open,
     user,

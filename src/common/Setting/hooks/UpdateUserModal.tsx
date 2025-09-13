@@ -37,34 +37,25 @@ const UpdateUserModal = ({
   }, [handleSubmit]);
 
   const renderContent = useCallback(() => {
-    const renderRows = () => {
-      return (
-        <Stack>
-          <Typography variant="body1">데이터 목록</Typography>
-          {formDetailConfig
-            .filter((fieldItem) => !fieldItem.disabled)
-            .map(({ disabled, fields }) => (
-              <Box key={fields.id}>
-                <Typography variant="body1" sx={{ mb: 1 }}>
-                  {fields.label}
-                </Typography>
-
-                <FieldRenderer
-                  {...fields}
-                  value={formData[fields.id as keyof typeof formData] ?? ""}
-                  onChange={(val) => handleChange(fields.id, val)}
-                />
-              </Box>
-            ))}
-        </Stack>
-      );
-    };
-
     return (
-      <Box>
+      <>
         <Divider sx={{ mb: 2, marginTop: 0, marginBottom: "22px" }} />
-        {renderRows()}
-      </Box>
+        <Typography variant="body1">데이터 목록</Typography>
+        {formDetailConfig
+          .filter((fieldItem) => !fieldItem.disabled)
+          .map(({ disabled, fields }) => (
+            <Box key={fields.id}>
+              <Typography variant="body1" sx={{ mb: 1 }}>
+                {fields.label}
+              </Typography>
+              <FieldRenderer
+                {...fields}
+                value={formData[fields.id as keyof typeof formData] ?? ""}
+                onChange={(val) => handleChange(fields.id, val)}
+              />
+            </Box>
+          ))}
+      </>
     );
   }, [formDetailConfig, formData]);
 

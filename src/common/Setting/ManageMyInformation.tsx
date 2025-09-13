@@ -98,7 +98,6 @@ const ManageMyInformation = () => {
       <UserInfoSection
         myInfo={myInfo as UserData}
         onChange={handleUpdateMyInfo}
-        handleUploadFile={handleImageUpload}
       />
       {/* <ManagePathAdminSection /> */}
       <DataAccessPermissionSection />

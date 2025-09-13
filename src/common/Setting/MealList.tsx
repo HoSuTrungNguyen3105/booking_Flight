@@ -12,17 +12,17 @@ export default function MealList() {
   const { getFlightData, refetchGetFlightData, loadingFlightData } =
     useGetFlightData();
 
-  const [rows, setRows] = useState<GridRowDef[]>([]);
-
-  const handleSetRows = (newRows: React.SetStateAction<GridRowDef[]>) => {
-    setRows(newRows);
-  };
+  const [selectedMealRows, setSelectedMealRows] = useState<GridRowDef[]>([]);
+  const [selectedFlightRows, setSelectedFlightRows] = useState<GridRowDef[]>(
+    []
+  );
 
   const rowsFlightBookingData: GridRowDef[] = useMemo(
     () =>
       flightBookingData?.list?.map((f) => ({
         ...f,
         id: f.id,
+        checkYn: false,
       })) ?? [],
     [flightBookingData]
   );
@@ -32,15 +32,16 @@ export default function MealList() {
       getFlightData?.list?.map((f) => ({
         ...f,
         id: f.flightId,
+        checkYn: false,
       })) ?? [],
-    [flightBookingData]
+    [getFlightData]
   );
 
   const columnFlightBookingData: GridColDef[] = [
-    { field: "id", headerName: "ID", width: 80 },
+    { field: "id", headerName: "ID", flex: 1 },
     { field: "name", headerName: "Tên món", flex: 1 },
-    { field: "mealType", headerName: "Loại", width: 130 },
-    { field: "price", headerName: "Giá ($)", width: 120, type: "number" },
+    { field: "mealType", headerName: "Loại", flex: 1 },
+    { field: "price", headerName: "Giá ($)", flex: 1 },
     { field: "description", headerName: "Mô tả", flex: 1.5 },
     {
       field: "flightMeals",
@@ -90,14 +91,10 @@ export default function MealList() {
       flex: 1,
       renderCell: (params) => {
         return (
-          <>
-            {
-              <FlightModalTriggerManagement
-                onSuccess={() => refetchGetFlightData()}
-                id={params.row.id}
-              />
-            }
-          </>
+          <FlightModalTriggerManagement
+            onSuccess={() => refetchGetFlightData()}
+            id={params.row.id}
+          />
         );
       },
     },
@@ -105,34 +102,60 @@ export default function MealList() {
 
   return (
     <div style={{ height: 500, width: "100%" }}>
+      {/* Bảng Meal */}
+      <Typography variant="h6" gutterBottom>
+        Meal List
+      </Typography>
       <TableSection
         rows={rowsFlightBookingData}
         columns={columnFlightBookingData}
         isLoading={loadingFlightBookingData}
-        setRows={setRows}
+        setRows={setSelectedMealRows}
         nextRowClick
         largeThan
       />
-      {
-        <FlightModalTriggerManagement
-          onSuccess={() => refetchGetFlightData()}
-        />
-      }
-      <Typography>Flight list</Typography>
-      {rows && rows.length > 0 && (
-        <Box>
-          <Typography>Selected Rows: {rows.length}</Typography>
-          <Button onClick={() => handleSetRows([])}>Clear Selection</Button>
+
+      {selectedMealRows.length > 0 && (
+        <Box sx={{ my: 2, p: 2, bgcolor: "grey.100" }}>
+          <Typography>Selected Meals: {selectedMealRows.length}</Typography>
+          <Button
+            variant="outlined"
+            onClick={() => setSelectedMealRows([])}
+            sx={{ mt: 1 }}
+          >
+            Clear Meal Selection
+          </Button>
         </Box>
       )}
+
+      {/* Flight Modal Trigger */}
+      <FlightModalTriggerManagement onSuccess={() => refetchGetFlightData()} />
+
+      {/* Bảng Flight */}
+      <Typography variant="h6" gutterBottom sx={{ mt: 4 }}>
+        Flight List
+      </Typography>
       <TableSection
         columns={columnsFlightData}
-        setRows={setRows}
+        setRows={setSelectedFlightRows}
         isLoading={loadingFlightData}
         rows={rowsGetFlightData}
         nextRowClick
         largeThan
       />
+
+      {selectedFlightRows.length > 0 && (
+        <Box sx={{ my: 2, p: 2, bgcolor: "grey.100" }}>
+          <Typography>Selected Flights: {selectedFlightRows.length}</Typography>
+          <Button
+            variant="outlined"
+            onClick={() => setSelectedFlightRows([])}
+            sx={{ mt: 1 }}
+          >
+            Clear Flight Selection
+          </Button>
+        </Box>
+      )}
     </div>
   );
 }

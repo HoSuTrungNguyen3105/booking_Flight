@@ -27,6 +27,7 @@ type SideBarValueTypes =
   | "international"
   | "overview"
   | "food"
+  | "bookticket"
   | "sampleTimepicker"
   | "manage-my-info"
   | "special"
@@ -104,6 +105,7 @@ export const menuData: MenuSection[] = [
             subItems: [
               { id: "flightmeals", label: "Nhân viên" },
               { id: "domestic", label: "Nội địa" },
+              { id: "bookticket", label: "book ticket" },
               { id: "international", label: "Quốc tế" },
               { id: "sampleDatePicker", label: "secure" },
               { id: "payroll-management", label: "Quản lý bảng lương" },

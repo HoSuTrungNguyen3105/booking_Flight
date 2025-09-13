@@ -11,14 +11,15 @@ import type { DataFlight } from "../../../utils/type";
 import { useState } from "react";
 import { useFlightList } from "../../Api/usePostApi";
 import ImageFlight from "../../../svgs/wallpaper.jpg";
+import type { Flight } from "../../../common/Setting/type";
 const FlightPage = () => {
   const { flightList } = useFlightList();
-  const [flights] = useState<DataFlight[]>(flightList?.list as DataFlight[]);
-  const [selectedFlight, setSelectedFlight] = useState<DataFlight | null>(null);
+  const [flights] = useState<Flight[]>(flightList?.list as Flight[]);
+  const [selectedFlight, setSelectedFlight] = useState<Flight | null>(null);
   const [passengerName, setPassengerName] = useState("");
   const [message, setMessage] = useState("");
 
-  const handleSelectFlight = (flight: DataFlight) => {
+  const handleSelectFlight = (flight: Flight) => {
     setSelectedFlight(flight);
     setMessage("");
   };

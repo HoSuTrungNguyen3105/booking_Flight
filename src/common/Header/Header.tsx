@@ -165,19 +165,7 @@ export const Header = () => {
               >
                 <GridMenuIcon />
               </IconButton>
-            ) : (
-              <Button
-                variant="contained"
-                sx={{
-                  borderRadius: "25px",
-                  textTransform: "none",
-                  fontWeight: "bold",
-                  px: 3,
-                }}
-              >
-                Book a Trip
-              </Button>
-            )}
+            ) : null}
 
             <Stack direction="row" alignItems="center" spacing={1}>
               <LanguageButton />

@@ -29,9 +29,11 @@ const RequestLeaveActionModal = ({
   const { fetchApproveLeaveRequest } = useApproveLeaveRequest(
     selectedRows?.id as number
   );
+
   const { fetchRejectLeaveRequest } = useRejectLeaveRequest(
     selectedRows?.id as number
   );
+
   useEffect(() => {
     if (open) {
       setNote("");

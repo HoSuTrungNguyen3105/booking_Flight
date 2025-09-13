@@ -45,6 +45,7 @@ const ProfileUser = () => {
       </Box>
     );
   }, []);
+
   return (
     <div>
       {renderDataGrid()}
