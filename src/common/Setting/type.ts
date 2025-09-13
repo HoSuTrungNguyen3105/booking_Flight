@@ -28,14 +28,12 @@ export interface IDataDetail extends GridRowDef {
   hash: string; // HASH
   isDeleted: boolean; // 삭제 여부(true = Y, false = N)
 
-  // optional fields
   categoryName?: string;
   documentId?: string;
   documentName?: string;
   modifiedAt?: string;
   sourceSystem?: string; // 데이터 출처 (e.g.)
   version?: string;
-  // dataInfo?: string;
 }
 
 export const customLabels: Record<keyof DataDetail, string> = {
@@ -78,7 +76,7 @@ export interface ISubfileListProps extends GridRowDef {
   uploader: string;
   type: string;
 }
-// types.ts
+
 export interface Meal {
   id: number;
 }

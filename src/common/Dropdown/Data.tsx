@@ -29,10 +29,12 @@ const initialData: RowData[] = Array.from({ length: 25 }).map((_, i) => ({
 
 export default function DataGridInTab() {
   const [data, setData] = useState<RowData[]>(initialData);
+
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: 0,
     pageSize: 10,
   });
+
   const handleOrderChange = (direction: "up" | "down", rowIndex: number) => {
     if (direction === "up" && rowIndex > 0) {
       setData((prev) => {

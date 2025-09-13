@@ -28,7 +28,7 @@ export type User = {
 
 export type UserWithMFA = {
   email: string;
-  code: string; // mã 6 số từ Google Authenticator
+  code: string;
 };
 
 export type AuthType = "DEV" | "IDPW";
@@ -80,7 +80,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setToken(accessToken ?? null);
       updateLocalStorage(true, accessToken ?? null, id);
       await fetchMyInfo(id);
-      console.log("login", res);
       return res;
     } else {
       toast((res?.resultMessage as string) || "Đăng nhập thất bại", "error");
@@ -116,7 +115,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const requests = await refetchGetMyInfo(id);
 
         if (requests?.resultCode === "00" && requests.data) {
-          console.log("user info", user);
           setUser(requests.data);
           setIsAuthenticated(true);
           await refetchUpdateUserRank({ userId: id });

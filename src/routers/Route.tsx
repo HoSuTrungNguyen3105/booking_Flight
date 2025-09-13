@@ -3,7 +3,7 @@ import MainLayout from "../components/Layout/MainLayout";
 import ErrorPage from "../components/Layout/ErrorPage";
 import Guard from "../guard/Guard";
 import Home from "../components/Home/Home";
-import Setting from "../common/Setting/Setting";
+// import Setting from "../common/Setting/Setting";
 import { FileUpload } from "../common/FileUploader";
 import Hero from "../components/Hero/Hero";
 import BookTicket from "../components/User/BookTicket";
@@ -31,6 +31,7 @@ import UnlockRequestTable from "../common/DetailSection/UnlockRequestTable";
 import FlightPage from "../components/Admin/component/FlightPage";
 import AccountYn from "../components/Auth/AccountYn";
 import LeaveRequestGrid from "../components/Admin/component/LeaveRequestGrid";
+import PayrollManagement from "../common/Sample/PayrollManagement";
 
 const routes = [
   {
@@ -68,10 +69,7 @@ const routes = [
       {
         path: ROUTE_PATHS.LANDING, // = "/"
         element: <Guard />,
-        children: [
-          { index: true, element: <Hero /> },
-          { path: "setting", element: <Setting /> },
-        ],
+        children: [{ index: true, element: <Hero /> }],
       },
       {
         path: "special",
@@ -81,14 +79,6 @@ const routes = [
         path: "FlightPage",
         element: <FlightPage />,
       },
-      // {
-      //   path: "airport-list/domestic",
-      //   element: <BookTicket/>,
-      // },
-      // {
-      //   path: "profile",
-      //   element: <InspectionDetails />,
-      // },
       {
         path: ROUTE_PATHS.SAMPLE_FORM.replace("/", ""),
         element: <CheckboxUI />,
@@ -156,18 +146,10 @@ const routes = [
         path: ROUTE_PATHS.TIME_PICKER.replace("/", ""),
         element: <SampleTimePicker />,
       },
-      // {
-      //   path: "data-secure",
-      //   element: <DataSecure />,
-      // },
       {
         path: "special",
         element: <Special />,
       },
-      // {
-      //   path: "flight_update",
-      //   element: <FlightUpdateManagement />,
-      // },
       {
         path: ROUTE_PATHS.NOTIFICATIONS,
         element: <Search_layout />,
@@ -199,6 +181,10 @@ const routes = [
       {
         path: "manage-my-info",
         element: <ManageMyInfo />,
+      },
+      {
+        path: "payroll-management",
+        element: <PayrollManagement />,
       },
       {
         path: "aircraft",

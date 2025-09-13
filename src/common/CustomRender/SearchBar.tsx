@@ -7,7 +7,6 @@ import {
   useState,
   type KeyboardEvent,
 } from "react";
-import InputField from "../Input/InputField";
 import InputTextField from "../Input/InputTextField";
 import DateTimePickerComponent from "../DayPicker/date-range-picker";
 
@@ -131,31 +130,6 @@ const SearchBar = ({ disabled = false, onSearch }: ISearchBarProps) => {
       </Stack>
 
       <Stack maxHeight={"20rem"} gap={1} direction="row" alignItems="center">
-        {/* <CalendarCard
-          disabled={disabled}
-          placeholder="Start time"
-          value={startDate}
-          onChange={handleStartDateChange}
-        />
-        <CalendarCard
-          disabled={disabled}
-          placeholder="End time"
-          value={endDate}
-          onChange={handleEndDateChange}
-        /> */}
-        {/* <InputField
-          disabled={disabled}
-          placeholder="Start date"
-          value={startDate}
-          // onChange={handleStartDateChange}
-        />
-        -
-        <InputField
-          disabled={disabled}
-          placeholder="End date"
-          value={endDate}
-          //   onChange={handleEndDateChange}
-        /> */}
         <DateTimePickerComponent language="jp" />
         -
         <DateTimePickerComponent language="jp" />

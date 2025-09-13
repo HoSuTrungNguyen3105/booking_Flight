@@ -18,10 +18,10 @@ import SingleDateRangePickerComponent from "./date-range-field";
 
 const SampleDatePicker: React.FC = () => {
   const { i18n } = useTranslation();
-  const [language, setLanguage] = useState<"en" | "kr">("en");
+  const [language, setLanguage] = useState<"en" | "ko">("en");
   const [value, setValue] = useState<string | null>("2023-08-08");
 
-  const changeLanguage = (lng: "en" | "kr") => {
+  const changeLanguage = (lng: "en" | "ko") => {
     i18n.changeLanguage(lng);
     moment.locale(lng);
     setLanguage(lng);
@@ -60,12 +60,7 @@ const SampleDatePicker: React.FC = () => {
               {
                 status: "Focused - Typing",
                 field: (
-                  <CusDateField
-                    value={value}
-                    onChange={(newValue) => setValue(newValue as string | null)}
-                    status="default"
-                    usecase="date"
-                  />
+                  <CusDateField value={value} status="default" usecase="date" />
                 ),
               },
               {
@@ -155,7 +150,6 @@ const SampleDatePicker: React.FC = () => {
                   <SingleDateRangePickerComponent
                     language={language}
                     status="default"
-                    size="medium"
                     placeHolder="YYYY.MM.DD - YYYY.MM.DD"
                   />
                 ),

@@ -14,7 +14,6 @@ type ITableSectionProps = {
   handleRowClick?: (row: GridRowDef) => void;
   nextRowClick?: boolean;
   largeThan?: boolean;
-  hideColumnHeaderCheckbox?: boolean;
 };
 
 const TableSection = ({
@@ -24,7 +23,6 @@ const TableSection = ({
   handleRowClick,
   nextRowClick,
   largeThan,
-  hideColumnHeaderCheckbox,
   isLoading,
 }: ITableSectionProps) => {
   const {
@@ -37,21 +35,25 @@ const TableSection = ({
     totalPages,
     onSortModelChange,
   } = useClientPagination({ data: rows });
+
   const handleRowSelect = useCallback(
     (selectedRow: Set<GridRowId>) => {
+      const ids = Array.from(selectedRow); // convert Set -> Array
       setRows((prev) =>
         prev.map((row) => ({
           ...row,
-          checkYn: !!selectedRow.has(row.id),
+          checkYn: ids.includes(row.id),
         }))
       );
     },
     [setRows]
   );
+
   const selectedRow = useMemo(
     () => rows?.filter(({ checkYn }) => checkYn).map(({ id }) => id),
     [rows]
   );
+
   return (
     <Box sx={{ width: "100%", padding: "8px", maxHeight: "100vh" }}>
       <Box
@@ -64,8 +66,7 @@ const TableSection = ({
         <DataTable
           rows={paginatedData}
           columns={columns}
-          hideColumnHeaderCheckbox={hideColumnHeaderCheckbox}
-          checkboxSelection={false}
+          checkboxSelection={selectedRow.length === 0}
           selectedRows={selectedRow}
           onRowClick={handleRowClick}
           onRowSelect={handleRowSelect}

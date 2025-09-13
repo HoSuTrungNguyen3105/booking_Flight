@@ -141,17 +141,19 @@ export const useFlightUpdate = ({ id }: ReqUserIDProps) => {
     refetchUpdateFlightId,
   };
 };
-export const SeatType = {
-  VIP: "VIP",
-  BUSINESS: "BUSINESS",
-  ECONOMY: "ECONOMY",
-};
-export type SeatUpdateProps = {
+// export const SeatType = {
+//   VIP: "VIP",
+//   BUSINESS: "BUSINESS",
+//   ECONOMY: "ECONOMY",
+// };
+export type SeatTypeValue = "ECONOMY" | "BUSINESS" | "FIRST";
+
+export interface SeatUpdateProps {
   seatIds: number[];
-  type?: typeof SeatType;
+  type?: SeatTypeValue;
   seatRow?: string;
   seatNumber?: number;
-};
+}
 export const useSeatUpdateByIds = () => {
   const { refetch: refetchUpdateSeatByIds } = useFetch<
     FlightDetailApiResponse,

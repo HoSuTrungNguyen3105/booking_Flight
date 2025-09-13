@@ -1,30 +1,17 @@
 import {
   Box,
-  Paper,
   Typography,
-  TextField,
   Button,
   Grid,
-  MenuItem,
   FormControl,
-  InputLabel,
-  Select,
-  Switch,
   FormControlLabel,
-  Divider,
   Chip,
-  Alert,
   Card,
   CardContent,
   Stepper,
   Step,
   StepLabel,
   InputAdornment,
-  IconButton,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
 } from "@mui/material";
 import {
   FlightTakeoff,
@@ -36,12 +23,12 @@ import {
   Edit,
   Save,
   Close,
+  Refresh,
 } from "@mui/icons-material";
-import type { BaseFlight, Flight } from "../Setting/type";
+import type { Flight } from "../Setting/type";
 import InputTextField from "../Input/InputTextField";
 import SelectDropdown from "../Dropdown/SelectDropdown";
 import DateTimePickerComponent from "../DayPicker/date-range-picker";
-import SingleDateRangePickerComponent from "../DayPicker/date-range-field";
 import Android12Switch from "../Switch/Switch";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
@@ -55,29 +42,10 @@ import {
 } from "../../components/Api/usePostApi";
 import type { Seat } from "../../utils/type";
 import { useToast } from "../../context/ToastContext";
-// Thêm các type này
 
 export type FlightFormData = {
-  flightId?: number; // Chỉ dùng trong form, không gửi API
+  flightId?: number;
   seats?: Seat[];
-  // flightNo: string;
-  // flightType: string;
-  // departureAirport: string;
-  // arrivalAirport: string;
-  // status: string;
-  // aircraftCode: string;
-  // scheduledDeparture: number;
-  // scheduledArrival: number;
-  // actualDeparture?: number;
-  // actualArrival?: number;
-  // priceEconomy?: number;
-  // priceBusiness?: number;
-  // priceFirst?: number;
-  // maxCapacity?: number;
-  // gate?: string;
-  // terminal?: string;
-  // isCancelled?: boolean;
-  // delayMinutes?: number;
   flightNo: string;
   scheduledDeparture: number;
   scheduledArrival: number;
@@ -119,9 +87,10 @@ const FlightUpdateModal = ({
   onUpdate,
 }: IModalStatisticalDataLearningProps) => {
   const [activeStep, setActiveStep] = useState(0);
-  const { getFlightByIdData, refetchGetFlightData } = useGetFlightByIDData({
-    id: mode === "update" && flightId ? flightId : undefined,
-  });
+  const { getFlightByIdData, refetchGetFlightData, loadingFlightData } =
+    useGetFlightByIDData({
+      id: mode === "update" && flightId ? flightId : undefined,
+    });
 
   const stepTopRef = useRef<HTMLDivElement | null>(null);
 
@@ -182,6 +151,24 @@ const FlightUpdateModal = ({
     };
   };
 
+  useEffect(() => {
+    if (mode === "update" && getFlightByIdData?.data) {
+      setFormData(mapFlightToFormData(getFlightByIdData.data));
+    }
+  }, [getFlightByIdData?.data, mode]);
+
+  // Hàm refetch toàn bộ data
+  const handleRefetchAllData = useCallback(async () => {
+    try {
+      if (mode === "update" && flightId) {
+        // Refetch flight data
+        await refetchGetFlightData();
+      }
+    } catch (error) {
+      console.error("Error refetching data:", error);
+    }
+  }, [mode, flightId, refetchGetFlightData]);
+
   const [formData, setFormData] = useState<FlightFormData>(
     mode === "update"
       ? mapFlightToFormData(getFlightByIdData?.data)
@@ -193,7 +180,6 @@ const FlightUpdateModal = ({
   const handleSave = useCallback(async () => {
     try {
       if (mode === "update" && flightId) {
-        // Chỉ gửi các trường có thể update
         const updateData = {
           flightNo: formData.flightNo,
           flightType: formData.flightType,
@@ -215,10 +201,7 @@ const FlightUpdateModal = ({
           delayMinutes: formData.delayMinutes,
         };
 
-        console.log("Creating flight with data:", updateData);
-
         const response = await refetchUpdateFlightId(updateData);
-        console.log("Creating response with data:", response);
 
         if (response?.resultCode === "00") {
           onSuccess();
@@ -246,9 +229,8 @@ const FlightUpdateModal = ({
           delayMinutes: formData.delayMinutes,
         };
 
-        console.log("Creating flight with data:", createData);
-
         const response = await refetchCreateFlightData(createData);
+
         if (response?.resultCode === "00") {
           onSuccess();
           onClose();
@@ -451,6 +433,7 @@ const FlightUpdateModal = ({
     () => (
       <Grid container spacing={3}>
         <Grid size={12}>
+          <Typography>Giá vé Phổ thông</Typography>
           <InputTextField
             type="number"
             value={String(formData.priceEconomy)}
@@ -555,7 +538,9 @@ const FlightUpdateModal = ({
     return (
       <SeatBooking
         flightId={flightId as number}
+        onSuccess={handleRefetchAllData}
         seats={(formData.seats as Seat[]) ?? []}
+        loadingFlightData={loadingFlightData}
       />
     );
   }, [formData.seats]);
@@ -566,6 +551,16 @@ const FlightUpdateModal = ({
         <Button onClick={onClose} variant="outlined">
           Hủy
         </Button>
+
+        {mode === "update" && (
+          <Button
+            onClick={handleRefetchAllData}
+            variant="outlined"
+            startIcon={<Refresh />}
+          >
+            Refresh
+          </Button>
+        )}
 
         {activeStep > 0 && (
           <Button

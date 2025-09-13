@@ -39,7 +39,8 @@ type SideBarValueTypes =
   | "user-list"
   | "customers"
   | "unlock_request"
-  | "sampleDatePicker";
+  | "sampleDatePicker"
+  | "payroll-management";
 
 export type MenuItem = {
   id: SideBarValueTypes;
@@ -105,7 +106,7 @@ export const menuData: MenuSection[] = [
               { id: "domestic", label: "Nội địa" },
               { id: "international", label: "Quốc tế" },
               { id: "sampleDatePicker", label: "secure" },
-              { id: "flight_update", label: "flight_update" },
+              { id: "payroll-management", label: "Quản lý bảng lương" },
             ],
           },
         ],

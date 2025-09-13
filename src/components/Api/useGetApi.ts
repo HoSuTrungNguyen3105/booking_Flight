@@ -195,10 +195,11 @@ export const useGetMeal = () => {
 };
 
 export const useGetFlightData = () => {
-  const { data: getFlightData, refetch: refetchGetFlightData } = useFetch<
-    FlightResponse,
-    null
-  >({
+  const {
+    data: getFlightData,
+    refetch: refetchGetFlightData,
+    loading: loadingFlightData,
+  } = useFetch<FlightResponse, null>({
     url: "/sys/flights",
     autoFetch: true,
     config: getMethod,
@@ -206,6 +207,7 @@ export const useGetFlightData = () => {
   return {
     getFlightData,
     refetchGetFlightData,
+    loadingFlightData,
   };
 };
 
@@ -225,10 +227,11 @@ export const useGetSeatsData = () => {
 };
 
 export const useGetFlightByIDData = ({ id }: ReqUserIDProps) => {
-  const { data: getFlightByIdData, refetch: refetchGetFlightData } = useFetch<
-    FlightResponse,
-    void
-  >({
+  const {
+    data: getFlightByIdData,
+    refetch: refetchGetFlightData,
+    loading: loadingFlightData,
+  } = useFetch<FlightResponse, void>({
     url: id ? `/sys/flights/getFlight/${id}` : "",
     autoFetch: !!id,
     config: getMethod,
@@ -236,6 +239,7 @@ export const useGetFlightByIDData = ({ id }: ReqUserIDProps) => {
   return {
     getFlightByIdData,
     refetchGetFlightData,
+    loadingFlightData,
   };
 };
 

@@ -86,6 +86,50 @@ const StyledDataGrid = styled(DataGrid)<{
     lineHeight: "none",
     "&:focus-within": { outline: "none" },
   },
+  // "& .MuiDataGrid-virtualScroller": {
+  //   overflow: "auto",
+  //   "&::-webkit-scrollbar": {
+  //     display: "none",
+  //   },
+  //   scrollbarWidth: "none",
+  //   msOverflowStyle: "none",
+  // },
+
+  // "& .MuiDataGrid-virtualScroller": {
+  //   overflow: "auto",
+  //   "&::-webkit-scrollbar": {
+  //     width: 0,
+  //     height: 0,
+  //     display: "none",
+  //   },
+  //   scrollbarWidth: "none",
+  //   msOverflowStyle: "none",
+  // },
+
+  // "& .MuiDataGrid-main": {
+  //   "&::-webkit-scrollbar": {
+  //     display: "none",
+  //   },
+  //   scrollbarWidth: "none",
+  //   msOverflowStyle: "none",
+  // },
+
+  "& .MuiDataGrid-virtualScroller": {
+    overflow: "auto",
+    "&::-webkit-scrollbar": {
+      width: 0,
+      height: 0,
+      background: "transparent",
+    },
+    scrollbarWidth: "none",
+  },
+
+  "& .MuiDataGrid-main": {
+    "&::-webkit-scrollbar": {
+      display: "none",
+    },
+  },
+
   ...(hideColumnHeaderCheckbox && {
     "& .MuiDataGrid-columnHeaderCheckbox": { display: "none" },
   }),
@@ -120,6 +164,8 @@ const DataTable = ({
       columnHeaderHeight={columnHeaderHeight}
       disableColumnMenu
       hideColumnHeaderCheckbox={hideColumnHeaderCheckbox}
+      sortModel={sortModel}
+      onSortModelChange={(model) => onSortModelChange(model)}
       rowSelectionModel={{
         type: "include",
         ids: new Set(selectedRows),
@@ -127,8 +173,6 @@ const DataTable = ({
       onRowSelectionModelChange={(row) => {
         onRowSelect(row.ids);
       }}
-      sortModel={sortModel}
-      onSortModelChange={(model) => onSortModelChange(model)}
       slots={{
         noRowsOverlay: noRowOverlay,
         loadingOverlay: loadingMemo,

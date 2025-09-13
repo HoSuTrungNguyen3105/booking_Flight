@@ -2,31 +2,33 @@ import { Box, FormControl, Stack, Typography } from "@mui/material";
 import { memo } from "react";
 import type { UserData } from "../../utils/type";
 import InputTextField from "../Input/InputTextField";
-import { FileUpload } from "../FileUploader";
-import { INPUT_TYPE, type TFileUploader } from "../FileUploader/type";
 import { DateFormatEnum, formatDateKR } from "../../hooks/format";
 
 interface IUserInfoSectionProps {
   myInfo?: UserData;
   onChange: (field: keyof UserData, value: string) => void;
-  handleUploadFile: (files: TFileUploader[]) => void;
 }
 
-const UserInfoSection = ({
-  myInfo,
-  onChange,
-  handleUploadFile,
-}: IUserInfoSectionProps) => {
+const UserInfoSection = ({ myInfo, onChange }: IUserInfoSectionProps) => {
   return (
-    <Box sx={{ paddingBottom: "8px" }}>
+    <Box
+      sx={{
+        paddingBottom: "8px",
+        height: "500px",
+        overflow: "auto",
+        border: "1px solid #e0e0e0",
+        borderRadius: "4px",
+      }}
+    >
       <Box
         sx={{
           backgroundColor: "white",
           padding: "8px 12px",
-          border: 1,
+          borderBottom: 1,
           borderColor: "grey.200",
-          borderLeft: "none",
-          borderRight: "none",
+          position: "sticky",
+          top: 0,
+          zIndex: 1,
         }}
       >
         <Typography component="p" variant="overline">
@@ -145,19 +147,16 @@ const UserInfoSection = ({
             />
           </FormControl>
 
-          <FormControl fullWidth>
+          {/* to_do */}
+          {/* <FormControl fullWidth>
             <Typography variant="body2" mb={0.5}>
-              이미지 (선택)
+              닉네임 (선택)
             </Typography>
-            <FileUpload
-              name="productImage"
-              onChange={(files) => handleUploadFile(files)}
-              accept=".jpg,.png"
-              maxFiles={5}
-              maxSize="10 MB"
-              inputType={INPUT_TYPE.THUMBNAIL}
+            <InputTextField
+              value={myInfo?.pictureUrl}
+              onChange={(val) => onChange("pictureUrl", val)}
             />
-          </FormControl>
+          </FormControl> */}
         </Stack>
       </Box>
     </Box>
