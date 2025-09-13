@@ -2,18 +2,18 @@ import { useMemo, useState } from "react";
 import { type GridColDef } from "@mui/x-data-grid";
 import { useGetFlightData, useGetMeal } from "../../components/Api/useGetApi";
 import { Box, Button, Typography } from "@mui/material";
-import DateRangePickerComponent from "../DayPicker/date-range-picker";
-import DataTable, { type GridRowDef } from "../DataGrid/index";
+import { type GridRowDef } from "../DataGrid/index";
 import { DateFormatEnum, formatDateKR } from "../../hooks/format";
 import FlightModalTriggerManagement from "./FlightModalTriggerManagement";
 import TableSection from "./TableSection";
 
 export default function MealList() {
-  const { flightBookingData } = useGetMeal();
+  const { flightBookingData, loadingFlightBookingData } = useGetMeal();
   const { getFlightData, refetchGetFlightData, loadingFlightData } =
     useGetFlightData();
 
   const [rows, setRows] = useState<GridRowDef[]>([]);
+
   const handleSetRows = (newRows: React.SetStateAction<GridRowDef[]>) => {
     setRows(newRows);
   };
@@ -84,15 +84,6 @@ export default function MealList() {
     { field: "departureAirport", headerName: "From", flex: 1 },
     { field: "arrivalAirport", headerName: "To", flex: 1 },
     { field: "status", headerName: "Status", flex: 1 },
-    // {
-    //   field: "meals",
-    //   headerName: "Meals",
-    //   flex: 1,
-    //   renderCell: (params) => {
-    //     const meals = (params.value as { id: number }[] | undefined) ?? [];
-    //     return <Button>{meals.length > 0 ? "Info Meals" : "No meals"}</Button>;
-    //   },
-    // },
     {
       field: "update",
       headerName: "Update",
@@ -114,16 +105,19 @@ export default function MealList() {
 
   return (
     <div style={{ height: 500, width: "100%" }}>
-      <DataTable
+      <TableSection
         rows={rowsFlightBookingData}
         columns={columnFlightBookingData}
+        isLoading={loadingFlightBookingData}
+        setRows={setRows}
+        nextRowClick
+        largeThan
       />
       {
         <FlightModalTriggerManagement
           onSuccess={() => refetchGetFlightData()}
         />
       }
-      {/* <DateRangePickerComponent language="kr" /> */}
       <Typography>Flight list</Typography>
       {rows && rows.length > 0 && (
         <Box>
@@ -131,20 +125,14 @@ export default function MealList() {
           <Button onClick={() => handleSetRows([])}>Clear Selection</Button>
         </Box>
       )}
-      {/* Table section */}
       <TableSection
         columns={columnsFlightData}
-        setRows={handleSetRows}
+        setRows={setRows}
         isLoading={loadingFlightData}
         rows={rowsGetFlightData}
         nextRowClick
         largeThan
       />
-      {/* <pre
-        style={{ background: "#f5f5f5", padding: "10px", borderRadius: "8px" }}
-      >
-        {JSON.stringify(getFlightData, null, 2)}
-      </pre> */}
     </div>
   );
 }

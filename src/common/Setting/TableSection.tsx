@@ -2,7 +2,11 @@ import { Box } from "@mui/material";
 import type { GridRowDef } from "../DataGrid";
 import DataTable from "../DataGrid/index";
 import useClientPagination from "../../context/use[custom]/useClientPagination";
-import type { GridColDef, GridRowId } from "@mui/x-data-grid";
+import type {
+  GridColDef,
+  GridRowId,
+  GridRowSelectionModel,
+} from "@mui/x-data-grid";
 import { memo, useCallback, useMemo } from "react";
 import Pagination from "../DataGrid/Pagination";
 
@@ -37,12 +41,14 @@ const TableSection = ({
   } = useClientPagination({ data: rows });
 
   const handleRowSelect = useCallback(
-    (selectedRow: Set<GridRowId>) => {
-      const ids = Array.from(selectedRow); // convert Set -> Array
+    (newSelection: GridRowSelectionModel) => {
+      // newSelection là array id (GridRowId[]) hoặc single id
+      const ids: GridRowId[] = Array.from(newSelection as GridRowId[]);
+
       setRows((prev) =>
         prev.map((row) => ({
           ...row,
-          checkYn: ids.includes(row.id),
+          checkYn: ids.includes(row.id), // đánh dấu checked
         }))
       );
     },
@@ -66,10 +72,10 @@ const TableSection = ({
         <DataTable
           rows={paginatedData}
           columns={columns}
-          checkboxSelection={selectedRow.length === 0}
-          selectedRows={selectedRow}
+          checkboxSelection
+          rowSelectionModel={selectedRow} // đồng bộ checked
+          onRowSelectionModelChange={handleRowSelect} // gọi khi check
           onRowClick={handleRowClick}
-          onRowSelect={handleRowSelect}
           onSortModelChange={onSortModelChange}
           loading={isLoading}
         />

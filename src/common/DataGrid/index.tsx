@@ -3,6 +3,7 @@ import type {
   GridRowModel,
   GridColDef,
   GridSortModel,
+  GridRowSelectionModel,
 } from "@mui/x-data-grid";
 import { memo, useCallback, type ReactNode } from "react";
 import { Loading } from "../Loading/Loading";
@@ -21,11 +22,11 @@ interface IDataTableProps {
   columnHeaderHeight?: number;
   hideColumnHeaderCheckbox?: boolean;
   checkboxSelection?: boolean;
-  selectedRows?: GridRowId[]; // optional external control
+  selectedRows?: GridRowSelectionModel; // thay vì GridRowId[]
   sortModel?: GridSortModel;
   emptyContent?: ReactNode;
   emptyItemIcon?: string;
-  onRowSelect?: (row: Set<GridRowId>) => void;
+  onRowSelect?: (rowIds: GridRowId[]) => void;
   onRowClick?: (row: GridRowDef) => void;
   onSortModelChange?: (model: GridSortModel) => void;
 }
@@ -86,33 +87,6 @@ const StyledDataGrid = styled(DataGrid)<{
     lineHeight: "none",
     "&:focus-within": { outline: "none" },
   },
-  // "& .MuiDataGrid-virtualScroller": {
-  //   overflow: "auto",
-  //   "&::-webkit-scrollbar": {
-  //     display: "none",
-  //   },
-  //   scrollbarWidth: "none",
-  //   msOverflowStyle: "none",
-  // },
-
-  // "& .MuiDataGrid-virtualScroller": {
-  //   overflow: "auto",
-  //   "&::-webkit-scrollbar": {
-  //     width: 0,
-  //     height: 0,
-  //     display: "none",
-  //   },
-  //   scrollbarWidth: "none",
-  //   msOverflowStyle: "none",
-  // },
-
-  // "& .MuiDataGrid-main": {
-  //   "&::-webkit-scrollbar": {
-  //     display: "none",
-  //   },
-  //   scrollbarWidth: "none",
-  //   msOverflowStyle: "none",
-  // },
 
   "& .MuiDataGrid-virtualScroller": {
     overflow: "auto",
@@ -154,6 +128,24 @@ const DataTable = ({
     [emptyContent]
   );
 
+  // Sửa hàm normalizeSelectionModel
+  const normalizeSelectionModel = useCallback(
+    (model: GridRowSelectionModel | undefined): GridRowId[] => {
+      if (!model) return [];
+      return Array.isArray(model) ? model : [model];
+    },
+    []
+  );
+
+  // Xử lý selection change
+  const handleSelectionModelChange = useCallback(
+    (newSelection: GridRowSelectionModel) => {
+      const ids = normalizeSelectionModel(newSelection);
+      onRowSelect(ids);
+    },
+    [onRowSelect, normalizeSelectionModel]
+  );
+
   return (
     <StyledDataGrid
       rows={rows}
@@ -166,12 +158,10 @@ const DataTable = ({
       hideColumnHeaderCheckbox={hideColumnHeaderCheckbox}
       sortModel={sortModel}
       onSortModelChange={(model) => onSortModelChange(model)}
-      rowSelectionModel={{
-        type: "include",
-        ids: new Set(selectedRows),
-      }}
-      onRowSelectionModelChange={(row) => {
-        onRowSelect(row.ids);
+      rowSelectionModel={selectedRows} // kiểu GridRowSelectionModel
+      onRowSelectionModelChange={(newSelection: GridRowSelectionModel) => {
+        const ids = normalizeSelectionModel(newSelection);
+        onRowSelect?.(ids); // trả về GridRowId[] cho parent
       }}
       slots={{
         noRowsOverlay: noRowOverlay,

@@ -182,15 +182,19 @@ export const useFlightMealsById = (id: string) => {
   };
 };
 export const useGetMeal = () => {
-  const { data: flightBookingData, refetch: refetchFlightBookingDataData } =
-    useFetch<MealResponse, MealResponse>({
-      url: "/sys/meals",
-      autoFetch: true,
-      config: getMethod,
-    });
+  const {
+    data: flightBookingData,
+    refetch: refetchFlightBookingDataData,
+    loading: loadingFlightBookingData,
+  } = useFetch<MealResponse, MealResponse>({
+    url: "/sys/meals",
+    autoFetch: true,
+    config: getMethod,
+  });
   return {
     flightBookingData,
     refetchFlightBookingDataData,
+    loadingFlightBookingData,
   };
 };
 
