@@ -1,12 +1,12 @@
 import { Box, Button, Popover, styled } from "@mui/material";
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, type ReactNode } from "react";
 import theme from "../../scss/theme";
 
 export interface IButtonSettingProps {
-  option?: string[]; // nhieu option
+  option?: ReactNode[]; // nhieu option
   icon: string;
   buttonProps?: React.ComponentProps<typeof Button>;
-  handleAction: (opt: string) => void; // sửa: truyền option khi click
+  handleAction: (opt: any) => void; // sửa: truyền option khi click
 }
 const StyledPopover = styled(Popover)<{}>(() => ({
   "& .MuiPaper-root": {
@@ -51,7 +51,6 @@ const CustomPopover: React.FC<IButtonSettingProps> = ({
         }}
       >
         {icon}
-        {/* && <Box component={"img"} src={icon} /> */}
       </Button>
       <StyledPopover
         id={id}
@@ -64,19 +63,20 @@ const CustomPopover: React.FC<IButtonSettingProps> = ({
           horizontal: "left",
         }}
       >
-        {options.map((i) => (
+        {options.map((item, index) => (
           <Button
-            key={i}
+            key={index}
             onClick={() => {
-              handleAction(i); // truyền option khi click
+              handleAction?.(item);
               handleClose();
             }}
             sx={{
               color: theme.palette.text.primary,
               textTransform: "none",
+              cursor: "pointer",
             }}
           >
-            {i}
+            {item}
           </Button>
         ))}
       </StyledPopover>

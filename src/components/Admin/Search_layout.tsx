@@ -7,27 +7,19 @@ import {
   Card,
   CardContent,
   Button,
-  IconButton,
   Paper,
   Divider,
   Chip,
   Skeleton,
 } from "@mui/material";
-import {
-  AdminPanelSettings,
-  DeleteForever,
-  House,
-  StarBorder,
-} from "@mui/icons-material";
-import { useFlightUpdate, useSearchFlight } from "../Api/usePostApi";
+import { DeleteForever } from "@mui/icons-material";
+import { useSearchFlight } from "../Api/usePostApi";
 import ContentModal from "../../common/Modal/ContentModal";
 import { toast } from "react-toastify";
-import { type DataFlight, type SearchType } from "../../utils/type";
-import Input from "./component/Input";
+import { type DataFlight } from "../../utils/type";
 import FormRow from "../../common/CustomRender/FormRow";
 import type { GridColDef, GridRowId } from "@mui/x-data-grid";
-import DataTable, { type GridRowDef } from "../../common/DataGrid/index.tsx";
-import { FileUpload } from "../../common/FileUploader/index.tsx";
+import { type GridRowDef } from "../../common/DataGrid/index.tsx";
 import InputTextField from "../../common/Input/InputTextField.tsx";
 import SelectDropdown from "../../common/Dropdown/SelectDropdown.tsx";
 import {
@@ -35,7 +27,6 @@ import {
   flightStatusOptions,
   flightTypeOptions,
 } from "./hook.ts";
-
 import {
   Search as SearchIcon,
   Refresh as RefreshIcon,
@@ -43,10 +34,12 @@ import {
   StarBorder as StarBorderIcon,
 } from "@mui/icons-material";
 import FlightDetail from "./component/FlightDetail.tsx";
+import TableSection from "../../common/Setting/TableSection.tsx";
 
 type FlightId = {
   id: number;
 };
+
 type CabinClassType = "ECONOMY" | "BUSINESS" | "VIP";
 export type SearchFlightDto = {
   from: string; // departureAirport
@@ -130,21 +123,18 @@ const Search_layout: React.FC = () => {
     setDetailModalOpen(true);
   };
 
-  const { handleSubmit: handleUpdateSubmit, reset: resetUpdate } = useForm<
-    DataFlight[]
-  >({
+  const { reset: resetUpdate } = useForm<DataFlight[]>({
     defaultValues: flightData,
   });
 
   const onSubmitValue = React.useCallback(
     async (values: SearchFlightDto) => {
       try {
-        setIsSearch(true); // 👈 Set loading state trước
+        setIsSearch(true);
 
         const res = await refetchSearchFlightList(values);
 
         if (res?.resultCode === "00") {
-          // 👈 Xử lý cả outbound và inbound
           const allFlights = [
             ...(res.data?.outbound || []),
             ...(res.data?.inbound || []),
@@ -152,24 +142,22 @@ const Search_layout: React.FC = () => {
           setRowData(allFlights as DataFlight[]);
         } else {
           setRowData([]);
-          // 👈 Có thể show error message
           console.error("Search failed:", res?.resultMessage);
         }
       } catch (error) {
         console.error("Search error:", error);
         setRowData([]);
-        // 👈 Xử lý lỗi network hoặc unexpected errors
       } finally {
-        setIsSearch(false); // 👈 Luôn set false sau khi complete
+        setIsSearch(false);
       }
     },
     [refetchSearchFlightList, setRowData, setIsSearch]
-  ); // 👈 Thêm dependencies
+  );
 
   const loadingFlightFromSearch = React.useCallback(() => {
     rowData.map((r) => ({
       ...r,
-      id: (r.flightId ?? r.flightId) as GridRowId, // đảm bảo luôn có id dạng number/string
+      id: (r.flightId ?? r.flightId) as GridRowId,
     }));
   }, []);
 
@@ -215,46 +203,20 @@ const Search_layout: React.FC = () => {
     resetSearch();
     refetchSearchFlightList(flightParams);
   };
+  const [flightRows, setFlightRows] = React.useState<GridRowDef[]>([]);
 
   const handleOpenUpdateConfirm = () => setOpenUpdateConfirm(true);
-
-  // const rowData: DataFlight[] = [
-  //   {
-  //     flightId: 1,
-  //     flightNo: "VN101",
-  //     scheduledDeparture: 887973737473473,
-  //     scheduledArrival: 887973737473473,
-  //     departureAirport: "SGN",
-  //     arrivalAirport: "HAN",
-  //     status: "Scheduled",
-  //     aircraftCode: "A321",
-  //     actualDeparture: 887973737473473,
-  //     actualArrival: 887973737473473,
-  //   },
-  //   {
-  //     flightId: 2,
-  //     flightNo: "VN202",
-  //     scheduledDeparture: 887973737473473,
-  //     scheduledArrival: 887973737473473,
-  //     departureAirport: "DAD",
-  //     arrivalAirport: "SGN",
-  //     status: "Delayed",
-  //     aircraftCode: "B787",
-  //     actualDeparture: 887973737473473,
-  //     actualArrival: 887973737473473,
-  //   },
-  //   {
-  //     flightId: 3,
-  //     flightNo: "VN303",
-  //     scheduledDeparture: 887973737473473,
-  //     scheduledArrival: 887973737473473,
-  //     departureAirport: "HAN",
-  //     arrivalAirport: "DAD",
-  //     status: "Cancelled",
-  //     aircraftCode: "A350",
-  //   },
-  // ];
-
+  const [selectedMealRows, setSelectedMealRows] = React.useState<GridRowDef[]>(
+    []
+  );
+  const handleFlightRowSelection = (selectedIds: any[]) => {
+    setSelectedMealRows((prev) => {
+      const newSelectedRows = flightRows.filter((row) =>
+        selectedIds.includes(row.id)
+      );
+      return newSelectedRows;
+    });
+  };
   const colDefs: GridColDef[] = [
     {
       field: "flightId",
@@ -319,19 +281,6 @@ const Search_layout: React.FC = () => {
       renderCell: (params) => formatDate(params.row.actualArrival),
     },
   ];
-
-  // const rowDataGrid = React.useCallback(()=>{
-
-  //   const data = rowData.map((item, index) => ({ ...item, id: index + 1 }));
-  //   return setFlightData(data);
-
-  // },[rowData])
-
-  // React.useEffect(() => {
-  //   if (rowData && rowData.length > 0) {
-  //     setFlightData(data);
-  //   }
-  // }, [rowData]);
 
   if (!selectId) {
     return (
@@ -611,13 +560,14 @@ const Search_layout: React.FC = () => {
           </Box>
 
           <Box sx={{ height: "60vh", minHeight: 400 }}>
-            <DataTable
-              rows={rowData.map((r) => ({
-                ...r,
-                id: (r.flightId ?? r.flightId) as GridRowId,
-              }))}
+            <TableSection
+              rows={flightRows}
               columns={colDefs}
-              onRowClick={handleRowClick} // 👈 Thêm prop này
+              isLoading={false}
+              setRows={setFlightRows}
+              onSelectedRowIdsChange={handleFlightRowSelection}
+              nextRowClick
+              largeThan
             />
           </Box>
 
@@ -656,7 +606,6 @@ const Search_layout: React.FC = () => {
             <Typography variant="h6" gutterBottom>
               Update Flight Information
             </Typography>
-            {/* Update form content here */}
           </Box>
         }
         // middleBtns={[
