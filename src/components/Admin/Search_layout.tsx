@@ -1,13 +1,17 @@
 import * as React from "react";
 import { useForm } from "react-hook-form";
-import RefreshSharpIcon from "@mui/icons-material/RefreshSharp";
-import SearchIcon from "@mui/icons-material/Search";
 import {
   Box,
-  FormControl,
-  Skeleton,
-  TableContainer,
   Typography,
+  Grid,
+  Card,
+  CardContent,
+  Button,
+  IconButton,
+  Paper,
+  Divider,
+  Chip,
+  Skeleton,
 } from "@mui/material";
 import {
   AdminPanelSettings,
@@ -16,7 +20,6 @@ import {
   StarBorder,
 } from "@mui/icons-material";
 import { useFlightUpdate, useSearchFlight } from "../Api/usePostApi";
-import { Button } from "../../common/Button/Button";
 import ContentModal from "../../common/Modal/ContentModal";
 import { toast } from "react-toastify";
 import { type DataFlight, type SearchType } from "../../utils/type";
@@ -25,8 +28,48 @@ import FormRow from "../../common/CustomRender/FormRow";
 import type { GridColDef, GridRowId } from "@mui/x-data-grid";
 import DataTable from "../../common/DataGrid/index.tsx";
 import { FileUpload } from "../../common/FileUploader/index.tsx";
+import InputTextField from "../../common/Input/InputTextField.tsx";
+import SelectDropdown from "../../common/Dropdown/SelectDropdown.tsx";
+import {
+  cabinClassOptions,
+  flightStatusOptions,
+  flightTypeOptions,
+} from "./hook.ts";
+
+import {
+  Search as SearchIcon,
+  Refresh as RefreshIcon,
+  Flight as FlightIcon,
+  StarBorder as StarBorderIcon,
+} from "@mui/icons-material";
+
 type FlightId = {
   id: number;
+};
+type CabinClassType = "ECONOMY" | "BUSINESS" | "VIP";
+export type SearchFlightDto = {
+  from: string; // departureAirport
+  to: string; // arrivalAirport
+  departDate?: number;
+  returnDate?: number;
+  passengers?: number;
+  flightType?: "oneway" | "roundtrip";
+  cabinClass?: CabinClassType;
+  aircraftCode?: string;
+  status?:
+    | "scheduled"
+    | "boarding"
+    | "departed"
+    | "arrived"
+    | "delayed"
+    | "cancelled";
+  minPrice?: number;
+  maxPrice?: number;
+  gate?: string;
+  terminal?: string;
+  minDelayMinutes?: number;
+  maxDelayMinutes?: number;
+  includeCancelled?: boolean;
 };
 
 const Search_layout: React.FC = () => {
@@ -41,41 +84,79 @@ const Search_layout: React.FC = () => {
   const [isReset, setIsReset] = React.useState<boolean>(false);
   const [error, setError] = React.useState<string | null>(null);
   const [_, setLoading] = React.useState<boolean>(true);
-  const [flightParams, setFlightParams] = React.useState<SearchType>({
-    status: "",
-    scheduledDeparture: "",
-    scheduledArrival: "",
-    departureAirport: "",
-    arrivalAirport: "",
+  const [flightParams, setFlightParams] = React.useState<SearchFlightDto>({
+    from: "",
+    to: "",
+    departDate: 0,
+    returnDate: undefined,
+    passengers: undefined,
+    flightType: undefined,
+    gate: "",
+    cabinClass: "ECONOMY",
     aircraftCode: "",
+    status: undefined,
+    minPrice: undefined,
+    maxPrice: undefined,
+    terminal: "",
+    minDelayMinutes: undefined,
+    maxDelayMinutes: undefined,
+    includeCancelled: false,
   });
+
   const [showDelete, setShowDelete] = React.useState<boolean>(false);
-  const { flightList, refetchFlightList } = useSearchFlight(flightParams);
+  const { searchFlightList, refetchSearchFlightList } = useSearchFlight();
   const {
     control: controlSearch,
     handleSubmit: handleSearchSubmit,
     reset: resetSearch,
-  } = useForm<SearchType>({
+  } = useForm<SearchFlightDto>({
     defaultValues: flightParams,
   });
 
-  React.useEffect(() => {
-    if (!flightList) return;
-  }, [flightList]);
+  const [rowData, setRowData] = React.useState<DataFlight[]>([]);
 
-  // const { refetchUpdateFlightId } = useFlightUpdate();
   const { handleSubmit: handleUpdateSubmit, reset: resetUpdate } = useForm<
     DataFlight[]
   >({
     defaultValues: flightData,
   });
 
-  const onSubmitValue = (values: SearchType): void => {
-    if (isReset) return;
-    setFlightParams(values);
-    refetchFlightList(values);
-    setIsSearch(true);
-  };
+  const onSubmitValue = React.useCallback(
+    async (values: SearchFlightDto) => {
+      try {
+        setIsSearch(true); // 👈 Set loading state trước
+
+        const res = await refetchSearchFlightList(values);
+
+        if (res?.resultCode === "00") {
+          // 👈 Xử lý cả outbound và inbound
+          const allFlights = [
+            ...(res.data?.outbound || []),
+            ...(res.data?.inbound || []),
+          ];
+          setRowData(allFlights as DataFlight[]);
+        } else {
+          setRowData([]);
+          // 👈 Có thể show error message
+          console.error("Search failed:", res?.resultMessage);
+        }
+      } catch (error) {
+        console.error("Search error:", error);
+        setRowData([]);
+        // 👈 Xử lý lỗi network hoặc unexpected errors
+      } finally {
+        setIsSearch(false); // 👈 Luôn set false sau khi complete
+      }
+    },
+    [refetchSearchFlightList, setRowData, setIsSearch]
+  ); // 👈 Thêm dependencies
+
+  const loadingFlightFromSearch = React.useCallback(() => {
+    rowData.map((r) => ({
+      ...r,
+      id: (r.flightId ?? r.flightId) as GridRowId, // đảm bảo luôn có id dạng number/string
+    }));
+  }, []);
 
   const handleOpen = (data: DataFlight): void => {
     try {
@@ -92,31 +173,6 @@ const Search_layout: React.FC = () => {
     setUpdateFlight(false);
     setFlightId(null);
     setSelectId([]);
-  };
-
-  const handleCloseUpdate = () => setOpenUpdateConfirm(false);
-
-  const handleCloseDelete = () => setShowDelete(false);
-
-  const onSubmitUpdate = async (data: DataFlight) => {
-    if (!data?.flightId) return;
-    try {
-      // const response = await refetchUpdateFlightId(data);
-      // await new Promise((resolve) => setTimeout(resolve, 200));
-      // if (response?.resultCode === "00") {
-      //   await refetchFlightList(flightParams);
-      //   setUpdateFlight(false);
-      //   setOpenUpdateConfirm(false);
-      // } else {
-      //   setUpdateFlight(true);
-      //   setOpenUpdateConfirm(false);
-      // }
-    } catch (err) {
-      console.error(err);
-      setError("Update error");
-      setUpdateFlight(true);
-      setOpenUpdateConfirm(true);
-    }
   };
 
   const resetUpdateField = async () => {
@@ -142,57 +198,53 @@ const Search_layout: React.FC = () => {
   const onResetForm = (): void => {
     if (isReset) return;
     resetSearch();
-    refetchFlightList(flightParams);
+    refetchSearchFlightList(flightParams);
   };
 
   const handleOpenUpdateConfirm = () => setOpenUpdateConfirm(true);
 
-  const rowData: DataFlight[] = [
-    {
-      flightId: 1,
-      flightNo: "VN101",
-      scheduledDeparture: "2025-06-21T06:00:00Z",
-      scheduledArrival: "2025-06-21T08:00:00Z",
-      departureAirport: "SGN",
-      arrivalAirport: "HAN",
-      status: "Scheduled",
-      aircraftCode: "A321",
-      actualDeparture: "2025-06-21T06:05:00Z",
-      actualArrival: "2025-06-21T07:55:00Z",
-    },
-    {
-      flightId: 2,
-      flightNo: "VN202",
-      scheduledDeparture: "2025-06-21T09:00:00Z",
-      scheduledArrival: "2025-06-21T11:30:00Z",
-      departureAirport: "DAD",
-      arrivalAirport: "SGN",
-      status: "Delayed",
-      aircraftCode: "B787",
-      actualDeparture: "2025-06-21T09:30:00Z",
-      actualArrival: "2025-06-21T12:00:00Z",
-    },
-    {
-      flightId: 3,
-      flightNo: "VN303",
-      scheduledDeparture: "2025-06-21T13:00:00Z",
-      scheduledArrival: "2025-06-21T15:00:00Z",
-      departureAirport: "HAN",
-      arrivalAirport: "DAD",
-      status: "Cancelled",
-      aircraftCode: "A350",
-    },
-  ];
+  // const rowData: DataFlight[] = [
+  //   {
+  //     flightId: 1,
+  //     flightNo: "VN101",
+  //     scheduledDeparture: 887973737473473,
+  //     scheduledArrival: 887973737473473,
+  //     departureAirport: "SGN",
+  //     arrivalAirport: "HAN",
+  //     status: "Scheduled",
+  //     aircraftCode: "A321",
+  //     actualDeparture: 887973737473473,
+  //     actualArrival: 887973737473473,
+  //   },
+  //   {
+  //     flightId: 2,
+  //     flightNo: "VN202",
+  //     scheduledDeparture: 887973737473473,
+  //     scheduledArrival: 887973737473473,
+  //     departureAirport: "DAD",
+  //     arrivalAirport: "SGN",
+  //     status: "Delayed",
+  //     aircraftCode: "B787",
+  //     actualDeparture: 887973737473473,
+  //     actualArrival: 887973737473473,
+  //   },
+  //   {
+  //     flightId: 3,
+  //     flightNo: "VN303",
+  //     scheduledDeparture: 887973737473473,
+  //     scheduledArrival: 887973737473473,
+  //     departureAirport: "HAN",
+  //     arrivalAirport: "DAD",
+  //     status: "Cancelled",
+  //     aircraftCode: "A350",
+  //   },
+  // ];
 
   const colDefs: GridColDef[] = [
     {
-      headerName: "",
-      field: "checkbox",
-    },
-    {
       field: "flightId",
       headerName: "Mã chuyến bay",
-      width: 150,
+      flex: 1,
       renderCell: (params) => (
         <Typography
           onClick={() => handleOpen(params.row)}
@@ -205,119 +257,51 @@ const Search_layout: React.FC = () => {
     {
       field: "flightNo",
       headerName: "Số hiệu",
-      width: 120,
-      renderCell: (params) => (
-        <Typography
-          onClick={() => handleOpen(params.row)}
-          sx={{ cursor: "pointer" }}
-        >
-          {params.row.flightNo}
-        </Typography>
-      ),
+      flex: 0.5,
     },
     {
       field: "scheduledDeparture",
       headerName: "Giờ khởi hành dự kiến",
-      width: 200,
-      renderCell: (params) => (
-        <Typography
-          onClick={() => handleOpen(params.row)}
-          sx={{ cursor: "pointer", whiteSpace: "nowrap" }}
-        >
-          {formatDate(params.row.scheduledDeparture)}
-        </Typography>
-      ),
+      flex: 1,
+      renderCell: (params) => formatDate(params.row.scheduledDeparture),
     },
     {
       field: "scheduledArrival",
       headerName: "Giờ đến dự kiến",
-      width: 200,
-      renderCell: (params) => (
-        <Typography
-          onClick={() => handleOpen(params.row)}
-          sx={{ cursor: "pointer", whiteSpace: "nowrap" }}
-        >
-          {formatDate(params.row.scheduledArrival)}
-        </Typography>
-      ),
+      flex: 1,
+      renderCell: (params) => formatDate(params.row.scheduledArrival),
     },
     {
       field: "departureAirport",
       headerName: "Sân bay đi",
-      width: 150,
-      renderCell: (params) => (
-        <Typography
-          onClick={() => handleOpen(params.row)}
-          sx={{ cursor: "pointer" }}
-        >
-          {params.row.departureAirport}
-        </Typography>
-      ),
+      flex: 1,
     },
     {
       field: "arrivalAirport",
       headerName: "Sân bay đến",
-      width: 150,
-      renderCell: (params) => (
-        <Typography
-          onClick={() => handleOpen(params.row)}
-          sx={{ cursor: "pointer" }}
-        >
-          {params.row.arrivalAirport}
-        </Typography>
-      ),
+      flex: 1,
     },
     {
       field: "status",
       headerName: "Trạng thái",
-      width: 120,
-      renderCell: (params) => (
-        <Typography
-          onClick={() => handleOpen(params.row)}
-          sx={{ cursor: "pointer" }}
-        >
-          {params.row.status}
-        </Typography>
-      ),
+      flex: 1,
     },
     {
       field: "aircraftCode",
       headerName: "Mã máy bay",
-      width: 120,
-      renderCell: (params) => (
-        <Typography
-          onClick={() => handleOpen(params.row)}
-          sx={{ cursor: "pointer" }}
-        >
-          {params.row.aircraftCode}
-        </Typography>
-      ),
+      flex: 1,
     },
     {
       field: "actualDeparture",
       headerName: "Giờ khởi hành thực tế",
-      width: 200,
-      renderCell: (params) => (
-        <Typography
-          onClick={() => handleOpen(params.row)}
-          sx={{ cursor: "pointer", whiteSpace: "nowrap" }}
-        >
-          {formatDate(params.row.actualDeparture)}
-        </Typography>
-      ),
+      flex: 1,
+      renderCell: (params) => formatDate(params.row.actualDeparture),
     },
     {
       field: "actualArrival",
       headerName: "Giờ đến thực tế",
-      width: 200,
-      renderCell: (params) => (
-        <Typography
-          onClick={() => handleOpen(params.row)}
-          sx={{ cursor: "pointer", whiteSpace: "nowrap" }}
-        >
-          {formatDate(params.row.actualArrival)}
-        </Typography>
-      ),
+      flex: 1,
+      renderCell: (params) => formatDate(params.row.actualArrival),
     },
   ];
 
@@ -371,190 +355,390 @@ const Search_layout: React.FC = () => {
   //   { label: "Search" },
   // ];
   return (
-    <form onSubmit={handleSearchSubmit(onSubmitValue)}>
-      <FormControl fullWidth>
-        <TableContainer className="flight-container">
-          {/* sx={{ p: 1, mt: 2 }} */}
+    <Box
+      component="form"
+      onSubmit={handleSearchSubmit(onSubmitValue)}
+      sx={{ p: 2 }}
+    >
+      {/* Header Section */}
+      <Paper
+        elevation={2}
+        sx={{ p: 2, mb: 2, bgcolor: "primary.main", color: "white" }}
+      >
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <FlightIcon fontSize="large" />
+          <Typography variant="h5" fontWeight="bold">
+            Flight Search
+          </Typography>
+        </Box>
+        <Typography variant="body2" sx={{ opacity: 0.9, mt: 0.5 }}>
+          Find your perfect flight with advanced search options
+        </Typography>
+      </Paper>
+
+      {/* Search Form Section */}
+      <Card elevation={3} sx={{ mb: 3 }}>
+        <CardContent sx={{ p: 3 }}>
+          <Grid container spacing={3}>
+            {/* Column 1: Basic Flight Info */}
+            <Grid size={12}>
+              <Typography
+                variant="h6"
+                gutterBottom
+                sx={{
+                  color: "primary.main",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                }}
+              >
+                <StarBorderIcon /> Flight Route
+              </Typography>
+
+              <FormRow label="From Airport">
+                <InputTextField
+                  value={flightParams.from}
+                  name="from"
+                  placeholder="e.g., SGN"
+                />
+              </FormRow>
+
+              <FormRow label="To Airport">
+                <InputTextField
+                  value={flightParams.to}
+                  name="to"
+                  placeholder="e.g., HAN"
+                />
+              </FormRow>
+
+              <FormRow label="Depart Date">
+                <InputTextField
+                  value={String(flightParams.departDate)}
+                  name="departDate"
+                  type="date"
+                />
+              </FormRow>
+
+              <FormRow label="Return Date">
+                <InputTextField
+                  value={String(flightParams.returnDate)}
+                  name="returnDate"
+                  type="date"
+                />
+              </FormRow>
+
+              <FormRow label="Passengers">
+                <InputTextField
+                  name="passengers"
+                  type="number"
+                  placeholder="1"
+                  value={String(flightParams.passengers)}
+                />
+              </FormRow>
+            </Grid>
+
+            {/* Column 2: Flight Details */}
+            <Grid size={12}>
+              <Typography
+                variant="h6"
+                gutterBottom
+                sx={{
+                  color: "primary.main",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                }}
+              >
+                <StarBorderIcon /> Flight Details
+              </Typography>
+
+              {/* <FormRow label="Flight Type">
+                <SelectDropdown
+                  value={flightParams.flightType}
+                  options={flightTypeOptions}
+                  fullWidth
+                  size="small"
+                />
+              </FormRow>
+
+              <FormRow label="Cabin Class">
+                <SelectDropdown
+                  value={flightParams.cabinClass}
+                  options={cabinClassOptions}
+                  fullWidth
+                  size="small"
+                />
+              </FormRow>
+
+              <FormRow label="Aircraft Code">
+                <InputTextField
+                  name="aircraftCode"
+                  placeholder="e.g., A321, B737"
+                  value={flightParams.aircraftCode}
+                  fullWidth
+                  size="small"
+                />
+              </FormRow>
+
+              <FormRow label="Status">
+                <SelectDropdown
+                  value={flightParams.status}
+                  options={flightStatusOptions}
+                  fullWidth
+                  size="small"
+                />
+              </FormRow>
+
+              <FormRow label="Include Cancelled">
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <InputTextField name="includeCancelled" type="checkbox" />
+                  <Typography variant="body2" sx={{ ml: 1 }}>
+                    Show cancelled flights
+                  </Typography>
+                </Box>
+              </FormRow> */}
+              <FormRow label="Flight Type">
+                <SelectDropdown
+                  value={flightParams.flightType}
+                  options={flightTypeOptions}
+                />
+              </FormRow>
+
+              <FormRow label="Cabin Class">
+                <SelectDropdown
+                  value={flightParams.cabinClass}
+                  options={cabinClassOptions}
+                />
+              </FormRow>
+
+              <FormRow label="Aircraft Code">
+                <InputTextField
+                  name="aircraftCode"
+                  placeholder="e.g., A321, B737"
+                  value={flightParams.aircraftCode}
+                />
+              </FormRow>
+
+              <FormRow label="Status">
+                <SelectDropdown
+                  value={flightParams.status}
+                  options={flightStatusOptions}
+                />
+              </FormRow>
+
+              {/* <FormRow label="Include Cancelled">
+                <InputTextField value={flightParams.includeCancelled} name="includeCancelled" type="checkbox" />
+              </FormRow> */}
+            </Grid>
+
+            {/* Column 3: Additional Filters */}
+            <Grid size={12}>
+              <Typography
+                variant="h6"
+                gutterBottom
+                sx={{
+                  color: "primary.main",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                }}
+              >
+                <StarBorderIcon /> Additional Filters
+              </Typography>
+
+              <FormRow label="Gate">
+                <InputTextField
+                  value={flightParams.gate}
+                  name="gate"
+                  placeholder="e.g., A12, B3"
+                />
+              </FormRow>
+
+              <FormRow label="Terminal">
+                <InputTextField
+                  value={flightParams.terminal}
+                  name="terminal"
+                  placeholder="e.g., T1, T2"
+                />
+              </FormRow>
+
+              <FormRow label="Price Range">
+                <Box display="flex" gap={1} alignItems="center">
+                  <InputTextField
+                    name="minPrice"
+                    type="number"
+                    placeholder="Min"
+                    sx={{ flex: 1 }}
+                    value={String(flightParams.minPrice)}
+                  />
+                  <Typography variant="body2">to</Typography>
+                  <InputTextField
+                    name="maxPrice"
+                    type="number"
+                    placeholder="Max"
+                    sx={{ flex: 1 }}
+                    value={String(flightParams.maxPrice)}
+                  />
+                </Box>
+              </FormRow>
+
+              <FormRow label="Delay Range (minutes)">
+                <Box display="flex" gap={1} alignItems="center">
+                  <InputTextField
+                    name="minDelayMinutes"
+                    type="number"
+                    placeholder="Min"
+                    sx={{ flex: 1 }}
+                    value={String(flightParams.minDelayMinutes)}
+                  />
+                  <Typography variant="body2">to</Typography>
+                  <InputTextField
+                    name="maxDelayMinutes"
+                    type="number"
+                    placeholder="Max"
+                    sx={{ flex: 1 }}
+                    value={String(flightParams.maxDelayMinutes)}
+                  />
+                </Box>
+              </FormRow>
+            </Grid>
+          </Grid>
+
+          {/* Action Buttons */}
+          <Divider sx={{ my: 3 }} />
+          <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end" }}>
+            <Button
+              variant="outlined"
+              startIcon={<RefreshIcon />}
+              onClick={onResetForm}
+              size="large"
+              sx={{ minWidth: 120 }}
+            >
+              Reset
+            </Button>
+            <Button
+              variant="contained"
+              startIcon={<SearchIcon />}
+              type="submit"
+              disabled={isSearch}
+              size="large"
+              sx={{ minWidth: 120 }}
+            >
+              Search
+            </Button>
+          </Box>
+        </CardContent>
+      </Card>
+
+      {/* Results Section */}
+      <Card elevation={2}>
+        <CardContent>
           <Box
             sx={{
               display: "flex",
-              alignItems: "center",
               justifyContent: "space-between",
+              alignItems: "center",
+              mb: 2,
             }}
           >
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <StarBorder />
-              <Typography>Search Flight</Typography>
-            </Box>
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              {/* <BreadCrumb items={breadCrumbText} /> */}
-              <FileUpload name="fileUploader" />
-            </Box>
-          </Box>
-          <Box sx={{ borderRadius: 1, border: "solid 3px #f2f3f8" }}>
-            <Box className="search-status">
-              <Box className="left-element">
-                <FormRow label="Status">
-                  <Input
-                    name="status"
-                    control={controlSearch}
-                    placeholder="Select"
-                    isPassword={false}
-                    isEditable={true}
-                  />
-                </FormRow>
-                <FormRow label="Aircraft Code">
-                  <Input
-                    name="aircraftCode"
-                    control={controlSearch}
-                    placeholder="Select"
-                    isPassword={false}
-                    isEditable={true}
-                  />
-                </FormRow>
-              </Box>
-              <Box className="bottom-element">
-                <FormRow label="Status">
-                  <Input
-                    name="status"
-                    control={controlSearch}
-                    placeholder="Select"
-                    isPassword={false}
-                    isEditable={true}
-                  />
-                </FormRow>
-
-                <FormRow label="Aircraft Code">
-                  <Input
-                    name="aircraftCode"
-                    control={controlSearch}
-                    placeholder="Select"
-                    isPassword={false}
-                    isEditable={true}
-                  />
-                </FormRow>
-              </Box>
-              <Box className="right-element">
-                <FormRow label="Aircraft Code">
-                  <Input
-                    name="status"
-                    control={controlSearch}
-                    placeholder="Select"
-                    isPassword={false}
-                    isEditable={true}
-                  />
-                </FormRow>
-                <FormRow label="Aircraft Code">
-                  <Input
-                    name="aircraftCode"
-                    control={controlSearch}
-                    placeholder="Select"
-                    isPassword={false}
-                    isEditable={true}
-                  />
-                </FormRow>
-              </Box>
-              <Box
-                sx={{
-                  gap: "6px",
-                  display: "flex",
-                  padding: "0.2px",
-                  p: 1,
-                  mt: 9.3,
-                }}
-              >
-                <Button
-                  priority="normal"
-                  onClick={onResetForm}
-                  label={<RefreshSharpIcon />}
-                  iconPosition="trailing"
-                  size="large"
-                  type="reset"
-                  iconSize={21}
-                />
-                <Button
-                  priority="normal"
-                  iconPosition="trailing"
-                  size="large"
-                  type="submit"
-                  disabled={isSearch}
-                  label={
-                    <Box>
-                      <Typography>
-                        <SearchIcon />
-                        선택
-                      </Typography>
-                    </Box>
-                  }
-                />
-              </Box>
-            </Box>
+            <Typography variant="h6">
+              Flight Results ({rowData.length} flights found)
+            </Typography>
+            <Chip
+              label={`Last updated: ${new Date().toLocaleTimeString()}`}
+              size="small"
+              variant="outlined"
+            />
           </Box>
 
-          <Box className="agrid-theme" mt={1.5} sx={{ height: "66vh" }}>
+          <Box sx={{ height: "60vh", minHeight: 400 }}>
             <DataTable
               rows={rowData.map((r) => ({
                 ...r,
-                id: (r.flightId ?? r.flightId) as GridRowId, // đảm bảo luôn có id dạng number/string
+                id: (r.flightId ?? r.flightId) as GridRowId,
               }))}
               columns={colDefs}
             />
-            <ContentModal
-              open={updateFlight}
-              closeLabel="Close"
-              submitLabel="Save"
-              handleSubmit={handleOpenUpdateConfirm}
-              handleClose={handleClose}
-              middleBtns={[
-                {
-                  label: "Reset",
-                  onClick: () => resetUpdateField(),
-                  priority: "normal",
-                },
-              ]}
-              contentArea={
-                <Box sx={{ gap: 3.5, padding: 1.5 }}>
-                  <ContentModal
-                    open={openUpdateConfirm}
-                    closeLabel="Cancel"
-                    submitLabel="Confirm Update"
-                    handleClose={handleCloseUpdate}
-                    contentArea={
-                      <Typography>
-                        Do you want to confirm the information of flight and
-                        save a change?
-                      </Typography>
-                    }
-                  />
-                </Box>
-              }
-            />
           </Box>
-          <Box sx={{ padding: 1 }}>
+
+          {/* Action Buttons for Results */}
+          <Box
+            sx={{ display: "flex", gap: 2, mt: 2, justifyContent: "flex-end" }}
+          >
             <Button
-              icon={<DeleteForever />}
-              label="Delete"
-              priority="normal"
-              iconPosition="trailing"
-              size="large"
-              type="button"
-              iconSize={31}
-              disabled={isUpdate}
+              variant="outlined"
+              color="error"
+              startIcon={<DeleteForever />}
               onClick={handleDeleteClick}
-            />
-            <ContentModal
-              open={showDelete}
-              closeLabel="Cancel"
-              submitLabel="Confirm"
-              contentArea={<Box>Box</Box>}
-              //   contentArea={<DeleteFlight id={selectId[0]} />}
-              handleClose={handleCloseDelete}
-            />
+              disabled={isUpdate}
+              size="large"
+            >
+              Delete Selected
+            </Button>
           </Box>
-        </TableContainer>
-      </FormControl>
-    </form>
+        </CardContent>
+      </Card>
+
+      {/* Modals */}
+      <ContentModal
+        open={updateFlight}
+        closeLabel="Close"
+        submitLabel="Save Changes"
+        handleSubmit={handleOpenUpdateConfirm}
+        handleClose={handleClose}
+        contentArea={
+          <Box sx={{ p: 2 }}>
+            <Typography variant="h6" gutterBottom>
+              Update Flight Information
+            </Typography>
+            {/* Update form content here */}
+          </Box>
+        }
+        // middleBtns={[
+        //   {
+        //     label: "Reset Form",
+        //     onClick: () => resetUpdateField(),
+        //     variant: "outlined",
+        //   },
+        // ]}
+        // maxWidth="md"
+      ></ContentModal>
+
+      {/* <ContentModal
+        open={openUpdateConfirm}
+        closeLabel="Cancel"
+        submitLabel="Confirm Update"
+        handleClose={handleCloseUpdate}
+        maxWidth="sm"
+      >
+        <Box sx={{ textAlign: 'center', p: 3 }}>
+          <Typography variant="h6" gutterBottom>
+            Confirm Changes
+          </Typography>
+          <Typography>
+            Are you sure you want to update the flight information?
+          </Typography>
+        </Box>
+      </ContentModal> */}
+
+      {/* <ContentModal
+        open={showDelete}
+        closeLabel="Cancel"
+        submitLabel="Confirm Delete"
+        handleClose={handleCloseDelete}
+        maxWidth="sm"
+      >
+        <Box sx={{ textAlign: 'center', p: 3 }}>
+          <Typography variant="h6" gutterBottom>
+            Delete Confirmation
+          </Typography>
+          <Typography>
+            Are you sure you want to delete the selected flights? This action cannot be undone.
+          </Typography>
+        </Box>
+      </ContentModal> */}
+    </Box>
   );
 };
 
-export default Search_layout;
+export default React.memo(Search_layout);

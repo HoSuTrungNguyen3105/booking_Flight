@@ -6,9 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { ROUTE_PATHS } from "../../routers/RoutePath";
 import theme from "../../scss/theme";
-import SelectDropdown, { type ActionType } from "../Dropdown/SelectDropdown";
 import { LanguageButton } from "../Dropdown/Changelng";
-import RadioUI from "../Radio/RadioUI";
 
 const Header = () => {
   const { isAdmin, logout, user } = useAuth();

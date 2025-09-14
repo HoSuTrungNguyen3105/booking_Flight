@@ -31,10 +31,10 @@ export type DataFlight = {
   priceFirst?: number;
   maxCapacity?: number;
 
-  scheduledDeparture: string;
-  scheduledArrival: string;
-  actualDeparture?: string | null;
-  actualArrival?: string | null;
+  scheduledDeparture: number;
+  scheduledArrival: number;
+  actualDeparture?: number | null;
+  actualArrival?: number | null;
 
   gate?: string;
   terminal?: string;
@@ -302,6 +302,11 @@ export interface Meal {
   flightMeals: FlightMeal[];
 }
 
+export type SearchFlightProps = {
+  outbound: DataFlight[];
+  inbound: DataFlight[];
+};
+
 export type UserListResponse = UserDataResponse<UserData>;
 export type UserCreateResponse = DetailResponseMessage<UserDataNoGrid>;
 
@@ -309,9 +314,13 @@ export type MealResponse = DetailResponseMessage<Meal>;
 export type FlightResponse = DetailResponseMessage<Flight>;
 
 export type FlightDetailApiResponse = DetailResponseMessage<Flight>;
+
+export type SearchFlightResponse = DetailResponseMessage<SearchFlightProps>;
+
 export type FlightMealDetailApiResponse = DetailResponseMessage<FlightMeal>;
 export type UserListManageResponse = DetailResponseMessage<UserData>;
 export type FlightListApiResponse = DetailResponseMessage<Flight>;
+
 export type EmailProps = {
   email?: string;
   userId?: number;

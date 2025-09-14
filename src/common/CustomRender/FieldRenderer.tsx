@@ -83,7 +83,7 @@ const FieldRenderer = ({
           {...sx}
           type="password"
           canCopy
-          realease3phrase
+          // realease3phrase
           showEyeIcon
           value={value}
           onChange={onChange}

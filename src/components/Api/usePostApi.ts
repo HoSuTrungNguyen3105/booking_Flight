@@ -19,6 +19,7 @@ import type {
   LeaveRequest,
   ReqUserIDProps,
   Seat,
+  SearchFlightResponse,
 } from "../../utils/type.ts";
 import { MethodType } from "../../hooks/type";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
@@ -30,6 +31,7 @@ import type {
 import { useFetch } from "../../context/use[custom]/useFetch.ts";
 import type { BaseFlight, Flight } from "../../common/Setting/type.ts";
 import type { FlightFormData } from "../../common/Sample/FlightUpdateModal.tsx";
+import type { SearchFlightDto } from "../Admin/Search_layout.tsx";
 
 const postMethod = {
   method: MethodType.POST,
@@ -66,7 +68,7 @@ export const mapToDropdown = (
 export const useCreateFlight = () => {
   const { data: createFlightData, refetch: refetchCreateFlightData } = useFetch<
     FlightListApiResponse,
-    FlightFormData
+    Partial<FlightFormData>
   >({
     url: "/sys/flights",
     autoFetch: false,
@@ -92,22 +94,18 @@ export const useGetFlightNo = () => {
     refetchGetFlightNoData,
   };
 };
-export const useSearchFlight = (flightParams: SearchType) => {
-  const { data: flightList, refetch: refetchFlightList } = useFetch<
-    FlightListApiResponse,
-    DataFlight
+export const useSearchFlight = () => {
+  const { data: searchFlightList, refetch: refetchSearchFlightList } = useFetch<
+    SearchFlightResponse,
+    SearchFlightDto
   >({
-    url: "/sys/flights/getFlightList",
-    params: {
-      ...flightParams,
-    },
-    defaultValue: { resultCode: "", resultMessage: "" },
-    autoFetch: true,
+    url: "/sys/flights/search",
+    autoFetch: false,
     config: postMethod,
   });
   return {
-    flightList,
-    refetchFlightList,
+    searchFlightList,
+    refetchSearchFlightList,
   };
 };
 export const useFlightById = ({ id }: FlightId) => {

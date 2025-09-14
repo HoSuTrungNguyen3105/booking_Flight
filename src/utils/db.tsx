@@ -40,6 +40,7 @@ type SideBarValueTypes =
   | "user-list"
   | "customers"
   | "unlock_request"
+  | "notifications"
   | "sampleDatePicker"
   | "payroll-management";
 
@@ -73,6 +74,7 @@ export const menuData: MenuSection[] = [
             icon: <AccountCircle />,
           },
           { id: "food", label: "Button", icon: <GppBadIcon /> },
+          { id: "notifications", label: "notifications", icon: <GppBadIcon /> },
           {
             id: "sampleTimepicker",
             label: "Timepicker",

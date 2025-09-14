@@ -352,33 +352,7 @@ const PayrollManagement = () => {
         onClose={() => setOpenGenerateDialog(false)}
         payrollData={payrollData}
         onSuccess={() => setOpenGenerateDialog(false)}
-        // selectedRows={selectedMealRows}
       />
-
-      {/* <Dialog
-        open={openGenerateDialog}
-        onClose={() => setOpenGenerateDialog(false)}
-        maxWidth="md"
-        fullWidth
-      >
-        <DialogTitle>
-          <Typography variant="h6" fontWeight="bold">
-            Tạo Bảng Lương Mới
-          </Typography>
-        </DialogTitle>
-        <DialogContent>
-          
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenGenerateDialog(false)}>Hủy</Button>
-          <Button
-            variant="contained"
-            onClick={() => console.log("Generate payroll")}
-          >
-            Tạo Bảng Lương
-          </Button>
-        </DialogActions>
-      </Dialog> */}
     </Box>
   );
 };

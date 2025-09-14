@@ -45,7 +45,6 @@ import { useToast } from "../../context/ToastContext";
 
 export type FlightFormData = {
   flightId?: number;
-  seats?: Seat[];
   flightNo: string;
   scheduledDeparture: number;
   scheduledArrival: number;
@@ -57,13 +56,15 @@ export type FlightFormData = {
   priceEconomy: number;
   priceBusiness: number;
   priceFirst: number;
-  maxCapacity: number;
   actualDeparture?: number | null;
   actualArrival?: number | null;
   gate: string;
   terminal: string;
   isCancelled: boolean;
   delayMinutes: number | null;
+  delayReason?: string;
+  cancellationReason?: string;
+  seats?: Seat[];
 };
 
 type FlightFormMode = "create" | "update";
@@ -110,11 +111,12 @@ const FlightUpdateModal = ({
     priceEconomy: 0,
     priceBusiness: 0,
     priceFirst: 0,
-    maxCapacity: 180,
     gate: "",
     terminal: "",
     isCancelled: false,
     delayMinutes: 0,
+    cancellationReason: "",
+    delayReason: "",
   });
 
   const mapFlightToFormData = (data?: Partial<Flight>): FlightFormData => {
@@ -133,21 +135,14 @@ const FlightUpdateModal = ({
       scheduledArrival: data.scheduledArrival
         ? Number(data.scheduledArrival)
         : 0,
-      actualDeparture: data.actualDeparture
-        ? Number(data.actualDeparture)
-        : undefined,
-      actualArrival: data.actualArrival
-        ? Number(data.actualArrival)
-        : undefined,
       priceEconomy: data.priceEconomy || 0,
       priceBusiness: data.priceBusiness || 0,
       priceFirst: data.priceFirst || 0,
-      maxCapacity: data.maxCapacity || 180,
       gate: data.gate || "",
       terminal: data.terminal || "",
       isCancelled: data.isCancelled || false,
       delayMinutes: data.delayMinutes || 0,
-      seats: data.seats || [],
+      // seats: data.seats || [],
     };
   };
 
@@ -187,18 +182,21 @@ const FlightUpdateModal = ({
           arrivalAirport: formData.arrivalAirport,
           status: formData.status,
           aircraftCode: formData.aircraftCode,
-          scheduledDeparture: formData.scheduledDeparture,
-          scheduledArrival: formData.scheduledArrival,
           actualDeparture: formData.actualDeparture,
           actualArrival: formData.actualArrival,
           priceEconomy: formData.priceEconomy,
           priceBusiness: formData.priceBusiness,
           priceFirst: formData.priceFirst,
-          maxCapacity: formData.maxCapacity,
           gate: formData.gate,
           terminal: formData.terminal,
           isCancelled: formData.isCancelled,
           delayMinutes: formData.delayMinutes,
+          ...(formData.isCancelled && {
+            cancellationReason: formData.cancellationReason,
+          }),
+          ...(formData.delayMinutes && {
+            delayReason: formData.delayReason,
+          }),
         };
 
         const response = await refetchUpdateFlightId(updateData);
@@ -222,11 +220,8 @@ const FlightUpdateModal = ({
           priceEconomy: formData.priceEconomy,
           priceBusiness: formData.priceBusiness,
           priceFirst: formData.priceFirst,
-          maxCapacity: formData.maxCapacity,
           gate: formData.gate,
           terminal: formData.terminal,
-          isCancelled: formData.isCancelled,
-          delayMinutes: formData.delayMinutes,
         };
 
         const response = await refetchCreateFlightData(createData);
@@ -401,29 +396,25 @@ const FlightUpdateModal = ({
           />
         </Grid>
 
-        <Grid size={12}>
-          <DateTimePickerComponent
-            value={formData.actualDeparture as number}
-            onChange={(e) => handleInputChange("actualDeparture", e)}
-            language="en"
-          />
-        </Grid>
+        {mode === "update" && (
+          <>
+            <Grid size={12}>
+              <DateTimePickerComponent
+                value={formData.actualDeparture as number}
+                onChange={(e) => handleInputChange("actualDeparture", e)}
+                language="en"
+              />
+            </Grid>
 
-        <Grid size={12}>
-          <DateTimePickerComponent
-            value={formData.actualArrival as number}
-            onChange={(e) => handleInputChange("actualArrival", e)}
-            language="en"
-          />
-        </Grid>
-
-        <Grid size={12}>
-          <InputTextField
-            type="number"
-            value={String(formData.delayMinutes)}
-            onChange={(e) => handleInputChange("delayMinutes", parseInt(e))}
-          />
-        </Grid>
+            <Grid size={12}>
+              <DateTimePickerComponent
+                value={formData.actualArrival as number}
+                onChange={(e) => handleInputChange("actualArrival", e)}
+                language="en"
+              />
+            </Grid>
+          </>
+        )}
       </Grid>
     ),
     [formData, handleInputChange]
@@ -462,16 +453,6 @@ const FlightUpdateModal = ({
             onChange={(e) => handleInputChange("priceFirst", parseInt(e))}
             startIcon={<AttachMoney />}
             endIcon={<Typography>USD</Typography>}
-          />
-        </Grid>
-
-        <Grid size={12}>
-          <InputTextField
-            type="number"
-            name="Giá vé Thương gia"
-            value={String(formData.maxCapacity)}
-            onChange={(e) => handleInputChange("maxCapacity", parseInt(e))}
-            endIcon={<Typography>Hành khách</Typography>}
           />
         </Grid>
       </Grid>
@@ -525,13 +506,41 @@ const FlightUpdateModal = ({
                     </Typography>
                   </>
                 )}
+                <Grid size={12}>
+                  <InputTextField
+                    type="number"
+                    value={String(formData.delayMinutes)}
+                    onChange={(e) =>
+                      handleInputChange("delayMinutes", parseInt(e))
+                    }
+                  />
+                </Grid>
+                {formData.isCancelled === true && (
+                  <>
+                    <Cancel color="error" sx={{ mr: 1 }} />
+                    <InputTextField
+                      value={formData.cancellationReason}
+                      placeholder="Chuyến bay đã bị hủy"
+                    />
+                  </>
+                )}
+                {formData?.delayMinutes !== null &&
+                  formData?.delayMinutes > 0 && (
+                    <>
+                      <Cancel color="error" sx={{ mr: 1 }} />
+                      <InputTextField
+                        value={formData?.delayReason || ""}
+                        placeholder="Chuyến bay bị delay"
+                      />
+                    </>
+                  )}
               </Box>
             }
           />
         </Grid>
       </Grid>
     ),
-    [, handleInputChange]
+    [handleInputChange]
   );
 
   const renderSeatBooking = useCallback(() => {
