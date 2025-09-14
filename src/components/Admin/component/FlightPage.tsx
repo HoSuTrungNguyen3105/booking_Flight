@@ -7,7 +7,6 @@ import {
   Grid,
   CardMedia,
 } from "@mui/material";
-import type { DataFlight } from "../../../utils/type";
 import { useState } from "react";
 import { useFlightList } from "../../Api/usePostApi";
 import ImageFlight from "../../../svgs/wallpaper.jpg";
@@ -28,7 +27,6 @@ const FlightPage = () => {
     <Box p={3}>
       <Typography variant="h4" fontWeight="bold" mb={3}>
         Available Flights
-        {/* {JSON.stringify(flightList)} */}
       </Typography>
 
       <Grid container spacing={2}>
@@ -88,22 +86,6 @@ const FlightPage = () => {
           {message}
         </Typography>
       )}
-
-      {/* {selectedFlight && (
-        <Box mt={3}>
-          <Typography variant="h6" mb={1}>
-            Selected: Flight {selectedFlight.flightNo}
-          </Typography>
-          <Button
-            variant="contained"
-            onClick={() =>
-              setMessage(`✅ Booking successful for ${selectedFlight.flightNo}`)
-            }
-          >
-            Book Flight
-          </Button>
-        </Box>
-      )} */}
     </Box>
   );
 };

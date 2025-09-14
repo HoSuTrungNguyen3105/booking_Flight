@@ -12,11 +12,11 @@ const Setting_flight = () => {
   const [rows, setRows] = useState<DataFlight[]>([]);
   const { fetchFlightList } = useFlightList();
 
-  useEffect(() => {
-    if (fetchFlightList?.list) {
-      setRows(fetchFlightList.list);
-    }
-  }, [fetchFlightList]);
+  // useEffect(() => {
+  //   if (fetchFlightList?.list) {
+  //     setRows(fetchFlightList.list);
+  //   }
+  // }, [fetchFlightList]);
 
   const flightCols: GridColDef[] = [
     { field: "flightId", headerName: "Flight ID", width: 100 },

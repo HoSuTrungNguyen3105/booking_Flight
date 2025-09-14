@@ -26,7 +26,7 @@ import { type DataFlight, type SearchType } from "../../utils/type";
 import Input from "./component/Input";
 import FormRow from "../../common/CustomRender/FormRow";
 import type { GridColDef, GridRowId } from "@mui/x-data-grid";
-import DataTable from "../../common/DataGrid/index.tsx";
+import DataTable, { type GridRowDef } from "../../common/DataGrid/index.tsx";
 import { FileUpload } from "../../common/FileUploader/index.tsx";
 import InputTextField from "../../common/Input/InputTextField.tsx";
 import SelectDropdown from "../../common/Dropdown/SelectDropdown.tsx";
@@ -42,6 +42,7 @@ import {
   Flight as FlightIcon,
   StarBorder as StarBorderIcon,
 } from "@mui/icons-material";
+import FlightDetail from "./component/FlightDetail.tsx";
 
 type FlightId = {
   id: number;
@@ -114,6 +115,20 @@ const Search_layout: React.FC = () => {
   });
 
   const [rowData, setRowData] = React.useState<DataFlight[]>([]);
+
+  const [selectedFlight, setSelectedFlight] = React.useState<GridRowDef | null>(
+    null
+  );
+  const [selectedFlightData, setSelectedFlightData] =
+    React.useState<DataFlight | null>(null);
+
+  const [detailModalOpen, setDetailModalOpen] = React.useState(false);
+
+  const handleRowClick = (flight: GridRowDef) => {
+    setSelectedFlight(flight);
+    setSelectedFlightData(flightData[0]);
+    setDetailModalOpen(true);
+  };
 
   const { handleSubmit: handleUpdateSubmit, reset: resetUpdate } = useForm<
     DataFlight[]
@@ -349,18 +364,13 @@ const Search_layout: React.FC = () => {
       </Box>
     );
   }
-  // const breadCrumbText: BreadcrumbItem[] = [
-  //   { label: "Home", href: "/", icon: <House /> },
-  //   { label: "Admin", href: "/admin", icon: <AdminPanelSettings /> },
-  //   { label: "Search" },
-  // ];
+
   return (
     <Box
       component="form"
       onSubmit={handleSearchSubmit(onSubmitValue)}
       sx={{ p: 2 }}
     >
-      {/* Header Section */}
       <Paper
         elevation={2}
         sx={{ p: 2, mb: 2, bgcolor: "primary.main", color: "white" }}
@@ -376,11 +386,9 @@ const Search_layout: React.FC = () => {
         </Typography>
       </Paper>
 
-      {/* Search Form Section */}
       <Card elevation={3} sx={{ mb: 3 }}>
         <CardContent sx={{ p: 3 }}>
           <Grid container spacing={3}>
-            {/* Column 1: Basic Flight Info */}
             <Grid size={12}>
               <Typography
                 variant="h6"
@@ -437,7 +445,6 @@ const Search_layout: React.FC = () => {
               </FormRow>
             </Grid>
 
-            {/* Column 2: Flight Details */}
             <Grid size={12}>
               <Typography
                 variant="h6"
@@ -452,51 +459,6 @@ const Search_layout: React.FC = () => {
                 <StarBorderIcon /> Flight Details
               </Typography>
 
-              {/* <FormRow label="Flight Type">
-                <SelectDropdown
-                  value={flightParams.flightType}
-                  options={flightTypeOptions}
-                  fullWidth
-                  size="small"
-                />
-              </FormRow>
-
-              <FormRow label="Cabin Class">
-                <SelectDropdown
-                  value={flightParams.cabinClass}
-                  options={cabinClassOptions}
-                  fullWidth
-                  size="small"
-                />
-              </FormRow>
-
-              <FormRow label="Aircraft Code">
-                <InputTextField
-                  name="aircraftCode"
-                  placeholder="e.g., A321, B737"
-                  value={flightParams.aircraftCode}
-                  fullWidth
-                  size="small"
-                />
-              </FormRow>
-
-              <FormRow label="Status">
-                <SelectDropdown
-                  value={flightParams.status}
-                  options={flightStatusOptions}
-                  fullWidth
-                  size="small"
-                />
-              </FormRow>
-
-              <FormRow label="Include Cancelled">
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <InputTextField name="includeCancelled" type="checkbox" />
-                  <Typography variant="body2" sx={{ ml: 1 }}>
-                    Show cancelled flights
-                  </Typography>
-                </Box>
-              </FormRow> */}
               <FormRow label="Flight Type">
                 <SelectDropdown
                   value={flightParams.flightType}
@@ -531,7 +493,6 @@ const Search_layout: React.FC = () => {
               </FormRow> */}
             </Grid>
 
-            {/* Column 3: Additional Filters */}
             <Grid size={12}>
               <Typography
                 variant="h6"
@@ -604,7 +565,6 @@ const Search_layout: React.FC = () => {
             </Grid>
           </Grid>
 
-          {/* Action Buttons */}
           <Divider sx={{ my: 3 }} />
           <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end" }}>
             <Button
@@ -630,7 +590,6 @@ const Search_layout: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Results Section */}
       <Card elevation={2}>
         <CardContent>
           <Box
@@ -658,10 +617,10 @@ const Search_layout: React.FC = () => {
                 id: (r.flightId ?? r.flightId) as GridRowId,
               }))}
               columns={colDefs}
+              onRowClick={handleRowClick} // 👈 Thêm prop này
             />
           </Box>
 
-          {/* Action Buttons for Results */}
           <Box
             sx={{ display: "flex", gap: 2, mt: 2, justifyContent: "flex-end" }}
           >
@@ -679,7 +638,13 @@ const Search_layout: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Modals */}
+      <FlightDetail
+        open={detailModalOpen}
+        flightId={selectedFlight}
+        flight={selectedFlightData}
+        onClose={() => setDetailModalOpen(false)}
+      />
+
       <ContentModal
         open={updateFlight}
         closeLabel="Close"
@@ -703,40 +668,6 @@ const Search_layout: React.FC = () => {
         // ]}
         // maxWidth="md"
       ></ContentModal>
-
-      {/* <ContentModal
-        open={openUpdateConfirm}
-        closeLabel="Cancel"
-        submitLabel="Confirm Update"
-        handleClose={handleCloseUpdate}
-        maxWidth="sm"
-      >
-        <Box sx={{ textAlign: 'center', p: 3 }}>
-          <Typography variant="h6" gutterBottom>
-            Confirm Changes
-          </Typography>
-          <Typography>
-            Are you sure you want to update the flight information?
-          </Typography>
-        </Box>
-      </ContentModal> */}
-
-      {/* <ContentModal
-        open={showDelete}
-        closeLabel="Cancel"
-        submitLabel="Confirm Delete"
-        handleClose={handleCloseDelete}
-        maxWidth="sm"
-      >
-        <Box sx={{ textAlign: 'center', p: 3 }}>
-          <Typography variant="h6" gutterBottom>
-            Delete Confirmation
-          </Typography>
-          <Typography>
-            Are you sure you want to delete the selected flights? This action cannot be undone.
-          </Typography>
-        </Box>
-      </ContentModal> */}
     </Box>
   );
 };

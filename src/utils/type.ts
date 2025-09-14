@@ -40,7 +40,8 @@ export type DataFlight = {
   terminal?: string;
   isCancelled?: boolean;
   delayMinutes?: number | null;
-
+  cancellationReason?: string;
+  delayReason?: string;
   aircraft?: {
     code: string;
     model: string;
