@@ -47,6 +47,7 @@ export const useDataSection = (
         fields: {
           id: "password",
           label: "Mật khẩu",
+          disabled: formType === "register",
           type: FieldType.INPUT_WITH_TYPE_PASSWORD,
           placeholder: "Nhập mật khẩu...",
           options: [],
@@ -57,6 +58,7 @@ export const useDataSection = (
         fields: {
           id: "email",
           label: "Email",
+          disabled: formType === "register",
           type: FieldType.INPUT_WITH_TYPE_TEXT,
           placeholder: "Nhập email...",
           options: [],
@@ -67,7 +69,7 @@ export const useDataSection = (
         fields: {
           id: "rank",
           label: "Rank",
-          disabled: formType === "register",
+          disabled: formType === "update",
           type: FieldType.INPUT_WITH_TYPE_TEXT,
           placeholder: "Nhập email...",
           options: [],

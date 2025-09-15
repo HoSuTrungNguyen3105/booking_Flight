@@ -42,7 +42,7 @@ const AddUserModal = ({
   const {
     formDetailConfig,
     enableUpdateBtn,
-    formData,
+    updateInfo,
     error,
     fetchUser,
     loadingUser,
@@ -78,7 +78,8 @@ const AddUserModal = ({
 
                 <FieldRenderer
                   {...fields}
-                  value={formData[fields.id as keyof typeof formData] ?? ""}
+                  value={updateInfo[fields.id as keyof typeof updateInfo] ?? ""}
+                  placeholder={fields.placeholder}
                   onChange={(val) => handleChange(fields.id, val)}
                 />
               </Box>
@@ -93,7 +94,7 @@ const AddUserModal = ({
         {renderRows()}
       </>
     );
-  }, [formDetailConfig, formData]);
+  }, [formDetailConfig, updateInfo]);
 
   return (
     <BaseModal

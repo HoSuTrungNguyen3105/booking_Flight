@@ -14,7 +14,6 @@ import {
 } from "@mui/material";
 import { Add, DeleteForever } from "@mui/icons-material";
 import { useSearchFlight } from "../Api/usePostApi";
-import ContentModal from "../../common/Modal/ContentModal";
 import { toast } from "react-toastify";
 import { type DataFlight } from "../../utils/type";
 import FormRow from "../../common/CustomRender/FormRow";
@@ -116,10 +115,20 @@ const Search_layout: React.FC = () => {
 
   const [detailModalOpen, setDetailModalOpen] = React.useState(false);
 
-  const handleRowClick = (flight: GridRowDef) => {
-    // setSelectedFlight(flight);
-    setSelectedFlightData(flightData[0]);
-    setDetailModalOpen(true);
+  const handleRowClick = (rowData: any) => {
+    console.log("🎯 Row clicked in parent component:", rowData);
+
+    // Lấy flightId từ row data
+    const flightId = rowData.flightId || rowData.id;
+    console.log("🎯 Extracted Flight ID:", flightId);
+
+    if (flightId) {
+      setSelectedFlight(flightId);
+      setSelectedFlightData(rowData);
+      setDetailModalOpen(true);
+    } else {
+      console.error("❌ No flightId found in row data");
+    }
   };
 
   const handleSetTranformMode = React.useCallback(() => {
@@ -595,35 +604,15 @@ const Search_layout: React.FC = () => {
         </CardContent>
       </Card>
 
-      <FlightDetail
-        open={detailModalOpen}
-        flightId={selectedFlight}
-        flight={selectedFlightData}
-        onClose={() => setDetailModalOpen(false)}
-      />
-
-      {/* <ContentModal
-        open={updateFlight}
-        closeLabel="Close"
-        submitLabel="Save Changes"
-        handleSubmit={handleOpenUpdateConfirm}
-        handleClose={handleClose}
-        contentArea={
-          <Box sx={{ p: 2 }}>
-            <Typography variant="h6" gutterBottom>
-              Update Flight Information
-            </Typography>
-          </Box>
-        }
-        middleBtns={[
-          {
-            label: "Reset Form",
-            onClick: () => resetUpdateField(),
-            variant: "outlined",
-          },
-        ]}
-        maxWidth="md"
-      ></ContentModal> */}
+      {detailModalOpen && (
+        <FlightDetail
+          onSuccess={() => {}}
+          open={detailModalOpen}
+          flightId={selectedFlight}
+          flight={selectedFlightData}
+          onClose={() => setDetailModalOpen(false)}
+        />
+      )}
     </Box>
   );
 };

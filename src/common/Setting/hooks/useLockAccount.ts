@@ -19,11 +19,10 @@ export const useLockAccount = ({
   user,
 }: ILockAccountModalProps) => {
   //   const api = useApis();
-  const [error, setError] = useState("");
-  const { fetchAccountLock, refetchAccountLock } = useAccountLock();
+  const [error, _] = useState("");
+  const { refetchAccountLock } = useAccountLock();
   const [formData, setFormData] = useState<{ id?: number }>({
     id: user?.id,
-    // accountLockYn: user?.accountLockYn,
   });
 
   const isLocked = user?.accountLockYn === "Y";
@@ -58,18 +57,8 @@ export const useLockAccount = ({
     }
   }, [isLocked, user, onSuccess, onClose]);
 
-  const userInfoLines = useCallback(() => {
-    return [
-      //   `사용자 ID: ${formData?.userId}`,
-      //   `사용자 이름: ${formData?.userName}`,
-      //   `닉네임: ${formData?.userAlias}`,
-      //   `최근 로그인: ${formData?.lastLoginDate}`,
-    ];
-  }, [formData]);
-
   return {
     formData,
-    userInfoLines,
     handleLockAccount,
     error,
     title,

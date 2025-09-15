@@ -1,77 +1,104 @@
-import React from "react";
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
   Box,
-  Typography,
-  Grid,
+  Button,
   Chip,
   Divider,
+  Grid,
   Paper,
+  Typography,
 } from "@mui/material";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
+import BaseModal from "../../../common/Modal/BaseModal";
+import InputTextField from "../../../common/Input/InputTextField";
+import { useAuth } from "../../../context/AuthContext";
 import {
   Close,
   Flight,
   Schedule,
   AirplanemodeActive,
 } from "@mui/icons-material";
-import type { DataFlight } from "../../../utils/type";
-import type { GridRowDef } from "../../../common/DataGrid";
-import { useGetFlightByIDData } from "../../Api/useGetApi";
+import type { DataFlight, LeaveRequest } from "../../../utils/type";
 
-interface FlightDetailModalProps {
+interface IRequestLeaveActionModalProps {
   open: boolean;
+  onClose: () => void;
+  onSuccess: () => void;
   flightId?: number;
   flight: DataFlight | null;
-  onClose: () => void;
 }
 
-const FlightDetail: React.FC<FlightDetailModalProps> = ({
+const FlightDetailModal = ({
   open,
-  flight,
-  flightId,
   onClose,
-}) => {
-  const { getFlightByIdData } = useGetFlightByIDData({ id: flightId });
-  if (!flight) return null;
+  onSuccess,
+  flightId,
+  flight,
+}: IRequestLeaveActionModalProps) => {
+  const [note, setNote] = useState("");
+  const { user } = useAuth();
+  // const { fetchApproveLeaveRequest } = useApproveLeaveRequest(
+  //   selectedRows?.id as number
+  // );
 
-  return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      maxWidth="md"
-      fullWidth
-      PaperProps={{ sx: { borderRadius: 2 } }}
-    >
-      <DialogTitle
-        sx={{
-          bgcolor: "primary.main",
-          color: "white",
-          display: "flex",
-          alignItems: "center",
-          gap: 1,
-        }}
-      >
-        <Flight />
-        Flight Details - {flight.flightNo}
-        <Button
-          onClick={onClose}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: "white",
-          }}
-        >
-          <Close />
+  // const { fetchRejectLeaveRequest } = useRejectLeaveRequest(
+  //   selectedRows?.id as number
+  // );
+
+  // useEffect(() => {
+  //   if (open) {
+  //     setNote("");
+  //   }
+  // }, [open]);
+
+  // const handleApproveSubmit = useCallback(async () => {
+  //   const data: SendRequestProps = {
+  //     approverId: user?.id as number,
+  //     requestId: selectedRows?.employee.id as number,
+  //     note: note,
+  //   };
+  //   const res = await fetchApproveLeaveRequest({
+  //     ...data,
+  //   });
+  //   if (res?.resultCode == "00") {
+  //     onSuccess();
+  //     setNote("");
+  //   } else setNote("");
+  // }, [onSuccess, fetchApproveLeaveRequest]);
+
+  // const handleRejectSubmit = useCallback(async () => {
+  //   const data: SendRequestProps = {
+  //     approverId: user?.id as number,
+  //     requestId: selectedRows?.employee.id as number,
+  //     note: note,
+  //   };
+  //   const res = await fetchRejectLeaveRequest({
+  //     ...data,
+  //   });
+  //   if (res?.resultCode == "00") {
+  //     onSuccess();
+  //     setNote("");
+  //   } else setNote("");
+  // }, [onSuccess, fetchRejectLeaveRequest]);
+
+  const renderActions = useCallback(() => {
+    return (
+      <Box display="flex" gap={1} justifyContent="flex-end" alignItems="center">
+        <Button onClick={onClose} variant="outlined">
+          Close
         </Button>
-      </DialogTitle>
+        <Button variant="contained" color="primary">
+          Book This Flight
+        </Button>
+      </Box>
+    );
+  }, []);
 
-      <DialogContent sx={{ p: 3 }}>
-        {/* Flight Summary */}
+  const renderRowDetail = useCallback(() => {
+    if (!flight) return null;
+
+    return (
+      <>
         <Paper elevation={1} sx={{ p: 2, mb: 3, bgcolor: "grey.50" }}>
           <Grid container spacing={2}>
             <Grid size={12}>
@@ -229,18 +256,77 @@ const FlightDetail: React.FC<FlightDetailModalProps> = ({
             <Typography>${flight.priceFirst?.toLocaleString()}</Typography>
           </Grid>
         </Grid>
-      </DialogContent>
+      </>
+    );
+  }, []);
 
-      <DialogActions sx={{ p: 2 }}>
-        <Button onClick={onClose} variant="outlined">
-          Close
-        </Button>
-        <Button variant="contained" color="primary">
-          Book This Flight
-        </Button>
-      </DialogActions>
-    </Dialog>
+  const renderContent = useCallback(() => {
+    if (!flight) return null;
+
+    return (
+      <>
+        <Paper
+          elevation={1}
+          sx={{ p: 3, mb: 3, maxWidth: "50rem", bgcolor: "grey.50" }}
+        >
+          <Grid container spacing={3} alignItems="center">
+            {/* Route Section */}
+            <Grid size={12}>
+              <Box sx={{ textAlign: "center" }}>
+                <Typography variant="h6" gutterBottom>
+                  {flight.departureAirport} → {flight.arrivalAirport}
+                </Typography>
+                <Box
+                  sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}
+                >
+                  <Chip
+                    label={flight.status}
+                    color={
+                      flight.status === "scheduled"
+                        ? "primary"
+                        : flight.status === "departed"
+                        ? "success"
+                        : flight.status === "cancelled"
+                        ? "error"
+                        : flight.status === "delayed"
+                        ? "warning"
+                        : "default"
+                    }
+                    size="small"
+                  />
+                  <Chip
+                    label={flight.flightType}
+                    variant="outlined"
+                    size="small"
+                  />
+                </Box>
+              </Box>
+            </Grid>
+            <Grid size={12} sx={{ textAlign: "right" }}>
+              <Typography variant="h4" color="primary">
+                {flight.flightNo}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Aircraft: {flight.aircraftCode}
+              </Typography>
+            </Grid>
+          </Grid>
+          {renderRowDetail()}
+        </Paper>
+      </>
+    );
+  }, [note]);
+
+  return (
+    <BaseModal
+      open={open}
+      onClose={onClose}
+      title={`원본 데이터, 통계 데이터 학습 Seq${flight?.flightId} 상세 정보`}
+      Icon={PrivacyTipIcon}
+      slots={{ content: renderContent(), actions: renderActions() }}
+      fullWidth
+    />
   );
 };
 
-export default FlightDetail;
+export default memo(FlightDetailModal);

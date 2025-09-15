@@ -128,7 +128,7 @@ export const useRandomPassword = () => {
     setParams: setParamsUser,
   } = useFetch<DetailResponseMessage<string>, null>({
     url: "/sys/users/getRandomPw",
-    autoFetch: true,
+    autoFetch: false,
     config: getMethod,
   });
   return {

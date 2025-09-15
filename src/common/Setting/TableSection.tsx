@@ -70,6 +70,16 @@ const TableSection = ({
     [rows]
   );
 
+  const handleRowClickDebug = useCallback(
+    (row: GridRowDef) => {
+      console.log("Row clicked in TableSection:", row);
+      if (handleRowClick) {
+        handleRowClick(row);
+      }
+    },
+    [handleRowClick]
+  );
+
   return (
     <Box sx={{ width: "100%", padding: "8px", maxHeight: "100vh" }}>
       <Box
@@ -84,7 +94,7 @@ const TableSection = ({
           columns={columns}
           checkboxSelection={true}
           selectedRows={selectedRow}
-          onRowClick={handleRowClick}
+          onRowClick={handleRowClickDebug}
           onRowSelect={handleRowSelect}
           onSortModelChange={onSortModelChange}
           loading={isLoading}

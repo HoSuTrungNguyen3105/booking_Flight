@@ -2,8 +2,6 @@ import type {
   FlightListApiResponse,
   FlightDetailApiResponse,
   CodeItem,
-  DataFlight,
-  SearchType,
   AircraftList,
   AvailableAircraft,
   ResponseMessage,
@@ -606,6 +604,7 @@ export const useUpdateUserInfo = (id: number) => {
     loadingUpdateUserInfo,
   };
 };
+
 export enum LeaveType {
   ANNUAL = "ANNUAL",
   SICK = "SICK",

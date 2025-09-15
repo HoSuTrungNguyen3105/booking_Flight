@@ -21,28 +21,39 @@ export const useCreateUser = ({
   //   const api = useApi5();
   const [error, setError] = useState<string>("");
   const { fetchUser, loadingUser, refetchUser } = useGetUserList();
-  const { fetchUserPw } = useRandomPassword();
+  const { fetchUserPw, refetchUserPw } = useRandomPassword();
   const [updateInfo, setUpdateInfo] = useState<UserCreateProps>({
     email: user?.email,
-    password: fetchUserPw?.data,
+    password: "",
     name: user?.name,
     role: user?.role,
   });
+  // Fetch password khi component mount (nếu cần)
+  useEffect(() => {
+    const generatePassword = async () => {
+      const password = await refetchUserPw();
+      if (password) {
+        setUpdateInfo((prev) => ({ ...prev, password: password.data }));
+      }
+    };
+
+    generatePassword();
+  }, []);
   const toast = useToast();
-  const [formData, setFormData] = useState<UserCreateProps>(updateInfo);
+  // const [formData, setFormData] = useState<UserCreateProps>(updateInfo);
   //   const formDetailConfig = useDataSection(formData, false);
-  const formDetailConfig = useDataSection(formData, "register", false);
+  const formDetailConfig = useDataSection(updateInfo, "register");
 
   const handleChange = (key: string, value: any) => {
-    setFormData((prev) => ({ ...prev, [key]: value }));
+    setUpdateInfo((prev) => ({ ...prev, [key]: value }));
   };
   const { fetchCreateUser, refetchCreateUser } = useCreateUserByAdmin();
   const handleSubmit = async () => {
     const payload: UserCreateProps = {
-      name: formData.name,
-      email: formData.email,
-      password: formData.password,
-      role: formData.role,
+      name: updateInfo.name,
+      email: updateInfo.email,
+      password: updateInfo.password,
+      role: updateInfo.role,
     };
 
     const res = await refetchCreateUser(payload);
@@ -60,8 +71,8 @@ export const useCreateUser = ({
     [updateInfo]
   );
 
-  const handleChangeFormInput = (key: keyof typeof formData, value: any) => {
-    setFormData((prev) => ({
+  const handleChangeFormInput = (key: keyof typeof updateInfo, value: any) => {
+    setUpdateInfo((prev) => ({
       ...prev,
       [key]: value,
     }));
@@ -73,7 +84,7 @@ export const useCreateUser = ({
     handleChangeFormInput,
     enableUpdateBtn,
     error,
-    formData,
+    updateInfo,
     fetchCreateUser,
     handleChange,
     handleSubmit,

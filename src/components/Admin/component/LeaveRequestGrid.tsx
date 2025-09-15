@@ -14,11 +14,13 @@ import { useGetLeaveRequest } from "../../Api/usePostApi";
 import { DateFormatEnum, formatDateKR } from "../../../hooks/format";
 import CustomPopover from "../../../common/Button/Popover";
 import RequestLeaveActionModal from "./RequestLeaveActionModal";
-import type { LeaveRequest } from "../../../utils/type";
+import { UserRole, type LeaveRequest } from "../../../utils/type";
 import CreateLeaveRequestForm from "../../User/CreateLeaveRequestForm";
+import { useAuth } from "../../../context/AuthContext";
 
 const LeaveRequestGrid = () => {
   const theme = useTheme();
+  const { user } = useAuth();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const { dataGetLeaveRequest, refetchGetLeaveRequest } = useGetLeaveRequest();
 
@@ -168,16 +170,16 @@ const LeaveRequestGrid = () => {
 
   const [onCreateRequest, setOnCreateRequest] = useState(false);
 
-  const employees: Array<{ id: number; name: string; email: string }> = [
-    { id: 1, name: "Nguyen Ho", email: "nguyenho@example.com" },
-    { id: 2, name: "Be Y Nhi", email: "beynhi@example.com" },
-    { id: 3, name: "Tran An", email: "tran.an@example.com" },
-    { id: 4, name: "Le Minh", email: "le.minh@example.com" },
-    { id: 5, name: "Pham Lan", email: "pham.lan@example.com" },
-  ];
+  // const employees: Array<{ id: number; name: string; email: string }> = [
+  //   { id: 1, name: "Nguyen Ho", email: "nguyenho@example.com" },
+  //   { id: 2, name: "Be Y Nhi", email: "beynhi@example.com" },
+  //   { id: 3, name: "Tran An", email: "tran.an@example.com" },
+  //   { id: 4, name: "Le Minh", email: "le.minh@example.com" },
+  //   { id: 5, name: "Pham Lan", email: "pham.lan@example.com" },
+  // ];
 
   if (onCreateRequest) {
-    return <CreateLeaveRequestForm employees={employees} />;
+    return <CreateLeaveRequestForm employees={user?.id as number} />;
   }
 
   return (
@@ -193,9 +195,17 @@ const LeaveRequestGrid = () => {
         <Typography variant="h5" fontWeight="bold" color="primary.main">
           Danh sách đơn xin nghỉ phép
         </Typography>
-        <Box>
-          <Button onClick={() => setOnCreateRequest(true)} />
-        </Box>
+        {user?.role === UserRole.USER && (
+          <Box>
+            <Typography></Typography>
+            <Button
+              variant="contained"
+              onClick={() => setOnCreateRequest(true)}
+            >
+              Create Request leave
+            </Button>
+          </Box>
+        )}
       </Box>
 
       <Box

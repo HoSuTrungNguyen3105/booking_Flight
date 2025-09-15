@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Box,
   Paper,
@@ -22,33 +22,23 @@ import {
   StepLabel,
   IconButton,
 } from "@mui/material";
-import {
-  Person,
-  CalendarToday,
-  Calculate,
-  Description,
-  Send,
-  RestartAlt,
-  X,
-} from "@mui/icons-material";
-import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { vi } from "date-fns/locale";
+import { Send, RestartAlt } from "@mui/icons-material";
 import {
   getUserIdByEmail,
   LeaveType,
+  useCreateLeaveRequest,
   type CreateLeaveRequestDto,
 } from "../Api/usePostApi";
 import DateTimePickerComponent from "../../common/DayPicker/date-range-picker";
 import InputTextField from "../../common/Input/InputTextField";
 import InputTextArea from "../../common/Input/InputTextArea";
 import SelectDropdown from "../../common/Dropdown/SelectDropdown";
-import { useWatch } from "react-hook-form";
 import { useToast } from "../../context/ToastContext";
+import { DateFormatEnum, formatDateKR } from "../../hooks/format";
 
 interface CreateLeaveRequestFormProps {
   //   onSubmit: (data: CreateLeaveRequestDto) => void;
-  employees: Array<{ id: number; name: string; email: string }>;
+  employees: number;
   loading?: boolean;
 }
 
@@ -59,8 +49,9 @@ const CreateLeaveRequestForm: React.FC<CreateLeaveRequestFormProps> = ({
 }) => {
   const theme = useTheme();
   const [activeStep, setActiveStep] = useState(0);
+  const { refetchGetLeaveRequest } = useCreateLeaveRequest();
   const [formData, setFormData] = useState<CreateLeaveRequestDto>({
-    employeeId: 0,
+    employeeId: employees,
     leaveType: LeaveType.ANNUAL,
     startDate: 0,
     endDate: 0,
@@ -77,7 +68,7 @@ const CreateLeaveRequestForm: React.FC<CreateLeaveRequestFormProps> = ({
     { value: "UNPAID", label: "Nghỉ không lương", color: "warning" },
   ];
 
-  const steps = ["Chọn nhân viên", "Thông tin nghỉ phép", "Xác nhận"];
+  const steps = ["ID nhân viên", "Thông tin nghỉ phép", "Xác nhận"];
 
   const handleInputChange = (
     field: keyof CreateLeaveRequestDto,
@@ -91,58 +82,117 @@ const CreateLeaveRequestForm: React.FC<CreateLeaveRequestFormProps> = ({
     }
   };
 
+  // const handleDateChange = (
+  //   field: "startDate" | "endDate",
+  //   date: number | null
+  // ) => {
+  //   // Cập nhật giá trị date
+  //   handleInputChange(field, date);
+
+  //   // Auto-calculate days if both dates are selected
+  //   if (date) {
+  //     if (field === "startDate" && formData.endDate) {
+  //       calculateDays(date, formData.endDate);
+  //     } else if (field === "endDate" && formData.startDate) {
+  //       calculateDays(formData.startDate, date);
+  //     }
+  //   } else {
+  //     // Nếu xóa một trong hai date, reset days về 0
+  //     handleInputChange("days", 0);
+  //   }
+  // };
+
+  // const calculateDays = (start: number, end: number) => {
+  //   // Đảm bảo end date không nhỏ hơn start date
+  //   if (end < start) {
+  //     handleInputChange("days", 0);
+  //     // Có thể set error message ở đây nếu muốn
+  //     return;
+  //   }
+
+  //   // Tính số ngày chênh lệch (bao gồm cả ngày bắt đầu)
+  //   const startDate = new Date(start);
+  //   const endDate = new Date(end);
+
+  //   // Reset giờ về 00:00:00 để tính chính xác số ngày
+  //   startDate.setHours(0, 0, 0, 0);
+  //   endDate.setHours(0, 0, 0, 0);
+
+  //   const timeDiff = endDate.getTime() - startDate.getTime();
+  //   const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1; // +1 để bao gồm cả ngày đầu
+
+  //   handleInputChange("days", daysDiff > 0 ? daysDiff : 0);
+  // };
+
+  // Thêm useEffect để tự động tính toán khi dates thay đổi
+  useEffect(() => {
+    if (formData.startDate && formData.endDate) {
+      calculateDays(formData.startDate, formData.endDate);
+    } else {
+      handleInputChange("days", 0);
+    }
+  }, [formData.startDate, formData.endDate]);
+
   const handleDateChange = (
     field: "startDate" | "endDate",
     date: number | null
   ) => {
-    if (date) {
-      // const timestamp = date.getTime();
-      handleInputChange(field, date);
-
-      // Auto-calculate days if both dates are selected
-      if (field === "startDate" && formData.endDate) {
-        calculateDays(date, formData.endDate);
-      } else if (field === "endDate" && formData.startDate) {
-        calculateDays(formData.startDate, date);
-      }
-    }
+    handleInputChange(field, date);
   };
+
+  // const calculateDays = (start: number, end: number) => {
+  //   if (end < start) {
+  //     handleInputChange("days", 0);
+  //     setErrors((prev) => ({
+  //       ...prev,
+  //       endDate: "End date cannot be before start date",
+  //     }));
+  //     return;
+  //   }
+
+  //   setErrors((prev) => ({ ...prev, endDate: "" }));
+
+  //   const startDate = new Date(start);
+  //   const endDate = new Date(end);
+
+  //   startDate.setHours(0, 0, 0, 0);
+  //   endDate.setHours(0, 0, 0, 0);
+
+  //   const timeDiff = endDate.getTime() - startDate.getTime();
+  //   const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
+
+  //   handleInputChange("days", daysDiff);
+  // };
 
   const calculateDays = (start: number, end: number) => {
-    const daysDiff = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
-    handleInputChange("days", daysDiff > 0 ? daysDiff : 0);
+    if (end <= start) {
+      handleInputChange("days", end === start ? 1 : 0);
+      if (end < start) {
+        setErrors((prev) => ({
+          ...prev,
+          endDate: "End date cannot be before start date",
+        }));
+      }
+      return;
+    }
+
+    // Tạo Date object từ timestamp
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+
+    // Reset về cùng giờ để tính chính xác số ngày
+    startDate.setHours(0, 0, 0, 0);
+    endDate.setHours(0, 0, 0, 0);
+
+    // Tính chênh lệch milliseconds
+    const timeDiff = endDate.getTime() - startDate.getTime();
+
+    // Chuyển đổi sang số ngày và +1 để bao gồm cả ngày đầu
+    const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
+
+    handleInputChange("days", daysDiff);
+    setErrors((prev) => ({ ...prev, endDate: "" }));
   };
-
-  // const validateForm = (): boolean => {
-  //   const newErrors: Partial<Record<keyof CreateLeaveRequestDto, string>> = {};
-
-  //   if (!formData.employeeId) {
-  //     newErrors.employeeId = "Vui lòng chọn nhân viên";
-  //   }
-
-  //   if (!formData.startDate) {
-  //     newErrors.startDate = "Vui lòng chọn ngày bắt đầu";
-  //   }
-
-  //   if (!formData.endDate) {
-  //     newErrors.endDate = "Vui lòng chọn ngày kết thúc";
-  //   }
-
-  //   if (
-  //     formData.startDate &&
-  //     formData.endDate &&
-  //     formData.startDate > formData.endDate
-  //   ) {
-  //     newErrors.endDate = "Ngày kết thúc phải sau ngày bắt đầu";
-  //   }
-
-  //   if (!formData.days || formData.days <= 0) {
-  //     newErrors.days = "Số ngày nghỉ không hợp lệ";
-  //   }
-
-  //   setErrors(newErrors);
-  //   return Object.keys(newErrors).length === 0;
-  // };
 
   const validateStep = (step: number): boolean => {
     const newErrors: Partial<Record<keyof CreateLeaveRequestDto, string>> = {};
@@ -193,15 +243,14 @@ const CreateLeaveRequestForm: React.FC<CreateLeaveRequestFormProps> = ({
     setActiveStep((prev) => prev - 1);
   };
 
-  const handleSubmit = () => {
-    if (1) {
-      //onSubmit(formData);
-    }
-  };
+  const handleSubmit = useCallback(async () => {
+    const res = await refetchGetLeaveRequest(formData);
+    console.log("res", res);
+  }, [formData]);
 
   const handleReset = () => {
     setFormData({
-      employeeId: 0,
+      employeeId: employees,
       leaveType: LeaveType.ANNUAL,
       startDate: 0,
       endDate: 0,
@@ -234,10 +283,6 @@ const CreateLeaveRequestForm: React.FC<CreateLeaveRequestFormProps> = ({
     }
   }, [emailEmployee, refetchUserEmailData]);
 
-  const getSelectedEmployee = () => {
-    return employees.find((emp) => emp.id === formData.employeeId);
-  };
-
   const renderStepContent = (step: number) => {
     switch (step) {
       case 0:
@@ -245,42 +290,11 @@ const CreateLeaveRequestForm: React.FC<CreateLeaveRequestFormProps> = ({
           <Grid container spacing={3}>
             <Grid size={12}>
               <FormControl fullWidth error={!!errors.employeeId}>
-                <InputLabel>Nhân viên</InputLabel>
-                {/* <InputTextField
-                  value={emailEmployee}
-                  onChange={(e) => handleInputChange("employeeId", e)}
-                /> */}
-
                 <InputTextField
-                  type="email"
-                  value={emailEmployee}
-                  onChange={(e) => setEmailEmployee(e)}
-                  disabled={loading}
+                  type="text"
+                  value={String(employees)}
+                  disabled={true}
                 />
-
-                {userId && (
-                  <Alert
-                    severity="success"
-                    sx={{ mb: 2 }}
-                    action={
-                      <IconButton size="small" onClick={() => setUserId(0)}>
-                        <X />
-                      </IconButton>
-                    }
-                  >
-                    <Typography variant="body2">
-                      <strong>UserID tìm thấy:</strong> {userId}
-                    </Typography>
-                  </Alert>
-                )}
-
-                <Button
-                  onClick={handleSubmitEmailValue}
-                  variant="contained"
-                  sx={{ mt: 1 }}
-                >
-                  Find User
-                </Button>
               </FormControl>
             </Grid>
           </Grid>
@@ -291,7 +305,6 @@ const CreateLeaveRequestForm: React.FC<CreateLeaveRequestFormProps> = ({
           <Grid container spacing={3}>
             <Grid size={12}>
               <FormControl fullWidth error={!!errors.leaveType}>
-                <InputLabel>Loại nghỉ phép</InputLabel>
                 <SelectDropdown
                   value={formData.leaveType}
                   options={leaveTypes}
@@ -320,8 +333,9 @@ const CreateLeaveRequestForm: React.FC<CreateLeaveRequestFormProps> = ({
               <InputTextField
                 type="number"
                 value={String(formData.days)}
-                onChange={(e) => handleInputChange("days", Number(e))}
+                // onChange={(e) => handleInputChange("days", Number(e))}
                 error={!!errors.days}
+                readOnly
               />
             </Grid>
 
@@ -336,7 +350,7 @@ const CreateLeaveRequestForm: React.FC<CreateLeaveRequestFormProps> = ({
         );
 
       case 2:
-        const employee = getSelectedEmployee();
+        // const employee = getSelectedEmployee();
         return (
           <Box>
             <Alert severity="info" sx={{ mb: 3 }}>
@@ -346,22 +360,10 @@ const CreateLeaveRequestForm: React.FC<CreateLeaveRequestFormProps> = ({
             <Card variant="outlined" sx={{ mb: 3 }}>
               <CardContent>
                 <Typography variant="h6" gutterBottom color="primary">
-                  Thông tin đơn xin nghỉ phép
+                  Thông tin đơn xin nghỉ phép {userId}
                 </Typography>
 
                 <Grid container spacing={2}>
-                  <Grid size={12}>
-                    <Typography variant="body2" color="text.secondary">
-                      Nhân viên:
-                    </Typography>
-                    <Typography variant="body1" fontWeight="bold">
-                      {employee?.name}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      {employee?.email}
-                    </Typography>
-                  </Grid>
-
                   <Grid size={12}>
                     <Typography variant="body2" color="text.secondary">
                       Loại nghỉ phép:
@@ -384,8 +386,15 @@ const CreateLeaveRequestForm: React.FC<CreateLeaveRequestFormProps> = ({
                       Thời gian nghỉ:
                     </Typography>
                     <Typography variant="body1">
-                      {formatDate(formData.startDate)} -{" "}
-                      {formatDate(formData.endDate)}
+                      {formatDateKR(
+                        DateFormatEnum.MM_DD_YYYY,
+                        formData.startDate
+                      )}{" "}
+                      -{" "}
+                      {formatDateKR(
+                        DateFormatEnum.MM_DD_YYYY,
+                        formData.endDate
+                      )}{" "}
                     </Typography>
                   </Grid>
 

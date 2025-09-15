@@ -140,9 +140,6 @@ export const useInspectionPerformanceHistory = () => {
     [toggleOpenModal]
   );
 
-  // console.log("currentUserId", currentUserId);
-  console.log("row.id", user?.id);
-
   const DropdownCell = memo(
     ({
       row,

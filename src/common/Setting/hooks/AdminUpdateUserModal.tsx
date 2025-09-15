@@ -45,9 +45,7 @@ const AdminUpdateUserModal = ({
         <Stack>
           <Divider sx={{ mb: 2, marginTop: 0, marginBottom: "22px" }} />
           <Typography variant="body1">
-            Nhập ID{" "}
-            <strong>{JSON.stringify(data as AdminUpdateUserForm)}</strong> để
-            xác nhận xóa tài khoản.
+            Nhập ID xác nhận xóa tài khoản. Ex : {String(data?.id)}
           </Typography>
           <InputTextField
             value={inputId}
