@@ -37,15 +37,16 @@ import { useToast } from "../../context/ToastContext";
 import { DateFormatEnum, formatDateKR } from "../../hooks/format";
 
 interface CreateLeaveRequestFormProps {
-  //   onSubmit: (data: CreateLeaveRequestDto) => void;
   employees: number;
   loading?: boolean;
+  onSuccess: () => void;
 }
 
 const CreateLeaveRequestForm: React.FC<CreateLeaveRequestFormProps> = ({
   //   onSubmit,
   employees,
   loading = false,
+  onSuccess,
 }) => {
   const theme = useTheme();
   const [activeStep, setActiveStep] = useState(0);
@@ -82,49 +83,6 @@ const CreateLeaveRequestForm: React.FC<CreateLeaveRequestFormProps> = ({
     }
   };
 
-  // const handleDateChange = (
-  //   field: "startDate" | "endDate",
-  //   date: number | null
-  // ) => {
-  //   // Cập nhật giá trị date
-  //   handleInputChange(field, date);
-
-  //   // Auto-calculate days if both dates are selected
-  //   if (date) {
-  //     if (field === "startDate" && formData.endDate) {
-  //       calculateDays(date, formData.endDate);
-  //     } else if (field === "endDate" && formData.startDate) {
-  //       calculateDays(formData.startDate, date);
-  //     }
-  //   } else {
-  //     // Nếu xóa một trong hai date, reset days về 0
-  //     handleInputChange("days", 0);
-  //   }
-  // };
-
-  // const calculateDays = (start: number, end: number) => {
-  //   // Đảm bảo end date không nhỏ hơn start date
-  //   if (end < start) {
-  //     handleInputChange("days", 0);
-  //     // Có thể set error message ở đây nếu muốn
-  //     return;
-  //   }
-
-  //   // Tính số ngày chênh lệch (bao gồm cả ngày bắt đầu)
-  //   const startDate = new Date(start);
-  //   const endDate = new Date(end);
-
-  //   // Reset giờ về 00:00:00 để tính chính xác số ngày
-  //   startDate.setHours(0, 0, 0, 0);
-  //   endDate.setHours(0, 0, 0, 0);
-
-  //   const timeDiff = endDate.getTime() - startDate.getTime();
-  //   const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1; // +1 để bao gồm cả ngày đầu
-
-  //   handleInputChange("days", daysDiff > 0 ? daysDiff : 0);
-  // };
-
-  // Thêm useEffect để tự động tính toán khi dates thay đổi
   useEffect(() => {
     if (formData.startDate && formData.endDate) {
       calculateDays(formData.startDate, formData.endDate);
@@ -139,30 +97,6 @@ const CreateLeaveRequestForm: React.FC<CreateLeaveRequestFormProps> = ({
   ) => {
     handleInputChange(field, date);
   };
-
-  // const calculateDays = (start: number, end: number) => {
-  //   if (end < start) {
-  //     handleInputChange("days", 0);
-  //     setErrors((prev) => ({
-  //       ...prev,
-  //       endDate: "End date cannot be before start date",
-  //     }));
-  //     return;
-  //   }
-
-  //   setErrors((prev) => ({ ...prev, endDate: "" }));
-
-  //   const startDate = new Date(start);
-  //   const endDate = new Date(end);
-
-  //   startDate.setHours(0, 0, 0, 0);
-  //   endDate.setHours(0, 0, 0, 0);
-
-  //   const timeDiff = endDate.getTime() - startDate.getTime();
-  //   const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
-
-  //   handleInputChange("days", daysDiff);
-  // };
 
   const calculateDays = (start: number, end: number) => {
     if (end <= start) {
@@ -198,7 +132,6 @@ const CreateLeaveRequestForm: React.FC<CreateLeaveRequestFormProps> = ({
         newErrors.employeeId = "Vui lòng chọn nhân viên";
       }
     } else if (step === 1) {
-      // Validate các field ở step 1
       if (!formData.startDate) {
         newErrors.startDate = "Vui lòng chọn ngày bắt đầu";
       }
@@ -241,7 +174,10 @@ const CreateLeaveRequestForm: React.FC<CreateLeaveRequestFormProps> = ({
   const handleSubmit = useCallback(async () => {
     const res = await refetchGetLeaveRequest(formData);
     console.log("res", res);
-  }, [formData]);
+    if (res?.resultCode === "00") {
+      onSuccess();
+    }
+  }, [formData, onSuccess]);
 
   const handleReset = () => {
     setFormData({

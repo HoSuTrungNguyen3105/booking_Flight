@@ -131,6 +131,12 @@ const Search_layout: React.FC = () => {
     }
   };
 
+  const [formData, setFormData] = React.useState({
+    quantity: 0,
+    price: 0,
+    discount: 10,
+  });
+
   const handleSetTranformMode = React.useCallback(() => {
     if (mode === "simple") {
       setMode("advance");

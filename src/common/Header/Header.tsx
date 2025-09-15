@@ -12,7 +12,6 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
-  Popover,
   Stack,
   useMediaQuery,
   useTheme,
@@ -25,26 +24,18 @@ import { LanguageButton } from "../Dropdown/Changelng";
 import { GridMenuIcon } from "@mui/x-data-grid";
 import { ImageThumbnail } from "../Profile/ImageThumbnail";
 import CustomPopover from "../Button/Popover";
+import { Login } from "@mui/icons-material";
 
 export const Header = () => {
-  const navItems = ["About", "Tour", "Package", "Contact"];
-  const { isAuthenticated, user } = useAuth();
+  const navItems = ["About", "Package", "Contact"];
+  const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [drawerOpen, setDrawerOpen] = React.useState(false);
-  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
 
   const handleDrawerToggle = () => {
     setDrawerOpen(!drawerOpen);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
   };
 
   const drawer = React.useCallback(
@@ -167,20 +158,84 @@ export const Header = () => {
               </IconButton>
             ) : null}
 
-            <Stack direction="row" alignItems="center" spacing={1}>
-              <LanguageButton />
+            <Stack
+              direction="row"
+              alignItems="center"
+              spacing={{ xs: 1, sm: 2 }}
+              sx={{
+                padding: { xs: "2px 4px", sm: "4px 8px" },
+                borderRadius: "8px",
+                backgroundColor:
+                  theme.palette.mode === "dark"
+                    ? "rgba(255, 255, 255, 0.05)"
+                    : "rgba(0, 0, 0, 0.02)",
+                border: `1px solid ${
+                  theme.palette.mode === "dark"
+                    ? "rgba(255, 255, 255, 0.1)"
+                    : "rgba(0, 0, 0, 0.1)"
+                }`,
+              }}
+            >
+              <Box
+                sx={{
+                  padding: { xs: "4px", sm: "6px" },
+                  borderRadius: "6px",
+                  display: { xs: "none", sm: "block" },
+                  "&:hover": {
+                    backgroundColor: theme.palette.action.hover,
+                  },
+                }}
+              >
+                <LanguageButton />
+              </Box>
+
               {isAuthenticated ? (
-                <Stack direction="row" alignItems="center">
-                  <ImageThumbnail url={ImageThumbnailIcon} />
-                  <SignOut />
+                <Stack direction="row" alignItems="center" spacing={1}>
+                  <ImageThumbnail
+                    url={ImageThumbnailIcon}
+                    sx={{
+                      width: { xs: 28, sm: 32 },
+                      height: { xs: 28, sm: 32 },
+                      borderRadius: "50%",
+                    }}
+                  />
+
+                  <IconButton
+                    size="small"
+                    sx={{
+                      color: theme.palette.text.secondary,
+                      "&:hover": {
+                        color: theme.palette.primary.main,
+                      },
+                    }}
+                  >
+                    <SignOut />
+                  </IconButton>
                 </Stack>
               ) : (
-                <Link to="/init/loginPage">
+                <Link to="/init/loginPage" style={{ textDecoration: "none" }}>
                   <Button
+                    variant="outlined"
                     size="small"
-                    sx={{ color: theme.palette.text.primary }}
+                    sx={{
+                      color: theme.palette.primary.main,
+                      borderColor: theme.palette.primary.main,
+                      borderRadius: "20px",
+                      padding: { xs: "4px 12px", sm: "6px 16px" },
+                      minWidth: "auto",
+                      "&:hover": {
+                        backgroundColor: theme.palette.primary.main,
+                        color: theme.palette.primary.contrastText,
+                      },
+                    }}
                   >
-                    Login
+                    <Login sx={{ fontSize: 16, mr: { xs: 0, sm: 0.5 } }} />
+                    <Box
+                      component="span"
+                      sx={{ display: { xs: "none", sm: "inline" } }}
+                    >
+                      Login
+                    </Box>
                   </Button>
                 </Link>
               )}

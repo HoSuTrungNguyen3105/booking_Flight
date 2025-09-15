@@ -1,6 +1,5 @@
 import { memo, useEffect, useState } from "react";
 import { INPUT_HEIGHT_BY_SIZE, type InputNumberProps } from "./type";
-import clsx from "clsx";
 import { TextField } from "@mui/material";
 
 const InputNumber = ({
@@ -9,7 +8,6 @@ const InputNumber = ({
   sx,
   defaultValue,
   min = 0,
-  status = "default",
   onChange,
   onBlur,
   disabled = false,
@@ -18,7 +16,6 @@ const InputNumber = ({
   textAlign = "left",
 }: InputNumberProps) => {
   const [valueText, setValueText] = useState<string>(value?.toString() ?? "");
-  const inputErrorClass = status === "error" ? "input-error" : "";
 
   const addCommas = (num: string) =>
     num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -50,6 +47,7 @@ const InputNumber = ({
     const convertValue = value?.toString() ?? "";
     setValueText(isSeparator ? addCommas(convertValue) : convertValue);
   }, [value]);
+
   return (
     <TextField
       value={value ?? ""}
@@ -70,7 +68,7 @@ const InputNumber = ({
           inputProps: {
             style: { textAlign, border: "none" },
             min,
-            className: clsx("input-number-container", inputErrorClass),
+            // className: clsx("input-number-container", inputErrorClass),
             defaultValue,
             placeholder,
           },

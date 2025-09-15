@@ -179,7 +179,12 @@ const LeaveRequestGrid = () => {
   // ];
 
   if (onCreateRequest) {
-    return <CreateLeaveRequestForm employees={user?.id as number} />;
+    return (
+      <CreateLeaveRequestForm
+        onSuccess={() => setOnCreateRequest(false)}
+        employees={user?.id as number}
+      />
+    );
   }
 
   return (

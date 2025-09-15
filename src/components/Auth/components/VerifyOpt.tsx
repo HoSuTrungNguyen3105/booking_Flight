@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import OTPInput from "../../User/OTPInput";
+import OTPInput from "../../../common/Input/OTPInput";
 import { Box, Button, Paper, Typography } from "@mui/material";
 import type { EmailProps } from "../../../utils/type";
 import { useVerifyOTPCode } from "../../Api/usePostApi";

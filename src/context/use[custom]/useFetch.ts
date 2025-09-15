@@ -1,7 +1,7 @@
 import type { AxiosRequestConfig } from "axios";
 import { useApi } from "../../context/ApiContext";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { MethodType } from "../../hooks/type";
+import { MethodType } from "../../utils/type";
 
 type ResponseMessage = {
   resultCode?: string;

@@ -1,11 +1,12 @@
-import { Box } from "@mui/material";
+import { Box, type SxProps } from "@mui/material";
 import type { FC } from "react";
 
 type ImageThumbnailProps = {
   url?: string;
+  sx?: SxProps;
 };
 
-export const ImageThumbnail: FC<ImageThumbnailProps> = ({ url }) => {
+export const ImageThumbnail: FC<ImageThumbnailProps> = ({ url, sx }) => {
   return url ? (
     <Box
       component="img"
@@ -17,6 +18,7 @@ export const ImageThumbnail: FC<ImageThumbnailProps> = ({ url }) => {
         border: "1px solid #ccc",
         flexShrink: 0,
         objectFit: "cover",
+        ...sx,
       }}
     />
   ) : null;

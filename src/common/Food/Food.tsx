@@ -10,10 +10,6 @@ const Food = () => {
   const { fetchFlightMeals } = useFlightMeals();
   const [rows, setRows] = useState<FlightMeal[]>([]);
 
-  // useEffect(() => {
-  //   refetchFlightMeals();
-  // }, []);
-
   useEffect(() => {
     if (fetchFlightMeals?.list) {
       setRows(fetchFlightMeals.list);
