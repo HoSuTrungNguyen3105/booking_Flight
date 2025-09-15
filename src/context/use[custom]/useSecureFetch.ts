@@ -59,8 +59,13 @@ export const useSecureFetch = <T extends Partial<ResponseMessage>, P>({
     async (extra?: P, overrideUrl?: string): Promise<T | undefined> => {
       console.log("📞 secureRefetch called, isValid:", isValid);
 
-      if (isValidRef.current) {
-        console.log("✅ Đã xác thực, gọi API trực tiếp");
+      if (isValidRef.current == true) {
+        console.log("✅ Đã xác thực, gọi API extra trực tiếp", extra);
+        console.log(
+          "✅ Đã xác thực, gọi API overrideUrl trực tiếp",
+          overrideUrl
+        );
+
         return fetch.refetch(extra, overrideUrl);
       }
 
@@ -70,8 +75,9 @@ export const useSecureFetch = <T extends Partial<ResponseMessage>, P>({
         setOpenModalConfirm(true);
         return undefined;
       }
-
-      return fetch.refetch(extra, overrideUrl);
+      // console.log("✅ Đã xác thực, gọi API extra trực tiếp", extra);
+      // console.log("✅ Đã xác thực, gọi API overrideUrl trực tiếp", overrideUrl);
+      // return fetch.refetch(extra, overrideUrl);
     },
     [requirePassword, isValid, fetch.refetch] // Giữ nguyên dependencies
   );

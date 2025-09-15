@@ -142,7 +142,7 @@ const FlightUpdateModal = ({
       terminal: data.terminal || "",
       isCancelled: data.isCancelled || false,
       delayMinutes: data.delayMinutes || 0,
-      // seats: data.seats || [],
+      seats: data.seats || [],
     };
   };
 

@@ -148,6 +148,7 @@ export type Seat = {
   //Add type
   isWindow?: boolean;
   nearRestroom?: boolean;
+  isAvailable?: boolean;
 };
 // Định nghĩa type cho Employee
 interface Employee {

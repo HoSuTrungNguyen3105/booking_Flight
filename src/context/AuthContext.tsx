@@ -125,7 +125,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         return false;
       }
     },
-    []
+    [fetchVerifyPassword, toast]
   );
 
   const setValid = useCallback((valid: boolean) => {

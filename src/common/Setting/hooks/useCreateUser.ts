@@ -39,6 +39,7 @@ export const useCreateUser = ({
 
     generatePassword();
   }, []);
+
   const toast = useToast();
   // const [formData, setFormData] = useState<UserCreateProps>(updateInfo);
   //   const formDetailConfig = useDataSection(formData, false);

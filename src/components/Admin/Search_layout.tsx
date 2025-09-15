@@ -77,6 +77,9 @@ const Search_layout: React.FC = () => {
   const [isUpdate, setIsUpdate] = React.useState<boolean>(false);
   const [isSearch, setIsSearch] = React.useState<boolean>(false);
   const [isReset, setIsReset] = React.useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [responseCode, setResponseCode] = React.useState("");
+  const [isPasswordValid, setIsPasswordValid] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [_, setLoading] = React.useState<boolean>(true);
   const [flightParams, setFlightParams] = React.useState<SearchFlightDto>({
@@ -101,10 +104,10 @@ const Search_layout: React.FC = () => {
   const [showDelete, setShowDelete] = React.useState<boolean>(false);
 
   const {
-    openModalConfirm,
+    // openModalConfirm,
     refetchSearchFlightList,
-    handleCancelPassword,
-    handlePasswordConfirm,
+    // handleCancelPassword,
+    // handlePasswordConfirm,
   } = useSearchFlight();
 
   // console.log("logpasw", password);
@@ -631,13 +634,13 @@ const Search_layout: React.FC = () => {
         />
       )}
 
-      {openModalConfirm && (
+      {/* {openModalConfirm && (
         <ConfirmPasswordToCallApi
           open={openModalConfirm}
           onSuccess={handlePasswordConfirm}
           onClose={handleCancelPassword}
         />
-      )}
+      )} */}
     </Box>
   );
 };

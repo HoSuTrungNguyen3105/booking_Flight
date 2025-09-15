@@ -34,8 +34,8 @@ export const useFetch = <T extends Partial<ResponseMessage>, P>({
 }: TUseFetch<T, P>) => {
   const { get, post, delete: del, update } = useApi();
   // const { user, verifyPassword } = useAuth();
-  const toast = useToast();
-  const [openModalConfirm, setOpenModalConfirm] = useState(false);
+  // const toast = useToast();
+  // const [openModalConfirm, setOpenModalConfirm] = useState(false);
   const [data, setData] = useState<T | undefined>(defaultValue);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -48,9 +48,9 @@ export const useFetch = <T extends Partial<ResponseMessage>, P>({
         abortController.current.abort();
       }
       // Xác thực mật khẩu nếu required
-      if (requirePassword) {
-        setOpenModalConfirm(true);
-      }
+      // if (requirePassword) {
+      //   setOpenModalConfirm(true);
+      // }
       abortController.current = new AbortController();
       setLoading(true);
       const finalUrl = overrideUrl ?? url;

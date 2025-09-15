@@ -1,48 +1,3 @@
-// import React, { useCallback, useState } from "react";
-// import InputTextField from "../../common/Input/InputTextField";
-// import { Button } from "@mui/material";
-// import { useAuth } from "../../context/AuthContext";
-// import { useToast } from "../../context/ToastContext";
-
-// const ConfirmPasswordToCallApi = () => {
-//   const { user, verifyPassword } = useAuth();
-//   const toast = useToast();
-//   const [passwordPrompt, setPasswordPrompt] = useState("");
-
-//   const [error, setError] = useState(false);
-//   //   const promptForPassword = useCallback((): Promise<string | null> => {
-//   //     return new Promise((resolve) => {
-//   //       // Hiển thị dialog nhập mật khẩu (có thể implement bằng modal)
-//   //       const password = prompt("Vui lòng nhập mật khẩu của bạn để xác thực:");
-//   //       resolve(password);
-//   //     });
-//   //   }, []);
-//   const handleConfirm = useCallback(async () => {
-//     // const password = await promptForPassword();
-//     // if (!password) {
-//     //   setError(true);
-//     //   return undefined;
-//     // }
-
-//     // Verify password
-//     const isValid = await verifyPassword(passwordPrompt);
-//     console.log("res", isValid);
-//     if (isValid) {
-//       setError(true);
-//       toast("Mật khẩu không chính xác", "error");
-//       return undefined;
-//     }
-//   }, []);
-//   return (
-//     <>
-//       <InputTextField value={passwordPrompt} />
-//       <Button onClick={handleConfirm} />
-//     </>
-//   );
-// };
-
-// export default ConfirmPasswordToCallApi;
-
 import { Box, Button, Grid, Typography } from "@mui/material";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
@@ -52,20 +7,33 @@ import BaseModal from "../../common/Modal/BaseModal";
 interface ConfirmPasswordToCallApiProps {
   open: boolean;
   onClose: () => void;
-  onSuccess: (password: string) => void;
+  onSuccess: (password: string, isValid: boolean) => void;
+  responseCode: string; // Nhận response code từ bên ngoài
 }
 
 const ConfirmPasswordToCallApiModal = ({
   open,
   onClose,
   onSuccess,
+  responseCode,
 }: ConfirmPasswordToCallApiProps) => {
   const [passwordPrompt, setPasswordPrompt] = useState("");
   const [error, setError] = useState("");
+  const [isValid, setIsValid] = useState(false);
+
+  // Theo dõi responseCode và cập nhật isValid
+  useEffect(() => {
+    if (responseCode === "00") {
+      setIsValid(true);
+    } else {
+      setIsValid(false);
+    }
+  }, [responseCode]);
 
   useEffect(() => {
     if (open) {
       setPasswordPrompt("");
+      setError("");
     }
   }, [open]);
 
@@ -75,9 +43,9 @@ const ConfirmPasswordToCallApiModal = ({
   }, []);
 
   const handleSubmitPassword = useCallback(() => {
-    console.log("es", passwordPrompt);
-    onSuccess(passwordPrompt);
-  }, [passwordPrompt, onSuccess]);
+    // Truyền cả password và isValid ra ngoài
+    onSuccess(passwordPrompt, isValid);
+  }, [passwordPrompt, isValid, onSuccess]);
 
   const renderActions = useCallback(() => {
     return (
@@ -93,15 +61,21 @@ const ConfirmPasswordToCallApiModal = ({
     return (
       <Box maxHeight="30rem">
         <InputTextField
-          onChange={handleInputChange} // Đúng cách: truyền hàm, không gọi hàm
+          onChange={handleInputChange}
           value={passwordPrompt}
           type="password"
           placeholder="Nhập mật khẩu"
           error={!!error}
         />
+        {/* Hiển thị thông báo nếu mật khẩu hợp lệ */}
+        {isValid && (
+          <Typography color="success.main" sx={{ mt: 1 }}>
+            Mật khẩu chính xác!
+          </Typography>
+        )}
       </Box>
     );
-  }, [passwordPrompt, error, handleInputChange]);
+  }, [passwordPrompt, error, handleInputChange, isValid]);
 
   return (
     <BaseModal
