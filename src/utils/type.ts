@@ -1,10 +1,10 @@
 import type { GridRowDef } from "../common/DataGrid";
 import type { Flight } from "../common/Setting/type";
 
-export enum MethodConfig {
+export enum MethodType {
   DELETE = "DELETE",
   PATCH = "PATCH",
-  UPDATE = "UPDATE",
+  PUT = "PUT",
   GET = "GET",
   POST = "POST",
 }

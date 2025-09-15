@@ -1,25 +1,25 @@
-import type {
-  FlightListApiResponse,
-  FlightDetailApiResponse,
-  CodeItem,
-  AircraftList,
-  AvailableAircraft,
-  ResponseMessage,
-  UserListResponse,
-  UserCreateResponse,
-  DetailResponseMessage,
-  UserCreateProps,
-  DataResponseId,
-  RegisterResponseMessage,
-  RegisterOTPCodeVerifyResponse,
-  UserUpdateProps,
-  AdminUpdateUserForm,
-  LeaveRequest,
-  ReqUserIDProps,
-  Seat,
-  SearchFlightResponse,
+import {
+  type FlightListApiResponse,
+  type FlightDetailApiResponse,
+  type CodeItem,
+  type AircraftList,
+  type AvailableAircraft,
+  type ResponseMessage,
+  type UserListResponse,
+  type UserCreateResponse,
+  type DetailResponseMessage,
+  type UserCreateProps,
+  type DataResponseId,
+  type RegisterResponseMessage,
+  type RegisterOTPCodeVerifyResponse,
+  type UserUpdateProps,
+  type AdminUpdateUserForm,
+  type LeaveRequest,
+  type ReqUserIDProps,
+  type Seat,
+  type SearchFlightResponse,
+  MethodType,
 } from "../../utils/type.ts";
-import { MethodType } from "../../hooks/type";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
 import type {
   FlightDetailResponse,
@@ -41,10 +41,6 @@ const getMethod = {
 };
 const deleteMethod = {
   method: MethodType.DELETE,
-  headers: { "Content-Type": "application/json" },
-};
-const putMethod = {
-  method: MethodType.PUT,
   headers: { "Content-Type": "application/json" },
 };
 

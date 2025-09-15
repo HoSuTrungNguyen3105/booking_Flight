@@ -410,7 +410,6 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
   );
 
   const restroomRows = [1, 15, 30];
-  const [typeState, setTypeState] = useState("");
   const filteredSeats = useMemo(() => {
     if (filter === "ALL") return seats;
     if (filter === "WINDOW") return seats.filter((s) => s.isWindow);

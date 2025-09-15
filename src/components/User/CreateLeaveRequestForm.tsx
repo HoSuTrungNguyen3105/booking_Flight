@@ -176,18 +176,14 @@ const CreateLeaveRequestForm: React.FC<CreateLeaveRequestFormProps> = ({
       return;
     }
 
-    // Tạo Date object từ timestamp
     const startDate = new Date(start);
     const endDate = new Date(end);
 
-    // Reset về cùng giờ để tính chính xác số ngày
     startDate.setHours(0, 0, 0, 0);
     endDate.setHours(0, 0, 0, 0);
 
-    // Tính chênh lệch milliseconds
     const timeDiff = endDate.getTime() - startDate.getTime();
 
-    // Chuyển đổi sang số ngày và +1 để bao gồm cả ngày đầu
     const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
 
     handleInputChange("days", daysDiff);
@@ -198,7 +194,6 @@ const CreateLeaveRequestForm: React.FC<CreateLeaveRequestFormProps> = ({
     const newErrors: Partial<Record<keyof CreateLeaveRequestDto, string>> = {};
 
     if (step === 0) {
-      // Chỉ validate employeeId ở step 0
       if (!formData.employeeId) {
         newErrors.employeeId = "Vui lòng chọn nhân viên";
       }

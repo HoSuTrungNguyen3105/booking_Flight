@@ -11,6 +11,7 @@ export const resources = {
   jp,
   ko,
 };
+
 export const optionLanguage: DropdownOptions[] = Object.entries(locales).map(
   ([value, label]) => ({
     value,

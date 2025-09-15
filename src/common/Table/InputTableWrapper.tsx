@@ -49,7 +49,6 @@ export const InputTableWrapperCustom = <T extends TInfoTableTemp>({
               sx={{ minWidth, width }}
               style={{ flexShrink: 0, marginTop: "-4px" }}
             >
-              {/* {required && !hiddenRequired && <RequiredIcon />} */}
               {t(label)}
             </TableCell>
           ))}

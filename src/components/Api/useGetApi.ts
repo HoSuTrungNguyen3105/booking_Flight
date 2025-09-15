@@ -1,22 +1,22 @@
-import type {
-  FlightDetailApiResponse,
-  CodeItem,
-  SearchType,
-  UserListManageResponse,
-  UserData,
-  DetailResponseMessage,
-  FlightMealDetailApiResponse,
-  FlightListApiResponse,
-  MealResponse,
-  FlightResponse,
-  ResponseMessage,
-  SeatResponseMessage,
-  AircraftResponseMessage,
-  FlightSeatByAircraftResponseMessage,
-  ReqUserIDProps,
+import {
+  type FlightDetailApiResponse,
+  type CodeItem,
+  type SearchType,
+  type UserListManageResponse,
+  type UserData,
+  type DetailResponseMessage,
+  type FlightMealDetailApiResponse,
+  type FlightListApiResponse,
+  type MealResponse,
+  type FlightResponse,
+  type ResponseMessage,
+  type SeatResponseMessage,
+  type AircraftResponseMessage,
+  type FlightSeatByAircraftResponseMessage,
+  type ReqUserIDProps,
+  MethodType,
 } from "../../utils/type.ts";
 import React from "react";
-import { MethodType } from "../../hooks/type.ts";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
 import { useFetch } from "../../context/use[custom]/useFetch.ts";
 

@@ -8,7 +8,6 @@ import { FileUpload } from "../common/FileUploader";
 import Hero from "../components/Hero/Hero";
 import BookTicket from "../components/User/BookTicket";
 import Food from "../common/Food/Food";
-import SampleTimePicker from "../common/Sample/SampleTimePicker";
 import TableCustom from "../common/Table/Table";
 import { ROUTE_PATHS } from "./RoutePath";
 import ManageLayout from "../components/Layout/ResizeLayout";
@@ -85,10 +84,6 @@ const routes = [
         element: <CheckboxUI />,
       },
       {
-        path: ROUTE_PATHS.TIME_PICKER.replace("/", ""),
-        element: <SampleTimePicker />,
-      },
-      {
         path: "/sampleFormData",
         element: <Search_layout />,
       },
@@ -146,10 +141,6 @@ const routes = [
       {
         path: ROUTE_PATHS.FOOD.replace("/", ""),
         element: <Food />,
-      },
-      {
-        path: ROUTE_PATHS.TIME_PICKER.replace("/", ""),
-        element: <SampleTimePicker />,
       },
       {
         path: "special",
