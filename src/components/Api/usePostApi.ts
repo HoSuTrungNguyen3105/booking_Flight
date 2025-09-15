@@ -30,6 +30,7 @@ import { useFetch } from "../../context/use[custom]/useFetch.ts";
 import type { BaseFlight, Flight } from "../../common/Setting/type.ts";
 import type { FlightFormData } from "../../common/Sample/FlightUpdateModal.tsx";
 import type { SearchFlightDto } from "../Admin/Search_layout.tsx";
+import { useSecureFetch } from "../../context/use[custom]/useSecureFetch.ts";
 
 const postMethod = {
   method: MethodType.POST,
@@ -106,7 +107,9 @@ export const useSearchFlight = () => {
     data: searchFlightList,
     refetch: refetchSearchFlightList,
     openModalConfirm,
-  } = useFetch<SearchFlightResponse, SearchFlightDto>({
+    handlePasswordConfirm,
+    handleCancelPassword,
+  } = useSecureFetch<SearchFlightResponse, SearchFlightDto>({
     url: "/sys/flights/search",
     requirePassword: true,
     autoFetch: false,
@@ -116,6 +119,8 @@ export const useSearchFlight = () => {
     searchFlightList,
     refetchSearchFlightList,
     openModalConfirm,
+    handlePasswordConfirm,
+    handleCancelPassword,
   };
 };
 export const useFlightById = ({ id }: FlightId) => {

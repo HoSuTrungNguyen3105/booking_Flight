@@ -99,7 +99,12 @@ const Search_layout: React.FC = () => {
   });
 
   const [showDelete, setShowDelete] = React.useState<boolean>(false);
-  const { openModalConfirm, refetchSearchFlightList } = useSearchFlight();
+  const {
+    openModalConfirm,
+    refetchSearchFlightList,
+    handleCancelPassword,
+    handlePasswordConfirm,
+  } = useSearchFlight();
   const {
     control: controlSearch,
     handleSubmit: handleSearchSubmit,
@@ -131,8 +136,6 @@ const Search_layout: React.FC = () => {
       console.error("❌ No flightId found in row data");
     }
   };
-
-  console.log("openModalConfirm", openModalConfirm);
 
   const [formData, setFormData] = React.useState({
     quantity: 0,
@@ -624,7 +627,13 @@ const Search_layout: React.FC = () => {
         />
       )}
 
-      {openModalConfirm && <ConfirmPasswordToCallApi />}
+      {openModalConfirm && (
+        <ConfirmPasswordToCallApi
+          open={openModalConfirm}
+          onSuccess={handlePasswordConfirm}
+          onClose={handleCancelPassword}
+        />
+      )}
     </Box>
   );
 };

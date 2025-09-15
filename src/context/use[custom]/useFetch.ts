@@ -50,7 +50,6 @@ export const useFetch = <T extends Partial<ResponseMessage>, P>({
       // Xác thực mật khẩu nếu required
       if (requirePassword) {
         setOpenModalConfirm(true);
-        return;
       }
       abortController.current = new AbortController();
       setLoading(true);
@@ -106,7 +105,6 @@ export const useFetch = <T extends Partial<ResponseMessage>, P>({
       success,
       error,
       refetch,
-      openModalConfirm,
       setParams: setCurrentParams,
     }),
     [data, loading, success, error, refetch, setCurrentParams]

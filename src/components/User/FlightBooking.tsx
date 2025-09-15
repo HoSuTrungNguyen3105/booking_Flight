@@ -22,24 +22,24 @@ type Flight = {
 };
 
 const mockFlights: Flight[] = [
-  {
-    id: 1,
-    flightNumber: "VN123",
-    from: "Hanoi",
-    to: "Ho Chi Minh City",
-    departureTime: "2025-09-10 08:00",
-    arrivalTime: "2025-09-10 10:00",
-    price: 120,
-  },
-  {
-    id: 2,
-    flightNumber: "VJ456",
-    from: "Hanoi",
-    to: "Da Nang",
-    departureTime: "2025-09-11 09:30",
-    arrivalTime: "2025-09-11 11:00",
-    price: 90,
-  },
+  // {
+  //   id: 1,
+  //   flightNumber: "VN123",
+  //   from: "Hanoi",
+  //   to: "Ho Chi Minh City",
+  //   departureTime: "2025-09-10 08:00",
+  //   arrivalTime: "2025-09-10 10:00",
+  //   price: 120,
+  // },
+  // {
+  //   id: 2,
+  //   flightNumber: "VJ456",
+  //   from: "Hanoi",
+  //   to: "Da Nang",
+  //   departureTime: "2025-09-11 09:30",
+  //   arrivalTime: "2025-09-11 11:00",
+  //   price: 90,
+  // },
 ];
 
 const FlightBooking: React.FC = () => {
