@@ -6,23 +6,24 @@ import {
   Button,
   Grid,
 } from "@mui/material";
-import { useGetAircraftCode, useGetSeatByAircraftCode } from "../Api/useGetApi";
+import { useGetAircraftCode } from "../Api/useGetApi";
 import { useState } from "react";
-import SeatBooking from "./SeatBooking";
+import AircarftDetail from "./AircarftDetail";
 
 const AircraftPage = () => {
   const { getAircraftCodeData } = useGetAircraftCode();
-  const [aircraftCodeState, setAircraftCodeState] = useState("");
+  const [aircraftCodeState, setAircraftCodeState] = useState<number>(0);
   //   const { refetchGetSeatByAircraftCodeData } =
   //     useGetSeatByAircraftCode(aircraftCodeState);
   const [pageDetail, setPageDetail] = useState(false);
-  const handleViewSeats = (code: string) => {
+  const handleViewSeats = (code: number) => {
     setAircraftCodeState(code); // gán mã máy bay
     setPageDetail(true);
     // refetchGetSeatByAircraftCodeData(); // gọi API
   };
+
   if (pageDetail) {
-    return <SeatBooking code={aircraftCodeState} />;
+    return <AircarftDetail aircraft={aircraftCodeState} />;
   }
   return (
     <Box p={3}>
@@ -64,13 +65,6 @@ const AircraftPage = () => {
                     onClick={() => handleViewSeats(aircraft.code)}
                   >
                     Chi tiết
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    size="small"
-                    onClick={() => handleViewSeats(aircraft.code)}
-                  >
-                    Xem ghế
                   </Button>
                 </Box>
               </CardContent>

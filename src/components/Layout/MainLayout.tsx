@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { Box } from "@mui/material";
 import { Header } from "../../common/Header/Header";
 import { Loading } from "../../common/Loading/Loading";
@@ -56,4 +56,4 @@ const MainLayout = () => {
   );
 };
 
-export default MainLayout;
+export default memo(MainLayout);

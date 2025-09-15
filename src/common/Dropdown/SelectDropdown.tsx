@@ -76,6 +76,10 @@ const SelectDropdown: FC<OptionSelectDropdownProps> = ({
     setSelectOpen(false);
   }, []);
 
+  const handleMouseDown = useCallback((event: React.MouseEvent) => {
+    event.stopPropagation();
+  }, []);
+
   return (
     <FormControl fullWidth error={error}>
       <StyledSelect
@@ -84,6 +88,7 @@ const SelectDropdown: FC<OptionSelectDropdownProps> = ({
         onChange={handleChange}
         onOpen={handleOpen}
         onClose={handleClose}
+        onMouseDown={handleMouseDown}
         size="small"
         IconComponent={CustomSelectIcon}
         MenuProps={{

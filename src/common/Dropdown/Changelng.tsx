@@ -1,7 +1,5 @@
-import Language from "../../svgs/globe-svgrepo.svg";
 import { Box, Button, Typography } from "@mui/material";
 import { useCallback, useState } from "react";
-import ChangeLanguageModal from "./ChangeLanguageModal";
 import CustomPopover from "../Button/Popover";
 import { useChangeLanguage } from "../../context/use[custom]/useChangeLng";
 import SelectDropdown from "./SelectDropdown";
@@ -9,7 +7,6 @@ import { useTranslation } from "react-i18next";
 
 export const LanguageButton = () => {
   const { t } = useTranslation();
-  const [openModal, setOpenModal] = useState(false);
   const {
     selectedLang,
     handleLanguageSelect,

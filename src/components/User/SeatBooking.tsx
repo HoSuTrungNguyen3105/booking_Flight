@@ -980,22 +980,6 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
           </Card>
         </Box>
       </Box>
-
-      {/* <DialogConfirm
-        icon="warning"
-        cancelLabel="Cancel"
-        open={openModal}
-        onClose={() => setOpenModal(false)}
-        onConfirm={handleConfirmUpdate}
-        title="Confirm update Seats"
-        message={`Are you sure you want to update seats: ${selectedSeats
-          .map((id) => {
-            const seat = seats.find((s) => s.id === id);
-            return `${seat?.seatNumber}${seat?.seatRow}`;
-          })
-          .join(", ")}?`}
-        confirmLabel="Update Now"
-      /> */}
     </Box>
   );
 };

@@ -10,15 +10,18 @@ import {
   useLoginByMfa,
   useLoginUser,
   useUpdateUserRank,
+  useVerifyPw,
 } from "../components/Api/usePostApi";
 import { useToast } from "./ToastContext";
 import {
   UserRole,
   type DataResponseId,
+  type DetailResponseMessage,
   type UserData,
   type UserListResponse,
 } from "../utils/type";
 import { useGetMyInfo } from "../components/Api/useGetApi";
+import { useFetch } from "./use[custom]/useFetch";
 
 export type User = {
   email: string;
@@ -39,6 +42,7 @@ interface AuthContextType {
   token: string | null;
   isAdmin: boolean;
   authType: AuthType;
+  verifyPassword: (password: string) => Promise<boolean>;
   login: (userData: User) => Promise<UserListResponse>;
   loginWithGGAuthenticator: (userData: UserWithMFA) => Promise<DataResponseId>;
   logout: () => void;
@@ -55,7 +59,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const { refetchLogin } = useLoginUser();
   const { refetchSetLoginMfa } = useLoginByMfa();
   const { refetchGetMyInfo } = useGetMyInfo();
-
+  const { fetchVerifyPassword } = useVerifyPw({ id: user?.id });
   const isAdminLogin = useMemo(
     () => user?.role === UserRole.ADMIN,
     [user, refetchGetMyInfo]
@@ -86,6 +90,34 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       return res as UserListResponse;
     }
   };
+
+  const verifyPassword = useCallback(
+    async (password: string): Promise<boolean> => {
+      try {
+        const response = await fetchVerifyPassword({ password });
+
+        // Kiểm tra response có tồn tại không
+        if (!response) {
+          console.error("Password verification failed: No response");
+          return false;
+        }
+
+        // Type assertion để đảm bảo type safety
+        const typedResponse = response as DetailResponseMessage<{
+          isValid: boolean;
+        }>;
+
+        return (
+          typedResponse.resultCode === "00" &&
+          typedResponse.data?.isValid === true
+        );
+      } catch (error) {
+        console.error("Password verification failed:", error);
+        return false;
+      }
+    },
+    [fetchVerifyPassword]
+  );
 
   const loginWithGGAuthenticator = async (
     userData: UserWithMFA
@@ -181,6 +213,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         login,
         loginWithGGAuthenticator,
         logout,
+        verifyPassword,
         isAdmin: isAdminLogin,
         authType: "IDPW",
       }}

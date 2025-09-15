@@ -88,12 +88,26 @@ export const useGetFlightNo = () => {
     refetchGetFlightNoData,
   };
 };
+export const useVerifyPw = ({ id }: ReqUserIDProps) => {
+  const { refetch: fetchVerifyPassword } = useFetch<
+    DetailResponseMessage<{ isValid: boolean }>,
+    { password: string }
+  >({
+    url: `/auth/verify-password/${id}`, // Điều chỉnh endpoint theo API của bạn
+    config: postMethod,
+    autoFetch: false,
+  });
+  return {
+    fetchVerifyPassword,
+  };
+};
 export const useSearchFlight = () => {
   const { data: searchFlightList, refetch: refetchSearchFlightList } = useFetch<
     SearchFlightResponse,
     SearchFlightDto
   >({
     url: "/sys/flights/search",
+    requirePassword: true,
     autoFetch: false,
     config: postMethod,
   });

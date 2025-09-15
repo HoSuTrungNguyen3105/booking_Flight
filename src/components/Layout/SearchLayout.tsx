@@ -15,7 +15,7 @@ interface ISearchLayoutProps {
   onChangeTab: (tabIndex: number) => void;
 }
 
-const SearchLayout = ({
+const TabLayout = ({
   title,
   description,
   tabs,
@@ -51,4 +51,4 @@ const SearchLayout = ({
   );
 };
 
-export default memo(SearchLayout);
+export default memo(TabLayout);

@@ -35,10 +35,6 @@ const useClientPagination = <T>({
   const [sortModel, setSortModel] = useState<GridSortModel>([
     { field: initialSortField, sort: initialSortDirection },
   ]);
-  //   initialSortField
-  //     ? [{ field: initialSortField, sort: initialSortDirection }]
-  //     : []
-  // );
 
   const sortedData = useMemo(() => {
     if (!sortModel || sortModel.length === 0) return data;
