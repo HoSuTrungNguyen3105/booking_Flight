@@ -1,17 +1,19 @@
-import { Box, Button, Popover, styled } from "@mui/material";
-import React, { useMemo, useState, type ReactNode } from "react";
+import { Box, Button, Popover, styled, ClickAwayListener } from "@mui/material";
+import React, { useState, type ReactNode } from "react";
 import theme from "../../scss/theme";
 
 export interface IButtonSettingProps {
-  option?: ReactNode[]; // nhieu option
-  icon: string;
+  option?: ReactNode[];
+  icon: ReactNode;
   buttonProps?: React.ComponentProps<typeof Button>;
-  handleAction: (opt: any) => void; // sửa: truyền option khi click
+  handleAction: (opt: any) => void;
 }
+
 const StyledPopover = styled(Popover)<{}>(() => ({
   "& .MuiPaper-root": {
     borderRadius: "10px",
     padding: "10px",
+    minWidth: "120px",
   },
 }));
 
@@ -23,64 +25,70 @@ const CustomPopover: React.FC<IButtonSettingProps> = ({
 }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
 
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
+  const handleClickAway = () => {
+    handleClose();
   };
-  const id = useMemo(
-    () => (anchorEl ? "simple-popover" : undefined),
-    [anchorEl]
-  );
 
   const options = Array.isArray(option) ? option : [];
 
   return (
-    <div>
-      <Button
-        {...buttonProps}
-        variant="contained"
-        aria-describedby={id}
-        onClick={handleClick}
-        sx={{
-          minWidth: "23px",
-          position: "relative",
-          ...buttonProps?.sx,
-        }}
-      >
-        {icon}
-      </Button>
-      <StyledPopover
-        id={id}
-        open={Boolean(anchorEl)}
-        anchorEl={anchorEl}
-        onClose={handleClose}
-        disableScrollLock
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "left",
-        }}
-      >
-        {options.map((item, index) => (
-          <Button
-            key={index}
-            onClick={() => {
-              handleAction?.(item);
-              handleClose();
-            }}
-            sx={{
-              color: theme.palette.text.primary,
-              textTransform: "none",
-              cursor: "pointer",
-            }}
-          >
-            {item}
-          </Button>
-        ))}
-      </StyledPopover>
-    </div>
+    <ClickAwayListener onClickAway={handleClickAway}>
+      <div>
+        <Button
+          {...buttonProps}
+          variant="contained"
+          onClick={handleClick}
+          sx={{
+            minWidth: "23px",
+            position: "relative",
+            ...buttonProps?.sx,
+          }}
+        >
+          {icon}
+        </Button>
+
+        <StyledPopover
+          open={Boolean(anchorEl)}
+          anchorEl={anchorEl}
+          onClose={handleClose}
+          disableScrollLock
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "left",
+          }}
+        >
+          <Box sx={{ p: 1 }}>
+            {options.map((item, index) => (
+              <Box
+                key={index}
+                sx={{
+                  padding: "8px 12px",
+                  borderRadius: "6px",
+                  cursor: "pointer",
+                  "&:hover": {
+                    backgroundColor: "action.hover",
+                  },
+                }}
+                onClick={() => {
+                  handleAction?.(item);
+                  // Không đóng popover ở đây
+                }}
+              >
+                {item}
+              </Box>
+            ))}
+          </Box>
+        </StyledPopover>
+      </div>
+    </ClickAwayListener>
   );
 };
 

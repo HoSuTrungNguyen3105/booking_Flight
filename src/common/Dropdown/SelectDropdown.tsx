@@ -18,6 +18,7 @@ export interface ActionType {
   color?: string;
   onClick?: () => void;
 }
+
 interface OptionSelectDropdownProps {
   placeholder?: string;
   options: ActionType[];
@@ -31,6 +32,20 @@ interface OptionSelectDropdownProps {
   withBorder?: boolean;
 }
 
+// Di chuyển styled component ra ngoài để tránh re-render
+const StyledSelect = styled(Select)(({ theme }) => ({
+  "& .MuiSelect-root": {
+    backgroundColor: "white",
+  },
+  "& .MuiSelect-select": {
+    ...theme.typography.body1,
+    padding: "11px 17px",
+  },
+  "& > p": {
+    ...theme.typography.body1,
+  },
+}));
+
 const SelectDropdown: FC<OptionSelectDropdownProps> = ({
   value,
   options,
@@ -41,32 +56,25 @@ const SelectDropdown: FC<OptionSelectDropdownProps> = ({
   error,
 }) => {
   const [selectOpen, setSelectOpen] = useState<boolean>(false);
-  // const [internalValue, setInternalValue] = useState<string | number>(
-  //   defaultValue || ""
-  // );
+
   const CustomSelectIcon = useCallback(() => {
     return selectOpen ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />;
   }, [selectOpen]);
-  const StyledSelect = styled(Select)(({ theme }) => ({
-    "& .MuiSelect-root": {
-      backgroundColor: "white",
-    },
-    "& .MuiSelect-select": {
-      ...theme.typography.body1,
-      padding: "11px 17px",
-    },
-    "& > p": {
-      ...theme.typography.body1,
-    },
-  }));
+
   const handleChange = (val: SelectChangeEvent<unknown>) => {
     const newValue = val.target.value as string | number;
-    // setInternalValue(newValue);
-    // onChange?.(newValue);
     if (onChange) {
       onChange(newValue);
     }
   };
+
+  const handleOpen = useCallback(() => {
+    setSelectOpen(true);
+  }, []);
+
+  const handleClose = useCallback(() => {
+    setSelectOpen(false);
+  }, []);
 
   return (
     <FormControl fullWidth error={error}>
@@ -74,23 +82,23 @@ const SelectDropdown: FC<OptionSelectDropdownProps> = ({
         value={value}
         variant={variant}
         onChange={handleChange}
-        onOpen={() => setSelectOpen(true)}
-        onClose={() => setSelectOpen(false)}
+        onOpen={handleOpen}
+        onClose={handleClose}
         size="small"
         IconComponent={CustomSelectIcon}
         MenuProps={{
           disableScrollLock: true,
         }}
+        displayEmpty
       >
         {defaultValue && (
           <MenuItem sx={{ display: "none" }} value={defaultValue}>
             {defaultValue}
           </MenuItem>
         )}
-
         {placeholder && (
           <MenuItem sx={{ color: "grey.800" }} value="">
-            {placeholder}
+            <em>{placeholder}</em>
           </MenuItem>
         )}
 

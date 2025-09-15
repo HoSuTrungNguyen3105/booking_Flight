@@ -199,18 +199,7 @@ export const Header = () => {
                       borderRadius: "50%",
                     }}
                   />
-
-                  <IconButton
-                    size="small"
-                    sx={{
-                      color: theme.palette.text.secondary,
-                      "&:hover": {
-                        color: theme.palette.primary.main,
-                      },
-                    }}
-                  >
-                    <SignOut />
-                  </IconButton>
+                  <SignOut />
                 </Stack>
               ) : (
                 <Link to="/init/loginPage" style={{ textDecoration: "none" }}>

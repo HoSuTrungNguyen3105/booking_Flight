@@ -9,7 +9,7 @@ const Hero: React.FC = () => {
     <>
       <Box
         sx={{
-          height: "400px",
+          height: "480px",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",

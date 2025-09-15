@@ -5,10 +5,6 @@ export const Footer = () => {
   const dataFooter = useMemo(
     () => [
       {
-        title: "Footer",
-        child: "This is the footer section",
-      },
-      {
         title: "Contact Us",
         child: "For inquiries",
       },

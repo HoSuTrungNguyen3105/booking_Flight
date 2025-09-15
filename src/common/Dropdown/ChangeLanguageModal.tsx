@@ -5,6 +5,7 @@ import BaseModal from "../Modal/BaseModal";
 import { useChangeLanguage } from "../../context/use[custom]/useChangeLng";
 import SelectDropdown from "./SelectDropdown";
 import { useTranslation } from "react-i18next";
+import { Language } from "@mui/icons-material";
 
 interface IModalStatisticalDataLearningProps {
   open: boolean;
@@ -47,63 +48,27 @@ const ChangeLanguageModal = ({
 
   const renderContent = useCallback(() => {
     return (
-      <Box
-        display="flex"
-        flexDirection="column"
-        gap={3}
-        maxHeight="30rem"
-        sx={{
-          padding: 2,
-          borderRadius: "12px",
-          border: "1px solid",
-          borderColor: "divider",
-          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.08)",
-          overflow: "auto",
-          "&::-webkit-scrollbar": {
-            width: "6px",
-          },
-          "&::-webkit-scrollbar-track": {
-            background: "transparent",
-          },
-          "&::-webkit-scrollbar-thumb": {
-            background: "#c1c1c1",
-            borderRadius: "3px",
-            "&:hover": {
-              background: "#a8a8a8",
-            },
-          },
-        }}
-      >
+      <Box display="flex" flexDirection="column">
         {/* Language Selection Box */}
         <Box
           sx={{
-            padding: 2,
             borderRadius: "8px",
             border: "1px solid",
             borderColor: "grey.200",
             backgroundColor: "white",
-            boxShadow: "0 2px 12px rgba(0, 0, 0, 0.04)",
-            transition: "all 0.2s ease-in-out",
-            "&:hover": {
-              boxShadow: "0 4px 16px rgba(0, 0, 0, 0.08)",
-              transform: "translateY(-1px)",
-            },
           }}
         >
-          <Typography
-            component="p"
-            variant="subtitle1"
-            fontWeight="600"
-            mb={1.5}
-            color="primary.main"
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
-            }}
-          >
-            {t("language")}
-          </Typography>
+          <Box display="flex" alignItems="center" gap={1.5} mb={2.5}>
+            <Language
+              sx={{
+                color: "primary.main",
+                fontSize: 24,
+              }}
+            />
+            <Typography variant="h6" fontWeight="600" color="text.primary">
+              {t("language")}
+            </Typography>
+          </Box>
           <SelectDropdown
             options={optionLanguage}
             value={pendingLang?.value || selectedLang?.value}
@@ -115,17 +80,10 @@ const ChangeLanguageModal = ({
         {/* Currency Selection Box */}
         <Box
           sx={{
-            padding: 2,
             borderRadius: "8px",
             border: "1px solid",
             borderColor: "grey.200",
             backgroundColor: "white",
-            boxShadow: "0 2px 12px rgba(0, 0, 0, 0.04)",
-            transition: "all 0.2s ease-in-out",
-            "&:hover": {
-              boxShadow: "0 4px 16px rgba(0, 0, 0, 0.08)",
-              transform: "translateY(-1px)",
-            },
           }}
         >
           <Typography
@@ -181,7 +139,7 @@ const ChangeLanguageModal = ({
               fontStyle: "italic",
             }}
           >
-            {t("settingsWillApplyImmediately")}
+            {t("title")}
           </Typography>
         </Box>
       </Box>
@@ -203,7 +161,7 @@ const ChangeLanguageModal = ({
       title={"Language & Payment Setup"}
       Icon={PrivacyTipIcon}
       slots={{ content: renderContent(), actions: renderActions() }}
-      sx={{ maxWidth: "xs", width: "lg" }}
+      sx={{ maxWidth: "50rem" }}
     />
   );
 };
