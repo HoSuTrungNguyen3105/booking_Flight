@@ -99,12 +99,16 @@ const Search_layout: React.FC = () => {
   });
 
   const [showDelete, setShowDelete] = React.useState<boolean>(false);
+
   const {
     openModalConfirm,
     refetchSearchFlightList,
     handleCancelPassword,
     handlePasswordConfirm,
   } = useSearchFlight();
+
+  // console.log("logpasw", password);
+
   const {
     control: controlSearch,
     handleSubmit: handleSearchSubmit,
@@ -161,7 +165,7 @@ const Search_layout: React.FC = () => {
         setIsSearch(true);
 
         const res = await refetchSearchFlightList(values);
-
+        console.log("res", res);
         if (res?.resultCode === "00") {
           const allFlights = [
             ...(res.data?.outbound || []),

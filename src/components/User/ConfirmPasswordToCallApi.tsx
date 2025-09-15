@@ -46,7 +46,6 @@
 import { Box, Button, Grid, Typography } from "@mui/material";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
-import { useAuth } from "../../context/AuthContext";
 import InputTextField from "../../common/Input/InputTextField";
 import BaseModal from "../../common/Modal/BaseModal";
 
@@ -75,15 +74,20 @@ const ConfirmPasswordToCallApiModal = ({
     setError(""); // Clear error khi user bắt đầu nhập
   }, []);
 
+  const handleSubmitPassword = useCallback(() => {
+    console.log("es", passwordPrompt);
+    onSuccess(passwordPrompt);
+  }, [passwordPrompt, onSuccess]);
+
   const renderActions = useCallback(() => {
     return (
       <Box display="flex" gap={1} justifyContent="flex-end" alignItems="center">
-        <Button variant="contained" onClick={() => onSuccess(passwordPrompt)}>
+        <Button variant="contained" onClick={handleSubmitPassword}>
           Submit
         </Button>
       </Box>
     );
-  }, []);
+  }, [handleSubmitPassword]);
 
   const renderContent = useCallback(() => {
     return (

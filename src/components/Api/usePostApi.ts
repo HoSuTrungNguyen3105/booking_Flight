@@ -89,10 +89,13 @@ export const useGetFlightNo = () => {
     refetchGetFlightNoData,
   };
 };
+type PasswordProps = {
+  password: string;
+};
 export const useVerifyPw = ({ id }: ReqUserIDProps) => {
   const { refetch: fetchVerifyPassword } = useFetch<
     DetailResponseMessage<{ isValid: boolean }>,
-    { password: string }
+    PasswordProps
   >({
     url: `/auth/verify-password/${id}`, // Điều chỉnh endpoint theo API của bạn
     config: postMethod,
@@ -109,11 +112,16 @@ export const useSearchFlight = () => {
     openModalConfirm,
     handlePasswordConfirm,
     handleCancelPassword,
+    loading,
+    data,
+    isValid,
+    resetAuthValidation,
   } = useSecureFetch<SearchFlightResponse, SearchFlightDto>({
     url: "/sys/flights/search",
     requirePassword: true,
     autoFetch: false,
     config: postMethod,
+    resetAfterSuccess: true,
   });
   return {
     searchFlightList,
@@ -121,6 +129,10 @@ export const useSearchFlight = () => {
     openModalConfirm,
     handlePasswordConfirm,
     handleCancelPassword,
+    loading,
+    data,
+    isValid,
+    resetAuthValidation,
   };
 };
 export const useFlightById = ({ id }: FlightId) => {

@@ -40,6 +40,11 @@ interface AuthContextType {
   token: string | null;
   isAdmin: boolean;
   authType: AuthType;
+  // verifyPassword: boolean;
+  isValid: boolean;
+  verifyPassword: (password: string) => Promise<boolean>;
+  setValid: (valid: boolean) => void;
+  resetValidation: () => void;
   login: (userData: User) => Promise<UserListResponse>;
   loginWithGGAuthenticator: (userData: UserWithMFA) => Promise<DataResponseId>;
   logout: () => void;
@@ -52,6 +57,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<UserData | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const { refetchUpdateUserRank } = useUpdateUserRank();
+  const [isValid, setIsValid] = useState(false);
+
   const toast = useToast();
   const { refetchLogin } = useLoginUser();
   const { refetchSetLoginMfa } = useLoginByMfa();
@@ -61,6 +68,73 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     () => user?.role === UserRole.ADMIN,
     [user, refetchGetMyInfo]
   );
+
+  // const verifyPassword = useCallback(
+  //   async (password: string): Promise<boolean> => {
+  //     try {
+  //       const response = await fetchVerifyPassword({ password: password });
+
+  //       const isValid = response?.resultCode === "00";
+  //       setIsValid(isValid);
+
+  //       if (isValid) {
+  //         toast("Xác thực thành công", "success");
+  //       } else {
+  //         toast(response?.resultMessage || "Mật khẩu không chính xác", "error");
+  //       }
+
+  //       return isValid;
+  //     } catch (error: any) {
+  //       const errorMessage =
+  //         error.response?.data?.resultMessage || "Lỗi xác thực";
+  //       toast(errorMessage, "error");
+  //       setIsValid(false);
+  //       return false;
+  //     }
+  //   },
+  //   [fetchVerifyPassword, toast]
+  // );
+
+  const verifyPassword = useCallback(
+    async (password: string): Promise<boolean> => {
+      try {
+        console.log("🔐 Starting password verification...");
+
+        const response = await fetchVerifyPassword({ password });
+        const isValidResult = response?.resultCode === "00";
+
+        console.log("🎯 verifyPassword API response:", response);
+        console.log("🎯 isValidResult from API:", isValidResult);
+
+        // ĐẢM BẢO setIsValid ĐƯỢC GỌI
+        setIsValid(isValidResult);
+        console.log("🎯 setIsValid called with:", isValidResult);
+
+        if (isValidResult) {
+          toast("Xác thực thành công", "success");
+        } else {
+          toast(response?.resultMessage || "Mật khẩu không chính xác", "error");
+        }
+
+        return isValidResult;
+      } catch (error: any) {
+        console.error("💥 verifyPassword error:", error);
+        setIsValid(false);
+        console.log("🎯 setIsValid called with: false (due to error)");
+        toast("Lỗi xác thực mật khẩu", "error");
+        return false;
+      }
+    },
+    []
+  );
+
+  const setValid = useCallback((valid: boolean) => {
+    setIsValid(valid);
+  }, []);
+
+  const resetValidation = useCallback(() => {
+    setIsValid(false);
+  }, []);
 
   const updateLocalStorage = (
     isAuthenticated: boolean,
@@ -87,34 +161,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       return res as UserListResponse;
     }
   };
-
-  // const verifyPassword = useCallback(
-  //   async (password: string): Promise<boolean> => {
-  //     try {
-  //       const response = await fetchVerifyPassword({ password });
-
-  //       // Kiểm tra response có tồn tại không
-  //       if (!response) {
-  //         console.error("Password verification failed: No response");
-  //         return false;
-  //       }
-
-  //       // Type assertion để đảm bảo type safety
-  //       const typedResponse = response as DetailResponseMessage<{
-  //         isValid: boolean;
-  //       }>;
-
-  //       return (
-  //         typedResponse.resultCode === "00" &&
-  //         typedResponse.data?.isValid === true
-  //       );
-  //     } catch (error) {
-  //       console.error("Password verification failed:", error);
-  //       return false;
-  //     }
-  //   },
-  //   [fetchVerifyPassword]
-  // );
 
   const loginWithGGAuthenticator = async (
     userData: UserWithMFA
@@ -210,6 +256,10 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         login,
         loginWithGGAuthenticator,
         logout,
+        isValid,
+        verifyPassword,
+        setValid,
+        resetValidation,
         isAdmin: isAdminLogin,
         authType: "IDPW",
       }}

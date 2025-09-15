@@ -1,6 +1,5 @@
 import {
   Box,
-  Breadcrumbs,
   Card,
   CardContent,
   Chip,
@@ -19,7 +18,6 @@ import { FlightOutlined, RefreshOutlined } from "@mui/icons-material";
 import Zigzag from "../../common/CustomRender/Zigzag";
 import FormRow from "../../common/CustomRender/FormRow";
 import { Dropdown } from "../../common/Dropdown/Dropdown";
-import type { DataFlight } from "../../utils/type";
 import type { Flight } from "../../common/Setting/type";
 
 const BookTicket = () => {
@@ -99,7 +97,7 @@ const BookTicket = () => {
               justifyContent: "space-between",
             }}
           >
-            <Box
+            {/* <Box
               sx={{
                 display: "flex",
                 alignItems: "center",
@@ -107,16 +105,11 @@ const BookTicket = () => {
               }}
             >
               <Breadcrumbs />
-            </Box>
+            </Box> */}
           </Box>
           <Box sx={{ borderRadius: 2, border: "solid 3px #f2f3f8" }}>
-            <Box
-              borderRadius={2}
-              border="3px solid #f2f3f8"
-              p={3}
-              className="search-status"
-            >
-              <Grid container spacing={3}>
+            <Box borderRadius={2} border="3px solid #f2f3f8" p={3}>
+              <Grid container spacing={2}>
                 {/* <Grid item xs={12} md={6}> */}
                 <FormRow label="Fare Conditions">
                   <Dropdown
