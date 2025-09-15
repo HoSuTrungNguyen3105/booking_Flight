@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MethodType } from "../../utils/type";
 import { useAuth } from "../AuthContext";
 import { useToast } from "../ToastContext";
+import { useNavigate } from "react-router-dom";
 
 type ResponseMessage = {
   resultCode?: string;
@@ -34,21 +35,13 @@ export const useFetch = <T extends Partial<ResponseMessage>, P>({
   const { get, post, delete: del, update } = useApi();
   // const { user, verifyPassword } = useAuth();
   const toast = useToast();
+  const [openModalConfirm, setOpenModalConfirm] = useState(false);
   const [data, setData] = useState<T | undefined>(defaultValue);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
   const [currentParams, setCurrentParams] = useState<P | undefined>(params);
   const abortController = useRef<AbortController | null>(null);
-
-  const promptForPassword = useCallback((): Promise<string | null> => {
-    return new Promise((resolve) => {
-      // Hiển thị dialog nhập mật khẩu (có thể implement bằng modal)
-      const password = prompt("Vui lòng nhập mật khẩu của bạn để xác thực:");
-      resolve(password);
-    });
-  }, []);
-
   const refetch = useCallback(
     async (extra?: P, overrideUrl?: string): Promise<T | undefined> => {
       if (abortController.current) {
@@ -56,23 +49,8 @@ export const useFetch = <T extends Partial<ResponseMessage>, P>({
       }
       // Xác thực mật khẩu nếu required
       if (requirePassword) {
-        // const password = await promptForPassword();
-        // if (!password) {
-        //   setError(true);
-        //   onError?.();
-        //   return undefined;
-        // }
-
-        // // Verify password
-        // const isValid = await verifyPassword(password);
-        // if (!isValid) {
-        //   setError(true);
-        //   alert("Mật khẩu không chính xác");
-        //   onError?.();
-        //   return undefined;
-        // }
-        toast("Mật khẩu không chính xác", "error");
-        return undefined;
+        setOpenModalConfirm(true);
+        return;
       }
       abortController.current = new AbortController();
       setLoading(true);
@@ -128,6 +106,7 @@ export const useFetch = <T extends Partial<ResponseMessage>, P>({
       success,
       error,
       refetch,
+      openModalConfirm,
       setParams: setCurrentParams,
     }),
     [data, loading, success, error, refetch, setCurrentParams]

@@ -34,6 +34,7 @@ import {
 } from "@mui/icons-material";
 import FlightDetail from "./component/FlightDetail.tsx";
 import TableSection from "../../common/Setting/TableSection.tsx";
+import ConfirmPasswordToCallApi from "../User/ConfirmPasswordToCallApi.tsx";
 
 type FlightId = {
   id: number;
@@ -98,7 +99,7 @@ const Search_layout: React.FC = () => {
   });
 
   const [showDelete, setShowDelete] = React.useState<boolean>(false);
-  const { searchFlightList, refetchSearchFlightList } = useSearchFlight();
+  const { openModalConfirm, refetchSearchFlightList } = useSearchFlight();
   const {
     control: controlSearch,
     handleSubmit: handleSearchSubmit,
@@ -130,6 +131,8 @@ const Search_layout: React.FC = () => {
       console.error("❌ No flightId found in row data");
     }
   };
+
+  console.log("openModalConfirm", openModalConfirm);
 
   const [formData, setFormData] = React.useState({
     quantity: 0,
@@ -620,6 +623,8 @@ const Search_layout: React.FC = () => {
           onClose={() => setDetailModalOpen(false)}
         />
       )}
+
+      {openModalConfirm && <ConfirmPasswordToCallApi />}
     </Box>
   );
 };

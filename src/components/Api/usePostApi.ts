@@ -102,10 +102,11 @@ export const useVerifyPw = ({ id }: ReqUserIDProps) => {
   };
 };
 export const useSearchFlight = () => {
-  const { data: searchFlightList, refetch: refetchSearchFlightList } = useFetch<
-    SearchFlightResponse,
-    SearchFlightDto
-  >({
+  const {
+    data: searchFlightList,
+    refetch: refetchSearchFlightList,
+    openModalConfirm,
+  } = useFetch<SearchFlightResponse, SearchFlightDto>({
     url: "/sys/flights/search",
     requirePassword: true,
     autoFetch: false,
@@ -114,6 +115,7 @@ export const useSearchFlight = () => {
   return {
     searchFlightList,
     refetchSearchFlightList,
+    openModalConfirm,
   };
 };
 export const useFlightById = ({ id }: FlightId) => {
