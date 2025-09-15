@@ -16,12 +16,10 @@ import { useToast } from "./ToastContext";
 import {
   UserRole,
   type DataResponseId,
-  type DetailResponseMessage,
   type UserData,
   type UserListResponse,
 } from "../utils/type";
 import { useGetMyInfo } from "../components/Api/useGetApi";
-import { useFetch } from "./use[custom]/useFetch";
 
 export type User = {
   email: string;
@@ -42,7 +40,6 @@ interface AuthContextType {
   token: string | null;
   isAdmin: boolean;
   authType: AuthType;
-  verifyPassword: (password: string) => Promise<boolean>;
   login: (userData: User) => Promise<UserListResponse>;
   loginWithGGAuthenticator: (userData: UserWithMFA) => Promise<DataResponseId>;
   logout: () => void;
@@ -91,33 +88,33 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const verifyPassword = useCallback(
-    async (password: string): Promise<boolean> => {
-      try {
-        const response = await fetchVerifyPassword({ password });
+  // const verifyPassword = useCallback(
+  //   async (password: string): Promise<boolean> => {
+  //     try {
+  //       const response = await fetchVerifyPassword({ password });
 
-        // Kiểm tra response có tồn tại không
-        if (!response) {
-          console.error("Password verification failed: No response");
-          return false;
-        }
+  //       // Kiểm tra response có tồn tại không
+  //       if (!response) {
+  //         console.error("Password verification failed: No response");
+  //         return false;
+  //       }
 
-        // Type assertion để đảm bảo type safety
-        const typedResponse = response as DetailResponseMessage<{
-          isValid: boolean;
-        }>;
+  //       // Type assertion để đảm bảo type safety
+  //       const typedResponse = response as DetailResponseMessage<{
+  //         isValid: boolean;
+  //       }>;
 
-        return (
-          typedResponse.resultCode === "00" &&
-          typedResponse.data?.isValid === true
-        );
-      } catch (error) {
-        console.error("Password verification failed:", error);
-        return false;
-      }
-    },
-    [fetchVerifyPassword]
-  );
+  //       return (
+  //         typedResponse.resultCode === "00" &&
+  //         typedResponse.data?.isValid === true
+  //       );
+  //     } catch (error) {
+  //       console.error("Password verification failed:", error);
+  //       return false;
+  //     }
+  //   },
+  //   [fetchVerifyPassword]
+  // );
 
   const loginWithGGAuthenticator = async (
     userData: UserWithMFA
@@ -213,7 +210,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         login,
         loginWithGGAuthenticator,
         logout,
-        verifyPassword,
         isAdmin: isAdminLogin,
         authType: "IDPW",
       }}

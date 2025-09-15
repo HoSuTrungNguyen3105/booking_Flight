@@ -9,7 +9,6 @@ export const useSecureFetch = <T extends Partial<ResponseMessage>, P>(
 ) => {
   const { requirePassword, ...fetchOptions } = options;
   const fetch = useFetch<T, P>(fetchOptions);
-  const { verifyPassword } = useAuth();
   const toast = useToast();
   const [openModalConfirm, setOpenModalConfirm] = useState(false);
   const [pendingRequest, setPendingRequest] = useState<{

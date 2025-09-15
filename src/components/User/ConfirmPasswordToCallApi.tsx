@@ -62,6 +62,7 @@ const ConfirmPasswordToCallApiModal = ({
   onSuccess,
 }: ConfirmPasswordToCallApiProps) => {
   const [passwordPrompt, setPasswordPrompt] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (open) {
@@ -69,24 +70,34 @@ const ConfirmPasswordToCallApiModal = ({
     }
   }, [open]);
 
+  const handleInputChange = useCallback((value: string) => {
+    setPasswordPrompt(value);
+    setError(""); // Clear error khi user bắt đầu nhập
+  }, []);
+
   const renderActions = useCallback(() => {
     return (
-      <Box
-        display="flex"
-        gap={1}
-        justifyContent="flex-end"
-        alignItems="center"
-      ></Box>
+      <Box display="flex" gap={1} justifyContent="flex-end" alignItems="center">
+        <Button variant="contained" onClick={() => onSuccess(passwordPrompt)}>
+          Submit
+        </Button>
+      </Box>
     );
   }, []);
 
   const renderContent = useCallback(() => {
     return (
       <Box maxHeight="30rem">
-        <InputTextField value={passwordPrompt} />
+        <InputTextField
+          onChange={handleInputChange} // Đúng cách: truyền hàm, không gọi hàm
+          value={passwordPrompt}
+          type="password"
+          placeholder="Nhập mật khẩu"
+          error={!!error}
+        />
       </Box>
     );
-  }, [passwordPrompt]);
+  }, [passwordPrompt, error, handleInputChange]);
 
   return (
     <BaseModal
