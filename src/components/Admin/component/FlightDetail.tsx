@@ -20,20 +20,22 @@ import {
 } from "@mui/icons-material";
 import type { DataFlight } from "../../../utils/type";
 import type { GridRowDef } from "../../../common/DataGrid";
+import { useGetFlightByIDData } from "../../Api/useGetApi";
 
 interface FlightDetailModalProps {
   open: boolean;
-  flightId: GridRowDef | null;
+  flightId?: number;
   flight: DataFlight | null;
-
   onClose: () => void;
 }
 
 const FlightDetail: React.FC<FlightDetailModalProps> = ({
   open,
   flight,
+  flightId,
   onClose,
 }) => {
+  const { getFlightByIdData } = useGetFlightByIDData({ id: flightId });
   if (!flight) return null;
 
   return (
@@ -74,7 +76,9 @@ const FlightDetail: React.FC<FlightDetailModalProps> = ({
           <Grid container spacing={2}>
             <Grid size={12}>
               <Typography variant="h6" gutterBottom>
-                {flight.departureAirport} → {flight.arrivalAirport}
+                {/* {flight.departureAirport} → {flight.arrivalAirport} */}
+                flight flightId
+                {/* {JSON.stringify(getFlightByIdData, null, 2)} */}
               </Typography>
               <Box
                 sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}

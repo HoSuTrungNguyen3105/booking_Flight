@@ -12,7 +12,7 @@ import {
   Chip,
   Skeleton,
 } from "@mui/material";
-import { DeleteForever } from "@mui/icons-material";
+import { Add, DeleteForever } from "@mui/icons-material";
 import { useSearchFlight } from "../Api/usePostApi";
 import ContentModal from "../../common/Modal/ContentModal";
 import { toast } from "react-toastify";
@@ -70,9 +70,10 @@ const Search_layout: React.FC = () => {
   const [flightData, setFlightData] = React.useState<DataFlight[]>([]);
   const [flightId, setFlightId] = React.useState<FlightId | null>(null);
   const [selectId, setSelectId] = React.useState<number[]>([]);
-  const [updateFlight, setUpdateFlight] = React.useState<boolean>(false);
+  // const [updateFlight, setUpdateFlight] = React.useState<boolean>(false);
   const [openUpdateConfirm, setOpenUpdateConfirm] =
     React.useState<boolean>(false);
+  const [mode, setMode] = React.useState<"advance" | "simple">("simple");
   const [isUpdate, setIsUpdate] = React.useState<boolean>(false);
   const [isSearch, setIsSearch] = React.useState<boolean>(false);
   const [isReset, setIsReset] = React.useState<boolean>(false);
@@ -109,19 +110,25 @@ const Search_layout: React.FC = () => {
 
   const [rowData, setRowData] = React.useState<DataFlight[]>([]);
 
-  const [selectedFlight, setSelectedFlight] = React.useState<GridRowDef | null>(
-    null
-  );
+  const [selectedFlight, setSelectedFlight] = React.useState<number>();
   const [selectedFlightData, setSelectedFlightData] =
     React.useState<DataFlight | null>(null);
 
   const [detailModalOpen, setDetailModalOpen] = React.useState(false);
 
   const handleRowClick = (flight: GridRowDef) => {
-    setSelectedFlight(flight);
+    // setSelectedFlight(flight);
     setSelectedFlightData(flightData[0]);
     setDetailModalOpen(true);
   };
+
+  const handleSetTranformMode = React.useCallback(() => {
+    if (mode === "simple") {
+      setMode("advance");
+    } else {
+      setMode("simple");
+    }
+  }, [mode]);
 
   const { reset: resetUpdate } = useForm<DataFlight[]>({
     defaultValues: flightData,
@@ -154,26 +161,17 @@ const Search_layout: React.FC = () => {
     [refetchSearchFlightList, setRowData, setIsSearch]
   );
 
-  const loadingFlightFromSearch = React.useCallback(() => {
-    rowData.map((r) => ({
-      ...r,
-      id: (r.flightId ?? r.flightId) as GridRowId,
-    }));
-  }, []);
-
   const handleOpen = (data: DataFlight): void => {
     try {
-      // setFlightData(data);
-      // resetUpdate(data);
       setFlightId(data.flightId ? { id: data.flightId } : null);
-      setUpdateFlight(true);
+      // setUpdateFlight(true);
     } catch (err) {
       console.error("Error", err);
     }
   };
 
   const handleClose = (): void => {
-    setUpdateFlight(false);
+    // setUpdateFlight(false);
     setFlightId(null);
     setSelectId([]);
   };
@@ -203,12 +201,15 @@ const Search_layout: React.FC = () => {
     resetSearch();
     refetchSearchFlightList(flightParams);
   };
+
   const [flightRows, setFlightRows] = React.useState<GridRowDef[]>([]);
 
   const handleOpenUpdateConfirm = () => setOpenUpdateConfirm(true);
+
   const [selectedMealRows, setSelectedMealRows] = React.useState<GridRowDef[]>(
     []
   );
+
   const handleFlightRowSelection = (selectedIds: any[]) => {
     setSelectedMealRows((prev) => {
       const newSelectedRows = flightRows.filter((row) =>
@@ -217,6 +218,7 @@ const Search_layout: React.FC = () => {
       return newSelectedRows;
     });
   };
+
   const colDefs: GridColDef[] = [
     {
       field: "flightId",
@@ -298,6 +300,7 @@ const Search_layout: React.FC = () => {
       </Box>
     );
   }
+
   if (error) {
     return (
       <Box
@@ -372,7 +375,6 @@ const Search_layout: React.FC = () => {
                 <InputTextField
                   value={String(flightParams.departDate)}
                   name="departDate"
-                  type="date"
                 />
               </FormRow>
 
@@ -380,14 +382,12 @@ const Search_layout: React.FC = () => {
                 <InputTextField
                   value={String(flightParams.returnDate)}
                   name="returnDate"
-                  type="date"
                 />
               </FormRow>
 
               <FormRow label="Passengers">
                 <InputTextField
                   name="passengers"
-                  type="number"
                   placeholder="1"
                   value={String(flightParams.passengers)}
                 />
@@ -436,82 +436,76 @@ const Search_layout: React.FC = () => {
                   options={flightStatusOptions}
                 />
               </FormRow>
-
-              {/* <FormRow label="Include Cancelled">
-                <InputTextField value={flightParams.includeCancelled} name="includeCancelled" type="checkbox" />
-              </FormRow> */}
             </Grid>
 
-            <Grid size={12}>
-              <Typography
-                variant="h6"
-                gutterBottom
-                sx={{
-                  color: "primary.main",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 1,
-                }}
-              >
-                <StarBorderIcon /> Additional Filters
-              </Typography>
+            {mode === "advance" && (
+              <Grid size={12}>
+                <Typography
+                  variant="h6"
+                  gutterBottom
+                  sx={{
+                    color: "primary.main",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                  }}
+                >
+                  <StarBorderIcon /> Additional Filters
+                </Typography>
 
-              <FormRow label="Gate">
-                <InputTextField
-                  value={flightParams.gate}
-                  name="gate"
-                  placeholder="e.g., A12, B3"
-                />
-              </FormRow>
+                <FormRow label="Gate">
+                  <InputTextField
+                    value={flightParams.gate}
+                    name="gate"
+                    placeholder="e.g., A12, B3"
+                  />
+                </FormRow>
 
-              <FormRow label="Terminal">
-                <InputTextField
-                  value={flightParams.terminal}
-                  name="terminal"
-                  placeholder="e.g., T1, T2"
-                />
-              </FormRow>
+                <FormRow label="Terminal">
+                  <InputTextField
+                    value={flightParams.terminal}
+                    name="terminal"
+                    placeholder="e.g., T1, T2"
+                  />
+                </FormRow>
 
-              <FormRow label="Price Range">
-                <Box display="flex" gap={1} alignItems="center">
-                  <InputTextField
-                    name="minPrice"
-                    type="number"
-                    placeholder="Min"
-                    sx={{ flex: 1 }}
-                    value={String(flightParams.minPrice)}
-                  />
-                  <Typography variant="body2">to</Typography>
-                  <InputTextField
-                    name="maxPrice"
-                    type="number"
-                    placeholder="Max"
-                    sx={{ flex: 1 }}
-                    value={String(flightParams.maxPrice)}
-                  />
-                </Box>
-              </FormRow>
+                <FormRow label="Price Range">
+                  <Box display="flex" gap={1} alignItems="center">
+                    <InputTextField
+                      name="minPrice"
+                      placeholder="Min"
+                      sx={{ flex: 1 }}
+                      value={String(flightParams.minPrice)}
+                    />
+                    <Typography variant="body2">to</Typography>
+                    <InputTextField
+                      name="maxPrice"
+                      placeholder="Max"
+                      sx={{ flex: 1 }}
+                      value={String(flightParams.maxPrice)}
+                    />
+                  </Box>
+                </FormRow>
 
-              <FormRow label="Delay Range (minutes)">
-                <Box display="flex" gap={1} alignItems="center">
-                  <InputTextField
-                    name="minDelayMinutes"
-                    type="number"
-                    placeholder="Min"
-                    sx={{ flex: 1 }}
-                    value={String(flightParams.minDelayMinutes)}
-                  />
-                  <Typography variant="body2">to</Typography>
-                  <InputTextField
-                    name="maxDelayMinutes"
-                    type="number"
-                    placeholder="Max"
-                    sx={{ flex: 1 }}
-                    value={String(flightParams.maxDelayMinutes)}
-                  />
-                </Box>
-              </FormRow>
-            </Grid>
+                <FormRow label="Delay Range (minutes)">
+                  <Box display="flex" gap={1} alignItems="center">
+                    <InputTextField
+                      name="minDelayMinutes"
+                      placeholder="Min"
+                      sx={{ flex: 1 }}
+                      value={String(flightParams.minDelayMinutes)}
+                    />
+                    <Typography variant="body2">to</Typography>
+                    <InputTextField
+                      name="maxDelayMinutes"
+                      placeholder="Max"
+                      sx={{ flex: 1 }}
+                      value={String(flightParams.maxDelayMinutes)}
+                    />
+                  </Box>
+                </FormRow>
+              </Grid>
+            )}
           </Grid>
 
           <Divider sx={{ my: 3 }} />
@@ -524,6 +518,15 @@ const Search_layout: React.FC = () => {
               sx={{ minWidth: 120 }}
             >
               Reset
+            </Button>
+            <Button
+              variant="outlined"
+              startIcon={<Add />}
+              onClick={handleSetTranformMode}
+              size="large"
+              sx={{ minWidth: 120 }}
+            >
+              Advanced
             </Button>
             <Button
               variant="contained"
@@ -561,11 +564,15 @@ const Search_layout: React.FC = () => {
 
           <Box sx={{ height: "60vh", minHeight: 400 }}>
             <TableSection
-              rows={flightRows}
+              rows={rowData.map((r) => ({
+                ...r,
+                id: (r.flightId ?? r.flightId) as GridRowId,
+              }))}
               columns={colDefs}
               isLoading={false}
               setRows={setFlightRows}
               onSelectedRowIdsChange={handleFlightRowSelection}
+              handleRowClick={handleRowClick}
               nextRowClick
               largeThan
             />
@@ -595,7 +602,7 @@ const Search_layout: React.FC = () => {
         onClose={() => setDetailModalOpen(false)}
       />
 
-      <ContentModal
+      {/* <ContentModal
         open={updateFlight}
         closeLabel="Close"
         submitLabel="Save Changes"
@@ -608,15 +615,15 @@ const Search_layout: React.FC = () => {
             </Typography>
           </Box>
         }
-        // middleBtns={[
-        //   {
-        //     label: "Reset Form",
-        //     onClick: () => resetUpdateField(),
-        //     variant: "outlined",
-        //   },
-        // ]}
-        // maxWidth="md"
-      ></ContentModal>
+        middleBtns={[
+          {
+            label: "Reset Form",
+            onClick: () => resetUpdateField(),
+            variant: "outlined",
+          },
+        ]}
+        maxWidth="md"
+      ></ContentModal> */}
     </Box>
   );
 };
