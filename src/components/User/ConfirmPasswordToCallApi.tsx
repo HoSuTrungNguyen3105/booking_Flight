@@ -3,15 +3,16 @@ import { memo, useCallback, useEffect, useState } from "react";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
 import InputTextField from "../../common/Input/InputTextField";
 import BaseModal from "../../common/Modal/BaseModal";
-import type { DetailResponseMessage, ResponseMessage } from "../../utils/type";
+import type { DetailResponseMessage } from "../../utils/type";
 
 interface ConfirmPasswordToCallApiProps {
   open: boolean;
   onClose: () => void;
-  onSuccess: (password: string) => Promise<DetailResponseMessage>;
-  onValidPassword?: () => void; // Đổi thành optional
+  onCancel: () => void;
+  onSuccess: (password: string) => Promise<DetailResponseMessage<any>>;
+  onValidPassword?: () => void;
   isLoading?: boolean;
-  hasPendingRequest?: boolean; // Thêm prop mới để biết có pending request
+  hasPendingRequest?: boolean;
 }
 
 const ConfirmPasswordToCallApiModal = ({
@@ -19,14 +20,13 @@ const ConfirmPasswordToCallApiModal = ({
   onClose,
   onSuccess,
   onValidPassword,
+  onCancel,
   isLoading: externalLoading = false,
-  hasPendingRequest = false, // Nhận thông tin về pending request
+  hasPendingRequest = false,
 }: ConfirmPasswordToCallApiProps) => {
   const [passwordPrompt, setPasswordPrompt] = useState("");
   const [error, setError] = useState("");
   const [internalLoading, setInternalLoading] = useState(false);
-
-  // Kết hợp internal và external loading
   const isLoading = internalLoading || externalLoading;
 
   useEffect(() => {
@@ -47,21 +47,13 @@ const ConfirmPasswordToCallApiModal = ({
       setError("Vui lòng nhập mật khẩu");
       return;
     }
-
     setInternalLoading(true);
     try {
       const response = await onSuccess(passwordPrompt);
-      console.log("Modal response:", response);
-
       if (response.resultCode === "00") {
-        // PHÂN BIỆT BẰNG CÁCH KIỂM TRA CÓ DATA HAY KHÔNG
-        if (response.data) {
-          // Có data -> đây là kết quả từ API search
-          console.log("✅ API result with data, calling onValidPassword");
+        if (hasPendingRequest) {
           onValidPassword?.();
         } else {
-          // Không có data -> đây là response xác thực thành công
-          console.log("✅ Auth success, closing modal");
           onClose();
         }
       } else {
@@ -73,7 +65,7 @@ const ConfirmPasswordToCallApiModal = ({
     } finally {
       setInternalLoading(false);
     }
-  }, [passwordPrompt, onSuccess, onValidPassword, onClose]);
+  }, [passwordPrompt, onSuccess, onValidPassword, onClose, hasPendingRequest]);
 
   const handleClose = useCallback(() => {
     if (!isLoading) {
@@ -93,7 +85,7 @@ const ConfirmPasswordToCallApiModal = ({
   const renderActions = useCallback(() => {
     return (
       <Box display="flex" gap={1} justifyContent="flex-end" alignItems="center">
-        <Button variant="outlined" onClick={handleClose} disabled={isLoading}>
+        <Button variant="outlined" onClick={onCancel} disabled={isLoading}>
           Hủy
         </Button>
         <Button

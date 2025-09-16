@@ -43,12 +43,10 @@ interface CreateLeaveRequestFormProps {
 }
 
 const CreateLeaveRequestForm: React.FC<CreateLeaveRequestFormProps> = ({
-  //   onSubmit,
   employees,
   loading = false,
   onSuccess,
 }) => {
-  const theme = useTheme();
   const [activeStep, setActiveStep] = useState(0);
   const { refetchGetLeaveRequest } = useCreateLeaveRequest();
   const [formData, setFormData] = useState<CreateLeaveRequestDto>({
@@ -77,7 +75,6 @@ const CreateLeaveRequestForm: React.FC<CreateLeaveRequestFormProps> = ({
   ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
 
-    // Clear error when user starts typing
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
@@ -192,27 +189,7 @@ const CreateLeaveRequestForm: React.FC<CreateLeaveRequestFormProps> = ({
     setActiveStep(0);
   };
 
-  const formatDate = (timestamp: number) => {
-    return new Date(timestamp).toLocaleDateString("vi-VN");
-  };
-
-  const [emailEmployee, setEmailEmployee] = useState("");
-  const [userId, setUserId] = useState<number | undefined>();
-  const { refetchUserEmailData } = getUserIdByEmail();
-  // const email = useWatch({ control, name: "email" });
-  const toast = useToast();
-  const handleSubmitEmailValue = useCallback(async () => {
-    if (!emailEmployee) return;
-    const res = await refetchUserEmailData({ email: emailEmployee });
-    if (res?.resultCode === "00") {
-      setUserId(res?.data?.userId);
-    } else {
-      toast(
-        (res?.resultMessage as string) || "Error while connect to server",
-        "info"
-      );
-    }
-  }, [emailEmployee, refetchUserEmailData]);
+  const [userId] = useState<number | undefined>();
 
   const renderStepContent = (step: number) => {
     switch (step) {

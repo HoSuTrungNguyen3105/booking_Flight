@@ -50,6 +50,7 @@ const UpdateUserModal = ({
               </Typography>
               <FieldRenderer
                 {...fields}
+                disabled={disabled}
                 value={formData[fields.id as keyof typeof formData] ?? ""}
                 onChange={(val) => handleChange(fields.id, val)}
               />

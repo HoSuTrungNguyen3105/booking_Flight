@@ -4,7 +4,7 @@ import React, { memo, useCallback } from "react";
 export interface IDetailItem {
   title: string;
   description: string | React.ReactNode;
-  size?: number; // Add this new property for custom grid size
+  size?: number;
   hasBorder?: boolean;
 }
 

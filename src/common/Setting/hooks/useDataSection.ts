@@ -41,39 +41,29 @@ export const useDataSection = (
           placeholder: "Nhập tên đăng nhập...",
           options: [],
           value: data.name,
+          //disabled: formType === "update", // Ẩn khi là update
         },
       },
       {
         fields: {
           id: "password",
           label: "Mật khẩu",
-          disabled: formType === "register",
           type: FieldType.INPUT_WITH_TYPE_PASSWORD,
           placeholder: "Nhập mật khẩu...",
           options: [],
           value: data.password,
+          disabled: formType === "update", // Ẩn khi là update
         },
       },
       {
         fields: {
           id: "email",
           label: "Email",
-          disabled: formType === "register",
+          disabled: formType === "update", // Vô hiệu hóa khi là update
           type: FieldType.INPUT_WITH_TYPE_TEXT,
           placeholder: "Nhập email...",
           options: [],
           value: data.email,
-        },
-      },
-      {
-        fields: {
-          id: "rank",
-          label: "Rank",
-          disabled: formType === "update",
-          type: FieldType.INPUT_WITH_TYPE_TEXT,
-          placeholder: "Nhập email...",
-          options: [],
-          value: data.rank,
         },
       },
       {
@@ -92,6 +82,8 @@ export const useDataSection = (
       },
     ];
 
-    return fields.filter((f) => !fieldConfigs[f.fields.id]?.hidden);
-  }, [data, isDisable, fieldConfigs]);
+    return fields.filter(
+      (f) => !fieldConfigs[f.fields.id]?.disabled && !f.fields.disabled
+    );
+  }, [data, formType, isDisable, fieldConfigs]);
 };

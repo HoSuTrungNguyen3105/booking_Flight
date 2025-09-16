@@ -111,34 +111,32 @@ export const useSearchFlight = () => {
     refetch: refetchSearchFlightList,
     openModalConfirm,
     handlePasswordConfirm,
-    refreshFlag,
-    latestData,
-    // handleCancelPassword,
+    handleCloseConfirmPassword,
+    handleCancelPassword,
     loading,
     data,
     isValid,
-    // hasPendingRequest,
-    // resetAuthValidation,
+    hasPendingRequest,
+    resetAuthValidation,
   } = useSecureFetch<SearchFlightResponse, SearchFlightDto>({
     url: "/sys/flights/search",
     requirePassword: true,
     autoFetch: false,
     config: postMethod,
-    resetAfterSuccess: true,
+    resetAfterSuccess: false,
   });
   return {
     searchFlightList,
     refetchSearchFlightList,
-    latestData,
     openModalConfirm,
     handlePasswordConfirm,
-    // handleCancelPassword,
-    // hasPendingRequest,
-    //     resetAuthValidation,
+    handleCloseConfirmPassword,
+    handleCancelPassword,
+    hasPendingRequest,
+    resetAuthValidation,
     loading,
     data,
     isValid,
-    refreshFlag,
   };
 };
 
@@ -156,6 +154,7 @@ export const useSearchFlight = () => {
 //     refetchSearchFlightList,
 //   };
 // };
+
 export const useFlightById = ({ id }: FlightId) => {
   const isValid = !!id;
   const { data: fetchFlightId, refetch: refetchFlightId } = useFetch<

@@ -5,7 +5,7 @@ import { useChangeLanguage } from "../../context/use[custom]/useChangeLng";
 import SelectDropdown from "./SelectDropdown";
 import { useTranslation } from "react-i18next";
 
-export const LanguageButton = () => {
+const LanguageButton = () => {
   const { t } = useTranslation();
   const {
     selectedLang,
@@ -81,3 +81,4 @@ export const LanguageButton = () => {
     />
   );
 };
+export default LanguageButton;

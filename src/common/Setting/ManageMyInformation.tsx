@@ -51,7 +51,7 @@ const ManageMyInformation = () => {
     // if ( myInfo?.pictureUrl){
     //   handleImageUpload(myInfo?.pictureUrl)
     // }
-    const res = await refetchUpdateUserInfo(myInfo);
+    await refetchUpdateUserInfo(myInfo);
     //console.log("res", res);
   }, [myInfo, refetchUpdateUserInfo]);
 
@@ -91,7 +91,7 @@ const ManageMyInformation = () => {
         height: "100%",
         border: 1,
         borderColor: "divider",
-        overflowY: "auto", // bật scroll dọc
+        overflowY: "auto",
         overflowX: "hidden",
       }}
     >

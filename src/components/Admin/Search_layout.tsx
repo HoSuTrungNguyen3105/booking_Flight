@@ -104,47 +104,12 @@ const Search_layout: React.FC = () => {
   const {
     openModalConfirm,
     refetchSearchFlightList,
-    // handleCancelPassword,
-    searchFlightList,
+    handleCancelPassword,
+    handleCloseConfirmPassword,
     handlePasswordConfirm,
-    refreshFlag,
-    // hasPendingRequest,
-    latestData,
+    hasPendingRequest,
   } = useSearchFlight();
 
-  // React.useEffect(() => {
-  //   if (latestData && latestData.resultCode === "00" && latestData.data) {
-  //     console.log("🔄 Latest data updated:", latestData);
-  //     const allFlights = [
-  //       ...(latestData.data.outbound || []),
-  //       ...(latestData.data.inbound || []),
-  //     ];
-  //     setRowData(allFlights as DataFlight[]);
-  //     toast(`Tìm thấy ${allFlights.length} chuyến bay`, "success");
-  //   }
-  // }, [latestData, toast]);
-
-  // THEO DÕI fetchData thông thường
-  // React.useEffect(() => {
-  //   if (
-  //     searchFlightList &&
-  //     searchFlightList.resultCode === "00" &&
-  //     searchFlightList.data
-  //   ) {
-  //     console.log("🔄 Fetch data updated:", searchFlightList);
-  //     const allFlights = [
-  //       ...(searchFlightList.data.outbound || []),
-  //       ...(searchFlightList.data.inbound || []),
-  //     ];
-  //     setRowData(allFlights as DataFlight[]);
-  //   }
-  // }, [searchFlightList]);
-
-  // console.log("logpasw", password);
-  // React.useEffect(() => {
-  //   console.log("🔄 Refresh flag changed:", refreshFlag);
-  //   // Có thể thêm logic re-fetch hoặc cập nhật state ở đây nếu cần
-  // }, [refreshFlag]);
   const {
     control: controlSearch,
     handleSubmit: handleSearchSubmit,
@@ -153,19 +118,6 @@ const Search_layout: React.FC = () => {
     defaultValues: flightParams,
   });
   const [isVerifying, setIsVerifying] = React.useState(false);
-
-  // const handlePasswordSuccess = React.useCallback(
-  //   async (password: string) => {
-  //     setIsVerifying(true);
-  //     try {
-  //       const response = await handlePasswordConfirm(password);
-  //       return response;
-  //     } finally {
-  //       setIsVerifying(false);
-  //     }
-  //   },
-  //   [handlePasswordConfirm]
-  // );
 
   const [rowData, setRowData] = React.useState<DataFlight[]>([]);
 
@@ -191,12 +143,6 @@ const Search_layout: React.FC = () => {
     }
   };
 
-  const [formData, setFormData] = React.useState({
-    quantity: 0,
-    price: 0,
-    discount: 10,
-  });
-
   const handleSetTranformMode = React.useCallback(() => {
     if (mode === "simple") {
       setMode("advance");
@@ -213,10 +159,8 @@ const Search_layout: React.FC = () => {
     async (values: SearchFlightDto) => {
       try {
         setIsSearch(true);
-        console.log("🔍 Searching with:", values);
 
         const res = await refetchSearchFlightList(values);
-        console.log("📊 Search result:", res);
 
         if (res?.resultCode === "00") {
           const allFlights = [
@@ -224,7 +168,6 @@ const Search_layout: React.FC = () => {
             ...(res.data?.inbound || []),
           ];
           setRowData(allFlights as DataFlight[]);
-          toast(`Tìm thấy ${allFlights.length} chuyến bay`, "success");
         } else if (res) {
           toast(res.resultMessage || "Tìm kiếm thất bại", "error");
           setRowData([]);
@@ -241,145 +184,20 @@ const Search_layout: React.FC = () => {
   );
 
   const handlePasswordSuccess = async (password: string) => {
-    return await handlePasswordConfirm(password);
+    setIsVerifying(true);
+    try {
+      const response = await handlePasswordConfirm(password);
+      return response;
+    } catch (error) {
+      return { resultCode: "99", resultMessage: "Lỗi xác thực" };
+    } finally {
+      setIsVerifying(false);
+    }
   };
 
   const handleValidPassword = () => {
     console.log("✅ Xác thực thành công, data sẽ được cập nhật");
-    // Không cần làm gì thêm vì hook đã tự động gọi lại API
   };
-
-  // const onSubmitValue = React.useCallback(
-  //   async (values: SearchFlightDto) => {
-  //     try {
-  //       setIsSearch(true);
-
-  //       const res = await refetchSearchFlightList(values);
-  //       console.log("res", res);
-  //       if (res?.resultCode === "00") {
-  //         const allFlights = [
-  //           ...(res.data?.outbound || []),
-  //           ...(res.data?.inbound || []),
-  //         ];
-  //         setRowData(allFlights as DataFlight[]);
-  //       } else {
-  //         setRowData([]);
-  //         console.error("Search failed:", res);
-  //       }
-  //     } catch (error) {
-  //       console.error("Search error:", error);
-  //       setRowData([]);
-  //     } finally {
-  //       setIsSearch(false);
-  //     }
-  //   },
-  //   [refetchSearchFlightList, setRowData, setIsSearch]
-  // );
-
-  // const onSubmitValue = React.useCallback(
-  //   async (values: SearchFlightDto) => {
-  //     try {
-  //       setIsSearch(true);
-  //       console.log("🔍 Searching with:", values);
-
-  //       // Đảm bảo refetch trả về promise
-  //       const refetchPromise = refetchSearchFlightList(values);
-
-  //       if (refetchPromise && typeof refetchPromise.then === "function") {
-  //         const res = await refetchPromise;
-  //         console.log("📊 Search result:", res);
-
-  //         if (res?.resultCode === "00") {
-  //           // Đảm bảo data tồn tại
-  //           const flightsDataOutbound = res.data?.outbound;
-  //           const flightsDataInbound = res.data?.inbound;
-  //           const allFlights = [
-  //             ...(flightsDataOutbound || []),
-  //             ...(flightsDataInbound || []),
-  //           ];
-
-  //           console.log("✅ Found flights:", allFlights);
-  //           setRowData(allFlights as DataFlight[]);
-  //         } else {
-  //           console.warn("❌ Search failed:", res);
-  //           setRowData([]);
-  //         }
-  //       } else {
-  //         console.error("❌ refetchSearchFlightList không trả về promise");
-  //         setRowData([]);
-  //       }
-  //     } catch (error) {
-  //       console.error("❌ Search error:", error);
-  //       setRowData([]);
-  //     } finally {
-  //       setIsSearch(false);
-  //     }
-  //   },
-  //   [refetchSearchFlightList, setRowData, setIsSearch]
-  // );
-
-  // const onSubmitValue = React.useCallback(
-  //   async (values: SearchFlightDto) => {
-  //     try {
-  //       setIsSearch(true);
-  //       console.log("🔍 Searching with:", values);
-
-  //       // Gọi API và await kết quả
-  //       const res = await refetchSearchFlightList(values);
-  //       console.log("📊 Search result:", res);
-
-  //       // Kiểm tra res có tồn tại không
-  //       if (!res) {
-  //         console.warn("⚠️ API returned undefined or null");
-  //         toast("Không nhận được phản hồi từ server", "error");
-  //         setRowData([]);
-  //         return;
-  //       }
-
-  //       // Kiểm tra resultCode
-  //       if (res.resultCode === "00") {
-  //         console.log("✅ Search successful");
-
-  //         // Kiểm tra data structure
-  //         const flightsData = res.data;
-  //         const outbound = Array.isArray(flightsData?.outbound)
-  //           ? flightsData.outbound
-  //           : [];
-  //         const inbound = Array.isArray(flightsData?.inbound)
-  //           ? flightsData.inbound
-  //           : [];
-
-  //         const allFlights = [...outbound, ...inbound];
-  //         console.log(`✅ Found ${allFlights.length} flights`);
-
-  //         setRowData(allFlights as DataFlight[]);
-
-  //         // Hiển thị thông báo thành công
-  //         if (allFlights.length > 0) {
-  //           toast(`Tìm thấy ${allFlights.length} chuyến bay`, "success");
-  //         } else {
-  //           toast("Không tìm thấy chuyến bay phù hợp", "info");
-  //         }
-  //       } else {
-  //         // Xử lý khi resultCode khác "00"
-  //         console.warn("❌ Search failed with resultCode:", res.resultCode);
-  //         console.warn("Error message:", res.resultMessage);
-
-  //         setRowData([]);
-
-  //         // Hiển thị thông báo lỗi từ server
-  //         toast(res.resultMessage || "Tìm kiếm thất bại", "error");
-  //       }
-  //     } catch (error) {
-  //       console.error("❌ Search error:", error);
-  //       setRowData([]);
-  //       toast("Đã xảy ra lỗi khi tìm kiếm", "error");
-  //     } finally {
-  //       setIsSearch(false);
-  //     }
-  //   },
-  //   [refetchSearchFlightList, setRowData, setIsSearch, toast]
-  // );
 
   const handleOpen = (data: DataFlight): void => {
     try {
@@ -826,9 +644,10 @@ const Search_layout: React.FC = () => {
       {openModalConfirm && (
         <ConfirmPasswordToCallApi
           open={openModalConfirm}
-          onSuccess={handlePasswordConfirm}
-          onClose={() => {}}
-          // onSuccess={handlePasswordSuccess}
+          onCancel={handleCancelPassword}
+          onClose={handleCloseConfirmPassword}
+          hasPendingRequest={hasPendingRequest}
+          onSuccess={handlePasswordSuccess}
           onValidPassword={handleValidPassword}
           isLoading={isVerifying}
         />

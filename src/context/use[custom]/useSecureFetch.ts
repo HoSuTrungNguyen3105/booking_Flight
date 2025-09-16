@@ -16,6 +16,7 @@ type TUseSecureFetch<T, P> = {
   requirePassword?: boolean;
   resetAfterSuccess?: boolean;
 };
+
 export const useSecureFetch = <T extends Partial<ResponseMessage>, P>({
   requirePassword,
   resetAfterSuccess = true,
@@ -23,6 +24,9 @@ export const useSecureFetch = <T extends Partial<ResponseMessage>, P>({
   onError,
   ...fetchOptions
 }: TUseSecureFetch<T, P>) => {
+  const { isValid, verifyPassword, resetValidation } = useAuth();
+  const toast = useToast();
+
   const fetch = useFetch<T, P>({
     ...fetchOptions,
     onSuccess: (res) => {
@@ -36,29 +40,24 @@ export const useSecureFetch = <T extends Partial<ResponseMessage>, P>({
     },
   });
 
-  const { isValid, verifyPassword, resetValidation } = useAuth();
-  const toast = useToast();
   const [openModalConfirm, setOpenModalConfirm] = useState(false);
   const [pendingRequest, setPendingRequest] = useState<{
     extra?: P;
     overrideUrl?: string;
   } | null>(null);
-  const [refreshFlag, setRefreshFlag] = useState(0);
-  const [latestData, setLatestData] = useState<T | null>(null);
+
+  const [isAuthenticated, setIsAuthenticated] = useState(isValid);
   const isValidRef = useRef(isValid);
 
   useEffect(() => {
     isValidRef.current = isValid;
+    setIsAuthenticated(isValid);
   }, [isValid]);
 
   const secureRefetch = useCallback(
     async (extra?: P, overrideUrl?: string): Promise<T | undefined> => {
-      console.log("📞 secureRefetch called, isValid:", isValidRef.current);
-
       if (!requirePassword || isValidRef.current) {
-        const result = await fetch.refetch(extra, overrideUrl);
-        setLatestData(result || null); // Lưu data mới
-        return result;
+        return await fetch.refetch(extra, overrideUrl);
       }
       if (requirePassword && !isValidRef.current) {
         setPendingRequest({ extra, overrideUrl });
@@ -68,34 +67,29 @@ export const useSecureFetch = <T extends Partial<ResponseMessage>, P>({
     },
     [requirePassword, fetch.refetch]
   );
+
   const handlePasswordConfirm = useCallback(
     async (password: string): Promise<DetailResponseMessage<any>> => {
       try {
-        const isValid = await verifyPassword(password);
+        const isValidResult = await verifyPassword(password);
 
-        if (isValid) {
-          setRefreshFlag((prev) => prev + 1);
+        if (isValidResult) {
+          isValidRef.current = true;
+          setIsAuthenticated(true);
           setOpenModalConfirm(false);
-
           if (pendingRequest) {
             const result = await fetch.refetch(
               pendingRequest.extra,
               pendingRequest.overrideUrl
             );
-
             setPendingRequest(null);
-            setLatestData(result || null); // QUAN TRỌNG: Lưu data mới
-            toast("Xác thực thành công", "success");
-            return result as DetailResponseMessage<any>;
+            if (result) {
+              return result as DetailResponseMessage<any>;
+            }
           }
 
-          return {
-            resultCode: "00",
-            resultMessage: "Xác thực thành công",
-            data: pendingRequest,
-          };
+          return { resultCode: "00", resultMessage: "Xác thực thành công" };
         } else {
-          toast("Mật khẩu không chính xác", "error");
           return {
             resultCode: "01",
             resultMessage: "Mật khẩu không chính xác",
@@ -103,21 +97,51 @@ export const useSecureFetch = <T extends Partial<ResponseMessage>, P>({
         }
       } catch (error) {
         console.error("❌ Password verification error:", error);
-        toast("Lỗi xác thực", "error");
         return { resultCode: "99", resultMessage: "Lỗi xác thực" };
       }
     },
     [verifyPassword, pendingRequest, fetch.refetch, toast]
   );
 
+  const retryPendingRequest = useCallback(async (): Promise<T | undefined> => {
+    if (pendingRequest && isValidRef.current) {
+      const result = await fetch.refetch(
+        pendingRequest.extra,
+        pendingRequest.overrideUrl
+      );
+      setPendingRequest(null);
+      return result;
+    }
+    return undefined;
+  }, [pendingRequest, fetch.refetch]);
+
+  const handleCancelPassword = useCallback(() => {
+    setOpenModalConfirm(false);
+    setPendingRequest(null);
+    toast("Đã hủy xác thực", "info");
+  }, [toast]);
+
+  const handleCloseConfirmPassword = useCallback(() => {
+    setOpenModalConfirm(false);
+    setPendingRequest(null);
+  }, []);
+
+  const resetAuthValidation = useCallback(() => {
+    resetValidation();
+    setIsAuthenticated(false);
+    isValidRef.current = false;
+  }, [resetValidation]);
+
   return {
     ...fetch,
-    data: latestData || fetch.data, // Ưu tiên dùng latestData
     refetch: secureRefetch,
     openModalConfirm,
     handlePasswordConfirm,
-    refreshFlag,
-    isValid,
-    latestData,
+    handleCloseConfirmPassword,
+    handleCancelPassword,
+    resetAuthValidation,
+    retryPendingRequest,
+    isValid: isAuthenticated,
+    hasPendingRequest: !!pendingRequest,
   };
 };

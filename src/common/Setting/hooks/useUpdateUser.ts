@@ -44,7 +44,7 @@ export const useUpdateUser = ({
   }, [data]);
 
   // useDataSection lấy config trực tiếp từ formData để luôn cập nhật
-  const formDetailConfig = useDataSection(formData, "update", true);
+  const formDetailConfig = useDataSection(formData, "update");
 
   const handleChangeFormInput = (key: keyof UpdateUserForm, value: any) => {
     setFormData((prev) => ({

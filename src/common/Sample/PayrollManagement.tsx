@@ -1,39 +1,23 @@
 import {
   Box,
-  Card,
   Grid,
   Typography,
   Button,
-  Paper,
   Chip,
   Stack,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
   MenuItem,
   FormControl,
   InputLabel,
   Select,
-  Alert,
-  LinearProgress,
 } from "@mui/material";
 import {
   AttachMoney,
   Add,
   Visibility,
   Download,
-  Edit,
   CheckCircle,
-  Person,
-  CalendarMonth,
 } from "@mui/icons-material";
-import {
-  DataGrid,
-  GridActionsCellItem,
-  type GridColDef,
-} from "@mui/x-data-grid";
+import { GridActionsCellItem, type GridColDef } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import DataTable, { type GridRowDef } from "../../common/DataGrid/index";
 import TableSection from "../Setting/TableSection";
@@ -68,7 +52,6 @@ export type PayrollProps = {
 };
 
 const PayrollManagement = () => {
-  const [selectedEmployee, setSelectedEmployee] = useState<number>(0);
   const [month, setMonth] = useState<number>(new Date().getMonth() + 1);
   const [year, setYear] = useState<number>(new Date().getFullYear());
   const [openGenerateDialog, setOpenGenerateDialog] = useState(false);
@@ -247,10 +230,6 @@ const PayrollManagement = () => {
       return newSelectedRows;
     });
   };
-
-  // useEffect(() => {
-  //   setMealRows(payrolls);
-  // }, [payrolls]);
 
   useEffect(() => {
     setSelectedMealRows((prev) =>
