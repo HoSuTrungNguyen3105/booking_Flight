@@ -131,7 +131,7 @@ const Food = () => {
         <DataTable
           rows={rows.map((r) => ({
             ...r.flight,
-            id: r.flight.flightId, // Thêm id cho DataGrid
+            id: r.flight.flightId,
           }))}
           columns={flightCols}
           checkboxSelection

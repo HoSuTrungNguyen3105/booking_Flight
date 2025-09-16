@@ -1,26 +1,14 @@
 import {
   Box,
-  Card,
   Grid,
   Typography,
   Button,
-  Paper,
-  Chip,
-  Stack,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   TextField,
-  MenuItem,
   FormControl,
   InputLabel,
-  Select,
   Alert,
-  LinearProgress,
 } from "@mui/material";
 import { memo, useCallback, useMemo } from "react";
-import type { GridRowDef } from "../../DataGrid";
 import BaseModal from "../../Modal/BaseModal";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
 import type { PayrollProps } from "../PayrollManagement";
@@ -29,14 +17,12 @@ interface IModalStatisticalDataLearningProps {
   onClose: () => void;
   onSuccess: () => void;
   payrollData: PayrollProps;
-  //   selectedRows: GridRowDef;
 }
 
 const CreatePayrollModal = ({
   open,
   onClose,
   onSuccess,
-  //   selectedRows,
   payrollData,
 }: IModalStatisticalDataLearningProps) => {
   const renderActions = useCallback(() => {
@@ -48,14 +34,6 @@ const CreatePayrollModal = ({
   }, []);
 
   const renderContent = useCallback(() => {
-    const columnsSubFileList = useMemo(
-      () => [
-        { field: "category", headerName: "유형", flex: 1 },
-        { field: "fileName", headerName: "파일 이름", flex: 1 },
-      ],
-      []
-    );
-
     const renderRows = (data: PayrollProps) => {
       if (!data) return null;
       return (

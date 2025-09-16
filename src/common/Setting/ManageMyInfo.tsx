@@ -65,7 +65,7 @@ const ManageMyInfo = () => {
       </Box>
 
       <DataTable
-        checkboxSelection={true}
+        checkboxSelection={false}
         onSortModelChange={onSortModelChange}
         sortModel={sortModel}
         loading={loading}

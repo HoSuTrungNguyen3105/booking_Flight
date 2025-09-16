@@ -150,14 +150,13 @@ export type Seat = {
   nearRestroom?: boolean;
   isAvailable?: boolean;
 };
-// Định nghĩa type cho Employee
+
 interface Employee {
   id: number;
   name: string;
   email: string;
 }
 
-// Định nghĩa type cho LeaveRequest
 export interface LeaveRequest {
   id: number;
   employeeId: number;

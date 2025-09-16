@@ -7,18 +7,11 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { memo, useCallback } from "react";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
 import BaseModal from "../../../common/Modal/BaseModal";
-import InputTextField from "../../../common/Input/InputTextField";
-import { useAuth } from "../../../context/AuthContext";
-import {
-  Close,
-  Flight,
-  Schedule,
-  AirplanemodeActive,
-} from "@mui/icons-material";
-import type { DataFlight, LeaveRequest } from "../../../utils/type";
+import { Schedule, AirplanemodeActive } from "@mui/icons-material";
+import type { DataFlight } from "../../../utils/type";
 
 interface IRequestLeaveActionModalProps {
   open: boolean;
@@ -31,56 +24,10 @@ interface IRequestLeaveActionModalProps {
 const FlightDetailModal = ({
   open,
   onClose,
-  onSuccess,
+  // onSuccess,
   flightId,
   flight,
 }: IRequestLeaveActionModalProps) => {
-  const [note, setNote] = useState("");
-  const { user } = useAuth();
-  // const { fetchApproveLeaveRequest } = useApproveLeaveRequest(
-  //   selectedRows?.id as number
-  // );
-
-  // const { fetchRejectLeaveRequest } = useRejectLeaveRequest(
-  //   selectedRows?.id as number
-  // );
-
-  // useEffect(() => {
-  //   if (open) {
-  //     setNote("");
-  //   }
-  // }, [open]);
-
-  // const handleApproveSubmit = useCallback(async () => {
-  //   const data: SendRequestProps = {
-  //     approverId: user?.id as number,
-  //     requestId: selectedRows?.employee.id as number,
-  //     note: note,
-  //   };
-  //   const res = await fetchApproveLeaveRequest({
-  //     ...data,
-  //   });
-  //   if (res?.resultCode == "00") {
-  //     onSuccess();
-  //     setNote("");
-  //   } else setNote("");
-  // }, [onSuccess, fetchApproveLeaveRequest]);
-
-  // const handleRejectSubmit = useCallback(async () => {
-  //   const data: SendRequestProps = {
-  //     approverId: user?.id as number,
-  //     requestId: selectedRows?.employee.id as number,
-  //     note: note,
-  //   };
-  //   const res = await fetchRejectLeaveRequest({
-  //     ...data,
-  //   });
-  //   if (res?.resultCode == "00") {
-  //     onSuccess();
-  //     setNote("");
-  //   } else setNote("");
-  // }, [onSuccess, fetchRejectLeaveRequest]);
-
   const renderActions = useCallback(() => {
     return (
       <Box display="flex" gap={1} justifyContent="flex-end" alignItems="center">
@@ -103,9 +50,7 @@ const FlightDetailModal = ({
           <Grid container spacing={2}>
             <Grid size={12}>
               <Typography variant="h6" gutterBottom>
-                {/* {flight.departureAirport} → {flight.arrivalAirport} */}
-                flight flightId
-                {/* {JSON.stringify(getFlightByIdData, null, 2)} */}
+                flight {flightId}
               </Typography>
               <Box
                 sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}
@@ -315,7 +260,7 @@ const FlightDetailModal = ({
         </Paper>
       </>
     );
-  }, [note]);
+  }, []);
 
   return (
     <BaseModal
@@ -324,7 +269,8 @@ const FlightDetailModal = ({
       title={`원본 데이터, 통계 데이터 학습 Seq${flight?.flightId} 상세 정보`}
       Icon={PrivacyTipIcon}
       slots={{ content: renderContent(), actions: renderActions() }}
-      fullWidth
+      // fullWidth
+      // sx={{ maxWidth: "50rem" }}
     />
   );
 };

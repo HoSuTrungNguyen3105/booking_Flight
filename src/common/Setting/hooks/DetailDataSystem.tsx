@@ -19,9 +19,6 @@ interface IModalStatisticalDataLearningProps {
   onSuccess: () => void;
   detailData: Detail | null;
   selectedRows: IDataHistoryProps | null;
-  // files: {
-  //   name: string[];
-  // };
 }
 
 type DataExample = GridRowDef & {

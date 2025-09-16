@@ -41,7 +41,7 @@ const AircraftPage = () => {
             >
               <CardContent>
                 <Typography variant="h6" gutterBottom>
-                  ✈️ {aircraft.model}
+                  {aircraft.model}
                 </Typography>
                 <Typography color="text.secondary">
                   Mã: {aircraft.code}

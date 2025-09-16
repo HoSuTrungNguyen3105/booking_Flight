@@ -23,7 +23,7 @@ type SideBarValueTypes =
   | "flightmeals"
   | "airplaneSchedule"
   | "airplaneTicket"
-  | "airplaneUser"
+  | "service"
   | "international"
   | "overview"
   | "food"
@@ -76,7 +76,7 @@ export const menuData: MenuSection[] = [
           { id: "food", label: "Button", icon: <GppBadIcon /> },
           { id: "notifications", label: "notifications", icon: <GppBadIcon /> },
           {
-            id: "sampleTimepicker",
+            id: "service",
             label: "Timepicker",
             icon: <WifiPasswordRoundedIcon />,
           },

@@ -121,8 +121,6 @@ const ManageMyInformation = () => {
         message="Bạn có chắc chắn muốn thực hiện hành động này không?"
         confirmLabel="Xác nhận"
       />
-      {isFetching && <Loading />}
-      {/* {error && <ErrorMessage error={error} />} */}
     </Box>
   );
 };

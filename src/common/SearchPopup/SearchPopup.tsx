@@ -32,6 +32,7 @@ const mockData = [
     location: "Vung Tau",
   },
 ];
+
 const columns: GridColDef[] = [
   { field: "name", headerName: "Name", flex: 1 },
   { field: "department", headerName: "Department", flex: 1 },
@@ -48,23 +49,10 @@ const SearchPopup: React.FC = () => {
   }>({ type: "include", ids: new Set() });
 
   const [selectedItems, setSelectedItems] = useState<any[]>([]);
+  const navigate = useNavigate();
 
   const closeModal = () => setOpen(false);
 
-  const handleSelect = (item: (typeof mockData)[0]) => {
-    setSelectedItems((prevSelected) => {
-      const isSelected = prevSelected.some(
-        (selected) => selected.id === item.id
-      );
-
-      if (isSelected) {
-        return prevSelected.filter((selected) => selected.id !== item.id);
-      } else {
-        return [...prevSelected, item];
-      }
-    });
-  };
-  // const [query, setQuery] = useState("");
   const debouncedQuery = useDebounce(query, 500);
 
   useEffect(() => {
@@ -92,25 +80,7 @@ const SearchPopup: React.FC = () => {
     );
     setFilteredResults(filtered);
   };
-  // const handleCheckboxChange = (id: number) => {
-  //   setSelectedIdsModel((prev) => {
-  //     const newIds = new Set(prev.ids);
-  //     if (newIds.has(id)) {
-  //       newIds.delete(id);
-  //     } else {
-  //       newIds.add(id);
-  //     }
-  //     return { ...prev, ids: newIds };
-  //   });
-  // }
-  // const handleSelectAll = (selectAll: boolean) => {
-  //   setSelectedIdsModel((prev) => {
-  //     const newIds = selectAll
-  //       ? new Set(mockData.map((item) => item.id))
-  //       : new Set();
-  //     return { ...prev, ids: newIds };
-  //   });
-  // };
+
   useEffect(() => {
     if (debouncedQuery.trim() !== "") {
       handleFilter(debouncedQuery);
@@ -119,11 +89,6 @@ const SearchPopup: React.FC = () => {
     }
   }, [debouncedQuery]);
 
-  const handleCancel = () => {
-    setSelectedItems([]);
-    setOpen(false);
-  };
-  const navigate = useNavigate();
   return (
     <Box className="search-popup">
       <Box className="search">

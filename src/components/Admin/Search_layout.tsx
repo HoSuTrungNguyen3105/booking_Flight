@@ -36,6 +36,8 @@ import FlightDetail from "./component/FlightDetail.tsx";
 import TableSection from "../../common/Setting/TableSection.tsx";
 import ConfirmPasswordToCallApi from "../User/ConfirmPasswordToCallApi.tsx";
 import { useToast } from "../../context/ToastContext.tsx";
+import type { IDetailItem } from "../../common/DetailSection/index.tsx";
+import DetailSection from "../../common/DetailSection/index.tsx";
 
 type FlightId = {
   id: number;
@@ -99,6 +101,22 @@ const Search_layout: React.FC = () => {
     includeCancelled: false,
   });
 
+  const handleInputChange = (event: string) => {
+    // const { name, value } = event.target;
+    setFlightParams((prev) => ({
+      ...prev,
+      [event]: event,
+    }));
+  };
+
+  const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setFlightParams((prev) => ({
+      ...prev,
+      [name]: value === "" ? undefined : Number(value),
+    }));
+  };
+
   const [showDelete, setShowDelete] = React.useState<boolean>(false);
   const toast = useToast();
   const {
@@ -159,7 +177,7 @@ const Search_layout: React.FC = () => {
     async (values: SearchFlightDto) => {
       try {
         setIsSearch(true);
-
+        console.log("values", values);
         const res = await refetchSearchFlightList(values);
 
         if (res?.resultCode === "00") {
@@ -187,6 +205,7 @@ const Search_layout: React.FC = () => {
     setIsVerifying(true);
     try {
       const response = await handlePasswordConfirm(password);
+      // await handleSubmit();
       return response;
     } catch (error) {
       return { resultCode: "99", resultMessage: "Lỗi xác thực" };
@@ -306,19 +325,148 @@ const Search_layout: React.FC = () => {
       headerName: "Mã máy bay",
       flex: 1,
     },
-    {
-      field: "actualDeparture",
-      headerName: "Giờ khởi hành thực tế",
-      flex: 1,
-      renderCell: (params) => formatDate(params.row.actualDeparture),
-    },
-    {
-      field: "actualArrival",
-      headerName: "Giờ đến thực tế",
-      flex: 1,
-      renderCell: (params) => formatDate(params.row.actualArrival),
-    },
   ];
+  const renderDataGrid = React.useCallback(() => {
+    const detailInfoProfile: IDetailItem[] = [
+      {
+        title: "from",
+        size: 4,
+        description: (
+          <InputTextField
+            value={flightParams.from}
+            onChange={handleInputChange}
+            name="from"
+            placeholder="e.g., SGN"
+          />
+        ),
+      },
+      {
+        title: "name",
+        size: 4,
+        description: (
+          <InputTextField
+            value={flightParams.to}
+            name="to"
+            placeholder="e.g., HAN"
+          />
+        ),
+      },
+      {
+        title: "mfaEnabledYn",
+        size: 4,
+        description: (
+          <InputTextField
+            value={String(flightParams.returnDate)}
+            name="returnDate"
+          />
+        ),
+      },
+      {
+        title: "email",
+        size: 6,
+        description: (
+          <InputTextField
+            name="passengers"
+            placeholder="1"
+            value={String(flightParams.passengers)}
+          />
+        ),
+      },
+    ];
+
+    return (
+      <Box sx={{ height: "auto", width: "100%" }}>
+        <DetailSection data={detailInfoProfile} />
+      </Box>
+    );
+  }, []);
+
+  const renderData = React.useCallback(() => {
+    const detailInfoProfile: IDetailItem[] = [
+      {
+        title: "id",
+        size: 4,
+        description: (
+          <InputTextField
+            value={flightParams.from}
+            name="from"
+            placeholder="e.g., SGN"
+          />
+        ),
+      },
+      {
+        title: "name",
+        size: 4,
+        description: (
+          <InputTextField
+            value={flightParams.to}
+            name="to"
+            placeholder="e.g., HAN"
+          />
+        ),
+      },
+      {
+        title: "mfaEnabledYn",
+        size: 4,
+        description: (
+          <InputTextField
+            value={String(flightParams.returnDate)}
+            name="returnDate"
+          />
+        ),
+      },
+      {
+        title: "email",
+        size: 6,
+        description: (
+          <InputTextField
+            name="passengers"
+            placeholder="1"
+            value={String(flightParams.passengers)}
+          />
+        ),
+      },
+      {
+        title: "role",
+        size: 6,
+        description: (
+          <InputTextField
+            value={flightParams.from}
+            name="from"
+            placeholder="e.g., SGN"
+          />
+        ),
+      },
+      {
+        title: "createdAt",
+        size: 6,
+        description: (
+          <InputTextField
+            value={flightParams.from}
+            name="from"
+            placeholder="e.g., SGN"
+          />
+        ),
+      },
+      {
+        title: "updatedAt",
+        size: 6,
+        description: (
+          <InputTextField
+            value={flightParams.from}
+            name="from"
+            placeholder="e.g., SGN"
+          />
+        ),
+      },
+    ];
+
+    return (
+      <Box sx={{ height: "auto", width: "100%" }}>
+        <DetailSection data={detailInfoProfile} />
+      </Box>
+    );
+  }, []);
 
   if (!selectId) {
     return (
@@ -390,44 +538,7 @@ const Search_layout: React.FC = () => {
               >
                 <StarBorderIcon /> Flight Route
               </Typography>
-
-              <FormRow direction="column" label="From Airport">
-                <InputTextField
-                  value={flightParams.from}
-                  name="from"
-                  placeholder="e.g., SGN"
-                />
-              </FormRow>
-
-              <FormRow direction="column" label="To Airport">
-                <InputTextField
-                  value={flightParams.to}
-                  name="to"
-                  placeholder="e.g., HAN"
-                />
-              </FormRow>
-
-              <FormRow direction="column" label="Depart Date">
-                <InputTextField
-                  value={String(flightParams.departDate)}
-                  name="departDate"
-                />
-              </FormRow>
-
-              <FormRow direction="column" label="Return Date">
-                <InputTextField
-                  value={String(flightParams.returnDate)}
-                  name="returnDate"
-                />
-              </FormRow>
-
-              <FormRow direction="column" label="Passengers">
-                <InputTextField
-                  name="passengers"
-                  placeholder="1"
-                  value={String(flightParams.passengers)}
-                />
-              </FormRow>
+              {renderDataGrid()}
             </Grid>
 
             <Grid size={12}>
@@ -443,35 +554,7 @@ const Search_layout: React.FC = () => {
               >
                 <StarBorderIcon /> Flight Details
               </Typography>
-
-              <FormRow label="Flight Type">
-                <SelectDropdown
-                  value={flightParams.flightType}
-                  options={flightTypeOptions}
-                />
-              </FormRow>
-
-              <FormRow label="Cabin Class">
-                <SelectDropdown
-                  value={flightParams.cabinClass}
-                  options={cabinClassOptions}
-                />
-              </FormRow>
-
-              <FormRow label="Aircraft Code">
-                <InputTextField
-                  name="aircraftCode"
-                  placeholder="e.g., A321, B737"
-                  value={flightParams.aircraftCode}
-                />
-              </FormRow>
-
-              <FormRow label="Status">
-                <SelectDropdown
-                  value={flightParams.status}
-                  options={flightStatusOptions}
-                />
-              </FormRow>
+              {/* //jjjj */}
             </Grid>
 
             {mode === "advance" && (
@@ -607,7 +690,7 @@ const Search_layout: React.FC = () => {
               columns={colDefs}
               isLoading={false}
               setRows={setFlightRows}
-              onSelectedRowIdsChange={handleFlightRowSelection}
+              // onSelectedRowIdsChange={handleFlightRowSelection}
               handleRowClick={handleRowClick}
               nextRowClick
               largeThan

@@ -3,7 +3,6 @@ import {
   Card,
   CardContent,
   Typography,
-  Button,
   Grid,
   CardMedia,
 } from "@mui/material";
@@ -15,7 +14,6 @@ const FlightPage = () => {
   const { flightList } = useFlightList();
   const [flights] = useState<Flight[]>(flightList?.list as Flight[]);
   const [selectedFlight, setSelectedFlight] = useState<Flight | null>(null);
-  const [passengerName, setPassengerName] = useState("");
   const [message, setMessage] = useState("");
 
   const handleSelectFlight = (flight: Flight) => {

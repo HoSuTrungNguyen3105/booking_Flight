@@ -13,7 +13,7 @@ export type CheckboxProps = {
   onBlur?: React.FocusEventHandler<HTMLButtonElement>;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   center?: boolean;
-  sx?: SxProps<Theme>; // ✅ sửa ở đây để dùng sx hợp lệ
+  sx?: SxProps<Theme>;
   checkedIcon?: React.ReactNode;
   indeterminateIcon?: React.ReactNode;
 };

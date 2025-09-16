@@ -1,5 +1,5 @@
 import { Box, Button, Typography } from "@mui/material";
-import { useCallback } from "react";
+import { memo, useCallback } from "react";
 import CustomPopover from "../Button/Popover";
 import { useChangeLanguage } from "../../context/use[custom]/useChangeLng";
 import SelectDropdown from "./SelectDropdown";
@@ -39,7 +39,7 @@ const LanguageButton = () => {
     };
 
     return (
-      <div onClick={handleDropdownClick}>
+      <>
         <Typography variant="h6" fontWeight="600" color="text.primary">
           {t("language")}
         </Typography>
@@ -58,7 +58,7 @@ const LanguageButton = () => {
           onChange={handlePayMoneySelect}
         />
         {renderActions()}
-      </div>
+      </>
     );
   }, [
     t,
@@ -81,4 +81,4 @@ const LanguageButton = () => {
     />
   );
 };
-export default LanguageButton;
+export default memo(LanguageButton);

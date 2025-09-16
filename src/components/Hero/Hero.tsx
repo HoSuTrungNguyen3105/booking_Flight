@@ -63,10 +63,6 @@ const Hero: React.FC = () => {
               width: "100%",
               maxWidth: "800px",
               mx: "auto",
-              backgroundColor: "rgba(255, 255, 255, 0.15)",
-              borderRadius: "12px",
-              p: 3,
-              border: "1px solid rgba(255, 255, 255, 0.2)",
             }}
           >
             <Typography

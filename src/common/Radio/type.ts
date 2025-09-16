@@ -3,6 +3,7 @@ export interface Option {
   label: string;
   disabled?: boolean;
 }
+
 export type RadioProps = {
   label: string;
   options: Option[];

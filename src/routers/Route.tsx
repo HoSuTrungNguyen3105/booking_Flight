@@ -32,6 +32,7 @@ import AccountYn from "../components/Auth/AccountYn";
 import LeaveRequestGrid from "../components/Admin/component/LeaveRequestGrid";
 import PayrollManagement from "../common/Sample/PayrollManagement";
 import DataSecure from "../common/Setting/DataSecure";
+import AdditionalServicesPage from "../common/Sample/AdditionalServicesPage";
 
 const routes = [
   {
@@ -125,6 +126,10 @@ const routes = [
       {
         path: "domestic",
         element: <SecurityManage />,
+      },
+      {
+        path: "service",
+        element: <AdditionalServicesPage />,
       },
       {
         path: "unlock_request", //bookseat

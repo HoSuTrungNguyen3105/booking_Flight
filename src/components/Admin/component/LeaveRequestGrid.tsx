@@ -21,7 +21,7 @@ import { useAuth } from "../../../context/AuthContext";
 const LeaveRequestGrid = () => {
   const theme = useTheme();
   const { user } = useAuth();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  // const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const { dataGetLeaveRequest, refetchGetLeaveRequest } = useGetLeaveRequest();
 
   const rowData = useCallback(() => {
@@ -87,6 +87,11 @@ const LeaveRequestGrid = () => {
 
   const columns: GridColDef[] = [
     {
+      field: "id",
+      headerName: "ID",
+      flex: 1,
+    },
+    {
       field: "employee",
       headerName: "Nhân viên",
       flex: 1,
@@ -123,7 +128,7 @@ const LeaveRequestGrid = () => {
         <CustomPopover
           icon="Detail"
           handleAction={() => {}}
-          option={params.value}
+          option={[params.value]}
         />
       ),
     },
@@ -169,14 +174,6 @@ const LeaveRequestGrid = () => {
   ];
 
   const [onCreateRequest, setOnCreateRequest] = useState(false);
-
-  // const employees: Array<{ id: number; name: string; email: string }> = [
-  //   { id: 1, name: "Nguyen Ho", email: "nguyenho@example.com" },
-  //   { id: 2, name: "Be Y Nhi", email: "beynhi@example.com" },
-  //   { id: 3, name: "Tran An", email: "tran.an@example.com" },
-  //   { id: 4, name: "Le Minh", email: "le.minh@example.com" },
-  //   { id: 5, name: "Pham Lan", email: "pham.lan@example.com" },
-  // ];
 
   if (onCreateRequest) {
     return (
@@ -245,16 +242,17 @@ const LeaveRequestGrid = () => {
       <Box sx={{ height: "30rem", width: "100%" }}>
         <TableData rows={rowData()} columns={columns} />
       </Box>
-
-      <RequestLeaveActionModal
-        selectedRows={selectedRow}
-        open={open}
-        onClose={() => setOpen(false)}
-        onSuccess={() => {
-          setOpen(false);
-          refetchGetLeaveRequest();
-        }}
-      />
+      {open && selectedRow && (
+        <RequestLeaveActionModal
+          selectedRows={selectedRow}
+          open={open}
+          onClose={() => setOpen(false)}
+          onSuccess={() => {
+            setOpen(false);
+            refetchGetLeaveRequest();
+          }}
+        />
+      )}
     </Paper>
   );
 };

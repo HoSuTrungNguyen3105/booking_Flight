@@ -16,6 +16,7 @@ export const onChangeDatePicker = (
 ) => {
   onChange?.(value?.toISOString() ?? null);
 };
+
 export const onChangeTimePicker = (
   value: moment.Moment | null,
   onChange?: (time: string | null) => void,
@@ -26,11 +27,13 @@ export const onChangeTimePicker = (
   }
   return onChange?.(value.format("HH:mm"));
 };
+
 export const getTimeValue = (value?: string | null, usecase?: string) => {
   if (!value || typeof value !== "string" || usecase !== "time") return null;
   const [hour, minute] = value.split(":");
   return moment().set({ hour: Number(hour), minute: Number(minute) });
 };
+
 export const getDateValue = (value: ValueDate): moment.Moment | null => {
   if (!value) return null;
 

@@ -50,14 +50,9 @@ import {
   type SeatUpdateProps,
 } from "../Api/usePostApi";
 import { Loading } from "../../common/Loading/Loading";
+import LegendItemSection from "./LegendItem";
 
 type AircraftSeatTypeProps = "ALL" | "VIP" | "ECONOMY" | "WINDOW";
-
-type LegendItemProps = {
-  color: string;
-  label: string;
-  icon?: React.ReactNode;
-};
 
 type AircraftSeatProps = {
   seats: Seat[];
@@ -274,61 +269,47 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
     setOpenModal(false);
   };
 
-  const LegendItem = ({ color, label, icon }: LegendItemProps) => (
-    <Box sx={{ display: "flex", alignItems: "center", gap: "8px" }}>
-      <Box
-        sx={{
-          width: "20px",
-          height: "20px",
-          backgroundColor: color,
-          borderRadius: "4px",
-          border: "1px solid #ccc",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        {icon}
-      </Box>
-      <Typography
-        variant="body2"
-        sx={{ color: "#555", fontSize: isMobile ? "0.75rem" : "0.875rem" }}
-      >
-        {label}
-      </Typography>
-    </Box>
-  );
-
   const renderSeatButton = useCallback(
     (seat: Seat) => {
+      const theme = useTheme();
       const isSelected = selectedSeats.includes(seat.id);
       const isBooked = seat.isBooked;
 
       let backgroundColor = "#f5f5f5";
-      let textColor = "#212121";
+      let textColor = theme.palette.primary.main; // Sử dụng primary color
       let borderColor = "#ccc";
       let icon = null;
 
       if (isBooked) {
         backgroundColor = "#bdbdbd";
-        textColor = "#757575";
+        textColor = theme.palette.primary.main; // Vẫn giữ primary color
         borderColor = "#a9a9a9";
       } else if (isSelected) {
-        backgroundColor = "#4caf50";
-        textColor = "white";
-        borderColor = "#4caf50";
+        backgroundColor = theme.palette.primary.main;
+        textColor = theme.palette.primary.contrastText; // Màu tương phản với nền
+        borderColor = theme.palette.primary.main;
       } else if (seat.type === "VIP") {
-        backgroundColor = "#ffebee";
-        borderColor = "#c62828";
-        icon = <StarBorder sx={{ color: "#c62828", fontSize: 16 }} />;
+        backgroundColor = theme.palette.primary.light + "20"; // Thêm opacity
+        borderColor = theme.palette.primary.main;
+        icon = (
+          <StarBorder
+            sx={{ color: theme.palette.primary.main, fontSize: 16 }}
+          />
+        );
       } else if (seat.type === "BUSINESS") {
-        backgroundColor = "#e3f2fd";
-        borderColor = "#1565c0";
-        icon = <WorkOutline sx={{ color: "#1565c0", fontSize: 16 }} />; // icon khác Star
+        backgroundColor = theme.palette.primary.light + "15"; // Thêm opacity
+        borderColor = theme.palette.primary.main;
+        icon = (
+          <WorkOutline
+            sx={{ color: theme.palette.primary.main, fontSize: 16 }}
+          />
+        );
       } else if (seat.type === "ECONOMY") {
-        backgroundColor = "#e3f2fd";
-        borderColor = "#29b6f6";
-        icon = <Chair sx={{ color: "#29b6f6", fontSize: 16 }} />;
+        backgroundColor = theme.palette.primary.light + "10"; // Thêm opacity
+        borderColor = theme.palette.primary.main;
+        icon = (
+          <Chair sx={{ color: theme.palette.primary.main, fontSize: 16 }} />
+        );
       }
 
       return (
@@ -336,13 +317,23 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
           key={seat.id}
           title={
             <Box>
-              <Typography>
+              <Typography sx={{ color: theme.palette.primary.main }}>
                 Seat: {seat.seatNumber}
                 {seat.seatRow}
               </Typography>
-              <Typography>Type: {seat.type}</Typography>
-              {seat.isWindow && <Typography>Window Seat</Typography>}
-              {seat.nearRestroom && <Typography>Near Restroom</Typography>}
+              <Typography sx={{ color: theme.palette.primary.main }}>
+                Type: {seat.type}
+              </Typography>
+              {seat.isWindow && (
+                <Typography sx={{ color: theme.palette.primary.main }}>
+                  Window Seat
+                </Typography>
+              )}
+              {seat.nearRestroom && (
+                <Typography sx={{ color: theme.palette.primary.main }}>
+                  Near Restroom
+                </Typography>
+              )}
             </Box>
           }
           arrow
@@ -368,19 +359,22 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
               cursor: isBooked ? "not-allowed" : "pointer",
               transition: "all 0.2s ease",
               boxShadow: isSelected
-                ? "0px 0px 8px rgba(76, 175, 80, 0.7)"
+                ? `0px 0px 8px ${theme.palette.primary.main}80` // Thêm opacity
                 : "0px 1px 3px rgba(0,0,0,0.1)",
               "&:hover": {
                 backgroundColor: isBooked
                   ? "#bdbdbd"
                   : isSelected
-                  ? "#388e3c"
-                  : "#e0e0e0",
+                  ? theme.palette.primary.dark
+                  : theme.palette.primary.light + "30", // Thêm opacity
+                color: isSelected
+                  ? theme.palette.primary.contrastText
+                  : theme.palette.primary.main,
                 transform: isBooked ? "none" : "scale(1.05)",
                 boxShadow: isBooked ? "none" : "0px 2px 6px rgba(0,0,0,0.15)",
               },
               "&:focus": {
-                outline: "2px solid #1976d2",
+                outline: `2px solid ${theme.palette.primary.main}`,
               },
             }}
           >
@@ -394,7 +388,7 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
                 <Wc
                   sx={{
                     fontSize: 10,
-                    color: "#ff9800",
+                    color: theme.palette.primary.main,
                     position: "absolute",
                     top: 2,
                     right: 2,
@@ -406,7 +400,7 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
         </Tooltip>
       );
     },
-    [selectedSeats, handleSelectSeat]
+    [selectedSeats, handleSelectSeat, theme] // Thêm theme vào dependencies
   );
 
   const restroomRows = [1, 15, 30];
@@ -455,7 +449,7 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
             onClick={handleGenerateAllSeats}
             sx={{ mb: 2 }}
           >
-            Generate All Seats (A-F × 1-40)
+            Generate All Seats (A-F to 1-40)
           </Button>
           <Button onClick={resetSeatToGetData}>Reset</Button>
         </Box>
@@ -543,21 +537,45 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
         margin: "0 auto",
         backgroundColor: "#f8f9fa",
         minHeight: "100vh",
+        justifyContent: "space-around",
       }}
     >
       {/* Header Section */}
       <Box
         sx={{
-          background: "linear-gradient(135deg, #1976d2 0%, #0d47a1 100%)",
+          background: theme.palette.primary.main,
           borderRadius: "12px",
           padding: { xs: "16px", sm: "24px" },
           color: "white",
           marginBottom: "24px",
-          boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
         }}
       >
         <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
           <LocalAirport sx={{ fontSize: 28 }} />
+        </Box>
+        <Box>
+          {[
+            { key: "ALL", label: "All Seats" },
+            { key: "VIP", label: "VIP" },
+            { key: "ECONOMY", label: "Economy" },
+            { key: "WINDOW", label: "Window" },
+            { key: "BUSINESS", label: "BUSINESS" },
+          ].map((item) => (
+            <Chip
+              key={item.key}
+              label={item.label}
+              onClick={() => setFilter(item.key as AircraftSeatTypeProps)}
+              variant={filter === item.key ? "filled" : "outlined"}
+              color={filter === item.key ? "primary" : "default"}
+              sx={{
+                fontWeight: filter === item.key ? "600" : "400",
+                ...(filter === item.key && {
+                  backgroundColor: "primary.main",
+                  color: "white",
+                }),
+              }}
+            />
+          ))}
         </Box>
       </Box>
 
@@ -568,93 +586,9 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
           gap: 3,
         }}
       >
-        {/* Main Content */}
         <Box sx={{ flex: 1 }}>
-          {/* Filter Controls */}
-          <Card
-            sx={{
-              padding: { xs: "12px", sm: "16px" },
-              marginBottom: "16px",
-              borderRadius: "12px",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
-            }}
-          >
-            <Typography variant="subtitle1" sx={{ fontWeight: "600", mb: 1 }}>
-              Filter by:
-            </Typography>
-            <Box sx={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-              {[
-                { key: "ALL", label: "All Seats" },
-                { key: "VIP", label: "VIP" },
-                { key: "ECONOMY", label: "Economy" },
-                { key: "WINDOW", label: "Window" },
-                { key: "BUSINESS", label: "BUSINESS" },
-              ].map((item) => (
-                <Chip
-                  key={item.key}
-                  label={item.label}
-                  onClick={() => setFilter(item.key as AircraftSeatTypeProps)}
-                  variant={filter === item.key ? "filled" : "outlined"}
-                  color={filter === item.key ? "primary" : "default"}
-                  sx={{
-                    fontWeight: filter === item.key ? "600" : "400",
-                    ...(filter === item.key && {
-                      backgroundColor: "primary.main",
-                      color: "white",
-                    }),
-                  }}
-                />
-              ))}
-            </Box>
-          </Card>
-
-          {/* Legend */}
-          <Card
-            sx={{
-              padding: { xs: "12px", sm: "16px" },
-              marginBottom: "20px",
-              borderRadius: "12px",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
-            }}
-          >
-            <Typography variant="subtitle1" sx={{ fontWeight: "600", mb: 1 }}>
-              Seat Legend:
-            </Typography>
-            <Box
-              sx={{
-                display: "flex",
-                flexWrap: "wrap",
-                gap: "12px",
-                justifyContent: "center",
-              }}
-            >
-              <LegendItem color="#4caf50" label="Selected" />
-              <LegendItem color="#f5f5f5" label="Available" />
-              <LegendItem color="#d3d3d3" label="Booked" />
-              <LegendItem
-                color="#f9a825"
-                label="VIP"
-                icon={<StarHalfSharp />}
-              />
-              <LegendItem
-                color="#29b6f6"
-                label="Economy"
-                icon={<Chair sx={{ color: "#29b6f6", fontSize: 16 }} />}
-              />
-              <LegendItem
-                color="#e3f2fd"
-                label="Window"
-                icon={<WindowIcon />}
-              />
-              <LegendItem
-                color="#fff3e0"
-                label="Restroom"
-                icon={<Wc sx={{ color: "#ff9800", fontSize: 16 }} />}
-              />
-            </Box>
-          </Card>
-
           {/* Aircraft Layout */}
+          <LegendItemSection />
           <Card
             sx={{
               border: "1px solid #e0e0e0",
@@ -663,7 +597,11 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
               maxHeight: { xs: "400px", sm: "500px" },
               overflowY: "auto",
               background: "linear-gradient(180deg, #fafafa 0%, #e8f4fd 100%)",
-              boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+              //boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+              scrollbarWidth: "none", // Firefox
+              "&::-webkit-scrollbar": {
+                display: "none", // Chrome, Safari
+              },
             }}
           >
             <Box
@@ -815,13 +753,13 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
             sx={{
               padding: { xs: "16px", sm: "20px" },
               borderRadius: "12px",
-              boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+              // boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
               position: "sticky",
               top: 20,
             }}
           >
             <Typography variant="h6" sx={{ fontWeight: "700", mb: 2 }}>
-              Your Selection ({selectedSeats})
+              Your Selection
             </Typography>
 
             {selectedSeats.length > 0 ? (
@@ -909,14 +847,8 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
                   sx={{
                     py: 1.5,
                     fontSize: "16px",
-                    fontWeight: "600",
+                    fontWeight: 600,
                     borderRadius: "8px",
-                    background:
-                      "linear-gradient(135deg, #1976d2 0%, #0d47a1 100%)",
-                    "&:hover": {
-                      background:
-                        "linear-gradient(135deg, #1565c0 0%, #083c86 100%)",
-                    },
                   }}
                 >
                   Update
