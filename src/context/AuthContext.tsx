@@ -40,7 +40,6 @@ interface AuthContextType {
   token: string | null;
   isAdmin: boolean;
   authType: AuthType;
-  // verifyPassword: boolean;
   isValid: boolean;
   verifyPassword: (password: string) => Promise<boolean>;
   setValid: (valid: boolean) => void;
@@ -68,32 +67,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     () => user?.role === UserRole.ADMIN,
     [user, refetchGetMyInfo]
   );
-
-  // const verifyPassword = useCallback(
-  //   async (password: string): Promise<boolean> => {
-  //     try {
-  //       const response = await fetchVerifyPassword({ password: password });
-
-  //       const isValid = response?.resultCode === "00";
-  //       setIsValid(isValid);
-
-  //       if (isValid) {
-  //         toast("Xác thực thành công", "success");
-  //       } else {
-  //         toast(response?.resultMessage || "Mật khẩu không chính xác", "error");
-  //       }
-
-  //       return isValid;
-  //     } catch (error: any) {
-  //       const errorMessage =
-  //         error.response?.data?.resultMessage || "Lỗi xác thực";
-  //       toast(errorMessage, "error");
-  //       setIsValid(false);
-  //       return false;
-  //     }
-  //   },
-  //   [fetchVerifyPassword, toast]
-  // );
 
   const verifyPassword = useCallback(
     async (password: string): Promise<boolean> => {

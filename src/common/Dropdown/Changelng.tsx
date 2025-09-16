@@ -1,5 +1,5 @@
 import { Box, Button, Typography } from "@mui/material";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import CustomPopover from "../Button/Popover";
 import { useChangeLanguage } from "../../context/use[custom]/useChangeLng";
 import SelectDropdown from "./SelectDropdown";
@@ -34,8 +34,12 @@ export const LanguageButton = () => {
   }, [handleSaveChange, t]);
 
   const renderDropdown = useCallback(() => {
+    const handleDropdownClick = (e: React.MouseEvent<HTMLDivElement>) => {
+      e.stopPropagation();
+    };
+
     return (
-      <>
+      <div onClick={handleDropdownClick}>
         <Typography variant="h6" fontWeight="600" color="text.primary">
           {t("language")}
         </Typography>
@@ -54,17 +58,26 @@ export const LanguageButton = () => {
           onChange={handlePayMoneySelect}
         />
         {renderActions()}
-      </>
+      </div>
     );
-  }, []);
+  }, [
+    t,
+    optionLanguage,
+    pendingLang,
+    selectedLang,
+    handleLanguageSelect,
+    currencyOptions,
+    pendingPayMoney,
+    selectedPayMoney,
+    handlePayMoneySelect,
+    renderActions,
+  ]);
 
   return (
-    <>
-      <CustomPopover
-        icon="Icon"
-        handleAction={() => {}}
-        option={[renderDropdown()]}
-      />
-    </>
+    <CustomPopover
+      icon="Icon"
+      handleAction={() => {}}
+      option={[renderDropdown()]}
+    />
   );
 };

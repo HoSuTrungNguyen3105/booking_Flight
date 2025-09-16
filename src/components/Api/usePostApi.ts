@@ -109,32 +109,51 @@ export const useSearchFlight = () => {
   const {
     data: searchFlightList,
     refetch: refetchSearchFlightList,
-    // openModalConfirm,
-    // handlePasswordConfirm,
+    openModalConfirm,
+    handlePasswordConfirm,
+    refreshFlag,
     // handleCancelPassword,
-    // loading,
-    // data,
-    // isValid,
+    loading,
+    data,
+    isValid,
+    // hasPendingRequest,
     // resetAuthValidation,
-  } = useFetch<SearchFlightResponse, SearchFlightDto>({
+  } = useSecureFetch<SearchFlightResponse, SearchFlightDto>({
     url: "/sys/flights/search",
-    // requirePassword: true,
+    requirePassword: true,
     autoFetch: false,
     config: postMethod,
-    // resetAfterSuccess: true,
+    resetAfterSuccess: true,
   });
   return {
     searchFlightList,
     refetchSearchFlightList,
-    // openModalConfirm,
-    // handlePasswordConfirm,
+    openModalConfirm,
+    handlePasswordConfirm,
     // handleCancelPassword,
-    // loading,
-    // data,
-    // isValid,
-    // resetAuthValidation,
+    // hasPendingRequest,
+    //     resetAuthValidation,
+    loading,
+    data,
+    isValid,
+    refreshFlag,
   };
 };
+
+// export const useSearchFlight = () => {
+//   const {
+//     data: searchFlightList,
+//     refetch: refetchSearchFlightList,
+//   } = useFetch<SearchFlightResponse, SearchFlightDto>({
+//     url: "/sys/flights/search",
+//     autoFetch: false,
+//     config: postMethod,
+//   });
+//   return {
+//     searchFlightList,
+//     refetchSearchFlightList,
+//   };
+// };
 export const useFlightById = ({ id }: FlightId) => {
   const isValid = !!id;
   const { data: fetchFlightId, refetch: refetchFlightId } = useFetch<

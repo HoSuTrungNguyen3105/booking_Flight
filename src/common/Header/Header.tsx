@@ -139,12 +139,6 @@ export const Header = () => {
             </Stack>
           )}
 
-          <CustomPopover
-            icon="Profile"
-            option={["Dashboard"]}
-            handleAction={handleOpenProfile}
-          />
-
           {/* Right section - Actions and Login */}
           <Stack direction="row" alignItems="center" spacing={2}>
             {isMobile ? (
@@ -191,6 +185,11 @@ export const Header = () => {
 
               {isAuthenticated ? (
                 <Stack direction="row" alignItems="center" spacing={1}>
+                  <CustomPopover
+                    icon="Profile"
+                    option={["Dashboard"]}
+                    handleAction={handleOpenProfile}
+                  />
                   <ImageThumbnail
                     url={ImageThumbnailIcon}
                     sx={{

@@ -1,6 +1,5 @@
 import { Box, Button, Popover, styled, ClickAwayListener } from "@mui/material";
 import React, { useState, type ReactNode } from "react";
-import theme from "../../scss/theme";
 
 export interface IButtonSettingProps {
   option?: ReactNode[];
@@ -30,6 +29,9 @@ const CustomPopover: React.FC<IButtonSettingProps> = ({
   };
 
   const handleClose = () => {
+    //    if (event && event.target.closest('.select-dropdown, .MuiSelect-select')) {
+    //   return;
+    // }
     setAnchorEl(null);
   };
 
@@ -79,7 +81,6 @@ const CustomPopover: React.FC<IButtonSettingProps> = ({
                 }}
                 onClick={() => {
                   handleAction?.(item);
-                  // Không đóng popover ở đây
                 }}
               >
                 {item}
