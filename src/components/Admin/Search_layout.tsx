@@ -105,16 +105,46 @@ const Search_layout: React.FC = () => {
     openModalConfirm,
     refetchSearchFlightList,
     // handleCancelPassword,
+    searchFlightList,
     handlePasswordConfirm,
     refreshFlag,
     // hasPendingRequest,
+    latestData,
   } = useSearchFlight();
 
+  // React.useEffect(() => {
+  //   if (latestData && latestData.resultCode === "00" && latestData.data) {
+  //     console.log("🔄 Latest data updated:", latestData);
+  //     const allFlights = [
+  //       ...(latestData.data.outbound || []),
+  //       ...(latestData.data.inbound || []),
+  //     ];
+  //     setRowData(allFlights as DataFlight[]);
+  //     toast(`Tìm thấy ${allFlights.length} chuyến bay`, "success");
+  //   }
+  // }, [latestData, toast]);
+
+  // THEO DÕI fetchData thông thường
+  // React.useEffect(() => {
+  //   if (
+  //     searchFlightList &&
+  //     searchFlightList.resultCode === "00" &&
+  //     searchFlightList.data
+  //   ) {
+  //     console.log("🔄 Fetch data updated:", searchFlightList);
+  //     const allFlights = [
+  //       ...(searchFlightList.data.outbound || []),
+  //       ...(searchFlightList.data.inbound || []),
+  //     ];
+  //     setRowData(allFlights as DataFlight[]);
+  //   }
+  // }, [searchFlightList]);
+
   // console.log("logpasw", password);
-  React.useEffect(() => {
-    console.log("🔄 Refresh flag changed:", refreshFlag);
-    // Có thể thêm logic re-fetch hoặc cập nhật state ở đây nếu cần
-  }, [refreshFlag]);
+  // React.useEffect(() => {
+  //   console.log("🔄 Refresh flag changed:", refreshFlag);
+  //   // Có thể thêm logic re-fetch hoặc cập nhật state ở đây nếu cần
+  // }, [refreshFlag]);
   const {
     control: controlSearch,
     handleSubmit: handleSearchSubmit,

@@ -112,6 +112,7 @@ export const useSearchFlight = () => {
     openModalConfirm,
     handlePasswordConfirm,
     refreshFlag,
+    latestData,
     // handleCancelPassword,
     loading,
     data,
@@ -128,6 +129,7 @@ export const useSearchFlight = () => {
   return {
     searchFlightList,
     refetchSearchFlightList,
+    latestData,
     openModalConfirm,
     handlePasswordConfirm,
     // handleCancelPassword,

@@ -7,19 +7,16 @@ import {
   Grid,
 } from "@mui/material";
 import { useGetAircraftCode } from "../Api/useGetApi";
-import { useState } from "react";
+import { memo, useState } from "react";
 import AircarftDetail from "./AircarftDetail";
 
 const AircraftPage = () => {
   const { getAircraftCodeData } = useGetAircraftCode();
   const [aircraftCodeState, setAircraftCodeState] = useState<number>(0);
-  //   const { refetchGetSeatByAircraftCodeData } =
-  //     useGetSeatByAircraftCode(aircraftCodeState);
   const [pageDetail, setPageDetail] = useState(false);
   const handleViewSeats = (code: number) => {
     setAircraftCodeState(code); // gán mã máy bay
     setPageDetail(true);
-    // refetchGetSeatByAircraftCodeData(); // gọi API
   };
 
   if (pageDetail) {
@@ -76,4 +73,4 @@ const AircraftPage = () => {
   );
 };
 
-export default AircraftPage;
+export default memo(AircraftPage);

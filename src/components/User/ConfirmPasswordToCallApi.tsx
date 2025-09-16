@@ -3,13 +3,12 @@ import { memo, useCallback, useEffect, useState } from "react";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
 import InputTextField from "../../common/Input/InputTextField";
 import BaseModal from "../../common/Modal/BaseModal";
-import type { ResponseMessage } from "../../utils/type";
-import { useToast } from "../../context/ToastContext";
+import type { DetailResponseMessage, ResponseMessage } from "../../utils/type";
 
 interface ConfirmPasswordToCallApiProps {
   open: boolean;
   onClose: () => void;
-  onSuccess: (password: string) => Promise<ResponseMessage>;
+  onSuccess: (password: string) => Promise<DetailResponseMessage>;
   onValidPassword?: () => void; // Đổi thành optional
   isLoading?: boolean;
   hasPendingRequest?: boolean; // Thêm prop mới để biết có pending request
@@ -26,7 +25,6 @@ const ConfirmPasswordToCallApiModal = ({
   const [passwordPrompt, setPasswordPrompt] = useState("");
   const [error, setError] = useState("");
   const [internalLoading, setInternalLoading] = useState(false);
-  const toast = useToast();
 
   // Kết hợp internal và external loading
   const isLoading = internalLoading || externalLoading;
@@ -44,39 +42,6 @@ const ConfirmPasswordToCallApiModal = ({
     setError("");
   }, []);
 
-  // const handleSubmitPassword = useCallback(async () => {
-  //   if (!passwordPrompt) {
-  //     setError("Vui lòng nhập mật khẩu");
-  //     return;
-  //   }
-
-  //   setInternalLoading(true);
-  //   try {
-  //     const response = await onSuccess(passwordPrompt);
-  //     console.log("Modal response:", response);
-
-  //     if (response.resultCode === "00") {
-  //       // Password hợp lệ
-  //       if (hasPendingRequest) {
-  //         // Nếu có pending request, gọi callback để xử lý
-  //         onValidPassword?.();
-  //       } else {
-  //         // Nếu không có pending request, đóng modal
-  //         // onClose();
-  //         toast("loi");
-  //       }
-  //     } else {
-  //       setError(response.resultMessage || "Mật khẩu không chính xác");
-  //     }
-  //   } catch (error) {
-  //     console.error("Password verification error:", error);
-  //     setError("Đã xảy ra lỗi khi xác thực");
-  //   } finally {
-  //     setInternalLoading(false);
-  //   }
-  // }, [passwordPrompt, onSuccess, onValidPassword, onClose, hasPendingRequest]);
-
-  // ConfirmPasswordToCallApiModal.tsx
   const handleSubmitPassword = useCallback(async () => {
     if (!passwordPrompt) {
       setError("Vui lòng nhập mật khẩu");
@@ -88,16 +53,15 @@ const ConfirmPasswordToCallApiModal = ({
       const response = await onSuccess(passwordPrompt);
       console.log("Modal response:", response);
 
-      // KIỂM TRA resultCode TRỰC TIẾP TỪ RESPONSE
       if (response.resultCode === "00") {
-        // Nếu response có data (là kết quả từ API gốc)
-        if (response.resultCode) {
-          // Đây là response từ API search, không phải từ xác thực
-          // Gọi onValidPassword để xử lý kết quả
+        // PHÂN BIỆT BẰNG CÁCH KIỂM TRA CÓ DATA HAY KHÔNG
+        if (response.data) {
+          // Có data -> đây là kết quả từ API search
+          console.log("✅ API result with data, calling onValidPassword");
           onValidPassword?.();
         } else {
-          // Đây là response từ xác thực thành công
-          // Chỉ cần đóng modal, API đã được gọi tự động
+          // Không có data -> đây là response xác thực thành công
+          console.log("✅ Auth success, closing modal");
           onClose();
         }
       } else {

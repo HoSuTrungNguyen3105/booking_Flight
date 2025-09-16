@@ -86,13 +86,14 @@ export const useSecureFetch = <T extends Partial<ResponseMessage>, P>({
             setPendingRequest(null);
             setLatestData(result || null); // QUAN TRỌNG: Lưu data mới
             toast("Xác thực thành công", "success");
-
-            if (result) {
-              return result as DetailResponseMessage<any>;
-            }
+            return result as DetailResponseMessage<any>;
           }
 
-          return { resultCode: "00", resultMessage: "Xác thực thành công" };
+          return {
+            resultCode: "00",
+            resultMessage: "Xác thực thành công",
+            data: pendingRequest,
+          };
         } else {
           toast("Mật khẩu không chính xác", "error");
           return {
@@ -108,161 +109,6 @@ export const useSecureFetch = <T extends Partial<ResponseMessage>, P>({
     },
     [verifyPassword, pendingRequest, fetch.refetch, toast]
   );
-
-  // const handlePasswordConfirm = useCallback(
-  //   async (password: string): Promise<DetailResponseMessage<any>> => {
-  //     console.log("🔐 Verifying password:", password);
-
-  //     try {
-  //       const isValid = await verifyPassword(password);
-  //       console.log("✅ Password verification result:", isValid);
-
-  //       if (isValid) {
-  //         setRefreshFlag((prev) => prev + 1);
-  //         setOpenModalConfirm(false);
-
-  //         if (pendingRequest) {
-  //           console.log(
-  //             "🚀 Calling pending API after successful authentication"
-  //           );
-  //           console.log("📦 Pending request:", pendingRequest);
-
-  //           // GỌI API VÀ TRẢ VỀ RESPONSE TRỰC TIẾP, KHÔNG WRAP LẠI
-  //           const result = await fetch.refetch(
-  //             pendingRequest.extra,
-  //             pendingRequest.overrideUrl
-  //           );
-
-  //           console.log("📊 API Result:", result); // DEBUG: xem result có gì
-
-  //           setPendingRequest(null);
-  //           toast("Xác thực thành công", "success");
-
-  //           // TRẢ VỀ RESPONSE TỪ API GỐC, KHÔNG TẠO RESPONSE MỚI
-  //           if (result) {
-  //             console.log("✅ Returning API result with data:", result);
-  //             return result as DetailResponseMessage<any>;
-  //           } else {
-  //             console.warn("⚠️ API result is null or undefined");
-  //           }
-  //         }
-
-  //         return { resultCode: "00", resultMessage: "Xác thực thành công" };
-  //       } else {
-  //         toast("Mật khẩu không chính xác", "error");
-  //         return {
-  //           resultCode: "01",
-  //           resultMessage: "Mật khẩu không chính xác",
-  //         };
-  //       }
-  //     } catch (error) {
-  //       console.error("❌ Password verification error:", error);
-  //       toast("Lỗi xác thực", "error");
-  //       return { resultCode: "99", resultMessage: "Lỗi xác thực" };
-  //     }
-  //   },
-  //   [verifyPassword, pendingRequest, fetch.refetch, toast]
-  // );
-
-  // const handlePasswordConfirm = useCallback(
-  //   async (password: string): Promise<DetailResponseMessage<any>> => {
-  //     console.log("🔐 Verifying password:", password);
-
-  //     try {
-  //       const isValid = await verifyPassword(password);
-  //       console.log("✅ Password verification result:", isValid);
-
-  //       if (isValid) {
-  //         // CẬP NHẬT QUAN TRỌNG: Trigger re-render
-  //         setRefreshFlag((prev) => prev + 1);
-
-  //         setOpenModalConfirm(false);
-
-  //         if (pendingRequest) {
-  //           console.log(
-  //             "🚀 Calling pending API after successful authentication"
-  //           );
-  //           const result = await fetch.refetch(
-  //             pendingRequest.extra,
-  //             pendingRequest.overrideUrl
-  //           );
-
-  //           setPendingRequest(null);
-  //           toast("Xác thực thành công", "success");
-
-  //           return {
-  //             resultCode: "00",
-  //             resultMessage: "Xác thực thành công",
-  //             data: result,
-  //           };
-  //         }
-
-  //         return { resultCode: "00", resultMessage: "Xác thực thành công" };
-  //       } else {
-  //         toast("Mật khẩu không chính xác", "error");
-  //         return {
-  //           resultCode: "01",
-  //           resultMessage: "Mật khẩu không chính xác",
-  //         };
-  //       }
-  //     } catch (error) {
-  //       console.error("❌ Password verification error:", error);
-  //       toast("Lỗi xác thực", "error");
-  //       return { resultCode: "99", resultMessage: "Lỗi xác thực" };
-  //     }
-  //   },
-  //   [verifyPassword, pendingRequest, fetch.refetch, toast]
-  // );
-
-  // useSecureFetch hook - sửa phần handlePasswordConfirm
-  // const handlePasswordConfirm = useCallback(
-  //   async (password: string): Promise<DetailResponseMessage<any>> => {
-  //     console.log("🔐 Verifying password:", password);
-
-  //     try {
-  //       const isValid = await verifyPassword(password);
-  //       console.log("✅ Password verification result:", isValid);
-
-  //       if (isValid) {
-  //         setRefreshFlag((prev) => prev + 1);
-  //         setOpenModalConfirm(false);
-
-  //         if (pendingRequest) {
-  //           console.log(
-  //             "🚀 Calling pending API after successful authentication"
-  //           );
-
-  //           // GỌI API VÀ TRẢ VỀ RESPONSE TRỰC TIẾP, KHÔNG WRAP LẠI
-  //           const result = await fetch.refetch(
-  //             pendingRequest.extra,
-  //             pendingRequest.overrideUrl
-  //           );
-
-  //           setPendingRequest(null);
-  //           toast("Xác thực thành công", "success");
-
-  //           // TRẢ VỀ RESPONSE TỪ API GỐC, KHÔNG TẠO RESPONSE MỚI
-  //           if (result) {
-  //             return result as DetailResponseMessage<any>;
-  //           }
-  //         }
-
-  //         return { resultCode: "00", resultMessage: "Xác thực thành công" };
-  //       } else {
-  //         toast("Mật khẩu không chính xác", "error");
-  //         return {
-  //           resultCode: "01",
-  //           resultMessage: "Mật khẩu không chính xác",
-  //         };
-  //       }
-  //     } catch (error) {
-  //       console.error("❌ Password verification error:", error);
-  //       toast("Lỗi xác thực", "error");
-  //       return { resultCode: "99", resultMessage: "Lỗi xác thực" };
-  //     }
-  //   },
-  //   [verifyPassword, pendingRequest, fetch.refetch, toast]
-  // );
 
   return {
     ...fetch,
