@@ -174,7 +174,10 @@ export default function MealList() {
           </ul>
           <Button
             variant="outlined"
-            onClick={() => setSelectedMealRows([])}
+            onClick={() => {
+              setSelectedMealRows([]);
+              setMealRows([]);
+            }}
             sx={{ mt: 1 }}
           >
             Clear Meal Selection

@@ -252,23 +252,6 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
     });
   };
 
-  const handleConfirmUpdate = () => {
-    if (selectedSeats.length === 0) {
-      setMessage("Please select at least one seat.");
-      return;
-    }
-    setMessage(
-      `UPDATE successful! Seats: ${selectedSeats
-        .map((id) => {
-          const seat = seats.find((s) => s.id === id);
-          return `${seat?.seatNumber}${seat?.seatRow}`;
-        })
-        .join(", ")}`
-    );
-    setSelectedSeats([]);
-    setOpenModal(false);
-  };
-
   const renderSeatButton = useCallback(
     (seat: Seat) => {
       const theme = useTheme();
@@ -854,44 +837,10 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
                   Update
                 </Button>
                 {/* Modal for updating seats */}
-                <Dialog open={openModal} onClose={handleCloseModal}>
+                {/* <Dialog open={openModal} onClose={handleCloseModal}>
                   <DialogTitle>Update Selected Seats</DialogTitle>
                   <DialogContent>
-                    <Box sx={{ pt: 2 }}>
-                      <FormControl fullWidth sx={{ mb: 2 }}>
-                        <InputLabel>Seat Type</InputLabel>
-                        <Select
-                          value={updateSeat.type || "ECONOMY"} // ← Direct string value
-                          onChange={handleTypeChange}
-                        >
-                          <MenuItem value="ECONOMY">Economy</MenuItem>
-                          <MenuItem value="BUSINESS">Business</MenuItem>
-                          <MenuItem value="VIP"> VIP</MenuItem>
-                        </Select>
-                      </FormControl>
-
-                      <InputTextField
-                        value={newSeat.seatRow}
-                        onChange={(e) => setNewSeat({ ...newSeat, seatRow: e })}
-                        sx={{ mb: 2 }}
-                      />
-
-                      <InputTextField
-                        type="number"
-                        value={String(newSeat.seatNumber)}
-                        onChange={(e) =>
-                          setNewSeat({
-                            ...newSeat,
-                            seatNumber: parseInt(e) || 1,
-                          })
-                        }
-                        sx={{ mb: 2 }}
-                      />
-
-                      <Typography variant="body2" color="text.secondary">
-                        Updating {selectedSeats.length} selected seats
-                      </Typography>
-                    </Box>
+                   
                   </DialogContent>
                   <DialogActions>
                     <Button onClick={handleCloseModal}>Cancel</Button>
@@ -899,7 +848,7 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
                       Update Seats
                     </Button>
                   </DialogActions>
-                </Dialog>
+                </Dialog> */}
               </Box>
             ) : (
               <Box sx={{ textAlign: "center", py: 3 }}>

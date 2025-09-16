@@ -27,7 +27,6 @@ import type {
   UserSearchType,
 } from "../User/type.ts";
 import { useFetch } from "../../context/use[custom]/useFetch.ts";
-import type { BaseFlight, Flight } from "../../common/Setting/type.ts";
 import type { FlightFormData } from "../../common/Sample/FlightUpdateModal.tsx";
 import type { SearchFlightDto } from "../Admin/Search_layout.tsx";
 import { useSecureFetch } from "../../context/use[custom]/useSecureFetch.ts";

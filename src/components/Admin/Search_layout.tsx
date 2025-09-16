@@ -101,23 +101,24 @@ const Search_layout: React.FC = () => {
     includeCancelled: false,
   });
 
-  const handleInputChange = (event: string) => {
-    // const { name, value } = event.target;
-    setFlightParams((prev) => ({
-      ...prev,
-      [event]: event,
-    }));
-  };
+  // const handleInputChange = (event: string) => {
+  //   // const { name, value } = event.target;
+  //   setFlightParams((prev) => ({
+  //     ...prev,
+  //     [event]: event,
+  //   }));
+  // };
 
-  const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setFlightParams((prev) => ({
-      ...prev,
-      [name]: value === "" ? undefined : Number(value),
-    }));
-  };
+  // const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const { name, value } = event.target;
+  //   setFlightParams((prev) => ({
+  //     ...prev,
+  //     [name]: value === "" ? undefined : Number(value),
+  //   }));
+  // };
 
   const [showDelete, setShowDelete] = React.useState<boolean>(false);
+
   const toast = useToast();
   const {
     openModalConfirm,
@@ -334,7 +335,7 @@ const Search_layout: React.FC = () => {
         description: (
           <InputTextField
             value={flightParams.from}
-            onChange={handleInputChange}
+            // onChange={handleInputChange}
             name="from"
             placeholder="e.g., SGN"
           />
@@ -379,8 +380,21 @@ const Search_layout: React.FC = () => {
         <DetailSection data={detailInfoProfile} />
       </Box>
     );
-  }, []);
+  }, [flightParams]);
+  const handleInputChange = (name: keyof SearchFlightDto, value: string) => {
+    setFlightParams((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
+  // Hàm xử lý thay đổi cho number fields
+  const handleNumberChange = (name: keyof SearchFlightDto, value: string) => {
+    setFlightParams((prev) => ({
+      ...prev,
+      [name]: value === "" ? undefined : Number(value),
+    }));
+  };
   const renderData = React.useCallback(() => {
     const detailInfoProfile: IDetailItem[] = [
       {
