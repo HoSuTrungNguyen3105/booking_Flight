@@ -11,7 +11,6 @@ const currencyOptions: DropdownOptions[] = [
 ];
 
 export const useChangeLanguage = () => {
-  // Sử dụng useLocalStorage thay vì useState + localStorage trực tiếp
   const [language, setLanguage] = useLocalStorage<string>(
     "language",
     (optionLanguage[0]?.value as string) || "en"
@@ -26,7 +25,6 @@ export const useChangeLanguage = () => {
   const [pendingPayMoney, setPendingPayMoney] =
     useState<DropdownOptions | null>(null);
 
-  // Tìm selected options dựa trên giá trị từ localStorage
   const selectedLang = optionLanguage.find((o) => o.value === language) || null;
   const selectedPayMoney =
     currencyOptions.find((o) => o.value === currency) || currencyOptions[0];
@@ -45,13 +43,14 @@ export const useChangeLanguage = () => {
 
   const confirmSaveChange = () => {
     if (pendingPayMoney) {
-      setCurrency(String(pendingPayMoney.value)); // Cập nhật qua useLocalStorage
+      const pdPayMoney = String(pendingPayMoney.value);
+      setCurrency(String(pdPayMoney));
       setPendingPayMoney(null);
     }
 
     if (pendingLang) {
       const lng = String(pendingLang.value);
-      setLanguage(lng); // Cập nhật qua useLocalStorage
+      setLanguage(lng);
       i18n.changeLanguage(lng);
       setPendingLang(null);
     }

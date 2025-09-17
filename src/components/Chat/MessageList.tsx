@@ -4,8 +4,26 @@ import { Box, Paper, Typography } from "@mui/material";
 export interface Message {
   id: number;
   content: string;
+  createdAt: string;
   senderId: number;
-  timestamp?: string;
+  receiverId: number;
+  sender: {
+    id: number;
+    name: string;
+    pictureUrl: string;
+    email: string;
+  };
+  receiver: {
+    id: number;
+    name: string;
+    pictureUrl: string;
+    email: string;
+  };
+}
+
+interface MessageListProps {
+  messages: Message[];
+  currentUser: { id: number };
 }
 
 interface MessageListProps {

@@ -14,22 +14,7 @@ import { useSocket } from "../../context/use[custom]/useSocket";
 
 const socket = io("http://localhost:3000");
 
-interface User {
-  id: string;
-  name: string;
-}
-
-// interface Message {
-//   id: number;
-//   senderId: string;
-//   receiverId: string;
-//   content: string;
-//   createdAt: string;
-// }
-
 const ChatContainer: React.FC = () => {
-  //   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  //   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const navigate = useNavigate();
   const { currentUser, selectedUser } = useChat();
@@ -50,16 +35,13 @@ const ChatContainer: React.FC = () => {
       setMessages((prevMessages) => [...prevMessages, message]);
     });
 
-    // Cleanup listener on unmount
     return () => {
       socket.off("newMessage");
     };
   }, [navigate, currentUser]);
 
-  //    const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
 
-  // Hook để nhận tin nhắn mới
   const { data: incomingMessage, isConnected } = useSocket<Message>({
     event: "new_message",
     autoListen: true,
@@ -68,6 +50,86 @@ const ChatContainer: React.FC = () => {
       setMessages((prev) => [...prev, message]);
     },
   });
+
+  // Dữ liệu mock theo cấu trúc API của bạn
+  const mockMessages: Message[] = [
+    {
+      id: 1,
+      content: "Xin chào, bạn khỏe không?",
+      createdAt: "1758118858000",
+      senderId: 6,
+      receiverId: 11,
+      sender: {
+        id: 6,
+        name: "Nguyễn Văn A",
+        pictureUrl: "https://i.pravatar.cc/150?u=6",
+        email: "tnhs3105@gmail.com",
+      },
+      receiver: {
+        id: 11,
+        name: "Trần Thị B",
+        pictureUrl: "https://i.pravatar.cc/150?u=11",
+        email: "trungnguyenhosu3105@gmail.com",
+      },
+    },
+    {
+      id: 3,
+      content: "Mình khỏe, cảm ơn bạn! Còn bạn thì sao?",
+      createdAt: "1758119539322",
+      senderId: 11,
+      receiverId: 6,
+      sender: {
+        id: 11,
+        name: "Trần Thị B",
+        pictureUrl: "https://i.pravatar.cc/150?u=11",
+        email: "trungnguyenhosu3105@gmail.com",
+      },
+      receiver: {
+        id: 6,
+        name: "Nguyễn Văn A",
+        pictureUrl: "https://i.pravatar.cc/150?u=6",
+        email: "tnhs3105@gmail.com",
+      },
+    },
+    {
+      id: 4,
+      content: "Mình cũng khỏe. Dạo này bạn thế nào?",
+      createdAt: "1758119545000",
+      senderId: 6,
+      receiverId: 11,
+      sender: {
+        id: 6,
+        name: "Nguyễn Văn A",
+        pictureUrl: "https://i.pravatar.cc/150?u=6",
+        email: "tnhs3105@gmail.com",
+      },
+      receiver: {
+        id: 11,
+        name: "Trần Thị B",
+        pictureUrl: "https://i.pravatar.cc/150?u=11",
+        email: "trungnguyenhosu3105@gmail.com",
+      },
+    },
+    {
+      id: 5,
+      content: "Mình vẫn ổn. Cảm ơn bạn đã quan tâm!",
+      createdAt: "1758119552000",
+      senderId: 11,
+      receiverId: 6,
+      sender: {
+        id: 11,
+        name: "Trần Thị B",
+        pictureUrl: "https://i.pravatar.cc/150?u=11",
+        email: "trungnguyenhosu3105@gmail.com",
+      },
+      receiver: {
+        id: 6,
+        name: "Nguyễn Văn A",
+        pictureUrl: "https://i.pravatar.cc/150?u=6",
+        email: "tnhs3105@gmail.com",
+      },
+    },
+  ];
 
   console.log("incomingMessage", incomingMessage);
 
@@ -126,89 +188,24 @@ const ChatContainer: React.FC = () => {
     // }
   };
 
-  //   const handleSendMessage = async (content: string) => {
-  //     if (!selectedUser || !currentUser || content.trim() === "") return;
-
-  //     const message = {
-  //       id: Date.now().toString(),
-  //       senderId: currentUser.id,
-  //       receiverId: selectedUser.id,
-  //       content,
-  //       createdAt: new Date().toISOString(),
-  //     };
-
-  //     try {
-  //       await axios.post("http://localhost:3000/messages", message);
-  //       socket.emit("sendMessage", message);
-  //     //   setMessages((prevMessages) => [...prevMessages, message]);
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   };
-
   return (
     <Box display="flex" height="89vh">
-      {/* Sidebar bên trái */}
-      {/* <Box
-        width="300px"
-        sx={{
-          borderRight: `1px solid ${theme.palette.divider}`,
-          //   background: `linear-gradient(135deg, ${alpha(
-          //     theme.palette.primary.light,
-          //     0.1
-          //   )} 0%, ${alpha(theme.palette.primary.main, 0.05)} 100%)`,
-        }}
-      >
-      </Box> */}
-
       <ChatSidebar />
-
-      {/* Phần chính bên phải */}
       <Box flex={1} display="flex" flexDirection="column" p={2}>
-        {/* Header với Search */}
-        {/* <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="space-between"
-          px={3}
-          py={2}
-          sx={{
-            background: `linear-gradient(135deg, ${alpha(
-              theme.palette.primary.main,
-              0.8
-            )} 0%, ${alpha(theme.palette.primary.dark, 0.8)} 100%)`,
-            color: theme.palette.primary.contrastText,
-            borderRadius: 2,
-            boxShadow: `0 4px 12px ${alpha(theme.palette.primary.main, 0.2)}`,
-          }}
-        >
-          <SearchUser onUserSelect={handleUserSelect} />
-        </Box> */}
-
-        {/* Danh sách tin nhắn */}
+        <SearchUser onUserSelect={handleUserSelect} />
         <Box
           sx={{
-            // background: `linear-gradient(135deg, ${alpha(
-            //   theme.palette.primary.light,
-            //   0.1
-            // )} 0%, ${alpha(theme.palette.primary.main, 0.1)} 100%)`,
+            height: "20rem",
             color: theme.palette.text.primary,
             flex: 1,
-            // minHeight: "20vh",
             overflowY: "auto",
-            // borderRadius: 2,
-            // mt: 2,
-            // p: 2,
-            // border: `1px solid ${alpha(theme.palette.primary.light, 0.3)}`,
           }}
         >
           <MessageList
-            messages={messages}
+            messages={mockMessages}
             currentUser={{ id: currentUser?.id as number }}
           />
         </Box>
-
-        {/* Input gửi tin nhắn */}
         <Box
           mt={2}
           sx={{
