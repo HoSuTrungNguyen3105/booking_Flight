@@ -651,7 +651,7 @@ const FlightUpdateModal = ({
                       formData.scheduledDeparture
                     )}`}
                     size="small"
-                    color="info"
+                    variant="outlined"
                   />
                 </Box>
               </CardContent>

@@ -1,4 +1,12 @@
 import { memo } from "react";
+import {
+  Breadcrumbs as MuiBreadcrumbs,
+  Link,
+  Typography,
+  Box,
+  useTheme,
+} from "@mui/material";
+import { NavigateNext } from "@mui/icons-material";
 
 export type BreadcrumbItem = {
   label: string;
@@ -6,35 +14,81 @@ export type BreadcrumbItem = {
   icon?: React.ReactNode;
 };
 
-interface CustomBreadCrumb {
+interface CustomBreadCrumbProps {
   items: BreadcrumbItem[];
   separator?: React.ReactNode;
 }
 
-const BreadCrumb: React.FC<CustomBreadCrumb> = ({ items, separator = "/" }) => {
+const BreadCrumb: React.FC<CustomBreadCrumbProps> = ({
+  items,
+  separator = <NavigateNext fontSize="small" />,
+}) => {
+  const theme = useTheme();
+
   return (
-    <nav aria-label="breadcrumb">
-      <ol style={{ display: "flex", listStyle: "none", padding: 0 }}>
-        {items.map((item, index) => (
-          <li key={index} style={{ display: "flex", alignItems: "center" }}>
-            {item.icon && <span style={{ marginRight: 4 }}>{item.icon}</span>}
-            {item.href ? (
-              <a
-                href={item.href}
-                style={{ textDecoration: "none", color: "#007bff" }}
-              >
-                {item.label}
-              </a>
-            ) : (
-              <span>{item.label}</span>
+    <MuiBreadcrumbs
+      separator={separator}
+      aria-label="breadcrumb"
+      sx={{
+        "& .MuiBreadcrumbs-separator": {
+          margin: theme.spacing(0, 0.5),
+          color: theme.palette.text.secondary,
+        },
+      }}
+    >
+      {items.map((item, index) => {
+        const isLast = index === items.length - 1;
+
+        return isLast ? (
+          <Box
+            key={index}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              color: theme.palette.text.primary,
+            }}
+          >
+            {item.icon && (
+              <Box sx={{ mr: 1, display: "flex", alignItems: "center" }}>
+                {item.icon}
+              </Box>
             )}
-            {index < items.length - 1 && (
-              <span style={{ margin: "0 8px" }}>{separator}</span>
+            <Typography
+              variant="body2"
+              sx={{
+                fontWeight: 600,
+                color: "inherit",
+              }}
+            >
+              {item.label}
+            </Typography>
+          </Box>
+        ) : (
+          <Link
+            key={index}
+            href={item.href}
+            variant="body2"
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              textDecoration: "none",
+              color: theme.palette.primary.main,
+              "&:hover": {
+                textDecoration: "underline",
+                color: theme.palette.primary.dark,
+              },
+            }}
+          >
+            {item.icon && (
+              <Box sx={{ mr: 1, display: "flex", alignItems: "center" }}>
+                {item.icon}
+              </Box>
             )}
-          </li>
-        ))}
-      </ol>
-    </nav>
+            {item.label}
+          </Link>
+        );
+      })}
+    </MuiBreadcrumbs>
   );
 };
 

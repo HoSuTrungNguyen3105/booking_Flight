@@ -14,18 +14,11 @@ import {
 } from "@mui/material";
 import { Add, DeleteForever } from "@mui/icons-material";
 import { useSearchFlight } from "../Api/usePostApi";
-import { toast } from "react-toastify";
 import { type DataFlight } from "../../utils/type";
 import FormRow from "../../common/CustomRender/FormRow";
 import type { GridColDef, GridRowId } from "@mui/x-data-grid";
 import { type GridRowDef } from "../../common/DataGrid/index.tsx";
 import InputTextField from "../../common/Input/InputTextField.tsx";
-import SelectDropdown from "../../common/Dropdown/SelectDropdown.tsx";
-import {
-  cabinClassOptions,
-  flightStatusOptions,
-  flightTypeOptions,
-} from "./hook.ts";
 import {
   Search as SearchIcon,
   Refresh as RefreshIcon,
@@ -38,12 +31,14 @@ import ConfirmPasswordToCallApi from "../User/ConfirmPasswordToCallApi.tsx";
 import { useToast } from "../../context/ToastContext.tsx";
 import type { IDetailItem } from "../../common/DetailSection/index.tsx";
 import DetailSection from "../../common/DetailSection/index.tsx";
+import RhfInputTextField from "../../common/CustomRender/RhfInputTextField.tsx";
 
 type FlightId = {
   id: number;
 };
 
 type CabinClassType = "ECONOMY" | "BUSINESS" | "VIP";
+
 export type SearchFlightDto = {
   from: string; // departureAirport
   to: string; // arrivalAirport
@@ -73,9 +68,6 @@ const Search_layout: React.FC = () => {
   const [flightData, setFlightData] = React.useState<DataFlight[]>([]);
   const [flightId, setFlightId] = React.useState<FlightId | null>(null);
   const [selectId, setSelectId] = React.useState<number[]>([]);
-  // const [updateFlight, setUpdateFlight] = React.useState<boolean>(false);
-  const [openUpdateConfirm, setOpenUpdateConfirm] =
-    React.useState<boolean>(false);
   const [mode, setMode] = React.useState<"advance" | "simple">("simple");
   const [isUpdate, setIsUpdate] = React.useState<boolean>(false);
   const [isSearch, setIsSearch] = React.useState<boolean>(false);
@@ -101,22 +93,6 @@ const Search_layout: React.FC = () => {
     includeCancelled: false,
   });
 
-  // const handleInputChange = (event: string) => {
-  //   // const { name, value } = event.target;
-  //   setFlightParams((prev) => ({
-  //     ...prev,
-  //     [event]: event,
-  //   }));
-  // };
-
-  // const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   const { name, value } = event.target;
-  //   setFlightParams((prev) => ({
-  //     ...prev,
-  //     [name]: value === "" ? undefined : Number(value),
-  //   }));
-  // };
-
   const [showDelete, setShowDelete] = React.useState<boolean>(false);
 
   const toast = useToast();
@@ -132,6 +108,8 @@ const Search_layout: React.FC = () => {
   const {
     control: controlSearch,
     handleSubmit: handleSearchSubmit,
+    getValues: getValuesSearch,
+    register: registerSearch,
     reset: resetSearch,
   } = useForm<SearchFlightDto>({
     defaultValues: flightParams,
@@ -147,12 +125,7 @@ const Search_layout: React.FC = () => {
   const [detailModalOpen, setDetailModalOpen] = React.useState(false);
 
   const handleRowClick = (rowData: any) => {
-    console.log("🎯 Row clicked in parent component:", rowData);
-
-    // Lấy flightId từ row data
     const flightId = rowData.flightId || rowData.id;
-    console.log("🎯 Extracted Flight ID:", flightId);
-
     if (flightId) {
       setSelectedFlight(flightId);
       setSelectedFlightData(rowData);
@@ -170,6 +143,27 @@ const Search_layout: React.FC = () => {
     }
   }, [mode]);
 
+  const resetForm = () => {
+    setFlightParams({
+      from: "",
+      to: "",
+      departDate: 0,
+      returnDate: undefined,
+      passengers: undefined,
+      flightType: undefined,
+      gate: "",
+      cabinClass: "ECONOMY",
+      aircraftCode: "",
+      status: undefined,
+      minPrice: undefined,
+      maxPrice: undefined,
+      terminal: "",
+      minDelayMinutes: undefined,
+      maxDelayMinutes: undefined,
+      includeCancelled: false,
+    });
+  };
+
   const { reset: resetUpdate } = useForm<DataFlight[]>({
     defaultValues: flightData,
   });
@@ -178,9 +172,7 @@ const Search_layout: React.FC = () => {
     async (values: SearchFlightDto) => {
       try {
         setIsSearch(true);
-        console.log("values", values);
         const res = await refetchSearchFlightList(values);
-
         if (res?.resultCode === "00") {
           const allFlights = [
             ...(res.data?.outbound || []),
@@ -188,7 +180,6 @@ const Search_layout: React.FC = () => {
           ];
           setRowData(allFlights as DataFlight[]);
         } else if (res) {
-          toast(res.resultMessage || "Tìm kiếm thất bại", "error");
           setRowData([]);
         }
       } catch (error) {
@@ -206,7 +197,6 @@ const Search_layout: React.FC = () => {
     setIsVerifying(true);
     try {
       const response = await handlePasswordConfirm(password);
-      // await handleSubmit();
       return response;
     } catch (error) {
       return { resultCode: "99", resultMessage: "Lỗi xác thực" };
@@ -327,16 +317,18 @@ const Search_layout: React.FC = () => {
       flex: 1,
     },
   ];
-  const renderDataGrid = React.useCallback(() => {
+
+  const renderDataOption1 = React.useCallback(() => {
+    const currentValues = getValuesSearch(); // Lấy giá trị hiện tại
+
     const detailInfoProfile: IDetailItem[] = [
       {
         title: "from",
         size: 4,
         description: (
-          <InputTextField
-            value={flightParams.from}
-            // onChange={handleInputChange}
-            name="from"
+          <RhfInputTextField
+            registration={registerSearch("from")}
+            value={currentValues.from} // Truyền value vào
             placeholder="e.g., SGN"
           />
         ),
@@ -345,31 +337,32 @@ const Search_layout: React.FC = () => {
         title: "name",
         size: 4,
         description: (
-          <InputTextField
-            value={flightParams.to}
-            name="to"
-            placeholder="e.g., HAN"
+          <RhfInputTextField
+            registration={registerSearch("to")}
+            value={currentValues.to} // Truyền value vào
+            placeholder="e.g., SGN"
           />
         ),
       },
       {
-        title: "mfaEnabledYn",
+        title: "returnDate",
         size: 4,
         description: (
-          <InputTextField
-            value={String(flightParams.returnDate)}
-            name="returnDate"
+          <RhfInputTextField
+            registration={registerSearch("returnDate")}
+            value={String(currentValues.returnDate)} // Truyền value vào
+            placeholder="e.g., SGN"
           />
         ),
       },
       {
-        title: "email",
+        title: "passengers",
         size: 6,
         description: (
-          <InputTextField
-            name="passengers"
-            placeholder="1"
-            value={String(flightParams.passengers)}
+          <RhfInputTextField
+            registration={registerSearch("passengers")}
+            value={String(currentValues.passengers)} // Truyền value vào
+            placeholder="e.g., SGN"
           />
         ),
       },
@@ -380,7 +373,8 @@ const Search_layout: React.FC = () => {
         <DetailSection data={detailInfoProfile} />
       </Box>
     );
-  }, [flightParams]);
+  }, [registerSearch]);
+
   const handleInputChange = (name: keyof SearchFlightDto, value: string) => {
     setFlightParams((prev) => ({
       ...prev,
@@ -395,7 +389,8 @@ const Search_layout: React.FC = () => {
       [name]: value === "" ? undefined : Number(value),
     }));
   };
-  const renderData = React.useCallback(() => {
+
+  const renderDataOption2 = React.useCallback(() => {
     const detailInfoProfile: IDetailItem[] = [
       {
         title: "id",
@@ -499,6 +494,15 @@ const Search_layout: React.FC = () => {
     );
   }
 
+  if (detailModalOpen) {
+    return (
+      <FlightDetail
+        flight={selectedFlightData as DataFlight}
+        onBookFlight={() => setDetailModalOpen(false)}
+      />
+    );
+  }
+
   if (error) {
     return (
       <Box
@@ -552,7 +556,7 @@ const Search_layout: React.FC = () => {
               >
                 <StarBorderIcon /> Flight Route
               </Typography>
-              {renderDataGrid()}
+              {renderDataOption1()}
             </Grid>
 
             <Grid size={12}>
@@ -665,7 +669,7 @@ const Search_layout: React.FC = () => {
               variant="contained"
               startIcon={<SearchIcon />}
               type="submit"
-              disabled={isSearch}
+              // disabled={isSearch}
               size="large"
               sx={{ minWidth: 120 }}
             >
@@ -727,16 +731,6 @@ const Search_layout: React.FC = () => {
           </Box>
         </CardContent>
       </Card>
-
-      {detailModalOpen && (
-        <FlightDetail
-          onSuccess={() => {}}
-          open={detailModalOpen}
-          flightId={selectedFlight}
-          flight={selectedFlightData}
-          onClose={() => setDetailModalOpen(false)}
-        />
-      )}
 
       {openModalConfirm && (
         <ConfirmPasswordToCallApi

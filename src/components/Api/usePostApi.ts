@@ -190,7 +190,7 @@ export const useFlightUpdate = ({ id }: ReqUserIDProps) => {
 //   BUSINESS: "BUSINESS",
 //   ECONOMY: "ECONOMY",
 // };
-export type SeatTypeValue = "ECONOMY" | "BUSINESS" | "FIRST";
+export type SeatTypeValue = "ECONOMY" | "BUSINESS" | "FIRST" | "VIP";
 
 export interface SeatUpdateProps {
   seatIds: number[];
@@ -362,7 +362,7 @@ export interface CreateSeatDto {
   isBooked?: boolean;
 }
 export const useSeatCreate = () => {
-  const { refetch: refetchSeatCreate } = useFetch<
+  const { refetch: refetchSeatCreate, loading: loadingCreateSeat } = useFetch<
     ResponseMessage,
     CreateSeatDto
   >({
@@ -372,6 +372,7 @@ export const useSeatCreate = () => {
   });
   return {
     refetchSeatCreate,
+    loadingCreateSeat,
   };
 };
 

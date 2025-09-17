@@ -9,48 +9,31 @@ import {
   Chip,
   Card,
   Divider,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   useTheme,
   useMediaQuery,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  FormControlLabel,
-  Checkbox,
-  Snackbar,
-  Alert,
   type SelectChangeEvent,
-  CircularProgress,
 } from "@mui/material";
 import {
   Chair,
   StarBorder,
-  StarHalfSharp,
   Wc,
   Flight,
   Window as WindowIcon,
   RestartAlt,
   LocalAirport,
   WorkOutline,
-  Add,
 } from "@mui/icons-material";
 import type { Seat } from "../../utils/type";
-import DialogConfirm from "../../common/Modal/DialogConfirm";
-import InputTextField from "../../common/Input/InputTextField";
 import {
-  useGetSeatByFlightId,
   useSeatCreate,
   useSeatUpdateByIds,
   type CreateSeatDto,
   type SeatTypeValue,
   type SeatUpdateProps,
 } from "../Api/usePostApi";
-import { Loading } from "../../common/Loading/Loading";
 import LegendItemSection from "./LegendItem";
+import CreateSeat from "./CreateSeat";
+import SeatManagementModal from "./SeatManagementModal";
 
 type AircraftSeatTypeProps = "ALL" | "VIP" | "ECONOMY" | "WINDOW";
 
@@ -67,11 +50,10 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
   onSuccess,
   loadingFlightData,
 }) => {
-  const [selectedSeats, setSelectedSeats] = useState<number[]>([]);
+  const [selectedSeats, setSelectedSeats] = useState<Seat[]>([]); // Thay đổi từ number[] sang Seat[]
   const [message, setMessage] = useState("");
-  const [openModal, setOpenModal] = useState(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [filter, setFilter] = useState<AircraftSeatTypeProps>("ALL");
-  // const [columns, setColumns] = useState(["A", "B", "C", "D", "E", "F"]);
   const { refetchSeatCreate } = useSeatCreate();
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -90,49 +72,69 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
   const [updateSeat, setUpdateSeat] = useState<SeatUpdateProps>({
     seatNumber: 0,
     seatRow: "",
-    seatIds: selectedSeats,
-    type: "ECONOMY", // String value
+    seatIds: [],
+    type: "ECONOMY",
   });
+
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const handleSelectSeat = useCallback(
-    (seatId: number) => {
-      const seat = seats.find((s) => s.id === seatId);
-      if (!seat || seat.isBooked) return;
+  // Sửa hàm handleSelectSeat để cập nhật selectedSeats và updateSeat
+  const handleSelectSeat = useCallback((seat: Seat) => {
+    if (seat.isBooked) return;
 
-      setSelectedSeats((prev) =>
-        prev.includes(seatId)
-          ? prev.filter((id) => id !== seatId)
-          : [...prev, seatId]
-      );
-    },
-    [seats]
-  );
+    setSelectedSeats((prev) => {
+      const isAlreadySelected = prev.some((s) => s.id === seat.id);
+
+      if (isAlreadySelected) {
+        return prev.filter((s) => s.id !== seat.id);
+      } else {
+        return [...prev, seat];
+      }
+    });
+
+    // Cập nhật updateSeat state với thông tin từ ghế được chọn
+    setUpdateSeat((prev) => {
+      // Nếu đây là ghế đầu tiên được chọn, set tất cả thông tin
+      if (prev.seatIds.length === 0) {
+        return {
+          seatIds: [seat.id],
+          type: seat.type,
+          seatRow: seat.seatRow,
+          seatNumber: seat.seatNumber,
+        };
+      } else {
+        // Nếu đã có ghế được chọn, chỉ cập nhật seatIds
+        const isAlreadyInIds = prev.seatIds.includes(seat.id);
+        return {
+          ...prev,
+          seatIds: isAlreadyInIds
+            ? prev.seatIds.filter((id) => id !== seat.id)
+            : [...prev.seatIds, seat.id],
+        };
+      }
+    });
+  }, []);
 
   const handleResetSelections = () => {
     setSelectedSeats([]);
+    setUpdateSeat({
+      seatNumber: 0,
+      seatRow: "",
+      seatIds: [],
+      type: "ECONOMY",
+    });
     setMessage("");
   };
 
-  // const { refetchGetSeatByFlightId } = useGetSeatByFlightId({ id: flightId });
-
-  const handleOpenModal = () => {
-    if (selectedSeats.length === 0) {
-      setMessage("Please select at least one seat.");
-      return;
-    }
-    setOpenModal(true);
-  };
-
-  // Handle filter change
   const handleFilterChange = (newFilter: AircraftSeatTypeProps) => {
     setFilter(newFilter);
   };
 
   const columns = ["A", "B", "C", "D", "E", "F"];
-  const rows = Array.from({ length: 40 }, (_, i) => i + 1); //todo
+  const rows = Array.from({ length: 40 }, (_, i) => i + 1);
   const { refetchUpdateSeatByIds } = useSeatUpdateByIds();
+
   // Show snackbar notification
   const showSnackbar = (
     message: string,
@@ -159,7 +161,6 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
         showSnackbar(response.resultMessage);
         setCreateFormOpen(false);
         await onSuccess();
-        onSuccess(); // Refresh seats data
       } else {
         showSnackbar(response?.resultMessage as string, "error");
       }
@@ -171,24 +172,22 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
 
   const handleUpdateSeatByIds = async () => {
     try {
-      if (selectedSeats.length === 0) {
+      if (updateSeat.seatIds.length === 0) {
         showSnackbar("Please select at least one seat to update", "error");
         return;
       }
 
-      const updateData = {
-        seatIds: selectedSeats,
-        type: updateSeat.type,
-        seatRow: updateSeat.seatRow,
-        seatNumber: updateSeat.seatNumber,
-      };
-
-      const response = await refetchUpdateSeatByIds(updateData);
+      const response = await refetchUpdateSeatByIds(updateSeat);
 
       if (response?.resultCode === "00") {
         showSnackbar(response.resultMessage);
-        setOpenModal(false);
         setSelectedSeats([]);
+        setUpdateSeat({
+          seatNumber: 0,
+          seatRow: "",
+          seatIds: [],
+          type: "ECONOMY",
+        });
         await onSuccess();
       } else {
         showSnackbar(response?.resultMessage as string, "error");
@@ -218,7 +217,6 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
       if (response?.resultCode === "00") {
         showSnackbar(response.resultMessage);
         await onSuccess();
-        onSuccess(); // Refresh seats data
       } else {
         showSnackbar(response?.resultMessage as string, "error");
       }
@@ -231,48 +229,59 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
   const resetSeatToGetData = async () => {
     await onSuccess();
     setSelectedSeats([]);
-    setMessage("");
-  };
-
-  const handleOpenUpdateModal = () => {
-    if (selectedSeats.length === 0) {
-      setMessage("Please select at least one seat to update.");
-      return;
-    }
-    setOpenModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setOpenModal(false);
     setUpdateSeat({
-      seatNumber: 1,
+      seatNumber: 0,
       seatRow: "",
       seatIds: [],
       type: "ECONOMY",
     });
+    setMessage("");
+  };
+
+  const handleOpenUpdateModal = useCallback(() => {
+    if (selectedSeats.length === 0) {
+      setMessage("Please select at least one seat to update.");
+      return;
+    }
+
+    // Lấy thông tin từ ghế đầu tiên
+    const firstSeat = selectedSeats[0];
+
+    // Cập nhật state updateSeat với thông tin từ ghế được chọn
+    setUpdateSeat({
+      seatIds: selectedSeats.map((seat) => seat.id),
+      type: firstSeat.type,
+      seatRow: firstSeat.seatRow,
+      seatNumber: firstSeat.seatNumber,
+    });
+
+    setIsUpdateModalOpen(true);
+  }, [selectedSeats]);
+
+  const handleCloseModal = () => {
+    setIsUpdateModalOpen(false);
   };
 
   const renderSeatButton = useCallback(
     (seat: Seat) => {
-      const theme = useTheme();
-      const isSelected = selectedSeats.includes(seat.id);
+      const isSelected = selectedSeats.some((s) => s.id === seat.id);
       const isBooked = seat.isBooked;
 
       let backgroundColor = "#f5f5f5";
-      let textColor = theme.palette.primary.main; // Sử dụng primary color
+      let textColor = theme.palette.primary.main;
       let borderColor = "#ccc";
       let icon = null;
 
       if (isBooked) {
         backgroundColor = "#bdbdbd";
-        textColor = theme.palette.primary.main; // Vẫn giữ primary color
+        textColor = theme.palette.primary.main;
         borderColor = "#a9a9a9";
       } else if (isSelected) {
         backgroundColor = theme.palette.primary.main;
-        textColor = theme.palette.primary.contrastText; // Màu tương phản với nền
+        textColor = theme.palette.primary.contrastText;
         borderColor = theme.palette.primary.main;
       } else if (seat.type === "VIP") {
-        backgroundColor = theme.palette.primary.light + "20"; // Thêm opacity
+        backgroundColor = theme.palette.primary.light + "20";
         borderColor = theme.palette.primary.main;
         icon = (
           <StarBorder
@@ -280,7 +289,7 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
           />
         );
       } else if (seat.type === "BUSINESS") {
-        backgroundColor = theme.palette.primary.light + "15"; // Thêm opacity
+        backgroundColor = theme.palette.primary.light + "15";
         borderColor = theme.palette.primary.main;
         icon = (
           <WorkOutline
@@ -288,7 +297,7 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
           />
         );
       } else if (seat.type === "ECONOMY") {
-        backgroundColor = theme.palette.primary.light + "10"; // Thêm opacity
+        backgroundColor = theme.palette.primary.light + "10";
         borderColor = theme.palette.primary.main;
         icon = (
           <Chair sx={{ color: theme.palette.primary.main, fontSize: 16 }} />
@@ -322,7 +331,7 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
           arrow
         >
           <Button
-            onClick={() => !isBooked && handleSelectSeat(seat.id)}
+            onClick={() => !isBooked && handleSelectSeat(seat)}
             disabled={isBooked}
             aria-label={`Seat ${seat.seatNumber}${seat.seatRow}, ${
               seat.isBooked ? "Booked" : seat.type
@@ -342,14 +351,14 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
               cursor: isBooked ? "not-allowed" : "pointer",
               transition: "all 0.2s ease",
               boxShadow: isSelected
-                ? `0px 0px 8px ${theme.palette.primary.main}80` // Thêm opacity
+                ? `0px 0px 8px ${theme.palette.primary.main}80`
                 : "0px 1px 3px rgba(0,0,0,0.1)",
               "&:hover": {
                 backgroundColor: isBooked
                   ? "#bdbdbd"
                   : isSelected
                   ? theme.palette.primary.dark
-                  : theme.palette.primary.light + "30", // Thêm opacity
+                  : theme.palette.primary.light + "30",
                 color: isSelected
                   ? theme.palette.primary.contrastText
                   : theme.palette.primary.main,
@@ -383,7 +392,7 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
         </Tooltip>
       );
     },
-    [selectedSeats, handleSelectSeat, theme] // Thêm theme vào dependencies
+    [selectedSeats, handleSelectSeat, theme]
   );
 
   const restroomRows = [1, 15, 30];
@@ -393,122 +402,13 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
     return seats.filter((s) => s.type === filter);
   }, [seats, filter]);
 
-  if (loadingFlightData) {
-    return <Loading />;
-  }
-
   if (!seats || seats.length === 0) {
     return (
-      <Box sx={{ p: 3, textAlign: "center" }}>
-        <Typography variant="h5" mb={2}>
-          No Seats Configured
-        </Typography>
-        <Typography variant="body1" mb={3}>
-          You haven't created any seats yet. Would you like to create individual
-          seats or generate a complete aircraft layout?
-        </Typography>
-
-        <Box
-          sx={{
-            display: "flex",
-            gap: 2,
-            justifyContent: "center",
-            flexWrap: "wrap",
-          }}
-        >
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => setCreateFormOpen(true)}
-            sx={{ mb: 2 }}
-            startIcon={<Add />}
-          >
-            Create Individual Seat
-          </Button>
-
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={handleGenerateAllSeats}
-            sx={{ mb: 2 }}
-          >
-            Generate All Seats (A-F to 1-40)
-          </Button>
-          <Button onClick={resetSeatToGetData}>Reset</Button>
-        </Box>
-
-        <Dialog
-          open={createFormOpen}
-          onClose={() => setCreateFormOpen(false)}
-          maxWidth="sm"
-          fullWidth
-        >
-          <DialogTitle>Create New Seat</DialogTitle>
-          <DialogContent>
-            <Box
-              sx={{ pt: 2, display: "flex", flexDirection: "column", gap: 2 }}
-            >
-              <InputTextField
-                type="number"
-                value={String(newSeat.seatNumber)}
-                onChange={(e) =>
-                  setNewSeat({ ...newSeat, seatNumber: parseInt(e) || 1 })
-                }
-              />
-
-              <FormControl fullWidth>
-                <InputLabel>Seat Row</InputLabel>
-                <Select
-                  value={newSeat.seatRow}
-                  label="Seat Row"
-                  onChange={(e) =>
-                    setNewSeat({ ...newSeat, seatRow: e.target.value })
-                  }
-                >
-                  {["A", "B", "C", "D", "E", "F"].map((col) => (
-                    <MenuItem key={col} value={col}>
-                      {col}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={newSeat.isBooked}
-                    onChange={(e) =>
-                      setNewSeat({ ...newSeat, isBooked: e.target.checked })
-                    }
-                  />
-                }
-                label="Booked"
-              />
-            </Box>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setCreateFormOpen(false)}>Cancel</Button>
-            <Button onClick={handleCreateSingleSeat} variant="contained">
-              Create Seat
-            </Button>
-          </DialogActions>
-        </Dialog>
-
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={6000}
-          onClose={() => setSnackbarOpen(false)}
-          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-        >
-          <Alert
-            onClose={() => setSnackbarOpen(false)}
-            severity={snackbarSeverity}
-            sx={{ width: "100%" }}
-          >
-            {snackbarMessage}
-          </Alert>
-        </Snackbar>
-      </Box>
+      <CreateSeat
+        flightId={flightId}
+        onChange={handleGenerateAllSeats}
+        loading={loadingFlightData}
+      />
     );
   }
 
@@ -748,8 +648,8 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
             {selectedSeats.length > 0 ? (
               <Box>
                 <Stack spacing={1} sx={{ mb: 2 }}>
-                  {selectedSeats.map((id) => {
-                    const seat = seats.find((s) => s.id === id);
+                  {selectedSeats.map((id, e) => {
+                    const seat = seats.find((s) => s.id === e);
                     if (!seat) return null;
 
                     const getTypeColor = (type: string) => {
@@ -767,7 +667,7 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
 
                     return (
                       <Box
-                        key={id}
+                        key={id.id}
                         sx={{
                           display: "flex",
                           alignItems: "center",
@@ -836,6 +736,14 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
                 >
                   Update
                 </Button>
+                <SeatManagementModal
+                  onUpdate={() => {}}
+                  open={isUpdateModalOpen}
+                  selectedSeats={updateSeat}
+                  onSuccess={handleCloseModal}
+                  onClose={handleCloseModal}
+                />
+                {updateSeat.seatIds}
                 {/* Modal for updating seats */}
                 {/* <Dialog open={openModal} onClose={handleCloseModal}>
                   <DialogTitle>Update Selected Seats</DialogTitle>

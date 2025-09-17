@@ -1,8 +1,14 @@
 import { Add } from "@mui/icons-material";
 import { Box, Button, Typography } from "@mui/material";
-import React, { useState } from "react";
-
-const CreateSeat = () => {
+import React, { memo, useState } from "react";
+import CreateSeatModal from "./CreateSeatModal";
+import { Loading } from "../../common/Loading/Loading";
+type CreateSeat = {
+  flightId: number;
+  onChange: () => void;
+  loading: boolean;
+};
+const CreateSeat = ({ flightId, onChange, loading }: CreateSeat) => {
   const [createFormOpen, setCreateFormOpen] = useState(false);
 
   return (
@@ -37,7 +43,7 @@ const CreateSeat = () => {
           <Button
             variant="outlined"
             color="primary"
-            onClick={handleGenerateAllSeats}
+            onClick={onChange} //handleGenerateAllSeats
             sx={{ mb: 2 }}
           >
             Generate All Seats (A-F to 1-40)
@@ -45,41 +51,16 @@ const CreateSeat = () => {
           {/* <Button onClick={resetSeatToGetData}>Reset</Button> */}
         </Box>
 
-        {/* <Dialog
-                open={createFormOpen}
-                onClose={() => setCreateFormOpen(false)}
-                maxWidth="sm"
-                fullWidth
-              >
-                <DialogTitle>Create New Seat</DialogTitle>
-                <DialogContent>
-                 
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={() => setCreateFormOpen(false)}>Cancel</Button>
-                  <Button onClick={handleCreateSingleSeat} variant="contained">
-                    Create Seat
-                  </Button>
-                </DialogActions>
-              </Dialog> */}
-
-        {/* <Snackbar
-                open={snackbarOpen}
-                autoHideDuration={6000}
-                onClose={() => setSnackbarOpen(false)}
-                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-              >
-                <Alert
-                  onClose={() => setSnackbarOpen(false)}
-                  severity={snackbarSeverity}
-                  sx={{ width: "100%" }}
-                >
-                  {snackbarMessage}
-                </Alert>
-              </Snackbar> */}
+        <CreateSeatModal
+          flightId={flightId}
+          open={createFormOpen}
+          onClose={() => setCreateFormOpen(false)}
+          onSuccess={() => setCreateFormOpen(false)}
+          loading={loading}
+        />
       </Box>
     </>
   );
 };
 
-export default CreateSeat;
+export default memo(CreateSeat);

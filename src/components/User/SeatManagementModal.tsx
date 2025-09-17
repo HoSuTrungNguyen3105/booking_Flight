@@ -1,42 +1,48 @@
-import {
-  Box,
-  Button,
-  Divider,
-  Stack,
-  Typography,
-  TextField,
-  FormControl,
-} from "@mui/material";
+import { Box, Button, Typography, FormControl, MenuItem } from "@mui/material";
 import { memo, useCallback, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
-import type { UserData } from "../../utils/type";
-import { useDeleteUserById } from "../Api/usePostApi";
 import BaseModal from "../../common/Modal/BaseModal";
 import InputTextField from "../../common/Input/InputTextField";
+import SelectDropdown from "../../common/Dropdown/SelectDropdown";
+import type { SeatUpdateProps } from "../Api/usePostApi";
 
 interface IModalStatisticalDataLearningProps {
   open: boolean;
   onClose: () => void;
   onSuccess: () => void;
-  user?: UserData;
+  selectedSeats?: SeatUpdateProps;
+  onUpdate: (data: SeatUpdateProps) => void;
 }
 
 const SeatManagementModal = ({
   open,
   onClose,
   onSuccess,
-  user,
+  selectedSeats,
 }: IModalStatisticalDataLearningProps) => {
-  const { refetchDeleteUser } = useDeleteUserById();
-  const [inputId, setInputId] = useState<string>("");
+  const [seatType, setSeatType] = useState("ECONOMY");
+  const [seatRow, setSeatRow] = useState("");
+  const [seatNumber, setSeatNumber] = useState(1);
 
-  const onDeleteOnChange = useCallback(async () => {
-    if (String(user?.id) === inputId) {
-      await refetchDeleteUser({ id: Number(inputId) });
-      onSuccess();
-      onClose();
-    }
-  }, [user?.id, inputId, onSuccess, onClose, refetchDeleteUser]);
+  const handleTypeChange = (value: string | number) => {
+    setSeatType(value as string);
+  };
+
+  const handleSeatRowChange = (value: string | number) => {
+    setSeatRow(value as string);
+  };
+
+  const handleSeatNumberChange = (value: string | number) => {
+    setSeatNumber(Number(value) || 1);
+  };
+
+  const renderTypeSeatOptions = useCallback(() => {
+    return [
+      { value: "ECONOMY", label: "Economy" },
+      { value: "BUSINESS", label: "Business" },
+      { value: "VIP", label: "VIP" },
+    ];
+  }, []);
 
   const renderActions = useCallback(() => {
     return (
@@ -44,59 +50,50 @@ const SeatManagementModal = ({
         <Button variant="outlined" color="error" onClick={onClose}>
           Cancel
         </Button>
-        <Button variant="outlined" color="error" onClick={onDeleteOnChange}>
-          Delete
+        <Button variant="contained" color="primary">
+          Update
         </Button>
       </Box>
     );
-  }, [user?.id, inputId]);
+  }, [onClose]);
 
   const renderContent = useCallback(() => {
     return (
       <>
         <Box sx={{ pt: 2 }}>
           <FormControl fullWidth sx={{ mb: 2 }}>
-            <Select
-              value={updateSeat.type || "ECONOMY"} // ← Direct string value
+            <Typography>{selectedSeats?.seatIds}</Typography>
+            <SelectDropdown
+              options={renderTypeSeatOptions()}
+              value={seatType}
               onChange={handleTypeChange}
-            >
-              <MenuItem value="ECONOMY">Economy</MenuItem>
-              <MenuItem value="BUSINESS">Business</MenuItem>
-              <MenuItem value="VIP"> VIP</MenuItem>
-            </Select>
+            />
           </FormControl>
 
           <InputTextField
-            value={newSeat.seatRow}
-            onChange={(e) => setNewSeat({ ...newSeat, seatRow: e })}
+            value={seatRow}
+            onChange={handleSeatRowChange}
             sx={{ mb: 2 }}
           />
 
           <InputTextField
             type="number"
-            value={String(newSeat.seatNumber)}
-            onChange={(e) =>
-              setNewSeat({
-                ...newSeat,
-                seatNumber: parseInt(e) || 1,
-              })
-            }
+            value={String(seatNumber)}
+            onChange={handleSeatNumberChange}
             sx={{ mb: 2 }}
           />
 
-          <Typography variant="body2" color="text.secondary">
-            Updating {selectedSeats.length} selected seats
-          </Typography>
+          <Typography variant="body2" color="text.secondary"></Typography>
         </Box>
       </>
     );
-  }, [user?.id, inputId]);
+  }, [selectedSeats, seatType, seatRow, seatNumber, renderTypeSeatOptions]);
 
   return (
     <BaseModal
       open={open}
       onClose={onClose}
-      title="Delete"
+      title="Update Seats"
       Icon={AddIcon}
       slots={{ content: renderContent(), actions: renderActions() }}
     />

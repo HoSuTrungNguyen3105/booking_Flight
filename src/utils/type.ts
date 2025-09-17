@@ -1,5 +1,6 @@
 import type { GridRowDef } from "../common/DataGrid";
 import type { Flight } from "../common/Setting/type";
+import type { SeatTypeValue } from "../components/Api/usePostApi";
 
 export enum MethodType {
   DELETE = "DELETE",
@@ -143,7 +144,7 @@ export type Seat = {
   isBooked: boolean;
   flightId?: number;
   bookingId?: number;
-  type: string;
+  type: SeatTypeValue;
 
   //Add type
   isWindow?: boolean;
@@ -210,8 +211,6 @@ export type BaseUserData = {
   authType?: string;
   userAlias?: string;
   remember?: boolean;
-  firstname?: string;
-  lastname?: string;
   pictureUrl?: string;
   rank?: string;
   role?: UserRoleType;

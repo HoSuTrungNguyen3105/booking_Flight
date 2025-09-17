@@ -1,278 +1,289 @@
+import { Box, Button, Chip, Paper, Typography, Container } from "@mui/material";
+import { memo, useCallback, useEffect } from "react";
 import {
-  Box,
-  Button,
-  Chip,
-  Divider,
-  Grid,
-  Paper,
-  Typography,
-} from "@mui/material";
-import { memo, useCallback } from "react";
-import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
-import BaseModal from "../../../common/Modal/BaseModal";
-import { Schedule, AirplanemodeActive } from "@mui/icons-material";
+  Schedule,
+  AirplanemodeActive,
+  Home,
+  Flight,
+} from "@mui/icons-material";
 import type { DataFlight } from "../../../utils/type";
+import { useNavigate } from "react-router-dom";
+import type { BreadcrumbItem } from "../../../common/BreadCrumb/BreadCrumb";
+import BreadCrumb from "../../../common/BreadCrumb/BreadCrumb";
+import type { IDetailItem } from "../../../common/DetailSection";
+import DetailSection from "../../../common/DetailSection";
 
-interface IRequestLeaveActionModalProps {
-  open: boolean;
-  onClose: () => void;
-  onSuccess: () => void;
-  flightId?: number;
-  flight: DataFlight | null;
+interface FlightDetailPageProps {
+  flight: DataFlight;
+  onBookFlight?: (flightId: number) => void;
 }
 
-const FlightDetailModal = ({
-  open,
-  onClose,
-  // onSuccess,
-  flightId,
-  flight,
-}: IRequestLeaveActionModalProps) => {
-  const renderActions = useCallback(() => {
-    return (
-      <Box display="flex" gap={1} justifyContent="flex-end" alignItems="center">
-        <Button onClick={onClose} variant="outlined">
-          Close
-        </Button>
-        <Button variant="contained" color="primary">
-          Book This Flight
-        </Button>
-      </Box>
-    );
+const FlightDetailPage = ({ flight, onBookFlight }: FlightDetailPageProps) => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
-  const renderRowDetail = useCallback(() => {
-    if (!flight) return null;
+  const handleBookFlight = useCallback(() => {
+    if (flight && onBookFlight) {
+      onBookFlight(flight.flightId as number);
+    }
+  }, [flight, onBookFlight]);
+
+  const handleGoBack = useCallback(() => {
+    navigate(-1);
+  }, [navigate]);
+
+  const renderBreadcrumbs = useCallback(() => {
+    const breadcrumbItems: BreadcrumbItem[] = [
+      {
+        label: "Home",
+        href: "/",
+        icon: <Home sx={{ fontSize: 16 }} />,
+      },
+      {
+        label: "Flights",
+        href: "/admin",
+        icon: <Flight sx={{ fontSize: 16 }} />,
+      },
+      {
+        label: `Flight ${flight.flightId}`,
+      },
+    ];
 
     return (
-      <>
-        <Paper elevation={1} sx={{ p: 2, mb: 3, bgcolor: "grey.50" }}>
-          <Grid container spacing={2}>
-            <Grid size={12}>
-              <Typography variant="h6" gutterBottom>
-                flight {flightId}
-              </Typography>
-              <Box
-                sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}
-              >
-                <Chip
-                  label={flight.status}
-                  color={
-                    flight.status === "scheduled"
-                      ? "primary"
-                      : flight.status === "departed"
-                      ? "success"
-                      : flight.status === "cancelled"
-                      ? "error"
-                      : flight.status === "delayed"
-                      ? "warning"
-                      : "default"
-                  }
-                  size="small"
-                />
-                <Chip
-                  label={flight.flightType}
-                  variant="outlined"
-                  size="small"
-                />
-              </Box>
-            </Grid>
-            <Grid size={12} sx={{ textAlign: "right" }}>
-              <Typography variant="h4" color="primary">
-                {flight.flightNo}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Aircraft: {flight.aircraftCode}
-              </Typography>
-            </Grid>
-          </Grid>
-        </Paper>
-
-        <Grid container spacing={3}>
-          {/* Schedule Information */}
-          <Grid size={12}>
-            <Typography
-              variant="h6"
-              gutterBottom
-              sx={{ display: "flex", alignItems: "center", gap: 1 }}
-            >
-              <Schedule /> Schedule
-            </Typography>
-
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="subtitle2">Departure</Typography>
-              <Typography>
-                {new Date(Number(flight.scheduledDeparture)).toLocaleString()}
-              </Typography>
-              {flight.actualDeparture && (
-                <Typography variant="body2" color="text.secondary">
-                  Actual:{" "}
-                  {new Date(Number(flight.actualDeparture)).toLocaleString()}
-                </Typography>
-              )}
-            </Box>
-
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="subtitle2">Arrival</Typography>
-              <Typography>
-                {new Date(Number(flight.scheduledArrival)).toLocaleString()}
-              </Typography>
-              {flight.actualArrival && (
-                <Typography variant="body2" color="text.secondary">
-                  Actual:{" "}
-                  {new Date(Number(flight.actualArrival)).toLocaleString()}
-                </Typography>
-              )}
-            </Box>
-
-            {(flight.delayMinutes ?? 0) > 0 && (
-              <Box>
-                <Typography variant="subtitle2">Delay</Typography>
-                <Typography color="warning.main">
-                  {flight.delayMinutes} minutes
-                </Typography>
-                {flight.delayReason && (
-                  <Typography variant="body2" color="text.secondary">
-                    Reason: {flight.delayReason}
-                  </Typography>
-                )}
-              </Box>
-            )}
-          </Grid>
-
-          {/* Airport Information */}
-          <Grid size={12}>
-            <Typography
-              variant="h6"
-              gutterBottom
-              sx={{ display: "flex", alignItems: "center", gap: 1 }}
-            >
-              <AirplanemodeActive /> Airports
-            </Typography>
-
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="subtitle2">Departure Airport</Typography>
-              <Typography>{flight.departureAirport}</Typography>
-              {flight.gate && (
-                <Typography variant="body2">Gate: {flight.gate}</Typography>
-              )}
-              {flight.terminal && (
-                <Typography variant="body2">
-                  Terminal: {flight.terminal}
-                </Typography>
-              )}
-            </Box>
-
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="subtitle2">Arrival Airport</Typography>
-              <Typography>{flight.arrivalAirport}</Typography>
-            </Box>
-
-            {flight.isCancelled && flight.cancellationReason && (
-              <Box sx={{ p: 1, bgcolor: "error.light", borderRadius: 1 }}>
-                <Typography variant="subtitle2" color="error.dark">
-                  Cancellation Reason
-                </Typography>
-                <Typography variant="body2">
-                  {flight.cancellationReason}
-                </Typography>
-              </Box>
-            )}
-          </Grid>
-        </Grid>
-
-        <Divider sx={{ my: 3 }} />
-
-        {/* Price Information */}
-        <Typography variant="h6" gutterBottom>
-          Pricing
-        </Typography>
-        <Grid container spacing={2}>
-          <Grid size={4}>
-            <Typography variant="subtitle2">Economy</Typography>
-            <Typography>${flight.priceEconomy?.toLocaleString()}</Typography>
-          </Grid>
-          <Grid size={4}>
-            <Typography variant="subtitle2">Business</Typography>
-            <Typography>${flight.priceBusiness?.toLocaleString()}</Typography>
-          </Grid>
-          <Grid size={4}>
-            <Typography variant="subtitle2">First Class</Typography>
-            <Typography>${flight.priceFirst?.toLocaleString()}</Typography>
-          </Grid>
-        </Grid>
-      </>
+      <BreadCrumb
+        items={breadcrumbItems}
+        separator={<span style={{ margin: "0 8px" }}>/</span>}
+      />
     );
-  }, []);
+  }, [flight.flightId]);
+
+  // Tạo dữ liệu cho DetailSection - Thông tin lịch trình
+  const scheduleData: IDetailItem[] = [
+    {
+      title: "Scheduled Departure",
+      description: new Date(Number(flight.scheduledDeparture)).toLocaleString(),
+      size: 4,
+    },
+    {
+      title: "Actual Departure",
+      description: flight.actualDeparture
+        ? new Date(Number(flight.actualDeparture)).toLocaleString()
+        : "-",
+      size: 4,
+    },
+    {
+      title: "Scheduled Arrival",
+      description: new Date(Number(flight.scheduledArrival)).toLocaleString(),
+      size: 4,
+    },
+    {
+      title: "Actual Arrival",
+      description: flight.actualArrival
+        ? new Date(Number(flight.actualArrival)).toLocaleString()
+        : "-",
+      size: 4,
+    },
+    {
+      title: "Delay Minutes",
+      description: flight.delayMinutes ? `${flight.delayMinutes} minutes` : "-",
+      size: 4,
+    },
+    {
+      title: "Delay Reason",
+      description: flight.delayReason || "-",
+      size: 8,
+    },
+  ];
+
+  // Tạo dữ liệu cho DetailSection - Thông tin sân bay
+  const airportData: IDetailItem[] = [
+    {
+      title: "Departure Airport",
+      description: flight.departureAirport,
+      size: 4,
+    },
+    {
+      title: "Arrival Airport",
+      description: flight.arrivalAirport,
+      size: 4,
+    },
+    {
+      title: "Gate",
+      description: flight.gate || "-",
+      size: 2,
+    },
+    {
+      title: "Terminal",
+      description: flight.terminal || "-",
+      size: 2,
+    },
+    {
+      title: "Aircraft Code",
+      description: flight.aircraftCode,
+      size: 4,
+    },
+    {
+      title: "Flight Type",
+      description: flight.flightType,
+      size: 4,
+    },
+    {
+      title: "Status",
+      description: (
+        <Chip
+          label={flight.status}
+          color={
+            flight.status === "scheduled"
+              ? "primary"
+              : flight.status === "departed"
+              ? "success"
+              : flight.status === "cancelled"
+              ? "error"
+              : flight.status === "delayed"
+              ? "warning"
+              : "default"
+          }
+          size="small"
+        />
+      ),
+      size: 4,
+    },
+  ];
+
+  // Tạo dữ liệu cho DetailSection - Thông tin giá
+  const priceData: IDetailItem[] = [
+    {
+      title: "Economy Price",
+      description: flight.priceEconomy
+        ? `$${flight.priceEconomy.toLocaleString()}`
+        : "-",
+      size: 4,
+    },
+    {
+      title: "Business Price",
+      description: flight.priceBusiness
+        ? `$${flight.priceBusiness.toLocaleString()}`
+        : "-",
+      size: 4,
+    },
+    {
+      title: "First Class Price",
+      description: flight.priceFirst
+        ? `$${flight.priceFirst.toLocaleString()}`
+        : "-",
+      size: 4,
+    },
+  ];
+
+  // Thông tin hủy chuyến (nếu có)
+  const cancellationData: IDetailItem[] =
+    flight.isCancelled && flight.cancellationReason
+      ? [
+          {
+            title: "Cancellation Reason",
+            description: flight.cancellationReason,
+            size: 12,
+          },
+        ]
+      : [];
 
   const renderContent = useCallback(() => {
-    if (!flight) return null;
+    if (!flight) {
+      return (
+        <Box sx={{ textAlign: "center", py: 4 }}>
+          <Typography variant="h6" color="text.secondary">
+            Flight not found
+          </Typography>
+          <Button variant="contained" onClick={handleGoBack} sx={{ mt: 2 }}>
+            Go Back
+          </Button>
+        </Box>
+      );
+    }
 
     return (
       <>
-        <Paper
-          elevation={1}
-          sx={{ p: 3, mb: 3, maxWidth: "50rem", bgcolor: "grey.50" }}
-        >
-          <Grid container spacing={3} alignItems="center">
-            {/* Route Section */}
-            <Grid size={12}>
-              <Box sx={{ textAlign: "center" }}>
-                <Typography variant="h6" gutterBottom>
-                  {flight.departureAirport} → {flight.arrivalAirport}
-                </Typography>
-                <Box
-                  sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}
-                >
-                  <Chip
-                    label={flight.status}
-                    color={
-                      flight.status === "scheduled"
-                        ? "primary"
-                        : flight.status === "departed"
-                        ? "success"
-                        : flight.status === "cancelled"
-                        ? "error"
-                        : flight.status === "delayed"
-                        ? "warning"
-                        : "default"
-                    }
-                    size="small"
-                  />
-                  <Chip
-                    label={flight.flightType}
-                    variant="outlined"
-                    size="small"
-                  />
-                </Box>
-              </Box>
-            </Grid>
-            <Grid size={12} sx={{ textAlign: "right" }}>
-              <Typography variant="h4" color="primary">
-                {flight.flightNo}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Aircraft: {flight.aircraftCode}
-              </Typography>
-            </Grid>
-          </Grid>
-          {renderRowDetail()}
+        {/* Header Section */}
+        <Paper elevation={1} sx={{ p: 3, mb: 3, bgcolor: "grey.50" }}>
+          <Box sx={{ textAlign: "center", mb: 2 }}>
+            <Typography variant="h4" gutterBottom color="primary">
+              {flight.flightNo}
+            </Typography>
+            <Typography variant="h6" gutterBottom>
+              {flight.departureAirport} → {flight.arrivalAirport}
+            </Typography>
+          </Box>
+
+          {/* Flight Details using DetailSection */}
+          <DetailSection
+            title="schedule Information"
+            itemPerRow={3}
+            data={scheduleData}
+          />
+
+          <Box sx={{ my: 3 }} />
+
+          <DetailSection
+            title="Airport Information"
+            itemPerRow={3}
+            data={airportData}
+          />
+
+          {cancellationData.length > 0 && (
+            <>
+              <Box sx={{ my: 3 }} />
+              <DetailSection
+                title="Cancellation Information"
+                itemPerRow={1}
+                data={cancellationData}
+              />
+            </>
+          )}
+
+          <Box sx={{ my: 3 }} />
+
+          <DetailSection
+            title="Pricing Information"
+            itemPerRow={3}
+            data={priceData}
+          />
         </Paper>
+
+        {/* Action Buttons */}
+        <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end" }}>
+          <Button onClick={handleGoBack} variant="outlined">
+            Back
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleBookFlight}
+            disabled={flight.status === "cancelled"}
+          >
+            Book This Flight
+          </Button>
+        </Box>
       </>
     );
-  }, []);
+  }, [
+    flight,
+    handleGoBack,
+    handleBookFlight,
+    scheduleData,
+    airportData,
+    cancellationData,
+    priceData,
+  ]);
 
   return (
-    <BaseModal
-      open={open}
-      onClose={onClose}
-      title={`원본 데이터, 통계 데이터 학습 Seq${flight?.flightId} 상세 정보`}
-      Icon={PrivacyTipIcon}
-      slots={{ content: renderContent(), actions: renderActions() }}
-      // fullWidth
-      // sx={{ maxWidth: "50rem" }}
-    />
+    <Container maxWidth="lg" sx={{ py: 4 }}>
+      {renderBreadcrumbs()}
+      {renderContent()}
+    </Container>
   );
 };
 
-export default memo(FlightDetailModal);
+export default memo(FlightDetailPage);

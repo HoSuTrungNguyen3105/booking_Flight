@@ -23,13 +23,14 @@ import InputTextField from "../../common/Input/InputTextField";
 import SelectDropdown, {
   type ActionType,
 } from "../../common/Dropdown/SelectDropdown";
+import { Loading } from "../../common/Loading/Loading";
 
 interface IModalStatisticalDataLearningProps {
   open: boolean;
   onClose: () => void;
   onSuccess: () => void;
-  user?: UserData;
   flightId: number;
+  loading: boolean;
 }
 
 const CreateSeatModal = ({
@@ -37,7 +38,7 @@ const CreateSeatModal = ({
   onClose,
   flightId,
   onSuccess,
-  user,
+  loading,
 }: IModalStatisticalDataLearningProps) => {
   const { refetchSeatCreate } = useSeatCreate();
   const [createFormOpen, setCreateFormOpen] = useState(false);
@@ -48,6 +49,10 @@ const CreateSeatModal = ({
     flightId: flightId,
     isBooked: false,
   });
+
+  if (loading) {
+    return <Loading />;
+  }
 
   const renderActions = useCallback(() => {
     return (
@@ -60,7 +65,7 @@ const CreateSeatModal = ({
         </Button>
       </Box>
     );
-  }, [user?.id, onSuccess]);
+  }, [onSuccess]);
   const columnActions: ActionType[] = [
     {
       value: "A",
@@ -127,7 +132,7 @@ const CreateSeatModal = ({
         </Box>
       </>
     );
-  }, [user?.id]);
+  }, []);
 
   return (
     <BaseModal

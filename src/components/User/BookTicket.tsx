@@ -131,7 +131,6 @@ const BookTicket = () => {
               </Grid>
 
               {/* Middle column */}
-              {/* <Grid container spacing={3}> */}
               <Grid size={12}>
                 <FormRow label="Departure Airport">
                   <Dropdown
