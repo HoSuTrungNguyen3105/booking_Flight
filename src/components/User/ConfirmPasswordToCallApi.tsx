@@ -57,7 +57,7 @@ const ConfirmPasswordToCallApiModal = ({
           onClose();
         }
       } else {
-        setError(response.resultMessage || "Mật khẩu không chính xác");
+        setError(response.resultMessage || "Đã xảy ra lỗi khi xác thực");
       }
     } catch (error) {
       console.error("Password verification error:", error);

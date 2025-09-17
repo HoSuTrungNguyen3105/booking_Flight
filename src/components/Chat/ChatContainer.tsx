@@ -3,12 +3,14 @@ import { io } from "socket.io-client";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import SearchUser from "./SearchUser";
-import MessageList from "./MessageList";
+import MessageList, { type Message } from "./MessageList";
 import MessageInput from "./MessageInput";
 import { alpha, Box, Paper } from "@mui/material";
 import type { BaseUserData } from "../../utils/type";
 import theme from "../../scss/theme";
 import ChatSidebar from "./ChatSidebar";
+import { useChat } from "../../context/ChatContext";
+import { useSocket } from "../../context/use[custom]/useSocket";
 
 const socket = io("http://localhost:3000");
 
@@ -17,19 +19,20 @@ interface User {
   name: string;
 }
 
-interface Message {
-  id: string;
-  senderId: string;
-  receiverId: string;
-  content: string;
-  createdAt: string;
-}
+// interface Message {
+//   id: number;
+//   senderId: string;
+//   receiverId: string;
+//   content: string;
+//   createdAt: string;
+// }
 
 const ChatContainer: React.FC = () => {
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  //   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  //   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const navigate = useNavigate();
+  const { currentUser, selectedUser } = useChat();
 
   useEffect(() => {
     // const token = localStorage.getItem("token");
@@ -43,7 +46,7 @@ const ChatContainer: React.FC = () => {
 
     // Listen for new messages
     socket.on("newMessage", (message: Message) => {
-      if (message.senderId === currentUser?.id) return; // Ignore messages sent by the current user
+      //   if (message.senderId === currentUser?.id) return; // Ignore messages sent by the current user
       setMessages((prevMessages) => [...prevMessages, message]);
     });
 
@@ -52,6 +55,63 @@ const ChatContainer: React.FC = () => {
       socket.off("newMessage");
     };
   }, [navigate, currentUser]);
+
+  //    const [messages, setMessages] = useState<Message[]>([]);
+  const [newMessage, setNewMessage] = useState("");
+
+  // Hook để nhận tin nhắn mới
+  const { data: incomingMessage, isConnected } = useSocket<Message>({
+    event: "new_message",
+    autoListen: true,
+    userId: currentUser?.id,
+    onSuccess: (message) => {
+      setMessages((prev) => [...prev, message]);
+    },
+  });
+
+  console.log("incomingMessage", incomingMessage);
+
+  // Hook để gửi tin nhắn
+  const { emit: sendMessage, loading: sending } = useSocket({
+    event: "send_message",
+    autoListen: false,
+  });
+
+  // Hook để nhận danh sách người dùng online
+  useSocket<number[]>({
+    event: "online_users",
+    autoListen: true,
+    onSuccess: (userIds) => {
+      // Cập nhật danh sách người dùng online trong context
+      // setOnlineUsers(userIds); // Sẽ thực hiện trong useEffect riêng
+    },
+  });
+
+  // Fetch tin nhắn cũ khi chọn user khác
+  useEffect(() => {
+    if (currentUser && selectedUser) {
+      // Gọi API để lấy tin nhắn cũ
+      fetch(`/api/messages/${currentUser.id}/${selectedUser.id}`)
+        .then((res) => res.json())
+        .then((data) => setMessages(data))
+        .catch((err) => console.error("Error fetching messages:", err));
+    }
+  }, [currentUser, selectedUser]);
+
+  const handleSendMessage = () => {
+    if (!newMessage.trim() || !currentUser || !selectedUser || sending) return;
+
+    sendMessage(
+      {
+        content: newMessage,
+        senderId: currentUser.id,
+        receiverId: selectedUser.id,
+      },
+      () => {
+        setNewMessage("");
+      }
+    );
+  };
 
   const handleUserSelect = async (user: BaseUserData) => {
     // setSelectedUser(user);
@@ -66,30 +126,30 @@ const ChatContainer: React.FC = () => {
     // }
   };
 
-  const handleSendMessage = async (content: string) => {
-    if (!selectedUser || !currentUser || content.trim() === "") return;
+  //   const handleSendMessage = async (content: string) => {
+  //     if (!selectedUser || !currentUser || content.trim() === "") return;
 
-    const message = {
-      id: Date.now().toString(),
-      senderId: currentUser.id,
-      receiverId: selectedUser.id,
-      content,
-      createdAt: new Date().toISOString(),
-    };
+  //     const message = {
+  //       id: Date.now().toString(),
+  //       senderId: currentUser.id,
+  //       receiverId: selectedUser.id,
+  //       content,
+  //       createdAt: new Date().toISOString(),
+  //     };
 
-    try {
-      await axios.post("http://localhost:4000/messages", message);
-      socket.emit("sendMessage", message);
-      setMessages((prevMessages) => [...prevMessages, message]);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  //     try {
+  //       await axios.post("http://localhost:3000/messages", message);
+  //       socket.emit("sendMessage", message);
+  //     //   setMessages((prevMessages) => [...prevMessages, message]);
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   };
 
   return (
     <Box display="flex" height="89vh">
       {/* Sidebar bên trái */}
-      <Box
+      {/* <Box
         width="300px"
         sx={{
           borderRight: `1px solid ${theme.palette.divider}`,
@@ -99,8 +159,9 @@ const ChatContainer: React.FC = () => {
           //   )} 0%, ${alpha(theme.palette.primary.main, 0.05)} 100%)`,
         }}
       >
-        <ChatSidebar />
-      </Box>
+      </Box> */}
+
+      <ChatSidebar />
 
       {/* Phần chính bên phải */}
       <Box flex={1} display="flex" flexDirection="column" p={2}>
@@ -143,7 +204,7 @@ const ChatContainer: React.FC = () => {
         >
           <MessageList
             messages={messages}
-            currentUser={{ id: currentUser?.id as string }}
+            currentUser={{ id: currentUser?.id as number }}
           />
         </Box>
 

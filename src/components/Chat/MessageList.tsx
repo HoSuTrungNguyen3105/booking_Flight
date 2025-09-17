@@ -1,16 +1,16 @@
 import React from "react";
 import { Box, Paper, Typography } from "@mui/material";
 
-interface Message {
-  id: string;
+export interface Message {
+  id: number;
   content: string;
-  senderId: string;
+  senderId: number;
   timestamp?: string;
 }
 
 interface MessageListProps {
   messages: Message[];
-  currentUser: { id: string };
+  currentUser: { id: number };
 }
 
 const MessageList: React.FC<MessageListProps> = ({ messages, currentUser }) => {

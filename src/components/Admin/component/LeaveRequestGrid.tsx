@@ -7,6 +7,7 @@ import {
   useTheme,
   useMediaQuery,
   Button,
+  Stack,
 } from "@mui/material";
 import { type GridColDef, type GridRenderCellParams } from "@mui/x-data-grid";
 import TableData from "../../../common/DataGrid/index";
@@ -168,9 +169,33 @@ const LeaveRequestGrid = () => {
   ];
 
   const statuses = [
-    { key: "PENDING", label: "Pending", color: "warning" as const },
-    { key: "APPROVED", label: "Approved", color: "success" as const },
-    { key: "REJECTED", label: "Rejected", color: "error" as const },
+    {
+      key: "PENDING",
+      label: "Pending",
+      sx: {
+        bgcolor: "warning.light",
+        color: "warning.dark",
+        fontWeight: 500,
+      },
+    },
+    {
+      key: "APPROVED",
+      label: "Approved",
+      sx: {
+        bgcolor: "success.light",
+        color: "success.dark",
+        fontWeight: 500,
+      },
+    },
+    {
+      key: "REJECTED",
+      label: "Rejected",
+      sx: {
+        bgcolor: "error.light",
+        color: "error.dark",
+        fontWeight: 500,
+      },
+    },
   ];
 
   const [onCreateRequest, setOnCreateRequest] = useState(false);
@@ -185,15 +210,8 @@ const LeaveRequestGrid = () => {
   }
 
   return (
-    <Paper
-      elevation={2}
-      sx={{
-        p: 3,
-        borderRadius: 2,
-        backgroundColor: "white",
-      }}
-    >
-      <Box mb={2}>
+    <>
+      <Stack>
         <Typography variant="h5" fontWeight="bold" color="primary.main">
           Danh sách đơn xin nghỉ phép
         </Typography>
@@ -208,17 +226,9 @@ const LeaveRequestGrid = () => {
             </Button>
           </Box>
         )}
-      </Box>
+      </Stack>
 
-      <Box
-        mt={3}
-        p={2}
-        sx={{
-          backgroundColor: "grey.50",
-          borderRadius: 2,
-          border: `1px solid ${theme.palette.divider}`,
-        }}
-      >
+      <Box p={2}>
         <Typography variant="subtitle2" fontWeight="bold" mb={1}>
           Thống kê nhanh
         </Typography>
@@ -231,7 +241,16 @@ const LeaveRequestGrid = () => {
 
             return (
               <Box key={status.key} display="flex" alignItems="center" gap={1}>
-                <Chip label={count} color={status.color} size="small" />
+                <Chip
+                  label={status.label}
+                  sx={{
+                    ...status.sx,
+                    borderRadius: "8px",
+                    fontSize: "0.875rem",
+                    px: 1,
+                  }}
+                  // size="small"
+                />
                 <Typography variant="body2">{status.label}</Typography>
               </Box>
             );
@@ -253,7 +272,7 @@ const LeaveRequestGrid = () => {
           }}
         />
       )}
-    </Paper>
+    </>
   );
 };
 

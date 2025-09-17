@@ -28,6 +28,7 @@ const ChangeLanguageModal = ({
     pendingLang,
     pendingPayMoney,
     optionLanguage,
+    cancelChanges,
     currencyOptions,
   } = useChangeLanguage();
 
@@ -39,6 +40,9 @@ const ChangeLanguageModal = ({
   const renderActions = useCallback(() => {
     return (
       <Box mr={2} display="flex" justifyContent="flex-end" alignItems="center">
+        <Button variant="outlined" onClick={cancelChanges}>
+          {t("cancel")}
+        </Button>
         <Button variant="contained" onClick={handleSaveChange}>
           {t("submit")}
         </Button>

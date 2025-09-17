@@ -42,7 +42,7 @@ const SampleDatePicker: React.FC = () => {
         <Button
           data-testid="language-button-ko"
           variant="contained"
-          onClick={() => changeLanguage("kr")}
+          onClick={() => changeLanguage("ko")}
         >
           Korean
         </Button>

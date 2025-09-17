@@ -67,7 +67,7 @@ const PayrollManagement = () => {
     {
       id: 1,
       employeeId: 1,
-      month: 12,
+      month: 2,
       year: 2024,
       baseSalary: 50000000,
       allowances: 5000000,
@@ -100,16 +100,17 @@ const PayrollManagement = () => {
       field: "employee",
       headerName: "Nhân viên",
       flex: 1,
-      renderCell: (params) => (
-        <Stack spacing={0.5}>
-          <Typography variant="subtitle2">
-            {params.row.employee.name}
-          </Typography>
-          <Typography variant="caption" color="text.secondary">
-            {params.row.employee.employeeNo}
-          </Typography>
-        </Stack>
-      ),
+      renderCell: (params) => params.row.employee.name,
+      //    (
+      //   <Stack spacing={0.5}>
+      //     <Typography variant="subtitle2">
+      //       {params.row.employee.name}
+      //     </Typography>
+      //     <Typography variant="caption" color="text.secondary">
+      //       {params.row.employee.employeeNo}
+      //     </Typography>
+      //   </Stack>
+      // ),
     },
     {
       field: "period",
@@ -117,7 +118,7 @@ const PayrollManagement = () => {
       flex: 1,
       renderCell: (params) => (
         <Typography>
-          {params.row.month}/{params.row.year}
+          {String(params.row.month).padStart(2, "0")}/{params.row.year}
         </Typography>
       ),
     },

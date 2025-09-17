@@ -88,6 +88,7 @@ export type SearchType = FlightTimeFields &
 //   FlightLocationFields &
 //   FlightBasicFields;
 // export type CreateDataFlight = <Flight>;
+
 export type AvailableAircraft = FlightTimeFields;
 
 export type Aircraft = {

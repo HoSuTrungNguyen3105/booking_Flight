@@ -2,9 +2,6 @@ import type { AxiosRequestConfig } from "axios";
 import { useApi } from "../../context/ApiContext";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MethodType } from "../../utils/type";
-import { useAuth } from "../AuthContext";
-import { useToast } from "../ToastContext";
-import { useNavigate } from "react-router-dom";
 
 type ResponseMessage = {
   resultCode?: string;

@@ -14,11 +14,13 @@ import {
   Avatar,
   Divider,
   Button,
+  Stack,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import type { BaseUserData } from "../../utils/type";
 import SidebarSkeleton from "./SidebarSkeleton";
 import { Message } from "@mui/icons-material";
+import InputTextField from "../../common/Input/InputTextField";
 type UserWithMess = {
   user?: BaseUserData;
   isContactsLoading?: number[];
@@ -53,16 +55,21 @@ const ChatSidebar = ({ user, isContactsLoading }: UserWithMess) => {
   if (isContactsLoading) return <SidebarSkeleton />;
 
   return (
-    <Box
-      component="aside"
+    <Stack
+      overflow="hidden"
+      direction="column"
       sx={{
         height: "100%",
-        // width: { xs: 100, lg: 280 },
+        transition: "width 200ms",
+        // overflow: "hidden",
+        scrollbarWidth: "none",
+        "&::-webkit-scrollbar": {
+          width: 6,
+        },
         borderRight: "1px solid",
         borderColor: "divider",
-        display: "flex",
-        flexDirection: "column",
-        // transition: "all 0.2s ease-in-out",
+        // display: "flex",
+        // flexDirection: "column",
       }}
     >
       <Button
@@ -78,16 +85,13 @@ const ChatSidebar = ({ user, isContactsLoading }: UserWithMess) => {
           borderBottom: "1px solid",
           borderColor: "divider",
           width: "100%",
-          p: 2,
         }}
       >
         <Box display="flex" alignItems="center" gap={2} mb={2}>
           <Box
             sx={{
-              p: 1,
               bgcolor: "white",
               borderRadius: "50%",
-              boxShadow: 2,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -96,7 +100,6 @@ const ChatSidebar = ({ user, isContactsLoading }: UserWithMess) => {
             <Message />
           </Box>
           <Typography
-            variant="h6"
             fontWeight="600"
             sx={{ display: { xs: "none", lg: "block" } }}
           >
@@ -104,20 +107,16 @@ const ChatSidebar = ({ user, isContactsLoading }: UserWithMess) => {
           </Typography>
         </Box>
 
-        {/* Input tìm kiếm */}
-        <TextField
-          fullWidth
-          variant="outlined"
-          size="small"
+        <InputTextField
           placeholder="Nhập tên người dùng để tìm kiếm..."
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={(e) => setSearchQuery(e)}
           sx={{
+            pr: 2,
             "& .MuiOutlinedInput-root": { borderRadius: 2 },
           }}
         />
 
-        {/* Checkbox lọc online */}
         <Box
           mt={2}
           display={{ xs: "none", lg: "flex" }}
@@ -141,7 +140,6 @@ const ChatSidebar = ({ user, isContactsLoading }: UserWithMess) => {
         </Box>
       </Box>
 
-      {/* Danh sách contacts */}
       <Box flex={1} overflow="auto" py={1}>
         {/* {filteredContacts.length > 0 ? (
           <List disablePadding>
@@ -221,7 +219,7 @@ const ChatSidebar = ({ user, isContactsLoading }: UserWithMess) => {
           </Typography>
         )} */}
       </Box>
-    </Box>
+    </Stack>
   );
 };
 

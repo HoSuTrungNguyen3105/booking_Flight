@@ -1,10 +1,9 @@
 import { Chip, Box, Button, Typography } from "@mui/material";
 import type { GridColDef } from "@mui/x-data-grid";
-import TableData from "../DataGrid/index";
+import TableData, { type GridRowDef } from "../DataGrid/index";
 import { useGetUnlockRequests } from "../../components/Api/useGetApi";
-import { useCallback, useMemo } from "react";
-import SingleDateRangePickerComponent from "../DayPicker/date-range-field";
-import { useToast } from "../../context/ToastContext";
+import { useCallback, useMemo, useState } from "react";
+import TableSection from "../Setting/TableSection";
 
 enum TypeColor {
   REJECTED = "REJECTED",
@@ -14,6 +13,7 @@ enum TypeColor {
 
 const UnlockRequestTable = () => {
   const { getUnlockRequests } = useGetUnlockRequests();
+  const [unlockRows, setUnlockRows] = useState<GridRowDef[]>([]);
 
   const rowData = useMemo(
     () =>
@@ -105,23 +105,16 @@ const UnlockRequestTable = () => {
     },
   ];
 
-  const toast = useToast();
-
   return (
     <Box sx={{ height: 400, width: "100%" }}>
       <Typography variant="h6" fontWeight="bold" mb={2}>
         Unlock Request
       </Typography>
-      <TableData rows={rowData} columns={columns} />
-
-      <SingleDateRangePickerComponent
-        language="vn"
-        sx={{ mb: 2 }}
-        value={[1745388800.078, 1704067199.999]}
-        onChange={(dateRange) => {
-          toast(String(dateRange[1]), "info");
-          toast(String(dateRange[0]), "info");
-        }}
+      <TableSection
+        isLoading={false}
+        setRows={setUnlockRows}
+        rows={rowData}
+        columns={columns}
       />
     </Box>
   );

@@ -122,7 +122,7 @@ const AdditionalServicesPage: React.FC = () => {
             Hành lý ký gửi
           </Typography>
 
-          <Grid container spacing={2}>
+          {/* <Grid container spacing={2}>
             {services
               .filter((s) => s.id.includes("luggage"))
               .map((service) => (
@@ -180,7 +180,7 @@ const AdditionalServicesPage: React.FC = () => {
                   />
                 </Grid>
               ))}
-          </Grid>
+          </Grid> */}
         </CardContent>
       </Card>
 

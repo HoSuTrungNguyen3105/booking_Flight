@@ -154,7 +154,7 @@ const ManageLayout = () => {
       sx={{
         height: "100vh",
         transition: "width 200ms",
-        overflow: "auto",
+        overflow: "hidden",
         scrollbarWidth: "none",
         "&::-webkit-scrollbar": {
           width: 6,

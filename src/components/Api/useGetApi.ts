@@ -1,7 +1,6 @@
 import {
   type FlightDetailApiResponse,
   type CodeItem,
-  type SearchType,
   type UserListManageResponse,
   type UserData,
   type DetailResponseMessage,
@@ -16,7 +15,6 @@ import {
   type ReqUserIDProps,
   MethodType,
 } from "../../utils/type.ts";
-import React from "react";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
 import { useFetch } from "../../context/use[custom]/useFetch.ts";
 
@@ -39,86 +37,7 @@ export const mapToDropdown = (
     value: item[valueKey] || "",
   }));
 };
-export const useFlightCode = (
-  resetField?: (name: keyof SearchType) => void,
-  getValues?: (name: keyof SearchType) => any
-) => {
-  const [airport, setAirport] = React.useState<DropdownOptions[]>([]);
-  const [aircraft, setAircraft] = React.useState<DropdownOptions[]>([]);
-  const [airportName, setAirportName] = React.useState<DropdownOptions[]>([]);
-  const [airportAName, setAirportAName] = React.useState<DropdownOptions[]>([]);
-  const [aircraftName, setAircraftName] = React.useState<DropdownOptions[]>([]);
-  const [status, setStatus] = React.useState<DropdownOptions[]>([]);
-  const [fareConditions, setFareConditions] = React.useState<DropdownOptions[]>(
-    []
-  );
-  const [optionAirportCode, setOptionAirportCode] = React.useState<
-    DropdownOptions[]
-  >([]);
-  const [departureAirportList, setDepartureAirportList] = React.useState<
-    DropdownOptions[]
-  >([]);
-  const [arrivalAirportList, setArrivalAirportList] = React.useState<
-    DropdownOptions[]
-  >([]);
-  const [errorFetch, setErrorFetch] = React.useState<string | null>(null);
-  const { data: aircraftData } = useFetch<FlightDetailApiResponse, CodeItem>({
-    url: "/sys/flights/getAircraftCode",
-    params: { code: "", codeName: "" },
-    defaultValue: { resultCode: "", resultMessage: "" },
-    autoFetch: true,
-    config: getMethod,
-  });
-  const { data: airportData, refetch: refetchAirportData } = useFetch<
-    FlightDetailApiResponse,
-    CodeItem
-  >({
-    url: "/sys/flights/getAirportCode",
-    params: { code: "", codeName: "", acodeName: "" },
-    autoFetch: true,
-    config: getMethod,
-  });
-  const { data: statusData } = useFetch<FlightDetailApiResponse, CodeItem>({
-    url: "/sys/flights/getStatus",
-    params: { code: "", codeName: "" },
-    autoFetch: true,
-    config: getMethod,
-  });
-  const { data: fareConditionsData } = useFetch<
-    FlightDetailApiResponse,
-    CodeItem
-  >({
-    url: "/sys/flights/getFareConditions",
-    params: { code: "", codeName: "" },
-    autoFetch: true,
-    config: getMethod,
-  });
-  const { data: optionAirportCodeData, refetch: refetchOptionAirport } =
-    useFetch<FlightDetailApiResponse, CodeItem>({
-      url: "",
-      params: { code: "", codeName: "" },
-      autoFetch: false,
-      config: getMethod,
-    });
-  return {
-    airport,
-    airportName,
-    airportAName,
-    aircraft,
-    aircraftName,
-    status,
-    fareConditions,
-    optionAirportCode,
-    optionAirportCodeData,
-    refetchAirportData,
-    departureAirportList,
-    setDepartureAirportList,
-    arrivalAirportList,
-    setArrivalAirportList,
-    errorFetch,
-    mapToDropdown,
-  };
-};
+
 export const useRandomPassword = () => {
   // const isValid = !!id;
   const {
