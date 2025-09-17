@@ -108,7 +108,7 @@ const Search_layout: React.FC = () => {
   const {
     control: controlSearch,
     handleSubmit: handleSearchSubmit,
-    getValues: getValuesSearch,
+    getValues: getValues,
     register: registerSearch,
     reset: resetSearch,
   } = useForm<SearchFlightDto>({
@@ -203,6 +203,23 @@ const Search_layout: React.FC = () => {
     } finally {
       setIsVerifying(false);
     }
+  };
+
+  // const handleInputChange = (name: keyof SearchFlightDto, value: string) => {
+  //   setFlightParams((prev) => ({
+  //     ...prev,
+  //     [name]: value,
+  //   }));
+  // };
+
+  const handleInputChange = <K extends keyof SearchFlightDto>(
+    field: K,
+    value: SearchFlightDto[K]
+  ) => {
+    setFlightParams((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
   };
 
   const handleValidPassword = () => {
@@ -319,17 +336,18 @@ const Search_layout: React.FC = () => {
   ];
 
   const renderDataOption1 = React.useCallback(() => {
-    const currentValues = getValuesSearch(); // Lấy giá trị hiện tại
+    const currentValues = getValues(); // Lấy giá trị hiện tại
 
     const detailInfoProfile: IDetailItem[] = [
       {
         title: "from",
         size: 4,
         description: (
-          <RhfInputTextField
-            registration={registerSearch("from")}
+          <InputTextField
+            name="from"
+            placeholder="e.g., HAN"
             value={currentValues.from} // Truyền value vào
-            placeholder="e.g., SGN"
+            onChange={(e) => handleInputChange("from", e)}
           />
         ),
       },
@@ -337,10 +355,11 @@ const Search_layout: React.FC = () => {
         title: "name",
         size: 4,
         description: (
-          <RhfInputTextField
-            registration={registerSearch("to")}
-            value={currentValues.to} // Truyền value vào
-            placeholder="e.g., SGN"
+          <InputTextField
+            value={flightParams.to}
+            name="to"
+            placeholder="e.g., HAN"
+            onChange={(e) => handleInputChange("to", e)}
           />
         ),
       },
@@ -348,10 +367,10 @@ const Search_layout: React.FC = () => {
         title: "returnDate",
         size: 4,
         description: (
-          <RhfInputTextField
-            registration={registerSearch("returnDate")}
-            value={String(currentValues.returnDate)} // Truyền value vào
-            placeholder="e.g., SGN"
+          <InputTextField
+            value={String(flightParams.returnDate)}
+            name="returnDate"
+            onChange={(e) => handleNumberChange("returnDate", e)}
           />
         ),
       },
@@ -359,10 +378,11 @@ const Search_layout: React.FC = () => {
         title: "passengers",
         size: 6,
         description: (
-          <RhfInputTextField
-            registration={registerSearch("passengers")}
-            value={String(currentValues.passengers)} // Truyền value vào
-            placeholder="e.g., SGN"
+          <InputTextField
+            name="passengers"
+            placeholder="1"
+            value={String(flightParams.passengers)}
+            onChange={(event) => handleNumberChange("passengers", event)}
           />
         ),
       },
@@ -373,14 +393,7 @@ const Search_layout: React.FC = () => {
         <DetailSection data={detailInfoProfile} />
       </Box>
     );
-  }, [registerSearch]);
-
-  const handleInputChange = (name: keyof SearchFlightDto, value: string) => {
-    setFlightParams((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  }, [flightParams]);
 
   // Hàm xử lý thay đổi cho number fields
   const handleNumberChange = (name: keyof SearchFlightDto, value: string) => {
@@ -669,7 +682,7 @@ const Search_layout: React.FC = () => {
               variant="contained"
               startIcon={<SearchIcon />}
               type="submit"
-              // disabled={isSearch}
+              disabled={isSearch}
               size="large"
               sx={{ minWidth: 120 }}
             >

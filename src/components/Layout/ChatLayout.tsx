@@ -1,5 +1,6 @@
 import { Box, Paper, useMediaQuery, useTheme } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import ChatSidebar from "../Chat/ChatSidebar";
 
 const ChatLayout = () => {
   // const { selectedUser } = useChatStore();

@@ -1,33 +1,54 @@
 import React from "react";
+import { Box, Paper, Typography } from "@mui/material";
 
 interface Message {
-  id: string; // Unique identifier for each message
-  content: string; // The content of the message
-  senderId: string; // ID of the user who sent the message
-  timestamp?: string; // Timestamp for the message
+  id: string;
+  content: string;
+  senderId: string;
+  timestamp?: string;
 }
 
 interface MessageListProps {
   messages: Message[];
-  currentUser: { id: string }; // Current user object with an ID
+  currentUser: { id: string };
 }
 
 const MessageList: React.FC<MessageListProps> = ({ messages, currentUser }) => {
   return (
-    <div className=" h-96  mt-52">
-      <div className="message-container flex-1 p-4 ">
-        {messages.map((msg) => (
-          <div
+    <Box
+      height={384}
+      mt={10}
+      p={2}
+      sx={{
+        overflowY: "auto",
+      }}
+    >
+      {messages.map((msg) => {
+        const isOwnMessage = msg.senderId === currentUser.id;
+        return (
+          <Box
             key={msg.id}
-            className={`chat ${
-              msg.senderId === currentUser.id ? "chat-end" : "chat-start"
-            }`}
+            display="flex"
+            justifyContent={isOwnMessage ? "flex-end" : "flex-start"}
+            mb={1}
           >
-            <div className="chat-bubble">{msg.content}</div>
-          </div>
-        ))}
-      </div>
-    </div>
+            <Paper
+              elevation={2}
+              sx={{
+                px: 2,
+                py: 1,
+                borderRadius: 3,
+                maxWidth: "60%",
+                bgcolor: isOwnMessage ? "primary.main" : "grey.300",
+                color: isOwnMessage ? "white" : "black",
+              }}
+            >
+              <Typography variant="body2">{msg.content}</Typography>
+            </Paper>
+          </Box>
+        );
+      })}
+    </Box>
   );
 };
 

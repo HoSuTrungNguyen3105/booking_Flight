@@ -138,6 +138,7 @@ export const useRandomPassword = () => {
     setParamsUser,
   };
 };
+
 export const useFlightById = ({ id }: FlightId) => {
   const isValid = !!id;
   const { data: fetchFlightId, refetch: refetchFlightId } = useFetch<

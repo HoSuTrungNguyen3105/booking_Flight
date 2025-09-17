@@ -33,6 +33,7 @@ import LeaveRequestGrid from "../components/Admin/component/LeaveRequestGrid";
 import PayrollManagement from "../common/Sample/PayrollManagement";
 import DataSecure from "../common/Setting/DataSecure";
 import AdditionalServicesPage from "../common/Sample/AdditionalServicesPage";
+import ChatContainer from "../components/Chat/ChatContainer";
 
 const routes = [
   {
@@ -146,6 +147,10 @@ const routes = [
       {
         path: ROUTE_PATHS.FOOD.replace("/", ""),
         element: <Food />,
+      },
+      {
+        path: "manage/message",
+        element: <ChatContainer />,
       },
       {
         path: "special",
