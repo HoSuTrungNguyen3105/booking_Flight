@@ -1,6 +1,6 @@
 import { useInspectionPerformanceHistory } from "./hooks/useInspectionPerformanceHistory";
 import { Box, Button, Typography } from "@mui/material";
-import DataTable from "../DataGrid/index";
+import DataTable, { type GridRowDef } from "../DataGrid/index";
 import Pagination from "../DataGrid/Pagination";
 import AddUserModal from "./hooks/AddUserModal";
 import { Loading } from "../Loading/Loading";
@@ -11,6 +11,8 @@ import { memo, useState } from "react";
 import AdminUpdateUserModal from "./hooks/AdminUpdateUserModal";
 import UpdateUserForm from "../../components/Admin/component/UpdateUserForm";
 import type { AdminUpdateUserForm } from "../../utils/type";
+import SendEmailToUsers from "./SendEmailToUsers";
+import TableSection from "./TableSection";
 
 const ManageMyInfo = () => {
   const {
@@ -30,6 +32,17 @@ const ManageMyInfo = () => {
     pageInfo,
     sortModel,
   } = useInspectionPerformanceHistory();
+  const [selectedRowIds, setSelectedRowIds] = useState<GridRowDef[]>([]); // State để lưu selected IDs
+  const [selectedRowChange, setSelectedRowCHange] = useState<GridRowDef[]>([]); // State để lưu selected IDs
+
+  const handleMealRowSelection = (selectedIds: any[]) => {
+    setSelectedRowCHange(() => {
+      const newSelectedRows = selectedRowIds.filter((row) =>
+        selectedIds.includes(row.id)
+      );
+      return newSelectedRows;
+    });
+  };
   const [isValidate, setIsValidate] = useState(false);
 
   if (loading) {
@@ -43,6 +56,11 @@ const ManageMyInfo = () => {
         onSuccess={() => setIsValidate(false)}
       />
     );
+  }
+
+  // Nếu có row được chọn để gửi email
+  if (selectedRowChange.length > 0) {
+    return <SendEmailToUsers selectedUser={selectedRowIds} />;
   }
 
   return (
@@ -63,17 +81,22 @@ const ManageMyInfo = () => {
           <Button onClick={() => toggleOpenModal("addUser")} />
         </Typography>
       </Box>
+      {selectedRow?.length}
 
-      <DataTable
-        checkboxSelection={false}
-        onSortModelChange={onSortModelChange}
-        sortModel={sortModel}
-        loading={loading}
+      <TableSection
+        setRows={setSelectedRowIds}
+        isLoading={loading}
+        nextRowClick
+        onSelectedRowIdsChange={handleMealRowSelection}
+        // checkboxSelection={false}
+        // onSortModelChange={onSortModelChange}
+        // sortModel={sortModel}
+        //loading={loading}
         rows={rows}
         columns={columns}
       />
 
-      <Box sx={{ flexShrink: 0 }}>
+      {/* <Box sx={{ flexShrink: 0 }}>
         <Pagination
           totalPage={totalPages}
           totalResult={totalCount}
@@ -82,7 +105,7 @@ const ManageMyInfo = () => {
           pageSize={pageInfo.size}
           onPageSizeChange={onPageSizeChange}
         />
-      </Box>
+      </Box> */}
 
       {openModal.addUser && (
         <AddUserModal

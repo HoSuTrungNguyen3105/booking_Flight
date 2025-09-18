@@ -57,7 +57,7 @@ const ChatContainer: React.FC = () => {
       id: 1,
       content: "Xin chào, bạn khỏe không?",
       createdAt: "1758118858000",
-      senderId: 6,
+      senderId: 69,
       receiverId: 11,
       sender: {
         id: 6,
@@ -175,24 +175,24 @@ const ChatContainer: React.FC = () => {
     );
   };
 
-  const handleUserSelect = async (user: BaseUserData) => {
-    // setSelectedUser(user);
-    // socket.emit("join", { userId: user.id });
-    // try {
-    //   const response = await axios.get(
-    //     `http://localhost:4000/messages/${user.id}`
-    //   );
-    //   setMessages(response.data);
-    // } catch (error) {
-    //   console.error(error);
-    // }
-  };
+  // const handleUserSelect = async (user: BaseUserData) => {
+  //   // setSelectedUser(user);
+  //   // socket.emit("join", { userId: user.id });
+  //   // try {
+  //   //   const response = await axios.get(
+  //   //     `http://localhost:4000/messages/${user.id}`
+  //   //   );
+  //   //   setMessages(response.data);
+  //   // } catch (error) {
+  //   //   console.error(error);
+  //   // }
+  // };
 
   return (
     <Box display="flex" height="89vh">
       <ChatSidebar />
       <Box flex={1} display="flex" flexDirection="column" p={2}>
-        <SearchUser onUserSelect={handleUserSelect} />
+        {/* <SearchUser onUserSelect={handleUserSelect} /> */}
         <Box
           sx={{
             height: "20rem",

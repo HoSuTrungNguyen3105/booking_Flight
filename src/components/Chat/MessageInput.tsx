@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Box, TextField, Button } from "@mui/material";
+import { Box, Button } from "@mui/material";
+import InputTextField from "../../common/Input/InputTextField";
 
 interface MessageInputProps {
   onSendMessage: (content: string) => void;
@@ -16,20 +17,15 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
 
   return (
     <Box
+      p={2}
       display="flex"
       alignItems="center"
-      p={2}
-      px={4}
-      gap={2}
       sx={{ backgroundColor: "#fafafa", borderRadius: 2 }}
     >
-      <TextField
-        fullWidth
+      <InputTextField
         placeholder="Type a message..."
         value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        variant="outlined"
-        size="small"
+        onChange={(e) => setMessage(e)}
         sx={{
           borderRadius: 4,
           backgroundColor: "white",

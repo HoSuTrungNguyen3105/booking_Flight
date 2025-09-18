@@ -94,13 +94,27 @@ const PayrollManagement = () => {
     },
   ];
 
+  const maskValue = (value: string | number) => {
+    if (!value) return "";
+    const str = value.toString();
+    if (str.length <= 3) return str; // nếu ngắn quá thì hiện luôn
+    const visible = str.slice(-3); // lấy 3 ký tự cuối
+    const masked = "*".repeat(str.length - 3);
+    return masked + visible;
+  };
+
+  const [showData, setShowData] = useState(false);
+
   // Data Grid Columns
   const columns: GridColDef[] = [
     {
       field: "employee",
       headerName: "Nhân viên",
       flex: 1,
-      renderCell: (params) => params.row.employee.name,
+      renderCell: (params) =>
+        showData
+          ? params.row.employee.name
+          : maskValue(params.row.employee.name),
       //    (
       //   <Stack spacing={0.5}>
       //     <Typography variant="subtitle2">
@@ -188,9 +202,10 @@ const PayrollManagement = () => {
         [
           <GridActionsCellItem
             icon={<Visibility />}
-            label="Xem chi tiết"
-            onClick={() => handleViewDetails(params.row)}
+            label={showData ? "Ẩn dữ liệu" : "Hiện dữ liệu"}
+            onClick={() => setShowData((prev) => !prev)}
           />,
+
           <GridActionsCellItem
             icon={<Download />}
             label="Tải về"
@@ -331,6 +346,7 @@ const PayrollManagement = () => {
         open={openGenerateDialog}
         onClose={() => setOpenGenerateDialog(false)}
         payrollData={payrollData}
+        setPayrollData={setPayrollData}
         onSuccess={() => setOpenGenerateDialog(false)}
       />
     </Box>

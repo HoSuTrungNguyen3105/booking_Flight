@@ -47,7 +47,6 @@
 //   };
 // };
 
-// // Gửi tin nhắn mới
 // // const sendMessage = (content: string) => {
 // //   emit({ content, userId: currentUser.id });
 // // };

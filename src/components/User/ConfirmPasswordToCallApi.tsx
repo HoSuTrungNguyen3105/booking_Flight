@@ -143,7 +143,7 @@ const ConfirmPasswordToCallApiModal = ({
   return (
     <BaseModal
       open={open}
-      onClose={handleClose}
+      onClose={onCancel}
       title="Xác thực mật khẩu"
       subtitle="Vui lòng nhập mật khẩu để tiếp tục"
       Icon={PrivacyTipIcon}

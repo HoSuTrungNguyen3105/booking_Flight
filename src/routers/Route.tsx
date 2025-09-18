@@ -34,6 +34,7 @@ import PayrollManagement from "../common/Sample/PayrollManagement";
 import DataSecure from "../common/Setting/DataSecure";
 import AdditionalServicesPage from "../common/Sample/AdditionalServicesPage";
 import ChatContainer from "../components/Chat/ChatContainer";
+import Registration from "../components/Auth/Registration";
 
 const routes = [
   {
@@ -57,7 +58,8 @@ const routes = [
         path: "registerPage",
         element: (
           <GuestGuard>
-            <AccountYn />
+            <Registration email="fghdjs" onClose={() => {}} />
+            {/* AccountYn */}
           </GuestGuard>
         ),
       },

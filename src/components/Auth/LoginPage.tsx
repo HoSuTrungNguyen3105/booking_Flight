@@ -7,7 +7,6 @@ import InputTextField from "../../common/Input/InputTextField";
 import MfaSetup from "./MFA";
 import SelectDropdown from "../../common/Dropdown/SelectDropdown";
 import RequestUnlock from "./RequestUnlock";
-import Registration from "./Registration";
 import FindAccount from "./components/FindAccount";
 
 interface ILoginForm {

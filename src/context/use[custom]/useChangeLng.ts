@@ -2,7 +2,6 @@ import { useState } from "react";
 import type { DropdownOptions } from "../../common/Dropdown/type";
 import i18n from "../../i18n";
 import { optionLanguage } from "../../i18n/resource";
-import useLocalStorage from "./useLocalStorage";
 
 const currencyOptions: DropdownOptions[] = [
   { label: "USD ($)", value: "usd" },
@@ -11,23 +10,21 @@ const currencyOptions: DropdownOptions[] = [
 ];
 
 export const useChangeLanguage = () => {
-  const [language, setLanguage] = useLocalStorage<string>(
-    "language",
-    (optionLanguage[0]?.value as string) || "en"
+  const [selectedLang, setSelectedLang] = useState<DropdownOptions | null>(
+    optionLanguage.find((o) => o.value === localStorage.getItem("language")) ||
+      null
   );
 
-  const [currency, setCurrency] = useLocalStorage<string>(
-    "currency",
-    (currencyOptions[0]?.value as string) || "usd"
-  );
+  const [selectedPayMoney, setSelectedPayMoney] =
+    useState<DropdownOptions | null>(
+      currencyOptions.find(
+        (o) => o.value === localStorage.getItem("currencyOptions")
+      ) || currencyOptions[0]
+    );
 
   const [pendingLang, setPendingLang] = useState<DropdownOptions | null>(null);
   const [pendingPayMoney, setPendingPayMoney] =
     useState<DropdownOptions | null>(null);
-
-  const selectedLang = optionLanguage.find((o) => o.value === language) || null;
-  const selectedPayMoney =
-    currencyOptions.find((o) => o.value === currency) || currencyOptions[0];
 
   const handleLanguageSelect = (newValue: string | number) => {
     const selected = optionLanguage.find((o) => o.value === newValue);
@@ -41,25 +38,25 @@ export const useChangeLanguage = () => {
     setPendingPayMoney(selected);
   };
 
+  const cancelChanges = () => {
+    setPendingLang(null);
+    setPendingPayMoney(null);
+  };
+
   const confirmSaveChange = () => {
     if (pendingPayMoney) {
-      const pdPayMoney = String(pendingPayMoney.value);
-      setCurrency(String(pdPayMoney));
+      setSelectedPayMoney(pendingPayMoney);
+      localStorage.setItem("paymoney", String(pendingPayMoney.value));
       setPendingPayMoney(null);
     }
 
     if (pendingLang) {
+      setSelectedLang(pendingLang);
       const lng = String(pendingLang.value);
-      setLanguage(lng);
       i18n.changeLanguage(lng);
+      localStorage.setItem("language", lng);
       setPendingLang(null);
     }
-  };
-
-  // Hủy thay đổi pending
-  const cancelChanges = () => {
-    setPendingLang(null);
-    setPendingPayMoney(null);
   };
 
   return {
@@ -73,7 +70,6 @@ export const useChangeLanguage = () => {
     handlePayMoneySelect,
 
     confirmSaveChange,
-    cancelChanges, // Thêm hàm hủy
 
     optionLanguage,
     currencyOptions,

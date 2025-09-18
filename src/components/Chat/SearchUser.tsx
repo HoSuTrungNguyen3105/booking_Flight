@@ -8,47 +8,52 @@ import {
   ListItemButton,
   ListItemText,
   Typography,
+  Stack,
 } from "@mui/material";
 import type { BaseUserData } from "../../utils/type";
+import InputTextField from "../../common/Input/InputTextField";
 
 interface SearchUserProps {
   onUserSelect: (user: BaseUserData) => void;
 }
+const mockUsers: BaseUserData[] = [
+  { name: "Nguyễn Văn A", email: "a@example.com", password: "" },
+  { name: "Nguyễn Văn A", email: "a@example.com", password: "" },
+  { name: "Nguyễn Văn A", email: "a@example.com", password: "" },
+  { name: "Nguyễn Văn A", email: "a@example.com", password: "" },
+  { name: "Nguyễn Văn A", email: "a@example.com", password: "" },
+];
 
 const SearchUser: React.FC<SearchUserProps> = ({ onUserSelect }) => {
   const [search, setSearch] = useState("");
-  const [users, setUsers] = useState<BaseUserData[]>([]);
+  const [users, setUsers] = useState<BaseUserData[]>(mockUsers);
 
-  const handleSearch = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:4000/users?search=${search}`
-      );
-      setUsers(response.data);
-    } catch (error) {
-      console.error(error);
-    }
+  const handleSearch = () => {
+    const filtered = users.filter((user) =>
+      user?.name?.toLowerCase().includes(search.toLowerCase())
+    );
+    setUsers(filtered);
   };
 
+  // const handleSearch = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       `http://localhost:4000/users?search=${search}`
+  //     );
+  //     setUsers(response.data);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+
   return (
-    <Box p={2} height={160} overflow="auto">
+    <Box p={2} width={"100%"} height={50}>
       {/* Thanh tìm kiếm */}
       <Box display="flex" gap={2} alignItems="center">
-        <TextField
-          fullWidth
-          variant="outlined"
-          size="small"
+        <InputTextField
           placeholder="Search users..."
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          InputProps={{
-            sx: {
-              borderRadius: 3,
-              bgcolor: "black",
-              color: "white",
-              input: { color: "white" },
-            },
-          }}
+          onChange={(e) => setSearch(e)}
         />
         <Button
           variant="contained"
@@ -58,31 +63,34 @@ const SearchUser: React.FC<SearchUserProps> = ({ onUserSelect }) => {
         >
           Search
         </Button>
-      </Box>
 
-      {/* Danh sách user */}
-      <List sx={{ mt: 2, maxHeight: 100, overflow: "auto" }}>
-        {users.map((user) => (
-          <ListItemButton
-            key={user.email}
-            onClick={() => onUserSelect(user)}
-            sx={{
-              bgcolor: "error.light",
-              borderRadius: "50px",
-              mb: 1,
-              "&:hover": { bgcolor: "error.main" },
-            }}
-          >
-            <ListItemText
-              primary={
-                <Typography variant="body2" color="white" fontStyle="italic">
-                  {user.name}
-                </Typography>
-              }
-            />
-          </ListItemButton>
-        ))}
-      </List>
+        {/* Danh sách user */}
+        <List sx={{ mt: 2 }}>
+          {users.map((user) => (
+            <Stack direction="row" spacing={1} flexWrap="wrap">
+              {user.name}
+            </Stack>
+            // <ListItemButton
+            //   key={user.email}
+            //   onClick={() => onUserSelect(user)}
+            //   sx={{
+            //     bgcolor: "error.light",
+            //     borderRadius: "50px",
+            //     mb: 1,
+            //     "&:hover": { bgcolor: "error.main" },
+            //   }}
+            // >
+            //   <ListItemText
+            //     primary={
+            //       <Typography variant="body2" color="white" fontStyle="italic">
+            //         {user.name}
+            //       </Typography>
+            //     }
+            //   />
+            // </ListItemButton>
+          ))}
+        </List>
+      </Box>
     </Box>
   );
 };

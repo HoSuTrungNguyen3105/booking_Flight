@@ -21,6 +21,7 @@ import type { BaseUserData } from "../../utils/type";
 import SidebarSkeleton from "./SidebarSkeleton";
 import { Message } from "@mui/icons-material";
 import InputTextField from "../../common/Input/InputTextField";
+import SearchUser from "./SearchUser";
 type UserWithMess = {
   user?: BaseUserData;
   isContactsLoading?: number[];
@@ -51,6 +52,19 @@ const ChatSidebar = ({ user, isContactsLoading }: UserWithMess) => {
 
   //     return matchesSearch && (showOnlineOnly ? isOnline : true);
   //   });
+
+  const handleUserSelect = async (user: BaseUserData) => {
+    // setSelectedUser(user);
+    // socket.emit("join", { userId: user.id });
+    // try {
+    //   const response = await axios.get(
+    //     `http://localhost:4000/messages/${user.id}`
+    //   );
+    //   setMessages(response.data);
+    // } catch (error) {
+    //   console.error(error);
+    // }
+  };
 
   if (isContactsLoading) return <SidebarSkeleton />;
 
@@ -107,7 +121,7 @@ const ChatSidebar = ({ user, isContactsLoading }: UserWithMess) => {
           </Typography>
         </Box>
 
-        <InputTextField
+        {/* <InputTextField
           placeholder="Nhập tên người dùng để tìm kiếm..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e)}
@@ -115,7 +129,8 @@ const ChatSidebar = ({ user, isContactsLoading }: UserWithMess) => {
             pr: 2,
             "& .MuiOutlinedInput-root": { borderRadius: 2 },
           }}
-        />
+        /> */}
+        <SearchUser onUserSelect={handleUserSelect} />
 
         <Box
           mt={2}

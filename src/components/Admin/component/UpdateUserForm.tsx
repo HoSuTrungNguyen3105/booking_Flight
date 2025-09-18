@@ -6,7 +6,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { EmployeeStatus, type AdminUpdateUserForm } from "../../../utils/type";
 import { useUpdateUserFromAdmin } from "../../Api/usePostApi";
@@ -66,16 +66,19 @@ export default function UpdateUserForm({
   const {} = useGetUserById(data.id as number);
   const { refetchUpdateUserFromAdmin } = useUpdateUserFromAdmin();
 
-  const onSubmit = async (formData: AdminUpdateUserForm) => {
-    try {
-      await refetchUpdateUserFromAdmin(formData);
-      toast(`Cập nhật nhân viên #${formData.id} thành công`, "success");
-      onSuccess();
-    } catch (error) {
-      console.error("Error updating user:", error);
-      toast("Cập nhật thất bại", "error");
-    }
-  };
+  const onSubmit = useCallback(
+    async (formData: AdminUpdateUserForm) => {
+      try {
+        await refetchUpdateUserFromAdmin(formData);
+        toast(`Cập nhật nhân viên #${formData.id} thành công`, "success");
+        onSuccess();
+      } catch (error) {
+        console.error("Error updating user:", error);
+        toast("Cập nhật thất bại", "error");
+      }
+    },
+    [onSuccess, refetchUpdateUserFromAdmin]
+  );
 
   return (
     <Box

@@ -3,7 +3,7 @@ import type { GridRowDef } from "../DataGrid";
 import DataTable from "../DataGrid/index";
 import useClientPagination from "../../context/use[custom]/useClientPagination";
 import type { GridColDef, GridRowId } from "@mui/x-data-grid";
-import { memo, useCallback, useMemo, useState } from "react";
+import { memo, useCallback, useState } from "react";
 import Pagination from "../DataGrid/Pagination";
 
 type ITableSectionProps = {
@@ -14,7 +14,7 @@ type ITableSectionProps = {
   handleRowClick?: (row: GridRowDef) => void;
   nextRowClick?: boolean;
   largeThan?: boolean;
-  onSelectedRowIdsChange?: (selectedIds: GridRowId[]) => void; // Thêm prop callback mới
+  onSelectedRowIdsChange?: (selectedIds: GridRowId[]) => void; // Callback ra ngoài
 };
 
 const TableSection = ({
@@ -25,9 +25,9 @@ const TableSection = ({
   nextRowClick,
   largeThan,
   isLoading,
-  onSelectedRowIdsChange, // Nhận prop callback
+  onSelectedRowIdsChange,
 }: ITableSectionProps) => {
-  const [selectedRowIds, setSelectedRowIds] = useState<GridRowId[]>([]); // State để lưu selected IDs
+  const [selectedRowIds, setSelectedRowIds] = useState<GridRowId[]>([]);
 
   const {
     totalElements,
@@ -43,18 +43,13 @@ const TableSection = ({
 
   const handleRowSelect = useCallback(
     (selectedIds: Set<GridRowId>) => {
-      // Chuyển Set thành Array
       const selectedIdsArray = Array.from(selectedIds);
-
-      // Cập nhật state selectedRowIds
       setSelectedRowIds(selectedIdsArray);
 
-      // Gọi callback nếu có
-      if (onSelectedRowIdsChange) {
-        onSelectedRowIdsChange(selectedIdsArray);
-      }
+      // Emit ra ngoài nếu có
+      onSelectedRowIdsChange?.(selectedIdsArray);
 
-      // Cập nhật rows với trạng thái checkYn
+      // Cập nhật checkYn cho rows
       setRows((prev) =>
         prev.map((row) => ({
           ...row,
@@ -65,17 +60,10 @@ const TableSection = ({
     [setRows, onSelectedRowIdsChange]
   );
 
-  const selectedRow = useMemo(
-    () => rows?.filter(({ checkYn }) => checkYn).map(({ id }) => id),
-    [rows]
-  );
-
   const handleRowClickDebug = useCallback(
     (row: GridRowDef) => {
       console.log("Row clicked in TableSection:", row);
-      if (handleRowClick) {
-        handleRowClick(row);
-      }
+      handleRowClick?.(row);
     },
     [handleRowClick]
   );
@@ -92,8 +80,8 @@ const TableSection = ({
         <DataTable
           rows={paginatedData}
           columns={columns}
-          checkboxSelection={true}
-          selectedRows={selectedRow}
+          checkboxSelection
+          selectedRows={selectedRowIds}
           onRowClick={handleRowClickDebug}
           onRowSelect={handleRowSelect}
           onSortModelChange={onSortModelChange}
@@ -101,6 +89,7 @@ const TableSection = ({
           sortModel={sortModel}
         />
       </Box>
+
       {nextRowClick && (
         <Box sx={{ flexShrink: 0 }}>
           <Pagination

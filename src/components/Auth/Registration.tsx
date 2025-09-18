@@ -1,12 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Button,
   TextField,
-  Table,
-  TableBody,
+  TableRow,
   TableCell,
   TableContainer,
-  TableRow,
   Paper,
   Box,
   Typography,
@@ -15,170 +13,121 @@ import { useForm, Controller } from "react-hook-form";
 import { useRegisterUser, type PassengerFormData } from "../Api/usePostApi";
 import { useToast } from "../../context/ToastContext";
 import VerifyOpt from "./components/VerifyOpt";
-import { BackHand } from "@mui/icons-material";
+import {
+  AppRegistration,
+  AppRegistrationRounded,
+  BackHand,
+} from "@mui/icons-material";
+import {
+  InputTableWrapperCustom,
+  type HeaderColumn,
+} from "../../common/Table/InputTableWrapper";
+import InputTextField from "../../common/Input/InputTextField";
+
 interface RegisterProps {
   email: string;
   onClose: () => void;
 }
-const Registration = ({ email, onClose }: RegisterProps) => {
+
+const headers: HeaderColumn[] = [
+  // { label: "Field", minWidth: 150 },
+  // { label: "Value", minWidth: 300 },
+];
+
+const Registration = ({ email }: RegisterProps) => {
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm<PassengerFormData>({
-    defaultValues: {
-      email: email,
-    },
+    defaultValues: { email },
   });
+
   const { refetchRegister } = useRegisterUser();
   const [verifyOTPcode, setVerifyOTPcode] = useState(false);
-  // const [email, setEmail] = useState<string | undefined>(undefined);
-  const [userId, setUserId] = useState<number | undefined>(undefined);
+  const [userId, setUserId] = useState<number | null>(null);
   const toast = useToast();
+
   const onSubmit = async (data: PassengerFormData) => {
     try {
       const res = await refetchRegister(data);
-      // console.log("res", res);
       if (res?.resultCode === "00") {
         toast(res.resultMessage);
         setVerifyOTPcode(true);
-        // setEmail(res.data?.email);
-        setUserId(res.data?.userId);
-        // console.log("res", res.data);
+        setUserId(res.data?.userId ?? null);
       } else {
         toast(res?.resultMessage || "Yêu cầu thất bại, vui lòng thử lại.");
-        // onClose();
       }
-    } catch (error) {
+    } catch {
       toast("Có lỗi xảy ra, vui lòng thử lại.");
     }
   };
 
   if (verifyOTPcode) {
-    return <VerifyOpt userId={userId} email={email} />;
+    return <VerifyOpt userId={userId ?? undefined} email={email} />;
   }
 
   return (
     <TableContainer
       component={Paper}
-      sx={{ maxWidth: 700, margin: "auto", mt: 4, p: 3 }}
+      sx={{ maxWidth: 700, mx: "auto", mt: 4, p: 3 }}
     >
       <Typography variant="h6" gutterBottom>
-        <Button onClick={onClose}>
-          <BackHand />
-        </Button>{" "}
+        <AppRegistrationRounded />
         Registration
       </Typography>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Table>
-          <TableBody>
-            <TableRow>
-              <TableCell>Full Name</TableCell>
+      <form onSubmit={handleSubmit(onSubmit)} noValidate>
+        <InputTableWrapperCustom headersColumn={headers} hasCheckbox={false}>
+          {[
+            {
+              name: "name",
+              label: "Full Name",
+              type: "text",
+            },
+            {
+              name: "email",
+              label: "Email",
+              type: "email",
+            },
+            {
+              name: "password",
+              label: "Password",
+              showEyeIcon: true,
+              type: "password",
+            },
+            {
+              name: "phone",
+              label: "Phone",
+              type: "text",
+            },
+            {
+              name: "passport",
+              label: "Passport",
+              type: "text",
+            },
+          ].map(({ name, label, type, showEyeIcon }) => (
+            <TableRow key={name}>
+              <TableCell>{label}</TableCell>
               <TableCell>
                 <Controller
-                  name="name"
+                  name={name as keyof PassengerFormData}
                   control={control}
-                  rules={{ required: "Full name is required" }}
+                  // rules={rules}
                   render={({ field }) => (
-                    <TextField
+                    <InputTextField
                       {...field}
-                      placeholder="Enter your name"
-                      fullWidth
-                      error={!!errors.name}
-                      helperText={errors.name?.message}
+                      showEyeIcon={showEyeIcon}
+                      type={type}
+                      placeholder={`Enter your ${label.toLowerCase()}`}
+                      error={!!errors[name as keyof PassengerFormData]}
                     />
                   )}
                 />
               </TableCell>
             </TableRow>
-
-            <TableRow>
-              <TableCell>Email</TableCell>
-              <TableCell>
-                <Controller
-                  name="email"
-                  control={control}
-                  rules={{
-                    required: "Email is required",
-                    pattern: { value: /^\S+@\S+$/i, message: "Invalid email" },
-                  }}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      // value={email}
-                      placeholder="Enter your email"
-                      fullWidth
-                      error={!!errors.email}
-                      helperText={errors.email?.message}
-                    />
-                  )}
-                />
-              </TableCell>
-            </TableRow>
-
-            <TableRow>
-              <TableCell>Password</TableCell>
-              <TableCell>
-                <Controller
-                  name="password"
-                  control={control}
-                  rules={{ required: "Password is required" }}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      type="password"
-                      placeholder="Enter password"
-                      fullWidth
-                      error={!!errors.password}
-                      helperText={errors.password?.message}
-                    />
-                  )}
-                />
-              </TableCell>
-            </TableRow>
-
-            <TableRow>
-              <TableCell>Phone</TableCell>
-              <TableCell>
-                <Controller
-                  name="phone"
-                  control={control}
-                  rules={{ required: "Phone is required" }}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      placeholder="Enter phone number"
-                      fullWidth
-                      error={!!errors.phone}
-                      helperText={errors.phone?.message}
-                    />
-                  )}
-                />
-              </TableCell>
-            </TableRow>
-
-            <TableRow>
-              <TableCell>Passport</TableCell>
-              <TableCell>
-                <Controller
-                  name="passport"
-                  control={control}
-                  rules={{ required: "Passport is required" }}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      placeholder="Enter passport number"
-                      fullWidth
-                      error={!!errors.passport}
-                      helperText={errors.passport?.message}
-                    />
-                  )}
-                />
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
+          ))}
+        </InputTableWrapperCustom>
 
         <Box sx={{ mt: 3, textAlign: "center" }}>
           <Button variant="contained" color="primary" type="submit">

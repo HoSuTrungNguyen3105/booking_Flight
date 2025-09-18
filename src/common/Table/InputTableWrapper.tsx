@@ -17,22 +17,21 @@ export type HeaderColumn = {
   width?: number | string;
   minWidth?: number | string;
 };
-export interface InputTableProps<T extends TInfoTableTemp> {
+export interface InputTableProps {
   headersColumn: HeaderColumn[];
   children: React.ReactNode;
   hasCheckbox?: boolean;
   isSelectedAll?: boolean;
   handleSelectAll?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  data?: T;
 }
 
-export const InputTableWrapperCustom = <T extends TInfoTableTemp>({
+export const InputTableWrapperCustom = ({
   headersColumn,
   children,
   hasCheckbox = true,
   isSelectedAll,
   handleSelectAll,
-}: InputTableProps<T>) => {
+}: InputTableProps) => {
   const { t } = useTranslation();
   return (
     <Table>
@@ -40,14 +39,13 @@ export const InputTableWrapperCustom = <T extends TInfoTableTemp>({
         <TableRow>
           {hasCheckbox && (
             <TableCell sx={{ width: 51 }}>
-              <Checkbox checked={isSelectedAll} onChange={handleSelectAll} />
+              <Checkbox checked={!!isSelectedAll} onChange={handleSelectAll} />
             </TableCell>
           )}
           {headersColumn.map(({ label, width, minWidth }) => (
             <TableCell
               key={label}
-              sx={{ minWidth, width }}
-              style={{ flexShrink: 0, marginTop: "-4px" }}
+              sx={{ minWidth, width, flexShrink: 0, mt: "-4px" }}
             >
               {t(label)}
             </TableCell>

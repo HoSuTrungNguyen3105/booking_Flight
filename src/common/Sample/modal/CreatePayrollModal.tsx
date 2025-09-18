@@ -5,18 +5,21 @@ import {
   Button,
   TextField,
   FormControl,
-  InputLabel,
   Alert,
 } from "@mui/material";
-import { memo, useCallback, useMemo } from "react";
+import { memo, useCallback } from "react";
 import BaseModal from "../../Modal/BaseModal";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
 import type { PayrollProps } from "../PayrollManagement";
+import { Dropdown } from "../../Dropdown/Dropdown";
+import InputTextField from "../../Input/InputTextField";
+
 interface IModalStatisticalDataLearningProps {
   open: boolean;
   onClose: () => void;
   onSuccess: () => void;
   payrollData: PayrollProps;
+  setPayrollData: React.Dispatch<React.SetStateAction<PayrollProps>>; // 👈 thêm props để cập nhật state
 }
 
 const CreatePayrollModal = ({
@@ -24,151 +27,114 @@ const CreatePayrollModal = ({
   onClose,
   onSuccess,
   payrollData,
+  setPayrollData,
 }: IModalStatisticalDataLearningProps) => {
   const renderActions = useCallback(() => {
     return (
       <Box display="flex" gap={1} justifyContent="flex-end" alignItems="center">
-        <Button variant="contained" onClick={() => {}} />
+        <Button variant="contained" onClick={onSuccess}>
+          Lưu
+        </Button>
       </Box>
     );
-  }, []);
+  }, [onSuccess]);
+
+  const valueEmployee = [{ value: "ss", label: "ss" }];
 
   const renderContent = useCallback(() => {
-    const renderRows = (data: PayrollProps) => {
-      if (!data) return null;
-      return (
+    if (!payrollData) return null;
+
+    return (
+      <>
+        <Typography component="p" variant="body2" sx={{ mb: 1 }}>
+          Thông tin bảng lương
+        </Typography>
         <Box
           sx={{
-            overflow: "auto", // Cho phép cuộn
-            maxHeight: "400px", // Hoặc bất kỳ chiều cao nào bạn muốn
+            overflow: "auto",
+            maxHeight: "400px",
             scrollbarWidth: "none",
           }}
         >
-          <Grid container spacing={3} sx={{ mt: 1 }}>
+          <Grid container spacing={3}>
+            {/* Nhân viên */}
             <Grid size={12}>
               <FormControl fullWidth>
-                <InputLabel>Nhân viên</InputLabel>
-                {/* <Select
-                  value={selectedEmployee}
-                  onChange={(e) => setSelectedEmployee(Number(e.target.value))}
-                  label="Nhân viên"
-                >
-                  <MenuItem value={1}>Nguyễn Văn A (NV001)</MenuItem>
-                  <MenuItem value={2}>Trần Thị B (NV002)</MenuItem>
-                </Select> */}
+                <Dropdown
+                  options={valueEmployee}
+                  placeholder="Chọn nhân viên"
+                  onChange={() => {}}
+                  value={[]}
+                />
               </FormControl>
             </Grid>
 
-            <Grid size={12}>
-              <FormControl fullWidth>
-                <InputLabel>Tháng</InputLabel>
-                {/* <Select
-                  value={month}
-                  onChange={(e) => setMonth(Number(e.target.value))}
-                  label="Tháng"
-                >
-                  {Array.from({ length: 12 }, (_, i) => (
-                    <MenuItem key={i + 1} value={i + 1}>
-                      Tháng {i + 1}
-                    </MenuItem>
-                  ))}
-                </Select> */}
-              </FormControl>
-            </Grid>
-
-            <Grid size={12}>
-              <FormControl fullWidth>
-                <InputLabel>Năm</InputLabel>
-                {/* <Select
-                  value={year}
-                  onChange={(e) => setYear(Number(e.target.value))}
-                  label="Năm"
-                >
-                  {[2023, 2024, 2025].map((year) => (
-                    <MenuItem key={year} value={year}>
-                      {year}
-                    </MenuItem>
-                  ))}
-                </Select> */}
-              </FormControl>
-            </Grid>
-
+            {/* Lương cơ bản */}
             <Grid size={12}>
               <TextField
                 fullWidth
                 label="Lương cơ bản"
                 type="number"
                 value={payrollData.baseSalary}
-                onChange={
-                  (e) => {}
-                  //   setPayrollData({
-                  //     ...payrollData,
-                  //     baseSalary: Number(e.target.value),
-                  //   })
+                onChange={(e) =>
+                  setPayrollData((prev) => ({
+                    ...prev,
+                    baseSalary: Number(e.target.value),
+                  }))
                 }
-                InputProps={{
-                  endAdornment: "đ",
-                }}
+                InputProps={{ endAdornment: <span>đ</span> }}
               />
             </Grid>
 
+            {/* Phụ cấp */}
             <Grid size={12}>
-              <TextField
-                fullWidth
-                label="Phụ cấp"
+              <InputTextField
                 type="number"
-                value={payrollData.allowances}
-                onChange={
-                  (e) => {}
-                  //   setPayrollData({
-                  //     ...payrollData,
-                  //     allowances: Number(e.target.value),
-                  //   })
+                value={String(payrollData.allowances)}
+                onChange={(e) =>
+                  setPayrollData((prev) => ({
+                    ...prev,
+                    allowances: Number(e),
+                  }))
                 }
-                InputProps={{
-                  endAdornment: "đ",
-                }}
               />
             </Grid>
 
+            {/* Khấu trừ */}
             <Grid size={12}>
               <TextField
                 fullWidth
                 label="Khấu trừ"
                 type="number"
                 value={payrollData.deductions}
-                onChange={
-                  (e) => {}
-                  //   setPayrollData({
-                  //     ...payrollData,
-                  //     deductions: Number(e.target.value),
-                  //   })
+                onChange={(e) =>
+                  setPayrollData((prev) => ({
+                    ...prev,
+                    deductions: Number(e.target.value),
+                  }))
                 }
-                InputProps={{
-                  endAdornment: "đ",
-                }}
+                InputProps={{ endAdornment: <span>đ</span> }}
               />
             </Grid>
 
+            {/* Thuế */}
             <Grid size={12}>
               <TextField
                 fullWidth
                 label="Thuế"
                 type="number"
                 value={payrollData.tax}
-                onChange={
-                  (e) => {}
-                  //   setPayrollData({
-                  //     ...payrollData,
-                  //     tax: Number(e.target.value),
-                  //   })
+                onChange={(e) =>
+                  setPayrollData((prev) => ({
+                    ...prev,
+                    tax: Number(e.target.value),
+                  }))
                 }
-                InputProps={{
-                  endAdornment: "đ",
-                }}
+                InputProps={{ endAdornment: <span>đ</span> }}
               />
             </Grid>
 
+            {/* Thực lĩnh */}
             <Grid size={12}>
               <Alert severity="info">
                 Thực lĩnh:{" "}
@@ -183,27 +149,18 @@ const CreatePayrollModal = ({
             </Grid>
           </Grid>
         </Box>
-      );
-    };
-
-    return (
-      <>
-        <Typography component="p" variant="body2">
-          기본 정보
-        </Typography>
-        {renderRows(payrollData)}
       </>
     );
-  }, [payrollData]);
+  }, [payrollData, setPayrollData]);
 
   return (
     <BaseModal
       open={open}
       onClose={onClose}
-      title={`원본 데이터, 통계 데이터 학습 Seq 상세 정보`}
+      title="Chi tiết bảng lương"
       Icon={PrivacyTipIcon}
       maxWidth="lg"
-      sx={{ maxHeight: "600px", maxWidth: "lg", width: "lg" }}
+      sx={{ maxHeight: "600px", width: "lg" }}
       slots={{ content: renderContent(), actions: renderActions() }}
     />
   );
