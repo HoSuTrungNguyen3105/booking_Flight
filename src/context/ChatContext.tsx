@@ -1,4 +1,3 @@
-// contexts/ChatContext.tsx
 import React, {
   createContext,
   useContext,
@@ -10,7 +9,6 @@ interface User {
   id: number;
   name: string;
   avatar: string;
-  // Không có isOnline ở đây
 }
 
 interface ChatContextType {

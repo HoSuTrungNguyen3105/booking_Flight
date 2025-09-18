@@ -55,6 +55,7 @@ export default function MfaSetup({ email }: EmailProps) {
       email: email ?? "",
       code: code,
     });
+
     if (res?.resultCode === "00") {
       setQrCode(null);
       setLoginMfaUi(true);
@@ -76,7 +77,7 @@ export default function MfaSetup({ email }: EmailProps) {
     });
 
     if (res?.resultCode === "00") {
-      toast("Đăng nhập thành công 🎉");
+      toast("Đăng nhập thành công");
       setQrCode(null);
       setLoginMfaUi(true);
     } else if (res.requireUnlock) {

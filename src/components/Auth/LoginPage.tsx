@@ -10,6 +10,7 @@ import RequestUnlock from "./RequestUnlock";
 import FindAccount from "./components/FindAccount";
 import TabPanel, { type ITabItem } from "../../common/Setting/TabPanel";
 import theme from "../../scss/theme";
+import { useNavigate } from "react-router-dom";
 
 interface ILoginForm {
   email: string;
@@ -20,6 +21,7 @@ interface ILoginForm {
 type AuthType = "ID,PW" | "DEV" | "MFA";
 
 export const LoginPage: React.FC = () => {
+  const navigate = useNavigate();
   const AUTH_TYPE_OPTIONS: { label: string; value: AuthType }[] = [
     { label: "ID,PW", value: "ID,PW" },
     { label: "MFA", value: "MFA" },
@@ -32,6 +34,8 @@ export const LoginPage: React.FC = () => {
     password: "",
   });
   const [tabValue, setTabValue] = useState(0);
+  const [mfaEmail, setMfaEmail] = useState(false); // Lưu email cho MFA
+  const [mfaEmailValue, setMfaEmailValue] = useState(""); // Lưu email cho MFA
 
   const tabs: ITabItem[] = [
     {
@@ -72,17 +76,30 @@ export const LoginPage: React.FC = () => {
   const onSubmit = async (data: ILoginForm) => {
     const email = watch("email");
     setLoading(true);
+
+    if (formData.authType === "MFA") {
+      // Xử lý MFA: chỉ cần email, lưu email và chuyển sang trang MFA
+      setMfaEmailValue(email);
+      setLoading(false);
+      setMfaEmail(true);
+      //navigate("/mfa-verification", { state: { email } }); // Chuyển trang đến MFA
+      return;
+    }
+
+    // Xử lý login thông thường
     const loginRes = await login({
       email,
       password: data.password,
       remember: data.remember,
     });
+
     if (loginRes.requireUnlock) {
       setUnlockAccount(true);
       setUserId(loginRes.userId);
       setTabValue(2);
       return;
     }
+
     if (loginRes.requireChangePassword && loginRes.userId) {
       setChangePassword(true);
       setUserId(loginRes.userId);
@@ -90,6 +107,7 @@ export const LoginPage: React.FC = () => {
       setLoading(false);
       return;
     }
+
     setLoading(false);
   };
 
@@ -100,9 +118,7 @@ export const LoginPage: React.FC = () => {
   const renderTabContent = () => {
     switch (tabValue) {
       case 0:
-        return formData.authType === "MFA" ? (
-          <MfaSetup />
-        ) : (
+        return (
           <Stack direction="column" spacing={3} sx={{ mt: 3 }}>
             <FormControl fullWidth>
               <Typography variant="body1" mb={0.5}>
@@ -130,30 +146,33 @@ export const LoginPage: React.FC = () => {
               />
             </FormControl>
 
-            <FormControl fullWidth>
-              <Typography variant="body1" mb={0.5}>
-                비밀번호
-              </Typography>
-              <Controller
-                control={control}
-                name="password"
-                render={({ field }) => (
-                  <InputTextField
-                    {...field}
-                    placeholder="비밀번호를 입력하세요."
-                    type="password"
-                  />
-                )}
-              />
-            </FormControl>
+            {/* Chỉ hiển thị password field khi không phải MFA */}
+            {formData.authType !== "MFA" && (
+              <FormControl fullWidth>
+                <Typography variant="body1" mb={0.5}>
+                  비밀번호
+                </Typography>
+                <Controller
+                  control={control}
+                  name="password"
+                  render={({ field }) => (
+                    <InputTextField
+                      {...field}
+                      placeholder="비밀번호를 입력하세요."
+                      type="password"
+                    />
+                  )}
+                />
+              </FormControl>
+            )}
 
-            <Stack
+            {/* <Stack
               spacing={2}
               direction="row"
               justifyContent="flex-end"
               alignItems="center"
             >
-              {/* <Button variant="text" onClick={() => setTabValue(2)}>
+              <Button variant="text" onClick={() => setTabValue(2)}>
                 Request unlock account
               </Button>
               <Button variant="outlined" onClick={() => setTabValue(1)}>
@@ -161,8 +180,8 @@ export const LoginPage: React.FC = () => {
               </Button>
               <Button variant="contained" onClick={handleRegisterUser}>
                 Register
-              </Button> */}
-            </Stack>
+              </Button>
+            </Stack> */}
 
             <Box
               sx={{
@@ -171,8 +190,22 @@ export const LoginPage: React.FC = () => {
                 alignItems: "center",
               }}
             >
-              <Button type="submit" disabled={loading}>
-                {loading ? "Loading..." : "Submit"}
+              <Button
+                type="submit"
+                disabled={loading}
+                variant="contained"
+                sx={{
+                  backgroundColor: theme.palette.primary.main,
+                  "&:hover": {
+                    backgroundColor: theme.palette.primary.dark,
+                  },
+                }}
+              >
+                {loading
+                  ? "Loading..."
+                  : formData.authType === "MFA"
+                  ? "Send Verification Code"
+                  : "Submit"}
               </Button>
             </Box>
           </Stack>
@@ -189,6 +222,10 @@ export const LoginPage: React.FC = () => {
     }
   };
 
+  if (mfaEmail) {
+    return <MfaSetup email={mfaEmailValue} />;
+  }
+
   return (
     <Box
       component="form"
@@ -204,6 +241,8 @@ export const LoginPage: React.FC = () => {
           width: "456px",
           mx: "auto",
           border: `1px solid ${theme.palette.grey[200]}`,
+          borderRadius: 2,
+          overflow: "hidden",
         }}
       >
         <Box
@@ -219,17 +258,15 @@ export const LoginPage: React.FC = () => {
         </Box>
 
         <Box sx={{ bgcolor: "common.white", px: 4.5, py: 4 }}>
-          {/* <Typography variant="h6" align="center">
-            서비스설명
-          </Typography>
-          <Typography variant="body1" align="center" mt="20px" color="grey.500">
-            서비스 설명은 이렇습니다. 서비스 설명은 이렇습니다. <br />
-          </Typography> */}
-
           <TabPanel
             activeTab={tabValue}
             tabs={tabs}
             onChangeTab={setTabValue}
+            sx={{
+              "& .MuiTabs-indicator": {
+                backgroundColor: theme.palette.primary.main,
+              },
+            }}
           />
 
           {renderTabContent()}

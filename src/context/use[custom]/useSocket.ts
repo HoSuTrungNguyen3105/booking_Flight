@@ -29,7 +29,7 @@ export const useSocket = <T>({
 
   // Kết nối socket khi component mount
   useEffect(() => {
-    if (autoListen && !socket.connected) {
+    if (!socket.connected) {
       console.log("Connecting socket...");
       socket.connect();
     }
@@ -47,8 +47,7 @@ export const useSocket = <T>({
     };
   }, [autoListen]);
 
-  // Theo dõi trạng thái kết nối và register user
-  useEffect(() => {
+  const handleFollowConnect = useCallback(() => {
     const handleConnect = () => {
       console.log("Socket connected");
       setIsConnected(true);
@@ -81,6 +80,11 @@ export const useSocket = <T>({
         (h) => h.handler !== handleConnect && h.handler !== handleDisconnect
       );
     };
+  }, [eventHandlers]);
+
+  // Theo dõi trạng thái kết nối và register user
+  useEffect(() => {
+    handleFollowConnect();
   }, [userId]);
 
   // Lắng nghe event chính - QUAN TRỌNG: sửa lại phần này

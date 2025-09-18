@@ -1,6 +1,6 @@
 import { io } from "socket.io-client";
 
-const baseURL = import.meta.env.VITE_REACT_APP_URL || "http://localhost:3000";
+const baseURL = import.meta.env.VITE_REACT_APP_URL;
 
 export const socket = io(baseURL, {
   transports: ["websocket"],
@@ -10,4 +10,4 @@ export const socket = io(baseURL, {
   },
 });
 
-socket.connect();
+// socket.connect();

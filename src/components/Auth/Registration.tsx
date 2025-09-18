@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { memo, useState } from "react";
 import {
   Button,
   TextField,
@@ -28,11 +28,6 @@ interface RegisterProps {
   email: string;
   onClose: () => void;
 }
-
-const headers: HeaderColumn[] = [
-  // { label: "Field", minWidth: 150 },
-  // { label: "Value", minWidth: 300 },
-];
 
 const Registration = ({ email }: RegisterProps) => {
   const {
@@ -77,8 +72,8 @@ const Registration = ({ email }: RegisterProps) => {
         Registration
       </Typography>
 
-      <form onSubmit={handleSubmit(onSubmit)} noValidate>
-        <InputTableWrapperCustom headersColumn={headers} hasCheckbox={false}>
+      <Box component={"form"} onSubmit={handleSubmit(onSubmit)} noValidate>
+        <InputTableWrapperCustom headersColumn={[]} hasCheckbox={false}>
           {[
             {
               name: "name",
@@ -113,7 +108,6 @@ const Registration = ({ email }: RegisterProps) => {
                 <Controller
                   name={name as keyof PassengerFormData}
                   control={control}
-                  // rules={rules}
                   render={({ field }) => (
                     <InputTextField
                       {...field}
@@ -134,9 +128,9 @@ const Registration = ({ email }: RegisterProps) => {
             Register
           </Button>
         </Box>
-      </form>
+      </Box>
     </TableContainer>
   );
 };
 
-export default Registration;
+export default memo(Registration);
