@@ -16,6 +16,8 @@ type SideBarValueTypes =
   | "manage/message"
   | "user"
   | "flightSchedule"
+  | "ChatApp"
+  | "TerminalContainer"
   | "flightStatus"
   | "flightManagement"
   | "airplaneManagement"
@@ -74,6 +76,8 @@ export const menuData: MenuSection[] = [
             label: "FileUploader",
             icon: <AccountCircle />,
           },
+          { id: "TerminalContainer", label: " TerminalContainer" },
+          { id: "ChatApp", label: "ChatApp" },
           { id: "food", label: "Button", icon: <GppBadIcon /> },
           { id: "notifications", label: "notifications", icon: <GppBadIcon /> },
           {

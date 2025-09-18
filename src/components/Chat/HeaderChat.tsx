@@ -347,11 +347,11 @@ const ChatApp = () => {
                 anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                 variant="dot"
                 color="success"
-                invisible={!selectedUser.online}
+                invisible={!selectedUser}
               >
-                <Avatar src={selectedUser.avatar} sx={{ mr: 2 }}>
+                {/* <Avatar src={selectedUser.avatar} sx={{ mr: 2 }}>
                   {selectedUser.charAt(0)}
-                </Avatar>
+                </Avatar> */}
               </Badge>
               <Box>
                 <Typography variant="subtitle1">{selectedUser.name}</Typography>

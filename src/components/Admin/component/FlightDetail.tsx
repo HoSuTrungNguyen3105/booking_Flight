@@ -214,11 +214,10 @@ const FlightDetailPage = ({ flight, onBookFlight }: FlightDetailPageProps) => {
               {flight.flightNo}
             </Typography>
             <Typography variant="h6" gutterBottom>
-              {flight.departureAirport} → {flight.arrivalAirport}
+              {JSON.stringify(flight, null, 2)}
             </Typography>
           </Box>
 
-          {/* Flight Details using DetailSection */}
           <DetailSection
             title="schedule Information"
             itemPerRow={3}

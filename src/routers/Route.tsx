@@ -37,6 +37,11 @@ import ChatContainer from "../components/Chat/ChatContainer";
 import Registration from "../components/Auth/Registration";
 import FlightPath from "../components/User/FlightPath";
 import ChatApp from "../components/Chat/HeaderChat";
+import AirportDiagram from "../components/Admin/TerminalContainer";
+import RevenueDashboard from "../components/User/RevenueDashboard";
+import DashboardRight from "../components/User/DashboardRight";
+import TicketSalesDashboard from "../components/User/TicketSalesDashboard";
+import FlightRoutesDashboard from "../components/User/FlightRoutesDashboard";
 
 const routes = [
   {
@@ -158,7 +163,11 @@ const routes = [
       },
       {
         path: "special",
-        element: <Special />,
+        element: <RevenueDashboard />,
+      },
+      {
+        path: "special/one",
+        element: <FlightRoutesDashboard />,
       },
       {
         path: ROUTE_PATHS.NOTIFICATIONS,
@@ -166,7 +175,11 @@ const routes = [
       },
       {
         path: "hero",
-        element: <ProfileUser />,
+        element: <TicketSalesDashboard />,
+      },
+      {
+        path: "TerminalContainer",
+        element: <AirportDiagram />,
       },
       {
         path: "ChatApp",

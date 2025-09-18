@@ -1,16 +1,9 @@
-import {
-  Backdrop,
-  Box,
-  CircularProgress,
-  Typography,
-  Stack,
-} from "@mui/material";
+import { Backdrop, Box, Stack } from "@mui/material";
 import { useApi } from "../../context/ApiContext";
 import LoadingFlight from "../../svgs/Clone.gif";
 
 export const Loading = () => {
   const { loading } = useApi();
-
   return (
     <Backdrop
       sx={(theme) => ({
@@ -23,7 +16,6 @@ export const Loading = () => {
       onClick={(e) => e.stopPropagation()}
     >
       <Stack alignItems="center" gap={3}>
-        {/* Hiển thị ảnh GIF hoặc spinner trên mobile */}
         <Box
           component="img"
           src={LoadingFlight}
@@ -35,26 +27,6 @@ export const Loading = () => {
             display: { xs: "block", md: "block" },
           }}
         />
-
-        {/* <CircularProgress 
-          color="inherit" 
-          size={32}
-          sx={{
-            display: { xs: 'block', md: 'none' }
-          }} 
-        /> */}
-
-        {/* Hiển thị thông báo tùy chọn */}
-        {/* {loadingMessage && (
-          <Typography
-            variant="h6"
-            component="div"
-            textAlign="center"
-            sx={{ fontSize: { xs: "1rem", md: "1.25rem" } }}
-          >
-            {loadingMessage}
-          </Typography>
-        )} */}
       </Stack>
     </Backdrop>
   );

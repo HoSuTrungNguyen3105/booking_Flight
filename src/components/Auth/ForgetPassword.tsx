@@ -4,9 +4,9 @@ import { Button } from "../../common/Button/Button";
 import { useForm } from "react-hook-form";
 import { useToast } from "../../context/ToastContext";
 import { useCheckMfaAvailable } from "../Api/useGetApi";
-import { useResetPasswordByMfa } from "../Api/usePostApi";
-import Input from "../Admin/component/Input";
+// import Input from "../Admin/component/Input";
 import { Link } from "react-router-dom";
+import InputTextField from "../../common/Input/InputTextField";
 
 interface FormDataType {
   email: string;
@@ -48,16 +48,12 @@ const ForgetPassword = () => {
           Quên mật khẩu
         </Typography>
 
-        <Input name="email" control={control} placeholder="Email" />
+        <InputTextField name="email" placeholder="Email" />
 
         {requireMfa && (
           <Box sx={{ mt: 2 }}>
             <Typography>MFA Code</Typography>
-            <Input
-              name="mfaCode"
-              control={control}
-              placeholder="Nhập MFA code"
-            />
+            <InputTextField name="mfaCode" placeholder="Nhập MFA code" />
           </Box>
         )}
 
