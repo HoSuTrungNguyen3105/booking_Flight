@@ -55,7 +55,7 @@ const useClientPagination = <T>({
 
   // Calculate total pages
   const totalPages = useMemo(
-    () => Math.ceil(sortedData.length / pageSize) || 1,
+    () => Math.ceil(sortedData.length / pageSize) || 0,
     [sortedData.length, pageSize]
   );
 

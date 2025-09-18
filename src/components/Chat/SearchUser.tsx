@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {
   Box,
@@ -9,89 +9,465 @@ import {
   ListItemText,
   Typography,
   Stack,
+  Paper,
+  InputAdornment,
+  IconButton,
+  Collapse,
+  Tooltip,
+  Avatar,
 } from "@mui/material";
-import type { BaseUserData } from "../../utils/type";
+import SearchIcon from "@mui/icons-material/Search";
+import type { BaseUserData, UserDataNoGrid } from "../../utils/type";
 import InputTextField from "../../common/Input/InputTextField";
 
 interface SearchUserProps {
   onUserSelect: (user: BaseUserData) => void;
+  selectedUser?: BaseUserData | null;
+  isCollapsed?: boolean;
 }
+
 const mockUsers: BaseUserData[] = [
-  { name: "Nguyễn Văn A", email: "a@example.com", password: "" },
-  { name: "Nguyễn Văn A", email: "a@example.com", password: "" },
-  { name: "Nguyễn Văn A", email: "a@example.com", password: "" },
-  { name: "Nguyễn Văn A", email: "a@example.com", password: "" },
-  { name: "Nguyễn Văn A", email: "a@example.com", password: "" },
+  {
+    id: 1,
+    name: "Nguyễn Văn A",
+    email: "a@example.com",
+    password: "",
+    pictureUrl: "",
+  },
+  {
+    id: 2,
+    name: "Trần Thị B",
+    email: "b@example.com",
+    password: "",
+    pictureUrl: "",
+  },
+  {
+    id: 3,
+    name: "Lê Văn C",
+    email: "c@example.com",
+    password: "",
+    pictureUrl: "",
+  },
+  {
+    id: 4,
+    name: "Phạm Thị D",
+    email: "d@example.com",
+    password: "",
+    pictureUrl: "",
+  },
+  {
+    id: 5,
+    name: "Hoàng Văn E",
+    email: "e@example.com",
+    password: "",
+    pictureUrl: "",
+  },
 ];
 
-const SearchUser: React.FC<SearchUserProps> = ({ onUserSelect }) => {
+const SearchUser: React.FC<SearchUserProps> = ({
+  onUserSelect,
+  selectedUser,
+  isCollapsed,
+}) => {
   const [search, setSearch] = useState("");
-  const [users, setUsers] = useState<BaseUserData[]>(mockUsers);
+  // const [users, setUsers] = useState<BaseUserData[]>(mockUsers);
+  const [filteredUsers, setFilteredUsers] = useState<BaseUserData[]>(mockUsers);
+
+  useEffect(() => {
+    const filtered = filteredUsers.filter(
+      (user) =>
+        user?.name?.toLowerCase().includes(search.toLowerCase()) ||
+        user?.email?.toLowerCase().includes(search.toLowerCase())
+    );
+    setFilteredUsers(filtered);
+  }, [search, filteredUsers]);
 
   const handleSearch = () => {
-    const filtered = users.filter((user) =>
-      user?.name?.toLowerCase().includes(search.toLowerCase())
+    if (search.trim() === "") {
+      setFilteredUsers(filteredUsers);
+      return;
+    }
+
+    const filtered = filteredUsers.filter(
+      (user) =>
+        user?.name?.toLowerCase().includes(search.toLowerCase()) ||
+        user?.email?.toLowerCase().includes(search.toLowerCase())
     );
-    setUsers(filtered);
+    setFilteredUsers(filtered);
   };
 
-  // const handleSearch = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       `http://localhost:4000/users?search=${search}`
-  //     );
-  //     setUsers(response.data);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
+  const handleClearSearch = () => {
+    setSearch("");
+    setFilteredUsers(filteredUsers);
+  };
+
+  const handleUserSelect = (user: BaseUserData) => {
+    onUserSelect(user);
+  };
+
+  //   return (
+  //     <Paper
+  //       sx={{
+  //         width: 350,
+  //         height: "100vh",
+  //         bgcolor: "grey.50",
+  //         borderRight: 1,
+  //         borderColor: "divider",
+  //         overflow: "auto",
+  //       }}
+  //     >
+  //             <Collapse in={!isCollapsed}>
+  //       <Box p={2}>
+  //         {/* Header */}
+  //         <Typography
+  //           variant="h6"
+  //           gutterBottom
+  //           color="primary.main"
+  //           fontWeight="bold"
+  //         >
+  //           Users Dashboard
+  //         </Typography>
+
+  //         {/* Thanh tìm kiếm */}
+  //         <Box display="flex" gap={1} alignItems="center" mb={2}>
+  //           <InputTextField
+  //             placeholder="Search users..."
+  //             value={search}
+  //             onChange={(e) => setSearch(e)}
+  //             onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+  //             clearable
+  //           />
+  //           <Button
+  //             variant="contained"
+  //             color="primary"
+  //             onClick={handleSearch}
+  //             sx={{
+  //               minWidth: "auto",
+  //               px: 2,
+  //               borderRadius: 1,
+  //             }}
+  //           >
+  //             <SearchIcon />
+  //           </Button>
+  //         </Box>
+
+  //         {/* Thống kê */}
+  //         <Box mb={2} p={1.5} bgcolor="primary.light" borderRadius={1}>
+  //           <Typography variant="body2" color="white" fontWeight="medium">
+  //             Total Users: {users.length}
+  //           </Typography>
+  //           <Typography variant="body2" color="white">
+  //             Filtered: {filteredUsers.length}
+  //           </Typography>
+  //         </Box>
+
+  //         {/* Danh sách user */}
+  //         <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+  //           User List
+  //         </Typography>
+
+  //         <List sx={{ mt: 1 }}>
+  //           {filteredUsers.map((user) => (
+  //             <ListItemButton
+  //               key={user.id || user.email}
+  //               onClick={() => handleUserSelect(user)}
+  //               selected={selectedUser?.email === user.email}
+  //               sx={{
+  //                 mb: 1,
+  //                 borderRadius: 2,
+  //                 bgcolor:
+  //                   selectedUser?.email === user.email
+  //                     ? "primary.main"
+  //                     : "background.paper",
+  //                 "&:hover": {
+  //                   bgcolor:
+  //                     selectedUser?.email === user.email
+  //                       ? "primary.dark"
+  //                       : "grey.100",
+  //                 },
+  //                 boxShadow: 1,
+  //                 transition: "all 0.2s ease-in-out",
+  //               }}
+  //             >
+  //               <Stack
+  //                 direction="row"
+  //                 alignItems="center"
+  //                 spacing={1.5}
+  //                 width="100%"
+  //               >
+  //                 <Box
+  //                   sx={{
+  //                     width: 40,
+  //                     height: 40,
+  //                     borderRadius: "50%",
+  //                     bgcolor:
+  //                       selectedUser?.email === user.email
+  //                         ? "white"
+  //                         : "primary.main",
+  //                     display: "flex",
+  //                     alignItems: "center",
+  //                     justifyContent: "center",
+  //                     color:
+  //                       selectedUser?.email === user.email
+  //                         ? "primary.main"
+  //                         : "white",
+  //                     fontWeight: "bold",
+  //                     fontSize: 14,
+  //                   }}
+  //                 >
+  //                   {user.name?.charAt(0).toUpperCase() || "U"}
+  //                 </Box>
+  //                 <Box flex={1}>
+  //                   <ListItemText
+  //                     primary={
+  //                       <Typography
+  //                         variant="body2"
+  //                         fontWeight="medium"
+  //                         color={
+  //                           selectedUser?.email === user.email
+  //                             ? "white"
+  //                             : "text.primary"
+  //                         }
+  //                       >
+  //                         {user.name}
+  //                       </Typography>
+  //                     }
+  //                     secondary={
+  //                       <Typography
+  //                         variant="caption"
+  //                         color={
+  //                           selectedUser?.email === user.email
+  //                             ? "white"
+  //                             : "text.secondary"
+  //                         }
+  //                       >
+  //                         {user.email}
+  //                       </Typography>
+  //                     }
+  //                   />
+  //                 </Box>
+  //               </Stack>
+  //             </ListItemButton>
+  //           ))}
+  //         </List>
+
+  //         {filteredUsers.length === 0 && (
+  //           <Box textAlign="center" py={3}>
+  //             <Typography variant="body2" color="text.secondary">
+  //               No users found
+  //             </Typography>
+  //           </Box>
+  //         )}
+  //       </Box>
+  //             </Collapse>
+  //     </Paper>
+  //   );
   // };
 
   return (
-    <Box p={2} width={"100%"} height={50}>
-      {/* Thanh tìm kiếm */}
-      <Box display="flex" gap={2} alignItems="center">
-        <InputTextField
-          placeholder="Search users..."
-          value={search}
-          onChange={(e) => setSearch(e)}
-        />
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleSearch}
-          sx={{ borderRadius: 2, textTransform: "none" }}
-        >
-          Search
-        </Button>
+    <Paper
+      sx={{
+        width: isCollapsed ? 80 : 350,
+        height: "100vh",
+        bgcolor: "grey.50",
+        borderRight: 1,
+        borderColor: "divider",
+        overflow: "auto",
+        transition: "width 0.3s ease",
+        position: "relative",
+      }}
+    >
+      {isCollapsed && (
+        <Box p={1}>
+          <Typography
+            variant="h6"
+            noWrap
+            textAlign="center"
+            mb={2}
+            fontSize={16}
+          >
+            Users
+          </Typography>
 
-        {/* Danh sách user */}
-        <List sx={{ mt: 2 }}>
-          {users.map((user) => (
-            <Stack direction="row" spacing={1} flexWrap="wrap">
-              {user.name}
-            </Stack>
-            // <ListItemButton
-            //   key={user.email}
-            //   onClick={() => onUserSelect(user)}
-            //   sx={{
-            //     bgcolor: "error.light",
-            //     borderRadius: "50px",
-            //     mb: 1,
-            //     "&:hover": { bgcolor: "error.main" },
-            //   }}
-            // >
-            //   <ListItemText
-            //     primary={
-            //       <Typography variant="body2" color="white" fontStyle="italic">
-            //         {user.name}
-            //       </Typography>
-            //     }
-            //   />
-            // </ListItemButton>
-          ))}
-        </List>
-      </Box>
-    </Box>
+          <Stack spacing={1} alignItems="center">
+            {filteredUsers.slice(0, 5).map((user) => (
+              <Tooltip key={user.id} title={user.name} placement="right">
+                <Avatar
+                  onClick={() => handleUserSelect(user)}
+                  sx={{
+                    width: 48,
+                    height: 48,
+                    bgcolor: "primary.main",
+                    cursor: "pointer",
+                    border: selectedUser?.id === user.id ? "2px solid" : "none",
+                    borderColor:
+                      selectedUser?.id === user.id
+                        ? "primary.main"
+                        : "transparent",
+                  }}
+                >
+                  {user.name?.charAt(0).toUpperCase() || "U"}
+                </Avatar>
+              </Tooltip>
+            ))}
+
+            {filteredUsers.length > 5 && (
+              <Avatar sx={{ width: 48, height: 48, bgcolor: "grey.300" }}>
+                <Typography variant="caption">
+                  +{filteredUsers.length - 5}
+                </Typography>
+              </Avatar>
+            )}
+          </Stack>
+        </Box>
+      )}
+
+      {/* Chế độ mở rộng - hiển thị đầy đủ */}
+      <Collapse in={!isCollapsed} orientation="horizontal">
+        <Box p={2}>
+          {/* Header */}
+          <Typography
+            variant="h6"
+            gutterBottom
+            color="primary.main"
+            fontWeight="bold"
+          >
+            Users Dashboard
+          </Typography>
+
+          {/* Thanh tìm kiếm */}
+          <Box display="flex" gap={1} alignItems="center" mb={2}>
+            <InputTextField
+              placeholder="Search users..."
+              value={search}
+              onChange={(e) => setSearch(e)}
+              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+              clearable
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleSearch}
+              sx={{
+                minWidth: "auto",
+                px: 2,
+                borderRadius: 1,
+              }}
+            >
+              <SearchIcon />
+            </Button>
+          </Box>
+
+          {/* Thống kê */}
+          <Box mb={2} p={1.5} bgcolor="primary.light" borderRadius={1}>
+            <Typography variant="body2" color="white" fontWeight="medium">
+              Total Users: {filteredUsers.length}
+            </Typography>
+            <Typography variant="body2" color="white">
+              Filtered: {filteredUsers.length}
+            </Typography>
+          </Box>
+
+          {/* Danh sách user */}
+          <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+            User List
+          </Typography>
+
+          <List sx={{ mt: 1 }}>
+            {filteredUsers.map((user) => (
+              <ListItemButton
+                key={user.id || user.email}
+                onClick={() => handleUserSelect(user)}
+                selected={selectedUser?.email === user.email}
+                sx={{
+                  mb: 1,
+                  borderRadius: 2,
+                  bgcolor:
+                    selectedUser?.email === user.email
+                      ? "primary.main"
+                      : "background.paper",
+                  "&:hover": {
+                    bgcolor:
+                      selectedUser?.email === user.email
+                        ? "primary.dark"
+                        : "grey.100",
+                  },
+                  boxShadow: 1,
+                  transition: "all 0.2s ease-in-out",
+                }}
+              >
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  spacing={1.5}
+                  width="100%"
+                >
+                  <Box
+                    sx={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: "50%",
+                      bgcolor:
+                        selectedUser?.email === user.email
+                          ? "white"
+                          : "primary.main",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      color:
+                        selectedUser?.email === user.email
+                          ? "primary.main"
+                          : "white",
+                      fontWeight: "bold",
+                      fontSize: 14,
+                    }}
+                  >
+                    {user.name?.charAt(0).toUpperCase() || "U"}
+                  </Box>
+                  <Box flex={1}>
+                    <ListItemText
+                      primary={
+                        <Typography
+                          variant="body2"
+                          fontWeight="medium"
+                          color={
+                            selectedUser?.email === user.email
+                              ? "white"
+                              : "text.primary"
+                          }
+                        >
+                          {user.name}
+                        </Typography>
+                      }
+                      secondary={
+                        <Typography
+                          variant="caption"
+                          color={
+                            selectedUser?.email === user.email
+                              ? "white"
+                              : "text.secondary"
+                          }
+                        >
+                          {user.email}
+                        </Typography>
+                      }
+                    />
+                  </Box>
+                </Stack>
+              </ListItemButton>
+            ))}
+          </List>
+
+          {filteredUsers.length === 0 && (
+            <Box textAlign="center" py={3}>
+              <Typography variant="body2" color="text.secondary">
+                No users found
+              </Typography>
+            </Box>
+          )}
+        </Box>
+      </Collapse>
+    </Paper>
   );
 };
 

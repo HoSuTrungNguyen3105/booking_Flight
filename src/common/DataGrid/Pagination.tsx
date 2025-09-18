@@ -1,4 +1,4 @@
-import { Box, Pagination, styled, Typography } from "@mui/material";
+import { Box, Pagination, Stack, styled, Typography } from "@mui/material";
 import { memo, useCallback } from "react";
 import SelectDropdown from "../Dropdown/SelectDropdown";
 
@@ -64,19 +64,21 @@ const DataTablePagination = ({
         </Typography>
       </Box>
 
-      <Box display="flex" justifyContent="center" flexGrow={1}>
-        <StyledPagination
-          count={totalPage}
-          page={currentPage}
-          onChange={handlePageChange}
-          shape="rounded"
-          hidePrevButton={!currentPage || currentPage === 1}
-          hideNextButton={!currentPage || currentPage === totalPage}
-        />
-      </Box>
+      {currentPage !== 0 && (
+        <Box display="flex" justifyContent="center" flexGrow={1}>
+          <StyledPagination
+            count={totalPage}
+            page={currentPage}
+            onChange={handlePageChange}
+            shape="rounded"
+            hidePrevButton={!currentPage || currentPage !== 0}
+            hideNextButton={!currentPage || currentPage !== totalPage}
+          />
+        </Box>
+      )}
 
       {onPageSizeChange && (
-        <Box>
+        <Stack>
           <SelectDropdown
             sx={{ maxHeight: "30px" }}
             options={[
@@ -87,7 +89,7 @@ const DataTablePagination = ({
             value={pageSize}
             onChange={(val) => onPageSizeChange(val as number)}
           />
-        </Box>
+        </Stack>
       )}
     </Box>
   );

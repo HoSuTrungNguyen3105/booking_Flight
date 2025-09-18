@@ -188,6 +188,10 @@ const ChatContainer: React.FC = () => {
   //   // }
   // };
 
+  const sortedMessages = mockMessages
+    .concat(incomingMessage ? [incomingMessage] : [])
+    .sort((a, b) => Number(a.createdAt) - Number(b.createdAt));
+
   return (
     <Box display="flex" height="89vh">
       <ChatSidebar />
@@ -202,7 +206,7 @@ const ChatContainer: React.FC = () => {
           }}
         >
           <MessageList
-            messages={mockMessages}
+            messages={sortedMessages}
             currentUser={{ id: currentUser?.id as number }}
           />
         </Box>

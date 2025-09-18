@@ -36,6 +36,7 @@ import AdditionalServicesPage from "../common/Sample/AdditionalServicesPage";
 import ChatContainer from "../components/Chat/ChatContainer";
 import Registration from "../components/Auth/Registration";
 import FlightPath from "../components/User/FlightPath";
+import ChatApp from "../components/Chat/HeaderChat";
 
 const routes = [
   {
@@ -166,6 +167,10 @@ const routes = [
       {
         path: "hero",
         element: <ProfileUser />,
+      },
+      {
+        path: "ChatApp",
+        element: <ChatApp />,
       },
       {
         path: "FlightPath",

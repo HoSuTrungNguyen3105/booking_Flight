@@ -207,6 +207,7 @@ export enum UserRole {
 export type UserRoleType = UserRole.ADMIN | UserRole.USER | UserRole.MONITOR;
 
 export type BaseUserData = {
+  id: number;
   email: string;
   name?: string;
   authType?: string;
@@ -235,7 +236,6 @@ export type UserData = BaseUserData &
 
 export type UserDataNoGrid = BaseUserData & {
   userId?: number;
-  id: string;
 };
 
 export type UserCreateProps = {

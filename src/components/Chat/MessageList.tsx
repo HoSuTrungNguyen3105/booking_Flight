@@ -95,7 +95,6 @@ const MessageList: React.FC<MessageListProps> = ({ messages, currentUser }) => {
             alignItems="flex-end"
             mb={1}
           >
-            {/* Avatar chỉ hiện cho tin nhắn đối phương */}
             {!isOwnMessage && (
               <Box mr={1}>
                 <img
