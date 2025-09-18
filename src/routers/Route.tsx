@@ -35,6 +35,7 @@ import DataSecure from "../common/Setting/DataSecure";
 import AdditionalServicesPage from "../common/Sample/AdditionalServicesPage";
 import ChatContainer from "../components/Chat/ChatContainer";
 import Registration from "../components/Auth/Registration";
+import FlightPath from "../components/User/FlightPath";
 
 const routes = [
   {
@@ -165,6 +166,10 @@ const routes = [
       {
         path: "hero",
         element: <ProfileUser />,
+      },
+      {
+        path: "FlightPath",
+        element: <FlightPath />,
       },
       {
         path: "setting",

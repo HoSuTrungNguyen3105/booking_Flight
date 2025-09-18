@@ -38,7 +38,7 @@ const FindAccount = ({ onClose }: FindAccountProps) => {
   return (
     <Box
       component="form"
-      height="100vh"
+      // height="100vh"
       display="flex"
       justifyContent="center"
       alignItems="center"

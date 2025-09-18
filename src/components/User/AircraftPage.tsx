@@ -15,7 +15,7 @@ const AircraftPage = () => {
   const [aircraftCodeState, setAircraftCodeState] = useState<number>(0);
   const [pageDetail, setPageDetail] = useState(false);
   const handleViewSeats = (code: number) => {
-    setAircraftCodeState(code); // gán mã máy bay
+    setAircraftCodeState(code);
     setPageDetail(true);
   };
 

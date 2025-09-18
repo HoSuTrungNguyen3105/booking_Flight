@@ -12,6 +12,7 @@ import type { BreadcrumbItem } from "../../../common/BreadCrumb/BreadCrumb";
 import BreadCrumb from "../../../common/BreadCrumb/BreadCrumb";
 import type { IDetailItem } from "../../../common/DetailSection";
 import DetailSection from "../../../common/DetailSection";
+import FlightPath from "../../User/FlightPath";
 
 interface FlightDetailPageProps {
   flight: DataFlight;
@@ -250,6 +251,8 @@ const FlightDetailPage = ({ flight, onBookFlight }: FlightDetailPageProps) => {
             itemPerRow={3}
             data={priceData}
           />
+
+          <FlightPath />
         </Paper>
 
         {/* Action Buttons */}

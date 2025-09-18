@@ -37,7 +37,11 @@ const TabPanel = ({ sx, activeTab, tabs, onChangeTab }: ITabPanelProps) => {
       >
         {tabs.map((tab, idx) => (
           <Tab
-            label={<Typography variant="button">{tab.label}</Typography>}
+            label={
+              <Typography fontSize={"12px"} variant="button">
+                {tab.label}
+              </Typography>
+            }
             key={idx}
           />
         ))}

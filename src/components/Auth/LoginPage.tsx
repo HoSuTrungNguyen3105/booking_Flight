@@ -8,6 +8,8 @@ import MfaSetup from "./MFA";
 import SelectDropdown from "../../common/Dropdown/SelectDropdown";
 import RequestUnlock from "./RequestUnlock";
 import FindAccount from "./components/FindAccount";
+import TabPanel, { type ITabItem } from "../../common/Setting/TabPanel";
+import theme from "../../scss/theme";
 
 interface ILoginForm {
   email: string;
@@ -29,13 +31,32 @@ export const LoginPage: React.FC = () => {
     email: "",
     password: "",
   });
+  const [tabValue, setTabValue] = useState(0);
+
+  const tabs: ITabItem[] = [
+    {
+      label: "Login",
+      value: "login",
+      description: "로그인을 위해 아이디와 비밀번호를 입력해주세요.",
+    },
+    {
+      label: "Change Password",
+      value: "change-password",
+      description: "비밀번호 변경을 위해 필요한 정보를 입력해주세요.",
+    },
+    {
+      label: "Unlock Account",
+      value: "unlock-account",
+      description: "계정 잠금 해제를 요청합니다.",
+    },
+  ];
 
   const [changePassword, setChangePassword] = useState(false);
   const [unlockAccount, setUnlockAccount] = useState(false);
   const [registerUser, setRegisterUser] = useState(false);
   const { login } = useAuth();
   const [userId, setUserId] = useState(0);
-  const [_, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const { handleSubmit, watch, control } = useForm<ILoginForm>({
     defaultValues: {
@@ -59,16 +80,13 @@ export const LoginPage: React.FC = () => {
     if (loginRes.requireUnlock) {
       setUnlockAccount(true);
       setUserId(loginRes.userId);
+      setTabValue(2);
       return;
     }
-    // if (loginRes.requireVerified && loginRes.userId) {
-    //   setUserId(loginRes.userId);
-    //   setLoading(false);
-    //   return;
-    // }
     if (loginRes.requireChangePassword && loginRes.userId) {
       setChangePassword(true);
       setUserId(loginRes.userId);
+      setTabValue(1);
       setLoading(false);
       return;
     }
@@ -79,61 +97,12 @@ export const LoginPage: React.FC = () => {
     setFormData((prev) => ({ ...prev, [key]: value }));
   };
 
-  if (formData.authType === "MFA") {
-    return <MfaSetup />;
-  }
-
-  if (changePassword) {
-    return <FindAccount onClose={() => setChangePassword(false)} />;
-  }
-
-  if (unlockAccount) {
-    return (
-      <RequestUnlock userId={userId} onClose={() => setUnlockAccount(false)} />
-    );
-  }
-
-  // if (registerUser) {
-  //   return <Registration onClose={() => setRegisterUser(false)} />;
-  // }
-
-  return (
-    <Box
-      component="form"
-      height="100vh"
-      display="flex"
-      flexDirection="column"
-      justifyContent="center"
-      alignItems="center"
-      onSubmit={handleSubmit(onSubmit)}
-    >
-      <Box
-        sx={(theme) => ({
-          width: "456px",
-          mx: "auto",
-          border: `1px solid ${theme.palette.grey[200]}`,
-        })}
-      >
-        <Box
-          sx={(theme) => ({
-            backgroundColor: theme.palette.grey[50],
-            py: 2,
-            borderBottom: `1px solid ${theme.palette.grey[200]}`,
-          })}
-        >
-          <Typography variant="h4" component="h4" align="center">
-            Service
-          </Typography>
-        </Box>
-
-        <Box sx={{ bgcolor: "common.white", px: 4.5, py: 4 }}>
-          <Typography variant="h6" align="center">
-            서비스설명
-          </Typography>
-          <Typography variant="body1" align="center" mt="20px" color="grey.500">
-            서비스 설명은 이렇습니다. 서비스 설명은 이렇습니다. <br />
-          </Typography>
-
+  const renderTabContent = () => {
+    switch (tabValue) {
+      case 0:
+        return formData.authType === "MFA" ? (
+          <MfaSetup />
+        ) : (
           <Stack direction="column" spacing={3} sx={{ mt: 3 }}>
             <FormControl fullWidth>
               <Typography variant="body1" mb={0.5}>
@@ -147,7 +116,7 @@ export const LoginPage: React.FC = () => {
                 options={AUTH_TYPE_OPTIONS}
               />
             </FormControl>
-            {/* <Chip label={formData.authType} /> */}
+
             <FormControl fullWidth>
               <Typography variant="body1" mb={0.5}>
                 아이디
@@ -163,7 +132,7 @@ export const LoginPage: React.FC = () => {
 
             <FormControl fullWidth>
               <Typography variant="body1" mb={0.5}>
-                아이디
+                비밀번호
               </Typography>
               <Controller
                 control={control}
@@ -177,25 +146,24 @@ export const LoginPage: React.FC = () => {
                 )}
               />
             </FormControl>
+
             <Stack
               spacing={2}
               direction="row"
               justifyContent="flex-end"
               alignItems="center"
             >
-              <Button variant="text" onClick={() => setUnlockAccount(true)}>
+              {/* <Button variant="text" onClick={() => setTabValue(2)}>
                 Request unlock account
               </Button>
-              <Button
-                variant="outlined"
-                onClick={() => setChangePassword(true)}
-              >
+              <Button variant="outlined" onClick={() => setTabValue(1)}>
                 Change Password
               </Button>
               <Button variant="contained" onClick={handleRegisterUser}>
                 Register
-              </Button>
+              </Button> */}
             </Stack>
+
             <Box
               sx={{
                 display: "flex",
@@ -203,9 +171,68 @@ export const LoginPage: React.FC = () => {
                 alignItems: "center",
               }}
             >
-              <Button type="submit">Submit</Button>
+              <Button type="submit" disabled={loading}>
+                {loading ? "Loading..." : "Submit"}
+              </Button>
             </Box>
           </Stack>
+        );
+
+      case 1:
+        return <FindAccount onClose={() => setTabValue(0)} />;
+
+      case 2:
+        return <RequestUnlock userId={userId} onClose={() => setTabValue(0)} />;
+
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <Box
+      component="form"
+      height="100vh"
+      display="flex"
+      flexDirection="column"
+      justifyContent="center"
+      alignItems="center"
+      onSubmit={handleSubmit(onSubmit)}
+    >
+      <Box
+        sx={{
+          width: "456px",
+          mx: "auto",
+          border: `1px solid ${theme.palette.grey[200]}`,
+        }}
+      >
+        <Box
+          sx={{
+            backgroundColor: theme.palette.grey[50],
+            py: 2,
+            borderBottom: `1px solid ${theme.palette.grey[200]}`,
+          }}
+        >
+          <Typography variant="h4" component="h4" align="center">
+            Service
+          </Typography>
+        </Box>
+
+        <Box sx={{ bgcolor: "common.white", px: 4.5, py: 4 }}>
+          {/* <Typography variant="h6" align="center">
+            서비스설명
+          </Typography>
+          <Typography variant="body1" align="center" mt="20px" color="grey.500">
+            서비스 설명은 이렇습니다. 서비스 설명은 이렇습니다. <br />
+          </Typography> */}
+
+          <TabPanel
+            activeTab={tabValue}
+            tabs={tabs}
+            onChangeTab={setTabValue}
+          />
+
+          {renderTabContent()}
         </Box>
       </Box>
     </Box>

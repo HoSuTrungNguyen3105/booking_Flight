@@ -1,16 +1,13 @@
-import { Box, Grid, Typography } from "@mui/material";
-import { memo, useCallback, useMemo, useState } from "react";
-import { Button } from "../../Button/Button";
+import { Box, Button, Grid, Typography } from "@mui/material";
+import { memo, useCallback, useState } from "react";
 import {
   customLabels,
   type Detail,
   type IDataHistoryProps,
 } from "../DataSecure";
-import TableSection from "../TableSection";
 import type { GridRowDef } from "../../DataGrid";
 import BaseModal from "../../Modal/BaseModal";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
-import InputField from "../../Input/InputField";
 import InputTextField from "../../Input/InputTextField";
 
 interface IModalStatisticalDataLearningProps {
@@ -37,12 +34,7 @@ const DetailDataSystemModal = ({
   const renderActions = useCallback(() => {
     return (
       <Box display="flex" gap={1} justifyContent="flex-end" alignItems="center">
-        <Button
-          appearance="contained"
-          priority="normal"
-          label="삭제"
-          onClick={() => {}}
-        />
+        <Button onClick={onSuccess}>Submit</Button>
       </Box>
     );
   }, []);
