@@ -14,6 +14,7 @@ import {
   type FlightSeatByAircraftResponseMessage,
   type ReqUserIDProps,
   MethodType,
+  type AirportResponseMessage,
 } from "../../utils/type.ts";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
 import { useFetch } from "../../context/use[custom]/useFetch.ts";
@@ -177,6 +178,36 @@ export const useGetAircraftCode = () => {
   return {
     getAircraftCodeData,
     refetchGetAircraftCodeData,
+  };
+};
+
+export const useGetAllAircraftInfo = () => {
+  const { data: getAircraftInfo, refetch: refetchGetAircraftInfo } = useFetch<
+    AircraftResponseMessage,
+    null
+  >({
+    url: "/sys/flights/aircraft",
+    autoFetch: true,
+    config: getMethod,
+  });
+  return {
+    getAircraftInfo,
+    refetchGetAircraftInfo,
+  };
+};
+
+export const useGetAllAirportInfo = () => {
+  const { data: getAirportInfo, refetch: refetchGetAirportInfo } = useFetch<
+    AirportResponseMessage,
+    null
+  >({
+    url: "/sys/flights/airports",
+    autoFetch: true,
+    config: getMethod,
+  });
+  return {
+    getAirportInfo,
+    refetchGetAirportInfo,
   };
 };
 

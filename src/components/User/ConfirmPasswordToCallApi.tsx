@@ -57,12 +57,15 @@ const ConfirmPasswordToCallApiModal = ({
           onClose();
         }
       } else {
+        setPasswordPrompt("");
         setError(response.resultMessage || "Đã xảy ra lỗi khi xác thực");
       }
     } catch (error) {
+      setPasswordPrompt("");
       console.error("Password verification error:", error);
       setError("Đã xảy ra lỗi khi xác thực");
     } finally {
+      setPasswordPrompt("");
       setInternalLoading(false);
     }
   }, [passwordPrompt, onSuccess, onValidPassword, onClose, hasPendingRequest]);

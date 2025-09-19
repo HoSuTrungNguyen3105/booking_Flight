@@ -30,11 +30,12 @@ export default function MfaSetup({ email }: EmailProps) {
         setLoginMfaUi(true);
         setIsSetMfa(true);
         setQrCode(null);
-        return;
       } else if (data?.data?.hasVerified === "N" && data?.data?.qrCodeDataURL) {
         setQrCode(data.data.qrCodeDataURL);
         setLoginMfaUi(false);
         setIsSetMfa(false);
+      } else if (data?.resultCode === "09") {
+        toast(data?.resultMessage);
       }
     } catch (err) {
       toast("Có lỗi khi tạo MFA");

@@ -20,7 +20,7 @@ import FullLayout from "../components/Layout/FullLayout";
 import CheckboxUI from "../common/Checkbox/CheckboxUI";
 import MealList from "../common/Setting/MealList";
 import SecurityManage from "../common/Setting/hooks/SecurityManage";
-import ProfileUser from "../common/Profile";
+// import ProfileUser from "../common/Profile";
 import ManageMyInformation from "../common/Setting/ManageMyInformation";
 import ManageMyInfo from "../common/Setting/ManageMyInfo";
 import Special from "../common/Setting/hooks/Special";
@@ -28,7 +28,6 @@ import FlightBooking from "../components/User/FlightBooking";
 import AircraftPage from "../components/User/AircraftPage";
 import UnlockRequestTable from "../common/DetailSection/UnlockRequestTable";
 import FlightPage from "../components/Admin/component/FlightPage";
-import AccountYn from "../components/Auth/AccountYn";
 import LeaveRequestGrid from "../components/Admin/component/LeaveRequestGrid";
 import PayrollManagement from "../common/Sample/PayrollManagement";
 import DataSecure from "../common/Setting/DataSecure";
@@ -39,12 +38,12 @@ import FlightPath from "../components/User/FlightPath";
 import ChatApp from "../components/Chat/HeaderChat";
 import AirportDiagram from "../components/Admin/TerminalContainer";
 import RevenueDashboard from "../components/User/RevenueDashboard";
-import DashboardRight from "../components/User/DashboardRight";
 import TicketSalesDashboard from "../components/User/TicketSalesDashboard";
 import FlightRoutesDashboard from "../components/User/FlightRoutesDashboard";
 import AircraftBatchCreator from "../components/Admin/component/AircraftBatchCreator";
 import AircraftBatchCreatorEnhanced from "../components/Admin/component/AircraftBatchCreate";
 import TerminalGateContainer from "../components/Admin/AirportMasterplan";
+import AirportManagement from "../components/Admin/component/AirportManagement";
 
 const routes = [
   {
@@ -64,6 +63,10 @@ const routes = [
           </GuestGuard>
         ),
       },
+      // {
+      //   path: ROUTE_PATHS.FILE_UPLOAD.replace("/", ""),
+      //   element: <FileUpload name="fileUploader" />,
+      // },
       {
         path: "registerPage",
         element: (
@@ -89,6 +92,10 @@ const routes = [
         path: "special",
         element: <Special />,
       },
+      // {
+      //   path: ROUTE_PATHS.FILE_UPLOAD.replace("/", ""),
+      //   element: <FileUpload name="fileUploader" />,
+      // },
       {
         path: "FlightPage",
         element: <FlightPage />,
@@ -195,6 +202,10 @@ const routes = [
       {
         path: "ChatApp",
         element: <ChatApp />,
+      },
+      {
+        path: "AirportManagement",
+        element: <AirportManagement />,
       },
       {
         path: "TerminalGateContainer",

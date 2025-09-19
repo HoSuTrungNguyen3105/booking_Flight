@@ -15,6 +15,7 @@ import {
   ReportProblem,
 } from "@mui/icons-material";
 import { useRouteError, isRouteErrorResponse, Link } from "react-router-dom";
+import { memo } from "react";
 
 const ErrorPage = () => {
   const error = useRouteError();
@@ -178,4 +179,4 @@ const ErrorPage = () => {
   );
 };
 
-export default ErrorPage;
+export default memo(ErrorPage);

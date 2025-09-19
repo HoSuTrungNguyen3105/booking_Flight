@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useRef } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
-import AsideLnb from "./Sidebar";
+import AsideContainer from "./Sidebar";
 import {
   Box,
   List,
@@ -88,7 +88,7 @@ const ResizeLayout = () => {
   };
 
   return (
-    <AsideLnb>
+    <AsideContainer>
       <Box
         sx={(theme) => ({
           height: "100%",
@@ -103,7 +103,7 @@ const ResizeLayout = () => {
           "&::-webkit-scrollbar": {
             display: "none",
           },
-          msOverflowStyle: "none",
+          // msOverflowStyle: "none",
         })}
       >
         {menuData.map((section, index) => (
@@ -134,7 +134,7 @@ const ResizeLayout = () => {
       <Box flex={1} sx={{ overflow: "auto" }}>
         <Outlet />
       </Box>
-    </AsideLnb>
+    </AsideContainer>
   );
 };
 

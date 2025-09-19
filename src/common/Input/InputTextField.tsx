@@ -1,14 +1,13 @@
-import { Box, type SxProps } from "@mui/material";
+import { type SxProps } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import TextField from "@mui/material/TextField";
 import ClearIcon from "../../svgs/close-circle-svg.svg";
 import ClearErrorIcon from "../../svgs/eye_close.png";
-import CopyIcon from "../../svgs/copy-link-icon.svg";
-import HasCopyIcon from "../../svgs/copy-success-svg.svg";
-import PwHideIcon from "../../svgs/eye_close.png";
-import PwShowIcon from "../../svgs/eye_1.png";
-
+import ContentCopyRoundedIcon from "@mui/icons-material/ContentCopyRounded";
+import DoneAllRoundedIcon from "@mui/icons-material/DoneAllRounded";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import React, {
   forwardRef,
   memo,
@@ -94,7 +93,6 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
       };
     }, [readOnly, sx]);
 
-    // Xác định type thực tế cho input
     const actualInputType = useMemo(() => {
       if (type === "password") {
         return showPassword ? "text" : "password";
@@ -102,7 +100,6 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
       return type;
     }, [type, showPassword]);
 
-    // Kiểm tra xem có nên hiển thị endAdornment không
     const shouldShowEndAdornment = useMemo(() => {
       return (
         clearable || endIcon || (type === "password" && showEyeIcon) || canCopy
@@ -127,7 +124,6 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
             ),
             endAdornment: shouldShowEndAdornment && (
               <InputAdornment sx={{ gap: 1, paddingRight: 0 }} position="end">
-                {/* Clear button */}
                 {clearable && !!value && !disabled && (
                   <IconButton
                     edge="end"
@@ -144,7 +140,6 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
                   </IconButton>
                 )}
 
-                {/* Password visibility toggle */}
                 {type === "password" && showEyeIcon && (
                   <IconButton
                     onClick={handleTogglePasswordVisibility}
@@ -152,16 +147,10 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
                     edge="end"
                     sx={{ cursor: "pointer", padding: "4px" }}
                   >
-                    <img
-                      src={showPassword ? PwShowIcon : PwHideIcon}
-                      width={20}
-                      height={20}
-                      alt="toggle-password"
-                    />
+                    {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
                   </IconButton>
                 )}
 
-                {/* Custom end icon (chỉ hiển thị nếu không phải password field) */}
                 {endIcon && type !== "password" && (
                   <IconButton
                     disabled={disabled}
@@ -172,7 +161,6 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
                   </IconButton>
                 )}
 
-                {/* Copy button */}
                 {canCopy && (
                   <IconButton
                     onClick={handleCopyText}
@@ -180,21 +168,9 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
                     sx={{ padding: "4px" }}
                   >
                     {hasCopy ? (
-                      <Box
-                        component={"img"}
-                        width={20}
-                        height={20}
-                        src={HasCopyIcon}
-                        alt="copied"
-                      />
+                      <DoneAllRoundedIcon />
                     ) : (
-                      <Box
-                        component={"img"}
-                        width={20}
-                        height={20}
-                        src={CopyIcon}
-                        alt="copy"
-                      />
+                      <ContentCopyRoundedIcon />
                     )}
                   </IconButton>
                 )}

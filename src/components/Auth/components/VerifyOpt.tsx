@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import OTPInput from "../../../common/Input/OTPInput";
-import { Box, Button, Paper, Typography } from "@mui/material";
+import { Box, Button, Paper, Stack, Typography } from "@mui/material";
 import type { EmailProps } from "../../../utils/type";
 import { useVerifyOTPCode } from "../../Api/usePostApi";
 import MfaSetup from "../MFA";
@@ -33,7 +33,7 @@ const VerifyOpt = ({ email, userId }: EmailProps) => {
   }, [otpText, userId, sethasValidate, refetchVerifyOTPcode, toast]);
 
   if (hasValidate) {
-    return <MfaSetup userId={userId} email={email} />;
+    return <MfaSetup email={email} />;
   }
 
   return (
@@ -45,8 +45,7 @@ const VerifyOpt = ({ email, userId }: EmailProps) => {
       alignItems="center"
       bgcolor="background.default"
     >
-      <Paper
-        elevation={3}
+      <Stack
         sx={{
           width: 420,
           p: 4,
@@ -81,7 +80,7 @@ const VerifyOpt = ({ email, userId }: EmailProps) => {
         >
           Xác nhận
         </Button>
-      </Paper>
+      </Stack>
     </Box>
   );
 };

@@ -25,7 +25,7 @@ const LanguageButton = () => {
 
   const renderActions = useCallback(() => {
     return (
-      <Box mr={2} display="flex" justifyContent="flex-end" alignItems="center">
+      <Box mt={2} display="flex" justifyContent="flex-end" alignItems="center">
         <Button variant="contained" onClick={handleSaveChange}>
           {t("submit")}
         </Button>
@@ -34,10 +34,6 @@ const LanguageButton = () => {
   }, [handleSaveChange, t]);
 
   const renderDropdown = useCallback(() => {
-    const handleDropdownClick = (e: React.MouseEvent<HTMLDivElement>) => {
-      e.stopPropagation();
-    };
-
     return (
       <>
         <Typography variant="h6" fontWeight="600" color="text.primary">

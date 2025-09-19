@@ -87,10 +87,10 @@ export function convertCurrency(
   amountVND: number,
   targetCurrency: Currency,
   rates: Record<Currency, number> = {
-    USD: 0.000043, // giả sử 1 VND = 0.000043 USD (~1 USD = 23k VND)
-    JPY: 0.0061, // 1 VND = 0.0061 JPY (~1 JPY = 164 VND)
-    KRW: 0.053, // 1 VND = 0.053 KRW (~1 KRW = 18.9 VND)
-    VND: 1, // VND giữ nguyên
+    USD: 0.000043,
+    JPY: 0.0061,
+    KRW: 0.053,
+    VND: 1,
   }
 ): string {
   if (isNaN(amountVND)) return "";

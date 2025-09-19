@@ -18,6 +18,7 @@ import {
   Drawer,
   AppBar,
   Toolbar,
+  Stack,
 } from "@mui/material";
 import {
   Search as SearchIcon,
@@ -150,310 +151,63 @@ const ChatApp = () => {
   };
 
   return (
-    <Box sx={{ display: "flex", height: "100vh", bgcolor: "grey.100" }}>
-      {/* Sidebar */}
-      <Paper
-        sx={{
-          width: isSidebarOpen ? 320 : 0,
-          height: "100%",
-          borderRadius: 0,
-          overflow: "hidden",
-          transition: "width 0.3s ease",
-          display: "flex",
-          flexDirection: "column",
-        }}
-        elevation={2}
-      >
-        {/* Sidebar Header */}
-        <Box sx={{ p: 2, bgcolor: "primary.main", color: "white" }}>
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <Typography variant="h6" fontWeight="bold">
-              Tin nhắn
-            </Typography>
-            <IconButton color="inherit" onClick={toggleSidebar}>
-              <CloseIcon />
-            </IconButton>
-          </Box>
-
-          <Button
-            fullWidth
-            variant="contained"
-            startIcon={<GroupIcon />}
-            onClick={toggleSearchPanel}
-            sx={{
-              mt: 2,
-              bgcolor: "white",
-              color: "primary.main",
-              "&:hover": { bgcolor: "grey.100" },
-            }}
-          >
-            Tìm người dùng
-          </Button>
-        </Box>
-
-        {/* Conversation List */}
-        <Box sx={{ flex: 1, overflow: "auto" }}>
-          <List disablePadding>
-            {conversationsWithUsers.map((conv) => (
-              <ListItem key={conv.id} disablePadding>
-                <ListItemButton
-                  selected={selectedUser === conv.userId}
-                  onClick={() => handleUserSelect(conv.user)}
-                >
-                  <ListItemAvatar>
-                    <Badge
-                      overlap="circular"
-                      anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                      variant="dot"
-                      color="success"
-                      //   invisible={!conv.user.online}
-                    >
-                      <Avatar src={conv?.user?.avatar}>
-                        {/* {conv.user.name.charAt(0)} */}
-                      </Avatar>
-                    </Badge>
-                  </ListItemAvatar>
-
-                  <ListItemText
-                    primary={
-                      <Box
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <Typography variant="subtitle2" noWrap>
-                          {conv.user.name}
-                        </Typography>
-                        <Typography variant="caption" color="textSecondary">
-                          {conv.timestamp}
-                        </Typography>
-                      </Box>
-                    }
-                    secondary={
-                      <Box
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <Typography
-                          variant="body2"
-                          color="textSecondary"
-                          noWrap
-                          sx={{ maxWidth: "70%" }}
-                        >
-                          {conv.lastMessage}
-                        </Typography>
-                        {conv.unread > 0 && (
-                          <Chip
-                            label={conv.unread}
-                            size="small"
-                            color="primary"
-                            sx={{
-                              height: 20,
-                              minWidth: 20,
-                              fontSize: "0.7rem",
-                            }}
-                          />
-                        )}
-                      </Box>
-                    }
-                  />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
-        </Box>
-      </Paper>
-
-      {/* Main Chat Area */}
-      <Box sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
-        {/* App Bar */}
-        <AppBar position="static" color="default" elevation={1}>
-          <Toolbar>
-            {!isSidebarOpen && (
-              <IconButton edge="start" sx={{ mr: 2 }} onClick={toggleSidebar}>
-                <MenuIcon />
-              </IconButton>
-            )}
-            <Typography variant="h6" sx={{ flexGrow: 1 }}>
-              {selectedUser ? selectedUser.name : "Chọn một cuộc trò chuyện"}
-            </Typography>
-            <IconButton onClick={toggleSearchPanel}>
-              <SearchIcon />
-            </IconButton>
-          </Toolbar>
-        </AppBar>
-
-        {/* Empty State */}
-        {!selectedUser && (
-          <Box
-            sx={{
-              flex: 1,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              p: 3,
-            }}
-          >
-            <ChatIcon sx={{ fontSize: 64, color: "grey.400", mb: 2 }} />
-            <Typography variant="h6" color="textSecondary" gutterBottom>
-              Chào mừng đến với ứng dụng chat
-            </Typography>
-            <Typography
-              variant="body2"
-              color="textSecondary"
-              textAlign="center"
+    <>
+      <Box sx={{ display: "flex", height: "100vh", bgcolor: "grey.100" }}>
+        {/* Sidebar */}
+        <Stack
+          sx={{
+            width: isSidebarOpen ? 320 : 0,
+            height: "100%",
+            borderRadius: 0,
+            overflow: "hidden",
+            transition: "width 0.3s ease",
+            display: "flex",
+            flexDirection: "column",
+          }}
+          // elevation={2}
+        >
+          {/* Sidebar Header */}
+          <Box sx={{ p: 2, bgcolor: "primary.main", color: "white" }}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
             >
-              Chọn một cuộc trò chuyện từ sidebar hoặc tìm kiếm người dùng mới
-              để bắt đầu trò chuyện
-            </Typography>
+              <Typography variant="h6" fontWeight="bold">
+                Tin nhắn
+              </Typography>
+              <IconButton color="inherit" onClick={toggleSidebar}>
+                <CloseIcon />
+              </IconButton>
+            </Box>
+
             <Button
+              fullWidth
               variant="contained"
               startIcon={<GroupIcon />}
               onClick={toggleSearchPanel}
-              sx={{ mt: 2 }}
+              sx={{
+                mt: 2,
+                bgcolor: "white",
+                color: "primary.main",
+                "&:hover": { bgcolor: "grey.100" },
+              }}
             >
               Tìm người dùng
             </Button>
           </Box>
-        )}
 
-        {/* Chat Interface */}
-        {selectedUser && (
-          <Box sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
-            {/* Chat Header */}
-            <Box
-              sx={{
-                p: 2,
-                borderBottom: 1,
-                borderColor: "divider",
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <Badge
-                overlap="circular"
-                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                variant="dot"
-                color="success"
-                invisible={!selectedUser}
-              >
-                {/* <Avatar src={selectedUser.avatar} sx={{ mr: 2 }}>
-                  {selectedUser.charAt(0)}
-                </Avatar> */}
-              </Badge>
-              <Box>
-                <Typography variant="subtitle1">{selectedUser.name}</Typography>
-                <Typography variant="caption" color="textSecondary">
-                  {selectedUser.online
-                    ? "Đang hoạt động"
-                    : `Hoạt động ${selectedUser.lastSeen}`}
-                </Typography>
-              </Box>
-            </Box>
-
-            {/* Chat Messages */}
-            <Box sx={{ flex: 1, p: 2, overflow: "auto" }}>
-              {/* Placeholder for messages */}
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  height: "100%",
-                  color: "grey.500",
-                }}
-              >
-                <Typography>
-                  Chọn một cuộc trò chuyện để xem tin nhắn
-                </Typography>
-              </Box>
-            </Box>
-
-            {/* Message Input */}
-            <Box sx={{ p: 2, borderTop: 1, borderColor: "divider" }}>
-              <TextField
-                fullWidth
-                placeholder="Nhập tin nhắn..."
-                variant="outlined"
-                size="small"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton color="primary">
-                        <SendIcon />
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </Box>
-          </Box>
-        )}
-      </Box>
-
-      {/* Search Panel Drawer */}
-      <Drawer
-        anchor="right"
-        open={isSearchPanelOpen}
-        onClose={toggleSearchPanel}
-        sx={{
-          "& .MuiDrawer-paper": {
-            width: 400,
-            boxSizing: "border-box",
-          },
-        }}
-      >
-        <Box
-          sx={{
-            p: 2,
-            display: "flex",
-            alignItems: "center",
-            borderBottom: 1,
-            borderColor: "divider",
-          }}
-        >
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            Tìm kiếm người dùng
-          </Typography>
-          <IconButton onClick={toggleSearchPanel}>
-            <CloseIcon />
-          </IconButton>
-        </Box>
-
-        <Box sx={{ p: 2 }}>
-          <TextField
-            fullWidth
-            placeholder="Tìm kiếm theo tên hoặc email..."
-            value={searchQuery}
-            onChange={(e) => handleSearch(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-        </Box>
-
-        <Box sx={{ flex: 1, overflow: "auto" }}>
-          {searchResults.length > 0 ? (
-            <List>
-              {searchResults.map((user) => (
-                <ListItem key={user.id} disablePadding>
-                  <ListItemButton onClick={() => handleUserSelect(user)}>
+          {/* Conversation List */}
+          <Box sx={{ flex: 1, overflow: "auto" }}>
+            <List disablePadding>
+              {conversationsWithUsers.map((conv) => (
+                <ListItem key={conv.id} disablePadding>
+                  <ListItemButton
+                    selected={selectedUser === conv.userId}
+                    onClick={() => handleUserSelect(conv.user)}
+                  >
                     <ListItemAvatar>
                       <Badge
                         overlap="circular"
@@ -463,32 +217,59 @@ const ChatApp = () => {
                         }}
                         variant="dot"
                         color="success"
-                        invisible={!user.online}
+                        //   invisible={!conv.user.online}
                       >
-                        <Avatar src={user.avatar}>{user.name.charAt(0)}</Avatar>
+                        <Avatar src={conv?.user?.avatar}>
+                          {/* {conv.user.name.charAt(0)} */}
+                        </Avatar>
                       </Badge>
                     </ListItemAvatar>
+
                     <ListItemText
-                      primary={user.name}
+                      primary={
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <Typography variant="subtitle2" noWrap>
+                            {conv.user.name}
+                          </Typography>
+                          <Typography variant="caption" color="textSecondary">
+                            {conv.timestamp}
+                          </Typography>
+                        </Box>
+                      }
                       secondary={
-                        <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                          }}
+                        >
                           <Typography
                             variant="body2"
                             color="textSecondary"
-                            sx={{ mr: 1 }}
+                            noWrap
+                            sx={{ maxWidth: "70%" }}
                           >
-                            {user.email}
+                            {conv.lastMessage}
                           </Typography>
-                          •
-                          <Typography
-                            variant="caption"
-                            color="textSecondary"
-                            sx={{ ml: 1 }}
-                          >
-                            {user.online
-                              ? "Online"
-                              : `Offline - ${user.lastSeen}`}
-                          </Typography>
+                          {conv.unread > 0 && (
+                            <Chip
+                              label={conv.unread}
+                              size="small"
+                              color="primary"
+                              sx={{
+                                height: 20,
+                                minWidth: 20,
+                                fontSize: "0.7rem",
+                              }}
+                            />
+                          )}
                         </Box>
                       }
                     />
@@ -496,19 +277,248 @@ const ChatApp = () => {
                 </ListItem>
               ))}
             </List>
-          ) : (
-            <Box sx={{ p: 3, textAlign: "center" }}>
-              <SearchIcon sx={{ fontSize: 64, color: "grey.400", mb: 2 }} />
-              <Typography variant="body1" color="textSecondary">
-                {searchQuery
-                  ? "Không tìm thấy người dùng phù hợp"
-                  : "Nhập từ khóa để tìm kiếm người dùng"}
+          </Box>
+        </Stack>
+
+        {/* Main Chat Area */}
+        <Box sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
+          {/* App Bar */}
+          <AppBar position="static" color="default" elevation={1}>
+            <Toolbar>
+              {!isSidebarOpen && (
+                <IconButton edge="start" sx={{ mr: 2 }} onClick={toggleSidebar}>
+                  <MenuIcon />
+                </IconButton>
+              )}
+              <Typography variant="h6" sx={{ flexGrow: 1 }}>
+                {selectedUser ? selectedUser.name : "Chọn một cuộc trò chuyện"}
               </Typography>
+              <IconButton onClick={toggleSearchPanel}>
+                <SearchIcon />
+              </IconButton>
+            </Toolbar>
+          </AppBar>
+
+          {/* Empty State */}
+          {!selectedUser && (
+            <Box
+              sx={{
+                flex: 1,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                p: 3,
+              }}
+            >
+              <ChatIcon sx={{ fontSize: 64, color: "grey.400", mb: 2 }} />
+              <Typography variant="h6" color="textSecondary" gutterBottom>
+                Chào mừng đến với ứng dụng chat
+              </Typography>
+              <Typography
+                variant="body2"
+                color="textSecondary"
+                textAlign="center"
+              >
+                Chọn một cuộc trò chuyện từ sidebar hoặc tìm kiếm người dùng mới
+                để bắt đầu trò chuyện
+              </Typography>
+              <Button
+                variant="contained"
+                startIcon={<GroupIcon />}
+                onClick={toggleSearchPanel}
+                sx={{ mt: 2 }}
+              >
+                Tìm người dùng
+              </Button>
+            </Box>
+          )}
+
+          {/* Chat Interface */}
+          {selectedUser && (
+            <Box sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
+              {/* Chat Header */}
+              <Box
+                sx={{
+                  p: 2,
+                  borderBottom: 1,
+                  borderColor: "divider",
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <Badge
+                  overlap="circular"
+                  anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                  variant="dot"
+                  color="success"
+                  invisible={!selectedUser}
+                >
+                  {/* <Avatar src={selectedUser.avatar} sx={{ mr: 2 }}>
+                  {selectedUser.charAt(0)}
+                </Avatar> */}
+                </Badge>
+                <Box>
+                  <Typography variant="subtitle1">
+                    {selectedUser.name}
+                  </Typography>
+                  <Typography variant="caption" color="textSecondary">
+                    {selectedUser.online
+                      ? "Đang hoạt động"
+                      : `Hoạt động ${selectedUser.lastSeen}`}
+                  </Typography>
+                </Box>
+              </Box>
+
+              {/* Chat Messages */}
+              <Box sx={{ flex: 1, p: 2, overflow: "auto" }}>
+                {/* Placeholder for messages */}
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: "100%",
+                    color: "grey.500",
+                  }}
+                >
+                  <Typography>
+                    Chọn một cuộc trò chuyện để xem tin nhắn
+                  </Typography>
+                </Box>
+              </Box>
+
+              {/* Message Input */}
+              <Box sx={{ p: 2, borderTop: 1, borderColor: "divider" }}>
+                <TextField
+                  fullWidth
+                  placeholder="Nhập tin nhắn..."
+                  variant="outlined"
+                  size="small"
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton color="primary">
+                          <SendIcon />
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Box>
             </Box>
           )}
         </Box>
-      </Drawer>
-    </Box>
+
+        {/* Search Panel Drawer */}
+        <Drawer
+          anchor="right"
+          open={isSearchPanelOpen}
+          onClose={toggleSearchPanel}
+          sx={{
+            "& .MuiDrawer-paper": {
+              width: 400,
+              boxSizing: "border-box",
+            },
+          }}
+        >
+          <Box
+            sx={{
+              p: 2,
+              display: "flex",
+              alignItems: "center",
+              borderBottom: 1,
+              borderColor: "divider",
+            }}
+          >
+            <Typography variant="h6" sx={{ flexGrow: 1 }}>
+              Tìm kiếm người dùng
+            </Typography>
+            <IconButton onClick={toggleSearchPanel}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
+
+          <Box sx={{ p: 2 }}>
+            <TextField
+              fullWidth
+              placeholder="Tìm kiếm theo tên hoặc email..."
+              value={searchQuery}
+              onChange={(e) => handleSearch(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Box>
+
+          <Box sx={{ flex: 1, overflow: "auto" }}>
+            {searchResults.length > 0 ? (
+              <List>
+                {searchResults.map((user) => (
+                  <ListItem key={user.id} disablePadding>
+                    <ListItemButton onClick={() => handleUserSelect(user)}>
+                      <ListItemAvatar>
+                        <Badge
+                          overlap="circular"
+                          anchorOrigin={{
+                            vertical: "bottom",
+                            horizontal: "right",
+                          }}
+                          variant="dot"
+                          color="success"
+                          invisible={!user.online}
+                        >
+                          <Avatar src={user.avatar}>
+                            {user.name.charAt(0)}
+                          </Avatar>
+                        </Badge>
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary={user.name}
+                        secondary={
+                          <Box sx={{ display: "flex", alignItems: "center" }}>
+                            <Typography
+                              variant="body2"
+                              color="textSecondary"
+                              sx={{ mr: 1 }}
+                            >
+                              {user.email}
+                            </Typography>
+                            •
+                            <Typography
+                              variant="caption"
+                              color="textSecondary"
+                              sx={{ ml: 1 }}
+                            >
+                              {user.online
+                                ? "Online"
+                                : `Offline - ${user.lastSeen}`}
+                            </Typography>
+                          </Box>
+                        }
+                      />
+                    </ListItemButton>
+                  </ListItem>
+                ))}
+              </List>
+            ) : (
+              <Box sx={{ p: 3, textAlign: "center" }}>
+                <SearchIcon sx={{ fontSize: 64, color: "grey.400", mb: 2 }} />
+                <Typography variant="body1" color="textSecondary">
+                  {searchQuery
+                    ? "Không tìm thấy người dùng phù hợp"
+                    : "Nhập từ khóa để tìm kiếm người dùng"}
+                </Typography>
+              </Box>
+            )}
+          </Box>
+        </Drawer>
+      </Box>
+    </>
   );
 };
 

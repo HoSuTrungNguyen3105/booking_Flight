@@ -58,16 +58,17 @@ export default function UpdateUserForm({
       position: data.position ?? "",
       status: data.status ?? EmployeeStatus.ACTIVE,
       baseSalary: data.baseSalary ?? 0,
-      hireDate: data.hireDate ?? Math.floor(Date.now() / 1000),
+      // hireDate: data.hireDate ?? Math.floor(Date.now() / 1000),
     },
   });
 
   const toast = useToast();
-  const {} = useGetUserById(data.id as number);
+  // const {} = useGetUserById(data.id as number);
   const { refetchUpdateUserFromAdmin } = useUpdateUserFromAdmin();
 
   const onSubmit = useCallback(
     async (formData: AdminUpdateUserForm) => {
+      console.log("formData", formData);
       try {
         await refetchUpdateUserFromAdmin(formData);
         toast(`Cập nhật nhân viên #${formData.id} thành công`, "success");
@@ -128,7 +129,7 @@ export default function UpdateUserForm({
           />
 
           {/* Hire Date */}
-          <Controller
+          {/* <Controller
             name="hireDate"
             control={control}
             render={({ field }) => (
@@ -138,7 +139,7 @@ export default function UpdateUserForm({
                 onChange={(val) => setValue("hireDate", val)}
               />
             )}
-          />
+          /> */}
 
           {/* Base Salary - Sử dụng TextField tạm để test */}
           <Controller

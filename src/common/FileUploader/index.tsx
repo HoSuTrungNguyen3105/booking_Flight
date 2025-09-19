@@ -11,7 +11,7 @@ import {
   type FC,
   type MouseEventHandler,
 } from "react";
-import { sumBy, uniqueId } from "lodash";
+import { sumBy } from "lodash";
 import { INPUT_TYPE, type FileUploaderProps, type TFileUploader } from "./type";
 import { concatStrings, getFileInformation, sizeToBytes } from "../../utils";
 import { Image } from "@mui/icons-material";
@@ -23,19 +23,27 @@ const FilePreview = ({
   openImageModal,
   handleRemoveFile,
 }: any) => {
-  const toast = useToast();
   useEffect(() => {
     if (files?.length > 0) {
-      toast(files.length, "success");
+      console.log(files, "success");
     }
   }, [files]);
+
+  if (!files || files.length === 0) {
+    return (
+      <Typography variant="body2" color="text.secondary">
+        Chưa có file nào được tải lên
+      </Typography>
+    );
+  }
+
   switch (type) {
     case "input":
       return (
         <Box display="flex" flexWrap="wrap" gap={2}>
           {files.map((file: any, index: number) => (
             <Box
-              key={uniqueId()}
+              key={index}
               sx={{
                 width: 120,
                 height: 120,
@@ -73,7 +81,7 @@ const FilePreview = ({
         <Box display="flex" flexDirection="column" gap={1}>
           {files.map((file: any, index: number) => (
             <Box
-              key={uniqueId()}
+              key={index}
               display="flex"
               alignItems="center"
               justifyContent="space-between"
@@ -105,8 +113,8 @@ const FilePreview = ({
     case "read-only":
       return (
         <Box display="flex" flexDirection="column" gap={1}>
-          {files.map((file: any) => (
-            <Typography key={uniqueId()} variant="body2">
+          {files.map((file: any, index: number) => (
+            <Typography key={index} variant="body2">
               {file.fileName}
             </Typography>
           ))}

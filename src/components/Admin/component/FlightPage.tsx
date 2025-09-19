@@ -12,7 +12,7 @@ import ImageFlight from "../../../svgs/wallpaper.jpg";
 import type { Flight } from "../../../common/Setting/type";
 const FlightPage = () => {
   const { flightList } = useFlightList();
-  const [flights] = useState<Flight[]>(flightList?.list as Flight[]);
+  // const [flights] = useState<Flight[]>(flightList?.list as Flight[]);
   const [selectedFlight, setSelectedFlight] = useState<Flight | null>(null);
   const [message, setMessage] = useState("");
 
@@ -24,7 +24,7 @@ const FlightPage = () => {
   return (
     <Box p={3}>
       <Typography variant="h4" fontWeight="bold" mb={3}>
-        Available Flights
+        Available Flights {selectedFlight?.flightNo}
       </Typography>
 
       <Grid container spacing={2}>

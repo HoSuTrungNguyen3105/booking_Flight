@@ -1,13 +1,12 @@
 import { useInspectionPerformanceHistory } from "./hooks/useInspectionPerformanceHistory";
 import { Box, Button, Typography } from "@mui/material";
-import DataTable, { type GridRowDef } from "../DataGrid/index";
-import Pagination from "../DataGrid/Pagination";
+import { type GridRowDef } from "../DataGrid/index";
 import AddUserModal from "./hooks/AddUserModal";
 import { Loading } from "../Loading/Loading";
 import UpdateUserModal from "./hooks/UpdateUserModal";
 import AccountLock from "./AccountLock";
 import DeleteUserModal from "./DeleteUserModal";
-import { memo, useState } from "react";
+import { memo, useCallback, useState } from "react";
 import AdminUpdateUserModal from "./hooks/AdminUpdateUserModal";
 import UpdateUserForm from "../../components/Admin/component/UpdateUserForm";
 import type { AdminUpdateUserForm } from "../../utils/type";
@@ -17,20 +16,13 @@ import TableSection from "./TableSection";
 const ManageMyInfo = () => {
   const {
     loading,
-    totalPages,
     handleRefetchUserList,
     selectedRow,
     toggleOpenModal,
     rows,
     closeModal,
     columns,
-    onSortModelChange,
-    onPageChange,
-    onPageSizeChange,
     openModal,
-    totalCount,
-    pageInfo,
-    sortModel,
   } = useInspectionPerformanceHistory();
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowDef[]>([]); // State để lưu selected IDs
   const [selectedRowChange, setSelectedRowCHange] = useState<GridRowDef[]>([]); // State để lưu selected IDs
@@ -43,6 +35,7 @@ const ManageMyInfo = () => {
       return newSelectedRows;
     });
   };
+
   const [isValidate, setIsValidate] = useState(false);
 
   if (loading) {
@@ -53,7 +46,10 @@ const ManageMyInfo = () => {
     return (
       <UpdateUserForm
         data={selectedRow as AdminUpdateUserForm}
-        onSuccess={() => setIsValidate(false)}
+        onSuccess={() => {
+          setIsValidate(false);
+          handleRefetchUserList();
+        }}
       />
     );
   }
@@ -81,6 +77,7 @@ const ManageMyInfo = () => {
           <Button onClick={() => toggleOpenModal("addUser")} />
         </Typography>
       </Box>
+
       {selectedRow?.length}
 
       <TableSection

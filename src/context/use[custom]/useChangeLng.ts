@@ -6,6 +6,7 @@ import { optionLanguage } from "../../i18n/resource";
 const currencyOptions: DropdownOptions[] = [
   { label: "USD ($)", value: "usd" },
   { label: "KRW (₩)", value: "krw" },
+  { label: "JPY (¥)", value: "jpy" },
   { label: "VND (₫)", value: "vnd" },
 ];
 

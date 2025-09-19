@@ -6,6 +6,7 @@ export const convertToString = (value: any): string => {
   }
   return String(value);
 };
+
 export const quickValue = <T, K>(
   status: boolean,
   trueValue: T,

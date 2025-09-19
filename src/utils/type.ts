@@ -188,13 +188,28 @@ export type FlightSeat = {
 
 export type FlightSeatByAircraftResponseMessage =
   DetailResponseMessage<FlightSeat>;
+interface FlightInfoAircraft {
+  flightId: number;
+  flightNo: string;
+}
 
+export interface AirportCodeProps {
+  code: string;
+  name: string;
+  city: string;
+  country: string;
+  createdAt: number | string;
+  updatedAt: null;
+}
 interface AircraftCodeName {
   code: string;
   model: string;
   range: number;
+  flights?: FlightInfoAircraft[];
 }
 export type AircraftResponseMessage = DetailResponseMessage<AircraftCodeName>;
+
+export type AirportResponseMessage = DetailResponseMessage<AirportCodeProps>;
 
 export type SeatResponseMessage = DetailResponseMessage<Seat>;
 

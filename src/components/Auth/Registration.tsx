@@ -33,11 +33,12 @@ const Registration = ({ email }: RegisterProps) => {
   const {
     control,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<PassengerFormData>({
     defaultValues: { email },
   });
-
+  const watchEmail = watch("email");
   const { refetchRegister } = useRegisterUser();
   const [verifyOTPcode, setVerifyOTPcode] = useState(false);
   const [userId, setUserId] = useState<number | null>(null);
@@ -59,7 +60,7 @@ const Registration = ({ email }: RegisterProps) => {
   };
 
   if (verifyOTPcode) {
-    return <VerifyOpt userId={userId ?? undefined} email={email} />;
+    return <VerifyOpt userId={userId ?? undefined} email={watchEmail} />;
   }
 
   return (
