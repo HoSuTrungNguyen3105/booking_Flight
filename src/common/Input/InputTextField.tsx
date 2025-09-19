@@ -17,6 +17,7 @@ import React, {
   useState,
   type HTMLInputTypeAttribute,
 } from "react";
+import { useCopyToClipboard } from "../../context/use[custom]/useCopyToClipboard";
 
 interface IInputTextFieldProps {
   type?: HTMLInputTypeAttribute;
@@ -60,6 +61,7 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
   ) => {
     const [showPassword, setShowPassword] = useState(false);
     const [hasCopy, setHasCopy] = useState(false);
+    const [_, copy] = useCopyToClipboard();
 
     const handleTogglePasswordVisibility = useCallback(() => {
       setShowPassword(!showPassword);
@@ -69,14 +71,13 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
       onChange("");
     }, [onChange]);
 
-    const handleCopyText = useCallback(() => {
-      navigator.clipboard.writeText(value || "");
-      setHasCopy(true);
-
-      setTimeout(() => {
-        setHasCopy(false);
-      }, 2000);
-    }, [value]);
+    const handleCopyText = useCallback(async () => {
+      const success = await copy(value || "");
+      if (success) {
+        setHasCopy(true);
+        setTimeout(() => setHasCopy(false), 2000);
+      }
+    }, [value, copy]);
 
     const readonlyStyles: SxProps = {
       caretColor: "transparent",

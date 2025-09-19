@@ -44,6 +44,7 @@ import TicketSalesDashboard from "../components/User/TicketSalesDashboard";
 import FlightRoutesDashboard from "../components/User/FlightRoutesDashboard";
 import AircraftBatchCreator from "../components/Admin/component/AircraftBatchCreator";
 import AircraftBatchCreatorEnhanced from "../components/Admin/component/AircraftBatchCreate";
+import TerminalGateContainer from "../components/Admin/AirportMasterplan";
 
 const routes = [
   {
@@ -194,6 +195,10 @@ const routes = [
       {
         path: "ChatApp",
         element: <ChatApp />,
+      },
+      {
+        path: "TerminalGateContainer",
+        element: <TerminalGateContainer />,
       },
       {
         path: "FlightPath",

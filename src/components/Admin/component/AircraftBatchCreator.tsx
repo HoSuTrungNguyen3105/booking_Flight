@@ -50,24 +50,24 @@ const AircraftBatchCreator = () => {
     const invalidAircrafts = aircrafts.filter(
       (ac) => !ac.code || !ac.model || !ac.range
     );
-    if (invalidAircrafts.length > 0) {
-      //   setSnackbar({
-      //     open: true,
-      //     message: "Please fill all fields",
-      //     severity: "error",
-      //   });
+    console.log("invalidAircrafts", invalidAircrafts);
+    if (invalidAircrafts.length === 0) {
+      console.log(" no invalidAircrafts", invalidAircrafts);
       setLoading(false);
       return;
     }
 
     try {
-      const response = await fetch("http://localhost:3000/aircraft/batch", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(aircrafts),
-      });
+      const response = await fetch(
+        "http://localhost:3000/sys/flights/aircraft/batch",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(aircrafts),
+        }
+      );
 
       const result = await response.json();
 
@@ -107,7 +107,6 @@ const AircraftBatchCreator = () => {
                   gap: 2,
                   justifyContent: "space-between",
                   alignItems: "center",
-                  mb: 2,
                 }}
               >
                 <Typography variant="h6">Aircraft No.{index + 1}</Typography>

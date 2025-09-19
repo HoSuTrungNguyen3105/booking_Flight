@@ -3,28 +3,20 @@ import {
   Box,
   Paper,
   Typography,
-  TextField,
   Button,
-  MenuItem,
   Grid,
   Card,
   CardContent,
   Divider,
   Alert,
   Chip,
-  InputAdornment,
   FormControl,
-  InputLabel,
-  Select,
-  useTheme,
   Stepper,
   Step,
   StepLabel,
-  IconButton,
 } from "@mui/material";
 import { Send, RestartAlt } from "@mui/icons-material";
 import {
-  getUserIdByEmail,
   LeaveType,
   useCreateLeaveRequest,
   type CreateLeaveRequestDto,
@@ -33,7 +25,6 @@ import DateTimePickerComponent from "../../common/DayPicker/date-range-picker";
 import InputTextField from "../../common/Input/InputTextField";
 import InputTextArea from "../../common/Input/InputTextArea";
 import SelectDropdown from "../../common/Dropdown/SelectDropdown";
-import { useToast } from "../../context/ToastContext";
 import { DateFormatEnum, formatDateKR } from "../../hooks/format";
 
 interface CreateLeaveRequestFormProps {

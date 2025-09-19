@@ -33,7 +33,7 @@ const TextArea: React.FC<TextFieldProps> = ({
         "&.Mui-focused fieldset": {
           borderColor: "primary.dark",
         },
-        ...sx, // Merge ngoài cùng để có thể ghi đè
+        ...sx,
       }}
     />
   );

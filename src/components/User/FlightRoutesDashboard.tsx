@@ -13,13 +13,7 @@ import {
   styled,
   alpha,
 } from "@mui/material";
-import {
-  TrendingUp,
-  FlightTakeoff,
-  FlightLand,
-  Public,
-  AirlineStops,
-} from "@mui/icons-material";
+import { TrendingUp, FlightTakeoff, FlightLand } from "@mui/icons-material";
 import {
   BarChart,
   Bar,
@@ -28,7 +22,6 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  Cell,
 } from "recharts";
 import TabPanel, { type ITabItem } from "../../common/Setting/TabPanel";
 

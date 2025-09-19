@@ -3,24 +3,15 @@ import {
   Box,
   Paper,
   Typography,
-  Tabs,
-  Tab,
   Grid,
-  Card,
-  CardContent,
   Chip,
   useTheme,
   useMediaQuery,
   styled,
+  Stack,
 } from "@mui/material";
-import {
-  FlightTakeoff,
-  FlightLand,
-  Restaurant,
-  ShoppingBag,
-  LocalParking,
-  DirectionsWalk,
-} from "@mui/icons-material";
+import { LocalParking, DirectionsWalk } from "@mui/icons-material";
+import TabPanel, { type ITabItem } from "../../common/Setting/TabPanel";
 
 // Định nghĩa types
 interface TerminalSection {
@@ -54,6 +45,18 @@ const terminalSections: TerminalSection[] = [
     gates: ["B1", "B2", "B3", "B4", "B5", "B6"],
     facilities: ["Quán cà phê", "Cửa hàng lưu niệm", "Wi-Fi miễn phí", "ATM"],
     color: "#2e7d32",
+  },
+  {
+    id: "C",
+    name: "Terminal C - Hạng thương ...",
+    gates: ["C1", "C2", "C3", "C4"],
+    facilities: [
+      "Phòng chờ hạng nhất",
+      "Dịch vụ spa",
+      "Nhà hàng cao cấp",
+      "Dịch vụ đặc biệt",
+    ],
+    color: "#ed8702",
   },
   {
     id: "D",
@@ -144,16 +147,18 @@ const airportGates: AirportGate[] = [
   { id: "D4", terminal: "D", status: "maintenance" },
 ];
 
+const tabs: ITabItem[] = [
+  { label: "Tất cả", value: "all", description: "Hiển thị toàn bộ terminal" },
+  { label: "Khu A", value: "A", description: "Chỉ hiển thị khu A" },
+  { label: "Khu B", value: "B", description: "Chỉ hiển thị khu B" },
+  { label: "Khu C", value: "C", description: "Chỉ hiển thị khu C" },
+  { label: "Khu D", value: "D", description: "Chỉ hiển thị khu D" },
+];
+
 // Styled components
 const TerminalContainer = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(3),
   marginBottom: theme.spacing(3),
-  borderLeft: `4px solid`,
-  transition: "transform 0.2s ease-in-out",
-  "&:hover": {
-    transform: "translateY(-4px)",
-    boxShadow: theme.shadows[4],
-  },
 }));
 
 const GateBox = styled(Box)<{ status: string }>(({ theme, status }) => {
@@ -194,18 +199,7 @@ const AirportDiagram: React.FC = () => {
   const [selectedTerminal, setSelectedTerminal] = useState<string>("all");
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-
-  const handleTerminalChange = (
-    event: React.SyntheticEvent,
-    newValue: string
-  ) => {
-    setSelectedTerminal(newValue);
-  };
-
-  const filteredGates =
-    selectedTerminal === "all"
-      ? airportGates
-      : airportGates.filter((gate) => gate.terminal === selectedTerminal);
+  const [activeTab, setActiveTab] = useState(0);
 
   const getGateStatusText = (status: string) => {
     switch (status) {
@@ -221,141 +215,19 @@ const AirportDiagram: React.FC = () => {
   };
 
   return (
-    <Box sx={{ p: isMobile ? 1 : 3 }}>
-      <Typography
-        variant="h4"
-        component="h1"
-        gutterBottom
-        align="center"
-        sx={{ mb: 3 }}
-      >
-        Sơ đồ Sân bay
-      </Typography>
+    <>
+      <Stack sx={{ mb: 1 }}>
+        <TabPanel
+          activeTab={activeTab}
+          onChangeTab={(idx) => {
+            setActiveTab(idx);
+            setSelectedTerminal(tabs[idx].value);
+          }}
+          tabs={tabs}
+        />
+      </Stack>
 
-      {/* Terminal selector tabs */}
-      <Paper sx={{ mb: 3 }}>
-        <Tabs
-          value={selectedTerminal}
-          onChange={handleTerminalChange}
-          variant={isMobile ? "scrollable" : "fullWidth"}
-          scrollButtons="auto"
-          aria-label="terminal tabs"
-        >
-          <Tab label="Tất cả các khu" value="all" />
-          {terminalSections.map((terminal) => (
-            <Tab
-              key={terminal.id}
-              label={`Khu ${terminal.id}`}
-              value={terminal.id}
-              icon={<FlightTakeoff />}
-              iconPosition="start"
-            />
-          ))}
-        </Tabs>
-      </Paper>
-
-      {/* Terminal sections */}
-      {terminalSections.map((terminal) => (
-        <TerminalContainer
-          key={terminal.id}
-          elevation={2}
-          sx={{ borderLeftColor: terminal.color }}
-        >
-          <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-            <Box
-              sx={{
-                width: 24,
-                height: 24,
-                borderRadius: "50%",
-                backgroundColor: terminal.color,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "white",
-                fontWeight: "bold",
-                mr: 2,
-              }}
-            >
-              {terminal.id}
-            </Box>
-            <Typography variant="h5" component="h2" color={terminal.color}>
-              {terminal.name}
-            </Typography>
-          </Box>
-
-          <Grid container spacing={2}>
-            <Grid size={12} sx={{ md: 8 }}>
-              <Typography variant="h6" gutterBottom>
-                Cổng ({terminal.gates.length} cổng)
-              </Typography>
-              <Grid container spacing={1}>
-                {terminal.gates.map((gate) => {
-                  const gateInfo = airportGates.find((g) => g.id === gate);
-                  return (
-                    <Grid size={6} sx={{ sm: 4, md: 4 }} key={gate}>
-                      <GateBox status={gateInfo?.status || "available"}>
-                        <Typography variant="body2" fontWeight="bold">
-                          {gate}
-                        </Typography>
-                        {gateInfo?.flight && (
-                          <Typography variant="caption" display="block">
-                            {gateInfo.flight}
-                          </Typography>
-                        )}
-                        {gateInfo?.destination && (
-                          <Typography variant="caption" display="block">
-                            {gateInfo.destination}
-                          </Typography>
-                        )}
-                        <Typography variant="caption" display="block">
-                          {getGateStatusText(gateInfo?.status || "available")}
-                        </Typography>
-                      </GateBox>
-                    </Grid>
-                  );
-                })}
-              </Grid>
-            </Grid>
-
-            <Grid size={12} sx={{ md: 4 }}>
-              <Typography variant="h6" gutterBottom>
-                Tiện nghi
-              </Typography>
-              <Box>
-                {terminal.facilities.map((facility) => (
-                  <FacilityChip
-                    key={facility}
-                    label={facility}
-                    size="small"
-                    variant="outlined"
-                  />
-                ))}
-              </Box>
-
-              <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
-                Chỉ dẫn
-              </Typography>
-              <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-                <Chip
-                  icon={<DirectionsWalk />}
-                  label="5 phút đi bộ từ quầy check-in"
-                  variant="outlined"
-                  size="small"
-                />
-                <Chip
-                  icon={<LocalParking />}
-                  label="Bãi đỗ xe gần nhất: P2"
-                  variant="outlined"
-                  size="small"
-                />
-              </Box>
-            </Grid>
-          </Grid>
-        </TerminalContainer>
-      ))}
-
-      {/* Legend */}
-      <Paper sx={{ p: 2, mt: 3 }}>
+      <Box sx={{ p: "8px" }}>
         <Typography variant="h6" gutterBottom>
           Chú thích
         </Typography>
@@ -397,8 +269,110 @@ const AirportDiagram: React.FC = () => {
             <Typography variant="body2">Đang bảo trì</Typography>
           </Box>
         </Box>
-      </Paper>
-    </Box>
+      </Box>
+
+      {/* Terminal sections */}
+      {terminalSections
+        .filter((t) => selectedTerminal === "all" || t.id === selectedTerminal)
+        .map((terminal) => (
+          <TerminalContainer
+            key={terminal.id}
+            elevation={2}
+            sx={{ borderLeftColor: terminal.color }}
+          >
+            <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+              <Box
+                sx={{
+                  width: 24,
+                  height: 24,
+                  borderRadius: "50%",
+                  backgroundColor: terminal.color,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "white",
+                  fontWeight: "bold",
+                  mr: 2,
+                }}
+              >
+                {terminal.id}
+              </Box>
+              <Typography variant="h5" component="h2" color={terminal.color}>
+                {terminal.name}
+              </Typography>
+            </Box>
+
+            <Grid container spacing={2}>
+              <Grid size={12} sx={{ md: 8 }}>
+                <Typography variant="h6" gutterBottom>
+                  Cổng ({terminal.gates.length} cổng)
+                </Typography>
+                <Grid container spacing={1}>
+                  {terminal.gates.map((gate) => {
+                    const gateInfo = airportGates.find((g) => g.id === gate);
+                    return (
+                      <Grid size={6} sx={{ sm: 4, md: 4 }} key={gate}>
+                        <GateBox status={gateInfo?.status || "available"}>
+                          <Typography variant="body2" fontWeight="bold">
+                            {gate}
+                          </Typography>
+                          {gateInfo?.flight && (
+                            <Typography variant="caption" display="block">
+                              {gateInfo.flight}
+                            </Typography>
+                          )}
+                          {gateInfo?.destination && (
+                            <Typography variant="caption" display="block">
+                              {gateInfo.destination}
+                            </Typography>
+                          )}
+                          <Typography variant="caption" display="block">
+                            {getGateStatusText(gateInfo?.status || "available")}
+                          </Typography>
+                        </GateBox>
+                      </Grid>
+                    );
+                  })}
+                </Grid>
+              </Grid>
+
+              <Grid size={12} sx={{ md: 4 }}>
+                <Typography variant="h6" gutterBottom>
+                  Tiện nghi
+                </Typography>
+                <Box>
+                  {terminal.facilities.map((facility) => (
+                    <FacilityChip
+                      key={facility}
+                      label={facility}
+                      size="small"
+                      variant="outlined"
+                    />
+                  ))}
+                </Box>
+
+                <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
+                  Chỉ dẫn
+                </Typography>
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                  <Chip
+                    icon={<DirectionsWalk />}
+                    label="5 phút đi bộ từ quầy check-in"
+                    variant="outlined"
+                    size="small"
+                  />
+                  <Chip
+                    icon={<LocalParking />}
+                    label="Bãi đỗ xe gần nhất: P2"
+                    variant="outlined"
+                    size="small"
+                  />
+                </Box>
+              </Grid>
+            </Grid>
+          </TerminalContainer>
+        ))}
+    </>
   );
 };
 
