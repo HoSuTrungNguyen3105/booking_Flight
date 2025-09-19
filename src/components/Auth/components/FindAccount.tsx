@@ -3,7 +3,7 @@ import { Controller, useForm, useWatch } from "react-hook-form";
 import InputTextField from "../../../common/Input/InputTextField";
 import ChangePassword from "../ChangePassword";
 import { getUserIdByEmail } from "../../Api/usePostApi";
-import { useCallback, useState } from "react";
+import { memo, useCallback, useState } from "react";
 import { useToast } from "../../../context/ToastContext";
 
 interface FindAccountProps {
@@ -82,4 +82,4 @@ const FindAccount = ({ onClose }: FindAccountProps) => {
   );
 };
 
-export default FindAccount;
+export default memo(FindAccount);

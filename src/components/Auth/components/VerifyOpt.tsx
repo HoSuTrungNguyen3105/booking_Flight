@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { memo, useCallback, useState } from "react";
 import OTPInput from "../../../common/Input/OTPInput";
 import { Box, Button, Paper, Stack, Typography } from "@mui/material";
 import type { EmailProps } from "../../../utils/type";
@@ -85,4 +85,4 @@ const VerifyOpt = ({ email, userId }: EmailProps) => {
   );
 };
 
-export default VerifyOpt;
+export default memo(VerifyOpt);

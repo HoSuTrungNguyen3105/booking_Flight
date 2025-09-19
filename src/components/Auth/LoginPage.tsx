@@ -21,7 +21,6 @@ interface ILoginForm {
 type AuthType = "ID,PW" | "DEV" | "MFA";
 
 export const LoginPage: React.FC = () => {
-  const navigate = useNavigate();
   const AUTH_TYPE_OPTIONS: { label: string; value: AuthType }[] = [
     { label: "ID,PW", value: "ID,PW" },
     { label: "MFA", value: "MFA" },
@@ -33,9 +32,10 @@ export const LoginPage: React.FC = () => {
     email: "",
     password: "",
   });
+
   const [tabValue, setTabValue] = useState(0);
-  const [mfaEmail, setMfaEmail] = useState(false); // Lưu email cho MFA
-  const [mfaEmailValue, setMfaEmailValue] = useState(""); // Lưu email cho MFA
+  const [mfaEmail, setMfaEmail] = useState(false);
+  const [mfaEmailValue, setMfaEmailValue] = useState("");
 
   const tabs: ITabItem[] = [
     {
@@ -69,24 +69,17 @@ export const LoginPage: React.FC = () => {
     },
   });
 
-  const handleRegisterUser = () => {
-    setRegisterUser(true);
-  };
-
   const onSubmit = async (data: ILoginForm) => {
     const email = watch("email");
     setLoading(true);
 
     if (formData.authType === "MFA") {
-      // Xử lý MFA: chỉ cần email, lưu email và chuyển sang trang MFA
       setMfaEmailValue(email);
       setLoading(false);
       setMfaEmail(true);
-      //navigate("/mfa-verification", { state: { email } }); // Chuyển trang đến MFA
       return;
     }
 
-    // Xử lý login thông thường
     const loginRes = await login({
       email,
       password: data.password,
@@ -146,7 +139,6 @@ export const LoginPage: React.FC = () => {
               />
             </FormControl>
 
-            {/* Chỉ hiển thị password field khi không phải MFA */}
             {formData.authType !== "MFA" && (
               <FormControl fullWidth>
                 <Typography variant="body1" mb={0.5}>
@@ -165,23 +157,6 @@ export const LoginPage: React.FC = () => {
                 />
               </FormControl>
             )}
-
-            {/* <Stack
-              spacing={2}
-              direction="row"
-              justifyContent="flex-end"
-              alignItems="center"
-            >
-              <Button variant="text" onClick={() => setTabValue(2)}>
-                Request unlock account
-              </Button>
-              <Button variant="outlined" onClick={() => setTabValue(1)}>
-                Change Password
-              </Button>
-              <Button variant="contained" onClick={handleRegisterUser}>
-                Register
-              </Button>
-            </Stack> */}
 
             <Box
               sx={{

@@ -3,19 +3,13 @@ import { Box, Button, Typography, Stack } from "@mui/material";
 import { Add, Delete } from "@mui/icons-material";
 import type { Aircraft } from "../../../common/Setting/type";
 import InputTextField from "../../../common/Input/InputTextField";
-// type AircraftProps ={
-//     code : Aircraft
-// }
+
 const AircraftBatchCreator = () => {
   const [aircrafts, setAircrafts] = useState<Aircraft[]>([
     { code: "", model: "", range: 0 },
   ]);
+
   const [loading, setLoading] = useState(false);
-  //   const [snackbar, setSnackbar] = useState({
-  //     open: false,
-  //     message: "",
-  //     severity: "success",
-  //   });
 
   const addAircraft = () => {
     setAircrafts([...aircrafts, { code: "", model: "", range: 0 }]);
@@ -33,24 +27,19 @@ const AircraftBatchCreator = () => {
     value: string | number
   ) => {
     const updated = [...aircrafts];
-
     if (field === "range") {
       updated[index][field] = Number(value);
     } else {
       updated[index][field] = value as string;
     }
-
     setAircrafts(updated);
   };
 
   const handleSubmit = async () => {
     setLoading(true);
-
-    // Validate data
     const invalidAircrafts = aircrafts.filter(
       (ac) => !ac.code || !ac.model || !ac.range
     );
-    console.log("invalidAircrafts", invalidAircrafts);
     if (invalidAircrafts.length === 0) {
       console.log(" no invalidAircrafts", invalidAircrafts);
       setLoading(false);
@@ -72,21 +61,10 @@ const AircraftBatchCreator = () => {
       const result = await response.json();
 
       if (response.ok) {
-        // setSnackbar({
-        //   open: true,
-        //   message: "Batch created successfully!",
-        //   severity: "success",
-        // });
         setAircrafts([{ code: "", model: "", range: 0 }]); // Reset form
       } else {
-        // setSnackbar({
-        //   open: true,
-        //   message: result.message || "Error creating batch",
-        //   severity: "error",
-        // });
       }
     } catch (error) {
-      // setSnackbar({ open: true, message: "Network error", severity: "error" });
     } finally {
       setLoading(false);
     }

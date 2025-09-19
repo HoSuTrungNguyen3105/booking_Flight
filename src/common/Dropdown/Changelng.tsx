@@ -35,7 +35,7 @@ const LanguageButton = () => {
 
   const renderDropdown = useCallback(() => {
     return (
-      <>
+      <Box sx={{ maxWidth: "200px", minWidth: "200px" }}>
         <Typography variant="h6" fontWeight="600" color="text.primary">
           {t("language")}
         </Typography>
@@ -54,7 +54,7 @@ const LanguageButton = () => {
           onChange={handlePayMoneySelect}
         />
         {renderActions()}
-      </>
+      </Box>
     );
   }, [
     t,

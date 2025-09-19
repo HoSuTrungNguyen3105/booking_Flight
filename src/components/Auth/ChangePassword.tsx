@@ -9,7 +9,7 @@ import {
 import { Controller, useForm } from "react-hook-form";
 import InputTextField from "../../common/Input/InputTextField";
 import { useChangePassword } from "../Api/usePostApi";
-import { useState } from "react";
+import { memo, useState } from "react";
 import VerifyOpt from "./components/VerifyOpt";
 
 interface FormDataType {
@@ -153,4 +153,4 @@ const ChangePassword = ({ userId, email }: IUserIdNumber) => {
   );
 };
 
-export default ChangePassword;
+export default memo(ChangePassword);

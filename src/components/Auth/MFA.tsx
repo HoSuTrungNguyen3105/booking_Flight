@@ -9,7 +9,6 @@ import type { EmailProps } from "../../utils/type";
 
 export default function MfaSetup({ email }: EmailProps) {
   const [qrCode, setQrCode] = useState<string | null>(null);
-  // const [email, setEmail] = useState<string>("");
   const [code, setCode] = useState("");
   const [loginMfa, setLoginMfaUi] = useState(false);
   const { refetchSetLoginMfa } = useLoginByMfa();
@@ -72,6 +71,7 @@ export default function MfaSetup({ email }: EmailProps) {
       toast("Vui lòng nhập mã MFA");
       return;
     }
+
     const res = await loginWithGGAuthenticator({
       email: email ?? "",
       code: code,
@@ -81,7 +81,8 @@ export default function MfaSetup({ email }: EmailProps) {
       toast("Đăng nhập thành công");
       setQrCode(null);
       setLoginMfaUi(true);
-    } else if (res.requireUnlock) {
+    } else if (res.resultCode === "09") {
+      toast(res.resultMessage);
     } else {
       toast("Sai mã MFA, thử lại!");
     }

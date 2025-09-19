@@ -256,9 +256,9 @@ const PayrollManagement = () => {
   }, [mealRows]);
 
   return (
-    <Box sx={{ p: 3, height: "100vh" }}>
+    <Box sx={{ height: "70vh" }}>
       {/* Header */}
-      <Grid container spacing={3} sx={{ mb: 3 }}>
+      <Grid container spacing={3}>
         <Grid size={12}>
           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
             <AttachMoney color="primary" sx={{ fontSize: 40 }} />

@@ -44,6 +44,7 @@ import AircraftBatchCreator from "../components/Admin/component/AircraftBatchCre
 import AircraftBatchCreatorEnhanced from "../components/Admin/component/AircraftBatchCreate";
 import TerminalGateContainer from "../components/Admin/AirportMasterplan";
 import AirportManagement from "../components/Admin/component/AirportManagement";
+import SendEmailToUsers from "../common/Setting/SendEmailToUsers";
 
 const routes = [
   {
@@ -247,10 +248,10 @@ const routes = [
         path: "aircraft",
         element: <AircraftPage />,
       },
-      // {
-      //   path: ROUTE_PATHS.SAMPLE_BUTTON.replace("/", ""),
-      //   element: <Home />,
-      // },
+      {
+        path: "SendEmailToUsers",
+        element: <SendEmailToUsers selectedUser={[]} />,
+      },
     ],
   },
   {

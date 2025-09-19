@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { memo, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import { Button } from "../../common/Button/Button";
 import { useForm } from "react-hook-form";
@@ -73,4 +73,4 @@ const ForgetPassword = () => {
   );
 };
 
-export default ForgetPassword;
+export default memo(ForgetPassword);

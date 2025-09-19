@@ -10,9 +10,9 @@ import {
 } from "@mui/material";
 import { AttachFile, Delete, Send } from "@mui/icons-material";
 import { useAuth } from "../../context/AuthContext";
-import type { GridRowDef } from "../DataGrid";
+import { FileUpload } from "../FileUploader";
 type SendEmailProps = {
-  selectedUser: GridRowDef[];
+  selectedUser: string[];
 };
 const SendEmailToUsers = ({ selectedUser }: SendEmailProps) => {
   const [to, setTo] = useState<string[]>(["madison@example.com"]);
@@ -42,15 +42,15 @@ const SendEmailToUsers = ({ selectedUser }: SendEmailProps) => {
       sx={{
         width: "100%",
         bgcolor: "white",
-        p: 3,
+        p: 1,
         display: "flex",
         flexDirection: "column",
-        gap: 2,
+        gap: 1,
       }}
     >
       {/* Header */}
       <Typography variant="h6" fontWeight="bold">
-        New mail
+        Send mail {selectedUser}
       </Typography>
 
       {/* From */}
@@ -106,51 +106,7 @@ const SendEmailToUsers = ({ selectedUser }: SendEmailProps) => {
         value={body}
         onChange={(e) => setBody(e.target.value)}
       />
-
-      {/* Attachments */}
-      {attachments.length > 0 && (
-        <Box>
-          <Typography variant="body2" sx={{ mb: 1 }}>
-            Attachments
-          </Typography>
-          {attachments.map((file, i) => (
-            <Box
-              key={i}
-              display="flex"
-              alignItems="center"
-              justifyContent="space-between"
-              sx={{
-                border: "1px solid #e0e0e0",
-                borderRadius: 1,
-                p: 1,
-                mb: 1,
-              }}
-            >
-              <Typography variant="body2">{file.name}</Typography>
-              <IconButton
-                onClick={() =>
-                  setAttachments(attachments.filter((_, idx) => idx !== i))
-                }
-              >
-                <Delete fontSize="small" />
-              </IconButton>
-            </Box>
-          ))}
-        </Box>
-      )}
-
-      {/* Upload file */}
-      <Button
-        variant="outlined"
-        startIcon={<AttachFile />}
-        component="label"
-        sx={{ alignSelf: "flex-start" }}
-      >
-        Attach File
-        <input type="file" hidden multiple onChange={handleAttachFile} />
-      </Button>
-
-      {/* Actions */}
+      <FileUpload name="upload" />
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Box display="flex" alignItems="center" gap={1}>
           <Switch

@@ -54,9 +54,11 @@ const ManageMyInfo = () => {
     );
   }
 
-  // Nếu có row được chọn để gửi email
-  if (selectedRowChange.length > 0) {
-    return <SendEmailToUsers selectedUser={selectedRowIds} />;
+  if (selectedRowIds.length > 0) {
+    const selectedEmails = selectedRowIds
+      .map((row) => row.email)
+      .filter(Boolean); // lọc email hợp lệ
+    return <SendEmailToUsers selectedUser={selectedEmails} />;
   }
 
   return (
@@ -65,17 +67,19 @@ const ManageMyInfo = () => {
         sx={{
           backgroundColor: "white",
           padding: "8px",
-          justifyContent: "space-around",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
           border: 1,
           borderColor: "grey.200",
         }}
       >
         <Typography component="p" variant="overline">
-          내 정보 관리
+          User Management
         </Typography>
-        <Typography variant="body2" color="grey.500">
-          <Button onClick={() => toggleOpenModal("addUser")} />
-        </Typography>
+        <Button variant="contained" onClick={() => toggleOpenModal("addUser")}>
+          Create User
+        </Button>
       </Box>
 
       {selectedRow?.length}
@@ -85,25 +89,12 @@ const ManageMyInfo = () => {
         isLoading={loading}
         nextRowClick
         onSelectedRowIdsChange={handleMealRowSelection}
-        // checkboxSelection={false}
-        // onSortModelChange={onSortModelChange}
-        // sortModel={sortModel}
-        //loading={loading}
         rows={rows}
         columns={columns}
       />
-
-      {/* <Box sx={{ flexShrink: 0 }}>
-        <Pagination
-          totalPage={totalPages}
-          totalResult={totalCount}
-          onPageChange={onPageChange}
-          currentPage={pageInfo.page}
-          pageSize={pageInfo.size}
-          onPageSizeChange={onPageSizeChange}
-        />
-      </Box> */}
-
+      {selectedRowIds.length > 0 && (
+        <Button variant="contained">Send Message</Button>
+      )}
       {openModal.addUser && (
         <AddUserModal
           open={openModal.addUser}

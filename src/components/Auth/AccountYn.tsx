@@ -1,6 +1,6 @@
 import { Box, Button, FormControl, Paper, Typography } from "@mui/material";
 import { Controller, useForm, useWatch } from "react-hook-form";
-import { useCallback, useState } from "react";
+import { memo, useCallback, useState } from "react";
 import Registration from "./Registration";
 import InputTextField from "../../common/Input/InputTextField";
 import { useToast } from "../../context/ToastContext";
@@ -75,4 +75,4 @@ const AccountYn = () => {
   );
 };
 
-export default AccountYn;
+export default memo(AccountYn);
