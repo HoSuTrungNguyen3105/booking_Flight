@@ -159,7 +159,7 @@ const TicketSalesDashboard: React.FC = () => {
     <Box sx={{ p: 3, bgcolor: "grey.50", minHeight: "100vh" }}>
       <Grid container spacing={3}>
         {/* Header - Ticket Sales */}
-        <Grid item xs={12}>
+        <Grid size={12}>
           <StatCard elevation={3}>
             <Typography variant="h4" fontWeight="bold" gutterBottom>
               Ticket Sales
@@ -174,7 +174,7 @@ const TicketSalesDashboard: React.FC = () => {
         </Grid>
 
         {/* Stats Cards */}
-        <Grid item xs={12} md={4}>
+        <Grid size={12} sx={{ md: 4 }}>
           <Paper sx={{ p: 3, textAlign: "center", height: "100%" }}>
             <Typography variant="h6" color="primary" gutterBottom>
               Commercial Flights
@@ -201,7 +201,7 @@ const TicketSalesDashboard: React.FC = () => {
           </Paper>
         </Grid>
 
-        <Grid item xs={12} md={4}>
+        <Grid size={12} sx={{ md: 4 }}>
           <Paper sx={{ p: 3, textAlign: "center", height: "100%" }}>
             <Typography variant="h6" color="primary" gutterBottom>
               All Bookings
@@ -213,7 +213,7 @@ const TicketSalesDashboard: React.FC = () => {
           </Paper>
         </Grid>
 
-        <Grid item xs={12} md={4}>
+        <Grid size={12} sx={{ md: 4 }}>
           <Paper sx={{ p: 3, textAlign: "center", height: "100%" }}>
             <Typography variant="h6" color="primary" gutterBottom>
               Customer Growth
@@ -229,7 +229,7 @@ const TicketSalesDashboard: React.FC = () => {
         </Grid>
 
         {/* Top Flight Routes */}
-        <Grid item xs={12} md={6}>
+        <Grid size={12} sx={{ md: 6 }}>
           <Paper sx={{ p: 3 }}>
             <Typography variant="h6" fontWeight="bold" gutterBottom>
               Top Flight Routes
@@ -274,7 +274,7 @@ const TicketSalesDashboard: React.FC = () => {
         </Grid>
 
         {/* Recent Bookings */}
-        <Grid item xs={12} md={6}>
+        <Grid size={12} sx={{ md: 6 }}>
           <Paper sx={{ p: 3 }}>
             <Typography variant="h6" fontWeight="bold" gutterBottom>
               Recent Bookings
@@ -382,7 +382,7 @@ const TicketSalesDashboard: React.FC = () => {
         </Grid>
 
         {/* Additional Stats */}
-        <Grid item xs={12} md={6}>
+        <Grid size={12} sx={{ md: 6 }}>
           <Paper sx={{ p: 3, textAlign: "center" }}>
             <Typography variant="h6" gutterBottom>
               Last 6 Months Performance
@@ -408,7 +408,7 @@ const TicketSalesDashboard: React.FC = () => {
           </Paper>
         </Grid>
 
-        <Grid item xs={12} md={6}>
+        <Grid size={12} sx={{ md: 6 }}>
           <Paper sx={{ p: 3, textAlign: "center" }}>
             <Typography variant="h6" gutterBottom>
               Revenue Overview

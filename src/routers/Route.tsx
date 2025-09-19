@@ -42,6 +42,8 @@ import RevenueDashboard from "../components/User/RevenueDashboard";
 import DashboardRight from "../components/User/DashboardRight";
 import TicketSalesDashboard from "../components/User/TicketSalesDashboard";
 import FlightRoutesDashboard from "../components/User/FlightRoutesDashboard";
+import AircraftBatchCreator from "../components/Admin/component/AircraftBatchCreator";
+import AircraftBatchCreatorEnhanced from "../components/Admin/component/AircraftBatchCreate";
 
 const routes = [
   {
@@ -158,8 +160,16 @@ const routes = [
         element: <Food />,
       },
       {
-        path: "manage/message",
+        path: "message",
         element: <ChatContainer />,
+      },
+      {
+        path: "AircraftBatchCreatorEnhanced",
+        element: <AircraftBatchCreatorEnhanced />,
+      },
+      {
+        path: "AircraftBatchCreator",
+        element: <AircraftBatchCreator />,
       },
       {
         path: "special",

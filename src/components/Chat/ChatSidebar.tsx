@@ -56,7 +56,7 @@ const ChatSidebar = ({
 
   return (
     <Stack
-      overflow="hidden"
+      // overflow="hidden"
       direction="column"
       sx={{
         width: changeWidth,

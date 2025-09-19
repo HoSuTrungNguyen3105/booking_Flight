@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -131,7 +131,7 @@ const ChatContainer: React.FC = () => {
     },
   ];
 
-  console.log("incomingMessage", incomingMessage);
+  // console.log("incomingMessage", incomingMessage);
 
   // Hook để gửi tin nhắn
   const { emit: sendMessage, loading: sending } = useSocket({
@@ -150,15 +150,15 @@ const ChatContainer: React.FC = () => {
   });
 
   // Fetch tin nhắn cũ khi chọn user khác
-  useEffect(() => {
-    if (currentUser && selectedUser) {
-      // Gọi API để lấy tin nhắn cũ
-      fetch(`/api/messages/${currentUser.id}/${selectedUser.id}`)
-        .then((res) => res.json())
-        .then((data) => setMessages(data))
-        .catch((err) => console.error("Error fetching messages:", err));
-    }
-  }, [currentUser, selectedUser]);
+  // useEffect(() => {
+  //   if (currentUser && selectedUser) {
+  //     // Gọi API để lấy tin nhắn cũ
+  //     fetch(`/api/messages/${currentUser.id}/${selectedUser.id}`)
+  //       .then((res) => res.json())
+  //       .then((data) => setMessages(data))
+  //       .catch((err) => console.error("Error fetching messages:", err));
+  //   }
+  // }, [currentUser, selectedUser]);
 
   const handleSendMessage = () => {
     if (!newMessage.trim() || !currentUser || !selectedUser || sending) return;
@@ -193,8 +193,8 @@ const ChatContainer: React.FC = () => {
     .sort((a, b) => Number(a.createdAt) - Number(b.createdAt));
 
   return (
-    <Box display="flex" height="89vh">
-      <ChatSidebar />
+    <Box display="flex" height="80vh">
+      {/* <ChatSidebar /> */}
       <Box flex={1} display="flex" flexDirection="column" p={2}>
         {/* <SearchUser onUserSelect={handleUserSelect} /> */}
         <Box
@@ -227,4 +227,4 @@ const ChatContainer: React.FC = () => {
   );
 };
 
-export default ChatContainer;
+export default memo(ChatContainer);
