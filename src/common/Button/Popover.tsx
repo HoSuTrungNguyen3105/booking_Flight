@@ -1,5 +1,5 @@
 import { Box, Button, Popover, styled } from "@mui/material";
-import React, { useState, type ReactNode } from "react";
+import React, { memo, useState, type ReactNode } from "react";
 
 export interface IButtonSettingProps {
   option?: ReactNode[];
@@ -29,20 +29,12 @@ const CustomPopover: React.FC<IButtonSettingProps> = ({
   };
 
   const handleClose = () => {
-    //    if (event && event.target.closest('.select-dropdown, .MuiSelect-select')) {
-    //   return;
-    // }
     setAnchorEl(null);
   };
-
-  // const handleClickAway = () => {
-  //   handleClose();
-  // };
 
   const options = Array.isArray(option) ? option : [];
 
   return (
-    // <ClickAwayListener onClickAway={handleClickAway}>
     <>
       <Button
         {...buttonProps}
@@ -89,8 +81,7 @@ const CustomPopover: React.FC<IButtonSettingProps> = ({
         </Box>
       </StyledPopover>
     </>
-    // </ClickAwayListener>
   );
 };
 
-export default CustomPopover;
+export default memo(CustomPopover);

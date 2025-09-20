@@ -16,7 +16,6 @@ type TUseFetch<T, P> = {
   autoFetch?: boolean;
   onSuccess?: (res?: T) => void;
   onError?: () => void;
-  requirePassword?: boolean;
 };
 
 export const useFetch = <T extends Partial<ResponseMessage>, P>({
@@ -25,14 +24,10 @@ export const useFetch = <T extends Partial<ResponseMessage>, P>({
   config,
   defaultValue,
   autoFetch,
-  requirePassword,
   onSuccess,
   onError,
 }: TUseFetch<T, P>) => {
   const { get, post, delete: del, update } = useApi();
-  // const { user, verifyPassword } = useAuth();
-  // const toast = useToast();
-  // const [openModalConfirm, setOpenModalConfirm] = useState(false);
   const [data, setData] = useState<T | undefined>(defaultValue);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -44,10 +39,6 @@ export const useFetch = <T extends Partial<ResponseMessage>, P>({
       if (abortController.current) {
         abortController.current.abort();
       }
-      // Xác thực mật khẩu nếu required
-      // if (requirePassword) {
-      //   setOpenModalConfirm(true);
-      // }
       abortController.current = new AbortController();
       setLoading(true);
       const finalUrl = overrideUrl ?? url;

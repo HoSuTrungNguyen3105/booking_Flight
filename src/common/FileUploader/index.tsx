@@ -137,7 +137,6 @@ export const FileUpload: FC<FileUploaderProps> = ({
   onChange,
   maxFiles = 5,
   multiple = true,
-  hidePreview,
   disabled = false,
 }) => {
   const [imageFiles, setImageFiles] = useState<TFileUploader[]>(value || []);
@@ -326,6 +325,7 @@ export const FileUpload: FC<FileUploaderProps> = ({
             accept={accept}
             multiple={multiple}
             onChange={handleChange}
+            onClick={onInputClick}
           />
         )}
         <label htmlFor={name} style={{ cursor: "pointer" }}>

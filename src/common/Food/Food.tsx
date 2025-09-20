@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import type { FlightMeal, Seat } from "../../utils/type";
 import { useFlightMeals } from "../../components/Api/useGetApi";
 import DataTable from "../DataGrid/index.tsx";
-import SeatManager, { type SeatType } from "../Input/SeatManager.tsx";
+import { type SeatType } from "../Input/SeatManager.tsx";
 
 const Food = () => {
   const { fetchFlightMeals } = useFlightMeals();
@@ -17,42 +17,40 @@ const Food = () => {
   }, [fetchFlightMeals]);
 
   const flightMealCols: GridColDef<FlightMeal>[] = [
-    { field: "id", headerName: "ID", width: 80 },
-    { field: "flightId", headerName: "Flight ID", width: 100 },
-    { field: "mealId", headerName: "Meal ID", width: 100 },
-    { field: "quantity", headerName: "Số lượng", width: 120 },
-    { field: "price", headerName: "Giá ($)", width: 120 },
+    { field: "id", headerName: "ID", flex: 1 },
+    { field: "flightId", headerName: "Flight ID", flex: 1 },
+    { field: "mealId", headerName: "Meal ID", flex: 1 },
+    { field: "quantity", headerName: "Số lượng", flex: 1 },
+    { field: "price", headerName: "Giá ($)", flex: 1 },
   ];
 
   const flightCols: GridColDef[] = [
-    { field: "flightId", headerName: "Flight ID", width: 100 },
-    { field: "flightNo", headerName: "Số hiệu", width: 120 },
+    { field: "flightId", headerName: "Flight ID", flex: 1 },
+    { field: "flightNo", headerName: "Số hiệu", flex: 1 },
     {
       field: "scheduledDeparture",
       headerName: "Khởi hành",
-      width: 200,
-      valueFormatter: (p) => new Date(p).toLocaleString(),
+      flex: 1,
     },
     {
       field: "scheduledArrival",
       headerName: "Hạ cánh",
-      width: 200,
-      valueFormatter: (p) => new Date(p).toLocaleString(),
+      flex: 1,
     },
-    { field: "departureAirport", headerName: "Sân đi", width: 120 },
-    { field: "arrivalAirport", headerName: "Sân đến", width: 120 },
-    { field: "status", headerName: "Trạng thái", width: 120 },
-    { field: "aircraftCode", headerName: "Máy bay", width: 120 },
+    { field: "departureAirport", headerName: "Sân đi", flex: 1 },
+    { field: "arrivalAirport", headerName: "Sân đến", flex: 1 },
+    { field: "status", headerName: "Trạng thái", flex: 1 },
+    { field: "aircraftCode", headerName: "Máy bay", flex: 1 },
   ];
 
   // ==== Bảng 3: Meal Info ====
   const mealCols: GridColDef[] = [
-    { field: "id", headerName: "Meal ID", width: 100 },
+    { field: "id", headerName: "Meal ID", flex: 1 },
     { field: "name", headerName: "Tên món", flex: 1 },
-    { field: "mealType", headerName: "Loại", width: 120 },
+    { field: "mealType", headerName: "Loại", flex: 1 },
     { field: "description", headerName: "Mô tả", flex: 1 },
-    { field: "price", headerName: "Giá ($)", width: 120 },
-    { field: "isAvailable", headerName: "Có sẵn", width: 120 },
+    { field: "price", headerName: "Giá ($)", flex: 1 },
+    { field: "isAvailable", headerName: "Có sẵn", flex: 1 },
   ];
 
   const flightList = [

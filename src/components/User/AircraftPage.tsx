@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import { useGetAircraftCode } from "../Api/useGetApi";
 import { memo, useState } from "react";
-import AircarftDetail from "./AircarftDetail";
+import AircarftDetail from "./AircraftDetail";
 
 const AircraftPage = () => {
   const { getAircraftCodeData } = useGetAircraftCode();

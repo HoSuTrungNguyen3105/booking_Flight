@@ -19,7 +19,7 @@ interface IModalStatisticalDataLearningProps {
   onClose: () => void;
   onSuccess: () => void;
   payrollData: PayrollProps;
-  setPayrollData: React.Dispatch<React.SetStateAction<PayrollProps>>; // 👈 thêm props để cập nhật state
+  setPayrollData: React.Dispatch<React.SetStateAction<PayrollProps>>;
 }
 
 const CreatePayrollModal = ({

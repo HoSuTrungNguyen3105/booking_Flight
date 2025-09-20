@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Card,
   CardContent,
   Chip,
@@ -13,10 +14,9 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import type { FareConditions, UserSearchType } from "./type";
 import { useFlightBooking, useFlightList } from "../Api/usePostApi";
-import { Button } from "../../common/Button/Button";
+// import { Button } from "../../common/Button/Button";
 import { FlightOutlined, RefreshOutlined } from "@mui/icons-material";
 import Zigzag from "../../common/CustomRender/Zigzag";
-import FormRow from "../../common/CustomRender/FormRow";
 import { Dropdown } from "../../common/Dropdown/Dropdown";
 import type { Flight } from "../../common/Setting/type";
 import type { IDetailItem } from "../../common/DetailSection";
@@ -56,6 +56,7 @@ const BookTicket = () => {
   >([]);
   const { flightBookingData, refetchFlightBookingDataData } =
     useFlightBooking(flightParams);
+
   const getFareConditionColor = (fare: FareConditions): string => {
     switch (fare) {
       case "Business":
@@ -142,21 +143,10 @@ const BookTicket = () => {
             <Box borderRadius={2} border="3px solid #f2f3f8" p={3}>
               <DetailSection data={detail} />
               <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                <Button
-                  priority="normal"
-                  onClick={onResetForm}
-                  label={<RefreshOutlined />}
-                  iconPosition="trailing"
-                  size="large"
-                  type="reset"
-                  iconSize={21}
-                />
-                <Button
-                  priority="normal"
-                  size="large"
-                  type="submit"
-                  label="선택"
-                />
+                <Button type="reset" onClick={onResetForm}>
+                  <RefreshOutlined />
+                </Button>
+                <Button type="submit">선택</Button>
               </Box>
             </Box>
           </Box>
@@ -304,12 +294,7 @@ const BookTicket = () => {
                           {/* <Link
                               to={`/${flightParams.passengerCount}/${flight.ticketNo}`}
                             > */}
-                          <Button
-                            priority="normal"
-                            size="large"
-                            type="button"
-                            label="SELECT"
-                          />
+                          <Button type="button">SELECT</Button>
                           {/* </Link> */}
                         </Box>
                       </CardContent>

@@ -113,7 +113,7 @@ const FlightDetailPage = ({ flight, onBookFlight }: FlightDetailPageProps) => {
     },
     {
       title: "Gate",
-      description: flight.gate || "-",
+      description: flight.gateId || "-",
       size: 2,
     },
     {

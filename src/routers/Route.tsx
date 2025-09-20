@@ -45,6 +45,7 @@ import AircraftBatchCreatorEnhanced from "../components/Admin/component/Aircraft
 import TerminalGateContainer from "../components/Admin/AirportMasterplan";
 import AirportManagement from "../components/Admin/component/AirportManagement";
 import SendEmailToUsers from "../common/Setting/SendEmailToUsers";
+import CreateGateForm from "../components/User/CreateGateForm";
 
 const routes = [
   {
@@ -155,6 +156,10 @@ const routes = [
       {
         path: "unlock_request", //bookseat
         element: <UnlockRequestTable />,
+      },
+      {
+        path: "CreateGateForm", //bookseat
+        element: <CreateGateForm />,
       },
       {
         path: "data-secure",

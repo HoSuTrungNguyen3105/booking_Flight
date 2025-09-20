@@ -37,7 +37,11 @@ export type DataFlight = {
   actualDeparture?: number | null;
   actualArrival?: number | null;
 
-  gate?: string;
+  // gate?: string;
+  airline: string;
+  origin: string;
+  destination: string;
+  gateId?: string;
   terminal?: string;
   isCancelled?: boolean;
   delayMinutes?: number | null;
@@ -48,7 +52,6 @@ export type DataFlight = {
     model: string;
     range: number;
   };
-
   departureAirportRel?: {
     code: string;
     name: string;
@@ -64,8 +67,8 @@ export type DataFlight = {
     coordinates: string;
     timezone: string;
   };
-
-  meals?: any[];
+  meals?: Meal[];
+  seats?: Seat[];
 };
 
 export type FlightTimeFields = Pick<
@@ -207,9 +210,18 @@ interface AircraftCodeName {
   range: number;
   flights?: FlightInfoAircraft[];
 }
+
+interface AllFlightCodeProps {
+  aircraft: { code: string[] };
+  airport: { code: string[] };
+}
+
 export type AircraftResponseMessage = DetailResponseMessage<AircraftCodeName>;
 
 export type AirportResponseMessage = DetailResponseMessage<AirportCodeProps>;
+
+export type GetAllCodeResponseMessage =
+  DetailResponseMessage<AllFlightCodeProps>;
 
 export type SeatResponseMessage = DetailResponseMessage<Seat>;
 
@@ -218,6 +230,21 @@ export enum UserRole {
   USER = "USER",
   MONITOR = "MONITOR",
 }
+
+export enum GateStatus {
+  AVAILABLE = "AVAILABLE",
+  OCCUPIED = "OCCUPIED",
+  MAINTENANCE = "MAINTENANCE",
+  CLOSED = "CLOSED",
+}
+
+export type CreateGateReq = {
+  code: string;
+  terminalId: string;
+  status?: GateStatus;
+  createdAt?: number;
+  updatedAt?: number;
+};
 
 export type UserRoleType = UserRole.ADMIN | UserRole.USER | UserRole.MONITOR;
 

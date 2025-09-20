@@ -15,6 +15,7 @@ import {
   type ReqUserIDProps,
   MethodType,
   type AirportResponseMessage,
+  type GetAllCodeResponseMessage,
 } from "../../utils/type.ts";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
 import { useFetch } from "../../context/use[custom]/useFetch.ts";
@@ -208,6 +209,21 @@ export const useGetAllAirportInfo = () => {
   return {
     getAirportInfo,
     refetchGetAirportInfo,
+  };
+};
+
+export const useGetAllCode = () => {
+  const { data: getAllCode, refetch: refetchGetAllCode } = useFetch<
+    GetAllCodeResponseMessage,
+    null
+  >({
+    url: "/sys/flights/getAllCode",
+    autoFetch: true,
+    config: getMethod,
+  });
+  return {
+    getAllCode,
+    refetchGetAllCode,
   };
 };
 

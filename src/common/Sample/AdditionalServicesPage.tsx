@@ -85,28 +85,19 @@ const AdditionalServicesPage: React.FC = () => {
   };
 
   const handleSubmit = () => {
-    const selectedServices = services.filter((service) => service.checked);
-    console.log("Dịch vụ đã chọn:", selectedServices);
-    console.log("Tổng tiền:", formatCurrency(calculateTotal()));
-    // Gửi dữ liệu đến API hoặc xử lý tiếp
+    services.filter((service) => service.checked);
   };
 
   return (
-    <Box sx={{ maxWidth: 800, margin: "0 auto", p: 3 }}>
+    <Box sx={{ maxWidth: "100%", margin: "0 auto", p: 1 }}>
       <Typography
         variant="h4"
-        component="h1"
-        gutterBottom
         sx={{ color: theme.palette.primary.main, fontWeight: "bold", mb: 3 }}
       >
         Dịch vụ bổ sung
       </Typography>
 
-      <Typography
-        variant="body1"
-        paragraph
-        sx={{ color: theme.palette.text.primary }}
-      >
+      <Typography variant="body1" sx={{ color: theme.palette.text.primary }}>
         Nâng cao trải nghiệm chuyến bay của bạn với các dịch vụ bổ sung dưới
         đây.
       </Typography>
