@@ -211,9 +211,13 @@ interface AircraftCodeName {
   flights?: FlightInfoAircraft[];
 }
 
+export interface FlightCodeItem {
+  code: string;
+}
+
 interface AllFlightCodeProps {
-  aircraft: { code: string[] };
-  airport: { code: string[] };
+  aircraft: FlightCodeItem[];
+  airport: FlightCodeItem[];
 }
 
 export type AircraftResponseMessage = DetailResponseMessage<AircraftCodeName>;

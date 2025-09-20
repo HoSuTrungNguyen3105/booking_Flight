@@ -1,6 +1,7 @@
 import { IconButton, Stack } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import { memo } from "react";
 
 const OrderButton = ({
   disabled,
@@ -26,4 +27,4 @@ const OrderButton = ({
     </IconButton>
   </Stack>
 );
-export default OrderButton;
+export default memo(OrderButton);

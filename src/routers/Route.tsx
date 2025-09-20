@@ -8,7 +8,7 @@ import { FileUpload } from "../common/FileUploader";
 import Hero from "../components/Hero/Hero";
 import BookTicket from "../components/User/BookTicket";
 import Food from "../common/Food/Food";
-import TableCustom from "../common/Table/Table";
+// import TableCustom from "../common/Table/Table";
 import { ROUTE_PATHS } from "./RoutePath";
 import ManageLayout from "../components/Layout/ResizeLayout";
 import Search_layout from "../components/Admin/Search_layout";
@@ -46,12 +46,9 @@ import TerminalGateContainer from "../components/Admin/AirportMasterplan";
 import AirportManagement from "../components/Admin/component/AirportManagement";
 import SendEmailToUsers from "../common/Setting/SendEmailToUsers";
 import CreateGateForm from "../components/User/CreateGateForm";
+import MealForm from "../common/Sample/MealForm";
 
 const routes = [
-  {
-    path: ROUTE_PATHS.TABLE,
-    element: <TableCustom />,
-  },
   {
     path: ROUTE_PATHS.INIT,
     element: <FullLayout />,
@@ -111,10 +108,6 @@ const routes = [
         element: <Search_layout />,
       },
       {
-        path: "/TableCustom",
-        element: <TableCustom />,
-      },
-      {
         path: ROUTE_PATHS.FILE_UPLOAD.replace("/", ""),
         element: <FileUpload name="fileUploader" />,
       },
@@ -152,6 +145,10 @@ const routes = [
       {
         path: "service",
         element: <AdditionalServicesPage />,
+      },
+      {
+        path: "MealForm",
+        element: <MealForm onSubmit={() => {}} />,
       },
       {
         path: "unlock_request", //bookseat

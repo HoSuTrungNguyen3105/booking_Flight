@@ -98,7 +98,9 @@ const FlightUpdateModal = ({
     destination: "",
   });
 
-  const mapFlightToFormData = (data?: Partial<Flight>): FlightFormData => {
+  const mapFlightToFormData = (
+    data?: Partial<FlightFormData>
+  ): FlightFormData => {
     if (!data) return createDefaultFormData();
 
     return {
@@ -117,12 +119,12 @@ const FlightUpdateModal = ({
       priceEconomy: data.priceEconomy || 0,
       priceBusiness: data.priceBusiness || 0,
       priceFirst: data.priceFirst || 0,
-      gateId: data.gate || "",
+      gateId: data.gateId || "",
       terminal: data.terminal || "",
       isCancelled: data.isCancelled || false,
       delayMinutes: data.delayMinutes || 0,
       seats: data.seats || [],
-      airline: "",
+      airline: data.airline || "",
       origin: "",
       destination: "",
     };
@@ -181,6 +183,8 @@ const FlightUpdateModal = ({
           }),
         };
 
+        console.log("res", updateData);
+
         const response = await refetchUpdateFlightId(updateData);
 
         if (response?.resultCode === "00") {
@@ -202,17 +206,21 @@ const FlightUpdateModal = ({
           priceEconomy: formData.priceEconomy,
           priceBusiness: formData.priceBusiness,
           priceFirst: formData.priceFirst,
-          gate: formData.gateId,
+          // gateId: "",
           terminal: formData.terminal,
+          airline: formData.airline,
+          origin: formData.origin,
+          destination: formData.destination,
         };
 
         const response = await refetchCreateFlightData(createData);
 
         if (response?.resultCode === "00") {
+          toast(response?.resultMessage as string, "success");
           onSuccess();
           onClose();
         } else {
-          toast(response?.resultMessage || "Update flight failed", "error");
+          toast(response?.resultMessage as string, "error");
         }
       }
     } catch (error) {
@@ -244,19 +252,21 @@ const FlightUpdateModal = ({
     }
   }, [open, mode, getFlightByIdData]);
 
-  const optionAirportCode = (getAllCode?.data?.airport.code ?? []).map(
-    (item) => ({
-      value: item,
-      label: item,
+  const optionAirportCode = (getAllCode?.data?.airport ?? []).map(
+    (item, index) => ({
+      value: item.code,
+      label: item.code,
     })
   );
 
-  const optionAircraftCode = (getAllCode?.data?.aircraft.code ?? []).map(
-    (item) => ({
-      value: item,
-      label: item,
+  const optionAircraftCode = (getAllCode?.data?.aircraft ?? []).map(
+    (item, index) => ({
+      value: item.code,
+      label: item.code,
     })
   );
+
+  console.log("ss", formData);
 
   const optionWay = [
     {
@@ -365,8 +375,7 @@ const FlightUpdateModal = ({
         {/* TO_DO */}
 
         <Grid size={12}>
-          <SelectDropdown
-            options={optionAirportCode}
+          <InputTextField
             value={formData.terminal}
             onChange={(e) => handleInputChange("terminal", e as string)}
             //startIcon={<FlightTakeoff color="primary" />}
@@ -374,8 +383,7 @@ const FlightUpdateModal = ({
         </Grid>
 
         <Grid size={12}>
-          <SelectDropdown
-            options={optionAirportCode}
+          <InputTextField
             value={formData.airline}
             onChange={(e) => handleInputChange("airline", e as string)}
             // startIcon={<FlightLand color="primary" />}
@@ -384,23 +392,21 @@ const FlightUpdateModal = ({
 
         <Grid size={12}>
           <FormControl fullWidth>
-            <SelectDropdown
-              options={optionAircraftCode}
+            <InputTextField
               value={formData.origin}
               onChange={(e) => handleInputChange("origin", e as string)}
             />
           </FormControl>
         </Grid>
 
-        <Grid size={12}>
+        {/* <Grid size={12}>
           <FormControl fullWidth>
-            <SelectDropdown
-              options={flightStatuses}
+            <InputTextField
               value={formData?.status || ""}
               onChange={(e) => handleInputChange("status", e as string)}
             />
           </FormControl>
-        </Grid>
+        </Grid> */}
       </Grid>
     ),
     [formData, handleInputChange]
