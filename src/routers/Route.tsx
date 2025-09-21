@@ -47,6 +47,7 @@ import AirportManagement from "../components/Admin/component/AirportManagement";
 import SendEmailToUsers from "../common/Setting/SendEmailToUsers";
 import CreateGateForm from "../components/User/CreateGateForm";
 import MealForm from "../common/Sample/MealForm";
+import FlightStatisticsPage from "../components/User/FlightStatisticsPage";
 
 const routes = [
   {
@@ -141,6 +142,10 @@ const routes = [
       {
         path: "domestic",
         element: <SecurityManage />,
+      },
+      {
+        path: "FlightStatisticsPage",
+        element: <FlightStatisticsPage />,
       },
       {
         path: "service",

@@ -18,6 +18,7 @@ type SideBarValueTypes =
   | "message"
   | "flightSchedule"
   | "ChatApp"
+  | "FlightStatisticsPage"
   | "TerminalContainer"
   | "flightStatus"
   | "flightManagement"
@@ -113,6 +114,7 @@ export const menuData: MenuSection[] = [
             subItems: [
               { id: "flightmeals", label: "Nhân viên" },
               { id: "domestic", label: "Nội địa" },
+              { id: "FlightStatisticsPage", label: "FlightStatisticsPage" },
               { id: "bookticket", label: "book ticket" },
               { id: "international", label: "Quốc tế" },
               { id: "sampleDatePicker", label: "secure" },
