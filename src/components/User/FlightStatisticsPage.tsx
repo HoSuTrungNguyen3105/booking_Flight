@@ -1,5 +1,16 @@
-import { useState } from "react";
-import { Box, Typography, Paper, Grid, Card, CardContent } from "@mui/material";
+import { useEffect, useState, useMemo } from "react";
+import {
+  Box,
+  Typography,
+  Paper,
+  Grid,
+  Card,
+  CardContent,
+  Chip,
+  useTheme,
+  alpha,
+  LinearProgress,
+} from "@mui/material";
 import {
   PieChart,
   Pie,
@@ -14,9 +25,19 @@ import {
   Legend,
   BarChart,
   Bar,
+  ZAxis,
+  ComposedChart,
+  Area,
 } from "recharts";
 import type { DataFlight } from "../../utils/type";
-import theme from "../../scss/theme";
+import { useGetFlightData } from "../Api/useGetApi";
+import {
+  FlightTakeoff,
+  FlightLand,
+  Schedule,
+  Cancel,
+  AirlineSeatReclineNormal,
+} from "@mui/icons-material";
 
 // Màu sắc cho các trạng thái chuyến bay
 const STATUS_COLORS: { [key: string]: string } = {
@@ -39,244 +60,51 @@ const AIRLINE_COLORS: { [key: string]: string } = {
 // Danh sách các sân bay chính (dùng cho trục Y)
 const MAJOR_AIRPORTS = ["SGN", "HAN", "DAD", "CXR", "PQC", "VDO", "VCA", "DLI"];
 
-// Dữ liệu mẫu phù hợp với interface DataFlight
-const sampleFlights: DataFlight[] = [
-  {
-    flightId: 1,
-    flightNo: "VN123",
-    airline: "Vietnam Airlines",
-    departureAirport: "SGN",
-    arrivalAirport: "HAN",
-    origin: "Ho Chi Minh City",
-    destination: "Hanoi",
-    status: "Departed",
-    aircraftCode: "A321",
-    scheduledDeparture: new Date("2024-05-01T08:00:00Z").getTime(),
-    scheduledArrival: new Date("2024-05-01T10:00:00Z").getTime(),
-    actualDeparture: new Date("2024-05-01T08:15:00Z").getTime(),
-    actualArrival: new Date("2024-05-01T10:15:00Z").getTime(),
-    delayMinutes: 15,
-    priceEconomy: 1500000,
-    priceBusiness: 3000000,
-    maxCapacity: 180,
-    terminal: "T2",
-    gateId: "G5",
-  },
-  {
-    flightId: 2,
-    flightNo: "VJ456",
-    airline: "VietJet Air",
-    departureAirport: "HAN",
-    arrivalAirport: "CXR",
-    origin: "Hanoi",
-    destination: "Cam Ranh",
-    status: "Scheduled",
-    aircraftCode: "A320",
-    scheduledDeparture: new Date("2024-05-01T09:30:00Z").getTime(),
-    scheduledArrival: new Date("2024-05-01T11:30:00Z").getTime(),
-    actualDeparture: null,
-    actualArrival: null,
-    delayMinutes: null,
-    priceEconomy: 800000,
-    priceBusiness: 1600000,
-    maxCapacity: 186,
-    terminal: "T1",
-    gateId: "G12",
-  },
-  {
-    flightId: 3,
-    flightNo: "QH789",
-    airline: "Bamboo Airways",
-    departureAirport: "DAD",
-    arrivalAirport: "SGN",
-    origin: "Da Nang",
-    destination: "Ho Chi Minh City",
-    status: "Delayed",
-    aircraftCode: "B787",
-    scheduledDeparture: new Date("2024-05-01T10:15:00Z").getTime(),
-    scheduledArrival: new Date("2024-05-01T11:45:00Z").getTime(),
-    actualDeparture: new Date("2024-05-01T11:45:00Z").getTime(),
-    actualArrival: new Date("2024-05-01T13:15:00Z").getTime(),
-    delayMinutes: 90,
-    delayReason: "Technical issues",
-    priceEconomy: 1200000,
-    priceBusiness: 2500000,
-    maxCapacity: 294,
-    terminal: "T2",
-    gateId: "G8",
-  },
-  {
-    flightId: 4,
-    flightNo: "VN101",
-    airline: "Vietnam Airlines",
-    departureAirport: "SGN",
-    arrivalAirport: "DAD",
-    origin: "Ho Chi Minh City",
-    destination: "Da Nang",
-    status: "Boarding",
-    aircraftCode: "A321",
-    scheduledDeparture: new Date("2024-05-01T11:05:00Z").getTime(),
-    scheduledArrival: new Date("2024-05-01T12:25:00Z").getTime(),
-    actualDeparture: new Date("2024-05-01T11:05:00Z").getTime(),
-    actualArrival: null,
-    delayMinutes: 0,
-    priceEconomy: 1300000,
-    priceBusiness: 2600000,
-    maxCapacity: 180,
-    terminal: "T2",
-    gateId: "G3",
-  },
-  {
-    flightId: 5,
-    flightNo: "VJ202",
-    airline: "VietJet Air",
-    departureAirport: "HAN",
-    arrivalAirport: "PQC",
-    origin: "Hanoi",
-    destination: "Phu Quoc",
-    status: "Cancelled",
-    aircraftCode: "A320",
-    scheduledDeparture: new Date("2024-05-01T12:40:00Z").getTime(),
-    scheduledArrival: new Date("2024-05-01T14:40:00Z").getTime(),
-    actualDeparture: null,
-    actualArrival: null,
-    isCancelled: true,
-    cancellationReason: "Bad weather conditions",
-    priceEconomy: 900000,
-    priceBusiness: 1800000,
-    maxCapacity: 186,
-    terminal: "T1",
-    gateId: "G7",
-  },
-  {
-    flightId: 6,
-    flightNo: "VN999",
-    airline: "Vietnam Airlines",
-    departureAirport: "SGN",
-    arrivalAirport: "DLI",
-    origin: "Ho Chi Minh City",
-    destination: "Dalat",
-    status: "Landed",
-    aircraftCode: "ATR72",
-    scheduledDeparture: new Date("2024-05-01T07:20:00Z").getTime(),
-    scheduledArrival: new Date("2024-05-01T08:20:00Z").getTime(),
-    actualDeparture: new Date("2024-05-01T07:20:00Z").getTime(),
-    actualArrival: new Date("2024-05-01T08:15:00Z").getTime(),
-    delayMinutes: -5,
-    priceEconomy: 1000000,
-    priceBusiness: 2000000,
-    maxCapacity: 70,
-    terminal: "T2",
-    gateId: "G1",
-  },
-  {
-    flightId: 7,
-    flightNo: "VJ777",
-    airline: "VietJet Air",
-    departureAirport: "CXR",
-    arrivalAirport: "SGN",
-    origin: "Cam Ranh",
-    destination: "Ho Chi Minh City",
-    status: "Departed",
-    aircraftCode: "A321",
-    scheduledDeparture: new Date("2024-05-01T13:10:00Z").getTime(),
-    scheduledArrival: new Date("2024-05-01T14:40:00Z").getTime(),
-    actualDeparture: new Date("2024-05-01T13:25:00Z").getTime(),
-    actualArrival: new Date("2024-05-01T14:55:00Z").getTime(),
-    delayMinutes: 15,
-    priceEconomy: 850000,
-    priceBusiness: 1700000,
-    maxCapacity: 220,
-    terminal: "T1",
-    gateId: "G9",
-  },
-  {
-    flightId: 8,
-    flightNo: "QH505",
-    airline: "Bamboo Airways",
-    departureAirport: "VCA",
-    arrivalAirport: "HAN",
-    origin: "Can Tho",
-    destination: "Hanoi",
-    status: "Scheduled",
-    aircraftCode: "E190",
-    scheduledDeparture: new Date("2024-05-01T14:00:00Z").getTime(),
-    scheduledArrival: new Date("2024-05-01T16:00:00Z").getTime(),
-    actualDeparture: null,
-    actualArrival: null,
-    delayMinutes: null,
-    priceEconomy: 1100000,
-    priceBusiness: 2200000,
-    maxCapacity: 114,
-    terminal: "T2",
-    gateId: "G6",
-  },
-  {
-    flightId: 9,
-    flightNo: "VN888",
-    airline: "Vietnam Airlines",
-    departureAirport: "HAN",
-    arrivalAirport: "VDO",
-    origin: "Hanoi",
-    destination: "Van Don",
-    status: "Landed",
-    aircraftCode: "A320",
-    scheduledDeparture: new Date("2024-05-01T15:30:00Z").getTime(),
-    scheduledArrival: new Date("2024-05-01T16:30:00Z").getTime(),
-    actualDeparture: new Date("2024-05-01T15:30:00Z").getTime(),
-    actualArrival: new Date("2024-05-01T16:25:00Z").getTime(),
-    delayMinutes: -5,
-    priceEconomy: 950000,
-    priceBusiness: 1900000,
-    maxCapacity: 180,
-    terminal: "T2",
-    gateId: "G4",
-  },
-  {
-    flightId: 10,
-    flightNo: "VJ303",
-    airline: "VietJet Air",
-    departureAirport: "DAD",
-    arrivalAirport: "VCA",
-    origin: "Da Nang",
-    destination: "Can Tho",
-    status: "Delayed",
-    aircraftCode: "A320",
-    scheduledDeparture: new Date("2024-05-01T16:45:00Z").getTime(),
-    scheduledArrival: new Date("2024-05-01T18:15:00Z").getTime(),
-    actualDeparture: new Date("2024-05-01T17:30:00Z").getTime(),
-    actualArrival: new Date("2024-05-01T19:00:00Z").getTime(),
-    delayMinutes: 45,
-    delayReason: "Air traffic congestion",
-    priceEconomy: 750000,
-    priceBusiness: 1500000,
-    maxCapacity: 186,
-    terminal: "T1",
-    gateId: "G11",
-  },
-];
-
 const FlightStatisticsPage: React.FC = () => {
-  const [flights] = useState<DataFlight[]>(sampleFlights);
+  const theme = useTheme();
+  const { getFlightData, loadingFlightData } = useGetFlightData();
+  const [flights, setFlights] = useState<DataFlight[]>([]);
+
+  useEffect(() => {
+    if (getFlightData?.list) {
+      setFlights(getFlightData.list as DataFlight[]);
+    }
+  }, [getFlightData]);
 
   // Thống kê tổng quan
-  const totalFlights = flights.length;
-  const delayedFlights = flights.filter((f) => f.status === "Delayed").length;
-  const cancelledFlights = flights.filter(
-    (f) => f.status === "Cancelled"
-  ).length;
-  const onTimeFlights = flights.filter(
-    (f) =>
-      f.status === "Scheduled" ||
-      f.status === "Departed" ||
-      f.status === "Landed"
-  ).length;
+  const stats = useMemo(() => {
+    const totalFlights = flights.length;
+    const delayedFlights = flights.filter((f) => f.status === "Delayed").length;
+    const cancelledFlights = flights.filter(
+      (f) => f.status === "Cancelled"
+    ).length;
+    const onTimeFlights = flights.filter(
+      (f) =>
+        f.status === "Scheduled" ||
+        f.status === "Departed" ||
+        f.status === "Landed"
+    ).length;
+    const boardingFlights = flights.filter(
+      (f) => f.status === "Boarding"
+    ).length;
+
+    return {
+      totalFlights,
+      delayedFlights,
+      cancelledFlights,
+      onTimeFlights,
+      boardingFlights,
+      onTimePercentage:
+        totalFlights > 0 ? (onTimeFlights / totalFlights) * 100 : 0,
+    };
+  }, [flights]);
 
   // 1. Dữ liệu cho biểu đồ tròn: Phân bố trạng thái chuyến bay
   const statusCounts = Object.keys(STATUS_COLORS)
     .map((status) => ({
       name: status,
       value: flights.filter((f) => f.status === status).length || 0,
+      color: STATUS_COLORS[status],
     }))
     .filter((item) => item.value > 0);
 
@@ -285,6 +113,7 @@ const FlightStatisticsPage: React.FC = () => {
   const airlineData = airlines.map((airline) => ({
     name: airline,
     value: flights.filter((f) => f.airline === airline).length,
+    color: AIRLINE_COLORS[airline.substring(0, 2)] || AIRLINE_COLORS["default"],
   }));
 
   // 3. Dữ liệu cho biểu đồ scatter: Thời gian khởi hành thực tế so với lịch trình (Độ trễ)
@@ -299,6 +128,7 @@ const FlightStatisticsPage: React.FC = () => {
         airport: f.departureAirport,
         flightNo: f.flightNo,
         status: f.status,
+        size: 8 + Math.abs(delayMinutes) / 10, // Vary dot size based on delay
       };
     })
     .filter((item) => item.delay !== 0);
@@ -309,53 +139,238 @@ const FlightStatisticsPage: React.FC = () => {
     flights: flights.filter((f) => f.departureAirport === airport).length,
   }));
 
+  // 5. Dữ liệu cho biểu đồ hiệu suất theo giờ
+  const hourlyPerformance = useMemo(() => {
+    const hours = Array.from({ length: 24 }, (_, i) => i);
+    return hours.map((hour) => {
+      const hourFlights = flights.filter((f) => {
+        const date = new Date(f.scheduledDeparture);
+        return date.getHours() === hour;
+      });
+
+      const onTime = hourFlights.filter(
+        (f) =>
+          f.status === "Scheduled" ||
+          f.status === "Departed" ||
+          f.status === "Landed"
+      ).length;
+
+      return {
+        hour: `${hour}:00`,
+        total: hourFlights.length,
+        onTime,
+        onTimeRate:
+          hourFlights.length > 0 ? (onTime / hourFlights.length) * 100 : 0,
+      };
+    });
+  }, [flights]);
+
+  if (loadingFlightData) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+          flexDirection: "column",
+          gap: 2,
+        }}
+      >
+        <Typography variant="h6" color="textSecondary">
+          Loading flight data...
+        </Typography>
+        <LinearProgress sx={{ width: "300px" }} />
+      </Box>
+    );
+  }
+
   return (
     <Box
       sx={{
         minHeight: "100vh",
-        bgcolor: theme.palette.background.default,
+        bgcolor: theme.palette.grey[50],
       }}
     >
-      <Typography
-        variant="h4"
-        sx={{ mb: "8px", fontWeight: "bold", color: "primary.main" }}
-      >
-        Flight Operations Dashboard
-      </Typography>
+      <Box sx={{ mb: 4 }}>
+        <Typography
+          variant="h4"
+          sx={{
+            fontWeight: "600",
+            color: theme.palette.grey[800],
+            mb: 0.5,
+          }}
+        >
+          Flight Operations Dashboard
+        </Typography>
+        <Typography variant="body2" color="textSecondary">
+          Real-time monitoring and analytics of flight operations
+        </Typography>
+      </Box>
 
       {/* Thống kê tổng quan */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid size={3}>
-          <Card sx={{ bgcolor: "primary.main", color: "white" }}>
-            <CardContent>
-              <Typography variant="h6">Total Flights</Typography>
-              <Typography variant="h4">{totalFlights}</Typography>
+        <Grid size={6}>
+          <Card
+            sx={{
+              borderRadius: 2,
+              boxShadow: theme.shadows[2],
+              background: `linear-gradient(135deg, ${
+                theme.palette.primary.main
+              } 0%, ${alpha(theme.palette.primary.main, 0.8)} 100%)`,
+              color: "white",
+              position: "relative",
+              overflow: "hidden",
+              "&:before": {
+                content: '""',
+                position: "absolute",
+                width: "100%",
+                height: "100%",
+                background: "rgba(255,255,255,0.1)",
+                clipPath: "circle(20% at 90% 20%)",
+              },
+            }}
+          >
+            <CardContent sx={{ position: "relative", zIndex: 1 }}>
+              <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                <FlightTakeoff sx={{ mr: 1, fontSize: "1.2rem" }} />
+                <Typography variant="body2" fontWeight="500">
+                  TOTAL FLIGHTS
+                </Typography>
+              </Box>
+              <Typography variant="h4" sx={{ fontWeight: "600" }}>
+                {stats.totalFlights}
+              </Typography>
+              <Typography variant="caption" sx={{ opacity: 0.9 }}>
+                Today's scheduled flights
+              </Typography>
             </CardContent>
           </Card>
         </Grid>
-        <Grid size={3}>
-          <Card sx={{ bgcolor: "success.main", color: "white" }}>
-            <CardContent>
-              <Typography variant="h6">On Time</Typography>
-              <Typography variant="h4">{onTimeFlights}</Typography>
+
+        <Grid size={6}>
+          <Card
+            sx={{
+              borderRadius: 2,
+              boxShadow: theme.shadows[2],
+              background: `linear-gradient(135deg, ${
+                theme.palette.success.main
+              } 0%, ${alpha(theme.palette.success.main, 0.8)} 100%)`,
+              color: "white",
+              position: "relative",
+              overflow: "hidden",
+              "&:before": {
+                content: '""',
+                position: "absolute",
+                width: "100%",
+                height: "100%",
+                background: "rgba(255,255,255,0.1)",
+                clipPath: "circle(20% at 90% 20%)",
+              },
+            }}
+          >
+            <CardContent sx={{ position: "relative", zIndex: 1 }}>
+              <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                <Schedule sx={{ mr: 1, fontSize: "1.2rem" }} />
+                <Typography variant="body2" fontWeight="500">
+                  ON TIME
+                </Typography>
+              </Box>
+              <Typography variant="h4" sx={{ fontWeight: "600" }}>
+                {stats.onTimeFlights}
+              </Typography>
+              <Box sx={{ display: "flex", alignItems: "center", mt: 0.5 }}>
+                <Typography variant="caption" sx={{ opacity: 0.9, mr: 1 }}>
+                  {stats.onTimePercentage.toFixed(1)}% on-time rate
+                </Typography>
+              </Box>
             </CardContent>
           </Card>
         </Grid>
-        <Grid size={3}>
-          {" "}
-          <Card sx={{ bgcolor: "warning.main", color: "white" }}>
-            <CardContent>
-              <Typography variant="h6">Delayed</Typography>
-              <Typography variant="h4">{delayedFlights}</Typography>
+
+        <Grid size={6}>
+          <Card
+            sx={{
+              borderRadius: 2,
+              boxShadow: theme.shadows[2],
+              background: `linear-gradient(135deg, ${
+                theme.palette.warning.main
+              } 0%, ${alpha(theme.palette.warning.main, 0.8)} 100%)`,
+              color: "white",
+              position: "relative",
+              overflow: "hidden",
+              "&:before": {
+                content: '""',
+                position: "absolute",
+                width: "100%",
+                height: "100%",
+                background: "rgba(255,255,255,0.1)",
+                clipPath: "circle(20% at 90% 20%)",
+              },
+            }}
+          >
+            <CardContent sx={{ position: "relative", zIndex: 1 }}>
+              <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                <AirlineSeatReclineNormal sx={{ mr: 1, fontSize: "1.2rem" }} />
+                <Typography variant="body2" fontWeight="500">
+                  DELAYED
+                </Typography>
+              </Box>
+              <Typography variant="h4" sx={{ fontWeight: "600" }}>
+                {stats.delayedFlights}
+              </Typography>
+              <Typography variant="caption" sx={{ opacity: 0.9 }}>
+                {stats.totalFlights > 0
+                  ? ((stats.delayedFlights / stats.totalFlights) * 100).toFixed(
+                      1
+                    )
+                  : 0}
+                % of flights
+              </Typography>
             </CardContent>
           </Card>
         </Grid>
-        <Grid size={3}>
-          {" "}
-          <Card sx={{ bgcolor: "error.main", color: "white" }}>
-            <CardContent>
-              <Typography variant="h6">Cancelled</Typography>
-              <Typography variant="h4">{cancelledFlights}</Typography>
+
+        <Grid size={6}>
+          <Card
+            sx={{
+              borderRadius: 2,
+              boxShadow: theme.shadows[2],
+              background: `linear-gradient(135deg, ${
+                theme.palette.error.main
+              } 0%, ${alpha(theme.palette.error.main, 0.8)} 100%)`,
+              color: "white",
+              position: "relative",
+              overflow: "hidden",
+              "&:before": {
+                content: '""',
+                position: "absolute",
+                width: "100%",
+                height: "100%",
+                background: "rgba(255,255,255,0.1)",
+                clipPath: "circle(20% at 90% 20%)",
+              },
+            }}
+          >
+            <CardContent sx={{ position: "relative", zIndex: 1 }}>
+              <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                <Cancel sx={{ mr: 1, fontSize: "1.2rem" }} />
+                <Typography variant="body2" fontWeight="500">
+                  CANCELLED
+                </Typography>
+              </Box>
+              <Typography variant="h4" sx={{ fontWeight: "600" }}>
+                {stats.cancelledFlights}
+              </Typography>
+              <Typography variant="caption" sx={{ opacity: 0.9 }}>
+                {stats.totalFlights > 0
+                  ? (
+                      (stats.cancelledFlights / stats.totalFlights) *
+                      100
+                    ).toFixed(1)
+                  : 0}
+                % of flights
+              </Typography>
             </CardContent>
           </Card>
         </Grid>
@@ -364,9 +379,18 @@ const FlightStatisticsPage: React.FC = () => {
       <Grid container spacing={3}>
         {/* Phân bố trạng thái */}
         <Grid size={6}>
-          {" "}
-          <Paper sx={{ p: 3, height: 400 }}>
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: "bold" }}>
+          <Paper
+            sx={{
+              p: 3,
+              height: 400,
+              borderRadius: 2,
+              boxShadow: theme.shadows[1],
+            }}
+          >
+            <Typography
+              variant="h6"
+              sx={{ mb: 2, fontWeight: "600", color: theme.palette.grey[800] }}
+            >
               Flight Status Distribution
             </Typography>
             <ResponsiveContainer width="100%" height="90%">
@@ -381,16 +405,41 @@ const FlightStatisticsPage: React.FC = () => {
                   label={({ name, percent }) =>
                     `${name}: ${((percent as number) * 100).toFixed(0)}%`
                   }
+                  labelLine={false}
                 >
                   {statusCounts.map((entry, index) => (
                     <Cell
                       key={`cell-status-${index}`}
-                      fill={STATUS_COLORS[entry.name]}
+                      fill={entry.color}
+                      stroke={theme.palette.background.paper}
+                      strokeWidth={2}
                     />
                   ))}
                 </Pie>
-                <Tooltip />
-                <Legend />
+                <Tooltip
+                  formatter={(value, name, props) => [
+                    value,
+                    `${name}: ${(
+                      (Number(value) / stats.totalFlights) *
+                      100
+                    ).toFixed(1)}%`,
+                  ]}
+                />
+                <Legend
+                  verticalAlign="bottom"
+                  height={36}
+                  formatter={(value, entry, index) => (
+                    <Box
+                      component="span"
+                      sx={{
+                        color: theme.palette.text.primary,
+                        fontSize: "0.75rem",
+                      }}
+                    >
+                      {value}
+                    </Box>
+                  )}
+                />
               </PieChart>
             </ResponsiveContainer>
           </Paper>
@@ -398,9 +447,18 @@ const FlightStatisticsPage: React.FC = () => {
 
         {/* Phân bố hãng bay */}
         <Grid size={6}>
-          {" "}
-          <Paper sx={{ p: 3, height: 400 }}>
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: "bold" }}>
+          <Paper
+            sx={{
+              p: 3,
+              height: 400,
+              borderRadius: 2,
+              boxShadow: theme.shadows[1],
+            }}
+          >
+            <Typography
+              variant="h6"
+              sx={{ mb: 2, fontWeight: "600", color: theme.palette.grey[800] }}
+            >
               Flights by Airline
             </Typography>
             <ResponsiveContainer width="100%" height="90%">
@@ -415,60 +473,128 @@ const FlightStatisticsPage: React.FC = () => {
                   label={({ name, percent }) =>
                     `${name}: ${((percent as number) * 100).toFixed(0)}%`
                   }
+                  labelLine={false}
                 >
                   {airlineData.map((entry, index) => (
                     <Cell
                       key={`cell-airline-${index}`}
-                      fill={
-                        AIRLINE_COLORS[entry.name.substring(0, 2)] ||
-                        AIRLINE_COLORS["default"]
-                      }
+                      fill={entry.color}
+                      stroke={theme.palette.background.paper}
+                      strokeWidth={2}
                     />
                   ))}
                 </Pie>
-                <Tooltip />
-                <Legend />
+                <Tooltip
+                  formatter={(value, name, props) => [
+                    value,
+                    `${name}: ${(
+                      (Number(value) / stats.totalFlights) *
+                      100
+                    ).toFixed(1)}%`,
+                  ]}
+                />
+                <Legend
+                  verticalAlign="bottom"
+                  height={36}
+                  formatter={(value, entry, index) => (
+                    <Box
+                      component="span"
+                      sx={{
+                        color: theme.palette.text.primary,
+                        fontSize: "0.75rem",
+                      }}
+                    >
+                      {value}
+                    </Box>
+                  )}
+                />
               </PieChart>
             </ResponsiveContainer>
           </Paper>
         </Grid>
 
         {/* Phân tích độ trễ */}
-        <Grid size={8}>
-          <Paper sx={{ p: 3, height: 400 }}>
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: "bold" }}>
+        <Grid size={6}>
+          <Paper
+            sx={{
+              p: 3,
+              height: 400,
+              borderRadius: 2,
+              boxShadow: theme.shadows[1],
+            }}
+          >
+            <Typography
+              variant="h6"
+              sx={{ mb: 2, fontWeight: "600", color: theme.palette.grey[800] }}
+            >
               Departure Delay Analysis (minutes)
             </Typography>
             <ResponsiveContainer width="100%" height="90%">
               <ScatterChart
                 margin={{ top: 20, right: 20, bottom: 20, left: 60 }}
               >
-                <CartesianGrid />
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke={theme.palette.grey[300]}
+                />
                 <XAxis
                   type="number"
                   dataKey="delay"
                   name="Delay (min)"
-                  domain={["dataMin - 5", "dataMax + 5"]}
-                  tickCount={10}
+                  domain={["auto", "auto"]}
+                  tickCount={8}
+                  tick={{ fill: theme.palette.text.secondary, fontSize: 12 }}
+                  axisLine={{ stroke: theme.palette.grey[400] }}
                 />
                 <YAxis
                   type="category"
                   dataKey="airport"
                   name="Departure Airport"
                   allowDuplicatedCategory={false}
+                  tick={{ fill: theme.palette.text.secondary, fontSize: 12 }}
+                  axisLine={{ stroke: theme.palette.grey[400] }}
+                />
+                <ZAxis
+                  type="number"
+                  dataKey="size"
+                  range={[50, 300]}
+                  name="Size"
                 />
                 <Tooltip
                   cursor={{ strokeDasharray: "3 3" }}
                   formatter={(value, name) => [
                     value,
-                    name === "delay" ? "Delay (min)" : "Airport",
+                    name === "delay"
+                      ? "Delay (min)"
+                      : name === "airport"
+                      ? "Airport"
+                      : "Size",
                   ]}
+                  contentStyle={{
+                    backgroundColor: theme.palette.background.paper,
+                    border: `1px solid ${theme.palette.grey[300]}`,
+                    borderRadius: 4,
+                  }}
                 />
-                <Legend />
+                <Legend
+                  verticalAlign="top"
+                  height={36}
+                  formatter={(value) => (
+                    <Box
+                      component="span"
+                      sx={{
+                        color: theme.palette.text.primary,
+                        fontSize: "0.75rem",
+                      }}
+                    >
+                      {value}
+                    </Box>
+                  )}
+                />
                 <Scatter
                   name="Flights"
                   data={delayScatterData}
-                  fill="#8884d8"
+                  fill={theme.palette.primary.main}
                   shape="circle"
                 />
               </ScatterChart>
@@ -478,24 +604,164 @@ const FlightStatisticsPage: React.FC = () => {
 
         {/* Số chuyến theo sân bay */}
         <Grid size={4}>
-          {" "}
-          <Paper sx={{ p: 3, height: 400 }}>
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: "bold" }}>
+          <Paper
+            sx={{
+              p: 3,
+              height: 400,
+              borderRadius: 2,
+              boxShadow: theme.shadows[1],
+            }}
+          >
+            <Typography
+              variant="h6"
+              sx={{ mb: 2, fontWeight: "600", color: theme.palette.grey[800] }}
+            >
               Flights by Departure Airport
             </Typography>
             <ResponsiveContainer width="100%" height="90%">
               <BarChart data={departureAirportCounts}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke={theme.palette.grey[300]}
+                />
+                <XAxis
+                  dataKey="name"
+                  tick={{ fill: theme.palette.text.secondary, fontSize: 12 }}
+                  axisLine={{ stroke: theme.palette.grey[400] }}
+                />
+                <YAxis
+                  tick={{ fill: theme.palette.text.secondary, fontSize: 12 }}
+                  axisLine={{ stroke: theme.palette.grey[400] }}
+                />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: theme.palette.background.paper,
+                    border: `1px solid ${theme.palette.grey[300]}`,
+                    borderRadius: 4,
+                  }}
+                />
+                <Legend
+                  verticalAlign="top"
+                  height={36}
+                  formatter={(value) => (
+                    <Box
+                      component="span"
+                      sx={{
+                        color: theme.palette.text.primary,
+                        fontSize: "0.75rem",
+                      }}
+                    >
+                      {value}
+                    </Box>
+                  )}
+                />
                 <Bar
                   dataKey="flights"
                   name="Number of Flights"
-                  fill="#0ea5e9"
+                  fill={theme.palette.primary.main}
+                  radius={[4, 4, 0, 0]}
                 />
               </BarChart>
+            </ResponsiveContainer>
+          </Paper>
+        </Grid>
+
+        {/* Performance by hour */}
+        <Grid size={12}>
+          <Paper
+            sx={{
+              p: 3,
+              height: 400,
+              borderRadius: 2,
+              boxShadow: theme.shadows[1],
+            }}
+          >
+            <Typography
+              variant="h6"
+              sx={{ mb: 2, fontWeight: "600", color: theme.palette.grey[800] }}
+            >
+              Flight Performance by Hour
+            </Typography>
+            <ResponsiveContainer width="100%" height="90%">
+              <ComposedChart data={hourlyPerformance}>
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke={theme.palette.grey[300]}
+                />
+                <XAxis
+                  dataKey="hour"
+                  tick={{ fill: theme.palette.text.secondary, fontSize: 12 }}
+                  axisLine={{ stroke: theme.palette.grey[400] }}
+                />
+                <YAxis
+                  yAxisId="left"
+                  tick={{ fill: theme.palette.text.secondary, fontSize: 12 }}
+                  axisLine={{ stroke: theme.palette.grey[400] }}
+                  label={{
+                    value: "Number of Flights",
+                    angle: -90,
+                    position: "insideLeft",
+                    style: {
+                      textAnchor: "middle",
+                      fill: theme.palette.text.primary,
+                    },
+                  }}
+                />
+                <YAxis
+                  yAxisId="right"
+                  orientation="right"
+                  domain={[0, 100]}
+                  tick={{ fill: theme.palette.text.secondary, fontSize: 12 }}
+                  axisLine={{ stroke: theme.palette.grey[400] }}
+                  label={{
+                    value: "On-Time Rate (%)",
+                    angle: 90,
+                    position: "insideRight",
+                    style: {
+                      textAnchor: "middle",
+                      fill: theme.palette.text.primary,
+                    },
+                  }}
+                />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: theme.palette.background.paper,
+                    border: `1px solid ${theme.palette.grey[300]}`,
+                    borderRadius: 4,
+                  }}
+                />
+                <Legend
+                  verticalAlign="top"
+                  height={36}
+                  formatter={(value) => (
+                    <Box
+                      component="span"
+                      sx={{
+                        color: theme.palette.text.primary,
+                        fontSize: "0.75rem",
+                      }}
+                    >
+                      {value}
+                    </Box>
+                  )}
+                />
+                <Bar
+                  yAxisId="left"
+                  dataKey="total"
+                  name="Total Flights"
+                  fill={alpha(theme.palette.primary.main, 0.6)}
+                  radius={[4, 4, 0, 0]}
+                />
+                <Area
+                  yAxisId="right"
+                  type="monotone"
+                  dataKey="onTimeRate"
+                  name="On-Time Rate (%)"
+                  stroke={theme.palette.success.main}
+                  fill={alpha(theme.palette.success.main, 0.3)}
+                  strokeWidth={2}
+                />
+              </ComposedChart>
             </ResponsiveContainer>
           </Paper>
         </Grid>

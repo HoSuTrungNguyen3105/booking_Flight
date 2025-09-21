@@ -358,7 +358,7 @@ export type UserListResponse = UserDataResponse<UserData>;
 export type UserCreateResponse = DetailResponseMessage<UserDataNoGrid>;
 
 export type MealResponse = DetailResponseMessage<Meal>;
-export type FlightResponse = DetailResponseMessage<Flight>;
+export type FlightResponse = DetailResponseMessage<DataFlight>;
 
 export type FlightDetailApiResponse = DetailResponseMessage<Flight>;
 
