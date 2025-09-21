@@ -19,6 +19,15 @@ import {
   AppBar,
   Toolbar,
   Stack,
+  alpha,
+  useTheme,
+  Divider,
+  Fab,
+  Zoom,
+  InputBase,
+  Menu,
+  MenuItem,
+  Tooltip,
 } from "@mui/material";
 import {
   Search as SearchIcon,
@@ -26,10 +35,51 @@ import {
   Menu as MenuIcon,
   Chat as ChatIcon,
   Group as GroupIcon,
+  Send as SendIcon,
+  MoreVert as MoreVertIcon,
+  AttachFile as AttachFileIcon,
+  EmojiEmotions as EmojiIcon,
+  Mic as MicIcon,
+  FilterList as FilterIcon,
+  Notifications as NotificationsIcon,
+  AccountCircle as AccountIcon,
+  Logout as LogoutIcon,
+  Settings as SettingsIcon,
+  MarkEmailUnread as UnreadIcon,
 } from "@mui/icons-material";
+import theme from "../../scss/theme";
+
+// Define types
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  avatar: string;
+  lastSeen: string;
+  online: boolean;
+  department: string;
+  position: string;
+}
+
+interface Conversation {
+  id: string;
+  userId: string;
+  lastMessage: string;
+  timestamp: string;
+  unread: number;
+  isPinned: boolean;
+  user?: User;
+}
+
+interface Message {
+  id: number;
+  sender: string;
+  text: string;
+  timestamp: string;
+}
 
 // Mock data
-const mockUsers = [
+const mockUsers: User[] = [
   {
     id: "1",
     name: "Nguyễn Văn A",
@@ -37,6 +87,8 @@ const mockUsers = [
     avatar: "",
     lastSeen: "2 phút trước",
     online: true,
+    department: "Kế toán",
+    position: "Trưởng phòng",
   },
   {
     id: "2",
@@ -45,6 +97,8 @@ const mockUsers = [
     avatar: "",
     lastSeen: "10 phút trước",
     online: true,
+    department: "Nhân sự",
+    position: "Chuyên viên",
   },
   {
     id: "3",
@@ -53,6 +107,8 @@ const mockUsers = [
     avatar: "",
     lastSeen: "1 giờ trước",
     online: false,
+    department: "IT",
+    position: "Developer",
   },
   {
     id: "4",
@@ -61,6 +117,8 @@ const mockUsers = [
     avatar: "",
     lastSeen: "5 giờ trước",
     online: false,
+    department: "Marketing",
+    position: "Manager",
   },
   {
     id: "5",
@@ -69,16 +127,19 @@ const mockUsers = [
     avatar: "",
     lastSeen: "Hôm qua",
     online: true,
+    department: "Sales",
+    position: "Director",
   },
 ];
 
-const mockConversations = [
+const mockConversations: Conversation[] = [
   {
     id: "1",
     userId: "1",
     lastMessage: "Bạn đang làm gì thế?",
     timestamp: "10:30 AM",
     unread: 2,
+    isPinned: true,
   },
   {
     id: "2",
@@ -86,6 +147,7 @@ const mockConversations = [
     lastMessage: "Tôi sẽ gửi tài liệu cho bạn",
     timestamp: "09:15 AM",
     unread: 0,
+    isPinned: false,
   },
   {
     id: "3",
@@ -93,6 +155,7 @@ const mockConversations = [
     lastMessage: "Cuộc họp lúc 3h chiều nhé",
     timestamp: "Yesterday",
     unread: 5,
+    isPinned: true,
   },
   {
     id: "4",
@@ -100,6 +163,7 @@ const mockConversations = [
     lastMessage: "Cảm ơn bạn đã giúp đỡ",
     timestamp: "Monday",
     unread: 0,
+    isPinned: false,
   },
   {
     id: "5",
@@ -107,22 +171,76 @@ const mockConversations = [
     lastMessage: "Dự án tiến triển tốt",
     timestamp: "Last week",
     unread: 1,
+    isPinned: false,
+  },
+];
+
+// Sample messages for active conversation
+const mockMessages: Message[] = [
+  {
+    id: 1,
+    sender: "1",
+    text: "Xin chào, bạn khỏe không?",
+    timestamp: "10:25 AM",
+  },
+  {
+    id: 2,
+    sender: "current",
+    text: "Tôi khỏe, cảm ơn bạn! Còn bạn?",
+    timestamp: "10:26 AM",
+  },
+  {
+    id: 3,
+    sender: "1",
+    text: "Tôi cũng khỏe. Bạn đang làm gì thế?",
+    timestamp: "10:28 AM",
+  },
+  {
+    id: 4,
+    sender: "current",
+    text: "Tôi đang làm việc trên dự án mới. Còn bạn?",
+    timestamp: "10:30 AM",
   },
 ];
 
 const ChatApp = () => {
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchResults, setSearchResults] = useState<User[]>([]);
   const [isSearchPanelOpen, setIsSearchPanelOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [message, setMessage] = useState("");
+  const [activeMessages, setActiveMessages] = useState<Message[]>([]);
+  const [userMenuAnchor, setUserMenuAnchor] = useState<null | HTMLElement>(
+    null
+  );
+  const [conversationMenuAnchor, setConversationMenuAnchor] =
+    useState<null | HTMLElement>(null);
+  const [filterUnread, setFilterUnread] = useState(false);
+  const [filterPinned, setFilterPinned] = useState(false);
 
   const conversationsWithUsers = mockConversations.map((conv) => {
     const user = mockUsers.find((u) => u.id === conv.userId);
     return { ...conv, user };
   });
 
-  const handleSearch = (query: any) => {
+  // Filter conversations based on filters
+  const filteredConversations = conversationsWithUsers.filter((conv) => {
+    if (filterUnread && conv.unread === 0) return false;
+    if (filterPinned && !conv.isPinned) return false;
+    return true;
+  });
+
+  useEffect(() => {
+    if (selectedUser) {
+      // Simulate loading messages for selected user
+      setActiveMessages(mockMessages);
+    } else {
+      setActiveMessages([]);
+    }
+  }, [selectedUser]);
+
+  const handleSearch = (query: string) => {
     setSearchQuery(query);
     if (query.trim() === "") {
       setSearchResults([]);
@@ -137,7 +255,7 @@ const ChatApp = () => {
     setSearchResults(results);
   };
 
-  const handleUserSelect = (user) => {
+  const handleUserSelect = (user: User) => {
     setSelectedUser(user);
     setIsSearchPanelOpen(false);
   };
@@ -150,24 +268,79 @@ const ChatApp = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  const handleSendMessage = () => {
+    if (message.trim() === "") return;
+
+    const newMessage: Message = {
+      id: activeMessages.length + 1,
+      sender: "current",
+      text: message,
+      timestamp: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+    };
+
+    setActiveMessages([...activeMessages, newMessage]);
+    setMessage("");
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
+
+  const handleUserMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setUserMenuAnchor(event.currentTarget);
+  };
+
+  const handleUserMenuClose = () => {
+    setUserMenuAnchor(null);
+  };
+
+  const handleConversationMenuOpen = (
+    event: React.MouseEvent<HTMLElement>,
+    conversation: Conversation
+  ) => {
+    setConversationMenuAnchor(event.currentTarget);
+  };
+
+  const handleConversationMenuClose = () => {
+    setConversationMenuAnchor(null);
+  };
+
   return (
     <>
-      <Box sx={{ display: "flex", height: "100vh", bgcolor: "grey.100" }}>
+      <Box sx={{ display: "flex", height: "100vh", bgcolor: "grey.50" }}>
         {/* Sidebar */}
-        <Stack
+        <Paper
           sx={{
-            width: isSidebarOpen ? 320 : 0,
+            width: isSidebarOpen ? 380 : 0,
             height: "100%",
             borderRadius: 0,
             overflow: "hidden",
             transition: "width 0.3s ease",
             display: "flex",
             flexDirection: "column",
+            boxShadow: theme.shadows[3],
+            zIndex: 10,
+            position: "relative",
           }}
-          // elevation={2}
+          elevation={0}
         >
           {/* Sidebar Header */}
-          <Box sx={{ p: 2, bgcolor: "primary.main", color: "white" }}>
+          <Box
+            sx={{
+              p: 2,
+              bgcolor: "primary.main",
+              color: "white",
+              background: `linear-gradient(135deg, ${
+                theme.palette.primary.main
+              } 0%, ${alpha(theme.palette.primary.dark, 0.9)} 100%)`,
+            }}
+          >
             <Box
               sx={{
                 display: "flex",
@@ -175,12 +348,32 @@ const ChatApp = () => {
                 justifyContent: "space-between",
               }}
             >
-              <Typography variant="h6" fontWeight="bold">
+              <Typography variant="h6" fontWeight="600">
                 Tin nhắn
               </Typography>
-              <IconButton color="inherit" onClick={toggleSidebar}>
-                <CloseIcon />
-              </IconButton>
+              <Box>
+                <IconButton
+                  color="inherit"
+                  onClick={() => setFilterUnread(!filterUnread)}
+                  sx={{ mr: 1 }}
+                >
+                  <Badge color="error" variant="dot" invisible={!filterUnread}>
+                    <UnreadIcon />
+                  </Badge>
+                </IconButton>
+                <IconButton
+                  color="inherit"
+                  onClick={() => setFilterPinned(!filterPinned)}
+                  sx={{ mr: 1 }}
+                >
+                  <Badge color="error" variant="dot" invisible={!filterPinned}>
+                    <FilterIcon />
+                  </Badge>
+                </IconButton>
+                <IconButton color="inherit" onClick={toggleSidebar}>
+                  <CloseIcon />
+                </IconButton>
+              </Box>
             </Box>
 
             <Button
@@ -192,21 +385,80 @@ const ChatApp = () => {
                 mt: 2,
                 bgcolor: "white",
                 color: "primary.main",
-                "&:hover": { bgcolor: "grey.100" },
+                fontWeight: "600",
+                borderRadius: 2,
+                py: 1,
+                "&:hover": { bgcolor: "grey.100", boxShadow: theme.shadows[2] },
               }}
             >
               Tìm người dùng
             </Button>
           </Box>
 
+          {/* Search Box inside Sidebar */}
+          <Box
+            sx={{
+              p: 2,
+              bgcolor: "background.paper",
+              borderBottom: 1,
+              borderColor: "divider",
+            }}
+          >
+            <TextField
+              fullWidth
+              placeholder="Tìm kiếm cuộc trò chuyện..."
+              size="small"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon color="action" />
+                  </InputAdornment>
+                ),
+              }}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: 2,
+                  backgroundColor: alpha(theme.palette.common.white, 0.9),
+                },
+              }}
+            />
+          </Box>
+
           {/* Conversation List */}
           <Box sx={{ flex: 1, overflow: "auto" }}>
             <List disablePadding>
-              {conversationsWithUsers.map((conv) => (
-                <ListItem key={conv.id} disablePadding>
+              {filteredConversations.map((conv) => (
+                <ListItem
+                  key={conv.id}
+                  disablePadding
+                  secondaryAction={
+                    <IconButton
+                      edge="end"
+                      onClick={(e) => handleConversationMenuOpen(e, conv)}
+                    >
+                      <MoreVertIcon />
+                    </IconButton>
+                  }
+                >
                   <ListItemButton
-                    selected={selectedUser === conv.userId}
-                    onClick={() => handleUserSelect(conv.user)}
+                    selected={selectedUser?.id === conv.user?.id}
+                    onClick={() => handleUserSelect(conv.user as User)}
+                    sx={{
+                      py: 1.5,
+                      px: 2,
+                      "&.Mui-selected": {
+                        backgroundColor: alpha(
+                          theme.palette.primary.main,
+                          0.08
+                        ),
+                        "&:hover": {
+                          backgroundColor: alpha(
+                            theme.palette.primary.main,
+                            0.12
+                          ),
+                        },
+                      },
+                    }}
                   >
                     <ListItemAvatar>
                       <Badge
@@ -217,10 +469,19 @@ const ChatApp = () => {
                         }}
                         variant="dot"
                         color="success"
-                        //   invisible={!conv.user.online}
+                        invisible={!conv?.user?.online}
                       >
-                        <Avatar src={conv?.user?.avatar}>
-                          {/* {conv.user.name.charAt(0)} */}
+                        <Avatar
+                          src={conv.user?.avatar}
+                          sx={{
+                            width: 48,
+                            height: 48,
+                            bgcolor: conv.user?.online
+                              ? "primary.main"
+                              : "grey.400",
+                          }}
+                        >
+                          {conv.user?.name.charAt(0)}
                         </Avatar>
                       </Badge>
                     </ListItemAvatar>
@@ -234,8 +495,12 @@ const ChatApp = () => {
                             justifyContent: "space-between",
                           }}
                         >
-                          <Typography variant="subtitle2" noWrap>
-                            {conv.user.name}
+                          <Typography
+                            variant="subtitle2"
+                            noWrap
+                            fontWeight="medium"
+                          >
+                            {conv.user?.name}
                           </Typography>
                           <Typography variant="caption" color="textSecondary">
                             {conv.timestamp}
@@ -248,28 +513,50 @@ const ChatApp = () => {
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "space-between",
+                            mt: 0.5,
                           }}
                         >
                           <Typography
                             variant="body2"
                             color="textSecondary"
                             noWrap
-                            sx={{ maxWidth: "70%" }}
+                            sx={{
+                              maxWidth: "70%",
+                              fontWeight: conv.unread > 0 ? "600" : "normal",
+                              color:
+                                conv.unread > 0
+                                  ? "text.primary"
+                                  : "text.secondary",
+                            }}
                           >
                             {conv.lastMessage}
                           </Typography>
-                          {conv.unread > 0 && (
-                            <Chip
-                              label={conv.unread}
-                              size="small"
-                              color="primary"
-                              sx={{
-                                height: 20,
-                                minWidth: 20,
-                                fontSize: "0.7rem",
-                              }}
-                            />
-                          )}
+                          <Box sx={{ display: "flex", alignItems: "center" }}>
+                            {conv.isPinned && (
+                              <Tooltip title="Đã ghim">
+                                <FilterIcon
+                                  sx={{
+                                    fontSize: 16,
+                                    color: "primary.main",
+                                    mr: 0.5,
+                                  }}
+                                />
+                              </Tooltip>
+                            )}
+                            {conv.unread > 0 && (
+                              <Chip
+                                label={conv.unread}
+                                size="small"
+                                color="primary"
+                                sx={{
+                                  height: 20,
+                                  minWidth: 20,
+                                  fontSize: "0.7rem",
+                                  fontWeight: "bold",
+                                }}
+                              />
+                            )}
+                          </Box>
                         </Box>
                       }
                     />
@@ -278,24 +565,74 @@ const ChatApp = () => {
               ))}
             </List>
           </Box>
-        </Stack>
+        </Paper>
 
         {/* Main Chat Area */}
         <Box sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
           {/* App Bar */}
-          <AppBar position="static" color="default" elevation={1}>
-            <Toolbar>
+          <AppBar
+            position="static"
+            color="transparent"
+            elevation={1}
+            sx={{
+              bgcolor: "background.paper",
+              borderBottom: `1px solid ${theme.palette.divider}`,
+            }}
+          >
+            <Toolbar sx={{ minHeight: "72px !important" }}>
               {!isSidebarOpen && (
                 <IconButton edge="start" sx={{ mr: 2 }} onClick={toggleSidebar}>
                   <MenuIcon />
                 </IconButton>
               )}
-              <Typography variant="h6" sx={{ flexGrow: 1 }}>
-                {selectedUser ? selectedUser.name : "Chọn một cuộc trò chuyện"}
-              </Typography>
-              <IconButton onClick={toggleSearchPanel}>
-                <SearchIcon />
-              </IconButton>
+
+              {selectedUser ? (
+                <Box
+                  sx={{ display: "flex", alignItems: "center", flexGrow: 1 }}
+                >
+                  <Badge
+                    overlap="circular"
+                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                    variant="dot"
+                    color={selectedUser.online ? "success" : "default"}
+                  >
+                    <Avatar
+                      src={selectedUser.avatar}
+                      sx={{ mr: 2, width: 40, height: 40 }}
+                    >
+                      {selectedUser.name.charAt(0)}
+                    </Avatar>
+                  </Badge>
+                  <Box>
+                    <Typography variant="subtitle1" fontWeight="medium">
+                      {selectedUser.name}
+                    </Typography>
+                    <Typography variant="caption" color="textSecondary">
+                      {selectedUser.online
+                        ? "Đang hoạt động"
+                        : `Hoạt động ${selectedUser.lastSeen}`}{" "}
+                      • {selectedUser.position}
+                    </Typography>
+                  </Box>
+                </Box>
+              ) : (
+                <Typography
+                  variant="h6"
+                  sx={{ flexGrow: 1 }}
+                  fontWeight="medium"
+                >
+                  Enterprise Chat
+                </Typography>
+              )}
+
+              <Box>
+                <IconButton sx={{ mr: 1 }}>
+                  <NotificationsIcon />
+                </IconButton>
+                <IconButton onClick={handleUserMenuOpen}>
+                  <AccountIcon />
+                </IconButton>
+              </Box>
             </Toolbar>
           </AppBar>
 
@@ -309,16 +646,38 @@ const ChatApp = () => {
                 alignItems: "center",
                 justifyContent: "center",
                 p: 3,
+                background: `radial-gradient(circle, ${alpha(
+                  theme.palette.primary.light,
+                  0.05
+                )} 0%, transparent 70%)`,
               }}
             >
-              <ChatIcon sx={{ fontSize: 64, color: "grey.400", mb: 2 }} />
-              <Typography variant="h6" color="textSecondary" gutterBottom>
-                Chào mừng đến với ứng dụng chat
+              <Box
+                sx={{
+                  position: "relative",
+                  mb: 3,
+                  "& svg": {
+                    fontSize: 80,
+                    color: "primary.main",
+                    opacity: 0.7,
+                  },
+                }}
+              >
+                <ChatIcon />
+              </Box>
+              <Typography
+                variant="h5"
+                color="textSecondary"
+                gutterBottom
+                fontWeight="medium"
+              >
+                Chào mừng đến với Enterprise Chat
               </Typography>
               <Typography
                 variant="body2"
                 color="textSecondary"
                 textAlign="center"
+                sx={{ maxWidth: 500, mb: 3 }}
               >
                 Chọn một cuộc trò chuyện từ sidebar hoặc tìm kiếm người dùng mới
                 để bắt đầu trò chuyện
@@ -327,7 +686,13 @@ const ChatApp = () => {
                 variant="contained"
                 startIcon={<GroupIcon />}
                 onClick={toggleSearchPanel}
-                sx={{ mt: 2 }}
+                sx={{
+                  borderRadius: 2,
+                  py: 1,
+                  px: 3,
+                  fontWeight: "medium",
+                  boxShadow: theme.shadows[2],
+                }}
               >
                 Tìm người dùng
               </Button>
@@ -337,74 +702,108 @@ const ChatApp = () => {
           {/* Chat Interface */}
           {selectedUser && (
             <Box sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
-              {/* Chat Header */}
+              {/* Chat Messages */}
               <Box
                 sx={{
+                  flex: 1,
                   p: 2,
-                  borderBottom: 1,
-                  borderColor: "divider",
-                  display: "flex",
-                  alignItems: "center",
+                  overflow: "auto",
+                  background: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23${theme.palette.primary.main.replace(
+                    "#",
+                    ""
+                  )}' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E")`,
                 }}
               >
-                <Badge
-                  overlap="circular"
-                  anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                  variant="dot"
-                  color="success"
-                  invisible={!selectedUser}
-                >
-                  {/* <Avatar src={selectedUser.avatar} sx={{ mr: 2 }}>
-                  {selectedUser.charAt(0)}
-                </Avatar> */}
-                </Badge>
-                <Box>
-                  <Typography variant="subtitle1">
-                    {selectedUser.name}
-                  </Typography>
-                  <Typography variant="caption" color="textSecondary">
-                    {selectedUser.online
-                      ? "Đang hoạt động"
-                      : `Hoạt động ${selectedUser.lastSeen}`}
-                  </Typography>
-                </Box>
-              </Box>
-
-              {/* Chat Messages */}
-              <Box sx={{ flex: 1, p: 2, overflow: "auto" }}>
-                {/* Placeholder for messages */}
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    height: "100%",
-                    color: "grey.500",
-                  }}
-                >
-                  <Typography>
-                    Chọn một cuộc trò chuyện để xem tin nhắn
-                  </Typography>
-                </Box>
+                {activeMessages.map((msg) => (
+                  <Box
+                    key={msg.id}
+                    sx={{
+                      display: "flex",
+                      justifyContent:
+                        msg.sender === "current" ? "flex-end" : "flex-start",
+                      mb: 2,
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        maxWidth: "70%",
+                        p: 2,
+                        borderRadius: 4,
+                        bgcolor:
+                          msg.sender === "current"
+                            ? "primary.main"
+                            : "grey.100",
+                        color:
+                          msg.sender === "current" ? "white" : "text.primary",
+                        boxShadow: theme.shadows[1],
+                      }}
+                    >
+                      <Typography variant="body1">{msg.text}</Typography>
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          display: "block",
+                          textAlign: "right",
+                          color:
+                            msg.sender === "current"
+                              ? alpha("#fff", 0.7)
+                              : "text.secondary",
+                          mt: 0.5,
+                        }}
+                      >
+                        {msg.timestamp}
+                      </Typography>
+                    </Box>
+                  </Box>
+                ))}
               </Box>
 
               {/* Message Input */}
-              <Box sx={{ p: 2, borderTop: 1, borderColor: "divider" }}>
-                <TextField
-                  fullWidth
-                  placeholder="Nhập tin nhắn..."
-                  variant="outlined"
-                  size="small"
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton color="primary">
-                          <SendIcon />
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
+              <Box
+                sx={{
+                  p: 2,
+                  borderTop: 1,
+                  borderColor: "divider",
+                  bgcolor: "background.paper",
+                }}
+              >
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <IconButton sx={{ mr: 1 }}>
+                    <AttachFileIcon />
+                  </IconButton>
+                  <IconButton sx={{ mr: 1 }}>
+                    <EmojiIcon />
+                  </IconButton>
+                  <InputBase
+                    fullWidth
+                    placeholder="Nhập tin nhắn..."
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    multiline
+                    maxRows={4}
+                    sx={{
+                      bgcolor: "grey.50",
+                      borderRadius: 4,
+                      px: 2,
+                      py: 1,
+                      mr: 1,
+                    }}
+                  />
+                  <Zoom in={message.length > 0}>
+                    <Fab
+                      color="primary"
+                      size="small"
+                      onClick={handleSendMessage}
+                      sx={{ boxShadow: theme.shadows[4] }}
+                    >
+                      <SendIcon />
+                    </Fab>
+                  </Zoom>
+                  <IconButton sx={{ ml: 1 }}>
+                    <MicIcon />
+                  </IconButton>
+                </Box>
               </Box>
             </Box>
           )}
@@ -419,6 +818,7 @@ const ChatApp = () => {
             "& .MuiDrawer-paper": {
               width: 400,
               boxSizing: "border-box",
+              boxShadow: theme.shadows[5],
             },
           }}
         >
@@ -429,12 +829,17 @@ const ChatApp = () => {
               alignItems: "center",
               borderBottom: 1,
               borderColor: "divider",
+              bgcolor: "primary.main",
+              color: "white",
+              background: `linear-gradient(135deg, ${
+                theme.palette.primary.main
+              } 0%, ${alpha(theme.palette.primary.dark, 0.9)} 100%)`,
             }}
           >
-            <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            <Typography variant="h6" sx={{ flexGrow: 1 }} fontWeight="medium">
               Tìm kiếm người dùng
             </Typography>
-            <IconButton onClick={toggleSearchPanel}>
+            <IconButton onClick={toggleSearchPanel} color="inherit">
               <CloseIcon />
             </IconButton>
           </Box>
@@ -452,15 +857,23 @@ const ChatApp = () => {
                   </InputAdornment>
                 ),
               }}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: 2,
+                },
+              }}
             />
           </Box>
 
           <Box sx={{ flex: 1, overflow: "auto" }}>
             {searchResults.length > 0 ? (
-              <List>
+              <List disablePadding>
                 {searchResults.map((user) => (
                   <ListItem key={user.id} disablePadding>
-                    <ListItemButton onClick={() => handleUserSelect(user)}>
+                    <ListItemButton
+                      onClick={() => handleUserSelect(user)}
+                      sx={{ py: 1.5 }}
+                    >
                       <ListItemAvatar>
                         <Badge
                           overlap="circular"
@@ -472,31 +885,33 @@ const ChatApp = () => {
                           color="success"
                           invisible={!user.online}
                         >
-                          <Avatar src={user.avatar}>
+                          <Avatar
+                            src={user.avatar}
+                            sx={{
+                              width: 48,
+                              height: 48,
+                              bgcolor: user.online
+                                ? "primary.main"
+                                : "grey.400",
+                            }}
+                          >
                             {user.name.charAt(0)}
                           </Avatar>
                         </Badge>
                       </ListItemAvatar>
                       <ListItemText
-                        primary={user.name}
+                        primary={
+                          <Typography variant="subtitle2" fontWeight="medium">
+                            {user.name}
+                          </Typography>
+                        }
                         secondary={
-                          <Box sx={{ display: "flex", alignItems: "center" }}>
-                            <Typography
-                              variant="body2"
-                              color="textSecondary"
-                              sx={{ mr: 1 }}
-                            >
+                          <Box>
+                            <Typography variant="body2" color="textSecondary">
                               {user.email}
                             </Typography>
-                            •
-                            <Typography
-                              variant="caption"
-                              color="textSecondary"
-                              sx={{ ml: 1 }}
-                            >
-                              {user.online
-                                ? "Online"
-                                : `Offline - ${user.lastSeen}`}
+                            <Typography variant="caption" color="textSecondary">
+                              {user.department} • {user.position}
                             </Typography>
                           </Box>
                         }
@@ -507,7 +922,9 @@ const ChatApp = () => {
               </List>
             ) : (
               <Box sx={{ p: 3, textAlign: "center" }}>
-                <SearchIcon sx={{ fontSize: 64, color: "grey.400", mb: 2 }} />
+                <SearchIcon
+                  sx={{ fontSize: 64, color: "grey.400", mb: 2, opacity: 0.5 }}
+                />
                 <Typography variant="body1" color="textSecondary">
                   {searchQuery
                     ? "Không tìm thấy người dùng phù hợp"
@@ -517,22 +934,68 @@ const ChatApp = () => {
             )}
           </Box>
         </Drawer>
+
+        {/* User Menu */}
+        <Menu
+          anchorEl={userMenuAnchor}
+          open={Boolean(userMenuAnchor)}
+          onClose={handleUserMenuClose}
+          PaperProps={{
+            sx: {
+              width: 200,
+              borderRadius: 2,
+              boxShadow: theme.shadows[3],
+            },
+          }}
+        >
+          <MenuItem onClick={handleUserMenuClose}>
+            <AccountIcon sx={{ mr: 2 }} />
+            Hồ sơ
+          </MenuItem>
+          <MenuItem onClick={handleUserMenuClose}>
+            <SettingsIcon sx={{ mr: 2 }} />
+            Cài đặt
+          </MenuItem>
+          <Divider />
+          <MenuItem onClick={handleUserMenuClose}>
+            <LogoutIcon sx={{ mr: 2 }} />
+            Đăng xuất
+          </MenuItem>
+        </Menu>
+
+        {/* Conversation Menu */}
+        <Menu
+          anchorEl={conversationMenuAnchor}
+          open={Boolean(conversationMenuAnchor)}
+          onClose={handleConversationMenuClose}
+          PaperProps={{
+            sx: {
+              width: 180,
+              borderRadius: 2,
+              boxShadow: theme.shadows[3],
+            },
+          }}
+        >
+          <MenuItem onClick={handleConversationMenuClose}>
+            Đánh dấu đã đọc
+          </MenuItem>
+          <MenuItem onClick={handleConversationMenuClose}>
+            Ghim hội thoại
+          </MenuItem>
+          <MenuItem onClick={handleConversationMenuClose}>
+            Tắt thông báo
+          </MenuItem>
+          <Divider />
+          <MenuItem
+            onClick={handleConversationMenuClose}
+            sx={{ color: "error.main" }}
+          >
+            Xóa hội thoại
+          </MenuItem>
+        </Menu>
       </Box>
     </>
   );
 };
-
-// Mock SendIcon component
-const SendIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="currentColor"
-  >
-    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
-  </svg>
-);
 
 export default ChatApp;

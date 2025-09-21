@@ -6,7 +6,6 @@ import {
   Grid,
   Card,
   CardContent,
-  Chip,
   useTheme,
   alpha,
   LinearProgress,
@@ -33,13 +32,11 @@ import type { DataFlight } from "../../utils/type";
 import { useGetFlightData } from "../Api/useGetApi";
 import {
   FlightTakeoff,
-  FlightLand,
   Schedule,
   Cancel,
   AirlineSeatReclineNormal,
 } from "@mui/icons-material";
 
-// Màu sắc cho các trạng thái chuyến bay
 const STATUS_COLORS: { [key: string]: string } = {
   Scheduled: "#14b8a6", // Teal - Đúng giờ/Theo lịch trình
   Boarding: "#2563eb", // Blue - Đang lên máy bay
@@ -377,75 +374,6 @@ const FlightStatisticsPage: React.FC = () => {
       </Grid>
 
       <Grid container spacing={3}>
-        {/* Phân bố trạng thái */}
-        <Grid size={6}>
-          <Paper
-            sx={{
-              p: 3,
-              height: 400,
-              borderRadius: 2,
-              boxShadow: theme.shadows[1],
-            }}
-          >
-            <Typography
-              variant="h6"
-              sx={{ mb: 2, fontWeight: "600", color: theme.palette.grey[800] }}
-            >
-              Flight Status Distribution
-            </Typography>
-            <ResponsiveContainer width="100%" height="90%">
-              <PieChart>
-                <Pie
-                  data={statusCounts}
-                  dataKey="value"
-                  nameKey="name"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={100}
-                  label={({ name, percent }) =>
-                    `${name}: ${((percent as number) * 100).toFixed(0)}%`
-                  }
-                  labelLine={false}
-                >
-                  {statusCounts.map((entry, index) => (
-                    <Cell
-                      key={`cell-status-${index}`}
-                      fill={entry.color}
-                      stroke={theme.palette.background.paper}
-                      strokeWidth={2}
-                    />
-                  ))}
-                </Pie>
-                <Tooltip
-                  formatter={(value, name, props) => [
-                    value,
-                    `${name}: ${(
-                      (Number(value) / stats.totalFlights) *
-                      100
-                    ).toFixed(1)}%`,
-                  ]}
-                />
-                <Legend
-                  verticalAlign="bottom"
-                  height={36}
-                  formatter={(value, entry, index) => (
-                    <Box
-                      component="span"
-                      sx={{
-                        color: theme.palette.text.primary,
-                        fontSize: "0.75rem",
-                      }}
-                    >
-                      {value}
-                    </Box>
-                  )}
-                />
-              </PieChart>
-            </ResponsiveContainer>
-          </Paper>
-        </Grid>
-
-        {/* Phân bố hãng bay */}
         <Grid size={6}>
           <Paper
             sx={{

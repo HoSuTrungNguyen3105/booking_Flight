@@ -117,6 +117,7 @@ export const menuData: MenuSection[] = [
               { id: "FlightStatisticsPage", label: "FlightStatisticsPage" },
               { id: "bookticket", label: "book ticket" },
               { id: "international", label: "Quốc tế" },
+              { id: "ChatApp", label: "ChatApp" },
               { id: "sampleDatePicker", label: "secure" },
               { id: "payroll-management", label: "Quản lý bảng lương" },
             ],
