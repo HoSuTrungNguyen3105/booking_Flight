@@ -16,6 +16,7 @@ type SideBarValueTypes =
   | "manage/message"
   | "CreateGateForm"
   | "user"
+  | "SeatLayout"
   | "message"
   | "flightSchedule"
   | "ChatApp"
@@ -81,6 +82,7 @@ export const menuData: MenuSection[] = [
           },
           { id: "TerminalContainer", label: " TerminalContainer" },
           { id: "ChatApp", label: "ChatApp" },
+          { id: "SeatLayout", label: "SeatLayout" },
           { id: "food", label: "Button", icon: <GppBadIcon /> },
           { id: "notifications", label: "notifications", icon: <GppBadIcon /> },
           {

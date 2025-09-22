@@ -15,7 +15,7 @@ import DetailSection from "../../../common/DetailSection";
 import FlightPath from "../../User/FlightPath";
 
 interface FlightDetailPageProps {
-  flight: DataFlight;
+  flight?: DataFlight;
   onBookFlight?: (flightId: number) => void;
 }
 
@@ -35,6 +35,10 @@ const FlightDetailPage = ({ flight, onBookFlight }: FlightDetailPageProps) => {
   const handleGoBack = useCallback(() => {
     navigate(-1);
   }, [navigate]);
+
+  if (!flight) {
+    return "No item";
+  }
 
   const renderBreadcrumbs = useCallback(() => {
     const breadcrumbItems: BreadcrumbItem[] = [

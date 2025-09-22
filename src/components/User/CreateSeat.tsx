@@ -1,13 +1,14 @@
 import { Add } from "@mui/icons-material";
 import { Box, Button, Typography } from "@mui/material";
-import React, { memo, useState } from "react";
+import { memo, useState } from "react";
 import CreateSeatModal from "./CreateSeatModal";
-import { Loading } from "../../common/Loading/Loading";
+
 type CreateSeat = {
   flightId: number;
   onChange: () => void;
   loading: boolean;
 };
+
 const CreateSeat = ({ flightId, onChange, loading }: CreateSeat) => {
   const [createFormOpen, setCreateFormOpen] = useState(false);
 
@@ -33,20 +34,20 @@ const CreateSeat = ({ flightId, onChange, loading }: CreateSeat) => {
           <Button
             variant="contained"
             color="primary"
-            onClick={() => setCreateFormOpen(true)}
+            onClick={onChange}
             sx={{ mb: 2 }}
             startIcon={<Add />}
           >
-            Create Individual Seat
+            Generate All Seats (A-F to 1-40)
           </Button>
 
           <Button
             variant="outlined"
             color="primary"
-            onClick={onChange} //handleGenerateAllSeats
+            onClick={() => setCreateFormOpen(true)}
             sx={{ mb: 2 }}
           >
-            Generate All Seats (A-F to 1-40)
+            Create Individual Seat
           </Button>
           {/* <Button onClick={resetSeatToGetData}>Reset</Button> */}
         </Box>

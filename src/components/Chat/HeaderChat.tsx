@@ -315,24 +315,21 @@ const ChatApp = () => {
 
   return (
     <>
-      <Box sx={{ display: "flex", height: "100vh", bgcolor: "grey.50" }}>
-        {/* Sidebar */}
+      <Box sx={{ display: "flex", height: "70vh", bgcolor: "grey.50" }}>
         <Paper
           sx={{
-            width: isSidebarOpen ? 380 : 0,
-            height: "100%",
+            width: isSidebarOpen ? 280 : 0,
+            height: "85vh",
             borderRadius: 0,
             overflow: "hidden",
             transition: "width 0.3s ease",
             display: "flex",
             flexDirection: "column",
-            boxShadow: theme.shadows[3],
             zIndex: 10,
             position: "relative",
           }}
           elevation={0}
         >
-          {/* Sidebar Header */}
           <Box
             sx={{
               p: 2,

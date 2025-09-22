@@ -49,6 +49,56 @@ import CreateGateForm from "../components/User/CreateGateForm";
 import MealForm from "../common/Sample/MealForm";
 import FlightStatisticsPage from "../components/User/FlightStatisticsPage";
 import AirportSampleDiagram from "../components/User/AirportSampleDiagram";
+import FileUploadButtonWithValidation from "../components/Admin/modal/FileUploadButton";
+import FlightDetailPage from "../components/Admin/component/FlightDetail";
+import type { DataFlight } from "../utils/type";
+import SeatLayout from "../components/Admin/component/SeatLayout";
+
+export const mockFlights: DataFlight = {
+  flightId: 1,
+  flightNo: "VN123",
+  flightType: "one-way",
+  departureAirport: "HAN",
+  arrivalAirport: "SGN",
+  status: "On Time",
+  aircraftCode: "A321",
+  priceEconomy: 120,
+  priceBusiness: 350,
+  priceFirst: 700,
+  maxCapacity: 180,
+  scheduledDeparture: 1695372000, // UNIX timestamp
+  scheduledArrival: 1695379200,
+  actualDeparture: 1695372000,
+  actualArrival: 1695379200,
+  airline: "Vietnam Airlines",
+  origin: "Hanoi",
+  destination: "Ho Chi Minh City",
+  gateId: "A12",
+  terminal: "T1",
+  isCancelled: false,
+  delayMinutes: null,
+  aircraft: {
+    code: "A321",
+    model: "Airbus A321",
+    range: 5600,
+  },
+  departureAirportRel: {
+    code: "HAN",
+    name: "Noi Bai International Airport",
+    city: "Hanoi",
+    coordinates: "21.2212, 105.8072",
+    timezone: "Asia/Ho_Chi_Minh",
+  },
+  arrivalAirportRel: {
+    code: "SGN",
+    name: "Tan Son Nhat International Airport",
+    city: "Ho Chi Minh City",
+    coordinates: "10.8188, 106.6520",
+    timezone: "Asia/Ho_Chi_Minh",
+  },
+  meals: [],
+  seats: [],
+};
 
 const routes = [
   {
@@ -173,6 +223,20 @@ const routes = [
         element: <MealList />,
       },
       {
+        path: "FlightDetailPage",
+        element: <FlightDetailPage flight={mockFlights} />,
+      },
+      {
+        path: "FileUploadButtonWithValidation",
+        element: (
+          <FileUploadButtonWithValidation
+            title="hsh"
+            setValues={() => {}}
+            name="ssh"
+          />
+        ),
+      },
+      {
         path: "AirportSampleDiagram",
         element: <AirportSampleDiagram />,
       },
@@ -211,6 +275,10 @@ const routes = [
       {
         path: "TerminalContainer",
         element: <AirportDiagram />,
+      },
+      {
+        path: "SeatLayout",
+        element: <SeatLayout />,
       },
       {
         path: "ChatApp",

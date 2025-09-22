@@ -6,6 +6,7 @@ import { type GridRowDef } from "../DataGrid/index";
 import { DateFormatEnum, formatDateKR } from "../../hooks/format";
 import FlightModalTriggerManagement from "./FlightModalTriggerManagement";
 import TableSection from "./TableSection";
+import SeatBooking from "../../components/User/SeatBooking";
 
 export default function MealList() {
   const { flightBookingData, loadingFlightBookingData } = useGetMeal();
@@ -19,22 +20,23 @@ export default function MealList() {
   const [mealRows, setMealRows] = useState<GridRowDef[]>([]);
   const [flightRows, setFlightRows] = useState<GridRowDef[]>([]);
 
+  // state quản lý mở SeatBooking
+  const [selectedFlightForSeat, setSelectedFlightForSeat] = useState<
+    number | null
+  >(null);
+
   const handleMealRowSelection = (selectedIds: any[]) => {
-    setSelectedMealRows((prev) => {
-      const newSelectedRows = mealRows.filter((row) =>
-        selectedIds.includes(row.id)
-      );
-      return newSelectedRows;
-    });
+    const newSelectedRows = mealRows.filter((row) =>
+      selectedIds.includes(row.id)
+    );
+    setSelectedMealRows(newSelectedRows);
   };
 
   const handleFlightRowSelection = (selectedIds: any[]) => {
-    setSelectedFlightRows((prev) => {
-      const newSelectedRows = flightRows.filter((row) =>
-        selectedIds.includes(row.id)
-      );
-      return newSelectedRows;
-    });
+    const newSelectedRows = flightRows.filter((row) =>
+      selectedIds.includes(row.id)
+    );
+    setSelectedFlightRows(newSelectedRows);
   };
 
   const rowsFlightBookingData: GridRowDef[] = useMemo(
@@ -51,7 +53,7 @@ export default function MealList() {
     () =>
       getFlightData?.list?.map((f) => ({
         ...f,
-        id: f.flightId,
+        id: f.flightId as number,
         checkYn: false,
       })) ?? [],
     [getFlightData]
@@ -64,22 +66,6 @@ export default function MealList() {
   useEffect(() => {
     setFlightRows(rowsGetFlightData);
   }, [rowsGetFlightData]);
-
-  useEffect(() => {
-    setSelectedMealRows((prev) =>
-      prev.filter((selectedRow) =>
-        mealRows.some((row) => row.id === selectedRow.id)
-      )
-    );
-  }, [mealRows]);
-
-  useEffect(() => {
-    setSelectedFlightRows((prev) =>
-      prev.filter((selectedRow) =>
-        flightRows.some((row) => row.id === selectedRow.id)
-      )
-    );
-  }, [flightRows]);
 
   const handleDeleteMeals = useCallback((mealIds: GridRowDef[]) => {
     console.log("Deleting meals with IDs:", mealIds);
@@ -137,16 +123,39 @@ export default function MealList() {
       field: "update",
       headerName: "Update",
       flex: 1,
-      renderCell: (params) => {
-        return (
-          <FlightModalTriggerManagement
-            onSuccess={() => refetchGetFlightData()}
-            id={params.row.id}
-          />
-        );
-      },
+      renderCell: (params) => (
+        <FlightModalTriggerManagement
+          onSuccess={() => refetchGetFlightData()}
+          id={params.row.id}
+        />
+      ),
+    },
+    {
+      field: "seatOption",
+      headerName: "Seat",
+      flex: 1,
+      renderCell: (params) => (
+        <Button
+          size="small"
+          variant="outlined"
+          onClick={() => setSelectedFlightForSeat(params.row)}
+        >
+          Manage Seats
+        </Button>
+      ),
     },
   ];
+
+  if (selectedFlightForSeat) {
+    return (
+      <SeatBooking
+        flightId={selectedFlightForSeat}
+        onSuccess={() => refetchGetFlightData()}
+        seats={selectedFlightForSeat ?? []} // tùy vào API có trả seats hay không
+        loadingFlightData={loadingFlightData}
+      />
+    );
+  }
 
   return (
     <div style={{ height: 500, width: "100%" }}>
@@ -197,6 +206,7 @@ export default function MealList() {
       <Typography variant="h6" gutterBottom sx={{ mt: 4 }}>
         Flight List
       </Typography>
+
       <TableSection
         columns={columnsFlightData}
         setRows={setFlightRows}

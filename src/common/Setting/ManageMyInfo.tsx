@@ -6,7 +6,7 @@ import { Loading } from "../Loading/Loading";
 import UpdateUserModal from "./hooks/UpdateUserModal";
 import AccountLock from "./AccountLock";
 import DeleteUserModal from "./DeleteUserModal";
-import { memo, useCallback, useState } from "react";
+import { memo, useState } from "react";
 import AdminUpdateUserModal from "./hooks/AdminUpdateUserModal";
 import UpdateUserForm from "../../components/Admin/component/UpdateUserForm";
 import type { AdminUpdateUserForm } from "../../utils/type";

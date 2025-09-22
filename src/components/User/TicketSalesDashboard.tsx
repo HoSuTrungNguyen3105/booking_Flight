@@ -21,7 +21,6 @@ import {
   LocalAirport,
 } from "@mui/icons-material";
 
-// Styled components
 const StatCard = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(3),
   background: `linear-gradient(135deg, ${alpha(

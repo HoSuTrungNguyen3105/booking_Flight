@@ -192,9 +192,19 @@ export const useFlightUpdate = ({ id }: ReqUserIDProps) => {
 // };
 export type SeatTypeValue = "ECONOMY" | "BUSINESS" | "FIRST" | "VIP";
 
+export type SeatPosition = "WINDOW" | "MIDDLE" | "AISLE";
+
 export interface SeatUpdateProps {
   seatIds: number[];
   type?: SeatTypeValue;
+  position?: SeatPosition;
+  price?: number;
+  isBooked?: boolean;
+  isAvailable?: boolean;
+  isExitRow?: boolean;
+  isExtraLegroom?: boolean;
+  note?: string;
+
   seatRow?: string;
   seatNumber?: number;
 }
@@ -377,15 +387,14 @@ export const useSeatCreate = () => {
 };
 
 export const useGetSeatByFlightId = ({ id }: ReqUserIDProps) => {
-  const { refetch: refetchGetSeatByFlightId } = useFetch<
-    DetailResponseMessage<Seat>,
-    void
-  >({
-    url: `/sys/seats/getFlightSeat/${id}`,
-    autoFetch: !!id,
-    config: getMethod,
-  });
+  const { refetch: refetchGetSeatByFlightId, data: dataGetSeatByFlightId } =
+    useFetch<DetailResponseMessage<Seat>, void>({
+      url: `/sys/seats/getFlightSeat/${id}`,
+      autoFetch: !!id,
+      config: getMethod,
+    });
   return {
+    dataGetSeatByFlightId,
     refetchGetSeatByFlightId,
   };
 };

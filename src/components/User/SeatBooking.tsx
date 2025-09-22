@@ -25,6 +25,7 @@ import {
 } from "@mui/icons-material";
 import type { Seat } from "../../utils/type";
 import {
+  useGetSeatByFlightId,
   useSeatCreate,
   useSeatUpdateByIds,
   type CreateSeatDto,
@@ -38,14 +39,14 @@ import SeatManagementModal from "./SeatManagementModal";
 type AircraftSeatTypeProps = "ALL" | "VIP" | "ECONOMY" | "WINDOW";
 
 type AircraftSeatProps = {
-  seats: Seat[];
+  // seats: Seat[];
   flightId: number;
   onSuccess: () => void;
   loadingFlightData: boolean;
 };
 
 const SeatBooking: React.FC<AircraftSeatProps> = ({
-  seats,
+  // seats,
   flightId,
   onSuccess,
   loadingFlightData,
@@ -61,7 +62,8 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
     "success"
   );
   const [createFormOpen, setCreateFormOpen] = useState(false);
-
+  const { dataGetSeatByFlightId, refetchGetSeatByFlightId } =
+    useGetSeatByFlightId({ id: flightId });
   const [newSeat, setNewSeat] = useState<CreateSeatDto>({
     seatNumber: 0,
     seatRow: "",
@@ -397,12 +399,13 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
 
   const restroomRows = [1, 15, 30];
   const filteredSeats = useMemo(() => {
-    if (filter === "ALL") return seats;
-    if (filter === "WINDOW") return seats.filter((s) => s.isWindow);
-    return seats.filter((s) => s.type === filter);
-  }, [seats, filter]);
+    if (filter === "ALL") return dataGetSeatByFlightId?.list;
+    if (filter === "WINDOW")
+      return dataGetSeatByFlightId?.list?.filter((s) => s.isWindow);
+    return dataGetSeatByFlightId?.list?.filter((s) => s.type === filter);
+  }, [dataGetSeatByFlightId, filter]);
 
-  if (!seats || seats.length === 0) {
+  if (!dataGetSeatByFlightId || dataGetSeatByFlightId.list?.length === 0) {
     return (
       <CreateSeat
         flightId={flightId}
@@ -563,7 +566,7 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
                 {/* Left Seats */}
                 <Box display="flex" gap={1} sx={{ mx: 0.5 }}>
                   {columns.slice(0, 3).map((col) => {
-                    const seat = filteredSeats.find(
+                    const seat = filteredSeats?.find(
                       (s) => s.seatNumber === row && s.seatRow === col
                     );
                     return seat ? (
@@ -591,7 +594,7 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
                 {/* Right Seats */}
                 <Box display="flex" gap={1} sx={{ mx: 0.5 }}>
                   {columns.slice(3).map((col) => {
-                    const seat = filteredSeats.find(
+                    const seat = filteredSeats?.find(
                       (s) => s.seatNumber === row && s.seatRow === col
                     );
                     return seat ? (
@@ -649,7 +652,9 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
               <Box>
                 <Stack spacing={1} sx={{ mb: 2 }}>
                   {selectedSeats.map((id, e) => {
-                    const seat = seats.find((s) => s.id === e);
+                    const seat = dataGetSeatByFlightId.list?.find(
+                      (s) => s.id === e
+                    );
                     if (!seat) return null;
 
                     const getTypeColor = (type: string) => {
@@ -744,19 +749,6 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
                   onClose={handleCloseModal}
                 />
                 {updateSeat.seatIds}
-                {/* Modal for updating seats */}
-                {/* <Dialog open={openModal} onClose={handleCloseModal}>
-                  <DialogTitle>Update Selected Seats</DialogTitle>
-                  <DialogContent>
-                   
-                  </DialogContent>
-                  <DialogActions>
-                    <Button onClick={handleCloseModal}>Cancel</Button>
-                    <Button onClick={handleUpdateSeatByIds} variant="contained">
-                      Update Seats
-                    </Button>
-                  </DialogActions>
-                </Dialog> */}
               </Box>
             ) : (
               <Box sx={{ textAlign: "center", py: 3 }}>

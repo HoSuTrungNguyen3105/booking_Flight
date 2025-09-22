@@ -1,22 +1,12 @@
-import {
-  Box,
-  Button,
-  MenuItem,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
-import { useCallback, useState } from "react";
+import { Box, Button, Stack } from "@mui/material";
+import { useCallback } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { EmployeeStatus, type AdminUpdateUserForm } from "../../../utils/type";
 import { useUpdateUserFromAdmin } from "../../Api/usePostApi";
 import { useToast } from "../../../context/ToastContext";
-import DateTimePickerComponent from "../../../common/DayPicker/date-range-picker";
-import { useGetUserById } from "../../Api/useGetApi";
 import SelectDropdown from "../../../common/Dropdown/SelectDropdown";
 import InputTextField from "../../../common/Input/InputTextField";
 
-// Danh sách option phòng ban
 const departmentOptions = [
   { label: "IT", value: "IT" },
   { label: "HR", value: "HR" },
@@ -24,7 +14,6 @@ const departmentOptions = [
   { label: "Marketing", value: "MARKETING" },
 ];
 
-// Danh sách option chức vụ
 const positionOptions = [
   { label: "Manager", value: "MANAGER" },
   { label: "Staff", value: "STAFF" },
@@ -32,7 +21,6 @@ const positionOptions = [
   { label: "Intern", value: "INTERN" },
 ];
 
-// Danh sách option trạng thái
 const statusOptions = [
   { label: "Đang làm việc", value: EmployeeStatus.ACTIVE },
   { label: "Nghỉ việc", value: EmployeeStatus.INACTIVE },
@@ -49,7 +37,7 @@ export default function UpdateUserForm({
   data,
   onSuccess,
 }: AdminUpdateUserFormProps) {
-  console.log("Form received data:", data); // Kiểm tra data đầu vào
+  console.log("Form received data:", data);
 
   const { handleSubmit, control, setValue } = useForm({
     defaultValues: {
@@ -58,7 +46,6 @@ export default function UpdateUserForm({
       position: data.position ?? "",
       status: data.status ?? EmployeeStatus.ACTIVE,
       baseSalary: data.baseSalary ?? 0,
-      // hireDate: data.hireDate ?? Math.floor(Date.now() / 1000),
     },
   });
 

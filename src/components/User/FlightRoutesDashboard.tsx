@@ -7,9 +7,6 @@ import {
   Card,
   CardContent,
   Chip,
-  Tabs,
-  Tab,
-  useTheme,
   styled,
   alpha,
 } from "@mui/material";
@@ -24,6 +21,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import TabPanel, { type ITabItem } from "../../common/Setting/TabPanel";
+import theme from "../../scss/theme";
 
 // Styled components
 const RouteCard = styled(Card)(({ theme }) => ({
@@ -131,7 +129,6 @@ const chartData: ChartData[] = [
 ];
 
 const FlightRoutesDashboard: React.FC = () => {
-  const theme = useTheme();
   const [tabValue, setTabValue] = useState(0);
   const [selectedRoute, setSelectedRoute] = useState<string | null>(null);
 

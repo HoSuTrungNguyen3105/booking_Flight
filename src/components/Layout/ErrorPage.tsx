@@ -16,10 +16,10 @@ import {
 } from "@mui/icons-material";
 import { useRouteError, isRouteErrorResponse, Link } from "react-router-dom";
 import { memo } from "react";
+import theme from "../../scss/theme";
 
 const ErrorPage = () => {
   const error = useRouteError();
-  const theme = useTheme();
 
   if (error) {
     console.error("Route error:", error);

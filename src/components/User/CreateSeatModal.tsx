@@ -9,6 +9,7 @@ import {
   Icon,
   FormControlLabel,
   Checkbox,
+  Paper,
 } from "@mui/material";
 import { memo, useCallback, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
@@ -100,39 +101,62 @@ const CreateSeatModal = ({
 
   const renderContent = useCallback(() => {
     return (
-      <>
-        <Box sx={{ pt: 2, display: "flex", flexDirection: "column", gap: 2 }}>
-          <InputTextField
-            type="number"
-            value={String(newSeat.seatNumber)}
-            onChange={(e) =>
-              setNewSeat({ ...newSeat, seatNumber: parseInt(e) || 1 })
-            }
-          />
+      <Box sx={{ width: "20rem", pt: 2 }}>
+        <Typography variant="h6" gutterBottom>
+          Seat Information
+        </Typography>
 
+        <Stack spacing={3}>
+          {/* Seat Number */}
           <FormControl fullWidth>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+              Seat Number
+            </Typography>
+            <InputTextField
+              type="number"
+              value={String(newSeat.seatNumber)}
+              onChange={(e) =>
+                setNewSeat({ ...newSeat, seatNumber: parseInt(e) || 1 })
+              }
+              placeholder="Enter seat number"
+            />
+          </FormControl>
+
+          {/* Seat Row */}
+          <FormControl fullWidth>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+              Seat Row
+            </Typography>
             <SelectDropdown
               value={newSeat.seatRow}
               options={columnActions}
               onChange={(e) => setNewSeat({ ...newSeat, seatRow: e as string })}
-            ></SelectDropdown>
+            />
           </FormControl>
 
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={newSeat.isBooked}
-                onChange={(e) =>
-                  setNewSeat({ ...newSeat, isBooked: e.target.checked })
+          {/* Status */}
+          <Box>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+              Seat Status
+            </Typography>
+            <Stack direction="row" spacing={2}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={newSeat.isBooked}
+                    onChange={(e) =>
+                      setNewSeat({ ...newSeat, isBooked: e.target.checked })
+                    }
+                  />
                 }
+                label="Booked"
               />
-            }
-            label="Booked"
-          />
-        </Box>
-      </>
+            </Stack>
+          </Box>
+        </Stack>
+      </Box>
     );
-  }, []);
+  }, [newSeat]);
 
   return (
     <BaseModal

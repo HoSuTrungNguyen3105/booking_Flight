@@ -10,20 +10,7 @@ import {
   useTheme,
   styled,
 } from "@mui/material";
-import {
-  TrendingUp,
-  FlightTakeoff,
-  FlightLand,
-  AccessTime,
-} from "@mui/icons-material";
-
-// Styled components
-const RevenueCard = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(3),
-  background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-  color: "white",
-  borderRadius: "16px",
-}));
+import { FlightTakeoff, FlightLand, AccessTime } from "@mui/icons-material";
 
 const BookingCard = styled(Card)(({ theme }) => ({
   marginBottom: theme.spacing(2),

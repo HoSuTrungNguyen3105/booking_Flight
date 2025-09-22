@@ -580,16 +580,16 @@ const FlightUpdateModal = ({
     [handleInputChange]
   );
 
-  const renderSeatBooking = useCallback(() => {
-    return (
-      <SeatBooking
-        flightId={flightId as number}
-        onSuccess={handleRefetchAllData}
-        seats={(formData.seats as Seat[]) ?? []}
-        loadingFlightData={loadingFlightData}
-      />
-    );
-  }, [formData.seats]);
+  // const renderSeatBooking = useCallback(() => {
+  //   return (
+  //     <SeatBooking
+  //       flightId={flightId as number}
+  //       onSuccess={handleRefetchAllData}
+  //       seats={(formData.seats as Seat[]) ?? []}
+  //       loadingFlightData={loadingFlightData}
+  //     />
+  //   );
+  // }, [formData.seats]);
 
   const renderActions = useCallback(() => {
     return (
@@ -654,7 +654,7 @@ const FlightUpdateModal = ({
             {activeStep === 0 && renderBasicInfo()}
             {activeStep === 1 && renderTimeInfo()}
 
-            {mode === "update" && activeStep === 2 && renderSeatBooking()}
+            {/* {mode === "update" && activeStep === 2 && renderSeatBooking()} */}
             {mode === "create" && activeStep === 2 && renderPriceCapacity()}
 
             {mode === "update" && activeStep === 3 && renderPriceCapacity()}
