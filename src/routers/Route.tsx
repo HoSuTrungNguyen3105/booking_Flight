@@ -41,7 +41,7 @@ import RevenueDashboard from "../components/User/RevenueDashboard";
 import TicketSalesDashboard from "../components/User/TicketSalesDashboard";
 import FlightRoutesDashboard from "../components/User/FlightRoutesDashboard";
 import AircraftBatchCreator from "../components/Admin/component/AircraftBatchCreator";
-import AircraftBatchCreatorEnhanced from "../components/Admin/component/AircraftBatchCreate";
+// import AircraftBatchCreatorEnhanced from "../components/Admin/component/AircraftBatchCreate";
 import TerminalGateContainer from "../components/Admin/AirportMasterplan";
 import AirportManagement from "../components/Admin/component/AirportManagement";
 import SendEmailToUsers from "../common/Setting/SendEmailToUsers";
@@ -53,6 +53,8 @@ import FileUploadButtonWithValidation from "../components/Admin/modal/FileUpload
 import FlightDetailPage from "../components/Admin/component/FlightDetail";
 import type { DataFlight } from "../utils/type";
 import SeatLayout from "../components/Admin/component/SeatLayout";
+import BulkMealCreator from "../components/Admin/component/BulkMealCreator";
+import AirportMap from "../components/User/AirportMap";
 
 export const mockFlights: DataFlight = {
   flightId: 1,
@@ -70,9 +72,6 @@ export const mockFlights: DataFlight = {
   scheduledArrival: 1695379200,
   actualDeparture: 1695372000,
   actualArrival: 1695379200,
-  airline: "Vietnam Airlines",
-  origin: "Hanoi",
-  destination: "Ho Chi Minh City",
   gateId: "A12",
   terminal: "T1",
   isCancelled: false,
@@ -99,6 +98,41 @@ export const mockFlights: DataFlight = {
   meals: [],
   seats: [],
 };
+
+export const mockTerminals = [
+  {
+    id: "t-1",
+    code: "A",
+    name: "Terminal A",
+    type: "DOMESTIC" as const,
+    x: 20,
+    y: 28,
+  },
+  {
+    id: "t-2",
+    code: "B",
+    name: "Terminal B",
+    type: "INTERNATIONAL" as const,
+    x: 54,
+    y: 22,
+  },
+  {
+    id: "t-3",
+    code: "D",
+    name: "Terminal D",
+    type: "BUSINESS" as const,
+    x: 78,
+    y: 52,
+  },
+  {
+    id: "t-4",
+    code: "C",
+    name: "Terminal C",
+    type: "DOMESTIC" as const,
+    x: 30,
+    y: 68,
+  },
+];
 
 const routes = [
   {
@@ -195,6 +229,20 @@ const routes = [
         element: <SecurityManage />,
       },
       {
+        path: "BulkMealCreator",
+        element: <BulkMealCreator />,
+      },
+      {
+        path: "AirportMap",
+        element: (
+          <AirportMap
+            airportCode="SGN"
+            terminals={mockTerminals}
+            height={540}
+          />
+        ),
+      },
+      {
         path: "FlightStatisticsPage",
         element: <FlightStatisticsPage />,
       },
@@ -248,10 +296,10 @@ const routes = [
         path: "message",
         element: <ChatContainer />,
       },
-      {
-        path: "AircraftBatchCreatorEnhanced",
-        element: <AircraftBatchCreatorEnhanced />,
-      },
+      // {
+      //   path: "AircraftBatchCreatorEnhanced",
+      //   element: <AircraftBatchCreatorEnhanced />,
+      // },
       {
         path: "AircraftBatchCreator",
         element: <AircraftBatchCreator />,

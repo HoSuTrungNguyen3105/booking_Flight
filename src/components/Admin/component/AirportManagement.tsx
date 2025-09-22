@@ -20,28 +20,15 @@ import {
   TextField,
   Grid,
   Tooltip,
-  Avatar,
-  Divider,
 } from "@mui/material";
 import {
   Add as AddIcon,
   Edit as EditIcon,
   Delete as DeleteIcon,
   LocationOn as LocationIcon,
-  Flag as FlagIcon,
 } from "@mui/icons-material";
 import { useGetAllAirportInfo } from "../../Api/useGetApi";
 import type { AirportCodeProps } from "../../../utils/type";
-
-// interface Airport {
-//   code: string;
-//   name: string;
-//   city: string;
-//   country: string;
-//   terminalCount: number;
-//   createdAt: string;
-//   updatedAt?: string;
-// }
 
 const AirportManagement: React.FC = () => {
   const { getAirportInfo } = useGetAllAirportInfo();

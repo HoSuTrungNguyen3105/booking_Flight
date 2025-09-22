@@ -37,10 +37,6 @@ export type DataFlight = {
   actualDeparture?: number | null;
   actualArrival?: number | null;
 
-  // gate?: string;
-  airline: string;
-  origin: string;
-  destination: string;
   gateId?: string;
   terminal?: string;
   isCancelled?: boolean;
@@ -140,7 +136,7 @@ export type DataResponseId = {
   accessToken?: string | null;
   userId: number;
 };
-
+type PositionTypeValue = "WINDOW" | "MIDDLE" | "AISLE";
 export type Seat = {
   id: number;
   seatNumber: number;
@@ -148,6 +144,7 @@ export type Seat = {
   isBooked: boolean;
   flightId?: number;
   bookingId?: number;
+  position: PositionTypeValue;
   type: SeatTypeValue;
 
   //Add type

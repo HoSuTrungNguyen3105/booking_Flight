@@ -32,7 +32,6 @@ const SeatManagementModal = ({
 }: IModalStatisticalDataLearningProps) => {
   // state cho tất cả trường
   const [type, setType] = useState("ECONOMY");
-  const [seatClass, setSeatClass] = useState("ECONOMY");
   const [position, setPosition] = useState("WINDOW");
   const [seatRow, setSeatRow] = useState("");
   const [seatNumber, setSeatNumber] = useState(1);
@@ -187,7 +186,6 @@ const SeatManagementModal = ({
   }, [
     selectedSeats,
     type,
-    seatClass,
     position,
     seatRow,
     seatNumber,

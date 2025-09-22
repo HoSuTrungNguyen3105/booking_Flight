@@ -172,14 +172,11 @@ const FlightRoutesDashboard: React.FC = () => {
   return (
     <Box sx={{ p: 3 }}>
       <Grid container spacing={3}>
-        {/* Header */}
         <Grid size={12}>
           <Typography variant="h4" fontWeight="bold" gutterBottom>
             Flight Analytics Dashboard
           </Typography>
         </Grid>
-
-        {/* Top Flight Routes Section */}
         <Grid size={6} sx={{ md: 6 }}>
           <Paper sx={{ p: 3, height: "100%" }}>
             <Typography variant="h6" fontWeight="bold" gutterBottom>
@@ -289,8 +286,6 @@ const FlightRoutesDashboard: React.FC = () => {
             </Box>
           </Paper>
         </Grid>
-
-        {/* Flights Schedule Chart */}
         <Grid size={6} sx={{ md: 6 }}>
           <Paper sx={{ p: 3, height: "100%" }}>
             <Box
@@ -316,8 +311,6 @@ const FlightRoutesDashboard: React.FC = () => {
                 onChangeTab={handleTabChange}
               />
             </Box>
-
-            {/* Chart */}
             <Box sx={{ height: 300, mt: 2 }}>
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
@@ -350,8 +343,6 @@ const FlightRoutesDashboard: React.FC = () => {
                 </BarChart>
               </ResponsiveContainer>
             </Box>
-
-            {/* Stats Summary */}
             <Grid container spacing={2} sx={{ mt: 2 }}>
               <Grid size={6}>
                 <StatBox>
@@ -387,8 +378,6 @@ const FlightRoutesDashboard: React.FC = () => {
             </Grid>
           </Paper>
         </Grid>
-
-        {/* Additional Stats */}
         <Grid size={3} sx={{ md: 4 }}>
           <Paper sx={{ p: 3, textAlign: "center" }}>
             <Typography variant="h6" gutterBottom>

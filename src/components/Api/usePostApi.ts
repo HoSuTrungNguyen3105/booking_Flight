@@ -19,6 +19,7 @@ import {
   type Seat,
   type SearchFlightResponse,
   MethodType,
+  type MealResponse,
 } from "../../utils/type.ts";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
 import type {
@@ -396,6 +397,30 @@ export const useGetSeatByFlightId = ({ id }: ReqUserIDProps) => {
   return {
     dataGetSeatByFlightId,
     refetchGetSeatByFlightId,
+  };
+};
+interface CreateMealProps {
+  name: string;
+  mealType: string;
+  description?: string | null;
+  price?: number | null;
+  isAvailable?: boolean;
+}
+
+export const useCreateMultiMeal = () => {
+  const {
+    data: flightBookingData,
+    refetch: refetchFlightBookingDataData,
+    loading: loadingFlightBookingData,
+  } = useFetch<MealResponse, CreateMealProps[]>({
+    url: "/sys/meals/create-many",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    flightBookingData,
+    refetchFlightBookingDataData,
+    loadingFlightBookingData,
   };
 };
 

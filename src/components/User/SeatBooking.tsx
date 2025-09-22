@@ -418,19 +418,16 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
   return (
     <Box
       sx={{
-        padding: { xs: "12px", sm: "20px", md: "24px" },
-        maxWidth: "1200px",
-        margin: "0 auto",
+        maxWidth: "100%",
         backgroundColor: "#f8f9fa",
         minHeight: "100vh",
         justifyContent: "space-around",
       }}
     >
-      {/* Header Section */}
       <Box
         sx={{
           background: theme.palette.primary.main,
-          borderRadius: "12px",
+          borderRadius: "8px",
           padding: { xs: "16px", sm: "24px" },
           color: "white",
           marginBottom: "24px",
@@ -438,8 +435,6 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
       >
         <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
           <LocalAirport sx={{ fontSize: 28 }} />
-        </Box>
-        <Box>
           {[
             { key: "ALL", label: "All Seats" },
             { key: "VIP", label: "VIP" },
@@ -483,10 +478,9 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
               maxHeight: { xs: "400px", sm: "500px" },
               overflowY: "auto",
               background: "linear-gradient(180deg, #fafafa 0%, #e8f4fd 100%)",
-              //boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-              scrollbarWidth: "none", // Firefox
+              scrollbarWidth: "none",
               "&::-webkit-scrollbar": {
-                display: "none", // Chrome, Safari
+                display: "none",
               },
             }}
           >
@@ -512,18 +506,19 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
               sx={{
                 position: "sticky",
                 top: 0,
-                zIndex: 10,
+                height: "5rem",
+                zIndex: 5,
                 backgroundColor: "#f5f9ff",
                 padding: "8px 0",
                 display: "grid",
-                gridTemplateColumns: "28px repeat(6, 1fr) 28px",
                 alignItems: "center",
+                justifyItems: "center",
                 justifyContent: "center",
                 borderBottom: "2px solid #e0e0e0",
                 mb: 1,
               }}
             >
-              <Box /> {/* Empty for window */}
+              <Box />
               {columns.map((col) => (
                 <Typography
                   key={col}
@@ -651,12 +646,7 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
             {selectedSeats.length > 0 ? (
               <Box>
                 <Stack spacing={1} sx={{ mb: 2 }}>
-                  {selectedSeats.map((id, e) => {
-                    const seat = dataGetSeatByFlightId.list?.find(
-                      (s) => s.id === e
-                    );
-                    if (!seat) return null;
-
+                  {selectedSeats.map((seat) => {
                     const getTypeColor = (type: string) => {
                       switch (type) {
                         case "FIRST":
@@ -672,7 +662,7 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
 
                     return (
                       <Box
-                        key={id.id}
+                        key={seat.id}
                         sx={{
                           display: "flex",
                           alignItems: "center",

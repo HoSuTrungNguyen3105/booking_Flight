@@ -138,7 +138,7 @@ export default function MealList() {
         <Button
           size="small"
           variant="outlined"
-          onClick={() => setSelectedFlightForSeat(params.row)}
+          onClick={() => setSelectedFlightForSeat(params.row.id)}
         >
           Manage Seats
         </Button>
@@ -151,7 +151,7 @@ export default function MealList() {
       <SeatBooking
         flightId={selectedFlightForSeat}
         onSuccess={() => refetchGetFlightData()}
-        seats={selectedFlightForSeat ?? []} // tùy vào API có trả seats hay không
+        // seats={selectedFlightForSeat ?? []} // tùy vào API có trả seats hay không
         loadingFlightData={loadingFlightData}
       />
     );

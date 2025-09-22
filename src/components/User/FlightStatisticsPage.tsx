@@ -96,7 +96,6 @@ const FlightStatisticsPage: React.FC = () => {
     };
   }, [flights]);
 
-  // 1. Dữ liệu cho biểu đồ tròn: Phân bố trạng thái chuyến bay
   const statusCounts = Object.keys(STATUS_COLORS)
     .map((status) => ({
       name: status,
@@ -105,15 +104,15 @@ const FlightStatisticsPage: React.FC = () => {
     }))
     .filter((item) => item.value > 0);
 
-  // 2. Dữ liệu cho biểu đồ tròn: Phân bố theo hãng hàng không
-  const airlines = [...new Set(flights.map((f) => f.airline))];
+  const airlines = [
+    ...new Set(flights.map((f) => f.arrivalAirportRel?.name as string)),
+  ];
   const airlineData = airlines.map((airline) => ({
     name: airline,
-    value: flights.filter((f) => f.airline === airline).length,
+    value: flights.filter((f) => f.arrivalAirportRel?.name === airline).length,
     color: AIRLINE_COLORS[airline.substring(0, 2)] || AIRLINE_COLORS["default"],
   }));
 
-  // 3. Dữ liệu cho biểu đồ scatter: Thời gian khởi hành thực tế so với lịch trình (Độ trễ)
   const delayScatterData = flights
     .filter((f) => f.actualDeparture && f.scheduledDeparture)
     .map((f) => {

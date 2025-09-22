@@ -12,16 +12,6 @@ import {
 } from "@mui/material";
 import { FlightTakeoff, FlightLand, AccessTime } from "@mui/icons-material";
 
-const BookingCard = styled(Card)(({ theme }) => ({
-  marginBottom: theme.spacing(2),
-  borderRadius: "12px",
-  boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-  transition: "transform 0.2s ease-in-out",
-  "&:hover": {
-    transform: "translateY(-4px)",
-  },
-}));
-
 // Types
 interface BookingData {
   id: string;

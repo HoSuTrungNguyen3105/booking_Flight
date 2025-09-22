@@ -18,6 +18,7 @@ import {
   CardContent,
   LinearProgress,
   Stack,
+  type Theme,
 } from "@mui/material";
 import {
   Add as AddIcon,
@@ -32,6 +33,7 @@ import SelectDropdown, {
 } from "../../common/Dropdown/SelectDropdown";
 import InputTextField from "../../common/Input/InputTextField";
 import ChipInput from "../../common/ChipInput";
+import theme from "../../scss/theme";
 
 // Types và enums
 export enum GateStatus {
@@ -56,13 +58,16 @@ const terminalOptions = [
   { value: "T3", label: "Terminal 3 (Hạng thương gia)" },
   { value: "T4", label: "Terminal 4 (Hạng nhất)" },
 ];
-
-const CreateGateForm: React.FC = () => {
+type GateProps = {
+  gateId?: number;
+};
+const CreateGateForm: React.FC = ({ gateId }: GateProps) => {
   const [formData, setFormData] = useState<CreateGateReq>({
     code: "",
     terminalId: "",
     status: GateStatus.AVAILABLE,
   });
+
   const [phones, setPhones] = useState<string[]>([]);
 
   const [errors, setErrors] = useState<
@@ -76,26 +81,23 @@ const CreateGateForm: React.FC = () => {
       value: "AVAILABLE",
       label: "Khả dụng",
       // description: "Cổng sẵn sàng đón chuyến",
-      color: "success",
+      color: theme.palette.info.light,
       icon: <CheckCircleIcon fontSize="small" />,
     },
     {
       value: "OCCUPIED",
       label: "Đang sử dụng",
-      // description: "Cổng đang có chuyến bay",
-      color: "warning",
+      color: theme.palette.warning.main,
     },
     {
       value: "MAINTENANCE",
       label: "Bảo trì",
-      // description: "Cổng đang bảo trì, không thể sử dụng",
-      color: "info",
+      color: theme.palette.info.main,
     },
     {
       value: "CLOSED",
       label: "Đã đóng",
-      // description: "Cổng tạm thời đóng cửa",
-      color: "error",
+      color: theme.palette.error.main,
     },
   ];
 
@@ -146,8 +148,8 @@ const CreateGateForm: React.FC = () => {
 
       const submitData = {
         ...formData,
-        createdAt: Date.now(),
-        updatedAt: Date.now(),
+        // createdAt: Date.now(),
+        // updatedAt: Date.now(),
       };
 
       console.log("Dữ liệu gửi đi:", submitData);
@@ -178,35 +180,51 @@ const CreateGateForm: React.FC = () => {
     setErrors({});
   };
 
-  const getStatusColor = (status: GateStatus) => {
+  type StatusColor = {
+    bg: string;
+    border: string;
+    chip: "success" | "info" | "warning" | "error" | "default";
+  };
+
+  const getStatusColor = (status: GateStatus, theme: Theme): StatusColor => {
     switch (status) {
       case GateStatus.AVAILABLE:
-        return "success";
+        return {
+          bg: theme.palette.success.light,
+          border: theme.palette.success.main,
+          chip: "success",
+        };
       case GateStatus.OCCUPIED:
-        return "warning";
+        return {
+          bg: theme.palette.warning.light,
+          border: theme.palette.warning.main,
+          chip: "warning",
+        };
       case GateStatus.MAINTENANCE:
-        return "info";
+        return {
+          bg: theme.palette.info.light,
+          border: theme.palette.info.main,
+          chip: "info",
+        };
       case GateStatus.CLOSED:
-        return "error";
+        return {
+          bg: theme.palette.error.light,
+          border: theme.palette.error.main,
+          chip: "error",
+        };
       default:
-        return "default";
+        return {
+          bg: theme.palette.grey[100],
+          border: theme.palette.grey[300],
+          chip: "default",
+        };
     }
   };
 
-  const getStatusInfo = (status: GateStatus) => {
-    const option = gateStatusOptions.find((opt) => opt.value === status);
-    return {
-      text: option?.label || status,
-      color: option?.color || "default",
-      // description: option?.description || ""
-    };
-  };
-
-  const statusInfo = getStatusInfo(formData.status || GateStatus.AVAILABLE);
+  const statusColor = getStatusColor(formData.status as GateStatus, theme);
 
   return (
     <Box sx={{ maxWidth: "100%" }}>
-      {/* Header */}
       <Box sx={{ display: "flex", alignItems: "center", mb: 3, gap: 2 }}>
         <Box
           sx={{
@@ -236,15 +254,16 @@ const CreateGateForm: React.FC = () => {
         </Box>
       </Box>
 
-      {/* Info Alert */}
       <Alert
         severity="info"
-        sx={{
+        sx={(theme) => ({
           mb: 3,
           borderRadius: 2,
           alignItems: "center",
-        }}
-        icon={<InfoIcon />}
+          backgroundColor: theme.palette.primary.light,
+          color: theme.palette.text.primary,
+        })}
+        icon={<InfoIcon color="primary" />}
       >
         <Typography variant="body2">
           Mã cổng phải là duy nhất và tuân theo quy ước đặt tên. Ví dụ:{" "}
@@ -279,7 +298,6 @@ const CreateGateForm: React.FC = () => {
             value={phones}
             onChange={setPhones}
           />
-          {/* Mã cổng */}
           <Grid size={6}>
             <FormControl fullWidth>
               <InputTextField
@@ -305,7 +323,6 @@ const CreateGateForm: React.FC = () => {
             </FormControl>
           </Grid>
 
-          {/* Trạng thái */}
           <Grid size={6}>
             <FormControl fullWidth>
               <SelectDropdown
@@ -318,27 +335,23 @@ const CreateGateForm: React.FC = () => {
             </FormControl>
           </Grid>
 
-          {/* Status Preview Card */}
           <Grid size={12}>
             <Card
               variant="outlined"
               sx={{
-                bgcolor: `${statusInfo.color}.50`,
-                borderColor: `${statusInfo.color}.100`,
+                bgcolor: statusColor.bg,
+                borderColor: statusColor.border,
                 borderRadius: 2,
               }}
             >
               <CardContent sx={{ py: 2 }}>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
                   <Chip
-                    label={statusInfo.text}
-                    color={statusInfo.color as any}
+                    // label={statusInfo.text}
+                    color={statusColor.chip}
                     variant="filled"
                     size="small"
                   />
-                  {/* <Typography variant="body2" color="text.secondary">
-                      {statusInfo.description}
-                    </Typography> */}
                 </Box>
               </CardContent>
             </Card>

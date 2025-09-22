@@ -12,13 +12,13 @@ type LatLngTupleProps = {
   arrivalTime?: LatLngTuple;
 };
 const FlightPath = ({ departureTime, arrivalTime }: LatLngTupleProps) => {
-  // VD: toạ độ từ Hà Nội (Noi Bai) → TP.HCM (Tan Son Nhat)
   const departure: LatLngTuple = [21.2187, 105.8042];
   const arrival: LatLngTuple = [10.8189, 106.6519]; // SGN
+
   console.log("time", departureTime, arrivalTime);
   return (
     <MapContainer
-      center={[16, 106] as [number, number]} // ép thành tuple
+      center={[16, 106] as [number, number]}
       zoom={5}
       style={{ height: "400px", width: "100%" }}
     >

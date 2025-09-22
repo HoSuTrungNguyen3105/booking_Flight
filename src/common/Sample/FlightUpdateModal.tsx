@@ -39,7 +39,7 @@ import {
   useCreateFlight,
   useFlightUpdate,
 } from "../../components/Api/usePostApi";
-import type { DataFlight, Seat } from "../../utils/type";
+import type { DataFlight } from "../../utils/type";
 import { useToast } from "../../context/ToastContext";
 
 export type FlightFormData = Omit<DataFlight, "meals">;
@@ -172,9 +172,6 @@ const FlightUpdateModal = ({
           priceBusiness: formData.priceBusiness,
           priceFirst: formData.priceFirst,
           gateId: formData.gateId,
-          airline: formData.airline,
-          origin: formData.origin,
-          destination: formData.destination,
           terminal: formData.terminal,
           isCancelled: formData.isCancelled,
           delayMinutes: formData.delayMinutes,
@@ -211,9 +208,6 @@ const FlightUpdateModal = ({
           priceFirst: formData.priceFirst,
           // gateId: "",
           terminal: formData.terminal,
-          airline: formData.airline,
-          origin: formData.origin,
-          destination: formData.destination,
         };
 
         const response = await refetchCreateFlightData(createData);
