@@ -48,6 +48,7 @@ import SendEmailToUsers from "../common/Setting/SendEmailToUsers";
 import CreateGateForm from "../components/User/CreateGateForm";
 import MealForm from "../common/Sample/MealForm";
 import FlightStatisticsPage from "../components/User/FlightStatisticsPage";
+import AirportSampleDiagram from "../components/User/AirportSampleDiagram";
 
 const routes = [
   {
@@ -170,6 +171,10 @@ const routes = [
       {
         path: "flightmeals",
         element: <MealList />,
+      },
+      {
+        path: "AirportSampleDiagram",
+        element: <AirportSampleDiagram />,
       },
       {
         path: ROUTE_PATHS.FOOD.replace("/", ""),

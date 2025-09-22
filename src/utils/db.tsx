@@ -14,6 +14,7 @@ type SideBarValueTypes =
   | "ticket"
   | "bookseat"
   | "manage/message"
+  | "CreateGateForm"
   | "user"
   | "message"
   | "flightSchedule"
@@ -96,6 +97,11 @@ export const menuData: MenuSection[] = [
             id: "setting",
             label: "Bảng mẫu",
             icon: <OtherHousesTwoToneIcon />,
+          },
+          {
+            id: "CreateGateForm",
+            label: "CreateGateForm",
+            icon: <GppBadIcon />,
           },
         ],
       },

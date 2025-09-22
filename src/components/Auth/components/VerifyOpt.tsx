@@ -1,6 +1,6 @@
 import { memo, useCallback, useState } from "react";
 import OTPInput from "../../../common/Input/OTPInput";
-import { Box, Button, Paper, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import type { EmailProps } from "../../../utils/type";
 import { useVerifyOTPCode } from "../../Api/usePostApi";
 import MfaSetup from "../MFA";

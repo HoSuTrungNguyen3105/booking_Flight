@@ -34,7 +34,7 @@ const NavContainer = styled(Box)({
   flexDirection: "column",
 });
 
-const Sidebar = ({ children }: PropsWithChildren) => {
+const SidebarAdmin = ({ children }: PropsWithChildren) => {
   const asideRef = useRef<HTMLDivElement>(null);
   const [sidebarWidth, setSidebarWidth] = useState<number>(
     Number(localStorage.getItem("sidebarWidth")) || 250
@@ -95,4 +95,4 @@ const Sidebar = ({ children }: PropsWithChildren) => {
   );
 };
 
-export default memo(Sidebar);
+export default memo(SidebarAdmin);

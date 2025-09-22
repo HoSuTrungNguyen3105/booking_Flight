@@ -171,7 +171,10 @@ const FlightUpdateModal = ({
           priceEconomy: formData.priceEconomy,
           priceBusiness: formData.priceBusiness,
           priceFirst: formData.priceFirst,
-          gate: formData.gateId,
+          gateId: formData.gateId,
+          airline: formData.airline,
+          origin: formData.origin,
+          destination: formData.destination,
           terminal: formData.terminal,
           isCancelled: formData.isCancelled,
           delayMinutes: formData.delayMinutes,
@@ -265,8 +268,6 @@ const FlightUpdateModal = ({
       label: item.code,
     })
   );
-
-  console.log("ss", formData);
 
   const optionWay = [
     {
@@ -620,7 +621,10 @@ const FlightUpdateModal = ({
           <Button
             onClick={() => setActiveStep((prev) => prev + 1)}
             variant="contained"
-          />
+            size="medium"
+          >
+            Tiếp theo
+          </Button>
         ) : (
           <Button
             onClick={handleSubmit}

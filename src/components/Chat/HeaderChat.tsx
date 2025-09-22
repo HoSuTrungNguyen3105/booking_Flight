@@ -48,6 +48,7 @@ import {
   MarkEmailUnread as UnreadIcon,
 } from "@mui/icons-material";
 import theme from "../../scss/theme";
+import InputTextField from "../../common/Input/InputTextField";
 
 // Define types
 interface User {
@@ -218,6 +219,7 @@ const ChatApp = () => {
     useState<null | HTMLElement>(null);
   const [filterUnread, setFilterUnread] = useState(false);
   const [filterPinned, setFilterPinned] = useState(false);
+  const [searchValue, setSearchValue] = useState([]);
 
   const conversationsWithUsers = mockConversations.map((conv) => {
     const user = mockUsers.find((u) => u.id === conv.userId);
@@ -404,23 +406,9 @@ const ChatApp = () => {
               borderColor: "divider",
             }}
           >
-            <TextField
-              fullWidth
+            <InputTextField
+              // value={setSearchValue }
               placeholder="Tìm kiếm cuộc trò chuyện..."
-              size="small"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon color="action" />
-                  </InputAdornment>
-                ),
-              }}
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: 2,
-                  backgroundColor: alpha(theme.palette.common.white, 0.9),
-                },
-              }}
             />
           </Box>
 

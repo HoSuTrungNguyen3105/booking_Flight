@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { memo, useState } from "react";
 import { Box, Button, Card, CardContent, Typography } from "@mui/material";
 import { useRequestUnlockAccount } from "../Api/usePostApi";
 import InputTextArea from "../../common/Input/InputTextArea";
@@ -6,7 +6,8 @@ import InputTextArea from "../../common/Input/InputTextArea";
 const RequestUnlock = ({
   userId,
   onClose,
-}: {
+}: // onClose,
+{
   userId: number;
   onClose: () => void;
 }) => {
@@ -21,13 +22,13 @@ const RequestUnlock = ({
     setMessage(null);
     try {
       const res = await refetchRequestUnlockAccount({ userId, reason });
-      if (res?.resultCode !== "00") {
+      if (res?.resultCode === "00") {
         setMessage(res?.resultMessage || null);
-        setError(null);
+        // setError(null);
+        onClose();
       } else {
         setMessage(res?.resultMessage || null);
         setError(null);
-        onClose();
       }
     } catch (error) {
       setMessage("Có lỗi xảy ra, vui lòng thử lại.");
@@ -50,7 +51,7 @@ const RequestUnlock = ({
             Vui lòng nhập lý do để gửi yêu cầu mở khóa tài khoản.
           </Typography>
         </Box>
-        <form onSubmit={handleSubmit} className="space-y-3">
+        <Box component={"form"} onSubmit={handleSubmit}>
           <InputTextArea
             placeholder="Nhập lý do..."
             value={reason}
@@ -66,7 +67,7 @@ const RequestUnlock = ({
           >
             {loading ? "Đang gửi..." : "Gửi yêu cầu"}
           </Button>
-        </form>
+        </Box>
 
         {message && (
           <Box sx={{ textAlign: "start", mt: 2 }}>
@@ -79,4 +80,4 @@ const RequestUnlock = ({
     </Card>
   );
 };
-export default RequestUnlock;
+export default memo(RequestUnlock);

@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useRef } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
-import AsideContainer from "./Sidebar";
+import AsideContainer from "./SidebarAdmin";
 import {
   Box,
   List,

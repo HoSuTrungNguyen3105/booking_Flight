@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo, memo } from "react";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { koKR, enUS } from "@mui/x-date-pickers/locales";
@@ -7,8 +7,8 @@ import moment, { type Moment } from "moment";
 
 interface Props {
   language: "vn" | "en" | "kr" | "jp";
-  onChange?: (value: number) => void; // callback để trả về decimal timestamp (20,3)
-  value?: number; // Giá trị decimal (20,3) đại diện cho timestamp
+  onChange?: (value: number) => void;
+  value?: number;
 }
 
 const DateTimePickerComponent: React.FC<Props> = ({
@@ -19,99 +19,72 @@ const DateTimePickerComponent: React.FC<Props> = ({
   const [date, setDate] = useState<Moment | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
 
+  // Memoize locale setup
   useEffect(() => {
-    moment.locale(language);
+    if (moment.locale() !== language) {
+      moment.locale(language);
+    }
   }, [language]);
 
+  // Optimized initialization logic
   useEffect(() => {
-    if (!isInitialized && value !== undefined && value !== null && value > 0) {
+    if (isInitialized) return;
+
+    let initialDate: Moment | null = null;
+
+    if (value !== undefined && value !== null && value > 0) {
       try {
         const momentDate = moment(value * 1000);
-        if (momentDate.isValid()) {
-          setDate(momentDate);
-          setIsInitialized(true);
-        } else {
-          console.warn("Invalid date value:", value);
-          setDate(moment());
-          setIsInitialized(true);
-        }
+        initialDate = momentDate.isValid() ? momentDate : moment();
       } catch (error) {
         console.error("Error parsing date:", error);
-        setDate(moment());
-        setIsInitialized(true);
+        initialDate = moment();
       }
+    } else {
+      initialDate = moment();
     }
-  }, [value, isInitialized]);
 
-  useEffect(() => {
-    if (
-      !isInitialized &&
-      (value === 0 || value === null || value === undefined)
-    ) {
-      setDate(moment());
-      setIsInitialized(true);
-    }
-  }, [value, isInitialized]);
+    setDate(initialDate);
+    setIsInitialized(true);
+  }, [value, isInitialized]); // Removed unnecessary dependencies
 
-  // Sửa lại hàm handleChange để phù hợp với type definition mới
-  // const handleChange = (value: Moment | null, context: any) => {
-  //   setDate(value);
+  // Memoized callback for onChange
+  const handleChange = useCallback(
+    (newValue: unknown) => {
+      const momentValue = newValue as Moment | null;
+      setDate(momentValue);
 
-  //   if (value && onChange) {
-  //     try {
-  //       const timestampMs = value.valueOf();
-  //       const decimalValue = parseFloat((timestampMs / 1000).toFixed(3));
+      if (!onChange) return;
 
-  //       if (!isNaN(decimalValue) && isFinite(decimalValue)) {
-  //         onChange(decimalValue);
-  //       } else {
-  //         console.error("Invalid decimal value calculated:", decimalValue);
-  //         onChange(0);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error in handleChange:", error);
-  //       onChange(0);
-  //     }
-  //   } else if (onChange) {
-  //     onChange(0);
-  //   }
-  // };
-
-  const handleChange = (newValue: unknown) => {
-    const momentValue = newValue as Moment | null;
-    setDate(momentValue);
-
-    if (momentValue && onChange) {
       try {
-        const timestampMs = momentValue.valueOf();
-        const decimalValue = parseFloat((timestampMs / 1000).toFixed(3));
-
-        if (!isNaN(decimalValue) && isFinite(decimalValue)) {
+        if (momentValue && momentValue.isValid()) {
+          const timestampMs = momentValue.valueOf();
+          const decimalValue = Number((timestampMs / 1000).toFixed(3));
           onChange(decimalValue);
         } else {
           onChange(0);
         }
       } catch (error) {
+        console.error("Error in handleChange:", error);
         onChange(0);
       }
-    } else if (onChange) {
-      onChange(0);
-    }
-  };
+    },
+    [onChange]
+  );
+
+  // Memoize locale text to prevent unnecessary re-renders
+  const localeText = useMemo(() => {
+    return language === "kr"
+      ? koKR.components.MuiLocalizationProvider.defaultProps.localeText
+      : enUS.components.MuiLocalizationProvider.defaultProps.localeText;
+  }, [language]);
 
   if (!isInitialized) {
     return <TextField label="Loading date..." disabled fullWidth />;
   }
 
   return (
-    <LocalizationProvider
-      dateAdapter={AdapterMoment}
-      localeText={
-        language === "kr"
-          ? koKR.components.MuiLocalizationProvider.defaultProps.localeText
-          : enUS.components.MuiLocalizationProvider.defaultProps.localeText
-      }
-    >
+    <LocalizationProvider dateAdapter={AdapterMoment} localeText={localeText}>
       <Box display="flex" gap={2}>
         <DatePicker
           value={date}
@@ -122,8 +95,8 @@ const DateTimePickerComponent: React.FC<Props> = ({
               <TextField
                 {...params}
                 fullWidth
-                error={!date || !date.isValid()}
-                helperText={!date || !date.isValid() ? "Invalid date" : ""}
+                error={!date?.isValid()}
+                helperText={!date?.isValid() ? "Invalid date" : ""}
               />
             ),
           }}
@@ -133,4 +106,4 @@ const DateTimePickerComponent: React.FC<Props> = ({
   );
 };
 
-export default DateTimePickerComponent;
+export default memo(DateTimePickerComponent);
