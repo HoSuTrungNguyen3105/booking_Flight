@@ -11,6 +11,7 @@ import FindAccount from "./components/FindAccount";
 import TabPanel, { type ITabItem } from "../../common/Setting/TabPanel";
 import theme from "../../scss/theme";
 import { useNavigate } from "react-router-dom";
+import { Loading } from "../../common/Loading/Loading";
 
 interface ILoginForm {
   email: string;
@@ -199,6 +200,10 @@ export const LoginPage: React.FC = () => {
 
   if (mfaEmail) {
     return <MfaSetup email={mfaEmailValue} />;
+  }
+
+  if (loading) {
+    return <Loading />;
   }
 
   return (

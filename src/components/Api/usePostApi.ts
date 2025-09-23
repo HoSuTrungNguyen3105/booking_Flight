@@ -74,6 +74,39 @@ export const useCreateFlight = () => {
     refetchCreateFlightData,
   };
 };
+
+export type CreateAircraftDto = {
+  code: string;
+  model: string;
+  range: number;
+};
+export const useCreateAircraftBatchFlight = () => {
+  const { refetch: refetchCreateAircraftBatchFlightData } = useFetch<
+    FlightListApiResponse,
+    CreateAircraftDto[]
+  >({
+    url: "/sys/flights/aircraft/batch",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchCreateAircraftBatchFlightData,
+  };
+};
+
+export const useDeleteAircraftFlight = (code: string) => {
+  const { refetch: refetchDeleteAircraftFlight } = useFetch<
+    ResponseMessage,
+    void
+  >({
+    url: `/sys/flights/aircraft/remove/${code}`,
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchDeleteAircraftFlight,
+  };
+};
 export const useGetFlightNo = () => {
   const { data: getFlightNoData, refetch: refetchGetFlightNoData } = useFetch<
     ResponseMessage,

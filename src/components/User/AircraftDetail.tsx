@@ -1,5 +1,5 @@
 type AircraftProps = {
-  aircraft: number;
+  aircraft: string;
 };
 const AircraftDetail = ({ aircraft }: AircraftProps) => {
   return <div>{aircraft}</div>;

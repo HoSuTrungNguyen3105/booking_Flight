@@ -3,7 +3,6 @@ import {
   Button,
   Typography,
   FormControl,
-  MenuItem,
   Switch,
   FormControlLabel,
 } from "@mui/material";
@@ -12,7 +11,7 @@ import AddIcon from "@mui/icons-material/Add";
 import BaseModal from "../../common/Modal/BaseModal";
 import InputTextField from "../../common/Input/InputTextField";
 import SelectDropdown from "../../common/Dropdown/SelectDropdown";
-import type { SeatUpdateProps } from "../Api/usePostApi";
+import type { SeatTypeValue, SeatUpdateProps } from "../Api/usePostApi";
 import Android12Switch from "../../common/Switch/Switch";
 
 interface IModalStatisticalDataLearningProps {
@@ -30,7 +29,6 @@ const SeatManagementModal = ({
   selectedSeats,
   onUpdate,
 }: IModalStatisticalDataLearningProps) => {
-  // state cho tất cả trường
   const [type, setType] = useState("ECONOMY");
   const [position, setPosition] = useState("WINDOW");
   const [seatRow, setSeatRow] = useState("");
@@ -64,10 +62,7 @@ const SeatManagementModal = ({
   const handleUpdate = () => {
     onUpdate({
       seatIds: selectedSeats?.seatIds || [],
-      type: type as any,
-      position: position as any,
-      seatRow,
-      seatNumber,
+      type: type as SeatTypeValue,
       price,
       isBooked,
       isAvailable,
@@ -96,7 +91,7 @@ const SeatManagementModal = ({
     return (
       <Box sx={{ width: "40rem", pt: 2, maxHeight: "300px" }}>
         <Typography variant="body2" sx={{ mb: 2 }}>
-          Updating seats: {selectedSeats?.seatIds?.join(", ") as number[]}
+          Updating seats: {selectedSeats?.seatIds?.join(", ")}
         </Typography>
 
         {/* Type */}

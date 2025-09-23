@@ -3,14 +3,17 @@ import { Box, Button, Typography, Stack } from "@mui/material";
 import { Add, Delete } from "@mui/icons-material";
 import type { Aircraft } from "../../../common/Setting/type";
 import InputTextField from "../../../common/Input/InputTextField";
+import { useCreateAircraftBatchFlight } from "../../Api/usePostApi";
+import { useToast } from "../../../context/ToastContext";
 
 const AircraftBatchCreator = () => {
   const [aircrafts, setAircrafts] = useState<Aircraft[]>([
     { code: "", model: "", range: 0 },
   ]);
-
+  const toast = useToast();
   const [loading, setLoading] = useState(false);
-
+  const { refetchCreateAircraftBatchFlightData } =
+    useCreateAircraftBatchFlight();
   const addAircraft = () => {
     setAircrafts([...aircrafts, { code: "", model: "", range: 0 }]);
   };
@@ -41,28 +44,20 @@ const AircraftBatchCreator = () => {
       (ac) => !ac.code || !ac.model || !ac.range
     );
     if (invalidAircrafts.length === 0) {
-      console.log(" no invalidAircrafts", invalidAircrafts);
+      console.log("No invalidAircrafts", invalidAircrafts);
       setLoading(false);
       return;
     }
 
     try {
-      const response = await fetch(
-        "http://localhost:3000/sys/flights/aircraft/batch",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(aircrafts),
-        }
-      );
-
-      const result = await response.json();
-
-      if (response.ok) {
+      const response = await refetchCreateAircraftBatchFlightData(aircrafts);
+      console.log(aircrafts);
+      if (response?.resultCode === "00") {
+        toast(response?.resultMessage as string);
         setAircrafts([{ code: "", model: "", range: 0 }]); // Reset form
       } else {
+        toast(response?.resultMessage as string);
+        console.log(response);
       }
     } catch (error) {
     } finally {

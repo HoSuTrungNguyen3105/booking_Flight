@@ -9,6 +9,9 @@ import {
   FormGroup,
   Divider,
   Button,
+  IconButton,
+  Card,
+  Stack,
 } from "@mui/material";
 import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import AccessibilityNewIcon from "@mui/icons-material/AccessibilityNew";
@@ -18,8 +21,9 @@ import { useGetAllInfoFlightByIDData } from "../../Api/useGetApi";
 import DetailSection, { type IDetailItem } from "../../../common/DetailSection";
 import ButtonSeat from "./ButtonSeat";
 import type { Seat } from "../../../utils/type";
-import { LocalAirport } from "@mui/icons-material";
+import { Chair, LocalAirport, RestartAlt } from "@mui/icons-material";
 import { useSeatUpdateByIds, type SeatUpdateProps } from "../../Api/usePostApi";
+import SeatManagementModal from "../../User/SeatManagementModal";
 
 type FlightIdProps = {
   id: number;
@@ -152,7 +156,7 @@ const SeatLayout: React.FC<FlightIdProps> = ({ id }) => {
 
   const handleUpdateSeatsByIds = useCallback(async () => {
     const res = await refetchUpdateSeatByIds(updateSeat);
-  }, []);
+  }, [refetchUpdateSeatByIds]);
 
   const seatOptionList = [
     { name: "available", label: "Available" },
@@ -183,38 +187,24 @@ const SeatLayout: React.FC<FlightIdProps> = ({ id }) => {
       const exists = prev.find((s) => s.id === seat.id);
 
       if (exists) {
-        // Bỏ chọn ghế nếu đã chọn
         return prev.filter((s) => s.id !== seat.id);
       }
 
       if (maxSelectSeats === 1) {
-        // Chỉ được chọn 1 ghế
         return [seat];
       } else {
-        // Chọn nhiều ghế
         if (prev.length < maxSelectSeats) {
           return [...prev, seat];
         } else {
-          return prev; // đạt giới hạn, không thêm ghế nữa
+          return prev;
         }
       }
     });
   };
 
-  // const handleSelectSeat = (seat: Seat) => {
-  //   setSelectedSeats((prev) => {
-  //     const exists = prev.find((s) => s.id === seat.id);
-  //     if (exists) {
-  //       return prev.filter((s) => s.id !== seat.id); // bỏ chọn
-  //     }
-  //     return [...prev, seat]; // thêm chọn
-  //   });
-  // };
-
   return (
     <Box sx={{ maxWidth: "100%" }}>
       <Box sx={{ borderRadius: 2, p: 1 }}>
-        {/* Header Section */}
         <Box
           sx={{
             display: "flex",

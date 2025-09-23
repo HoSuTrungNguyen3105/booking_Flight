@@ -8,9 +8,6 @@ import {
 import { useTranslation } from "react-i18next";
 import { Checkbox } from "../Checkbox/Checkbox";
 
-export type TInfoTableTemp = {
-  [key: string]: any;
-};
 export type HeaderColumn = {
   label: string;
   required?: boolean;

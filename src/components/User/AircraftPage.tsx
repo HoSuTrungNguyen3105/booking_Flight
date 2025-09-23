@@ -7,21 +7,39 @@ import {
   Grid,
 } from "@mui/material";
 import { useGetAircraftCode } from "../Api/useGetApi";
-import { memo, useState } from "react";
+import { memo, useCallback, useState } from "react";
 import AircarftDetail from "./AircraftDetail";
+import { useDeleteAircraftFlight } from "../Api/usePostApi";
+import DialogConfirm from "../../common/Modal/DialogConfirm";
 
 const AircraftPage = () => {
-  const { getAircraftCodeData } = useGetAircraftCode();
-  const [aircraftCodeState, setAircraftCodeState] = useState<number>(0);
+  const { getAircraftCodeData, refetchGetAircraftCodeData } =
+    useGetAircraftCode();
+  const [aircraftCodeState, setAircraftCodeState] = useState<string>("");
   const [pageDetail, setPageDetail] = useState(false);
-  const handleViewSeats = (code: number) => {
+
+  const [toggleOpenModal, setToggleOpenModal] = useState(false);
+  const [selectedCode, setSelectedCode] = useState<string>(""); // Lưu code đang muốn xóa
+
+  const { refetchDeleteAircraftFlight } = useDeleteAircraftFlight(selectedCode);
+
+  const handleViewSeats = (code: string) => {
     setAircraftCodeState(code);
     setPageDetail(true);
   };
 
+  const handleDeleteAircraft = useCallback(async () => {
+    setToggleOpenModal(false);
+    if (!selectedCode) return;
+
+    await refetchDeleteAircraftFlight();
+    await refetchGetAircraftCodeData();
+  }, [refetchDeleteAircraftFlight, selectedCode]);
+
   if (pageDetail) {
     return <AircarftDetail aircraft={aircraftCodeState} />;
   }
+
   return (
     <Box p={3}>
       <Typography variant="h5" mb={3} fontWeight="bold">
@@ -58,6 +76,18 @@ const AircraftPage = () => {
                 >
                   <Button
                     variant="contained"
+                    color="error"
+                    size="small"
+                    onClick={() => {
+                      setSelectedCode(aircraft.code);
+                      setToggleOpenModal(true);
+                    }}
+                  >
+                    Delete
+                  </Button>
+
+                  <Button
+                    variant="contained"
                     size="small"
                     onClick={() => handleViewSeats(aircraft.code)}
                   >
@@ -69,6 +99,17 @@ const AircraftPage = () => {
           </Grid>
         ))}
       </Grid>
+
+      <DialogConfirm
+        icon="warning"
+        cancelLabel="Exit"
+        open={toggleOpenModal}
+        onClose={() => setToggleOpenModal(false)}
+        onConfirm={handleDeleteAircraft}
+        title="Xác nhận"
+        message="Bạn có chắc chắn muốn thực hiện hành động này không?"
+        confirmLabel="Xác nhận"
+      />
     </Box>
   );
 };

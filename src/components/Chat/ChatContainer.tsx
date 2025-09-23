@@ -1,14 +1,10 @@
 import React, { memo, useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import SearchUser from "./SearchUser";
 import MessageList, { type Message } from "./MessageList";
 import MessageInput from "./MessageInput";
-import { alpha, Box, Paper } from "@mui/material";
-import type { BaseUserData } from "../../utils/type";
+import { alpha, Box } from "@mui/material";
 import theme from "../../scss/theme";
-import ChatSidebar from "./ChatSidebar";
 import { useChat } from "../../context/ChatContext";
 import { useSocket } from "../../context/use[custom]/useSocket";
 
@@ -20,18 +16,7 @@ const ChatContainer: React.FC = () => {
   const { currentUser, selectedUser } = useChat();
 
   useEffect(() => {
-    // const token = localStorage.getItem("token");
-    // if (!token) navigate("/");
-    // axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-
-    // axios
-    //   .get("http://localhost:4000/current-user")
-    //   .then((response) => setCurrentUser(response.data))
-    //   .catch((error) => console.error(error));
-
-    // Listen for new messages
     socket.on("newMessage", (message: Message) => {
-      //   if (message.senderId === currentUser?.id) return; // Ignore messages sent by the current user
       setMessages((prevMessages) => [...prevMessages, message]);
     });
 
@@ -51,7 +36,6 @@ const ChatContainer: React.FC = () => {
     },
   });
 
-  // Dữ liệu mock theo cấu trúc API của bạn
   const mockMessages: Message[] = [
     {
       id: 1,
@@ -131,22 +115,15 @@ const ChatContainer: React.FC = () => {
     },
   ];
 
-  // console.log("incomingMessage", incomingMessage);
-
-  // Hook để gửi tin nhắn
   const { emit: sendMessage, loading: sending } = useSocket({
     event: "send_message",
     autoListen: false,
   });
 
-  // Hook để nhận danh sách người dùng online
   useSocket<number[]>({
     event: "online_users",
     autoListen: true,
-    onSuccess: (userIds) => {
-      // Cập nhật danh sách người dùng online trong context
-      // setOnlineUsers(userIds); // Sẽ thực hiện trong useEffect riêng
-    },
+    onSuccess: (userIds) => {},
   });
 
   // Fetch tin nhắn cũ khi chọn user khác

@@ -1,18 +1,14 @@
 import React from "react";
 import {
   Box,
-  Paper,
   Typography,
   Grid,
-  Card,
   CardContent,
   LinearProgress,
   useTheme,
-  styled,
 } from "@mui/material";
 import { FlightTakeoff, FlightLand, AccessTime } from "@mui/icons-material";
 
-// Types
 interface BookingData {
   id: string;
   airline: string;

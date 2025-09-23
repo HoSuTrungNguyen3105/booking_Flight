@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Box,
   Card,
@@ -29,10 +29,20 @@ import {
 } from "@mui/icons-material";
 import { useGetAllAirportInfo } from "../../Api/useGetApi";
 import type { AirportCodeProps } from "../../../utils/type";
+import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
+import TableSection from "../../../common/Setting/TableSection";
 
 const AirportManagement: React.FC = () => {
   const { getAirportInfo } = useGetAllAirportInfo();
   const [airports, setAirports] = useState<AirportCodeProps[]>([]);
+  const rowAirportsGrid = useMemo(
+    () =>
+      getAirportInfo?.list?.map((item) => ({
+        ...item,
+        id: item.code,
+      })) || [],
+    [getAirportInfo]
+  );
   useEffect(() => {
     if (getAirportInfo?.list) {
       setAirports(getAirportInfo.list);
@@ -66,28 +76,107 @@ const AirportManagement: React.FC = () => {
     setOpenDialog(true);
   };
 
+  const columns: GridColDef[] = [
+    {
+      field: "code",
+      headerName: "Mã sân bay",
+      flex: 1,
+      renderCell: (params: GridRenderCellParams) => (
+        <Chip
+          label={params.value}
+          color="primary"
+          variant="filled"
+          sx={{ fontWeight: "bold", color: "white" }}
+        />
+      ),
+    },
+    { field: "name", headerName: "Tên sân bay", flex: 2 },
+    { field: "city", headerName: "Thành phố", flex: 1 },
+    {
+      field: "country",
+      headerName: "Quốc gia",
+      flex: 1.5,
+      renderCell: (params: GridRenderCellParams) => (
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <Typography variant="body2">
+            {getCountryFlag(params.value)}
+          </Typography>
+          <Typography variant="body1">{params.value}</Typography>
+        </Box>
+      ),
+    },
+    {
+      field: "terminalCount",
+      headerName: "Số terminal",
+      flex: 1,
+      renderCell: (params: GridRenderCellParams) => (
+        <Chip
+          label={params.value}
+          color={params.value > 0 ? "secondary" : "default"}
+        />
+      ),
+    },
+    {
+      field: "createdAt",
+      headerName: "Ngày tạo",
+      flex: 1.5,
+      renderCell: (params: GridRenderCellParams) => (
+        <Box sx={{ display: "flex", flexDirection: "column" }}>
+          <Typography variant="caption">
+            Tạo: {new Date(params.value as string).toLocaleDateString("vi-VN")}
+          </Typography>
+          {params.row.updatedAt && (
+            <Typography variant="caption" color="text.secondary">
+              Sửa: {new Date(params.row.updatedAt).toLocaleDateString("vi-VN")}
+            </Typography>
+          )}
+        </Box>
+      ),
+    },
+    {
+      field: "actions",
+      headerName: "Thao tác",
+      flex: 1,
+      sortable: false,
+      filterable: false,
+      renderCell: (params: GridRenderCellParams) => (
+        <Box sx={{ display: "flex", gap: 1 }}>
+          <Tooltip title="Chỉnh sửa">
+            <IconButton
+              color="primary"
+              onClick={() => handleEdit(params.row)}
+              size="small"
+            >
+              <EditIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Xóa">
+            <IconButton
+              color="error"
+              onClick={() => handleDelete(params.row.code)}
+              size="small"
+            >
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        </Box>
+      ),
+    },
+  ];
+
   const handleSave = () => {
     if (editingAirport) {
-      // Update logic
       setAirports((prev) =>
         prev.map((a) =>
           a.code === editingAirport.code
             ? {
                 ...a,
                 ...formData,
-                // updatedAt: new Date().toISOString().split("T")[0],
               }
             : a
         )
       );
     } else {
-      // Create logic
-      //   const newAirport: Airport = {
-      //     ...formData,
-      //     terminalCount: 0,
-      //     // createdAt: new Date().toTimeString(),
-      //   };
-      //   setAirports((prev) => [...prev, newAirport]);
     }
     setOpenDialog(false);
   };
@@ -131,117 +220,14 @@ const AirportManagement: React.FC = () => {
         </Button>
       </Box>
 
-      <Card elevation={3}>
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="airport table">
-            <TableHead sx={{ bgcolor: "primary.main" }}>
-              <TableRow>
-                <TableCell sx={{ color: "white", fontWeight: "bold" }}>
-                  Mã sân bay
-                </TableCell>
-                <TableCell sx={{ color: "white", fontWeight: "bold" }}>
-                  Tên sân bay
-                </TableCell>
-                <TableCell sx={{ color: "white", fontWeight: "bold" }}>
-                  Thành phố
-                </TableCell>
-                <TableCell sx={{ color: "white", fontWeight: "bold" }}>
-                  Quốc gia
-                </TableCell>
-                <TableCell sx={{ color: "white", fontWeight: "bold" }}>
-                  Số terminal
-                </TableCell>
-                <TableCell sx={{ color: "white", fontWeight: "bold" }}>
-                  Ngày tạo
-                </TableCell>
-                <TableCell sx={{ color: "white", fontWeight: "bold" }}>
-                  Thao tác
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {airports.map((airport) => (
-                <TableRow key={airport.code} hover>
-                  <TableCell>
-                    <Chip
-                      label={airport.code}
-                      color="primary"
-                      variant="filled"
-                      sx={{ fontWeight: "bold", color: "white" }}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="body1" fontWeight="medium">
-                      {airport.name}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="body1">{airport.city}</Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                      <Typography variant="body2">
-                        {getCountryFlag(airport.country)}
-                      </Typography>
-                      <Typography variant="body1">{airport.country}</Typography>
-                    </Box>
-                  </TableCell>
-                  <TableCell>
-                    {/* <Chip
-                      label={airport.terminalCount}
-                      color={
-                        airport.terminalCount > 0 ? "secondary" : "default"
-                      }
-                    /> */}
-                  </TableCell>
-                  <TableCell>
-                    <Box sx={{ display: "flex", flexDirection: "column" }}>
-                      <Typography variant="caption">
-                        Tạo:{" "}
-                        {new Date(airport.createdAt).toLocaleDateString(
-                          "vi-VN"
-                        )}
-                      </Typography>
-                      {airport.updatedAt && (
-                        <Typography variant="caption" color="text.secondary">
-                          Sửa:{" "}
-                          {new Date(airport.updatedAt).toLocaleDateString(
-                            "vi-VN"
-                          )}
-                        </Typography>
-                      )}
-                    </Box>
-                  </TableCell>
-                  <TableCell>
-                    <Box sx={{ display: "flex", gap: 1 }}>
-                      <Tooltip title="Chỉnh sửa">
-                        <IconButton
-                          color="primary"
-                          onClick={() => handleEdit(airport)}
-                          size="small"
-                        >
-                          <EditIcon />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Xóa">
-                        <IconButton
-                          color="error"
-                          onClick={() => handleDelete(airport.code)}
-                          size="small"
-                          //   disabled={airport.terminalCount > 0}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </Tooltip>
-                    </Box>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Card>
-
+      <TableSection
+        rows={rowAirportsGrid}
+        columns={columns}
+        setRows={() => {}}
+        isLoading={false}
+        largeThan
+        nextRowClick
+      />
       <Dialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}

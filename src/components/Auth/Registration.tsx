@@ -1,7 +1,6 @@
 import { memo, useState } from "react";
 import {
   Button,
-  TextField,
   TableRow,
   TableCell,
   TableContainer,
@@ -13,15 +12,8 @@ import { useForm, Controller } from "react-hook-form";
 import { useRegisterUser, type PassengerFormData } from "../Api/usePostApi";
 import { useToast } from "../../context/ToastContext";
 import VerifyOpt from "./components/VerifyOpt";
-import {
-  AppRegistration,
-  AppRegistrationRounded,
-  BackHand,
-} from "@mui/icons-material";
-import {
-  InputTableWrapperCustom,
-  type HeaderColumn,
-} from "../../common/Table/InputTableWrapper";
+import { AppRegistrationRounded } from "@mui/icons-material";
+import { InputTableWrapperCustom } from "../../common/Table/InputTableWrapper";
 import InputTextField from "../../common/Input/InputTextField";
 
 interface RegisterProps {

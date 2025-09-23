@@ -211,14 +211,10 @@ const FlightDetailPage = ({ flight, onBookFlight }: FlightDetailPageProps) => {
 
     return (
       <>
-        {/* Header Section */}
         <Paper elevation={1} sx={{ p: 3, mb: 3, bgcolor: "grey.50" }}>
           <Box sx={{ textAlign: "center", mb: 2 }}>
             <Typography variant="h4" gutterBottom color="primary">
               {flight.flightNo}
-            </Typography>
-            <Typography variant="h6" gutterBottom>
-              {JSON.stringify(flight, null, 2)}
             </Typography>
           </Box>
 

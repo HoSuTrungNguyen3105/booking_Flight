@@ -134,6 +134,7 @@ const DataTable = ({
       loading={loading}
       columnHeaderHeight={columnHeaderHeight}
       disableColumnMenu
+      disableRowSelectionOnClick
       hideColumnHeaderCheckbox={hideColumnHeaderCheckbox}
       sortModel={sortModel}
       onSortModelChange={(model) => onSortModelChange(model)}

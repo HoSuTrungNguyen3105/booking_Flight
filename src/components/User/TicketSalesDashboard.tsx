@@ -49,7 +49,6 @@ const BookingCard = styled(Card)(({ theme }) => ({
   border: `1px solid ${theme.palette.divider}`,
 }));
 
-// Types
 interface FlightRoute {
   id: string;
   from: { city: string; airport: string };

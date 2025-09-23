@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { memo, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import DialogConfirm from "../../common/Modal/DialogConfirm";
 import { Button } from "@mui/material";
@@ -13,17 +13,19 @@ const SignOut = () => {
   return (
     <>
       <Button onClick={handleClick}>Sign Out</Button>
-      <DialogConfirm
-        onConfirm={submitLogout}
-        onClose={closeModal}
-        confirmLabel="Confirm"
-        cancelLabel="Exit"
-        open={open}
-        title="Logout confirm"
-        message="You will be logged out from your account."
-      />
+      {open && (
+        <DialogConfirm
+          onConfirm={submitLogout}
+          onClose={closeModal}
+          confirmLabel="Confirm"
+          cancelLabel="Exit"
+          open={open}
+          title="Logout confirm"
+          message="You will be logged out from your account."
+        />
+      )}
     </>
   );
 };
 
-export default SignOut;
+export default memo(SignOut);

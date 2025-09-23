@@ -71,8 +71,6 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
   });
 
   const [updateSeat, setUpdateSeat] = useState<SeatUpdateProps>({
-    seatNumber: 0,
-    seatRow: "",
     seatIds: [],
     type: "ECONOMY",
   });
@@ -120,8 +118,6 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
   const handleResetSelections = () => {
     setSelectedSeats([]);
     setUpdateSeat({
-      seatNumber: 0,
-      seatRow: "",
       seatIds: [],
       type: "ECONOMY",
     });

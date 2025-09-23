@@ -160,8 +160,7 @@ const FlightRoutesDashboard: React.FC = () => {
           </Typography>
         </Paper>
       );
-    }
-    return null;
+    } else return null;
   };
 
   const tabs: ITabItem[] = [

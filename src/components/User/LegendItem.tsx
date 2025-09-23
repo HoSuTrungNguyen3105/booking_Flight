@@ -9,7 +9,6 @@ type LegendItemProps = {
   icon?: React.ReactNode;
 };
 
-// ✅ Đưa styled component ra ngoài để tối ưu
 const BookingCard = styled(Card)(({ theme }) => ({
   height: "5rem",
   marginBottom: theme.spacing(2),
@@ -18,7 +17,6 @@ const BookingCard = styled(Card)(({ theme }) => ({
 }));
 
 const LegendItemSection = () => {
-  // const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const renderColorForLegendItem = useCallback(() => {

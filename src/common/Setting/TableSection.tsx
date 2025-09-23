@@ -102,7 +102,6 @@ const TableSection = ({
           />
         </Box>
       )}
-      {totalPages}
     </Box>
   );
 };
