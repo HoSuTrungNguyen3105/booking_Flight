@@ -324,10 +324,10 @@ const routes = [
         path: "TerminalContainer",
         element: <AirportDiagram />,
       },
-      {
-        path: "SeatLayout",
-        element: <SeatLayout />,
-      },
+      // {
+      //   path: "SeatLayout",
+      //   element: <SeatLayout />,
+      // },
       {
         path: "ChatApp",
         element: <ChatApp />,

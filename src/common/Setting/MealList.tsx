@@ -7,6 +7,7 @@ import { DateFormatEnum, formatDateKR } from "../../hooks/format";
 import FlightModalTriggerManagement from "./FlightModalTriggerManagement";
 import TableSection from "./TableSection";
 import SeatBooking from "../../components/User/SeatBooking";
+import SeatLayout from "../../components/Admin/component/SeatLayout";
 
 export default function MealList() {
   const { flightBookingData, loadingFlightBookingData } = useGetMeal();
@@ -22,6 +23,10 @@ export default function MealList() {
 
   // state quản lý mở SeatBooking
   const [selectedFlightForSeat, setSelectedFlightForSeat] = useState<
+    number | null
+  >(null);
+
+  const [selectedFlightToViewInfo, setSelectedFlightToViewInfo] = useState<
     number | null
   >(null);
 
@@ -131,6 +136,20 @@ export default function MealList() {
       ),
     },
     {
+      field: "info",
+      headerName: "Detail",
+      flex: 1,
+      renderCell: (params) => (
+        <Button
+          size="small"
+          variant="outlined"
+          onClick={() => setSelectedFlightToViewInfo(params.row.id)}
+        >
+          Detail
+        </Button>
+      ),
+    },
+    {
       field: "seatOption",
       headerName: "Seat",
       flex: 1,
@@ -145,6 +164,10 @@ export default function MealList() {
       ),
     },
   ];
+
+  if (selectedFlightToViewInfo) {
+    return <SeatLayout id={selectedFlightToViewInfo as number} />;
+  }
 
   if (selectedFlightForSeat) {
     return (

@@ -136,21 +136,29 @@ export type DataResponseId = {
   accessToken?: string | null;
   userId: number;
 };
-type PositionTypeValue = "WINDOW" | "MIDDLE" | "AISLE";
+
 export type Seat = {
   id: number;
   seatNumber: number;
   seatRow: string;
-  isBooked: boolean;
   flightId?: number;
   bookingId?: number;
-  position: PositionTypeValue;
+  // position: PositionTypeValue;
   type: SeatTypeValue;
 
   //Add type
-  isWindow?: boolean;
-  nearRestroom?: boolean;
+  // isWindow?: boolean;
+  // nearRestroom?: boolean;
+  // isAvailable?: boolean;
+  isBooked: boolean;
   isAvailable?: boolean;
+  isExtraLegroom?: boolean;
+  isExitRow?: boolean;
+  isHandicapAccessible?: boolean;
+  isNearLavatory?: boolean;
+  isUpperDeck?: boolean;
+  isWing?: boolean;
+  note?: string;
 };
 
 interface Employee {

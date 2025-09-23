@@ -1,12 +1,5 @@
 import { Chair, StarHalfSharp, Wc, Window } from "@mui/icons-material";
-import {
-  Box,
-  Card,
-  styled,
-  Typography,
-  useMediaQuery,
-  useTheme,
-} from "@mui/material";
+import { Box, Card, styled, Typography, useMediaQuery } from "@mui/material";
 import React, { memo, useCallback } from "react";
 import theme from "../../scss/theme";
 

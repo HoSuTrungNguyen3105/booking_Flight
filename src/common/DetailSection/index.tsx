@@ -12,6 +12,7 @@ interface IDetailSectionProps {
   title?: string;
   itemPerRow?: 1 | 2 | 3 | 4 | 6 | 12;
   data: IDetailItem[];
+  mode?: "row" | "column";
 }
 
 const GRID_COL_NUM = 12;
@@ -20,6 +21,7 @@ const DetailSection = ({
   title,
   itemPerRow = 4,
   data,
+  mode = "column",
 }: IDetailSectionProps) => {
   const renderDescription = useCallback(
     (description: string | React.ReactNode) => {
@@ -59,19 +61,25 @@ const DetailSection = ({
             size={item.size || GRID_COL_NUM / itemPerRow}
             key={index}
             sx={{
-              borderRight: item.hasBorder
-                ? 0
-                : (index + 1) % itemPerRow !== 0
-                ? 1
-                : 0,
+              display: "flex",
+              flexDirection: mode === "row" ? "row" : "column",
+              alignItems: mode === "row" ? "center" : "flex-start",
+              justifyContent: mode === "row" ? "space-between" : "flex-start",
+              borderRight:
+                item.hasBorder || (index + 1) % itemPerRow === 0 ? 0 : 1,
               borderColor: "grey.200",
               pr: (index + 1) % itemPerRow !== 0 ? 2 : 0,
+              gap: mode === "row" ? 2 : 0,
             }}
           >
-            <Typography variant="body2" color="grey.500">
+            <Typography
+              variant="body2"
+              color="grey.500"
+              sx={{ minWidth: mode === "row" ? 120 : "auto" }} // để title gọn đẹp
+            >
               {item.title}
             </Typography>
-            <Box>{renderDescription(item.description)}</Box>
+            <Box flex={1}>{renderDescription(item.description)}</Box>
           </Grid>
         ))}
       </Grid>

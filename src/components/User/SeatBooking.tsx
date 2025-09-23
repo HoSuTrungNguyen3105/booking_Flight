@@ -62,8 +62,7 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
     "success"
   );
   const [createFormOpen, setCreateFormOpen] = useState(false);
-  const { dataGetSeatByFlightId, refetchGetSeatByFlightId } =
-    useGetSeatByFlightId({ id: flightId });
+  const { dataGetSeatByFlightId } = useGetSeatByFlightId({ id: flightId });
   const [newSeat, setNewSeat] = useState<CreateSeatDto>({
     seatNumber: 0,
     seatRow: "",
@@ -420,7 +419,7 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
       sx={{
         maxWidth: "100%",
         backgroundColor: "#f8f9fa",
-        minHeight: "100vh",
+        minHeight: "90vh",
         justifyContent: "space-around",
       }}
     >
@@ -469,7 +468,7 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
       >
         <Box sx={{ flex: 1 }}>
           {/* Aircraft Layout */}
-          <LegendItemSection />
+          {/* <LegendItemSection /> */}
           <Card
             sx={{
               border: "1px solid #e0e0e0",
@@ -502,39 +501,49 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
             </Box>
 
             {/* Column Headers */}
+
             <Box
-              sx={{
-                position: "sticky",
-                top: 0,
-                height: "5rem",
-                zIndex: 5,
-                backgroundColor: "#f5f9ff",
-                padding: "8px 0",
-                display: "grid",
-                alignItems: "center",
-                justifyItems: "center",
-                justifyContent: "center",
-                borderBottom: "2px solid #e0e0e0",
-                mb: 1,
-              }}
+              display="flex"
+              gap={1}
+              sx={{ mx: 0.5, justifyContent: "center" }}
             >
-              <Box />
-              {columns.map((col) => (
+              {/* Left Seats Columns */}
+              {columns.slice(0, 3).map((col) => (
                 <Typography
                   key={col}
                   textAlign="center"
-                  fontWeight="bold"
+                  fontWeight="700"
                   sx={{
-                    fontSize: { xs: "14px", sm: "16px" },
-                    color: "#1565c0",
+                    fontSize: { xs: "12px", sm: "14px" },
+                    color: theme.palette.primary.dark,
+                    minWidth: 45,
                   }}
                 >
                   {col}
                 </Typography>
               ))}
-              <Box /> {/* Empty for window */}
-            </Box>
 
+              {/* Row Number Spacer */}
+              <Box sx={{ width: 18 }} />
+              <Box sx={{ width: 28 }} />
+              {/* Right Seats Columns */}
+              {columns.slice(3).map((col) => (
+                <Typography
+                  key={col}
+                  textAlign="center"
+                  fontWeight="700"
+                  sx={{
+                    fontSize: { xs: "12px", sm: "14px" },
+                    color: theme.palette.primary.dark,
+                    minWidth: 45,
+                  }}
+                >
+                  {col}
+                </Typography>
+              ))}
+
+              {/* Right Window Spacer */}
+            </Box>
             {/* Seat Rows */}
             {rows.map((row) => (
               <Box

@@ -316,11 +316,11 @@ const ChatApp = () => {
   return (
     <>
       <Box sx={{ display: "flex", height: "70vh", bgcolor: "grey.50" }}>
-        <Paper
+        <Stack
           sx={{
             width: isSidebarOpen ? 280 : 0,
-            height: "85vh",
-            borderRadius: 0,
+            height: "90vh",
+            // borderRadius: 0,
             overflow: "hidden",
             transition: "width 0.3s ease",
             display: "flex",
@@ -328,7 +328,7 @@ const ChatApp = () => {
             zIndex: 10,
             position: "relative",
           }}
-          elevation={0}
+          // elevation={0}
         >
           <Box
             sx={{
@@ -550,7 +550,7 @@ const ChatApp = () => {
               ))}
             </List>
           </Box>
-        </Paper>
+        </Stack>
 
         {/* Main Chat Area */}
         <Box sx={{ flex: 1, display: "flex", flexDirection: "column" }}>

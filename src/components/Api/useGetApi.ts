@@ -170,6 +170,23 @@ export const useGetFlightByIDData = ({ id }: ReqUserIDProps) => {
   };
 };
 
+export const useGetAllInfoFlightByIDData = ({ id }: ReqUserIDProps) => {
+  const {
+    data: getAllInfoFlightByIdData,
+    refetch: refetchGetAllInfoFlightData,
+    loading: loadingFlightData,
+  } = useFetch<FlightResponse, void>({
+    url: id ? `/sys/flights/getFlightAllInfo/${id}` : "",
+    autoFetch: !!id,
+    config: getMethod,
+  });
+  return {
+    getAllInfoFlightByIdData,
+    refetchGetAllInfoFlightData,
+    loadingFlightData,
+  };
+};
+
 export const useGetAircraftCode = () => {
   const { data: getAircraftCodeData, refetch: refetchGetAircraftCodeData } =
     useFetch<AircraftResponseMessage, null>({
