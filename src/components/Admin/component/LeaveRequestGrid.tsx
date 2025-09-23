@@ -1,14 +1,5 @@
-import React, { useState, useCallback, memo } from "react";
-import {
-  Box,
-  Paper,
-  Typography,
-  Chip,
-  useTheme,
-  useMediaQuery,
-  Button,
-  Stack,
-} from "@mui/material";
+import { useState, useCallback, memo } from "react";
+import { Box, Typography, Chip, Button, Stack } from "@mui/material";
 import { type GridColDef, type GridRenderCellParams } from "@mui/x-data-grid";
 import TableData from "../../../common/DataGrid/index";
 import { useGetLeaveRequest } from "../../Api/usePostApi";
@@ -20,9 +11,7 @@ import CreateLeaveRequestForm from "../../User/CreateLeaveRequestForm";
 import { useAuth } from "../../../context/AuthContext";
 
 const LeaveRequestGrid = () => {
-  const theme = useTheme();
   const { user } = useAuth();
-  // const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const { dataGetLeaveRequest, refetchGetLeaveRequest } = useGetLeaveRequest();
 
   const rowData = useCallback(() => {
@@ -35,16 +24,8 @@ const LeaveRequestGrid = () => {
   }, [dataGetLeaveRequest]);
 
   const [open, setOpen] = useState(false);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [modalType, setModalType] = useState<"view" | null>(null);
   const [selectedRow, setSelectedRow] = useState<LeaveRequest | null>(null);
-  const [selectedEmployeeId, setSelectedEmployeeId] = useState<number | null>(
-    null
-  );
-
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
 
   const handleView = (row: LeaveRequest) => {
     setSelectedRow(row);
@@ -52,13 +33,6 @@ const LeaveRequestGrid = () => {
     setOpen(true);
   };
 
-  const handleClose = () => {
-    setOpen(false);
-    setModalType(null);
-    // setSelectedRow(null);
-  };
-
-  // Hàm lấy màu cho trạng thái
   const getStatusColor = (status: string) => {
     switch (status) {
       case "APPROVED":
@@ -69,20 +43,6 @@ const LeaveRequestGrid = () => {
         return "warning";
       default:
         return "default";
-    }
-  };
-
-  // Hàm lấy label cho loại leave
-  const getLeaveTypeLabel = (type: string) => {
-    switch (type) {
-      case "ANNUAL":
-        return "Nghỉ phép năm";
-      case "SICK":
-        return "Nghỉ ốm";
-      case "UNPAID":
-        return "Nghỉ không lương";
-      default:
-        return type;
     }
   };
 
@@ -112,7 +72,6 @@ const LeaveRequestGrid = () => {
       valueFormatter: (value) =>
         formatDateKR(DateFormatEnum.MM_DD_YYYY_HH_MM_SS, value),
     },
-
     {
       field: "days",
       headerName: "Số ngày",
@@ -234,11 +193,6 @@ const LeaveRequestGrid = () => {
         </Typography>
         <Box display="flex" gap={3} flexWrap="wrap">
           {statuses.map((status) => {
-            const count =
-              dataGetLeaveRequest?.list?.filter(
-                (req) => req.status === status.key
-              ).length ?? 0;
-
             return (
               <Box key={status.key} display="flex" alignItems="center" gap={1}>
                 <Chip
@@ -249,7 +203,6 @@ const LeaveRequestGrid = () => {
                     fontSize: "0.875rem",
                     px: 1,
                   }}
-                  // size="small"
                 />
                 <Typography variant="body2">{status.label}</Typography>
               </Box>

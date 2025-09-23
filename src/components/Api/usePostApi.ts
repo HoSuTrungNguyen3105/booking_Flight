@@ -198,23 +198,24 @@ export type SeatPosition = "WINDOW" | "MIDDLE" | "AISLE";
 export interface SeatUpdateProps {
   seatIds: number[];
   type?: SeatTypeValue;
-  position?: SeatPosition;
   price?: number;
   isBooked?: boolean;
   isAvailable?: boolean;
-  isExitRow?: boolean;
   isExtraLegroom?: boolean;
+  isExitRow?: boolean;
+  isHandicapAccessible?: boolean;
+  isNearLavatory?: boolean;
+  isUpperDeck?: boolean;
+  isWing?: boolean;
   note?: string;
-
-  seatRow?: string;
-  seatNumber?: number;
 }
+
 export const useSeatUpdateByIds = () => {
   const { refetch: refetchUpdateSeatByIds } = useFetch<
     FlightDetailApiResponse,
     SeatUpdateProps
   >({
-    url: "/sys/seats/updateMultipleSeatsByIds",
+    url: "/sys/seats/updateSeatsByIds",
     autoFetch: false,
     config: postMethod,
   });

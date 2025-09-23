@@ -96,7 +96,7 @@ const SeatManagementModal = ({
     return (
       <Box sx={{ width: "40rem", pt: 2, maxHeight: "300px" }}>
         <Typography variant="body2" sx={{ mb: 2 }}>
-          Updating seats: {selectedSeats?.seatIds?.join(", ")}
+          Updating seats: {selectedSeats?.seatIds?.join(", ") as number[]}
         </Typography>
 
         {/* Type */}
