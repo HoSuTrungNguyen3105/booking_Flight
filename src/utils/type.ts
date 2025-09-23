@@ -358,7 +358,11 @@ export type SearchFlightProps = {
   outbound: DataFlight[];
   inbound: DataFlight[];
 };
-
+export type AircraftCodeBatchProps = {
+  code: string;
+  errorCode: string;
+  errorMessage: string;
+};
 export type UserListResponse = UserDataResponse<UserData>;
 export type UserCreateResponse = DetailResponseMessage<UserDataNoGrid>;
 
@@ -372,6 +376,8 @@ export type SearchFlightResponse = DetailResponseMessage<SearchFlightProps>;
 export type FlightMealDetailApiResponse = DetailResponseMessage<FlightMeal>;
 export type UserListManageResponse = DetailResponseMessage<UserData>;
 export type FlightListApiResponse = DetailResponseMessage<Flight>;
+export type FlightAircraftResponse =
+  DetailResponseMessage<AircraftCodeBatchProps>;
 
 export type EmailProps = {
   email?: string;

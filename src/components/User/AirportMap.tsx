@@ -17,15 +17,10 @@ export type TerminalView = {
 type Props = {
   airportCode?: string;
   terminals: TerminalView[];
-  width?: number | string; // container width
-  height?: number | string; // container height
+  width?: number | string;
+  height?: number | string;
 };
 
-/**
- * AirportMap
- * - terminals with x/y (0..100) will be placed absolutely using percentages
- * - terminals without coords will be placed into a responsive grid
- */
 const AirportMap: React.FC<Props> = ({
   airportCode,
   terminals,

@@ -3,6 +3,7 @@ import { memo } from "react";
 import type { UserData } from "../../utils/type";
 import InputTextField from "../Input/InputTextField";
 import { DateFormatEnum, formatDateKR } from "../../hooks/format";
+import { FileUploadButton } from "../FileUploader/FileUploadButton";
 
 interface IUserInfoSectionProps {
   myInfo?: UserData;
@@ -148,15 +149,12 @@ const UserInfoSection = ({ myInfo, onChange }: IUserInfoSectionProps) => {
           </FormControl>
 
           {/* to_do */}
-          {/* <FormControl fullWidth>
+          <FormControl fullWidth>
             <Typography variant="body2" mb={0.5}>
               닉네임 (선택)
             </Typography>
-            <InputTextField
-              value={myInfo?.pictureUrl}
-              onChange={(val) => onChange("pictureUrl", val)}
-            />
-          </FormControl> */}
+            {/* <FileUploadButton name="j" setValues={9}/> */}
+          </FormControl>
         </Stack>
       </Box>
     </Box>

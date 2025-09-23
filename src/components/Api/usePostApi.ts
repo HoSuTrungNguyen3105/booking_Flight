@@ -20,6 +20,7 @@ import {
   type SearchFlightResponse,
   MethodType,
   type MealResponse,
+  type FlightAircraftResponse,
 } from "../../utils/type.ts";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
 import type {
@@ -82,7 +83,7 @@ export type CreateAircraftDto = {
 };
 export const useCreateAircraftBatchFlight = () => {
   const { refetch: refetchCreateAircraftBatchFlightData } = useFetch<
-    FlightListApiResponse,
+    FlightAircraftResponse,
     CreateAircraftDto[]
   >({
     url: "/sys/flights/aircraft/batch",

@@ -6,6 +6,12 @@ import InputTextField from "../../../common/Input/InputTextField";
 import { useCreateAircraftBatchFlight } from "../../Api/usePostApi";
 import { useToast } from "../../../context/ToastContext";
 
+type AircraftError = {
+  code: string;
+  errorCode: string;
+  errorMessage: string;
+};
+
 const AircraftBatchCreator = () => {
   const [aircrafts, setAircrafts] = useState<Aircraft[]>([
     { code: "", model: "", range: 0 },
@@ -14,6 +20,10 @@ const AircraftBatchCreator = () => {
   const [loading, setLoading] = useState(false);
   const { refetchCreateAircraftBatchFlightData } =
     useCreateAircraftBatchFlight();
+
+  // chứa lỗi theo index
+  const [errors, setErrors] = useState<Record<number, string>>({});
+
   const addAircraft = () => {
     setAircrafts([...aircrafts, { code: "", model: "", range: 0 }]);
   };
@@ -21,6 +31,9 @@ const AircraftBatchCreator = () => {
   const removeAircraft = (index: number) => {
     if (aircrafts.length > 1) {
       setAircrafts(aircrafts.filter((_, i) => i !== index));
+      const newErrors = { ...errors };
+      delete newErrors[index];
+      setErrors(newErrors);
     }
   };
 
@@ -40,26 +53,30 @@ const AircraftBatchCreator = () => {
 
   const handleSubmit = async () => {
     setLoading(true);
-    const invalidAircrafts = aircrafts.filter(
-      (ac) => !ac.code || !ac.model || !ac.range
-    );
-    if (invalidAircrafts.length === 0) {
-      console.log("No invalidAircrafts", invalidAircrafts);
-      setLoading(false);
-      return;
-    }
-
     try {
       const response = await refetchCreateAircraftBatchFlightData(aircrafts);
-      console.log(aircrafts);
+
       if (response?.resultCode === "00") {
         toast(response?.resultMessage as string);
-        setAircrafts([{ code: "", model: "", range: 0 }]); // Reset form
+
+        // map lỗi cho từng aircraft code
+        const errorMap: Record<number, string> = {};
+        response.list?.forEach((res: AircraftError, idx: number) => {
+          if (res.errorCode !== "00") {
+            errorMap[idx] = res.errorMessage;
+          }
+        });
+        setErrors(errorMap);
+
+        if (Object.keys(errorMap).length === 0) {
+          // nếu không có lỗi => reset form
+          setAircrafts([{ code: "", model: "", range: 0 }]);
+        }
       } else {
         toast(response?.resultMessage as string);
-        console.log(response);
       }
     } catch (error) {
+      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -91,6 +108,7 @@ const AircraftBatchCreator = () => {
                   />
                 )}
               </Box>
+
               <Box
                 sx={{
                   display: "grid",
@@ -98,12 +116,19 @@ const AircraftBatchCreator = () => {
                   gap: 2,
                 }}
               >
-                <InputTextField
-                  clearable
-                  value={aircraft.code}
-                  onChange={(e) => updateAircraft(index, "code", e)}
-                  placeholder="e.g., B738"
-                />
+                <Box>
+                  <InputTextField
+                    clearable
+                    value={aircraft.code}
+                    onChange={(e) => updateAircraft(index, "code", e)}
+                    placeholder="e.g., B738"
+                  />
+                  {errors[index] && (
+                    <Typography color="error" variant="caption">
+                      {errors[index]}
+                    </Typography>
+                  )}
+                </Box>
                 <InputTextField
                   clearable
                   value={aircraft.model}
@@ -139,16 +164,6 @@ const AircraftBatchCreator = () => {
           </Box>
         </Box>
       </Stack>
-
-      {/* <Snackbar
-        open={snackbar.open}
-        autoHideDuration={6000}
-        onClose={() => setSnackbar({ ...snackbar, open: false })}
-      >
-        // {/* <Alert severity={snackbar.severity}>
-        //   {snackbar.message}
-        // </Alert> 
-      </Snackbar> */}
     </Box>
   );
 };

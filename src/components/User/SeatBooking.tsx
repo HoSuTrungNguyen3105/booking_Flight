@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo, memo } from "react";
 import {
   Box,
   Button,
@@ -760,4 +760,4 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
   );
 };
 
-export default React.memo(SeatBooking);
+export default memo(SeatBooking);

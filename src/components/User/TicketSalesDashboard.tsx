@@ -67,7 +67,6 @@ interface BookingData {
   growth?: number;
 }
 
-// Mock data
 const flightRoutes: FlightRoute[] = [
   {
     id: "1",
