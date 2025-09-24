@@ -26,7 +26,8 @@ import type { DropdownOptions } from "../../common/Dropdown/type.ts";
 import type {
   FlightDetailResponse,
   MFAAuthResponse,
-  UserSearchType,
+  SearchTicketType,
+  TerminalResponse,
 } from "../User/type.ts";
 import { useFetch } from "../../context/use[custom]/useFetch.ts";
 import type { FlightFormData } from "../../common/Sample/FlightUpdateModal.tsx";
@@ -385,22 +386,22 @@ export const useSelectIdFlight = (id: string | number | undefined) => {
   };
 };
 
-export const useFlightBooking = (flightParams: UserSearchType) => {
-  const { data: flightBookingData, refetch: refetchFlightBookingDataData } =
-    useFetch<FlightDetailResponse, UserSearchType>({
-      url: "/ticket/getFlightList",
-      params: {
-        ...flightParams,
-      },
-      defaultValue: { resultCode: "", resultMessage: "" },
-      autoFetch: false,
-      config: postMethod,
-    });
-  return {
-    flightBookingData,
-    refetchFlightBookingDataData,
-  };
-};
+// export const useFlightBooking = (flightParams: UserSearchType) => {
+//   const { data: flightBookingData, refetch: refetchFlightBookingDataData } =
+//     useFetch<FlightDetailResponse, UserSearchType>({
+//       url: "/ticket/getFlightList",
+//       params: {
+//         ...flightParams,
+//       },
+//       defaultValue: { resultCode: "", resultMessage: "" },
+//       autoFetch: false,
+//       config: postMethod,
+//     });
+//   return {
+//     flightBookingData,
+//     refetchFlightBookingDataData,
+//   };
+// };
 export interface CreateSeatDto {
   flightId: number;
   seatRow?: string;
@@ -459,22 +460,23 @@ export const useCreateMultiMeal = () => {
   };
 };
 
-export const useTicketById = (flightParams: UserSearchType) => {
-  const { data: flightBookingData, refetch: refetchFlightBookingDataData } =
-    useFetch<FlightDetailResponse, UserSearchType>({
-      url: "/ticket/getTicket",
-      params: {
-        ...flightParams,
-      },
-      defaultValue: { resultCode: "", resultMessage: "" },
-      autoFetch: false,
-      config: postMethod,
-    });
-  return {
-    flightBookingData,
-    refetchFlightBookingDataData,
-  };
-};
+// export const useTicketById = (flightParams: UserSearchType) => {
+//   const { data: flightBookingData, refetch: refetchFlightBookingDataData } =
+//     useFetch<FlightDetailResponse, UserSearchType>({
+//       url: "/ticket/getTicket",
+//       params: {
+//         ...flightParams,
+//       },
+//       defaultValue: { resultCode: "", resultMessage: "" },
+//       autoFetch: false,
+//       config: postMethod,
+//     });
+//   return {
+//     flightBookingData,
+//     refetchFlightBookingDataData,
+//   };
+// };
+
 interface MfaRequest {
   email: string;
 }
@@ -502,6 +504,22 @@ export const useSetUpMfa = () => {
     refetchSetUpMfa,
   };
 };
+
+export const useGetTerminalData = () => {
+  const { data: getTerminalData, refetch: refetchGetTerminalData } = useFetch<
+    TerminalResponse,
+    void
+  >({
+    url: "/sys/flights/terminal",
+    autoFetch: true,
+    config: getMethod,
+  });
+  return {
+    getTerminalData,
+    refetchGetTerminalData,
+  };
+};
+
 interface ChangePassword {
   userId: number;
   newPassword: string;

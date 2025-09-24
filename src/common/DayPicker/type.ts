@@ -9,7 +9,7 @@ export type DatePickerCase =
   | "default";
 export type DatePickerSize = "small" | "medium" | "large";
 export type DatePickerStatus = "error" | "warning" | "confirmed" | "default";
-export type ValueDate = string | Date | null | undefined;
+export type ValueDate = number | null | undefined;
 
 export type DatePickerProps = {
   placeHolder?: string;

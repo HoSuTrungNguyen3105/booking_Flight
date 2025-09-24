@@ -51,13 +51,13 @@ export type CreateGateReq = {
   updatedAt?: number;
 };
 
-// Giả lập dữ liệu terminal
 const terminalOptions = [
   { value: "T1", label: "Terminal 1 (Quốc nội)" },
   { value: "T2", label: "Terminal 2 (Quốc tế)" },
   { value: "T3", label: "Terminal 3 (Hạng thương gia)" },
   { value: "T4", label: "Terminal 4 (Hạng nhất)" },
 ];
+
 type GateProps = {
   gateId?: number;
 };
@@ -385,7 +385,6 @@ const CreateGateForm: React.FC = ({ gateId }: GateProps) => {
             >
               <Button
                 variant="outlined"
-                color="secondary"
                 onClick={handleReset}
                 disabled={isSubmitting}
                 startIcon={<CloseIcon />}
@@ -399,10 +398,6 @@ const CreateGateForm: React.FC = ({ gateId }: GateProps) => {
                 startIcon={isSubmitting ? undefined : <AddIcon />}
                 size="large"
                 disabled={isSubmitting}
-                sx={{
-                  minWidth: 120,
-                  background: "linear-gradient(45deg, #1976d2, #2196f3)",
-                }}
               >
                 {isSubmitting ? (
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>

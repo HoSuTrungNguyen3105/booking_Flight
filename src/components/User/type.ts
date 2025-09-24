@@ -1,25 +1,49 @@
-import type { DetailResponseMessage } from "../../utils/type";
+import type { DetailResponseMessage, Terminal } from "../../utils/type";
 
 export type FareConditions = "Business" | "Economy" | "Comfort";
 
-export type UserSearchType = {
-  ticketNo?: string;
-  passengerCount: number;
-  fareConditions: string;
-  status?: string;
-  flightId?: string;
+// export type SearchTicketType = {
+//   ticketNo?: string;
+//   passengerCount: number;
+//   status?: string;
+//   flightNo?: string;
+//   aircraftName?: string;
+//   totalAmount?: number;
+//   amount?: number;
+//   scheduledDeparture?: string;
+//   scheduledArrival?: string;
+//   departureAirport?: string;
+//   arrivalAirport?: string;
+// };
+
+export type SearchTicketType = {
   flightNo?: string;
-  aircraftName?: string;
-  totalAmount?: number;
-  amount?: number;
-  scheduledDeparture?: string;
-  scheduledArrival?: string;
-  departureAirport?: string;
-  arrivalAirport?: string;
+  from: string;
+  to: string;
+  departDate?: number;
+  returnDate?: number;
+  passengers?: number;
+  flightType?: "oneway" | "roundtrip";
+  cabinClass?: string; //"ECONOMY" | "BUSINESS" | "VIP"
+  aircraftCode?: string;
+  status?: string;
+  //| "scheduled"
+  // | "boarding"
+  // | "departed"
+  // | "arrived"
+  // | "delayed"
+  // | "cancelled";
+  minPrice?: number;
+  maxPrice?: number;
+  gate?: string;
+  terminal?: string;
+  minDelayMinutes?: number;
+  maxDelayMinutes?: number;
+  includeCancelled?: boolean;
 };
 
 export type FlightDetailResponse = {
-  flightList?: UserSearchType;
+  // flightList?: SearchTicketType;
   resultCode: string;
   resultMessage: string;
 };
@@ -38,3 +62,5 @@ interface MfaResponse {
 }
 
 export type MFAAuthResponse = DetailResponseMessage<MfaResponse>;
+
+export type TerminalResponse = DetailResponseMessage<Terminal>;

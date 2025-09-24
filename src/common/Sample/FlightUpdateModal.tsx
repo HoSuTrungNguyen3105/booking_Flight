@@ -93,9 +93,6 @@ const FlightUpdateModal = ({
     delayMinutes: 0,
     cancellationReason: "",
     delayReason: "",
-    airline: "",
-    origin: "",
-    destination: "",
   });
 
   const mapFlightToFormData = (
@@ -124,9 +121,6 @@ const FlightUpdateModal = ({
       isCancelled: data.isCancelled || false,
       delayMinutes: data.delayMinutes || 0,
       seats: data.seats || [],
-      airline: data.airline || "",
-      origin: "",
-      destination: "",
     };
   };
 
@@ -373,35 +367,8 @@ const FlightUpdateModal = ({
           <InputTextField
             value={formData.terminal}
             onChange={(e) => handleInputChange("terminal", e as string)}
-            //startIcon={<FlightTakeoff color="primary" />}
           />
         </Grid>
-
-        <Grid size={12}>
-          <InputTextField
-            value={formData.airline}
-            onChange={(e) => handleInputChange("airline", e as string)}
-            // startIcon={<FlightLand color="primary" />}
-          />
-        </Grid>
-
-        <Grid size={12}>
-          <FormControl fullWidth>
-            <InputTextField
-              value={formData.origin}
-              onChange={(e) => handleInputChange("origin", e as string)}
-            />
-          </FormControl>
-        </Grid>
-
-        {/* <Grid size={12}>
-          <FormControl fullWidth>
-            <InputTextField
-              value={formData?.status || ""}
-              onChange={(e) => handleInputChange("status", e as string)}
-            />
-          </FormControl>
-        </Grid> */}
       </Grid>
     ),
     [formData, handleInputChange]

@@ -383,6 +383,74 @@ export type EmailProps = {
   email?: string;
   userId?: number;
 };
+
+export enum FacilityType {
+  RESTAURANT = "RESTAURANT",
+  SHOP = "SHOP",
+  LOUNGE = "LOUNGE",
+  ATM = "ATM",
+  WIFI = "WIFI",
+  CHARGING_STATION = "CHARGING_STATION",
+  INFORMATION = "INFORMATION",
+  MEDICAL = "MEDICAL",
+  PRAYER_ROOM = "PRAYER_ROOM",
+  SMOKING_AREA = "SMOKING_AREA",
+}
+// export type Airport = {
+//   code: string;
+//   name: string;
+//   city: string;
+//   country: string;
+//   createdAt: string; // timestamp kiểu string
+//   updatedAt: string | null;
+// };
+
+export type Terminal = {
+  id: string;
+  code: string;
+  name: string;
+  description?: string;
+  type: "DOMESTIC" | "INTERNATIONAL" | "CARGO"; // enum TerminalType
+  airportId: string;
+  createdAt: string;
+  updatedAt: string;
+  airport: Airport;
+  gates: Gate[];
+  facilities: Facility[];
+};
+
+export type Gate = {
+  id: string;
+  code: string;
+  terminalId: string;
+  status: "AVAILABLE" | "OCCUPIED" | "MAINTENANCE"; // enum GateStatus
+  createdAt: number;
+  updatedAt: number;
+};
+
+export type Facility = {
+  id: string;
+  name: string;
+  type: string; // enum FacilityType nếu có
+  description?: string;
+  terminalId: string;
+  location?: string;
+  openingHours?: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+// export interface Terminal {
+//   id: string;
+//   code: string;
+//   name: string;
+//   description?: string;
+//   type: string;
+//   airportId: string;
+//   createdAt: string;
+//   updatedAt: string;
+// }
+
 export type RegisterResponseMessage = DetailResponseMessage<EmailProps>;
 
 export type ResponseMessage = {

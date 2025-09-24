@@ -16,63 +16,61 @@ const DateTimePickerComponent: React.FC<Props> = ({
   onChange,
   value,
 }) => {
-  const [date, setDate] = useState<Moment | null>(null);
+  const [date, setDate] = useState<Moment>(moment(0)); // default = 0
   const [isInitialized, setIsInitialized] = useState(false);
 
-  // Memoize locale setup
+  // Cập nhật locale
   useEffect(() => {
     if (moment.locale() !== language) {
       moment.locale(language);
     }
   }, [language]);
 
-  // Optimized initialization logic
+  // Khởi tạo giá trị ban đầu
   useEffect(() => {
     if (isInitialized) return;
 
-    let initialDate: Moment | null = null;
+    let initialDate: Moment;
 
-    if (value !== undefined && value !== null && value > 0) {
-      try {
-        const momentDate = moment(value * 1000);
-        initialDate = momentDate.isValid() ? momentDate : moment();
-      } catch (error) {
-        console.error("Error parsing date:", error);
-        initialDate = moment();
-      }
+    if (value !== undefined && value > 0) {
+      const momentDate = moment(value * 1000);
+      initialDate = momentDate.isValid() ? momentDate : moment(0);
     } else {
-      initialDate = moment();
+      initialDate = moment(0);
     }
 
     setDate(initialDate);
     setIsInitialized(true);
-  }, [value, isInitialized]); // Removed unnecessary dependencies
 
-  // Memoized callback for onChange
+    // Gọi onChange ngay lần đầu để đảm bảo set 0 khi chưa có
+    if (onChange) {
+      onChange(
+        initialDate.isValid()
+          ? Number((initialDate.valueOf() / 1000).toFixed(3))
+          : 0
+      );
+    }
+  }, [value, isInitialized, onChange]);
+
+  // Callback thay đổi giá trị
   const handleChange = useCallback(
     (newValue: unknown) => {
       const momentValue = newValue as Moment | null;
-      setDate(momentValue);
+      const validDate =
+        momentValue && momentValue.isValid() ? momentValue : moment(0);
 
-      if (!onChange) return;
+      setDate(validDate);
 
-      try {
-        if (momentValue && momentValue.isValid()) {
-          const timestampMs = momentValue.valueOf();
-          const decimalValue = Number((timestampMs / 1000).toFixed(3));
-          onChange(decimalValue);
-        } else {
-          onChange(0);
-        }
-      } catch (error) {
-        console.error("Error in handleChange:", error);
-        onChange(0);
+      if (onChange) {
+        const timestampMs = validDate.valueOf();
+        const decimalValue = Number((timestampMs / 1000).toFixed(3));
+        onChange(decimalValue);
       }
     },
     [onChange]
   );
 
-  // Memoize locale text to prevent unnecessary re-renders
+  // Locale text
   const localeText = useMemo(() => {
     return language === "kr"
       ? koKR.components.MuiLocalizationProvider.defaultProps.localeText

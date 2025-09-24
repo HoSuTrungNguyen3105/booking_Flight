@@ -7,12 +7,13 @@ import {
   CircularProgress,
   FormControl,
   Grid,
+  Switch,
   TableContainer,
   Typography,
 } from "@mui/material";
 import React from "react";
 import { useForm } from "react-hook-form";
-import type { FareConditions, UserSearchType } from "./type";
+import type { FareConditions, SearchTicketType } from "./type";
 import { useFlightBooking, useFlightList } from "../Api/usePostApi";
 // import { Button } from "../../common/Button/Button";
 import { FlightOutlined, RefreshOutlined } from "@mui/icons-material";
@@ -21,21 +22,30 @@ import { Dropdown } from "../../common/Dropdown/Dropdown";
 import type { Flight } from "../../common/Setting/type";
 import type { IDetailItem } from "../../common/DetailSection";
 import DetailSection from "../../common/DetailSection";
+import InputTextField from "../../common/Input/InputTextField";
+import SelectDropdown from "../../common/Dropdown/SelectDropdown";
+import { InputDate } from "../../common/DayPicker";
+import { useGetAllCode } from "../Api/useGetApi";
+import DateTimePickerComponent from "../../common/DayPicker/date-range-picker";
 
 const BookTicket = () => {
-  const [flightParams, setFlightParams] = React.useState<UserSearchType>({
-    fareConditions: "",
-    scheduledDeparture: "",
-    scheduledArrival: "",
-    departureAirport: "",
-    arrivalAirport: "",
-    passengerCount: 0,
+  const [flightParams, setFlightParams] = React.useState<SearchTicketType>({
+    from: "",
+    to: "",
+    status: "arrived",
+    cabinClass: "ECONOMY",
+    passengers: 1,
   });
+  const { getAllCode } = useGetAllCode();
 
-  const { reset: resetSearch, control: controlSearch } =
-    useForm<UserSearchType>({
-      defaultValues: flightParams,
-    });
+  const {
+    reset: resetSearch,
+    control,
+    setValue,
+    watch,
+  } = useForm<SearchTicketType>({
+    defaultValues: flightParams,
+  });
 
   const { flightList } = useFlightList();
   const [flightListData, setFlightList] = React.useState<Flight[]>([]);
@@ -49,84 +59,212 @@ const BookTicket = () => {
   const onResetForm = () => {
     resetSearch();
   };
-  const [loadingFlightBookingData, setLoadingFlightBookingData] =
-    React.useState<boolean>(false);
-  const [displayDataFlight, setDisplayDataFlight] = React.useState<
-    UserSearchType[]
-  >([]);
-  const { flightBookingData, refetchFlightBookingDataData } =
-    useFlightBooking(flightParams);
 
-  const getFareConditionColor = (fare: FareConditions): string => {
-    switch (fare) {
-      case "Business":
-        return "#e8f5e9";
-      case "Economy":
-        return "#e3f2fd";
-      case "Comfort":
-        return "#fff3e0";
-      default:
-        return "#f5f5f5";
-    }
-  };
-  const fareConditions = [
-    { label: "Economy", value: "ECONOMY" },
-    { label: "Business", value: "BUSINESS" },
-    { label: "First Class", value: "FIRST" },
-  ];
+  const optionAirportCode = (getAllCode?.data?.airport ?? []).map(
+    (item, index) => ({
+      value: item.code,
+      label: item.code,
+    })
+  );
+
+  const optionAircraftCode = (getAllCode?.data?.aircraft ?? []).map(
+    (item, index) => ({
+      value: item.code,
+      label: item.code,
+    })
+  );
 
   const detail: IDetailItem[] = [
     {
-      title: "Fare Conditions",
+      title: "Flight Number",
       description: (
-        <Dropdown
-          value={controlSearch._getWatch("fareConditions")}
-          onChange={() => {}}
-          options={fareConditions}
-          placeholder="Select"
+        <InputTextField
+          placeholder="Enter flight number"
+          value={watch("flightNo")}
+          onChange={(e) => setValue("flightNo", e)}
         />
       ),
     },
     {
-      title: "Passenger Count",
+      title: "From",
       description: (
-        <Dropdown
-          options={[]} // Replace with real data
+        <SelectDropdown
+          options={optionAirportCode}
+          placeholder="Select departure"
+          value={watch("from")}
+          onChange={(val) => setValue("from", String(val))}
+        />
+      ),
+    },
+    {
+      title: "To",
+      description: (
+        <SelectDropdown
+          options={optionAirportCode}
+          placeholder="Select destination"
+          value={watch("to")}
+          onChange={(val) => setValue("to", String(val))}
+        />
+      ),
+    },
+    // {
+    //   title: "Departure Date",
+    //   description: (
+    //     <SingleDateRangePickerComponent
+    //       value={[watch("departDate") , watch('returnDate')]}
+    //       onChange={(val) => setValue("departDate", val as number)}
+    //       usecase="datetime"
+    //     />
+    //   ),
+    // },
+    {
+      title: "Return Date",
+      description: (
+        <DateTimePickerComponent
+          value={watch("returnDate")}
+          onChange={(val) => setValue("returnDate", val as number)}
+          language="en"
+        />
+      ),
+    },
+    {
+      title: "Passengers",
+      description: (
+        <SelectDropdown
+          options={Array.from({ length: 10 }, (_, i) => ({
+            label: `${i + 1}`,
+            value: i + 1,
+          }))}
           placeholder="Choose number"
-          value={controlSearch._getWatch("passengerCount")}
-          onChange={() => {}}
+          value={watch("passengers")}
+          onChange={(val) => setValue("passengers", val as number)}
         />
       ),
     },
     {
-      title: "Departure Airport",
+      title: "Flight Type",
       description: (
-        <Dropdown
-          options={fareConditions}
-          placeholder="Select"
-          value={controlSearch._getWatch("fareConditions")}
-          onChange={() => {}}
+        <SelectDropdown
+          options={[
+            { label: "Oneway", value: "oneway" },
+            { label: "Roundtrip", value: "roundtrip" },
+          ]}
+          placeholder="Select type"
+          value={watch("flightType")}
+          onChange={(val) =>
+            setValue("flightType", val as "oneway" | "roundtrip")
+          }
         />
       ),
     },
     {
-      title: "Arrival Airport",
+      title: "Cabin Class",
       description: (
-        <Dropdown
-          options={fareConditions}
-          placeholder="Select"
-          value={controlSearch._getWatch("fareConditions")}
-          onChange={() => {}}
+        <SelectDropdown
+          options={[
+            { label: "Economy", value: "ECONOMY" },
+            { label: "Business", value: "BUSINESS" },
+            { label: "VIP", value: "VIP" },
+          ]}
+          placeholder="Select cabin"
+          value={watch("cabinClass")}
+          onChange={(val) => setValue("cabinClass", String(val))}
+        />
+      ),
+    },
+    {
+      title: "Status",
+      description: (
+        <SelectDropdown
+          options={[
+            { label: "Scheduled", value: "scheduled" },
+            { label: "Boarding", value: "boarding" },
+            { label: "Departed", value: "departed" },
+            { label: "Arrived", value: "arrived" },
+            { label: "Delayed", value: "delayed" },
+            { label: "Cancelled", value: "cancelled" },
+          ]}
+          placeholder="Select status"
+          value={watch("status")}
+          onChange={(val) => setValue("status", String(val))}
+        />
+      ),
+    },
+    {
+      title: "Price Range",
+      description: (
+        <Box display="flex" gap={2}>
+          <InputTextField
+            type="number"
+            placeholder="Min"
+            value={String(watch("minPrice"))}
+            onChange={(e) => setValue("minPrice", Number(e))}
+          />
+          <InputTextField
+            type="number"
+            placeholder="Max"
+            value={String(watch("maxPrice"))}
+            onChange={(e) => setValue("maxPrice", Number(e))}
+          />
+        </Box>
+      ),
+    },
+    {
+      title: "Gate",
+      description: (
+        <InputTextField
+          placeholder="Enter gate"
+          value={watch("gate")}
+          onChange={(e) => setValue("gate", e)}
+        />
+      ),
+    },
+    {
+      title: "Terminal",
+      description: (
+        <InputTextField
+          placeholder="Enter terminal"
+          value={watch("terminal")}
+          onChange={(e) => setValue("terminal", e)}
+        />
+      ),
+    },
+    {
+      title: "Delay Minutes",
+      description: (
+        <Box display="flex" gap={2}>
+          <InputTextField
+            type="number"
+            placeholder="Min"
+            value={String(watch("minDelayMinutes"))}
+            onChange={(e) => setValue("minDelayMinutes", Number(e))}
+          />
+          <InputTextField
+            type="number"
+            placeholder="Max"
+            value={String(watch("maxDelayMinutes"))}
+            onChange={(e) => setValue("maxDelayMinutes", Number(e))}
+          />
+        </Box>
+      ),
+    },
+    {
+      title: "Include Cancelled",
+      description: (
+        <Switch
+          checked={watch("includeCancelled")}
+          onChange={(e) => setValue("includeCancelled", e.target.checked)}
         />
       ),
     },
   ];
-  const onSubmitValue = async (values: UserSearchType) => {
+
+  const onSubmitValue = async (values: SearchTicketType) => {
     if (!values) return;
-    setLoadingFlightBookingData(true);
-    setDisplayDataFlight([]);
+    //setLoadingFlightBookingData(true);
+    // setDisplayDataFlight([]);
     setFlightParams(values);
-    await refetchFlightBookingDataData(values);
+    //await refetchFlightBookingDataData(values);
   };
 
   const formatDate = (dateValue: string | undefined) => {
@@ -185,7 +323,7 @@ const BookTicket = () => {
                           </Typography>
                         </Box>
                         <Box sx={{ alignContent: "center", minWidth: 160 }}>
-                          {fareConditions.map((fare) => (
+                          {/* {fareConditions.map((fare) => (
                             <Chip
                               key={fare.value}
                               label={fare.label}
@@ -195,7 +333,7 @@ const BookTicket = () => {
                                 ),
                               }}
                             />
-                          ))}
+                          ))} */}
 
                           <Typography variant="h5" color="text.secondary">
                             {flight.aircraftCode}
@@ -317,7 +455,7 @@ const BookTicket = () => {
               )}
 
               {/* Nếu đang loading thì hiển thị loading riêng */}
-              {loadingFlightBookingData && (
+              {/* {loadingFlightBookingData && (
                 // <Grid item xs={12}>
                 <Box>
                   <Box
@@ -339,7 +477,7 @@ const BookTicket = () => {
                     </Typography>
                   </Box>
                 </Box>
-              )}
+              )} */}
             </Grid>
           </Box>
         </TableContainer>

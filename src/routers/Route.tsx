@@ -55,6 +55,8 @@ import type { DataFlight } from "../utils/type";
 import SeatLayout from "../components/Admin/component/SeatLayout";
 import BulkMealCreator from "../components/Admin/component/BulkMealCreator";
 import AirportMap from "../components/User/AirportMap";
+import CreateFacility from "../components/Admin/modal/CreateFacility";
+import AirportManagementDetail from "../components/User/AirportManagementDetail";
 
 export const mockFlights: DataFlight = {
   flightId: 1,
@@ -321,13 +323,17 @@ const routes = [
         element: <TicketSalesDashboard />,
       },
       {
+        path: "facilities",
+        element: <CreateFacility />,
+      },
+      {
         path: "TerminalContainer",
         element: <AirportDiagram />,
       },
-      // {
-      //   path: "SeatLayout",
-      //   element: <SeatLayout />,
-      // },
+      {
+        path: "AirportManagementDetail",
+        element: <AirportManagementDetail />,
+      },
       {
         path: "ChatApp",
         element: <ChatApp />,

@@ -9,18 +9,23 @@ import {
   useMediaQuery,
   styled,
   Stack,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Button,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Alert,
+  IconButton,
 } from "@mui/material";
-import { LocalParking, DirectionsWalk } from "@mui/icons-material";
+import { Edit, Add } from "@mui/icons-material";
 import TabPanel, { type ITabItem } from "../../common/Setting/TabPanel";
-
-// Định nghĩa types
-interface TerminalSection {
-  id: string;
-  name: string;
-  gates: string[];
-  facilities: string[];
-  color: string;
-}
+import { useGetTerminalData } from "../Api/usePostApi";
+import type { Terminal } from "../../utils/type";
 
 interface AirportGate {
   id: string;
@@ -30,135 +35,33 @@ interface AirportGate {
   destination?: string;
 }
 
-// Dữ liệu mẫu cho sân bay
-const terminalSections: TerminalSection[] = [
-  {
-    id: "A",
-    name: "Terminal A - Quốc tế",
-    gates: ["A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8"],
-    facilities: ["Nhà hàng", "Quầy miễn thuế", "Phòng chờ VIP", "Đổi ngoại tệ"],
-    color: "#1976d2",
-  },
-  {
-    id: "B",
-    name: "Terminal B - Nội địa",
-    gates: ["B1", "B2", "B3", "B4", "B5", "B6"],
-    facilities: ["Quán cà phê", "Cửa hàng lưu niệm", "Wi-Fi miễn phí", "ATM"],
-    color: "#2e7d32",
-  },
-  {
-    id: "C",
-    name: "Terminal C - Hạng thương ...",
-    gates: ["C1", "C2", "C3", "C4"],
-    facilities: [
-      "Phòng chờ hạng nhất",
-      "Dịch vụ spa",
-      "Nhà hàng cao cấp",
-      "Dịch vụ đặc biệt",
-    ],
-    color: "#ed8702",
-  },
-  {
-    id: "D",
-    name: "Terminal D - Hạng thương gia",
-    gates: ["D1", "D2", "D3", "D4"],
-    facilities: [
-      "Phòng chờ hạng nhất",
-      "Dịch vụ spa",
-      "Nhà hàng cao cấp",
-      "Dịch vụ đặc biệt",
-    ],
-    color: "#ed6c02",
-  },
-];
-
-const airportGates: AirportGate[] = [
-  {
-    id: "A1",
-    terminal: "A",
-    status: "occupied",
-    flight: "VN 123",
-    destination: "Bangkok",
-  },
-  {
-    id: "A2",
-    terminal: "A",
-    status: "available",
-    flight: "VN 456",
-    destination: "Singapore",
-  },
-  { id: "A3", terminal: "A", status: "maintenance" },
-  { id: "A4", terminal: "A", status: "available" },
-  {
-    id: "A5",
-    terminal: "A",
-    status: "occupied",
-    flight: "QF 789",
-    destination: "Sydney",
-  },
-  { id: "A6", terminal: "A", status: "available" },
-  {
-    id: "A7",
-    terminal: "A",
-    status: "occupied",
-    flight: "JL 012",
-    destination: "Tokyo",
-  },
-  { id: "A8", terminal: "A", status: "available" },
-  {
-    id: "B1",
-    terminal: "B",
-    status: "occupied",
-    flight: "VN 345",
-    destination: "Hồ Chí Minh",
-  },
-  { id: "B2", terminal: "B", status: "available" },
-  {
-    id: "B3",
-    terminal: "B",
-    status: "occupied",
-    flight: "VN 678",
-    destination: "Đà Nẵng",
-  },
-  { id: "B4", terminal: "B", status: "maintenance" },
-  { id: "B5", terminal: "B", status: "available" },
-  {
-    id: "B6",
-    terminal: "B",
-    status: "occupied",
-    flight: "VJ 901",
-    destination: "Nha Trang",
-  },
-  {
-    id: "D1",
-    terminal: "D",
-    status: "occupied",
-    flight: "EK 123",
-    destination: "Dubai",
-  },
-  { id: "D2", terminal: "D", status: "available" },
-  {
-    id: "D3",
-    terminal: "D",
-    status: "occupied",
-    flight: "SQ 456",
-    destination: "London",
-  },
-  { id: "D4", terminal: "D", status: "maintenance" },
-];
+interface Facility {
+  id: string;
+  name: string;
+  type: string;
+  terminalId: string;
+  location?: string;
+  openingHours?: string;
+}
 
 const tabs: ITabItem[] = [
   { label: "Tất cả", value: "all", description: "Hiển thị toàn bộ terminal" },
   { label: "Khu A", value: "A", description: "Chỉ hiển thị khu A" },
   { label: "Khu B", value: "B", description: "Chỉ hiển thị khu B" },
   { label: "Khu C", value: "C", description: "Chỉ hiển thị khu C" },
-  { label: "Khu D", value: "D", description: "Chỉ hiển thị khu D" },
 ];
 
 // Styled components
 const TerminalContainer = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(3),
   marginBottom: theme.spacing(3),
+  position: "relative",
+  cursor: "pointer",
+  transition: "all 0.3s ease",
+  "&:hover": {
+    boxShadow: theme.shadows[4],
+    transform: "translateY(-2px)",
+  },
 }));
 
 const GateBox = styled(Box)<{ status: string }>(({ theme, status }) => {
@@ -182,35 +85,370 @@ const GateBox = styled(Box)<{ status: string }>(({ theme, status }) => {
     color,
     fontWeight: "bold",
     transition: "all 0.2s ease-in-out",
+    position: "relative",
     "&:hover": {
       opacity: 0.8,
+      transform: "scale(1.05)",
     },
   };
 });
 
-const FacilityChip = styled(Chip)(({ theme }) => ({
-  margin: theme.spacing(0.5),
-  backgroundColor: theme.palette.grey[100],
-  border: `1px solid ${theme.palette.grey[300]}`,
+const EditOverlay = styled(Box)(({ theme }) => ({
+  position: "absolute",
+  top: 8,
+  right: 8,
+  backgroundColor: "rgba(255, 255, 255, 0.9)",
+  borderRadius: "50%",
+  width: 32,
+  height: 32,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  cursor: "pointer",
+  opacity: 0,
+  transition: "all 0.3s ease",
+  "&:hover": {
+    backgroundColor: theme.palette.primary.main,
+    color: "white",
+  },
 }));
 
-// Main component
 const AirportDiagram: React.FC = () => {
   const [selectedTerminal, setSelectedTerminal] = useState<string>("all");
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [activeTab, setActiveTab] = useState(0);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogType, setDialogType] = useState<
+    "terminal" | "gate" | "facility"
+  >("terminal");
+  const [editingItem, setEditingItem] = useState<any>(null);
+  const [formData, setFormData] = useState({
+    name: "",
+    code: "",
+    status: "available",
+    type: "",
+    location: "",
+    openingHours: "",
+    flight: "",
+    destination: "",
+  });
 
-  const getGateStatusText = (status: string) => {
-    switch (status) {
-      case "occupied":
-        return "Đã có chuyến bay";
-      case "available":
-        return "Có sẵn";
-      case "maintenance":
-        return "Bảo trì";
-      default:
-        return status;
+  const getTerminalColor = (type: string): string => {
+    const colorMap: { [key: string]: string } = {
+      DOMESTIC: "#1976d2",
+      INTERNATIONAL: "#2e7d32",
+      BUSINESS: "#ed6c02",
+      CARGO: "#757575",
+    };
+    return colorMap[type] || "#9c27b0";
+  };
+
+  const getGateStatusText = (status: string): string => {
+    const statusMap: { [key: string]: string } = {
+      AVAILABLE: "Có sẵn",
+      OCCUPIED: "Đã có chuyến bay",
+      MAINTENANCE: "Đang bảo trì",
+      CLOSED: "Đã đóng",
+    };
+    return statusMap[status] || status;
+  };
+
+  const handleFacilityClick = (facility: Facility) => {
+    setDialogType("facility");
+    setEditingItem(facility);
+    // setFormData({
+    //   name: facility.name,
+    //   type: facility.type,
+    //   code: facility.id
+    //   // description: facility.description || '',
+    //   location: facility.location || '',
+    //   openingHours: facility.openingHours || '',
+    //   // terminalId: facility.terminalId
+    // });
+    setDialogOpen(true);
+  };
+
+  const { getTerminalData } = useGetTerminalData();
+  const handleTerminalClick = (terminal: Terminal) => {
+    setDialogType("terminal");
+    setEditingItem(terminal);
+    setFormData({
+      name: terminal.name,
+      code: terminal.id,
+      status: "available",
+      type: "",
+      location: "",
+      openingHours: "",
+      flight: "",
+      destination: "",
+    });
+    setDialogOpen(true);
+  };
+
+  const [form, setForm] = useState({
+    name: "",
+    type: "LOUNGE",
+    description: "",
+    terminalId: "",
+    location: "",
+    openingHours: "",
+  });
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleGateClick = (gate: AirportGate) => {
+    setDialogType("gate");
+    setEditingItem(gate);
+    setFormData({
+      name: "",
+      code: gate.id,
+      status: gate.status,
+      type: "",
+      location: "",
+      openingHours: "",
+      flight: gate.flight || "",
+      destination: gate.destination || "",
+    });
+    setDialogOpen(true);
+  };
+
+  const handleAddNew = (type: "gate" | "facility", terminalId: string) => {
+    setDialogType(type);
+    setEditingItem({ terminal: terminalId });
+    setFormData({
+      name: "",
+      code: "",
+      status: "available",
+      type: "",
+      location: "",
+      openingHours: "",
+      flight: "",
+      destination: "",
+    });
+    setDialogOpen(true);
+  };
+
+  const handleSubmit = async () => {
+    try {
+      if (dialogType === "gate") {
+        // const res = await
+      } else if (dialogType === "facility") {
+        // const res = await
+      } else if (dialogType === "terminal") {
+        // const res = await
+      }
+
+      if (true) {
+        setDialogOpen(false);
+        window.location.reload(); // Temporary solution
+      }
+    } catch (error) {
+      console.error("Error saving data:", error);
+    }
+  };
+
+  // const getGateStatusText = (status: string) => {
+  //   switch (status) {
+  //     case "occupied":
+  //       return "Đã có chuyến bay";
+  //     case "available":
+  //       return "Có sẵn";
+  //     case "maintenance":
+  //       return "Bảo trì";
+  //     default:
+  //       return status;
+  //   }
+  // };
+
+  const renderDialogContent = () => {
+    switch (dialogType) {
+      case "terminal":
+        return (
+          <>
+            <TextField
+              fullWidth
+              label="Tên Terminal"
+              value={formData.name}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
+              margin="normal"
+            />
+            <TextField
+              fullWidth
+              label="Mã Terminal"
+              value={formData.code}
+              onChange={(e) =>
+                setFormData({ ...formData, code: e.target.value })
+              }
+              margin="normal"
+            />
+          </>
+        );
+
+      case "gate":
+        return (
+          <>
+            <TextField
+              fullWidth
+              label="Mã Gate"
+              value={formData.code}
+              onChange={(e) =>
+                setFormData({ ...formData, code: e.target.value })
+              }
+              margin="normal"
+              required
+            />
+            <FormControl fullWidth margin="normal">
+              <InputLabel>Trạng thái</InputLabel>
+              <Select
+                value={formData.status}
+                onChange={(e) =>
+                  setFormData({ ...formData, status: e.target.value })
+                }
+                label="Trạng thái"
+              >
+                <MenuItem value="available">Có sẵn</MenuItem>
+                <MenuItem value="occupied">Đã có chuyến bay</MenuItem>
+                <MenuItem value="maintenance">Bảo trì</MenuItem>
+              </Select>
+            </FormControl>
+            <TextField
+              fullWidth
+              label="Chuyến bay"
+              value={formData.flight}
+              onChange={(e) =>
+                setFormData({ ...formData, flight: e.target.value })
+              }
+              margin="normal"
+            />
+            <TextField
+              fullWidth
+              label="Điểm đến"
+              value={formData.destination}
+              onChange={(e) =>
+                setFormData({ ...formData, destination: e.target.value })
+              }
+              margin="normal"
+            />
+          </>
+        );
+
+      case "facility":
+        return (
+          <>
+            <TextField
+              label="Name"
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+            />
+
+            <TextField
+              select
+              label="Type"
+              name="type"
+              value={form.type}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+            >
+              <MenuItem value="LOUNGE">Lounge</MenuItem>
+              <MenuItem value="RESTAURANT">Restaurant</MenuItem>
+              <MenuItem value="SHOP">Shop</MenuItem>
+              <MenuItem value="OTHER">Other</MenuItem>
+            </TextField>
+
+            <TextField
+              label="Description"
+              name="description"
+              value={form.description}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+              multiline
+              rows={3}
+            />
+
+            <TextField
+              label="Terminal ID"
+              name="terminalId"
+              value={form.terminalId}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+            />
+
+            <TextField
+              label="Location"
+              name="location"
+              value={form.location}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+            />
+
+            <TextField
+              label="Opening Hours"
+              name="openingHours"
+              value={form.openingHours}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+              placeholder="06:00 - 23:00"
+            />
+            {/* <TextField
+              fullWidth
+              label="Tên tiện nghi"
+              value={formData.name}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
+              margin="normal"
+              required
+            />
+            <FormControl fullWidth margin="normal">
+              <InputLabel>Loại tiện nghi</InputLabel>
+              <Select
+                value={formData.type}
+                onChange={(e) =>
+                  setFormData({ ...formData, type: e.target.value })
+                }
+                label="Loại tiện nghi"
+              >
+                <MenuItem value="RESTAURANT">Nhà hàng</MenuItem>
+                <MenuItem value="SHOP">Cửa hàng</MenuItem>
+                <MenuItem value="LOUNGE">Phòng chờ</MenuItem>
+                <MenuItem value="ATM">ATM</MenuItem>
+                <MenuItem value="WIFI">Wi-Fi</MenuItem>
+              </Select>
+            </FormControl>
+            <TextField
+              fullWidth
+              label="Vị trí"
+              value={formData.location}
+              onChange={(e) =>
+                setFormData({ ...formData, location: e.target.value })
+              }
+              margin="normal"
+            />
+            <TextField
+              fullWidth
+              label="Giờ mở cửa"
+              value={formData.openingHours}
+              onChange={(e) =>
+                setFormData({ ...formData, openingHours: e.target.value })
+              }
+              margin="normal"
+              placeholder="VD: 06:00-22:00"
+            /> */}
+          </>
+        );
     }
   };
 
@@ -226,12 +464,11 @@ const AirportDiagram: React.FC = () => {
           tabs={tabs}
         />
       </Stack>
-
       <Box sx={{ p: "8px" }}>
         <Typography variant="h6" gutterBottom>
           Chú thích
         </Typography>
-        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, mb: 2 }}>
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <Box
               sx={{
@@ -269,24 +506,38 @@ const AirportDiagram: React.FC = () => {
             <Typography variant="body2">Đang bảo trì</Typography>
           </Box>
         </Box>
+        <Alert severity="info">
+          Click vào terminal, gate hoặc tiện nghi để chỉnh sửa. Click nút "+" để
+          thêm mới.
+        </Alert>
       </Box>
 
-      {/* Terminal sections */}
-      {terminalSections
-        .filter((t) => selectedTerminal === "all" || t.id === selectedTerminal)
+      {getTerminalData?.list
+        ?.filter((t) => selectedTerminal === "all" || t.id === selectedTerminal)
         .map((terminal) => (
           <TerminalContainer
             key={terminal.id}
             elevation={2}
-            sx={{ borderLeftColor: terminal.color }}
+            sx={{ borderLeft: `4px solid ${getTerminalColor(terminal.type)}` }}
+            onClick={() => handleTerminalClick(terminal)}
           >
+            <EditOverlay
+              sx={{ opacity: 1 }}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleTerminalClick(terminal);
+              }}
+            >
+              <Edit fontSize="small" />
+            </EditOverlay>
+
             <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
               <Box
                 sx={{
                   width: 24,
                   height: 24,
                   borderRadius: "50%",
-                  backgroundColor: terminal.color,
+                  backgroundColor: getTerminalColor(terminal.type),
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -295,83 +546,179 @@ const AirportDiagram: React.FC = () => {
                   mr: 2,
                 }}
               >
-                {terminal.id}
+                {terminal.code} {/* Sửa từ terminal.id thành terminal.code */}
               </Box>
-              <Typography variant="h5" component="h2" color={terminal.color}>
-                {terminal.name}
+              <Typography
+                variant="h5"
+                component="h2"
+                color={getTerminalColor(terminal.type)}
+              >
+                {terminal.name} ({terminal.code}) - {terminal.airport.name}
+              </Typography>
+            </Box>
+
+            <Box sx={{ mb: 2 }}>
+              <Typography variant="body2" color="text.secondary">
+                {terminal.description} • {terminal.type} •{" "}
+                {terminal.airport.city}
               </Typography>
             </Box>
 
             <Grid container spacing={2}>
-              <Grid size={12} sx={{ md: 8 }}>
-                <Typography variant="h6" gutterBottom>
-                  Cổng ({terminal.gates.length} cổng)
-                </Typography>
-                <Grid container spacing={1}>
-                  {terminal.gates.map((gate) => {
-                    const gateInfo = airportGates.find((g) => g.id === gate);
-                    return (
-                      <Grid size={6} sx={{ sm: 4, md: 4 }} key={gate}>
-                        <GateBox status={gateInfo?.status || "available"}>
-                          <Typography variant="body2" fontWeight="bold">
-                            {gate}
-                          </Typography>
-                          {gateInfo?.flight && (
-                            <Typography variant="caption" display="block">
-                              {gateInfo.flight}
-                            </Typography>
-                          )}
-                          {gateInfo?.destination && (
-                            <Typography variant="caption" display="block">
-                              {gateInfo.destination}
-                            </Typography>
-                          )}
-                          <Typography variant="caption" display="block">
-                            {getGateStatusText(gateInfo?.status || "available")}
-                          </Typography>
-                        </GateBox>
-                      </Grid>
-                    );
-                  })}
-                </Grid>
-              </Grid>
-
-              <Grid size={12} sx={{ md: 4 }}>
-                <Typography variant="h6" gutterBottom>
-                  Tiện nghi
-                </Typography>
-                <Box>
-                  {terminal.facilities.map((facility) => (
-                    <FacilityChip
-                      key={facility}
-                      label={facility}
-                      size="small"
-                      variant="outlined"
-                    />
-                  ))}
+              <Grid size={8}>
+                <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                  <Typography variant="h6">
+                    Cổng ({terminal.gates.length} cổng)
+                  </Typography>
+                  <IconButton
+                    size="small"
+                    sx={{ ml: 1 }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleAddNew("gate", terminal.id);
+                    }}
+                  >
+                    <Add />
+                  </IconButton>
                 </Box>
 
-                <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
-                  Chỉ dẫn
-                </Typography>
-                <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-                  <Chip
-                    icon={<DirectionsWalk />}
-                    label="5 phút đi bộ từ quầy check-in"
-                    variant="outlined"
+                {terminal.gates.length > 0 ? (
+                  <Grid container spacing={1}>
+                    {terminal.gates.map((gate) => (
+                      <Grid size={4} key={gate.id}>
+                        <GateBox
+                          status={gate.status}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            // handleGateClick(gate);
+                          }}
+                        >
+                          <Typography variant="body2" fontWeight="bold">
+                            {gate.code} {/* Sửa từ gate.id thành gate.code */}
+                          </Typography>
+                          <Typography variant="caption" display="block">
+                            {getGateStatusText(gate.status)}
+                          </Typography>
+                          {/* Hiển thị thông tin flight assignment nếu có */}
+                          {/* {gate. && gate.assignments.length > 0 && (
+                      <Typography variant="caption" display="block">
+                        {gate.assignments[0].flight?.flightNumber}
+                      </Typography>
+                    )} */}
+                        </GateBox>
+                      </Grid>
+                    ))}
+                  </Grid>
+                ) : (
+                  <Box
+                    sx={{
+                      p: 2,
+                      textAlign: "center",
+                      bgcolor: "grey.50",
+                      borderRadius: 1,
+                    }}
+                  >
+                    <Typography variant="body2" color="text.secondary">
+                      Chưa có cổng nào. Click nút + để thêm cổng mới.
+                    </Typography>
+                  </Box>
+                )}
+              </Grid>
+
+              <Grid size={4}>
+                <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                  <Typography variant="h6">
+                    Tiện nghi ({terminal.facilities.length})
+                  </Typography>
+                  <IconButton
                     size="small"
-                  />
-                  <Chip
-                    icon={<LocalParking />}
-                    label="Bãi đỗ xe gần nhất: P2"
-                    variant="outlined"
-                    size="small"
-                  />
+                    sx={{ ml: 1 }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleAddNew("facility", terminal.id);
+                    }}
+                  >
+                    <Add />
+                  </IconButton>
+                </Box>
+
+                {terminal.facilities.length > 0 ? (
+                  <Box sx={{ mb: 2 }}>
+                    {terminal.facilities.map((facility) => (
+                      <Chip
+                        key={facility.id}
+                        label={
+                          <Box>
+                            <Typography variant="body2">
+                              {facility.name}
+                            </Typography>
+                            <Typography variant="caption" display="block">
+                              {facility.type}
+                            </Typography>
+                          </Box>
+                        }
+                        size="small"
+                        variant="outlined"
+                        sx={{ m: 0.5 }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleFacilityClick(facility);
+                        }}
+                      />
+                    ))}
+                  </Box>
+                ) : (
+                  <Box
+                    sx={{
+                      p: 2,
+                      textAlign: "center",
+                      bgcolor: "grey.50",
+                      borderRadius: 1,
+                    }}
+                  >
+                    <Typography variant="body2" color="text.secondary">
+                      Chưa có tiện nghi nào. Click nút + để thêm tiện nghi mới.
+                    </Typography>
+                  </Box>
+                )}
+
+                {/* Hiển thị thông tin airport */}
+                <Box sx={{ mt: 2, p: 2, bgcolor: "grey.50", borderRadius: 1 }}>
+                  <Typography variant="subtitle2" gutterBottom>
+                    Thông tin sân bay:
+                  </Typography>
+                  <Typography variant="body2">
+                    {terminal.airport.name} ({terminal.airport.code})
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {terminal.airport.city}, {terminal.airport.city}
+                  </Typography>
                 </Box>
               </Grid>
             </Grid>
           </TerminalContainer>
         ))}
+
+      {/* Dialog for Create/Update */}
+      <Dialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>
+          {editingItem?.id
+            ? `Chỉnh sửa ${dialogType}`
+            : `Thêm mới ${dialogType}`}
+        </DialogTitle>
+        <DialogContent>{renderDialogContent()}</DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDialogOpen(false)}>Hủy</Button>
+          <Button onClick={handleSubmit} variant="contained">
+            {editingItem?.id ? "Cập nhật" : "Tạo mới"}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };
