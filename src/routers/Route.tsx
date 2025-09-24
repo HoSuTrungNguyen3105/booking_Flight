@@ -23,8 +23,8 @@ import SecurityManage from "../common/Setting/hooks/SecurityManage";
 // import ProfileUser from "../common/Profile";
 import ManageMyInformation from "../common/Setting/ManageMyInformation";
 import ManageMyInfo from "../common/Setting/ManageMyInfo";
-import Special from "../common/Setting/hooks/Special";
-import FlightBooking from "../components/User/FlightBooking";
+// import Special from "../common/Setting/hooks/Special";
+// import FlightBooking from "../components/User/FlightBooking";
 import AircraftPage from "../components/User/AircraftPage";
 import UnlockRequestTable from "../common/DetailSection/UnlockRequestTable";
 import FlightPage from "../components/Admin/component/FlightPage";
@@ -48,7 +48,7 @@ import SendEmailToUsers from "../common/Setting/SendEmailToUsers";
 import CreateGateForm from "../components/User/CreateGateForm";
 import MealForm from "../common/Sample/MealForm";
 import FlightStatisticsPage from "../components/User/FlightStatisticsPage";
-import AirportSampleDiagram from "../components/User/AirportSampleDiagram";
+// import AirportSampleDiagram from "../components/User/AirportSampleDiagram";
 import FileUploadButtonWithValidation from "../components/Admin/modal/FileUploadButton";
 import FlightDetailPage from "../components/Admin/component/FlightDetail";
 import type { DataFlight } from "../utils/type";
@@ -175,10 +175,10 @@ const routes = [
         element: <Guard />,
         children: [{ index: true, element: <Hero /> }],
       },
-      {
-        path: "special",
-        element: <Special />,
-      },
+      // {
+      //   path: "special",
+      //   element: <Special />,
+      // },
       // {
       //   path: ROUTE_PATHS.FILE_UPLOAD.replace("/", ""),
       //   element: <FileUpload name="fileUploader" />,
@@ -287,10 +287,6 @@ const routes = [
         ),
       },
       {
-        path: "AirportSampleDiagram",
-        element: <AirportSampleDiagram />,
-      },
-      {
         path: ROUTE_PATHS.FOOD.replace("/", ""),
         element: <Food />,
       },
@@ -368,7 +364,7 @@ const routes = [
       },
       {
         path: "flight-book",
-        element: <FlightBooking />,
+        // element: <FlightBooking />,
       },
       {
         path: "manage-my-info",

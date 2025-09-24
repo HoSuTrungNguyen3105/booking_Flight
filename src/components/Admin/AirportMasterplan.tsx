@@ -1,18 +1,5 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Paper,
-  Typography,
-  Stack,
-  Chip,
-  Modal,
-  Card,
-  CardContent,
-  IconButton,
-  Grid,
-  Divider,
-} from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import { Box, Paper, Typography, Stack, Chip } from "@mui/material";
 import DetailTerminalModal from "./modal/DetailTerminalModal";
 
 export type AreaKey =

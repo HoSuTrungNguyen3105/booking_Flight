@@ -12,6 +12,7 @@ export enum MethodType {
 export interface ReqUserIDProps {
   id?: number;
 }
+
 export type CodeItem = {
   code: string;
   codeName?: string;
@@ -83,10 +84,44 @@ export type SearchType = FlightTimeFields &
   FlightLocationFields &
   Pick<DataFlight, "status" | "aircraftCode">;
 
-// export type CreateDataFlight = FlightTimeFields &
-//   FlightLocationFields &
-//   FlightBasicFields;
-// export type CreateDataFlight = <Flight>;
+export type FareConditions = "Business" | "Economy" | "Comfort";
+
+export type SearchTicketType = {
+  flightNo?: string;
+  from: string;
+  to: string;
+  departDate?: number;
+  returnDate?: number;
+  // passengers?: number;
+  flightType?: string;
+  cabinClass?: string; //"ECONOMY" | "BUSINESS" | "VIP"
+  aircraftCode?: string;
+  status?: string;
+  //| "scheduled"
+  // | "boarding"
+  // | "departed"
+  // | "arrived"
+  // | "delayed"
+  // | "cancelled";
+  minPrice?: number;
+  maxPrice?: number;
+  gate?: string;
+  terminal?: string;
+  minDelayMinutes?: number;
+  maxDelayMinutes?: number;
+  includeCancelled?: boolean;
+};
+
+interface MfaResponse {
+  userId: number;
+  hasVerified: string;
+  secret: string;
+  qrCodeDataURL: string;
+}
+
+export type MFAAuthResponse = DetailResponseMessage<MfaResponse>;
+
+export type TerminalResponse = DetailResponseMessage<Terminal>;
 
 export type AvailableAircraft = FlightTimeFields;
 
@@ -240,12 +275,7 @@ export enum UserRole {
   MONITOR = "MONITOR",
 }
 
-export enum GateStatus {
-  AVAILABLE = "AVAILABLE",
-  OCCUPIED = "OCCUPIED",
-  MAINTENANCE = "MAINTENANCE",
-  CLOSED = "CLOSED",
-}
+export type GateStatus = "AVAILABLE" | "OCCUPIED" | "MAINTENANCE" | "CLOSED";
 
 export type CreateGateReq = {
   code: string;

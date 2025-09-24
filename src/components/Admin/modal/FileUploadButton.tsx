@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { memo, useState } from "react";
 import {
   FileUploadButton,
   type FileUploadButtonProps,
@@ -54,4 +54,4 @@ export const FileUploadButtonWithValidation = ({
   );
 };
 
-export default FileUploadButtonWithValidation;
+export default memo(FileUploadButtonWithValidation);

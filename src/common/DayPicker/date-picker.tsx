@@ -1,176 +1,88 @@
-import React from "react";
+import { useState } from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import clsx from "clsx";
-import moment from "moment";
-import { Box } from "@mui/material";
-import Calendar from "@mui/icons-material/Event";
-import "./_datepicker.scss";
-import "./_displaydatepicker.scss";
-import DatePickerFunc from ".";
-import type { DatePickerProps, ValueDate } from "./type";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+import { Box, Typography } from "@mui/material";
+import moment, { type Moment } from "moment";
+import InputTextField from "../Input/InputTextField";
+import ChevronRightSharpIcon from "@mui/icons-material/ChevronRightSharp";
 
-export const DatePickerMonth = ({
-  value,
-  onChange,
-  disabled,
-  inputClassName,
-  readOnly,
-  format = "YYYY.MM",
-  minDate,
-  maxDate,
-  status = "default",
-  size = "medium",
-}: Omit<DatePickerProps, "usecase">) => {
-  return (
-    <Box
-      className={clsx(
-        "datemonthpicker datemonthpicker-container ",
-        inputClassName,
-        {
-          "small-size": size === "small",
-          "medium-size": size === "medium",
-          "large-size": size === "large",
-        }
-      )}
-      sx={{ display: "flex", flexDirection: "column", gap: 2, width: "10rem" }}
-    >
-      <LocalizationProvider dateAdapter={AdapterMoment}>
-        <DatePicker
-          value={value ? moment(value) : null}
-          onChange={(newValue) => {
-            onChange?.(newValue?.toISOString() ?? null);
-          }}
-          views={["month"]}
-          format={format}
-          disabled={disabled}
-          enableAccessibleFieldDOMStructure={false} // ← quan trọng
-          readOnly={readOnly}
-          minDate={minDate ? moment(minDate) : undefined}
-          maxDate={maxDate ? moment(maxDate) : undefined}
-          slotProps={{
-            inputAdornment: {
-              position: "start",
-              children: <Calendar />,
-            },
-            field: { clearable: true },
-            toolbar: { hidden: true },
-          }}
-          className={clsx("datemonthpicker-datepicker-input", status)}
-        />
-      </LocalizationProvider>
-    </Box>
-  );
-};
-export const DatePickerYear = ({
-  size,
-  value,
-  onChange,
-  disabled,
-  inputClassName,
-  readOnly,
-  format = "YYYY",
-  minDate,
-  maxDate,
-  status = "default",
-}: Omit<DatePickerProps, "usecase">) => {
-  return (
-    <Box
-      className={clsx("dateyearpicker-container", inputClassName, {
-        "small-size": size === "small",
-        "medium-size": size === "medium",
-        "large-size": size === "large",
-      })}
-      sx={{ display: "flex", flexDirection: "column", gap: 2, width: "10rem" }}
-    >
-      <LocalizationProvider dateAdapter={AdapterMoment}>
-        <DatePicker
-          value={value ? moment(value) : null}
-          onChange={(newValue) => {
-            onChange?.(newValue?.toISOString() ?? null);
-          }}
-          views={["year"]}
-          format={format}
-          disabled={disabled}
-          readOnly={readOnly}
-          minDate={minDate ? moment(minDate) : undefined}
-          maxDate={maxDate ? moment(maxDate) : undefined}
-          slotProps={{
-            inputAdornment: {
-              position: "start",
-              children: <Calendar />,
-            },
-            field: { clearable: true },
-            toolbar: { hidden: true },
-          }}
-          className={clsx("datepicker-input", status)}
-        />
-      </LocalizationProvider>
-    </Box>
-  );
+type TimePickerProps = {
+  value: string;
+  onChange: (val: string) => void;
 };
 
-interface Props {
-  language: "en" | "ko";
-}
-
-export const OnlyDatePicker: React.FC<Props> = ({ language }) => {
-  const [selectedDate, setSelectedDate] = React.useState<moment.Moment | null>(
-    null
+export const OpeningHoursPicker = ({ value, onChange }: TimePickerProps) => {
+  const [startTime, setStartTime] = useState<Moment | null>(
+    moment(value.split(" - ")[0], "HH:mm")
+  );
+  const [endTime, setEndTime] = useState<Moment | null>(
+    moment(value.split(" - ")[1], "HH:mm")
   );
 
-  React.useEffect(() => {
-    moment.locale(language);
-  }, [language]);
-
-  return (
-    <Box
-      className={clsx("onlydatepicker-container")}
-      sx={{ display: "flex", flexDirection: "column", gap: 2, width: "10rem" }}
-    >
-      <DatePickerFunc
-        usecase="date"
-        size="medium"
-        className="MuiPickersDay-root datepicker"
-        format="YYYY.MM.DD"
-        value={selectedDate ? selectedDate.toISOString() : null}
-        // minDate={moment().toDate()}
-        // maxDate={moment().add(1, 'year').toDate()}
-        onChange={(value) => setSelectedDate(value ? moment(value) : null)}
-      />
-    </Box>
-  );
-};
-
-export const BasicDateField = () => {
-  const handleDateChange = (date: ValueDate) => {
-    console.log("Selected Date:", date);
-  };
-
-  const datePickerProps: DatePickerProps = {
-    usecase: "date",
-    size: "medium",
-    value: null,
-    disabled: false,
-    readOnly: false,
-    status: "default",
-    format: "YYYY.MM.DD",
-    onChange: handleDateChange,
+  const handleUpdate = (start: Moment | null, end: Moment | null) => {
+    const formatted = `${start?.format("HH:mm") || "00:00"} - ${
+      end?.format("HH:mm") || "00:00"
+    }`;
+    onChange(formatted);
   };
 
   return (
-    <Box
-      sx={{ display: "flex", flexDirection: "column", gap: 2, width: "10rem" }}
-    >
-      <DatePickerFunc {...datePickerProps} />
-    </Box>
+    <LocalizationProvider dateAdapter={AdapterMoment}>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        <TimePicker
+          label="Mở"
+          value={startTime}
+          onChange={(newValue) => {
+            setStartTime(newValue);
+            handleUpdate(newValue, endTime);
+          }}
+          slotProps={{
+            textField: {
+              size: "small",
+              sx: {
+                height: "40px", // chỉnh cho bằng InputTextField
+                "& .MuiInputBase-root": {
+                  height: "100%",
+                },
+                "& input": {
+                  padding: "4px 8px", // chỉnh padding cho khớp
+                },
+              },
+            },
+          }}
+        />
+        <Typography>-</Typography>
+        <TimePicker
+          label="Đóng"
+          value={endTime}
+          onChange={(newValue) => {
+            setEndTime(newValue);
+            handleUpdate(startTime, newValue);
+          }}
+          slotProps={{
+            textField: {
+              size: "small",
+              sx: {
+                height: "40px", // chỉnh cho bằng InputTextField
+                "& .MuiInputBase-root": {
+                  height: "100%",
+                },
+                "& input": {
+                  padding: "4px 8px", // chỉnh padding cho khớp
+                },
+              },
+            },
+          }}
+        />
+        <ChevronRightSharpIcon />
+        <InputTextField
+          sx={{ width: "15rem", height: "90%" }}
+          value={value}
+          readOnly
+          placeholder="00:00 - 00:00"
+        />
+      </Box>
+    </LocalizationProvider>
   );
-};
-
-export default {
-  DatePickerMonth,
-  DatePickerYear,
-  OnlyDatePicker,
-  BasicDateField,
 };

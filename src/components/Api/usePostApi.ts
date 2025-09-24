@@ -21,14 +21,11 @@ import {
   MethodType,
   type MealResponse,
   type FlightAircraftResponse,
+  type GateStatus,
+  type MFAAuthResponse,
+  type TerminalResponse,
 } from "../../utils/type.ts";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
-import type {
-  FlightDetailResponse,
-  MFAAuthResponse,
-  SearchTicketType,
-  TerminalResponse,
-} from "../User/type.ts";
 import { useFetch } from "../../context/use[custom]/useFetch.ts";
 import type { FlightFormData } from "../../common/Sample/FlightUpdateModal.tsx";
 import type { SearchFlightDto } from "../Admin/Search_layout.tsx";
@@ -174,21 +171,6 @@ export const useSearchFlight = () => {
     isValid,
   };
 };
-
-// export const useSearchFlight = () => {
-//   const {
-//     data: searchFlightList,
-//     refetch: refetchSearchFlightList,
-//   } = useFetch<SearchFlightResponse, SearchFlightDto>({
-//     url: "/sys/flights/search",
-//     autoFetch: false,
-//     config: postMethod,
-//   });
-//   return {
-//     searchFlightList,
-//     refetchSearchFlightList,
-//   };
-// };
 
 export const useFlightById = ({ id }: FlightId) => {
   const isValid = !!id;
@@ -386,22 +368,6 @@ export const useSelectIdFlight = (id: string | number | undefined) => {
   };
 };
 
-// export const useFlightBooking = (flightParams: UserSearchType) => {
-//   const { data: flightBookingData, refetch: refetchFlightBookingDataData } =
-//     useFetch<FlightDetailResponse, UserSearchType>({
-//       url: "/ticket/getFlightList",
-//       params: {
-//         ...flightParams,
-//       },
-//       defaultValue: { resultCode: "", resultMessage: "" },
-//       autoFetch: false,
-//       config: postMethod,
-//     });
-//   return {
-//     flightBookingData,
-//     refetchFlightBookingDataData,
-//   };
-// };
 export interface CreateSeatDto {
   flightId: number;
   seatRow?: string;
@@ -502,6 +468,25 @@ export const useSetUpMfa = () => {
   return {
     setUpMfa,
     refetchSetUpMfa,
+  };
+};
+export type CreateGateProps = {
+  code: string;
+  terminalId: string;
+  status?: GateStatus;
+};
+
+export const useCreateGate = () => {
+  const { refetch: refetchCreateGate } = useFetch<
+    ResponseMessage,
+    CreateGateProps
+  >({
+    url: "/auth/setmfa",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchCreateGate,
   };
 };
 

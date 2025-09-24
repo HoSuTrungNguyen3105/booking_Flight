@@ -15,7 +15,6 @@ import { sumBy } from "lodash";
 import { INPUT_TYPE, type FileUploaderProps, type TFileUploader } from "./type";
 import { concatStrings, getFileInformation, sizeToBytes } from "../../utils";
 import { Image } from "@mui/icons-material";
-import ContentModal from "../Modal/ContentModal";
 
 const FilePreview = ({
   files,
@@ -348,7 +347,7 @@ export const FileUpload: FC<FileUploaderProps> = ({
           closeImageModal={closeImageModal}
         />
 
-        <ContentModal
+        {/* <ContentModal
           open={openImage}
           closeLabel="Exit"
           hideSubmit={true}
@@ -366,7 +365,7 @@ export const FileUpload: FC<FileUploaderProps> = ({
               "None Image"
             )
           }
-        />
+        /> */}
       </Box>
     </Box>
   );

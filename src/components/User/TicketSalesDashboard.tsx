@@ -150,8 +150,6 @@ const statsData = {
 };
 
 const TicketSalesDashboard: React.FC = () => {
-  const theme = useTheme();
-
   return (
     <Box sx={{ p: 3, bgcolor: "grey.50", minHeight: "100vh" }}>
       <Grid container spacing={3}>

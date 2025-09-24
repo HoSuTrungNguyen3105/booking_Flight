@@ -66,7 +66,7 @@ const CustomPopover: React.FC<IButtonSettingProps> = ({
               sx={{
                 padding: "8px 12px",
                 borderRadius: "6px",
-                cursor: "pointer",
+                cursor: "default",
                 "&:hover": {
                   backgroundColor: "action.hover",
                 },
@@ -78,6 +78,17 @@ const CustomPopover: React.FC<IButtonSettingProps> = ({
               {item}
             </Box>
           ))}
+          <Button
+            variant="contained"
+            fullWidth
+            sx={{ mt: 1 }}
+            onClick={() => {
+              handleAction?.(null); // hoặc truyền options nếu cần
+              handleClose();
+            }}
+          >
+            Submit
+          </Button>
         </Box>
       </StyledPopover>
     </>

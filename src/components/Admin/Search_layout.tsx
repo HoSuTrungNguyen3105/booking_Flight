@@ -27,7 +27,7 @@ import {
 } from "@mui/icons-material";
 import FlightDetail from "./component/FlightDetail.tsx";
 import TableSection from "../../common/Setting/TableSection.tsx";
-import ConfirmPasswordToCallApi from "../User/ConfirmPasswordToCallApi.tsx";
+import ConfirmPasswordToCallApi from "../../context/common/ConfirmPasswordToCallApi.tsx";
 import { useToast } from "../../context/ToastContext.tsx";
 import type { IDetailItem } from "../../common/DetailSection/index.tsx";
 import DetailSection from "../../common/DetailSection/index.tsx";

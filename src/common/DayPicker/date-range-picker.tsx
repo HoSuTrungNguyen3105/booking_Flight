@@ -16,55 +16,23 @@ const DateTimePickerComponent: React.FC<Props> = ({
   onChange,
   value,
 }) => {
-  const [date, setDate] = useState<Moment>(moment(0)); // default = 0
-  const [isInitialized, setIsInitialized] = useState(false);
+  const [date, setDate] = useState<Moment | null>(null);
 
-  // Cập nhật locale
+  // sync value từ props
   useEffect(() => {
-    if (moment.locale() !== language) {
-      moment.locale(language);
-    }
-  }, [language]);
-
-  // Khởi tạo giá trị ban đầu
-  useEffect(() => {
-    if (isInitialized) return;
-
-    let initialDate: Moment;
-
-    if (value !== undefined && value > 0) {
-      const momentDate = moment(value * 1000);
-      initialDate = momentDate.isValid() ? momentDate : moment(0);
+    if (value) {
+      const momentDate = moment(value); // giữ nguyên ms
+      setDate(momentDate.isValid() ? momentDate : null);
     } else {
-      initialDate = moment(0);
+      setDate(null);
     }
+  }, [value]);
 
-    setDate(initialDate);
-    setIsInitialized(true);
-
-    // Gọi onChange ngay lần đầu để đảm bảo set 0 khi chưa có
-    if (onChange) {
-      onChange(
-        initialDate.isValid()
-          ? Number((initialDate.valueOf() / 1000).toFixed(3))
-          : 0
-      );
-    }
-  }, [value, isInitialized, onChange]);
-
-  // Callback thay đổi giá trị
   const handleChange = useCallback(
-    (newValue: unknown) => {
-      const momentValue = newValue as Moment | null;
-      const validDate =
-        momentValue && momentValue.isValid() ? momentValue : moment(0);
-
-      setDate(validDate);
-
-      if (onChange) {
-        const timestampMs = validDate.valueOf();
-        const decimalValue = Number((timestampMs / 1000).toFixed(3));
-        onChange(decimalValue);
+    (newValue: Moment | null) => {
+      setDate(newValue);
+      if (onChange && newValue?.isValid()) {
+        onChange(newValue.valueOf()); // trả ms
       }
     },
     [onChange]
@@ -76,10 +44,6 @@ const DateTimePickerComponent: React.FC<Props> = ({
       ? koKR.components.MuiLocalizationProvider.defaultProps.localeText
       : enUS.components.MuiLocalizationProvider.defaultProps.localeText;
   }, [language]);
-
-  if (!isInitialized) {
-    return <TextField label="Loading date..." disabled fullWidth />;
-  }
 
   return (
     <LocalizationProvider dateAdapter={AdapterMoment} localeText={localeText}>

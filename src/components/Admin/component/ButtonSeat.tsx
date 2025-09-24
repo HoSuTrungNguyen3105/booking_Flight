@@ -142,7 +142,6 @@ const ButtonSeat: React.FC<ButtonSeatProps> = ({
   );
 };
 
-// Chỉ re-render khi seat hoặc selectedSeats thay đổi
 export default memo(ButtonSeat, (prev, next) => {
   return prev.seat === next.seat && prev.selectedSeats === next.selectedSeats;
 });

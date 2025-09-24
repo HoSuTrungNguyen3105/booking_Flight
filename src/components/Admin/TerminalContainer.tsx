@@ -5,8 +5,6 @@ import {
   Typography,
   Grid,
   Chip,
-  useTheme,
-  useMediaQuery,
   styled,
   Stack,
   Dialog,
@@ -24,15 +22,26 @@ import {
 } from "@mui/material";
 import { Edit, Add } from "@mui/icons-material";
 import TabPanel, { type ITabItem } from "../../common/Setting/TabPanel";
-import { useGetTerminalData } from "../Api/usePostApi";
-import type { Terminal } from "../../utils/type";
+import {
+  useCreateGate,
+  useGetTerminalData,
+  type CreateGateProps,
+} from "../Api/usePostApi";
+import { FacilityType, type GateStatus, type Terminal } from "../../utils/type";
+import InputTextField from "../../common/Input/InputTextField";
+import SelectDropdown from "../../common/Dropdown/SelectDropdown";
+import { OpeningHoursPicker } from "../../common/DayPicker/date-picker";
+import LabeledCheckbox from "../../common/Checkbox/LabeledCheckbox";
+import { Checkbox } from "../../common/Checkbox/Checkbox";
 
 interface AirportGate {
   id: string;
-  terminal: string;
-  status: "available" | "occupied" | "maintenance";
+  code: string;
+  terminalId: string;
+  status: GateStatus;
+  createdAt: number;
+  updatedAt: number;
   flight?: string;
-  destination?: string;
 }
 
 interface Facility {
@@ -120,6 +129,8 @@ const AirportDiagram: React.FC = () => {
   const [dialogType, setDialogType] = useState<
     "terminal" | "gate" | "facility"
   >("terminal");
+  const { getTerminalData } = useGetTerminalData();
+  const { refetchCreateGate } = useCreateGate();
   const [editingItem, setEditingItem] = useState<any>(null);
   const [formData, setFormData] = useState({
     name: "",
@@ -129,7 +140,12 @@ const AirportDiagram: React.FC = () => {
     location: "",
     openingHours: "",
     flight: "",
-    destination: "",
+  });
+
+  const [gateForm, setGateForm] = useState<CreateGateProps>({
+    terminalId: "",
+    code: "",
+    status: "AVAILABLE",
   });
 
   const getTerminalColor = (type: string): string => {
@@ -155,19 +171,9 @@ const AirportDiagram: React.FC = () => {
   const handleFacilityClick = (facility: Facility) => {
     setDialogType("facility");
     setEditingItem(facility);
-    // setFormData({
-    //   name: facility.name,
-    //   type: facility.type,
-    //   code: facility.id
-    //   // description: facility.description || '',
-    //   location: facility.location || '',
-    //   openingHours: facility.openingHours || '',
-    //   // terminalId: facility.terminalId
-    // });
     setDialogOpen(true);
   };
 
-  const { getTerminalData } = useGetTerminalData();
   const handleTerminalClick = (terminal: Terminal) => {
     setDialogType("terminal");
     setEditingItem(terminal);
@@ -179,40 +185,64 @@ const AirportDiagram: React.FC = () => {
       location: "",
       openingHours: "",
       flight: "",
-      destination: "",
     });
     setDialogOpen(true);
   };
 
-  const [form, setForm] = useState({
+  const [facilities, setFacilities] = useState({
     name: "",
     type: "LOUNGE",
     description: "",
     terminalId: "",
     location: "",
-    openingHours: "",
+    openingHours: "00:00 - 00:00", // thêm trường này
   });
 
+  const [checked, setChecked] = React.useState(false);
+
+  const facilityTypeOptions = [
+    { value: FacilityType.RESTAURANT, label: "Restaurant" },
+    { value: FacilityType.SHOP, label: "Shop" },
+    { value: FacilityType.LOUNGE, label: "Lounge" },
+    { value: FacilityType.ATM, label: "ATM" },
+    { value: FacilityType.WIFI, label: "WiFi Zone" },
+    { value: FacilityType.CHARGING_STATION, label: "Charging Station" },
+    { value: FacilityType.INFORMATION, label: "Information Desk" },
+    { value: FacilityType.MEDICAL, label: "Medical Facility" },
+    { value: FacilityType.PRAYER_ROOM, label: "Prayer Room" },
+    { value: FacilityType.SMOKING_AREA, label: "Smoking Area" },
+  ];
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    setFacilities({ ...facilities, [e.target.name]: e.target.value });
   };
+
+  // const handleSelectChange = (e: string) => {
+  //   const { name, value } = e.;
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     [name]: value,
+  //   }));
+  // };
 
   const handleGateClick = (gate: AirportGate) => {
     setDialogType("gate");
     setEditingItem(gate);
-    setFormData({
-      name: "",
+    setGateForm({
       code: gate.id,
       status: gate.status,
-      type: "",
-      location: "",
-      openingHours: "",
-      flight: gate.flight || "",
-      destination: gate.destination || "",
+      terminalId: gate.flight || "",
     });
     setDialogOpen(true);
+  };
+
+  // value có thể là string hoặc number
+  const handleSelectChange = (name: string, value: string | number) => {
+    setFacilities((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleAddNew = (type: "gate" | "facility", terminalId: string) => {
@@ -226,7 +256,6 @@ const AirportDiagram: React.FC = () => {
       location: "",
       openingHours: "",
       flight: "",
-      destination: "",
     });
     setDialogOpen(true);
   };
@@ -234,34 +263,16 @@ const AirportDiagram: React.FC = () => {
   const handleSubmit = async () => {
     try {
       if (dialogType === "gate") {
-        // const res = await
+        // const res = await refetchCreateGate({});
       } else if (dialogType === "facility") {
         // const res = await
       } else if (dialogType === "terminal") {
         // const res = await
       }
-
-      if (true) {
-        setDialogOpen(false);
-        window.location.reload(); // Temporary solution
-      }
     } catch (error) {
       console.error("Error saving data:", error);
     }
   };
-
-  // const getGateStatusText = (status: string) => {
-  //   switch (status) {
-  //     case "occupied":
-  //       return "Đã có chuyến bay";
-  //     case "available":
-  //       return "Có sẵn";
-  //     case "maintenance":
-  //       return "Bảo trì";
-  //     default:
-  //       return status;
-  //   }
-  // };
 
   const renderDialogContent = () => {
     switch (dialogType) {
@@ -292,20 +303,14 @@ const AirportDiagram: React.FC = () => {
       case "gate":
         return (
           <>
-            <TextField
-              fullWidth
-              label="Mã Gate"
-              value={formData.code}
-              onChange={(e) =>
-                setFormData({ ...formData, code: e.target.value })
-              }
-              margin="normal"
-              required
+            <InputTextField
+              value={gateForm.code}
+              onChange={(e) => setFormData({ ...formData, code: e })}
             />
             <FormControl fullWidth margin="normal">
               <InputLabel>Trạng thái</InputLabel>
               <Select
-                value={formData.status}
+                value={gateForm.status}
                 onChange={(e) =>
                   setFormData({ ...formData, status: e.target.value })
                 }
@@ -319,18 +324,9 @@ const AirportDiagram: React.FC = () => {
             <TextField
               fullWidth
               label="Chuyến bay"
-              value={formData.flight}
+              value={gateForm.terminalId}
               onChange={(e) =>
                 setFormData({ ...formData, flight: e.target.value })
-              }
-              margin="normal"
-            />
-            <TextField
-              fullWidth
-              label="Điểm đến"
-              value={formData.destination}
-              onChange={(e) =>
-                setFormData({ ...formData, destination: e.target.value })
               }
               margin="normal"
             />
@@ -343,31 +339,22 @@ const AirportDiagram: React.FC = () => {
             <TextField
               label="Name"
               name="name"
-              value={form.name}
+              value={facilities.name}
               onChange={handleChange}
               fullWidth
               margin="normal"
             />
 
-            <TextField
-              select
-              label="Type"
-              name="type"
-              value={form.type}
-              onChange={handleChange}
-              fullWidth
-              margin="normal"
-            >
-              <MenuItem value="LOUNGE">Lounge</MenuItem>
-              <MenuItem value="RESTAURANT">Restaurant</MenuItem>
-              <MenuItem value="SHOP">Shop</MenuItem>
-              <MenuItem value="OTHER">Other</MenuItem>
-            </TextField>
+            <SelectDropdown
+              value={facilities.type}
+              onChange={(value) => handleSelectChange("type", value)}
+              options={facilityTypeOptions}
+            />
 
             <TextField
               label="Description"
               name="description"
-              value={form.description}
+              value={facilities.description}
               onChange={handleChange}
               fullWidth
               margin="normal"
@@ -378,7 +365,7 @@ const AirportDiagram: React.FC = () => {
             <TextField
               label="Terminal ID"
               name="terminalId"
-              value={form.terminalId}
+              value={facilities.terminalId}
               onChange={handleChange}
               fullWidth
               margin="normal"
@@ -387,66 +374,17 @@ const AirportDiagram: React.FC = () => {
             <TextField
               label="Location"
               name="location"
-              value={form.location}
+              value={facilities.location}
               onChange={handleChange}
               fullWidth
               margin="normal"
             />
-
-            <TextField
-              label="Opening Hours"
-              name="openingHours"
-              value={form.openingHours}
-              onChange={handleChange}
-              fullWidth
-              margin="normal"
-              placeholder="06:00 - 23:00"
-            />
-            {/* <TextField
-              fullWidth
-              label="Tên tiện nghi"
-              value={formData.name}
-              onChange={(e) =>
-                setFormData({ ...formData, name: e.target.value })
-              }
-              margin="normal"
-              required
-            />
-            <FormControl fullWidth margin="normal">
-              <InputLabel>Loại tiện nghi</InputLabel>
-              <Select
-                value={formData.type}
-                onChange={(e) =>
-                  setFormData({ ...formData, type: e.target.value })
-                }
-                label="Loại tiện nghi"
-              >
-                <MenuItem value="RESTAURANT">Nhà hàng</MenuItem>
-                <MenuItem value="SHOP">Cửa hàng</MenuItem>
-                <MenuItem value="LOUNGE">Phòng chờ</MenuItem>
-                <MenuItem value="ATM">ATM</MenuItem>
-                <MenuItem value="WIFI">Wi-Fi</MenuItem>
-              </Select>
-            </FormControl>
-            <TextField
-              fullWidth
-              label="Vị trí"
-              value={formData.location}
-              onChange={(e) =>
-                setFormData({ ...formData, location: e.target.value })
-              }
-              margin="normal"
-            />
-            <TextField
-              fullWidth
-              label="Giờ mở cửa"
+            <OpeningHoursPicker
               value={formData.openingHours}
-              onChange={(e) =>
-                setFormData({ ...formData, openingHours: e.target.value })
+              onChange={(val) =>
+                setFormData((prev) => ({ ...prev, openingHours: val }))
               }
-              margin="normal"
-              placeholder="VD: 06:00-22:00"
-            /> */}
+            />
           </>
         );
     }
@@ -546,7 +484,7 @@ const AirportDiagram: React.FC = () => {
                   mr: 2,
                 }}
               >
-                {terminal.code} {/* Sửa từ terminal.id thành terminal.code */}
+                {terminal.code}
               </Box>
               <Typography
                 variant="h5"
@@ -698,8 +636,6 @@ const AirportDiagram: React.FC = () => {
             </Grid>
           </TerminalContainer>
         ))}
-
-      {/* Dialog for Create/Update */}
       <Dialog
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}

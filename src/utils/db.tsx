@@ -21,7 +21,6 @@ type SideBarValueTypes =
   | "flightSchedule"
   | "ChatApp"
   | "FlightStatisticsPage"
-  | "TerminalContainer"
   | "flightStatus"
   | "flightManagement"
   | "airplaneManagement"
@@ -40,6 +39,7 @@ type SideBarValueTypes =
   | "special"
   | "data-secure"
   | "airports"
+  | "SendEmailToUsers"
   | "airport-list"
   | "domestic"
   | "users"
@@ -47,6 +47,12 @@ type SideBarValueTypes =
   | "user-list"
   | "customers"
   | "unlock_request"
+  | "facilities"
+  | "TerminalContainer"
+  | "AirportManagementDetail"
+  | "TerminalGateContainer"
+  | "AirportManagement"
+  | "TerminalGateContainer"
   | "notifications"
   | "sampleDatePicker"
   | "payroll-management";
@@ -82,12 +88,12 @@ export const menuData: MenuSection[] = [
           },
           { id: "TerminalContainer", label: " TerminalContainer" },
           { id: "ChatApp", label: "ChatApp" },
-          { id: "SeatLayout", label: "SeatLayout" },
-          { id: "food", label: "Button", icon: <GppBadIcon /> },
+          { id: "facilities", label: "facilities" },
+          { id: "food", label: "food", icon: <GppBadIcon /> },
           { id: "notifications", label: "notifications", icon: <GppBadIcon /> },
           {
             id: "service",
-            label: "Timepicker",
+            label: "service",
             icon: <WifiPasswordRoundedIcon />,
           },
           {
@@ -98,6 +104,11 @@ export const menuData: MenuSection[] = [
           {
             id: "setting",
             label: "Bảng mẫu",
+            icon: <OtherHousesTwoToneIcon />,
+          },
+          {
+            id: "TerminalGateContainer",
+            label: "TerminalGateContainer",
             icon: <OtherHousesTwoToneIcon />,
           },
           {
@@ -128,6 +139,9 @@ export const menuData: MenuSection[] = [
               { id: "ChatApp", label: "ChatApp" },
               { id: "sampleDatePicker", label: "secure" },
               { id: "payroll-management", label: "Quản lý bảng lương" },
+              { id: "TerminalContainer", label: "ChatApp" },
+              { id: "AirportManagementDetail", label: "secure" },
+              { id: "AirportManagement", label: "Quản lý bảng lương" },
             ],
           },
         ],
@@ -145,6 +159,7 @@ export const menuData: MenuSection[] = [
               { id: "special", label: "Nhân viên" },
               { id: "message", label: "message" },
               { id: "aircraft", label: "aircraft" },
+              { id: "SendEmailToUsers", label: "SendEmailToUsers" },
             ],
           },
         ],

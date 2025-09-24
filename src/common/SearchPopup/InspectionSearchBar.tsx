@@ -1,8 +1,6 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
-// import CalendarCard from 'components/molecules/CalendarCard';
 import { memo, useCallback, useState } from "react";
 import { DateFormatEnum, formatDateKR } from "../../hooks/format";
-// import { DateFormatEnum, formatDateKR } from 'utils/date';
 
 export interface ISearchQuery {
   startDate: number | string;
@@ -31,14 +29,6 @@ const InspectionSearchBar = ({
     endDate as number
   );
 
-  const handleStartDateChange = useCallback((value: string | number) => {
-    setValueStartDate(value);
-  }, []);
-
-  const handleEndDateChange = useCallback((value: string) => {
-    setValueEndDate(value);
-  }, []);
-
   return (
     <Stack
       gap={2}
@@ -52,11 +42,6 @@ const InspectionSearchBar = ({
       <Stack alignItems="center" sx={{ flex: 16 }}>
         <Stack direction="row" gap={2} alignItems="center" width="100%">
           <Box sx={{ flex: 1 }}>
-            {/* <CalendarCard
-              placeholder="Start time"
-              value={formatDateKR(DateFormatEnum.YYYY_MM_DD_HH_MM_SS, valueStartDate as number)}
-              onChange={handleStartDateChange}
-            /> */}
             <Typography>
               {formatDateKR(
                 DateFormatEnum.YYYY_MM_DD_HH_MM_SS,
@@ -66,11 +51,6 @@ const InspectionSearchBar = ({
           </Box>
           -
           <Box sx={{ flex: 1 }}>
-            {/* <CalendarCard
-              placeholder="End time"
-              value={formatDateKR(DateFormatEnum.YYYY_MM_DD_HH_MM_SS, valueEndDate as number)}
-              onChange={handleEndDateChange}
-            /> */}
             <Typography>
               {formatDateKR(
                 DateFormatEnum.YYYY_MM_DD_HH_MM_SS,

@@ -1,8 +1,7 @@
-import { Box, Stack, Tab, Tabs, Typography } from "@mui/material";
+import { Box, Button, Stack, Tab, Tabs, Typography } from "@mui/material";
 import type { GridColDef, GridSortModel } from "@mui/x-data-grid";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import DataTable, { type GridRowDef } from "../DataGrid/index";
-import { Button } from "../Button/Button";
 import SearchIcon from "../../svgs/phone.png";
 import Pagination from "../DataGrid/Pagination";
 import SearchBar from "../CustomRender/SearchBar";
@@ -144,10 +143,7 @@ const InspectionSection = ({
                 {rows.length}
               </Typography>
             </Typography>
-            <Button
-              onClick={() => handleAction()}
-              label={<Typography variant="caption">지금 검색</Typography>}
-            ></Button>
+            <Button onClick={() => handleAction()}></Button>
           </Box>
         </Box>
 

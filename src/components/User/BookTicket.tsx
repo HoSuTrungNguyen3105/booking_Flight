@@ -13,34 +13,40 @@ import {
 } from "@mui/material";
 import React from "react";
 import { useForm } from "react-hook-form";
-import type { FareConditions, SearchTicketType } from "./type";
-import { useFlightBooking, useFlightList } from "../Api/usePostApi";
+import { useFlightList } from "../Api/usePostApi";
 // import { Button } from "../../common/Button/Button";
 import { FlightOutlined, RefreshOutlined } from "@mui/icons-material";
 import Zigzag from "../../common/CustomRender/Zigzag";
-import { Dropdown } from "../../common/Dropdown/Dropdown";
 import type { Flight } from "../../common/Setting/type";
 import type { IDetailItem } from "../../common/DetailSection";
 import DetailSection from "../../common/DetailSection";
 import InputTextField from "../../common/Input/InputTextField";
 import SelectDropdown from "../../common/Dropdown/SelectDropdown";
-import { InputDate } from "../../common/DayPicker";
 import { useGetAllCode } from "../Api/useGetApi";
 import DateTimePickerComponent from "../../common/DayPicker/date-range-picker";
+import type { SearchTicketType } from "../../utils/type";
 
 const BookTicket = () => {
   const [flightParams, setFlightParams] = React.useState<SearchTicketType>({
     from: "",
     to: "",
-    status: "arrived",
-    cabinClass: "ECONOMY",
-    passengers: 1,
+    status: "",
+    cabinClass: "",
+    aircraftCode: "",
+    minPrice: 0,
+    maxPrice: 0,
+    gate: "",
+    terminal: "",
+    flightNo: "",
+    minDelayMinutes: 0,
+    maxDelayMinutes: 0,
+    includeCancelled: false,
   });
   const { getAllCode } = useGetAllCode();
 
   const {
     reset: resetSearch,
-    control,
+    handleSubmit,
     setValue,
     watch,
   } = useForm<SearchTicketType>({
@@ -49,6 +55,7 @@ const BookTicket = () => {
 
   const { flightList } = useFlightList();
   const [flightListData, setFlightList] = React.useState<Flight[]>([]);
+  const [flightFilterData, setFilterFlightList] = React.useState<Flight[]>([]);
 
   React.useEffect(() => {
     if (flightList?.list) {
@@ -61,13 +68,6 @@ const BookTicket = () => {
   };
 
   const optionAirportCode = (getAllCode?.data?.airport ?? []).map(
-    (item, index) => ({
-      value: item.code,
-      label: item.code,
-    })
-  );
-
-  const optionAircraftCode = (getAllCode?.data?.aircraft ?? []).map(
     (item, index) => ({
       value: item.code,
       label: item.code,
@@ -107,16 +107,6 @@ const BookTicket = () => {
         />
       ),
     },
-    // {
-    //   title: "Departure Date",
-    //   description: (
-    //     <SingleDateRangePickerComponent
-    //       value={[watch("departDate") , watch('returnDate')]}
-    //       onChange={(val) => setValue("departDate", val as number)}
-    //       usecase="datetime"
-    //     />
-    //   ),
-    // },
     {
       title: "Return Date",
       description: (
@@ -124,20 +114,6 @@ const BookTicket = () => {
           value={watch("returnDate")}
           onChange={(val) => setValue("returnDate", val as number)}
           language="en"
-        />
-      ),
-    },
-    {
-      title: "Passengers",
-      description: (
-        <SelectDropdown
-          options={Array.from({ length: 10 }, (_, i) => ({
-            label: `${i + 1}`,
-            value: i + 1,
-          }))}
-          placeholder="Choose number"
-          value={watch("passengers")}
-          onChange={(val) => setValue("passengers", val as number)}
         />
       ),
     },
@@ -264,6 +240,7 @@ const BookTicket = () => {
     //setLoadingFlightBookingData(true);
     // setDisplayDataFlight([]);
     setFlightParams(values);
+    console.log("onSubmitValue", values);
     //await refetchFlightBookingDataData(values);
   };
 
@@ -274,215 +251,176 @@ const BookTicket = () => {
   };
 
   return (
-    <form>
-      <FormControl sx={{ width: "100%" }}>
-        <TableContainer sx={{ p: 1 }}>
-          <Box sx={{ borderRadius: 2, border: "solid 3px #f2f3f8" }}>
-            <Box borderRadius={2} border="3px solid #f2f3f8" p={3}>
-              <DetailSection data={detail} />
-              <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                <Button type="reset" onClick={onResetForm}>
-                  <RefreshOutlined />
-                </Button>
-                <Button type="submit">선택</Button>
-              </Box>
+    <FormControl
+      component="form"
+      onSubmit={handleSubmit(onSubmitValue)}
+      sx={{ width: "100%" }}
+    >
+      <TableContainer sx={{ p: 1 }}>
+        <Box sx={{ borderRadius: 2, border: "solid 3px #f2f3f8" }}>
+          <Box borderRadius={2} border="3px solid #f2f3f8" p={3}>
+            <DetailSection data={detail} />
+            <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+              <Button type="reset" onClick={onResetForm}>
+                <RefreshOutlined />
+              </Button>
+              <Button type="submit">선택</Button>
             </Box>
           </Box>
-          <Box mt={2}>
-            <Grid container spacing={2}>
-              {flightListData?.length > 0 ? (
-                flightListData.map((flight) => (
-                  <>
-                    <Card
+        </Box>
+        <Box mt={2}>
+          <Grid container spacing={2}>
+            {flightListData?.length > 0 ? (
+              flightListData.map((flight) => (
+                <>
+                  <Card
+                    sx={{
+                      borderRadius: 2,
+                      padding: 2,
+                      boxShadow: 3,
+                      height: "auto",
+                      maxWidth: "95%",
+                      display: "flex",
+                      margin: "0 auto",
+                    }}
+                  >
+                    <CardContent
                       sx={{
-                        borderRadius: 2,
-                        padding: 2,
-                        boxShadow: 3,
-                        height: "auto",
-                        maxWidth: "95%",
                         display: "flex",
-                        margin: "0 auto",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        flexWrap: "wrap",
+                        width: "100%",
+                        gap: 3,
                       }}
                     >
-                      <CardContent
+                      <Box sx={{ alignContent: "center" }}>
+                        <FlightOutlined
+                          sx={{ fontSize: 100, transform: "rotate(50deg)" }}
+                        />
+                        <Typography variant="body1" color="black">
+                          Flight Number: {flight.flightNo}
+                        </Typography>
+                      </Box>
+                      <Box sx={{ alignContent: "center", minWidth: 160 }}>
+                        <Typography variant="h5" color="text.secondary">
+                          {flight.aircraftCode}
+                        </Typography>
+                      </Box>
+                      <Box
                         sx={{
                           display: "flex",
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                          flexWrap: "wrap",
-                          width: "100%",
-                          gap: 3,
+                          alignItems: "center",
+                          gap: 1,
                         }}
                       >
-                        <Box sx={{ alignContent: "center" }}>
-                          <FlightOutlined
-                            sx={{ fontSize: 100, transform: "rotate(50deg)" }}
-                          />
-                          <Typography variant="body1" color="black">
-                            Flight Number: {flight.flightNo}
-                          </Typography>
-                        </Box>
-                        <Box sx={{ alignContent: "center", minWidth: 160 }}>
-                          {/* {fareConditions.map((fare) => (
-                            <Chip
-                              key={fare.value}
-                              label={fare.label}
-                              style={{
-                                backgroundColor: getFareConditionColor(
-                                  fare.label as FareConditions
-                                ),
-                              }}
-                            />
-                          ))} */}
-
-                          <Typography variant="h5" color="text.secondary">
-                            {flight.aircraftCode}
-                          </Typography>
-                        </Box>
                         <Box
                           sx={{
                             display: "flex",
+                            flexDirection: "column",
                             alignItems: "center",
-                            gap: 1,
                           }}
                         >
+                          <Typography variant="h6">
+                            {flight.scheduledDeparture}
+                          </Typography>
                           <Box
                             sx={{
-                              display: "flex",
-                              flexDirection: "column",
-                              alignItems: "center",
+                              px: 2,
+                              py: 0.5,
+                              border: "solid 1px black",
+                              borderRadius: "20px",
+                              fontWeight: "bold",
+                              backgroundColor: "#e3f2fd",
+                              color: "#0d47a1",
+                              whiteSpace: "normal",
+                              wordBreak: "break-word",
                             }}
                           >
-                            <Typography variant="h6">
-                              {flight.scheduledDeparture}
-                            </Typography>
-                            <Box
-                              sx={{
-                                px: 2,
-                                py: 0.5,
-                                border: "solid 1px black",
-                                borderRadius: "20px",
-                                fontWeight: "bold",
-                                backgroundColor: "#e3f2fd",
-                                color: "#0d47a1",
-                                whiteSpace: "normal",
-                                wordBreak: "break-word",
-                              }}
-                            >
-                              {flight.departureAirport}
-                            </Box>
+                            {flight.departureAirport}
                           </Box>
-                          <Zigzag
-                            items={
-                              <FlightOutlined
-                                fontSize="medium"
-                                sx={{
-                                  color: "#007bff",
-                                  transform: "rotate(90deg)",
-                                }}
-                              />
-                            }
-                          />
+                        </Box>
+                        <Zigzag
+                          items={
+                            <FlightOutlined
+                              fontSize="medium"
+                              sx={{
+                                color: "#007bff",
+                                transform: "rotate(90deg)",
+                              }}
+                            />
+                          }
+                        />
+                        <Box
+                          sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Typography variant="h6">
+                            {flight.scheduledArrival}
+                          </Typography>
                           <Box
                             sx={{
-                              display: "flex",
-                              flexDirection: "column",
-                              alignItems: "center",
+                              px: 2,
+                              py: 0.5,
+                              border: "solid 1px black",
+                              borderRadius: "20px",
+                              fontWeight: "bold",
+                              backgroundColor: "#fce4ec",
+                              color: "#880e4f",
+                              whiteSpace: "normal",
+                              wordBreak: "break-word",
                             }}
                           >
-                            <Typography variant="h6">
-                              {flight.scheduledArrival}
-                            </Typography>
-                            <Box
-                              sx={{
-                                px: 2,
-                                py: 0.5,
-                                border: "solid 1px black",
-                                borderRadius: "20px",
-                                fontWeight: "bold",
-                                backgroundColor: "#fce4ec",
-                                color: "#880e4f",
-                                whiteSpace: "normal",
-                                wordBreak: "break-word",
-                              }}
-                            >
-                              {flight.arrivalAirport}
-                            </Box>
+                            {flight.arrivalAirport}
                           </Box>
                         </Box>
-                        <Box sx={{ alignContent: "center" }}>
-                          <Typography
-                            variant="h6"
-                            fontWeight="bold"
-                            color="black"
-                          >
-                            {flight.aircraftCode} dollar
-                          </Typography>
+                      </Box>
+                      <Box sx={{ alignContent: "center" }}>
+                        <Typography
+                          variant="h6"
+                          fontWeight="bold"
+                          color="black"
+                        >
+                          {flight.aircraftCode} dollar
+                        </Typography>
 
-                          <Typography variant="body1" color="black">
-                            Total: {flight.arrivalAirport} / person dollar
-                          </Typography>
-                        </Box>
-                        <Box sx={{ alignContent: "center" }}>
-                          <Typography variant="body1" color="black">
-                            Status: {flight.status}
-                          </Typography>
-                        </Box>
-                        <Box sx={{ alignContent: "center" }}>
-                          {/* <Link
-                              to={`/${flightParams.passengerCount}/${flight.ticketNo}`}
-                            > */}
-                          <Button type="button">SELECT</Button>
-                          {/* </Link> */}
-                        </Box>
-                      </CardContent>
-                    </Card>
-                  </>
-                ))
-              ) : (
-                <Box>
-                  {/* item xs={12} */}
-                  <Typography
-                    variant="h6"
-                    textAlign="center"
-                    width="100%"
-                    mt={3}
-                    color="text.secondary"
-                  >
-                    Không có dữ liệu chuyến bay
-                  </Typography>
-                </Box>
-              )}
-
-              {/* Nếu đang loading thì hiển thị loading riêng */}
-              {/* {loadingFlightBookingData && (
-                // <Grid item xs={12}>
-                <Box>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: "100%",
-                      py: 4,
-                    }}
-                  >
-                    <CircularProgress color="primary" />
-                    <Typography
-                      variant="body1"
-                      sx={{ mt: 2, color: "text.secondary" }}
-                    >
-                      Đang tải dữ liệu chuyến bay...
-                    </Typography>
-                  </Box>
-                </Box>
-              )} */}
-            </Grid>
-          </Box>
-        </TableContainer>
-      </FormControl>
-    </form>
+                        <Typography variant="body1" color="black">
+                          Total: {flight.arrivalAirport} / person dollar
+                        </Typography>
+                      </Box>
+                      <Box sx={{ alignContent: "center" }}>
+                        <Typography variant="body1" color="black">
+                          Status: {flight.status}
+                        </Typography>
+                      </Box>
+                      <Box sx={{ alignContent: "center" }}>
+                        <Button type="button">SELECT</Button>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </>
+              ))
+            ) : (
+              <Box>
+                {/* item xs={12} */}
+                <Typography
+                  variant="h6"
+                  textAlign="center"
+                  width="100%"
+                  mt={3}
+                  color="text.secondary"
+                >
+                  Không có dữ liệu chuyến bay
+                </Typography>
+              </Box>
+            )}
+          </Grid>
+        </Box>
+      </TableContainer>
+    </FormControl>
   );
 };
 

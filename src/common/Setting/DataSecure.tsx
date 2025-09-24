@@ -2,7 +2,7 @@ import { useState, useMemo, useCallback, useRef } from "react";
 import type { GridRowDef } from "../DataGrid";
 import { Box, Typography } from "@mui/material";
 import TableSection from "./TableSection";
-import DetailedInformationModal from "./hooks/DetailedInformationModal";
+// import DetailedInformationModal from "./hooks/DetailedInformationModal";
 import type { GridColDef } from "@mui/x-data-grid";
 import AddUserModal from "./hooks/AddUserModal";
 import InspectionSearchBar from "../SearchPopup/InspectionSearchBar";
@@ -293,7 +293,7 @@ const DataSecure = () => {
             isLoading,
             openModal
           )}
-          {open && (
+          {/* {open && (
             <DetailedInformationModal
               open={open}
               onSuccess={() => {}}
@@ -302,7 +302,7 @@ const DataSecure = () => {
               // files={numberOfFile}
               detailData={inspectionData}
             />
-          )}
+          )} */}
           <AddUserModal
             onSuccess={() => {}}
             onClose={closeModalSubfile}
