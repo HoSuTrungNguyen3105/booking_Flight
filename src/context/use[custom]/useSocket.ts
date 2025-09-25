@@ -26,7 +26,6 @@ export const useSocket = <T>({
 
   const isMounted = useRef(false);
 
-  // Mount/unmount
   useEffect(() => {
     isMounted.current = true;
     socket.connect();
@@ -40,7 +39,6 @@ export const useSocket = <T>({
     };
   }, []);
 
-  // Theo dõi connect/disconnect + register user
   useEffect(() => {
     const handleConnect = () => {
       console.log("Socket connected");

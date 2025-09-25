@@ -139,7 +139,7 @@ const SearchPopup: React.FC = () => {
           }}
         />
       </Box>
-      <ContentModal
+      {/* <ContentModal
         open={open}
         submitLabel="Select"
         closeLabel="Exit"
@@ -238,7 +238,7 @@ const SearchPopup: React.FC = () => {
             </Box>
           </Box>
         }
-      ></ContentModal>
+      ></ContentModal> */}
     </Box>
   );
 };

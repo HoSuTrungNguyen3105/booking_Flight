@@ -6,6 +6,7 @@ export interface IButtonSettingProps {
   icon: ReactNode;
   buttonProps?: React.ComponentProps<typeof Button>;
   handleAction: (opt: any) => void;
+  hideSubmitButton?: boolean;
 }
 
 const StyledPopover = styled(Popover)<{}>(() => ({
@@ -15,12 +16,12 @@ const StyledPopover = styled(Popover)<{}>(() => ({
     minWidth: "120px",
   },
 }));
-
 const CustomPopover: React.FC<IButtonSettingProps> = ({
   buttonProps,
   icon,
   handleAction,
-  option = [],
+  option,
+  hideSubmitButton = false,
 }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
@@ -32,7 +33,8 @@ const CustomPopover: React.FC<IButtonSettingProps> = ({
     setAnchorEl(null);
   };
 
-  const options = Array.isArray(option) ? option : [];
+  const isOptionStringArray =
+    Array.isArray(option) && option.every((i) => typeof i === "string");
 
   return (
     <>
@@ -40,11 +42,7 @@ const CustomPopover: React.FC<IButtonSettingProps> = ({
         {...buttonProps}
         variant="contained"
         onClick={handleClick}
-        sx={{
-          minWidth: "23px",
-          position: "relative",
-          ...buttonProps?.sx,
-        }}
+        sx={{ minWidth: "23px", position: "relative", ...buttonProps?.sx }}
       >
         {icon}
       </Button>
@@ -53,42 +51,48 @@ const CustomPopover: React.FC<IButtonSettingProps> = ({
         open={Boolean(anchorEl)}
         anchorEl={anchorEl}
         onClose={handleClose}
-        disableScrollLock
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "left",
-        }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
       >
         <Box sx={{ p: 1 }}>
-          {options.map((item, index) => (
-            <Box
-              key={index}
-              sx={{
-                padding: "8px 12px",
-                borderRadius: "6px",
-                cursor: "default",
-                "&:hover": {
-                  backgroundColor: "action.hover",
-                },
-              }}
+          {Array.isArray(option) && option.length > 0
+            ? option.map((item, index) => {
+                if (typeof item === "string") {
+                  return (
+                    <Box
+                      key={index}
+                      sx={{
+                        padding: "8px 12px",
+                        borderRadius: "6px",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => {
+                        handleAction?.(item);
+                        handleClose();
+                      }}
+                    >
+                      {item}
+                    </Box>
+                  );
+                } else {
+                  return <Box key={index}>{item}</Box>;
+                }
+              })
+            : null}
+
+          {/* Button luôn render nếu hideSubmitButton = false */}
+          {!hideSubmitButton && (
+            <Button
+              variant="contained"
+              fullWidth
+              sx={{ mt: 1 }}
               onClick={() => {
-                handleAction?.(item);
+                handleAction?.(null);
+                handleClose();
               }}
             >
-              {item}
-            </Box>
-          ))}
-          <Button
-            variant="contained"
-            fullWidth
-            sx={{ mt: 1 }}
-            onClick={() => {
-              handleAction?.(null); // hoặc truyền options nếu cần
-              handleClose();
-            }}
-          >
-            Submit
-          </Button>
+              Submit
+            </Button>
+          )}
         </Box>
       </StyledPopover>
     </>

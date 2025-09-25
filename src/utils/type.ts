@@ -9,6 +9,7 @@ export enum MethodType {
   GET = "GET",
   POST = "POST",
 }
+
 export interface ReqUserIDProps {
   id?: number;
 }
@@ -22,48 +23,27 @@ export type CodeItem = {
 export type DataFlight = {
   flightId?: number;
   flightNo?: string;
-  flightType?: string; // one-way / roundtrip
+  flightType?: string;
   departureAirport: string;
   arrivalAirport: string;
   status: string;
   aircraftCode: string;
-
   priceEconomy?: number;
   priceBusiness?: number;
   priceFirst?: number;
-  maxCapacity?: number;
-
   scheduledDeparture: number;
   scheduledArrival: number;
   actualDeparture?: number | null;
   actualArrival?: number | null;
-
   gateId?: string;
   terminal?: string;
   isCancelled?: boolean;
   delayMinutes?: number | null;
   cancellationReason?: string;
   delayReason?: string;
-  aircraft?: {
-    code: string;
-    model: string;
-    range: number;
-  };
-  departureAirportRel?: {
-    code: string;
-    name: string;
-    city: string;
-    coordinates: string;
-    timezone: string;
-  };
-
-  arrivalAirportRel?: {
-    code: string;
-    name: string;
-    city: string;
-    coordinates: string;
-    timezone: string;
-  };
+  aircraft?: Aircraft;
+  departureAirportRel?: Airport;
+  arrivalAirportRel?: Airport;
   meals?: Meal[];
   seats?: Seat[];
 };
@@ -92,17 +72,10 @@ export type SearchTicketType = {
   to: string;
   departDate?: number;
   returnDate?: number;
-  // passengers?: number;
   flightType?: string;
-  cabinClass?: string; //"ECONOMY" | "BUSINESS" | "VIP"
+  cabinClass?: string;
   aircraftCode?: string;
   status?: string;
-  //| "scheduled"
-  // | "boarding"
-  // | "departed"
-  // | "arrived"
-  // | "delayed"
-  // | "cancelled";
   minPrice?: number;
   maxPrice?: number;
   gate?: string;
@@ -172,35 +145,11 @@ export type DataResponseId = {
   userId: number;
 };
 
-export type Seat = {
-  id: number;
-  seatNumber: number;
-  seatRow: string;
-  flightId?: number;
-  bookingId?: number;
-  // position: PositionTypeValue;
-  type: SeatTypeValue;
-
-  //Add type
-  // isWindow?: boolean;
-  // nearRestroom?: boolean;
-  // isAvailable?: boolean;
-  isBooked: boolean;
-  isAvailable?: boolean;
-  isExtraLegroom?: boolean;
-  isExitRow?: boolean;
-  isHandicapAccessible?: boolean;
-  isNearLavatory?: boolean;
-  isUpperDeck?: boolean;
-  isWing?: boolean;
-  note?: string;
-};
-
-interface Employee {
-  id: number;
-  name: string;
-  email: string;
-}
+// interface Employee {
+//   id: number;
+//   name: string;
+//   email: string;
+// }
 
 export interface LeaveRequest {
   id: number;
@@ -215,7 +164,7 @@ export interface LeaveRequest {
   approverNote?: string | null;
   appliedAt: string;
   decidedAt?: string | null;
-  employee: Employee;
+  employee: UserData;
 }
 
 // Props cho component
@@ -388,7 +337,7 @@ export type SearchBookingFlightProps = {
   id: number;
   passengerId: string;
   flightId: number;
-  bookingTime: string | number; // nếu server trả timestamp dạng số, dùng number; nếu string thì để string
+  bookingTime: number; // nếu server trả timestamp dạng số, dùng number; nếu string thì để string
   flight: DataFlight; // DataFlight là kiểu dữ liệu chuyến bay
 };
 
@@ -444,21 +393,13 @@ export enum FacilityType {
   PRAYER_ROOM = "PRAYER_ROOM",
   SMOKING_AREA = "SMOKING_AREA",
 }
-// export type Airport = {
-//   code: string;
-//   name: string;
-//   city: string;
-//   country: string;
-//   createdAt: string; // timestamp kiểu string
-//   updatedAt: string | null;
-// };
 
 export type Terminal = {
   id: string;
   code: string;
   name: string;
   description?: string;
-  type: "DOMESTIC" | "INTERNATIONAL" | "CARGO"; // enum TerminalType
+  type: "DOMESTIC" | "INTERNATIONAL" | "CARGO";
   airportId: string;
   createdAt: string;
   updatedAt: string;
@@ -488,22 +429,57 @@ export type Facility = {
   updatedAt: string;
 };
 
-// export interface Terminal {
-//   id: string;
-//   code: string;
-//   name: string;
-//   description?: string;
-//   type: string;
-//   airportId: string;
-//   createdAt: string;
-//   updatedAt: string;
-// }
-
 export type RegisterResponseMessage = DetailResponseMessage<EmailProps>;
+export type PassengerResponseMessage = DetailResponseMessage<Passenger>;
 
 export type ResponseMessage = {
   resultCode: string;
   resultMessage: string;
 };
+
+export type Seat = {
+  id: number;
+  seatNumber: number;
+  seatRow: string;
+  flightId?: number;
+  bookingId?: number;
+  type: SeatTypeValue;
+  isBooked: boolean;
+  isAvailable?: boolean;
+  isExtraLegroom?: boolean;
+  isExitRow?: boolean;
+  isHandicapAccessible?: boolean;
+  isNearLavatory?: boolean;
+  isUpperDeck?: boolean;
+  isWing?: boolean;
+  note?: string;
+};
+
+export interface Booking {
+  id: number;
+  bookingTime: string;
+  mealOrders: MealOrder[];
+  flight: Flight;
+  seats: Seat;
+}
+
+export interface MealOrder {
+  id: number;
+  bookingId: number;
+  mealId: number;
+  quantity: number;
+}
+
+export interface Passenger {
+  id: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  passport: string;
+  accountLockYn: "Y" | "N";
+  isEmailVerified: "Y" | "N";
+  lastLoginDate?: number;
+  bookings: Booking[];
+}
 
 export type Language = "en" | "ko" | "jp";

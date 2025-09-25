@@ -26,6 +26,7 @@ import {
   type TerminalResponse,
   type SearchFlightSearchBookingFlightPropsProps,
   type FlightBookingTicketDetailApiResponse,
+  type PassengerResponseMessage,
 } from "../../utils/type.ts";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
 import { useFetch } from "../../context/use[custom]/useFetch.ts";
@@ -256,6 +257,19 @@ export const useSearchBooking = () => {
     refetchSearchBooking,
   };
 };
+
+export const useFindPassengerById = () => {
+  const { data: dataPassengerById, refetch: refetchPassengerById } = useFetch<
+    PassengerResponseMessage,
+    { id: string }
+  >({
+    url: "sys/bookings/findPassengerById",
+    autoFetch: true,
+    config: postMethod,
+  });
+  return { dataPassengerById, refetchPassengerById };
+};
+
 type LoginData = {
   email: string;
   password: string;

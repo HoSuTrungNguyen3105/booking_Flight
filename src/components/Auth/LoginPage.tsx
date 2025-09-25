@@ -10,7 +10,6 @@ import RequestUnlock from "./RequestUnlock";
 import FindAccount from "./components/FindAccount";
 import TabPanel, { type ITabItem } from "../../common/Setting/TabPanel";
 import theme from "../../scss/theme";
-import { useNavigate } from "react-router-dom";
 import { Loading } from "../../common/Loading/Loading";
 
 interface ILoginForm {
@@ -58,7 +57,6 @@ export const LoginPage: React.FC = () => {
 
   const [changePassword, setChangePassword] = useState(false);
   const [unlockAccount, setUnlockAccount] = useState(false);
-  const [registerUser, setRegisterUser] = useState(false);
   const { login } = useAuth();
   const [userId, setUserId] = useState(0);
   const [loading, setLoading] = useState(false);

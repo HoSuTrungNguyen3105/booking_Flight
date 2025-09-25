@@ -1,5 +1,5 @@
 import { Box, Button, Stack, Tab, Tabs, Typography } from "@mui/material";
-import type { GridColDef, GridSortModel } from "@mui/x-data-grid";
+import type { GridColDef } from "@mui/x-data-grid";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import DataTable, { type GridRowDef } from "../DataGrid/index";
 import SearchIcon from "../../svgs/phone.png";
@@ -14,7 +14,7 @@ type ISecurityTabSectionProps = {
     description: string;
     content: React.ReactNode;
   }[];
-  rows: any[];
+  rows: GridRowDef[];
   name?: string;
   loading?: boolean;
   onSearch?: (query: string) => void;

@@ -58,49 +58,6 @@ import AirportMap from "../components/User/AirportMap";
 import CreateFacility from "../components/Admin/modal/CreateFacility";
 import AirportManagementDetail from "../components/User/AirportManagementDetail";
 
-export const mockFlights: DataFlight = {
-  flightId: 1,
-  flightNo: "VN123",
-  flightType: "one-way",
-  departureAirport: "HAN",
-  arrivalAirport: "SGN",
-  status: "On Time",
-  aircraftCode: "A321",
-  priceEconomy: 120,
-  priceBusiness: 350,
-  priceFirst: 700,
-  maxCapacity: 180,
-  scheduledDeparture: 1695372000, // UNIX timestamp
-  scheduledArrival: 1695379200,
-  actualDeparture: 1695372000,
-  actualArrival: 1695379200,
-  gateId: "A12",
-  terminal: "T1",
-  isCancelled: false,
-  delayMinutes: null,
-  aircraft: {
-    code: "A321",
-    model: "Airbus A321",
-    range: 5600,
-  },
-  departureAirportRel: {
-    code: "HAN",
-    name: "Noi Bai International Airport",
-    city: "Hanoi",
-    coordinates: "21.2212, 105.8072",
-    timezone: "Asia/Ho_Chi_Minh",
-  },
-  arrivalAirportRel: {
-    code: "SGN",
-    name: "Tan Son Nhat International Airport",
-    city: "Ho Chi Minh City",
-    coordinates: "10.8188, 106.6520",
-    timezone: "Asia/Ho_Chi_Minh",
-  },
-  meals: [],
-  seats: [],
-};
-
 export const mockTerminals = [
   {
     id: "t-1",
@@ -264,18 +221,18 @@ const routes = [
         path: "CreateGateForm", //bookseat
         element: <CreateGateForm />,
       },
-      {
-        path: "data-secure",
-        element: <DataSecure />,
-      },
+      // {
+      //   path: "data-secure",
+      //   element: <DataSecure />,
+      // },
       {
         path: "flightmeals",
         element: <MealList />,
       },
-      {
-        path: "FlightDetailPage",
-        element: <FlightDetailPage flight={mockFlights} />,
-      },
+      // {
+      //   path: "FlightDetailPage",
+      //   element: <FlightDetailPage flight={mockFlights} />,
+      // },
       {
         path: "FileUploadButtonWithValidation",
         element: (

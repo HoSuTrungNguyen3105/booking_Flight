@@ -16,6 +16,7 @@ import {
   MethodType,
   type AirportResponseMessage,
   type GetAllCodeResponseMessage,
+  type Passenger,
 } from "../../utils/type.ts";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
 import { useFetch } from "../../context/use[custom]/useFetch.ts";
@@ -57,6 +58,41 @@ export const useRandomPassword = () => {
     refetchUserPw,
     loadingUser,
     setParamsUser,
+  };
+};
+export interface Booking {
+  id: number;
+  passengerId: string;
+  flightId: number;
+  bookingTime: string;
+}
+
+// export interface Passenger {
+//   id: string;
+//   fullName: string;
+//   email: string;
+//   phone: string;
+//   passport: string;
+//   accountLockYn: "Y" | "N";
+//   isEmailVerified: "Y" | "N";
+//   lastLoginDate: string | null;
+//   bookings: Booking[];
+// }
+
+export const useFindAllPassenger = () => {
+  const {
+    data: dataAllPassenger,
+    refetch: refetchAllPassenger,
+    loading: loadingAllPassenger,
+  } = useFetch<DetailResponseMessage<Passenger>, null>({
+    url: "/sys/bookings/findAllPassenger",
+    autoFetch: true,
+    config: getMethod,
+  });
+  return {
+    dataAllPassenger,
+    refetchAllPassenger,
+    loadingAllPassenger,
   };
 };
 

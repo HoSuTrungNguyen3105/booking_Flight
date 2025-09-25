@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type { TabItem } from "../../../components/Layout/SearchLayout";
 import SearchLayout from "../../../components/Layout/SearchLayout";
 import InspectionSection from "../../Dropdown/InspectionSection";
@@ -7,89 +7,79 @@ import { Typography } from "@mui/material";
 import { DateFormatEnum, formatDateKR } from "../../../hooks/format";
 import { useNavigate } from "react-router-dom";
 import type { GridRowDef } from "../../DataGrid";
+import { useFindAllPassenger } from "../../../components/Api/useGetApi";
+import DataSecure from "../DataSecure";
 
-const columnsSubfileList: GridColDef[] = [
-  { field: "fileName", headerName: "파일 이름", flex: 1 },
-  { field: "type", headerName: "파일 경로", flex: 1 },
+export const columnsPassenger: GridColDef[] = [
+  { field: "fullName", headerName: "Họ và tên", flex: 1 },
+  { field: "email", headerName: "Email", flex: 1 },
+  { field: "phone", headerName: "Số điện thoại", flex: 1 },
+  { field: "passport", headerName: "Passport", flex: 1 },
   {
-    field: "createDate",
-    headerName: "수정 날짜",
+    field: "accountLockYn",
+    headerName: "Tài khoản khóa",
     flex: 1,
     renderCell: ({ value }) => (
-      <Typography variant="body2">
-        {formatDateKR(DateFormatEnum.MMMM_D_YYYY, value)}
-      </Typography>
+      <Typography>{value === "Y" ? "Đã khóa" : "Hoạt động"}</Typography>
     ),
   },
   {
-    field: "uploaderId",
-    headerName: "유형",
-    flex: 1,
-  },
-  {
-    field: "fileSize",
-    headerName: "Size",
+    field: "isEmailVerified",
+    headerName: "Email xác thực",
     flex: 1,
     renderCell: ({ value }) => (
-      <Typography variant="body2">{value || "-"}MB</Typography>
+      <Typography>{value === "Y" ? "Đã xác thực" : "Chưa xác thực"}</Typography>
     ),
   },
-];
-
-const rowsSubfileList = [
   {
-    id: 1,
-    fileName: "document1.pdf",
-    type: "/documents/projectA/",
-    createDate: "2025-08-01",
-    uploaderId: "admin01",
-    fileSize: 12,
-  },
-  {
-    id: 2,
-    fileName: "image.png",
-    type: "/images/uploads/",
-    createDate: "2025-08-05",
-    uploaderId: "user02",
-    fileSize: 4.5,
-  },
-  {
-    id: 3,
-    fileName: "report.xlsx",
-    type: "/reports/2025/",
-    createDate: "2025-08-10",
-    uploaderId: "manager03",
-    fileSize: 1.2,
-  },
-  {
-    id: 4,
-    fileName: "video.mp4",
-    type: "/videos/events/",
-    createDate: "2025-08-12",
-    uploaderId: "staff04",
-    fileSize: 150,
+    field: "lastLoginDate",
+    headerName: "Lần đăng nhập cuối",
+    flex: 1,
+    renderCell: ({ value }) =>
+      value ? (
+        <Typography>
+          {formatDateKR(DateFormatEnum.MMMM_D_YYYY, value)}
+        </Typography>
+      ) : (
+        <Typography>-</Typography>
+      ),
   },
 ];
 
 const SecurityManage = () => {
   const [tabX, setTab] = useState(0);
+  const [getValuePassenger, setGetValuePassenger] = useState(false);
+  const [passengerId, setPassengerId] = useState("");
+
+  const { dataAllPassenger } = useFindAllPassenger();
+
   const navigate = useNavigate();
   const onRowSelect = (rowData: GridRowDef) => {
-    navigate(`/admin/data-secure`, {
-      state: { data: rowData, type: tabX },
-    });
+    // navigate(`/admin/data-secure`, {
+    //   state: { data: rowData, type: tabX },
+    // });
+    setGetValuePassenger(true);
+    setPassengerId(rowData.id as string);
   };
+  const rowData = useMemo(
+    () =>
+      dataAllPassenger?.list?.map((item) => ({
+        ...item,
+        id: item.id,
+      })) || [],
+    [dataAllPassenger]
+  );
   const tabs: TabItem[] = [
     {
-      label: "Security",
-      value: "auto",
+      label: "Passenger",
+      value: "Passenger",
       content: (
         <InspectionSection
           onRowClick={onRowSelect}
           handleAction={() => {}}
-          columns={columnsSubfileList}
+          columns={columnsPassenger}
           tabs={[]}
-          rows={rowsSubfileList}
+          rows={rowData}
           loading={false}
           onSearch={() => {}}
         />
@@ -99,19 +89,20 @@ const SecurityManage = () => {
       label: "InspectionSection",
       value: "auto",
       content: (
-        <InspectionSection
-          onRowClick={onRowSelect}
-          handleAction={() => {}}
-          columns={columnsSubfileList}
-          tabs={[]}
-          rows={[]}
-          loading={false}
-          onSearch={() => {}}
-        />
+        <Typography></Typography>
+        // <InspectionSection
+        //   onRowClick={onRowSelect}
+        //   handleAction={() => {}}
+        //   columns={columnsSubfileList}
+        //   tabs={[]}
+        //   rows={[]}
+        //   loading={false}
+        //   onSearch={() => {}}
+        // />
       ),
     },
   ];
-
+  if (getValuePassenger) return <DataSecure passenger={passengerId} />;
   return (
     <div>
       <SearchLayout

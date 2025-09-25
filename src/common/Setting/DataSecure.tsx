@@ -1,94 +1,64 @@
-import { useState, useMemo, useCallback, useRef } from "react";
+import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import type { GridRowDef } from "../DataGrid";
 import { Box, Typography } from "@mui/material";
 import TableSection from "./TableSection";
-// import DetailedInformationModal from "./hooks/DetailedInformationModal";
 import type { GridColDef } from "@mui/x-data-grid";
 import AddUserModal from "./hooks/AddUserModal";
-import InspectionSearchBar from "../SearchPopup/InspectionSearchBar";
-import { useLocation } from "react-router-dom";
 import theme from "../../scss/theme";
-import { useInspectionInformation } from "./hooks/useInspectionInformation";
-import type { IDetailItem } from "../DetailSection";
-import DetailSection from "../DetailSection";
+import { useFindPassengerById } from "../../components/Api/usePostApi";
+import type { Passenger } from "../../utils/type";
+import DetailSection, { type IDetailItem } from "../DetailSection";
+import { DateFormatEnum, formatDateKR } from "../../hooks/format";
 
-export interface IDataHistoryProps extends GridRowDef {
-  collectionMethod: string;
-  dataId: string;
-  database: string;
-  creationUser: string;
-  name?: string[];
-}
-export const customLabels: Record<keyof Detail, string> = {
-  TITLE: "제목", // Tiêu đề
-  status: "상태", // Trạng thái
-  time: "시간", // Thời gian
-  inspection: "검사", // Kiểm tra
-  datStatus: "DAT 상태", // Tình trạng DAT
-  computerTime: "컴퓨터 시간", // Giờ máy tính
-  checklist: "체크리스트", // Danh sách kiểm tra
-  itemsStatus: "항목 상태", // Trạng thái mục
-  itemsScope: "항목 범위", // Phạm vi mục
+type DataSecureProps = {
+  passenger: string;
 };
-
-export interface Detail {
-  TITLE: string;
-  status: string;
-  time: string;
-  inspection: string;
-  datStatus: string;
-  computerTime: string;
-  checklist: string;
-  itemsStatus: string;
-  itemsScope: string;
-}
-
-const DataSecure = () => {
-  const location = useLocation();
-  const rowData = location.state?.data;
-  const typeData = location.state?.type;
-
-  const { detailsData } = useInspectionInformation({
-    data: rowData,
-    type: typeData,
-  });
-
+const DataSecure = ({ passenger }: DataSecureProps) => {
   const [isLoading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
-  const [openSubfile, setOpenSubefile] = useState(false);
+  const [data, setData] = useState<Passenger | null>(null); // có thể replace `any` bằng Passenger type
   const [openUserModal, setOpenUserModal] = useState(false);
-  const [selectedRow, setSelectedRow] = useState<IDataHistoryProps | null>(
-    null
-  );
+
+  const { dataPassengerById, refetchPassengerById } = useFindPassengerById();
+  useEffect(() => {
+    const fetchPassenger = async () => {
+      try {
+        setLoading(true);
+        const res = await refetchPassengerById({ id: passenger });
+        if (res?.resultCode === "00") {
+          setData(res.data as Passenger); // lưu dữ liệu vào state
+        } else {
+          console.error(res?.resultMessage);
+        }
+      } catch (err) {
+        console.error("Fetch passenger error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (passenger) {
+      fetchPassenger();
+    }
+  }, [passenger, refetchPassengerById]);
+
   const [subfileList, setSubfileList] = useState<GridRowDef[]>([]);
   const [dataHistory, setDataHistory] = useState<GridRowDef[]>([]);
   const [relatedItems, setRelatedItems] = useState<GridRowDef[]>([]);
   const openModal = (row: GridRowDef) => {
-    setSelectedRow(row as IDataHistoryProps);
+    // setSelectedRow(row as IDataHistoryProps);
     setOpen(true);
   };
 
   const openModalSubfile = (row: GridRowDef) => {
-    setSelectedRow(row as IDataHistoryProps);
+    // setSelectedRow(row as IDataHistoryProps);
     setOpenUserModal(true);
   };
 
   const closeModalSubfile = () => {
     setOpenUserModal(false);
   };
-  // Inspection data state
-  const [inspectionData, setInspectionData] = useState<Detail>({
-    //DataDetail
-    TITLE: "25.6.13 2:21 1:30 - TITLE, AL 서비스 범위 점검 정보",
-    status: "미완료",
-    time: "25.6.13 2:21 1:30",
-    inspection: "ID_HONG",
-    datStatus: "20/30",
-    computerTime: "25.6.13 2:21 2:30",
-    checklist: "시뮬레이션 파일",
-    itemsStatus: "10/15",
-    itemsScope: "AL RED",
-  });
+
   const randomFileNames = [
     "report1.csv",
     "data_final.json",
@@ -114,42 +84,58 @@ const DataSecure = () => {
     setFiles((prevFiles) => [...prevFiles, ...newFiles]);
   };
 
-  const detailData: IDetailItem[] = [
-    {
-      title: "Demo",
-      description: "None",
-    },
-    {
-      title: "Demo",
-      description: "None",
-    },
-    {
-      title: "Demo",
-      description: "None",
-    },
-    {
-      title: "Demo",
-      description: "None",
-    },
-    {
-      title: "Demo",
-      description: "None",
-    },
-  ];
-
   function getRandomFiles(count: number) {
     const shuffled = [...randomFileNames].sort(() => 0.5 - Math.random());
     return shuffled.slice(0, count);
   }
 
-  const columnSubfileList = useMemo(
+  const columnBookingList: GridColDef[] = useMemo(
     () => [
-      { field: "fileName", headerName: "파일 이름", flex: 1 },
-      { field: "type", headerName: "파일 경로", flex: 1 },
-      { field: "uploadTime", headerName: "수정 날짜", flex: 1 },
-      { field: "uploader", headerName: "유형", flex: 1 },
-      { field: "fileSize", headerName: "Size", flex: 1 },
-      { field: "name", headerName: "Size", flex: 1 },
+      {
+        field: "id",
+        headerName: "Booking ID",
+        flex: 1,
+      },
+      {
+        field: "bookingTime",
+        headerName: "Booking Time",
+        flex: 1,
+        renderCell: ({ value }) => (
+          <Typography variant="body2">
+            {formatDateKR(DateFormatEnum.MMMM_D_YYYY, value)}
+          </Typography>
+        ),
+      },
+      {
+        field: "flightNo",
+        headerName: "Flight No",
+        flex: 1,
+        // valueGetter: (params) => params.row.flight?.flightNo || "-",
+      },
+      {
+        field: "flightType",
+        headerName: "Flight Type",
+        flex: 1,
+        // valueGetter: (params) => params.row.flight?.flightType || "-",
+      },
+      {
+        field: "departureAirport",
+        headerName: "Departure",
+        flex: 1,
+        // valueGetter: (params) => params.row.flight?.departureAirport || "-",
+      },
+      {
+        field: "arrivalAirport",
+        headerName: "Arrival",
+        flex: 1,
+        // valueGetter: (params) => params.row.flight?.arrivalAirport || "-",
+      },
+      {
+        field: "mealCount",
+        headerName: "Meal Orders",
+        flex: 1,
+        // valueGetter: (params) => params.row.mealOrders?.length || 0,
+      },
     ],
     []
   );
@@ -177,21 +163,62 @@ const DataSecure = () => {
   );
 
   // Mock data generation
-  const rowsSubfileList = useMemo(
+  // const rowsSubfileList = useMemo(
+  //   () =>
+  //     Array.from({ length: 100 }, (_, i) => ({
+  //       id: i + 1,
+  //       fileName: i % 2 === 0 ? "FigmaSetup.zip" : "FigmaSetup.json",
+  //       fileSize: `${2 + (i % 4)}MB`,
+  //       uploadTime: `25.6.13 ${Math.floor(i / 2) + 1}:${
+  //         i % 2 === 0 ? "30" : "55"
+  //       }`,
+  //       uploader: "픽셀 문서",
+  //       type: `/directoryJ/directory${i % 3}`,
+  //       name: getRandomFiles(2 + (i % 3)), // 2-4 file random
+  //     })),
+  //   []
+  // );
+  const rowData = useMemo(
     () =>
-      Array.from({ length: 100 }, (_, i) => ({
-        id: i + 1,
-        fileName: i % 2 === 0 ? "FigmaSetup.zip" : "FigmaSetup.json",
-        fileSize: `${2 + (i % 4)}MB`,
-        uploadTime: `25.6.13 ${Math.floor(i / 2) + 1}:${
-          i % 2 === 0 ? "30" : "55"
-        }`,
-        uploader: "픽셀 문서",
-        type: `/directoryJ/directory${i % 3}`,
-        name: getRandomFiles(2 + (i % 3)), // 2-4 file random
-      })),
-    []
+      dataPassengerById?.data?.bookings.map((item) => ({
+        ...item,
+        id: item.id,
+      })) || [],
+    [dataPassengerById]
   );
+  const detailData: IDetailItem[] = [
+    {
+      title: "Họ và tên",
+      description: data?.fullName || "None",
+    },
+    {
+      title: "Email",
+      description: data?.email || "None",
+    },
+    {
+      title: "Số điện thoại",
+      description: data?.phone || "None",
+    },
+    {
+      title: "Passport",
+      description: data?.passport || "None",
+    },
+    {
+      title: "Lần đăng nhập cuối",
+      description: data?.lastLoginDate
+        ? formatDateKR(DateFormatEnum.MMMM_D_YYYY, data.lastLoginDate)
+        : "None",
+    },
+    {
+      title: "Tài khoản khóa",
+      description: data?.accountLockYn === "Y" ? "Đã khóa" : "Hoạt động",
+    },
+    {
+      title: "Email xác thực",
+      description:
+        data?.isEmailVerified === "Y" ? "Đã xác thực" : "Chưa xác thực",
+    },
+  ];
 
   const rowsDataHistory = useMemo(
     () =>
@@ -259,24 +286,14 @@ const DataSecure = () => {
 
   return (
     <Box minHeight={"50vh"}>
-      <Typography>
-        {/* <Breadcrumb data={dataBread} maxLength={3} limitWidth={120} /> */}
-      </Typography>
-
       <Box overflow={"auto"} minHeight={"50vh"}>
-        <DetailSection data={detailsData} />
-
-        <InspectionSearchBar
-          startDate={1734560400.0}
-          endDate={1734560400.0}
-          onClickFirst={() => {}}
-        />
-
+        <DetailSection data={detailData} />
         <Box borderTop={1} paddingTop={2} borderColor={"grey.200"}>
+          {JSON.stringify(rowData)}
           {renderDataSection(
             "하위 파일 목록",
-            columnSubfileList,
-            rowsSubfileList,
+            columnBookingList,
+            rowData,
             isLoading
           )}
           {renderDataSection(

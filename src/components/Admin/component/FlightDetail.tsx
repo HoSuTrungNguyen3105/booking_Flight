@@ -8,8 +8,8 @@ import {
 } from "@mui/icons-material";
 import type { DataFlight } from "../../../utils/type";
 import { useNavigate } from "react-router-dom";
-import type { BreadcrumbItem } from "../../../common/BreadCrumb/BreadCrumb";
-import BreadCrumb from "../../../common/BreadCrumb/BreadCrumb";
+import type { BreadcrumbItem } from "../../../common/BreadCrumb";
+import BreadCrumb from "../../../common/BreadCrumb";
 import type { IDetailItem } from "../../../common/DetailSection";
 import DetailSection from "../../../common/DetailSection";
 import FlightPath from "../../User/FlightPath";

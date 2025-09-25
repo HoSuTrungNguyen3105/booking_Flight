@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { memo, useCallback } from "react";
 import CustomPopover from "../Button/Popover";
 import { useChangeLanguage } from "../../context/use[custom]/useChangeLng";
@@ -22,16 +22,6 @@ const LanguageButton = () => {
   const handleSaveChange = useCallback(() => {
     confirmSaveChange();
   }, [confirmSaveChange]);
-
-  // const renderActions = useCallback(() => {
-  //   return (
-  //     <Box mt={2} display="flex" justifyContent="flex-end" alignItems="center">
-  //       <Button variant="contained" onClick={handleSaveChange}>
-  //         {t("submit")}
-  //       </Button>
-  //     </Box>
-  //   );
-  // }, [handleSaveChange, t]);
 
   const renderContent = useCallback(() => {
     return (
@@ -81,6 +71,7 @@ const LanguageButton = () => {
       icon="Icon"
       handleAction={handleSaveChange}
       option={[renderDropdown()]}
+      hideSubmitButton={false}
     />
   );
 };

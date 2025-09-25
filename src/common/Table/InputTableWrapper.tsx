@@ -1,4 +1,5 @@
 import {
+  Checkbox,
   Table,
   TableBody,
   TableCell,
@@ -6,7 +7,6 @@ import {
   TableRow,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { Checkbox } from "../Checkbox/Checkbox";
 
 export type HeaderColumn = {
   label: string;

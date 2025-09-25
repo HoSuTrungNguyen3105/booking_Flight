@@ -189,6 +189,7 @@ export const Header = () => {
                     icon="Profile"
                     option={["Dashboard"]}
                     handleAction={handleOpenProfile}
+                    hideSubmitButton
                   />
                   <ImageThumbnail
                     url={ImageThumbnailIcon}
