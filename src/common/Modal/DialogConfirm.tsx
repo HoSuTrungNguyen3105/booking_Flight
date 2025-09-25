@@ -33,10 +33,17 @@ const DialogConfirm = ({
 }: DialogConfirmProps) => {
   return (
     <Dialog open={open} onClose={onClose}>
-      <Box width="456px" px="16px">
+      <Box width="456px" px="8px">
         <DialogTitle>
           <Stack direction={"row"} spacing={1} alignItems={"center"}>
-            {icon && <Box component={"img"} src={icon} alt="icon" />}
+            {icon && (
+              <Box
+                component={"img"}
+                src={icon}
+                sx={{ height: 30, width: 30 }}
+                alt="icon"
+              />
+            )}
             <Typography variant="body1">{title}</Typography>
           </Stack>
         </DialogTitle>

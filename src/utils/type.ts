@@ -1,5 +1,4 @@
 import type { GridRowDef } from "../common/DataGrid";
-import type { Flight } from "../common/Setting/type";
 import type { SeatTypeValue } from "../components/Api/usePostApi";
 
 export enum MethodType {
@@ -99,9 +98,13 @@ export type TerminalResponse = DetailResponseMessage<Terminal>;
 export type AvailableAircraft = FlightTimeFields;
 
 export type Aircraft = {
-  aircraftCode: string;
-  rangeAircraft?: string;
+  code: string;
+  range?: number;
   model?: string;
+};
+
+export type PasswordProps = {
+  password: string;
 };
 
 export type AircraftList = {
@@ -185,14 +188,15 @@ interface FlightInfoAircraft {
   flightNo: string;
 }
 
-export interface AirportCodeProps {
+export interface Airport {
   code: string;
   name: string;
   city: string;
   country: string;
-  createdAt: number | string;
-  updatedAt: null;
+  createdAt?: number | string;
+  updatedAt?: number | string;
 }
+
 interface AircraftCodeName {
   code: string;
   model: string;
@@ -211,7 +215,7 @@ interface AllFlightCodeProps {
 
 export type AircraftResponseMessage = DetailResponseMessage<AircraftCodeName>;
 
-export type AirportResponseMessage = DetailResponseMessage<AirportCodeProps>;
+export type AirportResponseMessage = DetailResponseMessage<Airport>;
 
 export type GetAllCodeResponseMessage =
   DetailResponseMessage<AllFlightCodeProps>;
@@ -307,11 +311,12 @@ export type DetailResponseMessage<T = null> = {
   resultMessage: string;
 };
 
-export interface Airport {
-  code: string;
-  name: string;
-  city: string;
-}
+// export interface Airport {
+//   code: string;
+//   name: string;
+//   city: string;
+//     country: string;
+// }
 
 export interface FlightMeal {
   id: number;
@@ -319,7 +324,7 @@ export interface FlightMeal {
   mealId: number;
   quantity: number;
   price?: number;
-  flight: Flight;
+  flight: DataFlight;
   meal: Meal;
 }
 
@@ -340,6 +345,26 @@ export type SearchBookingFlightProps = {
   bookingTime: number; // nếu server trả timestamp dạng số, dùng number; nếu string thì để string
   flight: DataFlight; // DataFlight là kiểu dữ liệu chuyến bay
 };
+
+export interface Message {
+  id: number;
+  content: string;
+  createdAt: string;
+  senderId: number;
+  receiverId: number;
+  sender: {
+    id: number;
+    name: string;
+    pictureUrl: string;
+    email: string;
+  };
+  receiver: {
+    id: number;
+    name: string;
+    pictureUrl: string;
+    email: string;
+  };
+}
 
 // Kiểu cho kết quả trả về gồm outbound và inbound (nếu là khứ hồi)
 export type SearchFlightSearchBookingFlightPropsProps = {
@@ -366,19 +391,26 @@ export type UserCreateResponse = DetailResponseMessage<UserDataNoGrid>;
 export type MealResponse = DetailResponseMessage<Meal>;
 export type FlightResponse = DetailResponseMessage<DataFlight>;
 
-export type FlightDetailApiResponse = DetailResponseMessage<Flight>;
+export type FlightDetailApiResponse = DetailResponseMessage<DataFlight>;
 
 export type SearchFlightResponse = DetailResponseMessage<SearchFlightProps>;
 
 export type FlightMealDetailApiResponse = DetailResponseMessage<FlightMeal>;
+export type MessageApiResponse = DetailResponseMessage<Message>;
+
 export type UserListManageResponse = DetailResponseMessage<UserData>;
-export type FlightListApiResponse = DetailResponseMessage<Flight>;
+export type FlightListApiResponse = DetailResponseMessage<DataFlight>;
 export type FlightAircraftResponse =
   DetailResponseMessage<AircraftCodeBatchProps>;
 
 export type EmailProps = {
   email?: string;
   userId?: number;
+};
+
+export type SendMessageProps = {
+  user1Id: number;
+  user2Id: number;
 };
 
 export enum FacilityType {
@@ -459,7 +491,7 @@ export interface Booking {
   id: number;
   bookingTime: string;
   mealOrders: MealOrder[];
-  flight: Flight;
+  flight: DataFlight;
   seats: Seat;
 }
 

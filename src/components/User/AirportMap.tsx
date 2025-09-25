@@ -8,7 +8,6 @@ export type TerminalView = {
   code: string; // "A", "B"
   name: string;
   type: TerminalType;
-  // optional coordinates (percent 0..100). If provided, used for absolute positioning.
   x?: number;
   y?: number;
   description?: string;

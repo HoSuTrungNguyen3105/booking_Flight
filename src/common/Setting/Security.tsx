@@ -12,11 +12,7 @@ const Security = () => {
     {
       label: "Security",
       value: "auto",
-      content: (
-        <Box width={"20rem"}>
-          <FileUpload name="file" />
-        </Box>
-      ),
+      content: <Box width={"20rem"}></Box>,
     },
     {
       label: "InspectionSection",

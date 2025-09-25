@@ -24,9 +24,10 @@ import {
   type GateStatus,
   type MFAAuthResponse,
   type TerminalResponse,
-  type SearchFlightSearchBookingFlightPropsProps,
   type FlightBookingTicketDetailApiResponse,
   type PassengerResponseMessage,
+  type Aircraft,
+  type PasswordProps,
 } from "../../utils/type.ts";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
 import { useFetch } from "../../context/use[custom]/useFetch.ts";
@@ -77,15 +78,10 @@ export const useCreateFlight = () => {
   };
 };
 
-export type CreateAircraftDto = {
-  code: string;
-  model: string;
-  range: number;
-};
 export const useCreateAircraftBatchFlight = () => {
   const { refetch: refetchCreateAircraftBatchFlightData } = useFetch<
     FlightAircraftResponse,
-    CreateAircraftDto[]
+    Aircraft[]
   >({
     url: "/sys/flights/aircraft/batch",
     autoFetch: false,
@@ -97,16 +93,17 @@ export const useCreateAircraftBatchFlight = () => {
 };
 
 export const useDeleteAircraftFlight = (code: string) => {
-  const { refetch: refetchDeleteAircraftFlight } = useFetch<
-    ResponseMessage,
-    void
-  >({
+  const {
+    refetch: refetchDeleteAircraftFlight,
+    loading: loadingDeleteAircraftFlight,
+  } = useFetch<ResponseMessage, void>({
     url: `/sys/flights/aircraft/remove/${code}`,
     autoFetch: false,
     config: postMethod,
   });
   return {
     refetchDeleteAircraftFlight,
+    loadingDeleteAircraftFlight,
   };
 };
 export const useGetFlightNo = () => {
@@ -124,9 +121,7 @@ export const useGetFlightNo = () => {
     refetchGetFlightNoData,
   };
 };
-type PasswordProps = {
-  password: string;
-};
+
 export const useVerifyPw = ({ id }: ReqUserIDProps) => {
   const { refetch: fetchVerifyPassword } = useFetch<
     DetailResponseMessage<{ isValid: boolean }>,
@@ -149,7 +144,6 @@ export const useSearchFlight = () => {
     handleCloseConfirmPassword,
     handleCancelPassword,
     loading,
-    data,
     isValid,
     hasPendingRequest,
     resetAuthValidation,
@@ -170,7 +164,6 @@ export const useSearchFlight = () => {
     hasPendingRequest,
     resetAuthValidation,
     loading,
-    data,
     isValid,
   };
 };

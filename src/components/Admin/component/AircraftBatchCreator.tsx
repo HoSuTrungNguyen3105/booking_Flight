@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Box, Button, Typography, Stack } from "@mui/material";
 import { Add, Delete } from "@mui/icons-material";
-import type { Aircraft } from "../../../common/Setting/type";
 import InputTextField from "../../../common/Input/InputTextField";
 import { useCreateAircraftBatchFlight } from "../../Api/usePostApi";
 import { useToast } from "../../../context/ToastContext";
+import type { Aircraft } from "../../../utils/type";
 
 type AircraftError = {
   code: string;
@@ -21,7 +21,6 @@ const AircraftBatchCreator = () => {
   const { refetchCreateAircraftBatchFlightData } =
     useCreateAircraftBatchFlight();
 
-  // chứa lỗi theo index
   const [errors, setErrors] = useState<Record<number, string>>({});
 
   const addAircraft = () => {
@@ -108,14 +107,7 @@ const AircraftBatchCreator = () => {
                   />
                 )}
               </Box>
-
-              <Box
-                sx={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr 1fr 1fr",
-                  gap: 2,
-                }}
-              >
+              <Box sx={{ display: "grid", gap: 2 }}>
                 <Box>
                   <InputTextField
                     clearable

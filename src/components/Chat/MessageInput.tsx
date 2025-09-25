@@ -1,19 +1,17 @@
 import React, { useState } from "react";
-import { Box, Button } from "@mui/material";
+import { Box, Button, TextField } from "@mui/material";
 import InputTextField from "../../common/Input/InputTextField";
 
 interface MessageInputProps {
-  onSendMessage: (content: string) => void;
+  content: string;
+  onSendMessage: () => void;
 }
 
-const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
-  const [message, setMessage] = useState("");
-
-  const handleSend = () => {
-    if (message.trim() === "") return;
-    onSendMessage(message);
-    setMessage("");
-  };
+const MessageInput: React.FC<MessageInputProps> = ({
+  content,
+  onSendMessage,
+}) => {
+  const [message, setMessage] = useState(content);
 
   return (
     <Box
@@ -22,19 +20,23 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
       alignItems="center"
       sx={{ backgroundColor: "#fafafa", borderRadius: 2 }}
     >
-      <InputTextField
+      <TextField
         placeholder="Type a message..."
         value={message}
-        onChange={(e) => setMessage(e)}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          setMessage(e.target.value)
+        }
         sx={{
           borderRadius: 4,
           backgroundColor: "white",
+          flex: 1, // để input chiếm hết chỗ trống
+          mr: 2,
         }}
       />
       <Button
         variant="contained"
         color="primary"
-        onClick={handleSend}
+        onClick={onSendMessage}
         sx={{ borderRadius: 2, textTransform: "none", px: 3 }}
       >
         Send

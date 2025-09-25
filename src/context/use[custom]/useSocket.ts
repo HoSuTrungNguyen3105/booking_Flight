@@ -28,12 +28,10 @@ export const useSocket = <T>({
 
   useEffect(() => {
     isMounted.current = true;
-    socket.connect();
     if (!socket.connected) {
       console.log("Connecting socket...");
       socket.connect();
     }
-
     return () => {
       isMounted.current = false;
     };
@@ -62,7 +60,7 @@ export const useSocket = <T>({
     };
   }, [userId]);
 
-  // Listen event chính
+  // // Listen event chính
   useEffect(() => {
     if (!autoListen) return;
 
@@ -82,7 +80,7 @@ export const useSocket = <T>({
       setLoading(false);
       onError?.(err);
     };
-
+    if (autoListen) setLoading(true);
     socket.on(event, handleEvent);
     socket.on(`${event}_error`, handleError);
 

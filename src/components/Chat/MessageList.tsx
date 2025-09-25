@@ -1,26 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Paper, Typography } from "@mui/material";
 import { useSocket } from "../../context/use[custom]/useSocket";
-
-export interface Message {
-  id: number;
-  content: string;
-  createdAt: string;
-  senderId: number;
-  receiverId: number;
-  sender: {
-    id: number;
-    name: string;
-    pictureUrl: string;
-    email: string;
-  };
-  receiver: {
-    id: number;
-    name: string;
-    pictureUrl: string;
-    email: string;
-  };
-}
+import type { Message } from "../../utils/type";
+import { useGetMessage } from "../Api/useGetApi";
 
 interface MessageListProps {
   messages: Message[];
@@ -34,8 +16,22 @@ interface MessageListProps {
 
 const MessageList: React.FC<MessageListProps> = ({ messages, currentUser }) => {
   // const { user } = useAuth();
-  const [messagesData, setMessages] = useState<Message[]>(messages);
-
+  const [messagesData, setMessages] = useState<Message[]>(messages ?? []);
+  const { refetchGetMessageById } = useGetMessage({
+    user1Id: currentUser.id,
+    user2Id: currentUser?.id,
+  });
+  useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        const res = await refetchGetMessageById();
+        setMessages((res?.list as Message[]) ?? []);
+      } catch (error) {
+        console.error("Lỗi tải tin nhắn:", error);
+      }
+    };
+    fetchMessages();
+  }, []);
   const { data: newMessage, isConnected } = useSocket<Message>({
     event: "new_message",
     autoListen: true,

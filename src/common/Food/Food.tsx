@@ -2,19 +2,18 @@ import { Box, Typography } from "@mui/material";
 import { type GridColDef } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import type { FlightMeal, Seat } from "../../utils/type";
-import { useFlightMeals } from "../../components/Api/useGetApi";
 import DataTable from "../DataGrid/index.tsx";
 import { type SeatType } from "../Input/SeatManager.tsx";
 
 const Food = () => {
-  const { fetchFlightMeals } = useFlightMeals();
+  // const { fetchFlightMeals } = useFlightMeals();
   const [rows, setRows] = useState<FlightMeal[]>([]);
 
-  useEffect(() => {
-    if (fetchFlightMeals?.list) {
-      setRows(fetchFlightMeals.list);
-    }
-  }, [fetchFlightMeals]);
+  // useEffect(() => {
+  //   if (fetchFlightMeals?.list) {
+  //     setRows(fetchFlightMeals.list);
+  //   }
+  // }, [fetchFlightMeals]);
 
   const flightMealCols: GridColDef<FlightMeal>[] = [
     { field: "id", headerName: "ID", flex: 1 },
@@ -126,14 +125,14 @@ const Food = () => {
         <Typography variant="h6" mb={1}>
           Flight Info
         </Typography>
-        <DataTable
+        {/* <DataTable
           rows={rows.map((r) => ({
             ...r.flight,
             id: r.flight.flightId,
           }))}
           columns={flightCols}
           checkboxSelection
-        />
+        /> */}
       </Box>
 
       <Box>

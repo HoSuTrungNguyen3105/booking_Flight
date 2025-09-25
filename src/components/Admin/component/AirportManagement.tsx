@@ -1,14 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Box,
-  Card,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
   Chip,
   IconButton,
   Typography,
@@ -28,13 +20,14 @@ import {
   LocationOn as LocationIcon,
 } from "@mui/icons-material";
 import { useGetAllAirportInfo } from "../../Api/useGetApi";
-import type { AirportCodeProps } from "../../../utils/type";
+import type { Airport } from "../../../utils/type";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import TableSection from "../../../common/Setting/TableSection";
+import AirportManageModal from "../modal/AirportManageModal";
 
 const AirportManagement: React.FC = () => {
   const { getAirportInfo } = useGetAllAirportInfo();
-  const [airports, setAirports] = useState<AirportCodeProps[]>([]);
+  const [airports, setAirports] = useState<Airport[]>([]);
   const rowAirportsGrid = useMemo(
     () =>
       getAirportInfo?.list?.map((item) => ({
@@ -49,10 +42,10 @@ const AirportManagement: React.FC = () => {
     }
   }, [getAirportInfo]);
   const [openDialog, setOpenDialog] = useState(false);
-  const [editingAirport, setEditingAirport] = useState<AirportCodeProps | null>(
-    null
+  const [editingAirport, setEditingAirport] = useState<"update" | "create">(
+    "create"
   );
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<Airport>({
     code: "",
     name: "",
     city: "",
@@ -60,13 +53,13 @@ const AirportManagement: React.FC = () => {
   });
 
   const handleCreate = () => {
-    setEditingAirport(null);
+    setEditingAirport("create");
     setFormData({ code: "", name: "", city: "", country: "" });
     setOpenDialog(true);
   };
 
-  const handleEdit = (airport: AirportCodeProps) => {
-    setEditingAirport(airport);
+  const handleEdit = (airport: Airport) => {
+    setEditingAirport("update");
     setFormData({
       code: airport.code,
       name: airport.name,
@@ -164,22 +157,22 @@ const AirportManagement: React.FC = () => {
     },
   ];
 
-  const handleSave = () => {
-    if (editingAirport) {
-      setAirports((prev) =>
-        prev.map((a) =>
-          a.code === editingAirport.code
-            ? {
-                ...a,
-                ...formData,
-              }
-            : a
-        )
-      );
-    } else {
-    }
-    setOpenDialog(false);
-  };
+  // const handleSave = () => {
+  //   if (editingAirport) {
+  //     setAirports((prev) =>
+  //       prev.map((a) =>
+  //         a.code === editingAirport.code
+  //           ? {
+  //               ...a,
+  //               ...formData,
+  //             }
+  //           : a
+  //       )
+  //     );
+  //   } else {
+  //   }
+  //   setOpenDialog(false);
+  // };
 
   const handleDelete = (code: string) => {
     setAirports((prev) => prev.filter((a) => a.code !== code));
@@ -228,87 +221,14 @@ const AirportManagement: React.FC = () => {
         largeThan
         nextRowClick
       />
-      <Dialog
+      <AirportManageModal
+        onSuccess={() => {}}
         open={openDialog}
         onClose={() => setOpenDialog(false)}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle>
-          {editingAirport ? "Chỉnh sửa Sân bay" : "Thêm Sân bay Mới"}
-        </DialogTitle>
-        <DialogContent>
-          <Box sx={{ pt: 2 }}>
-            <Grid container spacing={2}>
-              <Grid size={12}>
-                <TextField
-                  fullWidth
-                  label="Mã sân bay (IATA)"
-                  value={formData.code}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      code: e.target.value.toUpperCase(),
-                    })
-                  }
-                  required
-                  disabled={!!editingAirport}
-                  inputProps={{ maxLength: 3 }}
-                  helperText="3 ký tự viết hoa"
-                />
-              </Grid>
-              <Grid size={12}>
-                <TextField
-                  fullWidth
-                  label="Tên sân bay"
-                  value={formData.name}
-                  onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
-                  required
-                />
-              </Grid>
-              <Grid size={12} sx={{ sm: 6 }}>
-                <TextField
-                  fullWidth
-                  label="Thành phố"
-                  value={formData.city}
-                  onChange={(e) =>
-                    setFormData({ ...formData, city: e.target.value })
-                  }
-                  required
-                />
-              </Grid>
-              <Grid size={12} sx={{ sm: 6 }}>
-                <TextField
-                  fullWidth
-                  label="Quốc gia"
-                  value={formData.country}
-                  onChange={(e) =>
-                    setFormData({ ...formData, country: e.target.value })
-                  }
-                  required
-                />
-              </Grid>
-            </Grid>
-          </Box>
-        </DialogContent>
-        <DialogActions sx={{ p: 3 }}>
-          <Button onClick={() => setOpenDialog(false)}>Hủy</Button>
-          <Button
-            onClick={handleSave}
-            variant="contained"
-            disabled={
-              !formData.code ||
-              !formData.name ||
-              !formData.city ||
-              !formData.country
-            }
-          >
-            {editingAirport ? "Cập nhật" : "Tạo mới"}
-          </Button>
-        </DialogActions>
-      </Dialog>
+        editingAirport={editingAirport}
+        formData={formData}
+        setFormData={setFormData}
+      ></AirportManageModal>
     </Box>
   );
 };

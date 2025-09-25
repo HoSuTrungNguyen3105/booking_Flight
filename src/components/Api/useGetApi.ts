@@ -17,6 +17,8 @@ import {
   type AirportResponseMessage,
   type GetAllCodeResponseMessage,
   type Passenger,
+  type SendMessageProps,
+  type MessageApiResponse,
 } from "../../utils/type.ts";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
 import { useFetch } from "../../context/use[custom]/useFetch.ts";
@@ -113,18 +115,16 @@ export const useFlightById = ({ id }: FlightId) => {
   };
 };
 
-export const useFlightMeals = () => {
-  const { data: fetchFlightMeals, refetch: refetchFlightMeals } = useFetch<
-    FlightMealDetailApiResponse,
-    FlightMealDetailApiResponse
-  >({
-    url: `/sys/flight-meals`,
-    autoFetch: false,
-    config: getMethod,
-  });
+export const useGetMessage = ({ user1Id, user2Id }: SendMessageProps) => {
+  const { data: fetchGetMessageById, refetch: refetchGetMessageById } =
+    useFetch<MessageApiResponse, void>({
+      url: `/sys/messages/${user1Id}/${user2Id}`,
+      autoFetch: false,
+      config: getMethod,
+    });
   return {
-    fetchFlightMeals,
-    refetchFlightMeals,
+    fetchGetMessageById,
+    refetchGetMessageById,
   };
 };
 export const useFlightMealsById = (id: string) => {
