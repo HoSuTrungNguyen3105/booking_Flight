@@ -26,7 +26,7 @@ import ManageMyInfo from "../common/Setting/ManageMyInfo";
 // import Special from "../common/Setting/hooks/Special";
 // import FlightBooking from "../components/User/FlightBooking";
 import AircraftPage from "../components/User/AircraftPage";
-import UnlockRequestTable from "../common/DetailSection/UnlockRequestTable";
+import UnlockRequestTable from "../components/Auth/UnlockRequestTable";
 import FlightPage from "../components/Admin/component/FlightPage";
 import LeaveRequestGrid from "../components/Admin/component/LeaveRequestGrid";
 import PayrollManagement from "../common/Sample/PayrollManagement";

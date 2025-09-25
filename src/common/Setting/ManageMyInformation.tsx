@@ -2,26 +2,18 @@ import { Box, Button, Stack } from "@mui/material";
 import { useCallback, useState } from "react";
 import DataAccessPermissionSection from "./DataAccessPermissionSection";
 import DialogConfirm from "../Modal/DialogConfirm";
-import { Loading } from "../Loading/Loading";
 import UserInfoSection from "./UserInfoSection";
 import { type UserData, type UserUpdateProps } from "../../utils/type";
 import TransferAuthoritySection from "./hooks/TransferAuthoritySection";
 import { useAuth } from "../../context/AuthContext";
 import { useUpdateUserInfo } from "../../components/Api/usePostApi";
 import type { TFileUploader } from "../FileUploader/type";
-// export class UpdateUserInfoDto extends UserUpdateProps{};
 
 const ManageMyInformation = () => {
   const { user } = useAuth();
-  // const [myInfo, setMyInfo] = useState<UserData | null>(user);
-  const [isFetching, setIsFetching] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
   const [toggleOpenModal, setToggleOpenModal] = useState(false);
   const { refetchUpdateUserInfo } = useUpdateUserInfo(user?.id as number);
-  const handleRestore = useCallback(() => {
-    // Logic to handle restore
-  }, []);
-
   const [myInfo, setMyInfo] = useState<UserUpdateProps>(user as UserData);
 
   const handleChange = (field: keyof UserData, value: string) => {

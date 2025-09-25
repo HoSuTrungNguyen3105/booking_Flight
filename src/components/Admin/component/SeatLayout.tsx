@@ -154,10 +154,6 @@ const SeatLayout: React.FC<FlightIdProps> = ({ id }) => {
     setMessage("");
   };
 
-  const handleUpdateSeatsByIds = useCallback(async () => {
-    const res = await refetchUpdateSeatByIds(updateSeat);
-  }, [refetchUpdateSeatByIds]);
-
   const seatOptionList = [
     { name: "available", label: "Available" },
     { name: "isBooked", label: "Occupied" },

@@ -22,11 +22,7 @@ import {
 } from "@mui/material";
 import { Edit, Add } from "@mui/icons-material";
 import TabPanel, { type ITabItem } from "../../common/Setting/TabPanel";
-import {
-  useCreateGate,
-  useGetTerminalData,
-  type CreateGateProps,
-} from "../Api/usePostApi";
+import { useGetTerminalData, type CreateGateProps } from "../Api/usePostApi";
 import { FacilityType, type GateStatus, type Terminal } from "../../utils/type";
 import InputTextField from "../../common/Input/InputTextField";
 import SelectDropdown from "../../common/Dropdown/SelectDropdown";
@@ -128,7 +124,6 @@ const AirportDiagram: React.FC = () => {
     "terminal" | "gate" | "facility"
   >("terminal");
   const { getTerminalData } = useGetTerminalData();
-  const { refetchCreateGate } = useCreateGate();
   const [editingItem, setEditingItem] = useState<any>(null);
   const [formData, setFormData] = useState({
     name: "",
@@ -193,10 +188,8 @@ const AirportDiagram: React.FC = () => {
     description: "",
     terminalId: "",
     location: "",
-    openingHours: "00:00 - 00:00", // thêm trường này
+    openingHours: "00:00 - 00:00",
   });
-
-  const [checked, setChecked] = React.useState(false);
 
   const facilityTypeOptions = [
     { value: FacilityType.RESTAURANT, label: "Restaurant" },
@@ -216,26 +209,6 @@ const AirportDiagram: React.FC = () => {
     setFacilities({ ...facilities, [e.target.name]: e.target.value });
   };
 
-  // const handleSelectChange = (e: string) => {
-  //   const { name, value } = e.;
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     [name]: value,
-  //   }));
-  // };
-
-  const handleGateClick = (gate: AirportGate) => {
-    setDialogType("gate");
-    setEditingItem(gate);
-    setGateForm({
-      code: gate.id,
-      status: gate.status,
-      terminalId: gate.flight || "",
-    });
-    setDialogOpen(true);
-  };
-
-  // value có thể là string hoặc number
   const handleSelectChange = (name: string, value: string | number) => {
     setFacilities((prev) => ({
       ...prev,

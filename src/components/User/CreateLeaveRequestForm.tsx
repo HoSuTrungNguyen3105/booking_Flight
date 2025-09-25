@@ -21,7 +21,7 @@ import {
   useCreateLeaveRequest,
   type CreateLeaveRequestDto,
 } from "../Api/usePostApi";
-import DateTimePickerComponent from "../../common/DayPicker/date-range-picker";
+import DateTimePickerComponent from "../../common/DayPicker";
 import InputTextField from "../../common/Input/InputTextField";
 import InputTextArea from "../../common/Input/InputTextArea";
 import SelectDropdown from "../../common/Dropdown/SelectDropdown";

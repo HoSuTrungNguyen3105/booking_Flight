@@ -1,6 +1,5 @@
 import { memo, useState } from "react";
-import { Box, Typography } from "@mui/material";
-import { Button } from "../../common/Button/Button";
+import { Box, Button, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { useToast } from "../../context/ToastContext";
 import { useCheckMfaAvailable } from "../Api/useGetApi";
@@ -58,12 +57,13 @@ const ForgetPassword = () => {
         )}
 
         <Button
-          label={loading ? "Đang xử lý..." : "Xác nhận"}
           type="submit"
           onClick={onHandleValueHasValid}
           disabled={loading || !email}
           sx={{ mt: 2 }}
-        />
+        >
+          {loading ? "Đang xử lý..." : "Xác nhận"}
+        </Button>
       </form>
 
       <Box sx={{ mt: 2 }}>

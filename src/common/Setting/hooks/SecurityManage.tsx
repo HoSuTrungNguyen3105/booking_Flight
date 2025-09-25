@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import type { TabItem } from "../../../components/Layout/SearchLayout";
 import SearchLayout from "../../../components/Layout/SearchLayout";
 import InspectionSection from "../../Dropdown/InspectionSection";
@@ -69,6 +69,11 @@ const SecurityManage = () => {
       })) || [],
     [dataAllPassenger]
   );
+
+  const handleReturn = useCallback(() => {
+    setGetValuePassenger(false);
+  }, [setGetValuePassenger]);
+
   const tabs: TabItem[] = [
     {
       label: "Passenger",
@@ -88,21 +93,12 @@ const SecurityManage = () => {
     {
       label: "InspectionSection",
       value: "auto",
-      content: (
-        <Typography></Typography>
-        // <InspectionSection
-        //   onRowClick={onRowSelect}
-        //   handleAction={() => {}}
-        //   columns={columnsSubfileList}
-        //   tabs={[]}
-        //   rows={[]}
-        //   loading={false}
-        //   onSearch={() => {}}
-        // />
-      ),
+      content: <Typography></Typography>,
     },
   ];
-  if (getValuePassenger) return <DataSecure passenger={passengerId} />;
+  if (getValuePassenger)
+    return <DataSecure returnButton={handleReturn} passenger={passengerId} />;
+
   return (
     <div>
       <SearchLayout

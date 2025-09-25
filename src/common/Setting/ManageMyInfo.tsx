@@ -32,6 +32,7 @@ const ManageMyInfo = () => {
       const newSelectedRows = selectedRowIds.filter((row) =>
         selectedIds.includes(row.id)
       );
+      console.log("selectedRowChange", selectedRowChange);
       return newSelectedRows;
     });
   };
@@ -57,7 +58,7 @@ const ManageMyInfo = () => {
   if (selectedRowIds.length > 0) {
     const selectedEmails = selectedRowIds
       .map((row) => row.email)
-      .filter(Boolean); // lọc email hợp lệ
+      .filter(Boolean);
     return <SendEmailToUsers selectedUser={selectedEmails} />;
   }
 

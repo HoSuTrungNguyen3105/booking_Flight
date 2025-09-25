@@ -37,8 +37,6 @@ export default function UpdateUserForm({
   data,
   onSuccess,
 }: AdminUpdateUserFormProps) {
-  console.log("Form received data:", data);
-
   const { handleSubmit, control, setValue } = useForm({
     defaultValues: {
       id: data.id,
@@ -50,12 +48,10 @@ export default function UpdateUserForm({
   });
 
   const toast = useToast();
-  // const {} = useGetUserById(data.id as number);
   const { refetchUpdateUserFromAdmin } = useUpdateUserFromAdmin();
 
   const onSubmit = useCallback(
     async (formData: AdminUpdateUserForm) => {
-      console.log("formData", formData);
       try {
         await refetchUpdateUserFromAdmin(formData);
         toast(`Cập nhật nhân viên #${formData.id} thành công`, "success");

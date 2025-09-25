@@ -1,9 +1,9 @@
 import { Chip, Box, Button, Typography } from "@mui/material";
 import type { GridColDef } from "@mui/x-data-grid";
-import TableData, { type GridRowDef } from "../DataGrid/index";
-import { useGetUnlockRequests } from "../../components/Api/useGetApi";
+import TableData, { type GridRowDef } from "../../common/DataGrid/index";
+import { useGetUnlockRequests } from "../Api/useGetApi";
 import { useCallback, useMemo, useState } from "react";
-import TableSection from "../Setting/TableSection";
+import TableSection from "../../common/Setting/TableSection";
 
 enum TypeColor {
   REJECTED = "REJECTED",

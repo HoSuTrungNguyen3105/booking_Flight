@@ -8,7 +8,7 @@ import {
   type KeyboardEvent,
 } from "react";
 import InputTextField from "../Input/InputTextField";
-import DateTimePickerComponent from "../DayPicker/date-range-picker";
+import DateTimePickerComponent from "../DayPicker";
 
 export interface ISearchQuery {
   text: string[];

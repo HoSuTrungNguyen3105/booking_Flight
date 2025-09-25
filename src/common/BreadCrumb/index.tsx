@@ -4,9 +4,9 @@ import {
   Link,
   Typography,
   Box,
-  useTheme,
 } from "@mui/material";
 import { NavigateNext } from "@mui/icons-material";
+import theme from "../../scss/theme";
 
 export type BreadcrumbItem = {
   label: string;
@@ -23,8 +23,6 @@ const BreadCrumb: React.FC<CustomBreadCrumbProps> = ({
   items,
   separator = <NavigateNext fontSize="small" />,
 }) => {
-  const theme = useTheme();
-
   return (
     <MuiBreadcrumbs
       separator={separator}

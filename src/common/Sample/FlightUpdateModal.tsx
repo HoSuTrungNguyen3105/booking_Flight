@@ -24,7 +24,7 @@ import {
 import type { Flight } from "../Setting/type";
 import InputTextField from "../Input/InputTextField";
 import SelectDropdown from "../Dropdown/SelectDropdown";
-import DateTimePickerComponent from "../DayPicker/date-range-picker";
+import DateTimePickerComponent from "../DayPicker";
 import Android12Switch from "../Switch/Switch";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";

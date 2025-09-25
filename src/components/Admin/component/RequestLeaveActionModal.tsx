@@ -1,5 +1,5 @@
-import { Box, Button, Grid, Typography } from "@mui/material";
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { Box, Button, Typography } from "@mui/material";
+import { memo, useCallback, useEffect, useState } from "react";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
 import BaseModal from "../../../common/Modal/BaseModal";
 import InputTextField from "../../../common/Input/InputTextField";
