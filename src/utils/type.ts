@@ -383,6 +383,20 @@ export interface Meal {
   isAvailable: boolean;
   flightMeals: FlightMeal[];
 }
+// Kiểu cho mỗi booking, bao gồm thông tin hành khách, flightId, thời gian đặt vé và chi tiết chuyến bay
+export type SearchBookingFlightProps = {
+  id: number;
+  passengerId: string;
+  flightId: number;
+  bookingTime: string | number; // nếu server trả timestamp dạng số, dùng number; nếu string thì để string
+  flight: DataFlight; // DataFlight là kiểu dữ liệu chuyến bay
+};
+
+// Kiểu cho kết quả trả về gồm outbound và inbound (nếu là khứ hồi)
+export type SearchFlightSearchBookingFlightPropsProps = {
+  outbound: SearchBookingFlightProps[];
+  inbound: SearchBookingFlightProps[];
+};
 
 export type SearchFlightProps = {
   outbound: DataFlight[];
@@ -393,6 +407,10 @@ export type AircraftCodeBatchProps = {
   errorCode: string;
   errorMessage: string;
 };
+
+export type FlightBookingTicketDetailApiResponse =
+  DetailResponseMessage<SearchFlightSearchBookingFlightPropsProps>;
+
 export type UserListResponse = UserDataResponse<UserData>;
 export type UserCreateResponse = DetailResponseMessage<UserDataNoGrid>;
 

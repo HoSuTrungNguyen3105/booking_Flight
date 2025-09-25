@@ -43,6 +43,7 @@ type SideBarValueTypes =
   | "airport-list"
   | "domestic"
   | "users"
+  | "AircraftBatchCreator"
   | "flight_update"
   | "user-list"
   | "customers"
@@ -104,6 +105,11 @@ export const menuData: MenuSection[] = [
           {
             id: "setting",
             label: "Bảng mẫu",
+            icon: <OtherHousesTwoToneIcon />,
+          },
+          {
+            id: "AircraftBatchCreator",
+            label: "AircraftBatchCreator",
             icon: <OtherHousesTwoToneIcon />,
           },
           {

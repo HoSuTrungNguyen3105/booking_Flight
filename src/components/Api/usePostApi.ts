@@ -24,6 +24,8 @@ import {
   type GateStatus,
   type MFAAuthResponse,
   type TerminalResponse,
+  type SearchFlightSearchBookingFlightPropsProps,
+  type FlightBookingTicketDetailApiResponse,
 } from "../../utils/type.ts";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
 import { useFetch } from "../../context/use[custom]/useFetch.ts";
@@ -238,6 +240,20 @@ export const useSeatUpdateByIds = () => {
   });
   return {
     refetchUpdateSeatByIds,
+  };
+};
+
+export const useSearchBooking = () => {
+  const { refetch: refetchSearchBooking } = useFetch<
+    FlightBookingTicketDetailApiResponse,
+    SearchFlightDto
+  >({
+    url: "sys/bookings/search",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchSearchBooking,
   };
 };
 type LoginData = {

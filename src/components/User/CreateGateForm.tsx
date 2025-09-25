@@ -80,7 +80,6 @@ const CreateGateForm: React.FC = ({ gateId }: GateProps) => {
     {
       value: "AVAILABLE",
       label: "Khả dụng",
-      // description: "Cổng sẵn sàng đón chuyến",
       color: theme.palette.info.light,
       icon: <CheckCircleIcon fontSize="small" />,
     },

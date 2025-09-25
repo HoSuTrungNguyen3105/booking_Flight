@@ -1,24 +1,15 @@
 import {
   Box,
   Button,
-  Divider,
   Stack,
   Typography,
-  TextField,
   FormControl,
-  Icon,
   FormControlLabel,
   Checkbox,
-  Paper,
 } from "@mui/material";
 import { memo, useCallback, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
-import type { UserData } from "../../utils/type";
-import {
-  useDeleteUserById,
-  useSeatCreate,
-  type CreateSeatDto,
-} from "../Api/usePostApi";
+import { type CreateSeatDto } from "../Api/usePostApi";
 import BaseModal from "../../common/Modal/BaseModal";
 import InputTextField from "../../common/Input/InputTextField";
 import SelectDropdown, {
@@ -41,9 +32,6 @@ const CreateSeatModal = ({
   onSuccess,
   loading,
 }: IModalStatisticalDataLearningProps) => {
-  const { refetchSeatCreate } = useSeatCreate();
-  const [createFormOpen, setCreateFormOpen] = useState(false);
-
   const [newSeat, setNewSeat] = useState<CreateSeatDto>({
     seatNumber: 0,
     seatRow: "",

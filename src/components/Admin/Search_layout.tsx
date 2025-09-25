@@ -37,7 +37,7 @@ type FlightId = {
   id: number;
 };
 
-type CabinClassType = "ECONOMY" | "BUSINESS" | "VIP";
+export type CabinClassType = "ECONOMY" | "BUSINESS" | "VIP";
 
 export type SearchFlightDto = {
   from: string; // departureAirport
@@ -45,16 +45,10 @@ export type SearchFlightDto = {
   departDate?: number;
   returnDate?: number;
   passengers?: number;
-  flightType?: "oneway" | "roundtrip";
+  flightType?: string;
   cabinClass?: CabinClassType;
   aircraftCode?: string;
-  status?:
-    | "scheduled"
-    | "boarding"
-    | "departed"
-    | "arrived"
-    | "delayed"
-    | "cancelled";
+  status?: string;
   minPrice?: number;
   maxPrice?: number;
   gate?: string;
