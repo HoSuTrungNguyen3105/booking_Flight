@@ -57,46 +57,34 @@ const BookTicket = () => {
   >([]);
 
   const { refetchSearchBooking } = useSearchBooking();
-  //const filterEmptyFields = (data: SearchFlightDto): Partial<SearchFlightDto> => {
-  //   const filteredData: Partial<SearchFlightDto> = {};
-
-  //   Object.entries(data).forEach(([key, value]) => {
-  //     // Chỉ giữ lại các trường có giá trị
-  //     if (value !== "" && value !== null && value !== undefined && value !== 0) {
-  //       // Riêng với boolean, luôn gửi nếu có giá trị
-  //       if (typeof value === 'boolean') {
-  //         filteredData[key as keyof SearchFlightDto] = value;
-  //       }
-  //       // Riêng với số, chỉ gửi nếu > 0 (trừ minPrice/maxPrice có thể là 0)
-  //       else if (typeof value === 'number') {
-  //         if (key === 'minPrice' || key === 'maxPrice' || key === 'minDelayMinutes' || key === 'maxDelayMinutes') {
-  //           if (value > 0) {
-  //             filteredData[key as keyof SearchFlightDto] = value;
-  //           }
-  //         } else if (value > 0) {
-  //           filteredData[key as keyof SearchFlightDto] = value;
-  //         }
-  //       }
-  //       // Với string, chỉ gửi nếu không rỗng
-  //       else if (typeof value === 'string' && value.trim() !== '') {
-  //         filteredData[key as keyof SearchFlightDto] = value;
-  //       }
-  //     }
-  //   });
-
-  //   return filteredData;
-  // };
 
   const onSubmitValue = async (values: SearchFlightDto) => {
     if (!values) return;
-    const res = await refetchSearchBooking(values);
+
+    const payload: Partial<SearchFlightDto> = Object.entries(values).reduce(
+      (acc, [key, val]) => {
+        if (
+          val !== undefined && // không gửi undefined
+          (typeof val === "string" ? val.trim() !== "" : true) && // loại bỏ chuỗi rỗng
+          (typeof val === "number" ? !isNaN(val) && val !== 0 : true) && // loại bỏ số 0 nếu muốn
+          (typeof val === "boolean" ? true : true) // giữ boolean
+        ) {
+          acc[key as keyof SearchFlightDto] = val as any; // vẫn cần ép chút để TS nhận
+        }
+        return acc;
+      },
+      {} as Partial<SearchFlightDto>
+    );
+
+    console.log("payload sent to API:", payload);
+
+    const res = await refetchSearchBooking(payload);
     if (res?.resultCode === "00") {
       setFlightOutboundList(res.data?.outbound?.map((b) => b.flight) || []);
       setFlightInboundList(res.data?.inbound?.map((b) => b.flight) || []);
     }
     console.log("values", values);
     console.log("onSubmitValue", res);
-    //await refetchFlightBookingDataData(values);
   };
 
   const onResetForm = () => {

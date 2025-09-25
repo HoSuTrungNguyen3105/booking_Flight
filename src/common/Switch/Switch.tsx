@@ -1,6 +1,5 @@
 import { styled, Switch, Typography, Box } from "@mui/material";
 import type { Android12SwitchProps } from "./type";
-import "../../scss/form/_switch.scss";
 
 const Android12Switch = ({
   color,

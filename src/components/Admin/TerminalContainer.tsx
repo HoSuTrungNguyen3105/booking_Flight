@@ -31,8 +31,6 @@ import { FacilityType, type GateStatus, type Terminal } from "../../utils/type";
 import InputTextField from "../../common/Input/InputTextField";
 import SelectDropdown from "../../common/Dropdown/SelectDropdown";
 import { OpeningHoursPicker } from "../../common/DayPicker/date-picker";
-import LabeledCheckbox from "../../common/Checkbox/LabeledCheckbox";
-import { Checkbox } from "../../common/Checkbox/Checkbox";
 
 interface AirportGate {
   id: string;

@@ -17,7 +17,7 @@ import GuestGuard from "../components/Layout/GuardLayout";
 import { LoginPage } from "../components/Auth/LoginPage";
 import Security from "../common/Setting/Security";
 import FullLayout from "../components/Layout/FullLayout";
-import CheckboxUI from "../common/Checkbox/CheckboxUI";
+// import CheckboxUI from "../common/Checkbox/CheckboxUI";
 import MealList from "../common/Setting/MealList";
 import SecurityManage from "../common/Setting/hooks/SecurityManage";
 // import ProfileUser from "../common/Profile";
@@ -187,10 +187,10 @@ const routes = [
         path: "FlightPage",
         element: <FlightPage />,
       },
-      {
-        path: ROUTE_PATHS.SAMPLE_FORM.replace("/", ""),
-        element: <CheckboxUI />,
-      },
+      // {
+      //   path: ROUTE_PATHS.SAMPLE_FORM.replace("/", ""),
+      //   element: <CheckboxUI />,
+      // },
       {
         path: "/sampleFormData",
         element: <Search_layout />,
@@ -357,10 +357,6 @@ const routes = [
       {
         path: ROUTE_PATHS.BOOK_TICKET.replace("/", ""),
         element: <BookTicket />,
-      },
-      {
-        path: "checkboxui",
-        element: <CheckboxUI />,
       },
       {
         path: "flight-book",

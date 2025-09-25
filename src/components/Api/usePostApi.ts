@@ -246,7 +246,7 @@ export const useSeatUpdateByIds = () => {
 export const useSearchBooking = () => {
   const { refetch: refetchSearchBooking } = useFetch<
     FlightBookingTicketDetailApiResponse,
-    SearchFlightDto
+    Partial<SearchFlightDto>
   >({
     url: "sys/bookings/search",
     autoFetch: false,

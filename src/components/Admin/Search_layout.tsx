@@ -31,7 +31,6 @@ import ConfirmPasswordToCallApi from "../../context/common/ConfirmPasswordToCall
 import { useToast } from "../../context/ToastContext.tsx";
 import type { IDetailItem } from "../../common/DetailSection/index.tsx";
 import DetailSection from "../../common/DetailSection/index.tsx";
-import RhfInputTextField from "../../common/CustomRender/RhfInputTextField.tsx";
 
 type FlightId = {
   id: number;

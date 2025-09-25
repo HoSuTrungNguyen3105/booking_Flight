@@ -1,11 +1,5 @@
 import { useState, type KeyboardEvent } from "react";
-import {
-  TextField,
-  Chip,
-  InputAdornment,
-  FormHelperText,
-  Box,
-} from "@mui/material";
+import { Chip, Box } from "@mui/material";
 import InputTextField from "../Input/InputTextField";
 
 interface Props {
@@ -13,7 +7,7 @@ interface Props {
   label: string;
   value?: string[];
   onChange?: (values: string[]) => void;
-  maxChips?: number; // mặc định 10
+  maxChips?: number;
 }
 
 const ChipInput = ({

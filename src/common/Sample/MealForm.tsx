@@ -14,6 +14,7 @@ import {
   Fade,
   FormHelperText,
   Stack,
+  Checkbox,
 } from "@mui/material";
 import {
   Restaurant as RestaurantIcon,
@@ -25,7 +26,6 @@ import {
 } from "@mui/icons-material";
 import InputTextField from "../Input/InputTextField";
 import InputTextArea from "../Input/InputTextArea";
-import { Checkbox } from "../Checkbox/Checkbox";
 
 interface MealFormProps {
   onSubmit: (data: any) => void;
@@ -181,7 +181,6 @@ const MealForm: React.FC<MealFormProps> = ({ onSubmit }) => {
                 checked={form.isAvailable}
                 onChange={(e) => handleChange("isAvailable", e.target.checked)}
                 color="primary"
-                label="Có sẵn"
               />
             </Paper>
           </Grid>
