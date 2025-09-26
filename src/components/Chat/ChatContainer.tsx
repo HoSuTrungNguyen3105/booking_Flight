@@ -11,6 +11,7 @@ import {
   disconnectSocket,
 } from "../../context/use[custom]/socket";
 import type { Message } from "../../utils/type";
+import ChatSidebar from "./ChatSidebar";
 
 const ChatContainer: React.FC = () => {
   const { selectedUser } = useChat();
@@ -30,18 +31,11 @@ const ChatContainer: React.FC = () => {
     };
   }, [user?.id]);
 
-  // Nhận message mới từ server
-  // const { data: incomingMessage } = useSocket<Message>({
-  //   event: "new_message",
-  //   autoListen: true,
-  //   userId: user?.id,
-  // });
   const { emit: sendMessage, isConnected } = useSocket({
     event: "send_message",
     autoListen: false, // không cần listen ở đây
   });
 
-  // dùng cho nhận message mới (server broadcast)
   const { data: incomingMessage } = useSocket<Message>({
     event: "new_message",
     autoListen: true,
@@ -57,27 +51,6 @@ const ChatContainer: React.FC = () => {
     }
   }, [incomingMessage]);
 
-  // Gửi message
-  // const { emit: sendMessage } = useSocket({
-  //   event: "send_message",
-  //   autoListen: false,
-  // });
-
-  // const handleSendMessage = (content: string) => {
-  //   if (!selectedUser?.id || !user?.id) return;
-
-  //   sendMessage(
-  //     {
-  //       senderId: user.id,
-  //       receiverId: selectedUser.id,
-  //       content,
-  //     },
-  //     () => {
-  //       // Khi server emit 'new_message' thì MessageList sẽ tự update
-  //     }
-  //   );
-  // };
-
   const handleSend = () => {
     if (!content.trim()) return;
     if (!user?.id || !selectedUser?.id) return;
@@ -90,6 +63,7 @@ const ChatContainer: React.FC = () => {
       },
       (res) => {
         console.log("Đã gửi tin nhắn:", res);
+        setMessages((prev) => [...prev, res]); // hiển thị ngay trên UI
       }
     );
 
@@ -100,6 +74,7 @@ const ChatContainer: React.FC = () => {
     <Box display="flex" height="80vh">
       <Box flex={1} display="flex" flexDirection="column" p={2}>
         {/* Message list */}
+        {/* <ChatSidebar /> */}
         <Box
           flex={1}
           overflow="auto"

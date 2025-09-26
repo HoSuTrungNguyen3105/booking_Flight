@@ -4,7 +4,7 @@ import InputTextField from "../../common/Input/InputTextField";
 
 interface MessageInputProps {
   content: string;
-  onSendMessage: () => void;
+  onSendMessage: (conten: string) => void;
 }
 
 const MessageInput: React.FC<MessageInputProps> = ({
@@ -36,7 +36,10 @@ const MessageInput: React.FC<MessageInputProps> = ({
       <Button
         variant="contained"
         color="primary"
-        onClick={onSendMessage}
+        onClick={() => {
+          onSendMessage(message); // truyền message lên
+          setMessage(""); // reset local state
+        }}
         sx={{ borderRadius: 2, textTransform: "none", px: 3 }}
       >
         Send

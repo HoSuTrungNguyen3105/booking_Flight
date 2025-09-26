@@ -49,6 +49,7 @@ import {
 } from "@mui/icons-material";
 import theme from "../../scss/theme";
 import InputTextField from "../../common/Input/InputTextField";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
 // Define types
 interface User {
@@ -219,7 +220,6 @@ const ChatApp = () => {
     useState<null | HTMLElement>(null);
   const [filterUnread, setFilterUnread] = useState(false);
   const [filterPinned, setFilterPinned] = useState(false);
-  const [searchValue, setSearchValue] = useState([]);
 
   const conversationsWithUsers = mockConversations.map((conv) => {
     const user = mockUsers.find((u) => u.id === conv.userId);
@@ -369,9 +369,14 @@ const ChatApp = () => {
                     <FilterIcon />
                   </Badge>
                 </IconButton>
-                <IconButton color="inherit" onClick={toggleSidebar}>
-                  <CloseIcon />
-                </IconButton>
+                <Button variant="outlined" onClick={toggleSidebar}>
+                  {/* <CloseIcon /> */}
+                  {isSidebarOpen ? (
+                    <FaArrowRight size={16} />
+                  ) : (
+                    <FaArrowLeft size={16} />
+                  )}
+                </Button>
               </Box>
             </Box>
 

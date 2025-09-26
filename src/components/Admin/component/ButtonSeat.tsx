@@ -94,18 +94,18 @@ const ButtonSeat: React.FC<ButtonSeatProps> = ({
           width: { xs: "36px", sm: "42px", md: "45px" },
           height: { xs: "36px", sm: "42px", md: "45px" },
           minWidth: "unset",
-          borderRadius: "6px",
+          borderRadius: 1,
           margin: "4px",
           fontSize: { xs: "10px", sm: "12px" },
           fontWeight: 600,
           backgroundColor,
           color: textColor,
-          border: `2px solid ${borderColor}`,
+          border: `1px solid ${borderColor}`,
           cursor: isBooked ? "not-allowed" : "pointer",
           transition: "all 0.2s ease",
-          boxShadow: isSelected
-            ? `0px 0px 8px ${theme.palette.primary.main}80`
-            : "0px 1px 3px rgba(0,0,0,0.1)",
+          // boxShadow: isSelected
+          //   ? `0px 0px 8px ${theme.palette.primary.main}80`
+          //   : "0px 1px 3px rgba(0,0,0,0.1)",
           "&:hover": {
             backgroundColor: isBooked
               ? "#bdbdbd"

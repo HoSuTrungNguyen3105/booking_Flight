@@ -330,6 +330,7 @@ export interface FlightMeal {
 
 export interface Meal {
   id: number;
+  mealCode: string;
   name: string;
   mealType: string;
   description?: string;

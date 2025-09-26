@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { memo, useState } from "react";
 import { Box, Button, Typography, Stack } from "@mui/material";
 import { Add, Delete } from "@mui/icons-material";
 import InputTextField from "../../../common/Input/InputTextField";
@@ -68,11 +68,10 @@ const AircraftBatchCreator = () => {
         setErrors(errorMap);
 
         if (Object.keys(errorMap).length === 0) {
-          // nếu không có lỗi => reset form
           setAircrafts([{ code: "", model: "", range: 0 }]);
         }
       } else {
-        toast(response?.resultMessage as string);
+        toast(response?.resultMessage || "Error while create");
       }
     } catch (error) {
       console.error(error);
@@ -83,81 +82,73 @@ const AircraftBatchCreator = () => {
 
   return (
     <Box sx={{ maxWidth: "100%" }}>
-      <Stack sx={{ p: 3 }}>
-        <Box px={2} py={1} borderBottom={1} borderColor="grey.200">
-          {aircrafts.map((aircraft, index) => (
-            <Box
-              key={index}
-              sx={{ mb: 2, p: 2, border: "1px solid #ddd", borderRadius: 1 }}
-            >
-              <Box
-                sx={{
-                  display: "flex",
-                  gap: 2,
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <Typography variant="h6">Aircraft No.{index + 1}</Typography>
-                {aircrafts.length > 1 && (
-                  <Button
-                    variant="text"
-                    endIcon={<Delete />}
-                    onClick={() => removeAircraft(index)}
-                  />
-                )}
-              </Box>
-              <Box sx={{ display: "grid", gap: 2 }}>
-                <Box>
-                  <InputTextField
-                    clearable
-                    value={aircraft.code}
-                    onChange={(e) => updateAircraft(index, "code", e)}
-                    placeholder="e.g., B738"
-                  />
-                  {errors[index] && (
-                    <Typography color="error" variant="caption">
-                      {errors[index]}
-                    </Typography>
-                  )}
-                </Box>
-                <InputTextField
-                  clearable
-                  value={aircraft.model}
-                  onChange={(e) => updateAircraft(index, "model", e)}
-                  placeholder="e.g., Boeing 737-800"
-                />
-                <InputTextField
-                  value={String(aircraft.range)}
-                  onChange={(e) => updateAircraft(index, "range", e)}
-                  placeholder="e.g., 5600"
-                />
-              </Box>
+      {aircrafts.map((aircraft, index) => (
+        <Box
+          key={index}
+          sx={{ mb: 2, p: 2, border: "1px solid #ddd", borderRadius: 1 }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              gap: 2,
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Typography variant="h6">Aircraft No.{index + 1}</Typography>
+            {aircrafts.length > 1 && (
+              <Button
+                variant="text"
+                endIcon={<Delete />}
+                onClick={() => removeAircraft(index)}
+              />
+            )}
+          </Box>
+          <Box sx={{ display: "grid", gap: 2 }}>
+            <Box>
+              <InputTextField
+                clearable
+                value={aircraft.code}
+                onChange={(e) => updateAircraft(index, "code", e)}
+                placeholder="e.g., B738"
+              />
+              {errors[index] && (
+                <Typography color="error" variant="caption">
+                  {errors[index]}
+                </Typography>
+              )}
             </Box>
-          ))}
-
-          <Box sx={{ display: "flex", gap: 2, mt: 3 }}>
-            <Button
-              variant="outlined"
-              startIcon={<Add />}
-              onClick={addAircraft}
-            >
-              Add Aircraft
-            </Button>
-
-            <Button
-              variant="contained"
-              onClick={handleSubmit}
-              disabled={loading}
-              sx={{ flexGrow: 1 }}
-            >
-              {loading ? "Creating..." : "Create Batch Aircraft"}
-            </Button>
+            <InputTextField
+              clearable
+              value={aircraft.model}
+              onChange={(e) => updateAircraft(index, "model", e)}
+              placeholder="e.g., Boeing 737-800"
+            />
+            <InputTextField
+              value={String(aircraft.range)}
+              onChange={(e) => updateAircraft(index, "range", e)}
+              placeholder="e.g., 5600"
+            />
           </Box>
         </Box>
-      </Stack>
+      ))}
+
+      <Box sx={{ display: "flex", gap: 2, mt: 3 }}>
+        <Button variant="outlined" startIcon={<Add />} onClick={addAircraft}>
+          Add Aircraft
+        </Button>
+
+        <Button
+          variant="contained"
+          onClick={handleSubmit}
+          disabled={loading}
+          sx={{ flexGrow: 1 }}
+        >
+          {loading ? "Creating..." : "Create Batch Aircraft"}
+        </Button>
+      </Box>
     </Box>
   );
 };
 
-export default AircraftBatchCreator;
+export default memo(AircraftBatchCreator);

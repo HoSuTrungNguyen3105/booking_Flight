@@ -34,6 +34,7 @@ import { useFetch } from "../../context/use[custom]/useFetch.ts";
 import type { FlightFormData } from "../../common/Sample/FlightUpdateModal.tsx";
 import type { SearchFlightDto } from "../Admin/Search_layout.tsx";
 import { useSecureFetch } from "../../context/use[custom]/useSecureFetch.ts";
+import type { CreateMealDto } from "../Admin/component/BulkMealCreator.tsx";
 
 const postMethod = {
   method: MethodType.POST,
@@ -119,6 +120,29 @@ export const useGetFlightNo = () => {
   return {
     getFlightNoData,
     refetchGetFlightNoData,
+  };
+};
+export type TerminalType = "INTERNATIONAL" | "DOMESTIC" | "BUSINESS";
+
+export type CreateTerminalDto = {
+  code: string;
+  name: string;
+  description?: string;
+  type: TerminalType;
+  airportId: string;
+};
+
+export const useCreateTerminalBulk = () => {
+  const { refetch: refetchCreateTerminalBulk } = useFetch<
+    ResponseMessage,
+    CreateTerminalDto[]
+  >({
+    url: "/sys/flights/createTerminal/bulk",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchCreateTerminalBulk,
   };
 };
 
@@ -424,28 +448,24 @@ export const useGetSeatByFlightId = ({ id }: ReqUserIDProps) => {
     refetchGetSeatByFlightId,
   };
 };
-interface CreateMealProps {
-  name: string;
-  mealType: string;
-  description?: string | null;
-  price?: number | null;
-  isAvailable?: boolean;
-}
+// interface CreateMealProps {
+//   name: string;
+//   mealType: string;
+//   description?: string | null;
+//   price?: number | null;
+//   isAvailable?: boolean;
+// }
 
 export const useCreateMultiMeal = () => {
-  const {
-    data: flightBookingData,
-    refetch: refetchFlightBookingDataData,
-    loading: loadingFlightBookingData,
-  } = useFetch<MealResponse, CreateMealProps[]>({
-    url: "/sys/meals/create-many",
-    autoFetch: false,
-    config: postMethod,
-  });
+  const { refetch: refetchCreateMultiMeal, loading: loadingCreateMultiMeal } =
+    useFetch<MealResponse, CreateMealDto[]>({
+      url: "/sys/meals/create-many",
+      autoFetch: false,
+      config: postMethod,
+    });
   return {
-    flightBookingData,
-    refetchFlightBookingDataData,
-    loadingFlightBookingData,
+    loadingCreateMultiMeal,
+    refetchCreateMultiMeal,
   };
 };
 

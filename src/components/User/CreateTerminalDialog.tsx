@@ -18,6 +18,10 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { Add, Close, CloudUpload } from "@mui/icons-material";
+import {
+  useCreateTerminalBulk,
+  type CreateTerminalDto,
+} from "../Api/usePostApi";
 
 interface CreateTerminalDialogProps {
   open: boolean;
@@ -25,13 +29,13 @@ interface CreateTerminalDialogProps {
   onSuccess: () => void;
 }
 
-interface TerminalFormData {
-  code: string;
-  name: string;
-  description: string;
-  type: string;
-  airportId: string;
-}
+// interface TerminalFormData {
+//   code: string;
+//   name: string;
+//   description: string;
+//   type: string;
+//   airportId: string;
+// }
 
 const CreateTerminalDialog: React.FC<CreateTerminalDialogProps> = ({
   open,
@@ -40,7 +44,7 @@ const CreateTerminalDialog: React.FC<CreateTerminalDialogProps> = ({
 }) => {
   const [activeStep, setActiveStep] = useState(0);
   const [mode, setMode] = useState<"single" | "bulk">("single");
-  const [formData, setFormData] = useState<TerminalFormData>({
+  const [formData, setFormData] = useState<CreateTerminalDto>({
     code: "",
     name: "",
     description: "",
@@ -55,7 +59,7 @@ const CreateTerminalDialog: React.FC<CreateTerminalDialogProps> = ({
   } | null>(null);
 
   const steps = ["Chọn phương thức", "Nhập thông tin", "Xác nhận"];
-
+  const { refetchCreateTerminalBulk } = useCreateTerminalBulk();
   const handleSingleSubmit = async () => {
     setLoading(true);
     setMessage(null);
@@ -103,28 +107,29 @@ const CreateTerminalDialog: React.FC<CreateTerminalDialogProps> = ({
           return { code, name, type, airportId: "default-airport-id" };
         });
 
-      const response = await fetch("http://localhost:3000/terminals/bulk", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(terminals),
-      });
+      // const result = await refetchCreateTerminalBulk(formData)
+      // if (result.resultCode === "00") {
+      //   setMessage({ type: "success", text: "Tạo terminal thành công!" });
+      //   setTimeout(() => {
+      //     onSuccess();
+      //     handleClose();
+      //   }, 1500);
+      // } else {
+      //   setMessage({ type: "error", text: result.resultMessage });
+      // }
 
-      const result = await response.json();
-
-      if (result.resultCode === "00") {
-        setMessage({
-          type: "success",
-          text: `Tạo thành công ${terminals.length} terminal!`,
-        });
-        setTimeout(() => {
-          onSuccess();
-          handleClose();
-        }, 1500);
-      } else {
-        setMessage({ type: "error", text: result.resultMessage });
-      }
+      // if (result.resultCode === "00") {
+      //   setMessage({
+      //     type: "success",
+      //     text: `Tạo thành công ${terminals.length} terminal!`,
+      //   });
+      //   setTimeout(() => {
+      //     onSuccess();
+      //     handleClose();
+      //   }, 1500);
+      // } else {
+      //   setMessage({ type: "error", text: result.resultMessage });
+      // }
     } catch (error) {
       setMessage({ type: "error", text: "Lỗi kết nối máy chủ" });
     } finally {

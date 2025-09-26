@@ -23,29 +23,24 @@ import {
 import { Edit, Add } from "@mui/icons-material";
 import TabPanel, { type ITabItem } from "../../common/Setting/TabPanel";
 import { useGetTerminalData, type CreateGateProps } from "../Api/usePostApi";
-import { FacilityType, type GateStatus, type Terminal } from "../../utils/type";
+import {
+  FacilityType,
+  type Facility,
+  type GateStatus,
+  type Terminal,
+} from "../../utils/type";
 import InputTextField from "../../common/Input/InputTextField";
 import SelectDropdown from "../../common/Dropdown/SelectDropdown";
 import { OpeningHoursPicker } from "../../common/DayPicker/date-picker";
 
-interface AirportGate {
-  id: string;
-  code: string;
-  terminalId: string;
-  status: GateStatus;
-  createdAt: number;
-  updatedAt: number;
-  flight?: string;
-}
-
-interface Facility {
-  id: string;
-  name: string;
-  type: string;
-  terminalId: string;
-  location?: string;
-  openingHours?: string;
-}
+// interface Facility {
+//   id: string;
+//   name: string;
+//   type: string;
+//   terminalId: string;
+//   location?: string;
+//   openingHours?: string;
+// }
 
 const tabs: ITabItem[] = [
   { label: "Tất cả", value: "all", description: "Hiển thị toàn bộ terminal" },

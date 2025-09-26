@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Box,
   Typography,
@@ -26,241 +26,51 @@ import {
 } from "@mui/material";
 import {
   Add as AddIcon,
-  Delete as DeleteIcon,
   Restaurant as RestaurantIcon,
   CheckCircle as CheckCircleIcon,
   PlaylistAdd as PlaylistAddIcon,
   CloudUpload as CloudUploadIcon,
   Preview as PreviewIcon,
 } from "@mui/icons-material";
+import theme from "../../../scss/theme";
+import type { Meal } from "../../../utils/type";
+import MealForm from "./InfoMealModal";
+import { useCreateMultiMeal } from "../../Api/usePostApi";
 
-// Types
-interface Meal {
-  id?: string;
-  name: string;
-  mealType: string;
-  description: string;
-  price: number;
-  isAvailable: boolean;
-}
+export interface CreateMealDto extends Omit<Meal, "id" | "flightMeals"> {}
 
-interface CreateMealDto extends Omit<Meal, "id"> {}
-
-// Meal Form Component
-const MealForm: React.FC<{
-  meal: Meal;
-  index: number;
-  onChange: (index: number, field: keyof Meal, value: any) => void;
-  onRemove: (index: number) => void;
-}> = ({ meal, index, onChange, onRemove }) => {
-  const theme = useTheme();
-
-  return (
-    <Card
-      sx={{
-        mb: 2,
-        border: `2px dashed ${alpha(theme.palette.primary.main, 0.2)}`,
-        transition: "all 0.3s ease",
-        "&:hover": {
-          borderColor: alpha(theme.palette.primary.main, 0.4),
-          transform: "translateY(-2px)",
-          boxShadow: theme.shadows[4],
-        },
-      }}
-    >
-      <CardContent>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            mb: 2,
-          }}
-        >
-          <Typography
-            variant="h6"
-            sx={{ display: "flex", alignItems: "center", gap: 1 }}
-          >
-            <RestaurantIcon color="primary" />
-            Meal #{index + 1}
-          </Typography>
-          <IconButton
-            onClick={() => onRemove(index)}
-            color="error"
-            sx={{
-              transition: "all 0.2s ease",
-              "&:hover": { transform: "scale(1.1)" },
-            }}
-          >
-            <DeleteIcon />
-          </IconButton>
-        </Box>
-
-        <Grid container spacing={2}>
-          <Grid size={6}>
-            <Box sx={{ mb: 2 }}>
-              <Typography
-                variant="subtitle2"
-                gutterBottom
-                color="text.secondary"
-              >
-                Meal Name *
-              </Typography>
-              <input
-                type="text"
-                value={meal.name}
-                onChange={(e) => onChange(index, "name", e.target.value)}
-                placeholder="Enter meal name"
-                style={{
-                  width: "100%",
-                  padding: "12px",
-                  border: `1px solid ${theme.palette.divider}`,
-                  borderRadius: "8px",
-                  fontSize: "14px",
-                  transition: "all 0.2s ease",
-                  outline: "none",
-                  background: theme.palette.background.paper,
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = theme.palette.primary.main;
-                  e.target.style.boxShadow = `0 0 0 2px ${alpha(
-                    theme.palette.primary.main,
-                    0.2
-                  )}`;
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = theme.palette.divider;
-                  e.target.style.boxShadow = "none";
-                }}
-              />
-            </Box>
-
-            <Box sx={{ mb: 2 }}>
-              <Typography
-                variant="subtitle2"
-                gutterBottom
-                color="text.secondary"
-              >
-                Meal Type *
-              </Typography>
-              <select
-                value={meal.mealType}
-                onChange={(e) => onChange(index, "mealType", e.target.value)}
-                style={{
-                  width: "100%",
-                  padding: "12px",
-                  border: `1px solid ${theme.palette.divider}`,
-                  borderRadius: "8px",
-                  fontSize: "14px",
-                  background: theme.palette.background.paper,
-                  cursor: "pointer",
-                }}
-              >
-                <option value="">Select meal type</option>
-                <option value="BREAKFAST">🍳 Breakfast</option>
-                <option value="LUNCH">🍽️ Lunch</option>
-                <option value="DINNER">🍲 Dinner</option>
-                <option value="SNACK">🍎 Snack</option>
-                <option value="BEVERAGE">🥤 Beverage</option>
-              </select>
-            </Box>
-          </Grid>
-
-          <Grid size={6}>
-            <Box sx={{ mb: 2 }}>
-              <Typography
-                variant="subtitle2"
-                gutterBottom
-                color="text.secondary"
-              >
-                Price ($) *
-              </Typography>
-              <input
-                type="number"
-                value={meal.price}
-                onChange={(e) =>
-                  onChange(index, "price", parseFloat(e.target.value) || 0)
-                }
-                placeholder="0.00"
-                min="0"
-                step="0.01"
-                style={{
-                  width: "100%",
-                  padding: "12px",
-                  border: `1px solid ${theme.palette.divider}`,
-                  borderRadius: "8px",
-                  fontSize: "14px",
-                }}
-              />
-            </Box>
-
-            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-              <label
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  cursor: "pointer",
-                }}
-              >
-                <input
-                  type="checkbox"
-                  checked={meal.isAvailable}
-                  onChange={(e) =>
-                    onChange(index, "isAvailable", e.target.checked)
-                  }
-                  style={{ marginRight: "8px" }}
-                />
-                <Typography variant="subtitle2" color="text.secondary">
-                  Available
-                </Typography>
-              </label>
-            </Box>
-          </Grid>
-
-          <Grid size={12}>
-            <Typography variant="subtitle2" gutterBottom color="text.secondary">
-              Description
-            </Typography>
-            <textarea
-              value={meal.description}
-              onChange={(e) => onChange(index, "description", e.target.value)}
-              placeholder="Describe this meal..."
-              rows={3}
-              style={{
-                width: "100%",
-                padding: "12px",
-                border: `1px solid ${theme.palette.divider}`,
-                borderRadius: "8px",
-                fontSize: "14px",
-                resize: "vertical",
-                minHeight: "80px",
-              }}
-            />
-          </Grid>
-        </Grid>
-      </CardContent>
-    </Card>
-  );
-};
-
-// Main Component
 const BulkMealCreator: React.FC = () => {
-  const theme = useTheme();
-  const [meals, setMeals] = useState<Meal[]>([
-    { name: "", mealType: "", description: "", price: 0, isAvailable: true },
+  const lastMealRef = useRef<HTMLDivElement>(null);
+  const [meals, setMeals] = useState<CreateMealDto[]>([
+    {
+      mealCode: "",
+      name: "",
+      mealType: "",
+      description: "",
+      price: 0,
+      isAvailable: true,
+    },
   ]);
   const [activeStep, setActiveStep] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
-  const [createdMeals, setCreatedMeals] = useState<Meal[]>([]);
-
+  const [createdMeals, setCreatedMeals] = useState<CreateMealDto[]>([]);
+  const { refetchCreateMultiMeal, loadingCreateMultiMeal } =
+    useCreateMultiMeal();
   const steps = ["Add Meals", "Review", "Complete"];
 
   const addMeal = () => {
     setMeals([
       ...meals,
-      { name: "", mealType: "", description: "", price: 0, isAvailable: true },
+      {
+        mealCode: "",
+        name: "",
+        mealType: "",
+        description: "",
+        price: 0,
+        isAvailable: true,
+      },
     ]);
   };
 
@@ -277,8 +87,13 @@ const BulkMealCreator: React.FC = () => {
     setMeals(updatedMeals);
   };
 
-  const isValidMeal = (meal: Meal): boolean => {
-    return meal.name.trim() !== "" && meal.mealType !== "" && meal.price > 0;
+  const isValidMeal = (meal: CreateMealDto): boolean => {
+    return (
+      meal.name.trim() !== "" &&
+      meal.mealType !== "" &&
+      meal.description !== "" &&
+      meal.price > 0
+    );
   };
 
   const validMealsCount = meals.filter(isValidMeal).length;
@@ -287,34 +102,18 @@ const BulkMealCreator: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      // Simulate API call
+      // Simulate API call delay
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      const createMany = async (dataList: CreateMealDto[]) => {
-        const mealList: Meal[] = [];
-
-        for (const data of dataList) {
-          // Simulate API response
-          const res: Meal = {
-            id: Math.random().toString(36).substr(2, 9),
-            ...data,
-            isAvailable: data.isAvailable ?? true,
-          };
-          mealList.push(res);
-        }
-
-        return {
-          resultCode: "00",
-          resultMessage: "Created multiple meals successfully!",
-          data: mealList,
-        };
-      };
-
-      const validMeals = meals.filter(isValidMeal);
-      const result = await createMany(validMeals);
-      setCreatedMeals(result.data);
-      setIsSuccess(true);
-      setActiveStep(2);
+      // Gọi API thật
+      const res = await refetchCreateMultiMeal(meals);
+      if (res?.resultCode === "00") {
+        setIsSuccess(true);
+        setActiveStep(2);
+        setCreatedMeals(meals); // nếu muốn lưu lại meal đã tạo
+      } else {
+        console.error("Error creating meals:", res?.resultMessage);
+      }
     } catch (error) {
       console.error("Error creating meals:", error);
     } finally {
@@ -324,28 +123,27 @@ const BulkMealCreator: React.FC = () => {
 
   const handleReset = () => {
     setMeals([
-      { name: "", mealType: "", description: "", price: 0, isAvailable: true },
+      {
+        mealCode: "",
+        name: "",
+        mealType: "",
+        description: "",
+        price: 0,
+        isAvailable: true,
+      },
     ]);
     setActiveStep(0);
     setIsSuccess(false);
   };
 
-  const getMealTypeIcon = (type: string) => {
-    switch (type) {
-      case "BREAKFAST":
-        return "🍳";
-      case "LUNCH":
-        return "🍽️";
-      case "DINNER":
-        return "🍲";
-      case "SNACK":
-        return "🍎";
-      case "BEVERAGE":
-        return "🥤";
-      default:
-        return "🍴";
+  useEffect(() => {
+    if (meals.length > 1 && lastMealRef.current) {
+      lastMealRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
     }
-  };
+  }, [meals.length]);
 
   return (
     <Box sx={{ maxWidth: "100%" }}>
@@ -411,15 +209,19 @@ const BulkMealCreator: React.FC = () => {
                 Preview ({validMealsCount})
               </Button>
             </Box>
-
             {meals.map((meal, index) => (
-              <MealForm
+              <Box
                 key={index}
-                meal={meal}
-                index={index}
-                onChange={updateMeal}
-                onRemove={removeMeal}
-              />
+                ref={index === meals.length - 1 ? lastMealRef : null}
+              >
+                <MealForm
+                  key={index}
+                  meal={meal}
+                  index={index}
+                  onChange={updateMeal}
+                  onRemove={removeMeal}
+                />
+              </Box>
             ))}
 
             <Button
@@ -478,7 +280,7 @@ const BulkMealCreator: React.FC = () => {
                               gap: 1,
                             }}
                           >
-                            {getMealTypeIcon(meal.mealType)} {meal.name}
+                            {meal.name}
                           </Typography>
                           <Chip
                             label={meal.mealType}
@@ -589,18 +391,6 @@ const BulkMealCreator: React.FC = () => {
           <Button onClick={() => setPreviewOpen(false)}>Close</Button>
         </DialogActions>
       </Dialog>
-
-      {/* Success Snackbar */}
-      <Snackbar
-        open={isSuccess}
-        autoHideDuration={4000}
-        onClose={() => setIsSuccess(false)}
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-      >
-        <Alert severity="success" variant="filled">
-          Meals created successfully!
-        </Alert>
-      </Snackbar>
     </Box>
   );
 };
