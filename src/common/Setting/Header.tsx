@@ -1,5 +1,5 @@
 import { Box, Menu, MenuItem, Stack, Typography } from "@mui/material";
-import Logo from "../../svgs/logo-github.svg";
+import Logo from "../../svgs/departures.svg";
 import UserIcon from "../../svgs/user-icon.svg";
 import { memo, useCallback, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -116,7 +116,7 @@ const Header = () => {
         px: "15px",
       }}
     >
-      <Box sx={{ height: "24px", width: "24px" }} component="img" src={Logo} />
+      <Box sx={{ height: "70px", width: "70px" }} component="img" src={Logo} />
       {renderUserMenu()}
     </Stack>
   );

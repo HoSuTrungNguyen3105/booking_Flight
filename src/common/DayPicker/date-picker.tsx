@@ -14,10 +14,10 @@ type TimePickerProps = {
 
 export const OpeningHoursPicker = ({ value, onChange }: TimePickerProps) => {
   const [startTime, setStartTime] = useState<Moment | null>(
-    moment(value.split(" - ")[0], "HH:mm")
+    value ? moment(value.split(" - ")[0], "HH:mm") : null
   );
   const [endTime, setEndTime] = useState<Moment | null>(
-    moment(value.split(" - ")[1], "HH:mm")
+    value ? moment(value.split(" - ")[1], "HH:mm") : null
   );
 
   const handleUpdate = (start: Moment | null, end: Moment | null) => {
@@ -77,7 +77,7 @@ export const OpeningHoursPicker = ({ value, onChange }: TimePickerProps) => {
         />
         <ChevronRightSharpIcon />
         <InputTextField
-          sx={{ width: "15rem", height: "90%" }}
+          ///   sx={{ width: "15rem", height: "90%" }}
           value={value}
           readOnly
           placeholder="00:00 - 00:00"

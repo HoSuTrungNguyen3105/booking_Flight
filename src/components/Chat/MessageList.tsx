@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Box, Paper, Typography } from "@mui/material";
 import { useSocket } from "../../context/use[custom]/useSocket";
 import type { Message } from "../../utils/type";
-import { useGetMessage } from "../Api/useGetApi";
+// import { useGetMessage } from "../Api/useGetApi";
 
 interface MessageListProps {
   messages: Message[];
@@ -17,21 +17,21 @@ interface MessageListProps {
 const MessageList: React.FC<MessageListProps> = ({ messages, currentUser }) => {
   // const { user } = useAuth();
   const [messagesData, setMessages] = useState<Message[]>(messages ?? []);
-  const { refetchGetMessageById } = useGetMessage({
-    user1Id: currentUser.id,
-    user2Id: currentUser?.id,
-  });
-  useEffect(() => {
-    const fetchMessages = async () => {
-      try {
-        const res = await refetchGetMessageById();
-        setMessages((res?.list as Message[]) ?? []);
-      } catch (error) {
-        console.error("Lỗi tải tin nhắn:", error);
-      }
-    };
-    fetchMessages();
-  }, []);
+  // const { refetchGetMessageById } = useGetMessage({
+  //   user1Id: currentUser.id,
+  //   user2Id: currentUser?.id,
+  // });
+  // useEffect(() => {
+  //   const fetchMessages = async () => {
+  //     try {
+  //       const res = await refetchGetMessageById();
+  //       setMessages((res?.list as Message[]) ?? []);
+  //     } catch (error) {
+  //       console.error("Lỗi tải tin nhắn:", error);
+  //     }
+  //   };
+  //   fetchMessages();
+  // }, []);
   const { data: newMessage, isConnected } = useSocket<Message>({
     event: "new_message",
     autoListen: true,

@@ -12,6 +12,7 @@ import {
 } from "../../context/use[custom]/socket";
 import type { Message } from "../../utils/type";
 import ChatSidebar from "./ChatSidebar";
+import Conversations from "./Conversations";
 
 const ChatContainer: React.FC = () => {
   const { selectedUser } = useChat();
@@ -74,7 +75,7 @@ const ChatContainer: React.FC = () => {
     <Box display="flex" height="80vh">
       <Box flex={1} display="flex" flexDirection="column" p={2}>
         {/* Message list */}
-        {/* <ChatSidebar /> */}
+        <Conversations userId={user?.id || 0} />
         <Box
           flex={1}
           overflow="auto"

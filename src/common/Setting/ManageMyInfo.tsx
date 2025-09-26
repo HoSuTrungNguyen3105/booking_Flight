@@ -89,13 +89,16 @@ const ManageMyInfo = () => {
         setRows={setSelectedRowIds}
         isLoading={loading}
         nextRowClick
+        largeThan
         onSelectedRowIdsChange={handleMealRowSelection}
         rows={rows}
         columns={columns}
       />
-      {selectedRowIds.length > 0 && (
+
+      {/* {selectedRowIds.length > 0 && (
         <Button variant="contained">Send Message</Button>
-      )}
+      )} */}
+
       {openModal.addUser && (
         <AddUserModal
           open={openModal.addUser}

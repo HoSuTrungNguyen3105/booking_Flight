@@ -36,6 +36,10 @@ const MealForm =
         { value: "DINNER", label: "Dinner" },
         { value: "SNACK", label: "Snack" },
         { value: "BEVERAGE", label: "Beverage" },
+        { value: "DESSERT", label: "DESSERT" },
+        { value: "DRINK", label: "DRINK" },
+        { value: "NONVEG", label: "NONVEG" },
+        { value: "VEG", label: "VEG" },
       ];
     }, []);
 
@@ -82,6 +86,22 @@ const MealForm =
 
           <Grid container spacing={2}>
             <Grid size={6}>
+              <Box sx={{ mb: 2 }}>
+                <Typography
+                  variant="subtitle2"
+                  gutterBottom
+                  color="text.secondary"
+                >
+                  Meal Code *
+                </Typography>
+                <InputTextField
+                  type="text"
+                  value={meal.mealCode}
+                  onChange={(e) => onChange(index, "mealCode", e)}
+                  placeholder="Enter meal code"
+                />
+              </Box>
+
               <Box sx={{ mb: 2 }}>
                 <Typography
                   variant="subtitle2"

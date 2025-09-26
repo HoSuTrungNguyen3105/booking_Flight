@@ -50,217 +50,61 @@ import {
 import theme from "../../scss/theme";
 import InputTextField from "../../common/Input/InputTextField";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
-
-// Define types
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  avatar: string;
-  lastSeen: string;
-  online: boolean;
-  department: string;
-  position: string;
-}
-
-interface Conversation {
-  id: string;
-  userId: string;
-  lastMessage: string;
-  timestamp: string;
-  unread: number;
-  isPinned: boolean;
-  user?: User;
-}
-
-interface Message {
-  id: number;
-  sender: string;
-  text: string;
-  timestamp: string;
-}
-
-// Mock data
-const mockUsers: User[] = [
-  {
-    id: "1",
-    name: "Nguyễn Văn A",
-    email: "a@example.com",
-    avatar: "",
-    lastSeen: "2 phút trước",
-    online: true,
-    department: "Kế toán",
-    position: "Trưởng phòng",
-  },
-  {
-    id: "2",
-    name: "Trần Thị B",
-    email: "b@example.com",
-    avatar: "",
-    lastSeen: "10 phút trước",
-    online: true,
-    department: "Nhân sự",
-    position: "Chuyên viên",
-  },
-  {
-    id: "3",
-    name: "Lê Văn C",
-    email: "c@example.com",
-    avatar: "",
-    lastSeen: "1 giờ trước",
-    online: false,
-    department: "IT",
-    position: "Developer",
-  },
-  {
-    id: "4",
-    name: "Phạm Thị D",
-    email: "d@example.com",
-    avatar: "",
-    lastSeen: "5 giờ trước",
-    online: false,
-    department: "Marketing",
-    position: "Manager",
-  },
-  {
-    id: "5",
-    name: "Hoàng Văn E",
-    email: "e@example.com",
-    avatar: "",
-    lastSeen: "Hôm qua",
-    online: true,
-    department: "Sales",
-    position: "Director",
-  },
-];
-
-const mockConversations: Conversation[] = [
-  {
-    id: "1",
-    userId: "1",
-    lastMessage: "Bạn đang làm gì thế?",
-    timestamp: "10:30 AM",
-    unread: 2,
-    isPinned: true,
-  },
-  {
-    id: "2",
-    userId: "2",
-    lastMessage: "Tôi sẽ gửi tài liệu cho bạn",
-    timestamp: "09:15 AM",
-    unread: 0,
-    isPinned: false,
-  },
-  {
-    id: "3",
-    userId: "3",
-    lastMessage: "Cuộc họp lúc 3h chiều nhé",
-    timestamp: "Yesterday",
-    unread: 5,
-    isPinned: true,
-  },
-  {
-    id: "4",
-    userId: "4",
-    lastMessage: "Cảm ơn bạn đã giúp đỡ",
-    timestamp: "Monday",
-    unread: 0,
-    isPinned: false,
-  },
-  {
-    id: "5",
-    userId: "5",
-    lastMessage: "Dự án tiến triển tốt",
-    timestamp: "Last week",
-    unread: 1,
-    isPinned: false,
-  },
-];
-
-// Sample messages for active conversation
-const mockMessages: Message[] = [
-  {
-    id: 1,
-    sender: "1",
-    text: "Xin chào, bạn khỏe không?",
-    timestamp: "10:25 AM",
-  },
-  {
-    id: 2,
-    sender: "current",
-    text: "Tôi khỏe, cảm ơn bạn! Còn bạn?",
-    timestamp: "10:26 AM",
-  },
-  {
-    id: 3,
-    sender: "1",
-    text: "Tôi cũng khỏe. Bạn đang làm gì thế?",
-    timestamp: "10:28 AM",
-  },
-  {
-    id: 4,
-    sender: "current",
-    text: "Tôi đang làm việc trên dự án mới. Còn bạn?",
-    timestamp: "10:30 AM",
-  },
-];
+import { useSocket } from "../../context/use[custom]/useSocket";
+import type {
+  Message,
+  MessageBetweenUserLoginResponse,
+  ResConversationsResponse,
+  SendMessageProps,
+  UserData,
+} from "../../utils/type";
+import { socket } from "../../context/use[custom]/socket";
+import { useAuth } from "../../context/AuthContext";
 
 const ChatApp = () => {
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<User[]>([]);
   const [isSearchPanelOpen, setIsSearchPanelOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [message, setMessage] = useState("");
-  const [activeMessages, setActiveMessages] = useState<Message[]>([]);
+  const [receiverId, setReceiverId] = useState<number | null>(null);
   const [userMenuAnchor, setUserMenuAnchor] = useState<null | HTMLElement>(
     null
   );
+  const { user } = useAuth();
+  const userId = user?.id;
+  const { data, loading, isConnected } = useSocket<ResConversationsResponse>({
+    event: "getConversationsResponse",
+    autoListen: true,
+    userId: userId,
+    onSuccess: (res) => {
+      if (res?.resultCode === "00") {
+        console.log("Conversations:", res.list);
+      } else {
+        console.warn(" Server error:", res?.resultMessage);
+      }
+    },
+  });
+  const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
+  const handleUserSelect = (user: UserData) => {
+    setSelectedUser(user);
+    setReceiverId(user.id);
+    // setActiveMessages([]); // Clear previous messages
+    setIsSearchPanelOpen(false);
+
+    // Load conversation history for this user
+    // You might want to implement this
+    console.log("Selected user:", user);
+  };
+  const { data: messagesData, emit: findMessages } =
+    useSocket<MessageBetweenUserLoginResponse>({
+      event: "findMessagesBetweenUsers",
+      autoListen: true,
+    });
+
   const [conversationMenuAnchor, setConversationMenuAnchor] =
     useState<null | HTMLElement>(null);
   const [filterUnread, setFilterUnread] = useState(false);
   const [filterPinned, setFilterPinned] = useState(false);
-
-  const conversationsWithUsers = mockConversations.map((conv) => {
-    const user = mockUsers.find((u) => u.id === conv.userId);
-    return { ...conv, user };
-  });
-
-  // Filter conversations based on filters
-  const filteredConversations = conversationsWithUsers.filter((conv) => {
-    if (filterUnread && conv.unread === 0) return false;
-    if (filterPinned && !conv.isPinned) return false;
-    return true;
-  });
-
-  useEffect(() => {
-    if (selectedUser) {
-      // Simulate loading messages for selected user
-      setActiveMessages(mockMessages);
-    } else {
-      setActiveMessages([]);
-    }
-  }, [selectedUser]);
-
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    if (query.trim() === "") {
-      setSearchResults([]);
-      return;
-    }
-
-    const results = mockUsers.filter(
-      (user) =>
-        user.name.toLowerCase().includes(query.toLowerCase()) ||
-        user.email.toLowerCase().includes(query.toLowerCase())
-    );
-    setSearchResults(results);
-  };
-
-  const handleUserSelect = (user: User) => {
-    setSelectedUser(user);
-    setIsSearchPanelOpen(false);
-  };
 
   const toggleSearchPanel = () => {
     setIsSearchPanelOpen(!isSearchPanelOpen);
@@ -271,19 +115,15 @@ const ChatApp = () => {
   };
 
   const handleSendMessage = () => {
-    if (message.trim() === "") return;
+    if (message.trim() === "" && !receiverId && !userId) return;
 
-    const newMessage: Message = {
-      id: activeMessages.length + 1,
-      sender: "current",
-      text: message,
-      timestamp: new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
+    const newMessage: SendMessageProps = {
+      receiverId: receiverId as number,
+      senderId: userId as number,
+      content: message,
     };
 
-    setActiveMessages([...activeMessages, newMessage]);
+    //setActiveMessages([...activeMessages, newMessage]);
     setMessage("");
   };
 
@@ -302,16 +142,22 @@ const ChatApp = () => {
     setUserMenuAnchor(null);
   };
 
-  const handleConversationMenuOpen = (
-    event: React.MouseEvent<HTMLElement>,
-    conversation: Conversation
-  ) => {
-    setConversationMenuAnchor(event.currentTarget);
-  };
+  // const handleConversationMenuOpen = (
+  //   event: React.MouseEvent<HTMLElement>,
+  //   conversation: Conversation
+  // ) => {
+  //   setConversationMenuAnchor(event.currentTarget);
+  // };
 
   const handleConversationMenuClose = () => {
     setConversationMenuAnchor(null);
   };
+
+  useEffect(() => {
+    if (isConnected) {
+      socket.emit("getConversations", { userId });
+    }
+  }, [isConnected, userId]);
 
   return (
     <>
@@ -413,146 +259,152 @@ const ChatApp = () => {
               placeholder="Tìm kiếm cuộc trò chuyện..."
             />
           </Box>
+          {loading && <div>Loading...</div>}
 
           {/* Conversation List */}
           <Box sx={{ flex: 1, overflow: "auto" }}>
-            <List disablePadding>
-              {filteredConversations.map((conv) => (
-                <ListItem
-                  key={conv.id}
-                  disablePadding
-                  secondaryAction={
-                    <IconButton
-                      edge="end"
-                      onClick={(e) => handleConversationMenuOpen(e, conv)}
-                    >
-                      <MoreVertIcon />
-                    </IconButton>
-                  }
-                >
-                  <ListItemButton
-                    selected={selectedUser?.id === conv.user?.id}
-                    onClick={() => handleUserSelect(conv.user as User)}
-                    sx={{
-                      py: 1.5,
-                      px: 2,
-                      "&.Mui-selected": {
-                        backgroundColor: alpha(
-                          theme.palette.primary.main,
-                          0.08
-                        ),
-                        "&:hover": {
-                          backgroundColor: alpha(
-                            theme.palette.primary.main,
-                            0.12
-                          ),
-                        },
-                      },
-                    }}
-                  >
-                    <ListItemAvatar>
-                      <Badge
-                        overlap="circular"
-                        anchorOrigin={{
-                          vertical: "bottom",
-                          horizontal: "right",
+            <List>
+              {data?.resultCode === "00" ? (
+                <>
+                  {data?.list?.map((conv) => (
+                    <ListItem key={conv.userId}>
+                      <ListItemButton
+                        sx={{
+                          py: 1.5,
+                          px: 2,
+                          "&.Mui-selected": {
+                            backgroundColor: alpha(
+                              theme.palette.primary.main,
+                              0.08
+                            ),
+                            "&:hover": {
+                              backgroundColor: alpha(
+                                theme.palette.primary.main,
+                                0.12
+                              ),
+                            },
+                          },
                         }}
-                        variant="dot"
-                        color="success"
-                        invisible={!conv?.user?.online}
                       >
-                        <Avatar
-                          src={conv.user?.avatar}
-                          sx={{
-                            width: 48,
-                            height: 48,
-                            bgcolor: conv.user?.online
-                              ? "primary.main"
-                              : "grey.400",
-                          }}
-                        >
-                          {conv.user?.name.charAt(0)}
-                        </Avatar>
-                      </Badge>
-                    </ListItemAvatar>
-
-                    <ListItemText
-                      primary={
-                        <Box
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                          }}
-                        >
-                          <Typography
-                            variant="subtitle2"
-                            noWrap
-                            fontWeight="medium"
-                          >
-                            {conv.user?.name}
-                          </Typography>
-                          <Typography variant="caption" color="textSecondary">
-                            {conv.timestamp}
-                          </Typography>
-                        </Box>
-                      }
-                      secondary={
-                        <Box
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                            mt: 0.5,
-                          }}
-                        >
-                          <Typography
-                            variant="body2"
-                            color="textSecondary"
-                            noWrap
-                            sx={{
-                              maxWidth: "70%",
-                              fontWeight: conv.unread > 0 ? "600" : "normal",
-                              color:
-                                conv.unread > 0
-                                  ? "text.primary"
-                                  : "text.secondary",
+                        {/* Avatar + trạng thái */}
+                        <ListItemAvatar>
+                          <Badge
+                            overlap="circular"
+                            anchorOrigin={{
+                              vertical: "bottom",
+                              horizontal: "right",
                             }}
+                            variant="dot"
+                            color="success"
+                            //invisible={!conv.online}
                           >
-                            {conv.lastMessage}
-                          </Typography>
-                          <Box sx={{ display: "flex", alignItems: "center" }}>
-                            {conv.isPinned && (
-                              <Tooltip title="Đã ghim">
-                                <FilterIcon
-                                  sx={{
-                                    fontSize: 16,
-                                    color: "primary.main",
-                                    mr: 0.5,
-                                  }}
-                                />
-                              </Tooltip>
-                            )}
-                            {conv.unread > 0 && (
-                              <Chip
-                                label={conv.unread}
-                                size="small"
-                                color="primary"
+                            <Avatar
+                              sx={{
+                                width: 48,
+                                height: 48,
+                                // bgcolor: conv.online
+                                //   ? "primary.main"
+                                //   : "grey.400",
+                              }}
+                            >
+                              {/* {conv.name.charAt(0)} */}
+                            </Avatar>
+                          </Badge>
+                        </ListItemAvatar>
+
+                        {/* Nội dung */}
+                        <ListItemText
+                          primary={
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                              }}
+                            >
+                              <Typography
+                                variant="subtitle2"
+                                noWrap
+                                fontWeight="medium"
+                              >
+                                {conv.name}
+                              </Typography>
+                              <Typography
+                                variant="caption"
+                                color="textSecondary"
+                              >
+                                {/* {conv.timestamp ?? ""} */}
+                              </Typography>
+                            </Box>
+                          }
+                          secondary={
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                mt: 0.5,
+                              }}
+                            >
+                              <Typography
+                                variant="body2"
+                                noWrap
                                 sx={{
-                                  height: 20,
-                                  minWidth: 20,
-                                  fontSize: "0.7rem",
-                                  fontWeight: "bold",
+                                  maxWidth: "70%",
+                                  // fontWeight:
+                                  //   conv.unread > 0 ? "600" : "normal",
+                                  // color:
+                                  //   conv.unread > 0
+                                  //     ? "text.primary"
+                                  //     : "text.secondary",
                                 }}
-                              />
-                            )}
-                          </Box>
-                        </Box>
-                      }
-                    />
-                  </ListItemButton>
-                </ListItem>
-              ))}
+                              >
+                                {conv.lastMessage}
+                              </Typography>
+                              <Box
+                                sx={{ display: "flex", alignItems: "center" }}
+                              >
+                                {/* {conv.isPinned && (
+                                  <Tooltip title="Đã ghim">
+                                    <FilterIcon
+                                      sx={{
+                                        fontSize: 16,
+                                        color: "primary.main",
+                                        mr: 0.5,
+                                      }}
+                                    />
+                                  </Tooltip>
+                                )}
+                                {conv.unread > 0 && (
+                                  <Chip
+                                    label={conv.unread}
+                                    size="small"
+                                    color="primary"
+                                    sx={{
+                                      height: 20,
+                                      minWidth: 20,
+                                      fontSize: "0.7rem",
+                                      fontWeight: "bold",
+                                    }}
+                                  />
+                                )} */}
+                              </Box>
+                            </Box>
+                          }
+                        />
+                      </ListItemButton>
+                    </ListItem>
+                  ))}
+                </>
+              ) : (
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ textAlign: "center", p: 2 }}
+                >
+                  {data?.resultMessage}
+                </Typography>
+              )}
             </List>
           </Box>
         </Stack>
@@ -590,7 +442,7 @@ const ChatApp = () => {
                       src={selectedUser.avatar}
                       sx={{ mr: 2, width: 40, height: 40 }}
                     >
-                      {selectedUser.name.charAt(0)}
+                      {/* {selectedUser.name.charAt(0)} */}
                     </Avatar>
                   </Badge>
                   <Box>
@@ -704,13 +556,13 @@ const ChatApp = () => {
                   )}' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E")`,
                 }}
               >
-                {activeMessages.map((msg) => (
+                {messagesData?.list?.map((msg) => (
                   <Box
                     key={msg.id}
                     sx={{
                       display: "flex",
-                      justifyContent:
-                        msg.sender === "current" ? "flex-end" : "flex-start",
+                      // justifyContent:
+                      //   msg.sender === "current" ? "flex-end" : "flex-start",
                       mb: 2,
                     }}
                   >
@@ -720,28 +572,26 @@ const ChatApp = () => {
                         p: 2,
                         borderRadius: 4,
                         bgcolor:
-                          msg.sender === "current"
-                            ? "primary.main"
-                            : "grey.100",
+                          msg.senderId === userId ? "primary.main" : "grey.100",
                         color:
-                          msg.sender === "current" ? "white" : "text.primary",
+                          msg.senderId === userId ? "white" : "text.primary",
                         boxShadow: theme.shadows[1],
                       }}
                     >
-                      <Typography variant="body1">{msg.text}</Typography>
+                      <Typography variant="body1">{msg.content}</Typography>
                       <Typography
                         variant="caption"
                         sx={{
                           display: "block",
                           textAlign: "right",
                           color:
-                            msg.sender === "current"
+                            msg.senderId === userId
                               ? alpha("#fff", 0.7)
                               : "text.secondary",
                           mt: 0.5,
                         }}
                       >
-                        {msg.timestamp}
+                        {msg.createdAt}
                       </Typography>
                     </Box>
                   </Box>
@@ -839,7 +689,7 @@ const ChatApp = () => {
               fullWidth
               placeholder="Tìm kiếm theo tên hoặc email..."
               value={searchQuery}
-              onChange={(e) => handleSearch(e.target.value)}
+              // onChange={(e) => handleSearch(e.target.value)}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -855,7 +705,7 @@ const ChatApp = () => {
             />
           </Box>
 
-          <Box sx={{ flex: 1, overflow: "auto" }}>
+          {/* <Box sx={{ flex: 1, overflow: "auto" }}>
             {searchResults.length > 0 ? (
               <List disablePadding>
                 {searchResults.map((user) => (
@@ -922,7 +772,7 @@ const ChatApp = () => {
                 </Typography>
               </Box>
             )}
-          </Box>
+          </Box> */}
         </Drawer>
 
         {/* User Menu */}

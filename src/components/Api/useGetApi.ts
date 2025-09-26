@@ -115,18 +115,18 @@ export const useFlightById = ({ id }: FlightId) => {
   };
 };
 
-export const useGetMessage = ({ user1Id, user2Id }: SendMessageProps) => {
-  const { data: fetchGetMessageById, refetch: refetchGetMessageById } =
-    useFetch<MessageApiResponse, void>({
-      url: `/sys/messages/${user1Id}/${user2Id}`,
-      autoFetch: false,
-      config: getMethod,
-    });
-  return {
-    fetchGetMessageById,
-    refetchGetMessageById,
-  };
-};
+// export const useGetMessage = ({ user1Id, user2Id }: SendMessageProps) => {
+//   const { data: fetchGetMessageById, refetch: refetchGetMessageById } =
+//     useFetch<MessageApiResponse, void>({
+//       url: `/sys/messages/${user1Id}/${user2Id}`,
+//       autoFetch: false,
+//       config: getMethod,
+//     });
+//   return {
+//     fetchGetMessageById,
+//     refetchGetMessageById,
+//   };
+// };
 
 // export const useGetSenderMessage = ({ user1Id, user2Id }: SendMessageProps) => {
 //   const { data: fetchGetMessageById, refetch: refetchGetMessageById } =

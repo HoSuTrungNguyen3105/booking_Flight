@@ -4,7 +4,7 @@ import Android12Switch from "../Switch/Switch";
 import InputTextField from "../Input/InputTextField";
 import type { Theme } from "@mui/material/styles";
 import type { SxProps } from "@mui/system";
-import JobTypeSelector from "../Setting/JobTypeSelector";
+// import JobTypeSelector from "../Setting/JobTypeSelector";
 import SelectDropdown from "../Dropdown/SelectDropdown";
 
 export enum FieldType {
@@ -102,17 +102,17 @@ const FieldRenderer = ({
           {...(customProps || {})} // ✅ Truyền toàn bộ prop riêng vào
         />
       );
-    case FieldType.CHECKBOX_SELECT:
-      return (
-        <JobTypeSelector
-          valueInCheckBox={valueIncheckbox}
-          error={error as boolean}
-          value={value}
-          onChange={onChange}
-          {...sx}
-          {...(customProps || {})} // ✅ Truyền toàn bộ prop riêng vào
-        />
-      );
+    // case FieldType.CHECKBOX_SELECT:
+    //   return (
+    //     <JobTypeSelector
+    //       valueInCheckBox={valueIncheckbox}
+    //       error={error as boolean}
+    //       value={value}
+    //       onChange={onChange}
+    //       {...sx}
+    //       {...(customProps || {})} // ✅ Truyền toàn bộ prop riêng vào
+    //     />
+    //   );
 
     case FieldType.TEXTAREA:
       return (

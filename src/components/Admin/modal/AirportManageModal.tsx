@@ -92,7 +92,9 @@ const AirportManageModal = ({
     <BaseModal
       open={open}
       onClose={onClose}
-      title={editingAirport ? "Chỉnh sửa Sân bay" : "Thêm Sân bay Mới"}
+      title={
+        editingAirport === "update" ? "Chỉnh sửa Sân bay" : "Thêm Sân bay Mới"
+      }
       Icon={PrivacyTipIcon}
       slots={{ content: renderContent(), actions: renderActions() }}
     />

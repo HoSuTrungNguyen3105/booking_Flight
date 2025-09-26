@@ -347,6 +347,18 @@ export type SearchBookingFlightProps = {
   flight: DataFlight; // DataFlight là kiểu dữ liệu chuyến bay
 };
 
+type Conversation = {
+  userId: number;
+  name: string;
+  lastMessage: string;
+};
+
+export type SendMessageProps = {
+  receiverId: number;
+  senderId: number;
+  content: string;
+};
+
 export interface Message {
   id: number;
   content: string;
@@ -367,7 +379,8 @@ export interface Message {
   };
 }
 
-// Kiểu cho kết quả trả về gồm outbound và inbound (nếu là khứ hồi)
+export type MessageBetweenUserLoginResponse = DetailResponseMessage<Message>;
+
 export type SearchFlightSearchBookingFlightPropsProps = {
   outbound: SearchBookingFlightProps[];
   inbound: SearchBookingFlightProps[];
@@ -399,6 +412,8 @@ export type SearchFlightResponse = DetailResponseMessage<SearchFlightProps>;
 export type FlightMealDetailApiResponse = DetailResponseMessage<FlightMeal>;
 export type MessageApiResponse = DetailResponseMessage<Message>;
 
+export type ResConversationsResponse = DetailResponseMessage<Conversation>;
+
 export type UserListManageResponse = DetailResponseMessage<UserData>;
 export type FlightListApiResponse = DetailResponseMessage<DataFlight>;
 export type FlightAircraftResponse =
@@ -409,10 +424,10 @@ export type EmailProps = {
   userId?: number;
 };
 
-export type SendMessageProps = {
-  user1Id: number;
-  user2Id: number;
-};
+// export type SendMessageProps = {
+//   user1Id: number;
+//   user2Id: number;
+// };
 
 export enum FacilityType {
   RESTAURANT = "RESTAURANT",

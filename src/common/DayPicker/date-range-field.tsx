@@ -7,7 +7,6 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ErrorIcon from "@mui/icons-material/Error";
 import moment, { type Moment } from "moment";
 import { koKR, enUS } from "@mui/x-date-pickers/locales";
-import clsx from "clsx";
 
 interface Props {
   language: "vn" | "en" | "ko" | "jp";
@@ -157,13 +156,13 @@ const SingleDateRangePickerComponent: React.FC<Props> = ({
           enableAccessibleFieldDOMStructure={false}
           slotProps={{
             textField: {
-              className: clsx(
-                "datefield-input",
-                inputClassName,
-                status === "error" && "border-error",
-                status === "warning" && "border-warning",
-                status === "confirmed" && "border-confirmed"
-              ),
+              // className: clsx(
+              //   "datefield-input",
+              //   inputClassName,
+              //   status === "error" && "border-error",
+              //   status === "warning" && "border-warning",
+              //   status === "confirmed" && "border-confirmed"
+              // ),
               InputProps: {
                 startAdornment: (
                   <InputAdornment position="start">
@@ -193,13 +192,13 @@ const SingleDateRangePickerComponent: React.FC<Props> = ({
           disableOpenPicker={disabledOpenPicker}
           slotProps={{
             textField: {
-              className: clsx(
-                "datefield-input",
-                inputClassName,
-                status === "error" && "border-error",
-                status === "warning" && "border-warning",
-                status === "confirmed" && "border-confirmed"
-              ),
+              // className: clsx(
+              //   "datefield-input",
+              //   inputClassName,
+              //   status === "error" && "border-error",
+              //   status === "warning" && "border-warning",
+              //   status === "confirmed" && "border-confirmed"
+              // ),
               InputProps: {
                 startAdornment: (
                   <InputAdornment position="start">

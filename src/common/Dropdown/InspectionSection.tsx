@@ -1,6 +1,6 @@
-import { Box, Button, Stack, Tab, Tabs, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import type { GridColDef } from "@mui/x-data-grid";
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import DataTable, { type GridRowDef } from "../DataGrid/index";
 import SearchIcon from "../../svgs/phone.png";
 import Pagination from "../DataGrid/Pagination";
@@ -21,6 +21,7 @@ type ISecurityTabSectionProps = {
   onRowClick: (rowData: GridRowDef) => void;
   handleAction?: () => void;
 };
+
 const InspectionSection = ({
   columns,
   tabs,
@@ -33,16 +34,10 @@ const InspectionSection = ({
 }: ISecurityTabSectionProps) => {
   const headerRef = useRef<HTMLDivElement>(null);
   const [headerHeight, setHeaderHeight] = useState(0);
-  const [activeTab, setActiveTab] = useState(0);
-  const changedTabRef = useRef<number>(0);
 
   useEffect(() => {
     setHeaderHeight(headerRef.current?.getBoundingClientRect().bottom || 0);
   }, []);
-
-  const [unsavedChanges, setUnsavedChanges] = useState(false);
-  const [showUnsavedChangesDialog, setShowUnsavedChangesDialog] =
-    useState(false);
 
   const {
     totalElements,
@@ -55,61 +50,6 @@ const InspectionSection = ({
     totalPages,
     onSortModelChange,
   } = useClientPagination({ data: rows });
-
-  const handleChangeTab = useCallback(
-    (tabIndex: number) => {
-      if (unsavedChanges) {
-        changedTabRef.current = tabIndex;
-        setShowUnsavedChangesDialog(true);
-        return;
-      }
-
-      setActiveTab(tabIndex);
-    },
-    [unsavedChanges]
-  );
-
-  const renderTabData = useMemo(() => {
-    if (!tabs || tabs.length === 0) return null;
-
-    return (
-      <Box>
-        <Box ref={headerRef} sx={{ border: "1px solid grey" }}>
-          <Box sx={{ backgroundColor: "white" }}>
-            <Tabs
-              value={activeTab}
-              onChange={(_, v) => handleChangeTab(v)}
-              sx={{ borderColor: "grey.200", minHeight: "auto" }}
-            >
-              {tabs?.map((tab, idx) => (
-                <Tab
-                  key={idx}
-                  label={<Typography variant="button">{tab.label}</Typography>}
-                  sx={{ minHeight: "40px" }}
-                />
-              ))}
-            </Tabs>
-          </Box>
-        </Box>
-
-        <Box sx={{ height: `calc(100vh - ${headerHeight}px)` }}>
-          <Box
-            sx={{
-              border: "1px solid grey",
-              display: "flex",
-              padding: "12px 16px",
-              bgcolor: "white",
-            }}
-          >
-            <Typography variant="body1" sx={{ gap: "10px" }} color="grey.500">
-              {tabs?.[activeTab].description}
-            </Typography>
-          </Box>
-          <Box flexGrow={1}>{tabs?.[activeTab].content}</Box>
-        </Box>
-      </Box>
-    );
-  }, [activeTab, headerHeight, tabs, handleChangeTab]);
 
   const renderContent = useCallback(() => {
     if (tabs && tabs.length > 0) {
@@ -157,9 +97,6 @@ const InspectionSection = ({
             rows={paginatedData}
             loading={loading}
             onRowClick={onRowClick}
-            // emptyContent={
-            //   <Typography variant="body2">No data available</Typography>
-            // }
           />
         </Box>
         <Pagination
@@ -184,10 +121,9 @@ const InspectionSection = ({
 
   return (
     <Stack gap="10px" height="100%">
-      <Box minHeight={"2rem"}>
-        <SearchBar onSearch={onSearch as (query: any) => void} />
+      <Box minHeight={headerHeight}>
+        <SearchBar onSearch={onSearch as () => void} />
       </Box>
-      {renderTabData}
       <Box flexGrow={1}>{renderContent()}</Box>
     </Stack>
   );

@@ -1,4 +1,4 @@
-import { type SxProps } from "@mui/material";
+import { Tooltip, type SxProps } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import TextField from "@mui/material/TextField";
@@ -162,17 +162,19 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
                 )}
 
                 {canCopy && (
-                  <IconButton
-                    onClick={handleCopyText}
-                    disabled={disabled}
-                    sx={{ padding: "4px" }}
-                  >
-                    {hasCopy ? (
-                      <DoneAllRoundedIcon />
-                    ) : (
-                      <ContentCopyRoundedIcon />
-                    )}
-                  </IconButton>
+                  <Tooltip title={hasCopy ? "Copied" : "Copy"}>
+                    <IconButton
+                      onClick={handleCopyText}
+                      disabled={disabled}
+                      sx={{ padding: "4px" }}
+                    >
+                      {hasCopy ? (
+                        <DoneAllRoundedIcon />
+                      ) : (
+                        <ContentCopyRoundedIcon />
+                      )}
+                    </IconButton>
+                  </Tooltip>
                 )}
               </InputAdornment>
             ),

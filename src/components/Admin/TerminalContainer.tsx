@@ -32,6 +32,7 @@ import {
 import InputTextField from "../../common/Input/InputTextField";
 import SelectDropdown from "../../common/Dropdown/SelectDropdown";
 import { OpeningHoursPicker } from "../../common/DayPicker/date-picker";
+import InputTextArea from "../../common/Input/InputTextArea";
 
 // interface Facility {
 //   id: string;
@@ -183,7 +184,7 @@ const AirportDiagram: React.FC = () => {
     description: "",
     terminalId: "",
     location: "",
-    openingHours: "00:00 - 00:00",
+    openingHours: "",
   });
 
   const facilityTypeOptions = [
@@ -198,10 +199,8 @@ const AirportDiagram: React.FC = () => {
     { value: FacilityType.PRAYER_ROOM, label: "Prayer Room" },
     { value: FacilityType.SMOKING_AREA, label: "Smoking Area" },
   ];
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setFacilities({ ...facilities, [e.target.name]: e.target.value });
+  const handleChange = (e: string) => {
+    setFacilities({ ...facilities, [e]: e });
   };
 
   const handleSelectChange = (name: string, value: string | number) => {
@@ -228,6 +227,7 @@ const AirportDiagram: React.FC = () => {
 
   const handleSubmit = async () => {
     try {
+      console.log("faci", facilities);
       if (dialogType === "gate") {
         // const res = await refetchCreateGate({});
       } else if (dialogType === "facility") {
@@ -301,57 +301,52 @@ const AirportDiagram: React.FC = () => {
 
       case "facility":
         return (
-          <>
-            <TextField
-              label="Name"
-              name="name"
-              value={facilities.name}
-              onChange={handleChange}
-              fullWidth
-              margin="normal"
-            />
-
-            <SelectDropdown
-              value={facilities.type}
-              onChange={(value) => handleSelectChange("type", value)}
-              options={facilityTypeOptions}
-            />
-
-            <TextField
-              label="Description"
-              name="description"
-              value={facilities.description}
-              onChange={handleChange}
-              fullWidth
-              margin="normal"
-              multiline
-              rows={3}
-            />
-
-            <TextField
-              label="Terminal ID"
-              name="terminalId"
-              value={facilities.terminalId}
-              onChange={handleChange}
-              fullWidth
-              margin="normal"
-            />
-
-            <TextField
-              label="Location"
-              name="location"
-              value={facilities.location}
-              onChange={handleChange}
-              fullWidth
-              margin="normal"
-            />
-            <OpeningHoursPicker
-              value={formData.openingHours}
-              onChange={(val) =>
-                setFormData((prev) => ({ ...prev, openingHours: val }))
-              }
-            />
-          </>
+          <Grid container spacing={3}>
+            {/* Facility Name */}
+            <Grid size={6}>
+              <InputTextField
+                name="name"
+                value={facilities.name}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid size={6}>
+              <SelectDropdown
+                value={facilities.type}
+                onChange={(value) => handleSelectChange("type", value)}
+                options={facilityTypeOptions}
+              />
+            </Grid>
+            <Grid size={6}>
+              <InputTextArea
+                name="description"
+                value={facilities.description}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid size={6}>
+              <InputTextField
+                name="terminalId"
+                value={facilities.terminalId}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid size={12}>
+              <InputTextField
+                name="location"
+                value={facilities.location}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid size={12}>
+              <OpeningHoursPicker
+                value={facilities.openingHours}
+                onChange={(val) =>
+                  setFacilities((prev) => ({ ...prev, openingHours: val }))
+                }
+              />
+            </Grid>
+          </Grid>
         );
     }
   };

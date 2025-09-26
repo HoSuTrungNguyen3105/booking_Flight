@@ -34,21 +34,16 @@ const DateTimePickerComponent: React.FC<Props> = ({
   const handleChange = useCallback(
     (newValue: Moment | null) => {
       setDate(newValue);
-
-      // Only validate if there's an actual value
       if (newValue) {
         const isValid = newValue.isValid();
         setHasError(!isValid);
 
         if (onChange && isValid) {
-          onChange(newValue.valueOf()); // trả ms
+          onChange(newValue.valueOf());
         }
       } else {
-        // Null value is not considered an error
         setHasError(false);
         if (onChange) {
-          // Optionally call onChange with null/undefined if you want to handle empty state
-          // onChange(undefined as any); // Uncomment if needed
         }
       }
     },
