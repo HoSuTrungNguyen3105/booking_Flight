@@ -8,7 +8,6 @@ import { ThemeProvider } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
 import theme from "./scss/theme";
 import i18n from "./i18n";
-import { ChatProvider } from "./context/ChatContext";
 
 function App() {
   return (
@@ -17,10 +16,8 @@ function App() {
         <I18nextProvider i18n={i18n}>
           <ApiProvider>
             <AuthProvider>
-              <ChatProvider>
-                <CssBaseline />
-                <RouterProvider router={router} />
-              </ChatProvider>
+              <CssBaseline />
+              <RouterProvider router={router} />
             </AuthProvider>
           </ApiProvider>
         </I18nextProvider>

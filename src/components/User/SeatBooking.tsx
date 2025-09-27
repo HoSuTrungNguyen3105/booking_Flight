@@ -180,8 +180,6 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
         showSnackbar(response.resultMessage);
         setSelectedSeats([]);
         setUpdateSeat({
-          seatNumber: 0,
-          seatRow: "",
           seatIds: [],
           type: "ECONOMY",
         });
@@ -227,8 +225,6 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
     await onSuccess();
     setSelectedSeats([]);
     setUpdateSeat({
-      seatNumber: 0,
-      seatRow: "",
       seatIds: [],
       type: "ECONOMY",
     });
@@ -248,8 +244,6 @@ const SeatBooking: React.FC<AircraftSeatProps> = ({
     setUpdateSeat({
       seatIds: selectedSeats.map((seat) => seat.id),
       type: firstSeat.type,
-      seatRow: firstSeat.seatRow,
-      seatNumber: firstSeat.seatNumber,
     });
 
     setIsUpdateModalOpen(true);

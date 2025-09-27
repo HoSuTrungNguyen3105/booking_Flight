@@ -1,128 +1,237 @@
-import React, { useEffect, useState } from "react";
-import { Box, Paper, Typography } from "@mui/material";
+import React, { useState, useEffect, useRef } from "react";
+import {
+  alpha,
+  Box,
+  Fab,
+  IconButton,
+  Typography,
+  Zoom,
+  Paper,
+} from "@mui/material";
 import { useSocket } from "../../context/use[custom]/useSocket";
-import type { Message } from "../../utils/type";
-// import { useGetMessage } from "../Api/useGetApi";
+import type {
+  Message,
+  MessageBetweenUserLoginResponse,
+} from "../../utils/type";
+import theme from "../../scss/theme";
+import { AttachFile, EmojiEmotions, Mic, Send } from "@mui/icons-material";
+import InputTextField from "../../common/Input/InputTextField";
 
 interface MessageListProps {
   messages: Message[];
   currentUser: { id: number };
+  selectedUser: number;
 }
 
-interface MessageListProps {
-  messages: Message[];
-  currentUser: { id: number };
-}
-
-const MessageList: React.FC<MessageListProps> = ({ messages, currentUser }) => {
-  // const { user } = useAuth();
+const MessageList: React.FC<MessageListProps> = ({
+  messages,
+  currentUser,
+  selectedUser,
+}) => {
+  const [inputMessage, setInputMessage] = useState("");
   const [messagesData, setMessages] = useState<Message[]>(messages ?? []);
-  // const { refetchGetMessageById } = useGetMessage({
-  //   user1Id: currentUser.id,
-  //   user2Id: currentUser?.id,
-  // });
-  // useEffect(() => {
-  //   const fetchMessages = async () => {
-  //     try {
-  //       const res = await refetchGetMessageById();
-  //       setMessages((res?.list as Message[]) ?? []);
-  //     } catch (error) {
-  //       console.error("Lỗi tải tin nhắn:", error);
-  //     }
-  //   };
-  //   fetchMessages();
-  // }, []);
-  const { data: newMessage, isConnected } = useSocket<Message>({
+  const userId = currentUser.id;
+  const bottomRef = useRef<HTMLDivElement | null>(null);
+
+  // socket gửi tin nhắn
+  const { emit: sendMessage } = useSocket<any>({
+    event: "send_message",
+    autoListen: false,
+    onSuccess: (res) => {
+      if (res?.data?.resultCode === "00") {
+        console.log("Gửi thành công");
+      } else {
+        console.warn("Server error:", res?.data?.resultMessage);
+      }
+    },
+    onError: (err) => console.error("Lỗi gửi:", err),
+  });
+
+  const handleSendMessage = () => {
+    if (!inputMessage.trim() || !selectedUser) return;
+
+    sendMessage({
+      senderId: userId,
+      receiverId: selectedUser,
+      content: inputMessage,
+    });
+
+    setInputMessage("");
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
+
+  // lấy lịch sử tin nhắn khi chọn user
+  const { data: messageResponse, loading: loadingMessages } =
+    useSocket<MessageBetweenUserLoginResponse>({
+      event: "findMessagesBetweenUsers",
+      autoListen: true,
+      onSuccess: (res) => {
+        if (res?.data?.resultCode === "00") {
+          setMessages(res.data.list || []);
+        } else {
+          console.warn("Server error:", res?.data?.resultMessage);
+        }
+      },
+    });
+
+  // lắng nghe tin nhắn mới từ server
+  const { isConnected } = useSocket<Message>({
     event: "new_message",
     autoListen: true,
     userId: currentUser?.id,
     onSuccess: (message) => {
-      // Kiểm tra xem tin nhắn có thuộc cuộc trò chuyện hiện tại không
       if (
         currentUser &&
-        (message.senderId === currentUser.id ||
-          message.receiverId === currentUser.id)
+        (message.sender.id === currentUser.id ||
+          message.receiver.id === currentUser.id)
       ) {
-        setMessages((prev) => [...prev, message]);
+        setMessages((prev) => {
+          if (prev.some((m) => m.id === message.id)) return prev;
+          return [...prev, message];
+        });
       }
-    },
-    onError: (error) => {
-      console.error("Lỗi nhận tin nhắn:", error);
     },
   });
 
-  const { emit: sendMessage, loading: sending } = useSocket({
-    event: "send_message",
-    autoListen: false, // Chỉ dùng để gửi, không lắng nghe
-  });
-
-  const handleSendMessage = (content: string, receiverId: number) => {
-    if (!currentUser) return;
-
-    sendMessage(
-      {
-        content,
-        senderId: currentUser.id,
-        receiverId,
-      },
-      (response) => {
-        console.log("Tin nhắn đã gửi:", response);
-      }
-    );
-  };
+  // auto scroll xuống cuối khi có tin nhắn mới
+  // useEffect(() => {
+  //   bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  // }, [messagesData]);
 
   return (
-    <Box
-      height={384}
-      mt={10}
-      p={2}
+    <Paper
+      elevation={3}
       sx={{
-        overflowY: "auto",
+        height: 500,
+        display: "flex",
+        flexDirection: "column",
+        borderRadius: 3,
+        overflow: "hidden",
       }}
     >
-      <div>Status: {isConnected ? "Connected" : "Disconnected"}</div>
-      {messagesData.map((msg) => {
-        const isOwnMessage = msg.senderId === currentUser.id;
-        return (
-          <Box
-            key={msg.id}
-            display="flex"
-            justifyContent={isOwnMessage ? "flex-end" : "flex-start"}
-            alignItems="flex-end"
-            mb={1}
-          >
-            {!isOwnMessage && (
-              <Box mr={1}>
-                <img
-                  src={msg.sender.pictureUrl}
-                  alt={msg.sender.name}
-                  style={{ width: 32, height: 32, borderRadius: "50%" }}
-                />
-              </Box>
-            )}
+      {/* Chat messages */}
+      <Box
+        flex={1}
+        p={2}
+        sx={{ overflowY: "auto", backgroundColor: "grey.50" }}
+      >
+        <Typography variant="caption" color="text.secondary">
+          {isConnected ? "🟢 Đang kết nối" : "🔴 Mất kết nối"}
+        </Typography>
 
-            <Paper
-              elevation={2}
+        {loadingMessages && <Typography>Đang tải tin nhắn...</Typography>}
+
+        {messagesData.length > 0 ? (
+          messagesData.map((msg) => (
+            <Box
+              key={msg.id}
               sx={{
-                px: 2,
-                py: 1,
-                borderRadius: 3,
-                maxWidth: "60%",
-                bgcolor: isOwnMessage ? "primary.main" : "grey.300",
-                color: isOwnMessage ? "white" : "black",
+                display: "flex",
+                justifyContent:
+                  msg.senderId === userId ? "flex-end" : "flex-start",
+                mb: 1.5,
               }}
             >
-              {!isOwnMessage && (
-                <Typography variant="caption" color="text.secondary">
-                  {msg.sender.name}
+              <Box
+                sx={{
+                  maxWidth: "70%",
+                  px: 2,
+                  py: 1,
+                  borderRadius: 3,
+                  bgcolor:
+                    msg.senderId === userId
+                      ? theme.palette.primary.main
+                      : "white",
+                  color: msg.senderId === userId ? "white" : "text.primary",
+                  boxShadow: theme.shadows[2],
+                }}
+              >
+                <Typography variant="body1">{msg.content}</Typography>
+                <Typography
+                  variant="caption"
+                  sx={{
+                    display: "block",
+                    textAlign: "right",
+                    color:
+                      msg.senderId === userId
+                        ? alpha("#fff", 0.7)
+                        : "text.secondary",
+                    mt: 0.5,
+                  }}
+                >
+                  {new Date(Number(msg.createdAt)).toLocaleTimeString("vi-VN", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
                 </Typography>
-              )}
-              <Typography variant="body2">{msg.content}</Typography>
-            </Paper>
-          </Box>
-        );
-      })}
-    </Box>
+              </Box>
+            </Box>
+          ))
+        ) : (
+          <Typography color="text.secondary" textAlign="center" mt={2}>
+            {messageResponse?.data?.resultMessage || "Chưa có tin nhắn nào"}
+          </Typography>
+        )}
+        <div ref={bottomRef} />
+      </Box>
+
+      {/* Message input */}
+      <Box
+        sx={{
+          p: 1.5,
+          borderTop: 1,
+          borderColor: "divider",
+          bgcolor: "background.paper",
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+          }}
+        >
+          <IconButton size="small" sx={{ color: "text.secondary" }}>
+            <AttachFile />
+          </IconButton>
+          <IconButton size="small" sx={{ color: "text.secondary" }}>
+            <EmojiEmotions />
+          </IconButton>
+          <InputTextField
+            placeholder="Nhập tin nhắn..."
+            value={inputMessage}
+            onChange={(e) => setInputMessage(e)}
+            onKeyDown={handleKeyPress}
+            sx={{
+              flex: 1,
+              bgcolor: "grey.100",
+              borderRadius: 2,
+              px: 1.5,
+              py: 1,
+            }}
+          />
+          <Zoom in={inputMessage.length > 0}>
+            <Fab
+              color="primary"
+              size="small"
+              onClick={handleSendMessage}
+              sx={{ boxShadow: theme.shadows[3] }}
+            >
+              <Send />
+            </Fab>
+          </Zoom>
+          <IconButton size="small" sx={{ color: "text.secondary" }}>
+            <Mic />
+          </IconButton>
+        </Box>
+      </Box>
+    </Paper>
   );
 };
 

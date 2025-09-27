@@ -311,6 +311,14 @@ export type DetailResponseMessage<T = null> = {
   resultMessage: string;
 };
 
+export type SocketResponseMessage<T = null> = {
+  data?: {
+    list?: T[];
+    resultCode: string;
+    resultMessage: string;
+  };
+};
+
 // export interface Airport {
 //   code: string;
 //   name: string;
@@ -379,7 +387,7 @@ export interface Message {
   };
 }
 
-export type MessageBetweenUserLoginResponse = DetailResponseMessage<Message>;
+export type MessageBetweenUserLoginResponse = SocketResponseMessage<Message>;
 
 export type SearchFlightSearchBookingFlightPropsProps = {
   outbound: SearchBookingFlightProps[];

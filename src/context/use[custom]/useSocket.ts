@@ -29,7 +29,6 @@ export const useSocket = <T>({
   useEffect(() => {
     isMounted.current = true;
     if (!socket.connected) {
-      console.log("Connecting socket...");
       socket.connect();
     }
     return () => {
@@ -39,7 +38,6 @@ export const useSocket = <T>({
 
   useEffect(() => {
     const handleConnect = () => {
-      console.log("Socket connected");
       setIsConnected(true);
       if (userId) {
         socket.emit("register_user", userId);
@@ -47,7 +45,6 @@ export const useSocket = <T>({
     };
 
     const handleDisconnect = () => {
-      console.log("Socket disconnected");
       setIsConnected(false);
     };
 
@@ -96,7 +93,7 @@ export const useSocket = <T>({
       if (!socket.connected) {
         console.error("Socket not connected");
         setError("Socket not connected");
-        socket.connect(); // thử kết nối lại
+        socket.connect();
         return;
       }
 
