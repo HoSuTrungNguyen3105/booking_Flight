@@ -42,6 +42,28 @@ const DataTablePagination = ({
     [onPageChange]
   );
 
+  const pageSizeOptions = [
+    { label: "10개씩 보기", value: 10 },
+    { label: "15개씩 보기", value: 15 },
+    { label: "20개씩 보기", value: 20 },
+  ];
+
+  const renderPageSizeChange = useCallback((dataLength: number) => {
+    switch (true) {
+      case dataLength < 10:
+        return []; // nhỏ hơn 10 thì không hiển thị gì
+
+      case dataLength <= 15:
+        return pageSizeOptions.filter((opt) => opt.value <= 15);
+
+      case dataLength <= 20:
+        return pageSizeOptions.filter((opt) => opt.value <= 20);
+
+      default:
+        return pageSizeOptions;
+    }
+  }, []);
+
   return (
     <Box
       sx={{
@@ -77,15 +99,11 @@ const DataTablePagination = ({
         </Box>
       )}
 
-      {onPageSizeChange && (
+      {onPageSizeChange && renderPageSizeChange(totalResult).length > 0 && (
         <Stack>
           <SelectDropdown
             sx={{ maxHeight: "30px" }}
-            options={[
-              { label: "10개씩 보기", value: 10 },
-              { label: "15개씩 보기", value: 15 },
-              { label: "20개씩 보기", value: 20 },
-            ]}
+            options={renderPageSizeChange(totalResult)}
             value={pageSize}
             onChange={(val) => onPageSizeChange(val as number)}
           />

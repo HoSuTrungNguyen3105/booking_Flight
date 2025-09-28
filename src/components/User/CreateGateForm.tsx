@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
   Box,
-  Paper,
   Typography,
   Button,
   Grid,
@@ -9,15 +8,11 @@ import {
   Alert,
   Chip,
   Divider,
-  InputAdornment,
   FormHelperText,
-  IconButton,
-  Tooltip,
   Fade,
   Card,
   CardContent,
   LinearProgress,
-  Stack,
   type Theme,
 } from "@mui/material";
 import {
@@ -34,8 +29,11 @@ import SelectDropdown, {
 import InputTextField from "../../common/Input/InputTextField";
 import ChipInput from "../../common/ChipInput";
 import theme from "../../scss/theme";
+import {
+  useFindAllGateStatuses,
+  useFindTerminalIDStatuses,
+} from "../Api/useGetApi";
 
-// Types và enums
 export enum GateStatus {
   AVAILABLE = "AVAILABLE",
   OCCUPIED = "OCCUPIED",
@@ -46,21 +44,13 @@ export enum GateStatus {
 export type CreateGateReq = {
   code: string;
   terminalId: string;
-  status?: GateStatus;
-  createdAt?: number;
-  updatedAt?: number;
+  status: GateStatus;
 };
-
-const terminalOptions = [
-  { value: "T1", label: "Terminal 1 (Quốc nội)" },
-  { value: "T2", label: "Terminal 2 (Quốc tế)" },
-  { value: "T3", label: "Terminal 3 (Hạng thương gia)" },
-  { value: "T4", label: "Terminal 4 (Hạng nhất)" },
-];
 
 type GateProps = {
   gateId?: number;
 };
+
 const CreateGateForm: React.FC = ({ gateId }: GateProps) => {
   const [formData, setFormData] = useState<CreateGateReq>({
     code: "",
@@ -75,30 +65,56 @@ const CreateGateForm: React.FC = ({ gateId }: GateProps) => {
   >({});
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { dataGateStatuses } = useFindAllGateStatuses();
+  const { dataTerminalIDStatuses } = useFindTerminalIDStatuses();
 
-  const gateStatusOptions: ActionType[] = [
-    {
-      value: "AVAILABLE",
-      label: "Khả dụng",
-      color: theme.palette.info.light,
-      icon: <CheckCircleIcon fontSize="small" />,
-    },
-    {
-      value: "OCCUPIED",
-      label: "Đang sử dụng",
-      color: theme.palette.warning.main,
-    },
-    {
-      value: "MAINTENANCE",
-      label: "Bảo trì",
-      color: theme.palette.info.main,
-    },
-    {
-      value: "CLOSED",
-      label: "Đã đóng",
-      color: theme.palette.error.main,
-    },
-  ];
+  // const [terminalOptions, setTerminalOptions] = useState<ActionType[]>(
+  //   (dataTerminalIDStatuses?.list as ActionType[]) || []
+  // );
+  const terminalOptions: ActionType[] = (
+    dataTerminalIDStatuses?.list ?? []
+  ).map((t) => ({
+    value: t.value,
+    label: t.label,
+    color: "#880e4f",
+  }));
+
+  const gateStatusOptions: ActionType[] =
+    (dataGateStatuses?.data || []).map((status) => {
+      switch (status) {
+        case "AVAILABLE":
+          return {
+            value: status,
+            label: "Khả dụng",
+            color: theme.palette.info.light,
+            icon: <CheckCircleIcon fontSize="small" />,
+          };
+        case "OCCUPIED":
+          return {
+            value: status,
+            label: "Đang sử dụng",
+            color: theme.palette.warning.main,
+          };
+        case "MAINTENANCE":
+          return {
+            value: status,
+            label: "Bảo trì",
+            color: theme.palette.info.main,
+          };
+        case "CLOSED":
+          return {
+            value: status,
+            label: "Đã đóng",
+            color: theme.palette.error.main,
+          };
+        default:
+          return {
+            value: status,
+            label: status,
+            color: theme.palette.grey[500],
+          };
+      }
+    }) ?? [];
 
   const handleChange =
     (field: keyof CreateGateReq) => (value: string | number) => {
@@ -106,8 +122,6 @@ const CreateGateForm: React.FC = ({ gateId }: GateProps) => {
         ...formData,
         [field]: value,
       });
-
-      // Xóa lỗi khi người dùng bắt đầu nhập
       if (errors[field]) {
         setErrors({
           ...errors,
@@ -120,14 +134,14 @@ const CreateGateForm: React.FC = ({ gateId }: GateProps) => {
     const newErrors: Partial<Record<keyof CreateGateReq, string>> = {};
 
     if (!formData.code.trim()) {
-      newErrors.code = "Mã cổng là bắt buộc";
+      //newErrors.code = "Mã cổng là bắt buộc";
     } else if (!/^[A-Z0-9]{2,5}$/.test(formData.code)) {
-      newErrors.code =
-        "Mã cổng phải gồm 2-5 ký tự chữ in hoa hoặc số (ví dụ: A12, B34)";
+      //newErrors.code =
+      //"Mã cổng phải gồm 2-5 ký tự chữ in hoa hoặc số (ví dụ: A12, B34)";
     }
 
     if (!formData.terminalId) {
-      newErrors.terminalId = "Vui lòng chọn terminal";
+      //  newErrors.terminalId = "Vui lòng chọn terminal";
     }
 
     setErrors(newErrors);
@@ -136,25 +150,16 @@ const CreateGateForm: React.FC = ({ gateId }: GateProps) => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-
     if (!validateForm()) return;
-
     setIsSubmitting(true);
-
     try {
-      // Giả lập API call
       await new Promise((resolve) => setTimeout(resolve, 1500));
-
       const submitData = {
         ...formData,
-        // createdAt: Date.now(),
-        // updatedAt: Date.now(),
       };
 
       console.log("Dữ liệu gửi đi:", submitData);
       setIsSubmitted(true);
-
-      // Reset form sau 3 giây
       setTimeout(() => {
         setFormData({
           code: "",
@@ -289,7 +294,7 @@ const CreateGateForm: React.FC = ({ gateId }: GateProps) => {
 
       <Divider sx={{ mb: 4 }} />
 
-      <form onSubmit={handleSubmit}>
+      <Box component={"form"} onSubmit={handleSubmit}>
         <Grid container spacing={3}>
           <ChipInput
             name="phones"
@@ -409,7 +414,7 @@ const CreateGateForm: React.FC = ({ gateId }: GateProps) => {
             </Box>
           </Grid>
         </Grid>
-      </form>
+      </Box>
 
       {/* Quick Help */}
       <Box

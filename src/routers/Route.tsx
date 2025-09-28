@@ -41,22 +41,18 @@ import RevenueDashboard from "../components/User/RevenueDashboard";
 import TicketSalesDashboard from "../components/User/TicketSalesDashboard";
 import FlightRoutesDashboard from "../components/User/FlightRoutesDashboard";
 import AircraftBatchCreator from "../components/Admin/component/AircraftBatchCreator";
-// import AircraftBatchCreatorEnhanced from "../components/Admin/component/AircraftBatchCreate";
 import TerminalGateContainer from "../components/Admin/AirportMasterplan";
 import AirportManagement from "../components/Admin/component/AirportManagement";
 import SendEmailToUsers from "../common/Setting/SendEmailToUsers";
 import CreateGateForm from "../components/User/CreateGateForm";
 import MealForm from "../common/Sample/MealForm";
 import FlightStatisticsPage from "../components/User/FlightStatisticsPage";
-// import AirportSampleDiagram from "../components/User/AirportSampleDiagram";
 import FileUploadButtonWithValidation from "../components/Admin/modal/FileUploadButton";
-import FlightDetailPage from "../components/Admin/component/FlightDetail";
-import type { DataFlight } from "../utils/type";
-import SeatLayout from "../components/Admin/component/SeatLayout";
 import BulkMealCreator from "../components/Admin/component/BulkMealCreator";
 import AirportMap from "../components/User/AirportMap";
 import CreateFacility from "../components/Admin/modal/CreateFacility";
 import AirportManagementDetail from "../components/User/AirportManagementDetail";
+import ChangePasswordInProfile from "../components/User/Security/ChangePasswordInProfile";
 
 export const mockTerminals = [
   {
@@ -330,6 +326,10 @@ const routes = [
       {
         path: "aircraft",
         element: <AircraftPage />,
+      },
+      {
+        path: "ChangePasswordInProfile",
+        element: <ChangePasswordInProfile />,
       },
       {
         path: "SendEmailToUsers",

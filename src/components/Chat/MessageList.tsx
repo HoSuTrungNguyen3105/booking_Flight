@@ -7,6 +7,7 @@ import {
   Typography,
   Zoom,
   Paper,
+  Badge,
 } from "@mui/material";
 import { useSocket } from "../../context/use[custom]/useSocket";
 import type {
@@ -121,12 +122,31 @@ const MessageList: React.FC<MessageListProps> = ({
         p={2}
         sx={{ overflowY: "auto", backgroundColor: "grey.50" }}
       >
-        <Typography variant="caption" color="text.secondary">
+        {/* <Typography variant="caption" color="text.secondary">
           {isConnected ? "🟢 Đang kết nối" : "🔴 Mất kết nối"}
-        </Typography>
+        </Typography> */}
 
-        {loadingMessages && <Typography>Đang tải tin nhắn...</Typography>}
-
+        {selectedUser ? (
+          <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1 }}>
+            <Badge
+              overlap="circular"
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              variant="dot"
+              // color={isConnected ? "success" : "default"}
+            >
+              {/* <ImageThumbnail url={ImageAvatar} /> */}
+            </Badge>
+            <Box>
+              <Typography variant="subtitle1" fontWeight="medium">
+                {selectedUser}
+              </Typography>
+            </Box>
+          </Box>
+        ) : (
+          <Typography variant="h6" sx={{ flexGrow: 1 }} fontWeight="medium">
+            Enterprise Chat
+          </Typography>
+        )}
         {messagesData.length > 0 ? (
           messagesData.map((msg) => (
             <Box
@@ -165,10 +185,7 @@ const MessageList: React.FC<MessageListProps> = ({
                     mt: 0.5,
                   }}
                 >
-                  {new Date(Number(msg.createdAt)).toLocaleTimeString("vi-VN", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
+                  {new Date(Number(msg.createdAt)).toLocaleString("vi-VN")}
                 </Typography>
               </Box>
             </Box>

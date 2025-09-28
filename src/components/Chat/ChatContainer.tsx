@@ -3,15 +3,11 @@ import {
   Badge,
   Box,
   Button,
+  Drawer,
   IconButton,
   Stack,
   Typography,
   alpha,
-  Drawer,
-  useMediaQuery,
-  Chip,
-  Avatar,
-  InputAdornment,
 } from "@mui/material";
 import { useAuth } from "../../context/AuthContext";
 import MessageList from "./MessageList";
@@ -27,41 +23,22 @@ import type {
 } from "../../utils/type";
 import Conversations from "./Conversations";
 import InputTextField from "../../common/Input/InputTextField";
-import {
-  ArrowBack,
-  Filter,
-  Group,
-  Search,
-  Menu as MenuIcon,
-  Close,
-} from "@mui/icons-material";
+import { Close, Filter, Group, Menu } from "@mui/icons-material";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
 const ChatContainer: React.FC = () => {
   const { user } = useAuth();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-
+  const [isSearchPanelOpen, setIsSearchPanelOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(!isMobile);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [selectedUser, setSelectedUser] = useState<number | null>(null);
   const [receiverId, setReceiverId] = useState<number | null>(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [activeFilter, setActiveFilter] = useState<"all" | "unread">("all");
-
   const userId = user?.id;
-
-  // Responsive sidebar handling
-  useEffect(() => {
-    setIsSidebarOpen(!isMobile);
-  }, [isMobile]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
-
-  const closeSidebar = () => {
-    if (isMobile) setIsSidebarOpen(false);
-  };
-
   const {
     data: messagesData,
     emit: findMessages,
@@ -77,18 +54,37 @@ const ChatContainer: React.FC = () => {
       }
     },
   });
-
+  const toggleSearchPanel = () => {
+    setIsSearchPanelOpen(!isSearchPanelOpen);
+  };
   const handleUserSelect = (user: number) => {
     setSelectedUser(user);
     setReceiverId(user);
-    closeSidebar(); // Close sidebar on mobile when user is selected
+    // setIsSearchPanelOpen(false);
 
     if (userId && user) {
-      findMessages({ userId, user2Id: user });
+      findMessages({ userId, user2Id: user }); // emit socket
     }
   };
 
-  // Socket connection
+  const { isConnected } = useSocket<Message>({
+    event: "new_message",
+    autoListen: true,
+    userId,
+    onSuccess: (message) => {
+      if (
+        userId &&
+        (message.sender.id === userId || message.receiver.id === userId)
+      ) {
+        setMessages((prev) => {
+          if (prev.some((m) => m.id === message.id)) return prev;
+          return [...prev, message];
+        });
+      }
+    },
+  });
+
+  // Kết nối socket khi có user
   useEffect(() => {
     if (!user?.id) return;
     const token = localStorage.getItem("token") || "";
@@ -114,256 +110,166 @@ const ChatContainer: React.FC = () => {
     }
   }, [incomingMessage]);
 
-  // Sidebar Content Component
-  const SidebarContent = () => (
-    <Stack
-      sx={{
-        width: "100%",
-        height: "100%",
-        flexDirection: "column",
-        bgcolor: "background.paper",
-        borderRight: `1px solid ${theme.palette.divider}`,
-      }}
-    >
-      {/* Sidebar Header */}
-      <Box
+  return (
+    <Box display="flex" height="80vh">
+      {/* Sidebar */}
+      <Stack
         sx={{
-          p: 2,
-          bgcolor: "primary.main",
-          color: "white",
-          background: `linear-gradient(135deg, ${
-            theme.palette.primary.main
-          } 0%, ${alpha(theme.palette.primary.dark, 0.9)} 100%)`,
+          width: isSidebarOpen ? 280 : 0,
+          overflow: "hidden",
+          transition: "width 0.3s ease",
+          flexDirection: "column",
+          bgcolor: "grey.50",
+          zIndex: 10,
+          position: "relative",
         }}
       >
-        <Box display="flex" alignItems="center" justifyContent="space-between">
-          <Typography variant="h6" fontWeight="600">
-            Tin nhắn
-          </Typography>
-          <Box display="flex" alignItems="center" gap={1}>
-            <IconButton
-              color="inherit"
-              onClick={() =>
-                setActiveFilter(activeFilter === "unread" ? "all" : "unread")
-              }
-              sx={{
-                opacity: activeFilter === "unread" ? 1 : 0.7,
-                transition: "all 0.2s ease",
-              }}
-            >
-              <Badge
-                color="error"
-                variant={activeFilter === "unread" ? "standard" : "dot"}
-                invisible={activeFilter === "unread"}
-              >
-                <Filter />
-              </Badge>
-            </IconButton>
-            {isMobile && (
-              <IconButton color="inherit" onClick={closeSidebar}>
-                <Close />
-              </IconButton>
-            )}
-          </Box>
-        </Box>
-
-        {/* Filter Chips */}
-        <Box display="flex" gap={1} mt={2}>
-          <Chip
-            label="Tất cả"
-            variant={activeFilter === "all" ? "filled" : "outlined"}
-            onClick={() => setActiveFilter("all")}
-            sx={{
-              color: activeFilter === "all" ? "primary.main" : "inherit",
-              bgcolor: activeFilter === "all" ? "white" : "transparent",
-              borderColor: "white",
-              "&:hover": { bgcolor: alpha("#fff", 0.1) },
-            }}
-          />
-          <Chip
-            label="Chưa đọc"
-            variant={activeFilter === "unread" ? "filled" : "outlined"}
-            onClick={() => setActiveFilter("unread")}
-            sx={{
-              color: activeFilter === "unread" ? "primary.main" : "inherit",
-              bgcolor: activeFilter === "unread" ? "white" : "transparent",
-              borderColor: "white",
-              "&:hover": { bgcolor: alpha("#fff", 0.1) },
-            }}
-          />
-        </Box>
-
-        <Button
-          fullWidth
-          variant="contained"
-          startIcon={<Group />}
+        {/* Sidebar Header */}
+        <Box
           sx={{
-            mt: 2,
-            bgcolor: "white",
-            color: "primary.main",
-            fontWeight: "600",
-            borderRadius: 2,
-            py: 1.5,
-            boxShadow: theme.shadows[2],
-            "&:hover": {
-              bgcolor: "grey.50",
-              boxShadow: theme.shadows[4],
-              transform: "translateY(-1px)",
-              transition: "all 0.2s ease",
-            },
+            p: 2,
+            bgcolor: "primary.main",
+            color: "white",
+            background: `linear-gradient(135deg, ${
+              theme.palette.primary.main
+            } 0%, ${alpha(theme.palette.primary.dark, 0.9)} 100%)`,
           }}
         >
-          Tìm người dùng
-        </Button>
-      </Box>
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            <Typography variant="h6" fontWeight="600">
+              Tin nhắn {isConnected ? "success" : "default"}
+            </Typography>
+            <Box>
+              <IconButton color="inherit" sx={{ mr: 1 }}>
+                <Badge color="error" variant="dot">
+                  <Filter />
+                </Badge>
+              </IconButton>
+              <Button variant="outlined" onClick={toggleSidebar}>
+                {isSidebarOpen ? (
+                  <FaArrowRight size={16} />
+                ) : (
+                  <FaArrowLeft size={16} />
+                )}
+              </Button>
+            </Box>
+          </Box>
 
-      {/* Search Box */}
-      <Box sx={{ p: 2, borderBottom: `1px solid ${theme.palette.divider}` }}>
-        <InputTextField
-          placeholder="Tìm kiếm cuộc trò chuyện..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e)}
-        />
-      </Box>
+          <Button
+            fullWidth
+            variant="contained"
+            startIcon={<Group />}
+            onClick={toggleSearchPanel}
+            sx={{
+              mt: 2,
+              bgcolor: "white",
+              color: "primary.main",
+              fontWeight: "600",
+              borderRadius: 2,
+              py: 1,
+              "&:hover": { bgcolor: "grey.100", boxShadow: theme.shadows[2] },
+            }}
+          >
+            Tìm người dùng
+          </Button>
+        </Box>
 
-      {/* Conversations */}
-      <Box sx={{ flex: 1, overflow: "auto" }}>
+        {/* Search Box */}
+        <Box
+          sx={{
+            p: 2,
+            bgcolor: "background.paper",
+            borderBottom: 1,
+            borderColor: "divider",
+          }}
+        >
+          <InputTextField placeholder="Tìm kiếm cuộc trò chuyện..." />
+        </Box>
+
+        {/* {!isSidebarOpen && (
+          <Button sx={{ mr: 2 }} onClick={toggleSidebar}>
+            <Menu />
+            Return
+          </Button>
+        )} */}
+
+        {/* Conversations */}
         <Conversations
           handleUserSelect={handleUserSelect}
           userId={user?.id || 0}
         />
-      </Box>
-    </Stack>
-  );
+      </Stack>
 
-  return (
-    <Box
-      display="flex"
-      height="80vh"
-      sx={{
-        position: "relative",
-        overflow: "hidden",
-      }}
-    >
-      {/* Sidebar for Desktop */}
-      {!isMobile && (
-        <Box
-          sx={{
-            width: isSidebarOpen ? 320 : 0,
-            minWidth: isSidebarOpen ? 320 : 0,
-            transition: "all 0.3s ease",
-            overflow: "hidden",
-            display: { xs: "none", md: "block" },
-          }}
-        >
-          <SidebarContent />
-        </Box>
-      )}
-
-      {/* Drawer for Mobile */}
-      {isMobile && (
-        <Drawer
-          variant="temporary"
-          open={isSidebarOpen}
-          onClose={closeSidebar}
-          ModalProps={{ keepMounted: true }}
-          sx={{
-            display: { xs: "block", md: "none" },
-            "& .MuiDrawer-paper": {
-              width: "100%",
-              maxWidth: 400,
-            },
-          }}
-        >
-          <SidebarContent />
-        </Drawer>
-      )}
-
-      {/* Main Chat Area */}
-      <Box
+      <Drawer
+        anchor="right"
+        open={isSearchPanelOpen}
+        onClose={toggleSearchPanel}
         sx={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          position: "relative",
-          bgcolor: "background.paper",
+          "& .MuiDrawer-paper": {
+            width: 400,
+            boxSizing: "border-box",
+            boxShadow: theme.shadows[5],
+          },
         }}
       >
-        {/* Chat Header */}
         <Box
           sx={{
             p: 2,
-            borderBottom: `1px solid ${theme.palette.divider}`,
-            bgcolor: "background.paper",
             display: "flex",
             alignItems: "center",
-            gap: 2,
-          }}
-        >
-          {(!isSidebarOpen || isMobile) && (
-            <IconButton
-              onClick={toggleSidebar}
-              sx={{
-                color: "text.primary",
-                bgcolor: "action.hover",
-                "&:hover": { bgcolor: "action.selected" },
-              }}
-            >
-              <MenuIcon />
-            </IconButton>
-          )}
-
-          {receiverId ? (
-            <Box display="flex" alignItems="center" gap={2}>
-              <Avatar sx={{ width: 40, height: 40 }} />
-              <Box>
-                <Typography variant="h6" fontWeight="600">
-                  Người dùng #{receiverId}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Đang hoạt động
-                </Typography>
-              </Box>
-            </Box>
-          ) : (
-            <Typography variant="h6" color="text.secondary">
-              Chọn một cuộc trò chuyện để bắt đầu
-            </Typography>
-          )}
-        </Box>
-
-        {/* Message List */}
-        <Box flex={1} overflow="auto">
-          <MessageList
-            selectedUser={receiverId as number}
-            messages={messages}
-            currentUser={{ id: user?.id! }}
-          />
-        </Box>
-      </Box>
-
-      {/* Floating Toggle Button for Mobile */}
-      {isMobile && !isSidebarOpen && (
-        <IconButton
-          onClick={toggleSidebar}
-          sx={{
-            position: "absolute",
-            top: 16,
-            left: 16,
+            borderBottom: 1,
+            borderColor: "divider",
             bgcolor: "primary.main",
             color: "white",
-            boxShadow: theme.shadows[4],
-            zIndex: 1000,
-            "&:hover": {
-              bgcolor: "primary.dark",
-              transform: "scale(1.1)",
-            },
-            transition: "all 0.2s ease",
+            background: `linear-gradient(135deg, ${
+              theme.palette.primary.main
+            } 0%, ${alpha(theme.palette.primary.dark, 0.9)} 100%)`,
           }}
         >
-          <MenuIcon />
-        </IconButton>
-      )}
+          <Typography variant="h6" sx={{ flexGrow: 1 }} fontWeight="medium">
+            Tìm kiếm người dùng
+          </Typography>
+          <IconButton onClick={toggleSearchPanel} color="inherit">
+            <Close />
+          </IconButton>
+        </Box>
+
+        <Box sx={{ p: 2 }}>
+          <InputTextField
+            placeholder="Tìm kiếm theo tên hoặc email..."
+            value={searchQuery}
+            // onChange={(e) => handleSearch(e.target.value)}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                borderRadius: 2,
+              },
+            }}
+          />
+        </Box>
+      </Drawer>
+
+      {/* Message List */}
+      <Box
+        flex={1}
+        overflow="auto"
+        sx={{ color: theme.palette.text.primary, mb: 2 }}
+      >
+        {!isSidebarOpen && (
+          <Button sx={{ mr: 2 }} onClick={toggleSidebar}>
+            <Menu />
+            Return
+          </Button>
+        )}
+        <MessageList
+          selectedUser={receiverId as number}
+          messages={messages}
+          currentUser={{ id: user?.id! }}
+        />
+      </Box>
     </Box>
   );
 };

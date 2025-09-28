@@ -23,7 +23,6 @@ type FormField = {
   type: FieldType;
   placeholder?: string;
   options: DropdownOptions[];
-  valueIncheckbox?: string[];
   value: any;
   sx?: SxProps<Theme>;
   disabled?: boolean;
@@ -48,7 +47,6 @@ const FieldRenderer = ({
   options,
   value,
   disabled,
-  valueIncheckbox = [],
   error,
   onChange,
   sx,
@@ -73,7 +71,7 @@ const FieldRenderer = ({
           value={value}
           disabled={disabled}
           onChange={onChange}
-          {...(customProps || {})} // ✅ Truyền toàn bộ prop riêng vào
+          {...(customProps || {})}
         />
       );
 
@@ -87,7 +85,7 @@ const FieldRenderer = ({
           showEyeIcon
           value={value}
           onChange={onChange}
-          {...(customProps || {})} // ✅ Truyền toàn bộ prop riêng vào
+          {...(customProps || {})}
         />
       );
     case FieldType.INPUT_WITH_TYPE_TEXT:
@@ -99,21 +97,9 @@ const FieldRenderer = ({
           clearable
           value={value}
           onChange={onChange}
-          {...(customProps || {})} // ✅ Truyền toàn bộ prop riêng vào
+          {...(customProps || {})}
         />
       );
-    // case FieldType.CHECKBOX_SELECT:
-    //   return (
-    //     <JobTypeSelector
-    //       valueInCheckBox={valueIncheckbox}
-    //       error={error as boolean}
-    //       value={value}
-    //       onChange={onChange}
-    //       {...sx}
-    //       {...(customProps || {})} // ✅ Truyền toàn bộ prop riêng vào
-    //     />
-    //   );
-
     case FieldType.TEXTAREA:
       return (
         <InputTextArea

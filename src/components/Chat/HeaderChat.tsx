@@ -68,18 +68,18 @@ const ChatApp = () => {
   );
   const { user } = useAuth();
   const userId = user?.id;
-  const { data, loading } = useSocket<ResConversationsResponse>({
-    event: "getConversationsResponse",
-    autoListen: true,
-    userId,
-    onSuccess: (res) => {
-      if (res?.resultCode === "00") {
-        console.log("Conversations:", res.list);
-      } else {
-        console.warn(" Server error:", res?.resultMessage);
-      }
-    },
-  });
+  // const { data, loading } = useSocket<ResConversationsResponse>({
+  //   event: "getConversationsResponse",
+  //   autoListen: true,
+  //   userId,
+  //   onSuccess: (res) => {
+  //     if (res?.resultCode === "00") {
+  //       console.log("Conversations:", res.list);
+  //     } else {
+  //       console.warn(" Server error:", res?.resultMessage);
+  //     }
+  //   },
+  // });
 
   const [selectedUser, setSelectedUser] = useState<number | null>(null);
   const { emit: sendMessage, loading: sending } = useSocket<any>({
@@ -154,15 +154,14 @@ const ChatApp = () => {
   const { data: newMessage, isConnected } = useSocket<Message>({
     event: "new_message",
     autoListen: true,
-    userId: currentUser?.id,
+    userId,
     onSuccess: (message) => {
       // Kiểm tra xem tin nhắn có thuộc cuộc trò chuyện hiện tại không
       if (
-        currentUser &&
-        (message.senderId === currentUser.id ||
-          message.receiverId === currentUser.id)
+        userId &&
+        (message.senderId === userId || message.receiverId === userId)
       ) {
-        setMessages((prev) => [...prev, message]);
+        // setMessage((prev) => [...prev, message]);
       }
     },
     onError: (error) => {

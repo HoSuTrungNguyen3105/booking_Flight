@@ -367,6 +367,11 @@ export type SendMessageProps = {
   content: string;
 };
 
+export type TerminalLabelValue = {
+  value: string;
+  label: string;
+};
+
 export interface Message {
   id: number;
   content: string;
@@ -398,6 +403,7 @@ export type SearchFlightProps = {
   outbound: DataFlight[];
   inbound: DataFlight[];
 };
+
 export type AircraftCodeBatchProps = {
   code: string;
   errorCode: string;
@@ -406,6 +412,9 @@ export type AircraftCodeBatchProps = {
 
 export type FlightBookingTicketDetailApiResponse =
   DetailResponseMessage<SearchFlightSearchBookingFlightPropsProps>;
+
+export type TerminalLabelListResponse =
+  DetailResponseMessage<TerminalLabelValue>;
 
 export type UserListResponse = UserDataResponse<UserData>;
 export type UserCreateResponse = DetailResponseMessage<UserDataNoGrid>;
