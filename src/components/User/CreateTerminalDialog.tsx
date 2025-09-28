@@ -106,30 +106,6 @@ const CreateTerminalDialog: React.FC<CreateTerminalDialogProps> = ({
             .map((item) => item.trim());
           return { code, name, type, airportId: "default-airport-id" };
         });
-
-      // const result = await refetchCreateTerminalBulk(formData)
-      // if (result.resultCode === "00") {
-      //   setMessage({ type: "success", text: "Tạo terminal thành công!" });
-      //   setTimeout(() => {
-      //     onSuccess();
-      //     handleClose();
-      //   }, 1500);
-      // } else {
-      //   setMessage({ type: "error", text: result.resultMessage });
-      // }
-
-      // if (result.resultCode === "00") {
-      //   setMessage({
-      //     type: "success",
-      //     text: `Tạo thành công ${terminals.length} terminal!`,
-      //   });
-      //   setTimeout(() => {
-      //     onSuccess();
-      //     handleClose();
-      //   }, 1500);
-      // } else {
-      //   setMessage({ type: "error", text: result.resultMessage });
-      // }
     } catch (error) {
       setMessage({ type: "error", text: "Lỗi kết nối máy chủ" });
     } finally {

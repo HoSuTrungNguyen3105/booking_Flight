@@ -554,6 +554,8 @@ interface ChangePassword {
   confirmPassword: string;
 }
 
+export type ChangePasswordInProfile = Omit<ChangePassword, "currentPassword">;
+
 interface ResetPasswordByMfa {
   email: string;
   mfaCode: string;
@@ -603,6 +605,22 @@ export const useChangePassword = () => {
     ChangePassword
   >({
     url: "/auth/change-password",
+    defaultValue: { resultCode: "", resultMessage: "" },
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    changePassword,
+    refetchChangePassword,
+  };
+};
+
+export const useChangePasswordInProfile = () => {
+  const { data: changePassword, refetch: refetchChangePassword } = useFetch<
+    ResponseMessage,
+    ChangePasswordInProfile
+  >({
+    url: "/auth/change-password-in-profile",
     defaultValue: { resultCode: "", resultMessage: "" },
     autoFetch: false,
     config: postMethod,

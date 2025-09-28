@@ -5,7 +5,7 @@ export type TerminalType = "INTERNATIONAL" | "DOMESTIC" | "BUSINESS";
 
 export type TerminalView = {
   id: string;
-  code: string; // "A", "B"
+  code: string;
   name: string;
   type: TerminalType;
   x?: number;

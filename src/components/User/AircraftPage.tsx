@@ -13,7 +13,6 @@ import {
   Alert,
 } from "@mui/material";
 import {
-  // Delete as DeleteIcon,
   Visibility as ViewIcon,
   AirplanemodeActive as AircraftIcon,
   Edit as EditIcon,
