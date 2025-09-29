@@ -401,67 +401,6 @@ const TerminalContainer: React.FC = () => {
                 )}
               </Grid>
 
-              {/* {terminal.gates.length > 0 ? (
-                <Grid container spacing={1}>
-                  {terminal.gates.map((gate) => {
-                    const isAssigned = gate.assignments.length > 0;
-                    const assignment = gate.assignments[0]; // lấy assignment đầu tiên (nếu có)
-
-                    return (
-                      <Grid size={4} key={gate.id}>
-                        <GateBox
-                          status={isAssigned ? "OCCUPIED" : "AVAILABLE"}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleGateClick("update", gate);
-                          }}
-                        >
-                          <Typography variant="body2" fontWeight="bold">
-                            {gate.code}
-                          </Typography>
-
-                          {isAssigned ? (
-                            <>
-                              <Typography
-                                variant="caption"
-                                display="block"
-                                color="success.main"
-                              >
-                                Đang gán cho Flight #{assignment.flightId}
-                              </Typography>
-                              <Typography variant="caption" display="block">
-                                AssignedAt: {assignment.assignedAt}
-                              </Typography>
-                            </>
-                          ) : (
-                            <Typography
-                              variant="caption"
-                              display="block"
-                              color="text.secondary"
-                            >
-                              Chưa có assignment
-                            </Typography>
-                          )}
-                        </GateBox>
-                      </Grid>
-                    );
-                  })}
-                </Grid>
-              ) : (
-                <Box
-                  sx={{
-                    p: 2,
-                    textAlign: "center",
-                    bgcolor: "grey.50",
-                    borderRadius: 1,
-                  }}
-                >
-                  <Typography variant="body2" color="text.secondary">
-                    Chưa có assignment gate nào. Click nút + để thêm mới.
-                  </Typography>
-                </Box>
-              )} */}
-
               {terminal.gates.length > 0 ? (
                 <Grid container spacing={1}>
                   {terminal.gates.map((gate) => (
@@ -594,25 +533,6 @@ const TerminalContainer: React.FC = () => {
             </Grid>
           </PaperContainer>
         ))}
-      {/* <Dialog
-        open={dialogOpen}
-        onClose={() => setDialogOpen(false)}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle>
-          {editingItem?.id
-            ? `Chỉnh sửa ${dialogType}`
-            : `Thêm mới ${dialogType}`}
-        </DialogTitle>
-        <DialogContent>{renderDialogContent()}</DialogContent>
-        <DialogActions>
-          <Button onClick={() => setDialogOpen(false)}>Hủy</Button>
-          <Button onClick={handleSubmit} variant="contained">
-            {editingItem?.id ? "Cập nhật" : "Tạo mới"}
-          </Button>
-        </DialogActions>
-      </Dialog> */}
       <CreateGateForm
         open={dialogOpen.gate}
         onClose={() => setDialogOpen((prev) => ({ ...prev, gate: false }))}

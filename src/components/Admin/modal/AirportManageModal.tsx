@@ -1,8 +1,7 @@
-import { Box, Button, Grid, TextField, Typography } from "@mui/material";
+import { Box, Button, Grid } from "@mui/material";
 import { memo, useCallback } from "react";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
 import BaseModal from "../../../common/Modal/BaseModal";
-import type { AreaKey } from "../AirportMasterplan";
 import type { Airport } from "../../../utils/type";
 import InputTextField from "../../../common/Input/InputTextField";
 

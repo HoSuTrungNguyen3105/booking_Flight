@@ -83,7 +83,6 @@ const CreateGateForm = ({
             value: status,
             label: "Khả dụng",
             color: theme.palette.info.light,
-            icon: <CheckCircleIcon fontSize="small" />,
           };
         case "OCCUPIED":
           return {
@@ -114,34 +113,6 @@ const CreateGateForm = ({
           };
       }
     }) ?? [];
-
-  // const handleChange =
-  //   (field: keyof CreateGateProps) => (value: string | number) => {
-  //     setFormData({
-  //       ...formData,
-  //       [field]: value,
-  //     });
-  //     if (errors[field]) {
-  //       setErrors({
-  //         ...errors,
-  //         [field]: "",
-  //       });
-  //     }
-  //   };
-
-  // Dùng cho InputTextField
-  const handleInputChange =
-    (field: keyof CreateGateProps) =>
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const { value } = event.target;
-      setFormData((prev) => ({
-        ...prev,
-        [field]: value,
-      }));
-      if (errors[field]) {
-        setErrors((prev) => ({ ...prev, [field]: "" }));
-      }
-    };
 
   // Dùng cho SelectDropdown (trả về value trực tiếp)
   const handleSelectChange =
@@ -185,12 +156,7 @@ const CreateGateForm = ({
         ...formData,
         terminalId: terminalId,
       };
-
       const res = await refetchCreateGate(submitData);
-
-      console.log("Dữ liệu gửi đi:", res);
-      console.log("Dữ submitData gửi đi:", submitData);
-
       if (res?.resultCode === "00") {
         onClose();
       }

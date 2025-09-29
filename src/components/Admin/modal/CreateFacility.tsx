@@ -27,6 +27,7 @@ import {
   useCreateFacilities,
   type CreateFacilityProps,
 } from "../../Api/usePostApi";
+import InputTextArea from "../../../common/Input/InputTextArea";
 type Props = {
   terminalId: string;
   onClose: () => void;
@@ -60,27 +61,6 @@ const CreateFacility = ({ onClose, terminalId }: Props) => {
     text: string;
   } | null>(null);
 
-  // Fetch terminals on component mount
-  // useEffect(() => {
-  //   const fetchTerminals = async () => {
-  //     setLoading(true);
-  //     try {
-  //       const response = await fetch("http://localhost:3000/terminals");
-  //       if (response.ok) {
-  //         const data = await response.json();
-  //         setTerminals(data);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching terminals:", error);
-  //       setMessage({ type: "error", text: "Failed to load terminals" });
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchTerminals();
-  // }, []);
-
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -88,13 +68,6 @@ const CreateFacility = ({ onClose, terminalId }: Props) => {
     setFormData((prev) => ({
       ...prev,
       [name]: value,
-    }));
-  };
-
-  const handleSelectChange = (e: string | number) => {
-    setFormData((prev) => ({
-      ...prev,
-      [prev.name]: e,
     }));
   };
 
@@ -109,7 +82,6 @@ const CreateFacility = ({ onClose, terminalId }: Props) => {
       const response = await refetchCreateFacilities(formData);
       console.log("response", response);
       if (response?.resultCode === "00") {
-        // setMessage({ type: "success", text: "Facility created successfully!" });
         setFormData({
           name: "",
           type: "",
@@ -143,19 +115,6 @@ const CreateFacility = ({ onClose, terminalId }: Props) => {
       })) ?? [];
     return res;
   }, [dataFacilityTypes]);
-
-  // const facilityTypeOptions = [
-  //   { value: FacilityType.RESTAURANT, label: "Restaurant" },
-  //   { value: FacilityType.SHOP, label: "Shop" },
-  //   { value: FacilityType.LOUNGE, label: "Lounge" },
-  //   { value: FacilityType.ATM, label: "ATM" },
-  //   { value: FacilityType.WIFI, label: "WiFi Zone" },
-  //   { value: FacilityType.CHARGING_STATION, label: "Charging Station" },
-  //   { value: FacilityType.INFORMATION, label: "Information Desk" },
-  //   { value: FacilityType.MEDICAL, label: "Medical Facility" },
-  //   { value: FacilityType.PRAYER_ROOM, label: "Prayer Room" },
-  //   { value: FacilityType.SMOKING_AREA, label: "Smoking Area" },
-  // ];
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
@@ -223,20 +182,7 @@ const CreateFacility = ({ onClose, terminalId }: Props) => {
                   }
                   options={dataTerminalIdOptions()}
                   disabled={loading}
-                >
-                  {/* {terminals.map((terminal) => (
-                    <MenuItem key={terminal.id} value={terminal.id}>
-                      <Box>
-                        <Typography variant="body1">
-                          {terminal.name} ({terminal.code})
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          {terminal.type}
-                        </Typography>
-                      </Box>
-                    </MenuItem>
-                  ))} */}
-                </SelectDropdown>
+                />
               </FormControl>
               {loading && <CircularProgress size={24} sx={{ mt: 1 }} />}
             </Grid>
@@ -255,15 +201,6 @@ const CreateFacility = ({ onClose, terminalId }: Props) => {
 
             {/* Opening Hours */}
             <Grid size={6}>
-              {/* <TextField
-                fullWidth
-                label="Opening Hours"
-                name="openingHours"
-                value={formData.openingHours}
-                onChange={handleInputChange}
-                placeholder="e.g., 06:00-22:00, 24/7"
-                helperText="Format: HH:MM-HH:MM or descriptive text"
-              /> */}
               <OpeningHoursPicker
                 value={formData.openingHours}
                 onChange={(val) =>
@@ -274,14 +211,10 @@ const CreateFacility = ({ onClose, terminalId }: Props) => {
 
             {/* Description */}
             <Grid size={12}>
-              <TextField
-                fullWidth
-                multiline
-                rows={4}
-                label="Description"
+              <InputTextArea
                 name="description"
                 value={formData.description}
-                onChange={handleInputChange}
+                //   onChange={handleInputChange}
                 placeholder="Enter facility description and services offered"
               />
             </Grid>

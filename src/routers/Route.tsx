@@ -47,7 +47,7 @@ import SendEmailToUsers from "../common/Setting/SendEmailToUsers";
 import CreateGateForm from "../components/User/CreateGateForm";
 import MealForm from "../common/Sample/MealForm";
 import FlightStatisticsPage from "../components/User/FlightStatisticsPage";
-import FileUploadButtonWithValidation from "../components/Admin/modal/FileUploadButton";
+import FileUploadButtonWithValidation from "../components/Admin/modal/FileUploadButtonWithValidation";
 import BulkMealCreator from "../components/Admin/component/BulkMealCreator";
 import AirportMap from "../components/User/AirportMap";
 import CreateFacility from "../components/Admin/modal/CreateFacility";

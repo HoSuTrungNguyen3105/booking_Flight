@@ -107,6 +107,7 @@ const BulkMealCreator: React.FC = () => {
 
       // Gọi API thật
       const res = await refetchCreateMultiMeal(meals);
+      console.log("res", res);
       if (res?.resultCode === "00") {
         setIsSuccess(true);
         setActiveStep(2);

@@ -10,7 +10,11 @@ import {
 } from "@mui/material";
 import { AttachFile, Delete, Send } from "@mui/icons-material";
 import { useAuth } from "../../context/AuthContext";
-import { FileUpload } from "../FileUploader";
+import { FileUploadButtonWithValidation } from "../../components/Admin/modal/FileUploadButtonWithValidation";
+// import { FileUpload } from "../FileUploader";
+// import FileUploadButton from "../../components/Admin/modal/FileUploadButtonWithValidation";
+// import { FileUploadButton } from "../FileUploader/FileUploadButton";
+// import { FileUploadButton } from "../FileUploader/FileUploadButton";
 type SendEmailProps = {
   selectedUser: string[];
 };
@@ -31,11 +35,11 @@ const SendEmailToUsers = ({ selectedUser }: SendEmailProps) => {
     setTo(to.filter((item) => item !== email));
   };
 
-  const handleAttachFile = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      setAttachments([...attachments, ...Array.from(event.target.files)]);
-    }
-  };
+  // const handleAttachFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   if (event.target.files) {
+  //     setAttachments([...attachments, ...Array.from(event.target.files)]);
+  //   }
+  // };
 
   return (
     <Box
@@ -106,7 +110,12 @@ const SendEmailToUsers = ({ selectedUser }: SendEmailProps) => {
         value={body}
         onChange={(e) => setBody(e.target.value)}
       />
-      <FileUpload name="upload" />
+      <FileUploadButtonWithValidation
+        title="test"
+        name="test"
+        setValues={() => {}}
+      />
+      {/* <FileUpload name="upload" /> */}
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Box display="flex" alignItems="center" gap={1}>
           <Switch
