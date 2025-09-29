@@ -473,13 +473,24 @@ export type Terminal = {
   facilities: Facility[];
 };
 
+export interface GateAssignment {
+  id: string;
+  gateId: string;
+  flightId: number;
+  assignedAt: number;
+  releasedAt: number;
+  createdAt: number;
+  updatedAt: number;
+}
+
 export type Gate = {
   id: string;
   code: string;
   terminalId: string;
-  status: "AVAILABLE" | "OCCUPIED" | "MAINTENANCE"; // enum GateStatus
+  status: string;
   createdAt: number;
   updatedAt: number;
+  assignments: GateAssignment[];
 };
 
 export type Facility = {

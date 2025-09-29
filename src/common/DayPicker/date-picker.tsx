@@ -37,20 +37,21 @@ export const OpeningHoursPicker = ({ value, onChange }: TimePickerProps) => {
             setStartTime(newValue);
             handleUpdate(newValue, endTime);
           }}
-          slotProps={{
-            textField: {
-              size: "small",
-              sx: {
-                height: "40px", // chỉnh cho bằng InputTextField
-                "& .MuiInputBase-root": {
-                  height: "100%",
-                },
-                "& input": {
-                  padding: "4px 8px", // chỉnh padding cho khớp
-                },
-              },
-            },
-          }}
+          slotProps={{ textField: { size: "small" } }}
+          // slotProps={{
+          //   textField: {
+          //     size: "small",
+          //     sx: {
+          //       height: "40px", // chỉnh cho bằng InputTextField
+          //       "& .MuiInputBase-root": {
+          //         height: "100%",
+          //       },
+          //       "& input": {
+          //         padding: "4px 8px", // chỉnh padding cho khớp
+          //       },
+          //     },
+          //   },
+          // }}
         />
         <Typography>-</Typography>
         <TimePicker
@@ -60,28 +61,29 @@ export const OpeningHoursPicker = ({ value, onChange }: TimePickerProps) => {
             setEndTime(newValue);
             handleUpdate(startTime, newValue);
           }}
-          slotProps={{
-            textField: {
-              size: "small",
-              sx: {
-                height: "40px", // chỉnh cho bằng InputTextField
-                "& .MuiInputBase-root": {
-                  height: "100%",
-                },
-                "& input": {
-                  padding: "4px 8px", // chỉnh padding cho khớp
-                },
-              },
-            },
-          }}
+          slotProps={{ textField: { size: "small" } }}
+          // slotProps={{
+          //   textField: {
+          //     size: "small",
+          //     sx: {
+          //       height: "40px", // chỉnh cho bằng InputTextField
+          //       "& .MuiInputBase-root": {
+          //         height: "100%",
+          //       },
+          //       "& input": {
+          //         padding: "4px 8px", // chỉnh padding cho khớp
+          //       },
+          //     },
+          //   },
+          // }}
         />
-        <ChevronRightSharpIcon />
-        <InputTextField
+        {/* <ChevronRightSharpIcon /> */}
+        {/* <InputTextField
           ///   sx={{ width: "15rem", height: "90%" }}
           value={value}
           readOnly
           placeholder="00:00 - 00:00"
-        />
+        /> */}
       </Box>
     </LocalizationProvider>
   );

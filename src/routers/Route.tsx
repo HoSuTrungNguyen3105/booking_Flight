@@ -213,10 +213,10 @@ const routes = [
         path: "unlock_request", //bookseat
         element: <UnlockRequestTable />,
       },
-      {
-        path: "CreateGateForm", //bookseat
-        element: <CreateGateForm />,
-      },
+      // {
+      //   path: "CreateGateForm", //bookseat
+      //   element: <CreateGateForm />,
+      // },
       // {
       //   path: "data-secure",
       //   element: <DataSecure />,
@@ -271,10 +271,10 @@ const routes = [
         path: "hero",
         element: <TicketSalesDashboard />,
       },
-      {
-        path: "facilities",
-        element: <CreateFacility />,
-      },
+      // {
+      //   path: "facilities",
+      //   element: <CreateFacility />,
+      // },
       {
         path: "TerminalContainer",
         element: <AirportDiagram />,

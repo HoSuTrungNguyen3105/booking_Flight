@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   Box,
   Paper,
@@ -7,16 +7,6 @@ import {
   Chip,
   styled,
   Stack,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-  Button,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   Alert,
   IconButton,
 } from "@mui/material";
@@ -24,15 +14,15 @@ import { Edit, Add } from "@mui/icons-material";
 import TabPanel, { type ITabItem } from "../../common/Setting/TabPanel";
 import { useGetTerminalData, type CreateGateProps } from "../Api/usePostApi";
 import {
-  FacilityType,
   type Facility,
+  type Gate,
   type GateStatus,
   type Terminal,
 } from "../../utils/type";
-import InputTextField from "../../common/Input/InputTextField";
-import SelectDropdown from "../../common/Dropdown/SelectDropdown";
-import { OpeningHoursPicker } from "../../common/DayPicker/date-picker";
-import InputTextArea from "../../common/Input/InputTextArea";
+import { type ActionType } from "../../common/Dropdown/SelectDropdown";
+import { useFindAllFacilityTypes } from "../Api/useGetApi";
+import CreateGateForm from "../User/CreateGateForm";
+import CreateFacility from "./modal/CreateFacility";
 
 // interface Facility {
 //   id: string;
@@ -50,8 +40,10 @@ const tabs: ITabItem[] = [
   { label: "Khu C", value: "C", description: "Chỉ hiển thị khu C" },
 ];
 
+export type UpdateGateProps = Omit<CreateGateProps, "terminalId">;
+
 // Styled components
-const TerminalContainer = styled(Paper)(({ theme }) => ({
+const PaperContainer = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(3),
   marginBottom: theme.spacing(3),
   position: "relative",
@@ -63,14 +55,22 @@ const TerminalContainer = styled(Paper)(({ theme }) => ({
   },
 }));
 
-const GateBox = styled(Box)<{ status: string }>(({ theme, status }) => {
+const GateBox = styled(Box)<{ status: GateStatus }>(({ theme, status }) => {
   let backgroundColor = theme.palette.grey[300];
   let color = theme.palette.text.primary;
 
-  if (status === "occupied") {
+  if (status === "OCCUPIED") {
     backgroundColor = theme.palette.primary.main;
     color = theme.palette.primary.contrastText;
-  } else if (status === "maintenance") {
+  }
+  if (status === "CLOSED") {
+    backgroundColor = theme.palette.success.dark;
+    color = theme.palette.primary.light;
+  }
+  if (status === "AVAILABLE") {
+    backgroundColor = theme.palette.background.default;
+    color = theme.palette.primary.light;
+  } else if (status === "MAINTENANCE") {
     backgroundColor = theme.palette.warning.main;
     color = theme.palette.warning.contrastText;
   }
@@ -112,30 +112,38 @@ const EditOverlay = styled(Box)(({ theme }) => ({
   },
 }));
 
-const AirportDiagram: React.FC = () => {
+const TerminalContainer: React.FC = () => {
   const [selectedTerminal, setSelectedTerminal] = useState<string>("all");
   const [activeTab, setActiveTab] = useState(0);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [dialogType, setDialogType] = useState<
-    "terminal" | "gate" | "facility"
-  >("terminal");
-  const { getTerminalData } = useGetTerminalData();
-  const [editingItem, setEditingItem] = useState<any>(null);
+  const [dialogOpen, setDialogOpen] = useState({
+    terminal: false,
+    gate: false,
+    facility: false,
+    assignments: false,
+  });
+  // const [dialogType, setDialogType] = useState<
+  //   "terminal" | "gate" | "facility"
+  // >("facility");
+  const { getTerminalData, refetchGetTerminalData } = useGetTerminalData();
+  const [editingItem, setEditingItem] = useState<
+    Terminal | Facility | Gate | null
+  >(null);
   const [formData, setFormData] = useState({
     name: "",
     code: "",
-    status: "available",
+    status: "",
     type: "",
     location: "",
     openingHours: "",
     flight: "",
   });
-
-  const [gateForm, setGateForm] = useState<CreateGateProps>({
-    terminalId: "",
+  const [dialogType, setDialogType] = useState<"update" | "create">("create");
+  const [gateForm, setGateForm] = useState<UpdateGateProps>({
     code: "",
-    status: "AVAILABLE",
+    status: "",
   });
+
+  const [terminalId, setTerminalId] = useState("");
 
   const getTerminalColor = (type: string): string => {
     const colorMap: { [key: string]: string } = {
@@ -158,13 +166,13 @@ const AirportDiagram: React.FC = () => {
   };
 
   const handleFacilityClick = (facility: Facility) => {
-    setDialogType("facility");
+    // setDialogType("facility");
     setEditingItem(facility);
-    setDialogOpen(true);
+    setDialogOpen((prev) => ({ ...prev, facility: true }));
   };
 
   const handleTerminalClick = (terminal: Terminal) => {
-    setDialogType("terminal");
+    // setDialogType("terminal");
     setEditingItem(terminal);
     setFormData({
       name: terminal.name,
@@ -175,7 +183,7 @@ const AirportDiagram: React.FC = () => {
       openingHours: "",
       flight: "",
     });
-    setDialogOpen(true);
+    setDialogOpen((prev) => ({ ...prev, terminal: true }));
   };
 
   const [facilities, setFacilities] = useState({
@@ -187,18 +195,6 @@ const AirportDiagram: React.FC = () => {
     openingHours: "",
   });
 
-  const facilityTypeOptions = [
-    { value: FacilityType.RESTAURANT, label: "Restaurant" },
-    { value: FacilityType.SHOP, label: "Shop" },
-    { value: FacilityType.LOUNGE, label: "Lounge" },
-    { value: FacilityType.ATM, label: "ATM" },
-    { value: FacilityType.WIFI, label: "WiFi Zone" },
-    { value: FacilityType.CHARGING_STATION, label: "Charging Station" },
-    { value: FacilityType.INFORMATION, label: "Information Desk" },
-    { value: FacilityType.MEDICAL, label: "Medical Facility" },
-    { value: FacilityType.PRAYER_ROOM, label: "Prayer Room" },
-    { value: FacilityType.SMOKING_AREA, label: "Smoking Area" },
-  ];
   const handleChange = (e: string) => {
     setFacilities({ ...facilities, [e]: e });
   };
@@ -211,145 +207,32 @@ const AirportDiagram: React.FC = () => {
   };
 
   const handleAddNew = (type: "gate" | "facility", terminalId: string) => {
+    // setDialogType(type);
+    setTerminalId(terminalId);
+    setDialogOpen((prev) => ({ ...prev, [type]: true }));
+  };
+
+  const handleGateClick = (type: "create" | "update", gate: Gate) => {
     setDialogType(type);
-    setEditingItem({ terminal: terminalId });
-    setFormData({
-      name: "",
-      code: "",
-      status: "available",
-      type: "",
-      location: "",
-      openingHours: "",
-      flight: "",
+    setGateForm({
+      code: gate.code,
+      status: gate.status,
     });
-    setDialogOpen(true);
+    console.log("gate, ", gate);
+    setDialogOpen((prev) => ({ ...prev, gate: true }));
   };
 
-  const handleSubmit = async () => {
-    try {
-      console.log("faci", facilities);
-      if (dialogType === "gate") {
-        // const res = await refetchCreateGate({});
-      } else if (dialogType === "facility") {
-        // const res = await
-      } else if (dialogType === "terminal") {
-        // const res = await
-      }
-    } catch (error) {
-      console.error("Error saving data:", error);
-    }
-  };
-
-  const renderDialogContent = () => {
-    switch (dialogType) {
-      case "terminal":
-        return (
-          <>
-            <TextField
-              fullWidth
-              label="Tên Terminal"
-              value={formData.name}
-              onChange={(e) =>
-                setFormData({ ...formData, name: e.target.value })
-              }
-              margin="normal"
-            />
-            <TextField
-              fullWidth
-              label="Mã Terminal"
-              value={formData.code}
-              onChange={(e) =>
-                setFormData({ ...formData, code: e.target.value })
-              }
-              margin="normal"
-            />
-          </>
-        );
-
-      case "gate":
-        return (
-          <>
-            <InputTextField
-              value={gateForm.code}
-              onChange={(e) => setFormData({ ...formData, code: e })}
-            />
-            <FormControl fullWidth margin="normal">
-              <InputLabel>Trạng thái</InputLabel>
-              <Select
-                value={gateForm.status}
-                onChange={(e) =>
-                  setFormData({ ...formData, status: e.target.value })
-                }
-                label="Trạng thái"
-              >
-                <MenuItem value="available">Có sẵn</MenuItem>
-                <MenuItem value="occupied">Đã có chuyến bay</MenuItem>
-                <MenuItem value="maintenance">Bảo trì</MenuItem>
-              </Select>
-            </FormControl>
-            <TextField
-              fullWidth
-              label="Chuyến bay"
-              value={gateForm.terminalId}
-              onChange={(e) =>
-                setFormData({ ...formData, flight: e.target.value })
-              }
-              margin="normal"
-            />
-          </>
-        );
-
-      case "facility":
-        return (
-          <Grid container spacing={3}>
-            {/* Facility Name */}
-            <Grid size={6}>
-              <InputTextField
-                name="name"
-                value={facilities.name}
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid size={6}>
-              <SelectDropdown
-                value={facilities.type}
-                onChange={(value) => handleSelectChange("type", value)}
-                options={facilityTypeOptions}
-              />
-            </Grid>
-            <Grid size={6}>
-              <InputTextArea
-                name="description"
-                value={facilities.description}
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid size={6}>
-              <InputTextField
-                name="terminalId"
-                value={facilities.terminalId}
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid size={12}>
-              <InputTextField
-                name="location"
-                value={facilities.location}
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid size={12}>
-              <OpeningHoursPicker
-                value={facilities.openingHours}
-                onChange={(val) =>
-                  setFacilities((prev) => ({ ...prev, openingHours: val }))
-                }
-              />
-            </Grid>
-          </Grid>
-        );
-    }
-  };
+  if (dialogOpen.facility) {
+    return (
+      <CreateFacility
+        terminalId={terminalId}
+        onClose={() => {
+          setDialogOpen((prev) => ({ ...prev, facility: false }));
+          refetchGetTerminalData();
+        }}
+      />
+    );
+  }
 
   return (
     <>
@@ -414,7 +297,7 @@ const AirportDiagram: React.FC = () => {
       {getTerminalData?.list
         ?.filter((t) => selectedTerminal === "all" || t.id === selectedTerminal)
         .map((terminal) => (
-          <TerminalContainer
+          <PaperContainer
             key={terminal.id}
             elevation={2}
             sx={{ borderLeft: `4px solid ${getTerminalColor(terminal.type)}` }}
@@ -486,24 +369,18 @@ const AirportDiagram: React.FC = () => {
                     {terminal.gates.map((gate) => (
                       <Grid size={4} key={gate.id}>
                         <GateBox
-                          status={gate.status}
+                          status={gate.status as GateStatus}
                           onClick={(e) => {
                             e.stopPropagation();
-                            // handleGateClick(gate);
+                            handleGateClick("update", gate);
                           }}
                         >
                           <Typography variant="body2" fontWeight="bold">
-                            {gate.code} {/* Sửa từ gate.id thành gate.code */}
+                            {gate.code}
                           </Typography>
                           <Typography variant="caption" display="block">
                             {getGateStatusText(gate.status)}
                           </Typography>
-                          {/* Hiển thị thông tin flight assignment nếu có */}
-                          {/* {gate. && gate.assignments.length > 0 && (
-                      <Typography variant="caption" display="block">
-                        {gate.assignments[0].flight?.flightNumber}
-                      </Typography>
-                    )} */}
                         </GateBox>
                       </Grid>
                     ))}
@@ -523,6 +400,126 @@ const AirportDiagram: React.FC = () => {
                   </Box>
                 )}
               </Grid>
+
+              {/* {terminal.gates.length > 0 ? (
+                <Grid container spacing={1}>
+                  {terminal.gates.map((gate) => {
+                    const isAssigned = gate.assignments.length > 0;
+                    const assignment = gate.assignments[0]; // lấy assignment đầu tiên (nếu có)
+
+                    return (
+                      <Grid size={4} key={gate.id}>
+                        <GateBox
+                          status={isAssigned ? "OCCUPIED" : "AVAILABLE"}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleGateClick("update", gate);
+                          }}
+                        >
+                          <Typography variant="body2" fontWeight="bold">
+                            {gate.code}
+                          </Typography>
+
+                          {isAssigned ? (
+                            <>
+                              <Typography
+                                variant="caption"
+                                display="block"
+                                color="success.main"
+                              >
+                                Đang gán cho Flight #{assignment.flightId}
+                              </Typography>
+                              <Typography variant="caption" display="block">
+                                AssignedAt: {assignment.assignedAt}
+                              </Typography>
+                            </>
+                          ) : (
+                            <Typography
+                              variant="caption"
+                              display="block"
+                              color="text.secondary"
+                            >
+                              Chưa có assignment
+                            </Typography>
+                          )}
+                        </GateBox>
+                      </Grid>
+                    );
+                  })}
+                </Grid>
+              ) : (
+                <Box
+                  sx={{
+                    p: 2,
+                    textAlign: "center",
+                    bgcolor: "grey.50",
+                    borderRadius: 1,
+                  }}
+                >
+                  <Typography variant="body2" color="text.secondary">
+                    Chưa có assignment gate nào. Click nút + để thêm mới.
+                  </Typography>
+                </Box>
+              )} */}
+
+              {terminal.gates.length > 0 ? (
+                <Grid container spacing={1}>
+                  {terminal.gates.map((gate) => (
+                    <Grid size={12} key={gate.id}>
+                      <GateBox
+                        status={
+                          gate.assignments.length > 0 ? "OCCUPIED" : "AVAILABLE"
+                        }
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleGateClick("update", gate);
+                        }}
+                      >
+                        {gate.assignments.length > 0 ? (
+                          gate.assignments.map((assignment) => (
+                            <Box key={assignment.id} sx={{ mt: 0.5 }}>
+                              <Typography
+                                variant="caption"
+                                display="block"
+                                color="success.main"
+                              >
+                                Flight #{assignment.flightId}
+                              </Typography>
+                              <Typography variant="caption" display="block">
+                                AssignedAt: {assignment.assignedAt}
+                              </Typography>
+                              <Typography variant="caption" display="block">
+                                ReleasedAt: {assignment.releasedAt}
+                              </Typography>
+                            </Box>
+                          ))
+                        ) : (
+                          <Typography
+                            variant="caption"
+                            display="block"
+                            color="text.secondary"
+                          >
+                            Chưa có assignment
+                          </Typography>
+                        )}
+                      </GateBox>
+                    </Grid>
+                  ))}
+                </Grid>
+              ) : (
+                <Box
+                  sx={{
+                    p: 2,
+                    textAlign: "center",
+                    bgcolor: "grey.50",
+                    borderRadius: 1,
+                  }}
+                >
+                  <Typography variant="body2" color="text.secondary">
+                    Chưa có assignment gate nào. Click nút + để thêm mới.
+                  </Typography>
+                </Box>
+              )}
 
               <Grid size={4}>
                 <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
@@ -595,9 +592,9 @@ const AirportDiagram: React.FC = () => {
                 </Box>
               </Grid>
             </Grid>
-          </TerminalContainer>
+          </PaperContainer>
         ))}
-      <Dialog
+      {/* <Dialog
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
         maxWidth="sm"
@@ -615,9 +612,17 @@ const AirportDiagram: React.FC = () => {
             {editingItem?.id ? "Cập nhật" : "Tạo mới"}
           </Button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
+      <CreateGateForm
+        open={dialogOpen.gate}
+        onClose={() => setDialogOpen((prev) => ({ ...prev, gate: false }))}
+        onSuccess={() => setDialogOpen((prev) => ({ ...prev, gate: false }))}
+        mode={dialogType}
+        data={gateForm}
+        terminalId={terminalId}
+      />
     </>
   );
 };
 
-export default AirportDiagram;
+export default TerminalContainer;

@@ -516,22 +516,22 @@ export const useSetUpMfa = () => {
 export type CreateGateProps = {
   code: string;
   terminalId: string;
-  status?: GateStatus;
+  status: string;
 };
 
-export const useCreateGate = () => {
-  const { refetch: refetchCreateGate } = useFetch<
-    ResponseMessage,
-    CreateGateProps
-  >({
-    url: "/auth/setmfa",
-    autoFetch: false,
-    config: postMethod,
-  });
-  return {
-    refetchCreateGate,
-  };
-};
+// export const useCreateGate = () => {
+//   const { refetch: refetchCreateGate } = useFetch<
+//     ResponseMessage,
+//     CreateGateProps
+//   >({
+//     url: "/auth/setmfa",
+//     autoFetch: false,
+//     config: postMethod,
+//   });
+//   return {
+//     refetchCreateGate,
+//   };
+// };
 
 export const useGetTerminalData = () => {
   const { data: getTerminalData, refetch: refetchGetTerminalData } = useFetch<
@@ -585,6 +585,7 @@ export const getUserIdByEmail = () => {
 type DeleteUserProps = {
   id: number;
 };
+
 export const useDeleteUserById = () => {
   const { refetch: refetchDeleteUser } = useFetch<
     ResponseMessage,
@@ -596,6 +597,43 @@ export const useDeleteUserById = () => {
   });
   return {
     refetchDeleteUser,
+  };
+};
+
+export interface CreateFacilityProps {
+  name: string;
+  type: string;
+  description: string;
+  terminalId: string;
+  location: string;
+  openingHours: string;
+}
+
+export const useCreateGate = () => {
+  const { refetch: refetchCreateGate } = useFetch<
+    ResponseMessage,
+    CreateGateProps
+  >({
+    url: "/sys/gates",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchCreateGate,
+  };
+};
+
+export const useCreateFacilities = () => {
+  const { refetch: refetchCreateFacilities } = useFetch<
+    ResponseMessage,
+    CreateFacilityProps
+  >({
+    url: "/sys/flights/facilities",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchCreateFacilities,
   };
 };
 

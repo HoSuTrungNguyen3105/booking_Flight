@@ -66,7 +66,7 @@ const BaseModal = ({
       fullWidth={fullWidth}
       PaperProps={{
         sx: {
-          borderRadius: "12px",
+          borderRadius: "2px",
           backgroundImage: "none",
           ...(isMobile && {
             margin: "16px",

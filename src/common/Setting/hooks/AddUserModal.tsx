@@ -1,6 +1,5 @@
 import { Box, Button, Divider, Typography } from "@mui/material";
 import { memo, useCallback } from "react";
-import type { DataDetail } from "../type";
 import BaseModal from "../../Modal/BaseModal";
 import AddIcon from "@mui/icons-material/Add";
 import FieldRenderer from "../../CustomRender/FieldRenderer";
