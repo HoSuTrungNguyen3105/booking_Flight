@@ -5,16 +5,13 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import ImageIcon from "@mui/icons-material/Image";
 import { styled } from "@mui/material/styles";
 
-export interface FileUploadButtonProps {
-  title: string;
-  name: string;
-  setValues: (data: any) => void;
-  error?: any;
-  isSubmitting?: boolean;
-  accept?: string;
-  maxSizeMB?: number;
-  initialPreviewUrl?: string;
-}
+import {
+  type FileUploaderProps,
+  type TFileUploader,
+  sizeToBytes,
+  getFileInformation,
+  concatStrings,
+} from "./type";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -38,88 +35,85 @@ const PreviewImage = styled("img")({
 
 export const FileUploadButton = ({
   title,
-  error,
   name,
-  setValues,
-  isSubmitting = false,
+  onChange,
   accept = "image/*",
-  maxSizeMB = 5,
-  initialPreviewUrl = "",
-}: FileUploadButtonProps) => {
-  const [file, setFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string>(initialPreviewUrl);
+  maxSize = "5 MB",
+  maxFiles = 1,
+  hidePreview = false,
+  disabled = false,
+  width = "200px",
+  height = "200px",
+  multiple = false,
+  value = [],
+}: FileUploaderProps & { title: string }) => {
+  const [files, setFiles] = useState<TFileUploader[]>(value ?? []);
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newFile = e.target.files ? e.target.files[0] : null;
-    setErrorMessage("");
+    const newFiles = e.target.files ? Array.from(e.target.files) : [];
+    if (!newFiles.length) return;
 
-    if (!newFile) return;
+    const maxSizeBytes = sizeToBytes(maxSize);
+    const acceptTypes = accept.split(",").map((t) => t.trim().toLowerCase());
 
-    // Kiểm tra kích thước file
-    if (maxSizeMB && newFile.size > maxSizeMB * 1024 * 1024) {
-      setErrorMessage(`File vượt quá kích thước cho phép (${maxSizeMB}MB)`);
-      return;
-    }
+    const validated: TFileUploader[] = [];
 
-    // Kiểm tra loại file
-    if (accept && !newFile.type.match(accept.replace("*", ".*"))) {
-      setErrorMessage("Loại file không được hỗ trợ");
-      return;
-    }
-
-    setFile(newFile);
-
-    // Tạo URL preview cho ảnh
-    if (newFile.type.startsWith("image/")) {
-      const objectUrl = URL.createObjectURL(newFile);
-      setPreviewUrl(objectUrl);
-    } else {
-      setPreviewUrl("");
-    }
-
-    // Cập nhật values
-    setValues((prev: any) => ({
-      ...prev,
-      [name]: newFile,
-    }));
-  };
-
-  const handleRemoveFile = () => {
-    setFile(null);
-    setPreviewUrl(initialPreviewUrl);
-
-    // Xóa file khỏi form values
-    setValues((prev: any) => ({
-      ...prev,
-      [name]: null,
-    }));
-
-    // Giải phóng URL object nếu có
-    if (previewUrl && previewUrl !== initialPreviewUrl) {
-      URL.revokeObjectURL(previewUrl);
-    }
-  };
-
-  useEffect(() => {
-    if (isSubmitting) {
-      setFile(null);
-      // Giải phóng URL object khi submit
-      if (previewUrl && previewUrl !== initialPreviewUrl) {
-        URL.revokeObjectURL(previewUrl);
+    for (const file of newFiles) {
+      if (file.size > maxSizeBytes) {
+        setErrorMessage(`File "${file.name}" vượt quá ${maxSize}`);
+        continue;
       }
-      setPreviewUrl(initialPreviewUrl);
+
+      const { type } = getFileInformation(file.name);
+      const validExt = concatStrings(".", type);
+      if (
+        accept !== "*/*" &&
+        !acceptTypes.some((t) => file.type.includes(t) || validExt === t)
+      ) {
+        setErrorMessage(`File "${file.name}" không đúng định dạng`);
+        continue;
+      }
+
+      validated.push({
+        preview: file.type.startsWith("image/")
+          ? URL.createObjectURL(file)
+          : "",
+        raw: file,
+        size: file.size,
+        name: file.name,
+        type: file.type,
+        fileName: file.name,
+      });
     }
-  }, [isSubmitting, initialPreviewUrl]);
+
+    if (validated.length) {
+      const updated = multiple ? [...files, ...validated] : validated;
+      setFiles(updated);
+      setErrorMessage("");
+      onChange?.(updated);
+    }
+
+    e.target.value = ""; // reset input
+  };
+
+  const handleRemoveFile = (index: number) => {
+    const updated = [...files];
+    const removed = updated.splice(index, 1)[0];
+    if (removed?.preview) {
+      URL.revokeObjectURL(removed.preview);
+    }
+    setFiles(updated);
+    onChange?.(updated);
+  };
 
   useEffect(() => {
-    // Cleanup URL object khi component unmount
     return () => {
-      if (previewUrl && previewUrl !== initialPreviewUrl) {
-        URL.revokeObjectURL(previewUrl);
-      }
+      files.forEach((f) => {
+        if (f.preview) URL.revokeObjectURL(f.preview);
+      });
     };
-  }, [previewUrl, initialPreviewUrl]);
+  }, [files]);
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
@@ -128,10 +122,9 @@ export const FileUploadButton = ({
       >
         <Button
           component="label"
-          role={undefined}
           variant="contained"
-          tabIndex={-1}
           startIcon={<CloudUploadIcon />}
+          disabled={disabled}
           sx={{ minWidth: 200 }}
         >
           {title}
@@ -140,68 +133,44 @@ export const FileUploadButton = ({
             name={name}
             onChange={handleFileChange}
             accept={accept}
-            onClick={(event) => ((event.target as HTMLInputElement).value = "")}
+            multiple={multiple}
           />
         </Button>
+      </Box>
 
-        {file && (
+      {/* Hiển thị danh sách file */}
+      {files.map((file, index) => (
+        <Box key={index} sx={{ mt: 1 }}>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <Typography
               variant="body2"
               sx={{ display: "flex", alignItems: "center", gap: 1 }}
             >
               <ImageIcon fontSize="small" />
-              {file.name}
+              {file.name} ({(file.size / 1024 / 1024).toFixed(2)} MB)
             </Typography>
             <IconButton
               size="small"
-              onClick={handleRemoveFile}
+              onClick={() => handleRemoveFile(index)}
               color="error"
               title="Xóa file"
             >
               <DeleteIcon fontSize="small" />
             </IconButton>
           </Box>
-        )}
-      </Box>
 
-      {/* Hiển thị preview ảnh */}
-      {previewUrl && (
-        <Box sx={{ mt: 1 }}>
-          <Typography variant="subtitle2" gutterBottom>
-            Preview:
-          </Typography>
-          <PreviewImage
-            src={previewUrl}
-            alt="Preview"
-            onError={() => setPreviewUrl("")}
-          />
+          {file.preview && (
+            <Box sx={{ mt: 1 }}>
+              <PreviewImage src={file.preview} alt="Preview" />
+            </Box>
+          )}
         </Box>
-      )}
-
-      {/* Hiển thị thông tin file */}
-      {file && (
-        <Box sx={{ mt: 1 }}>
-          <Typography variant="caption" color="text.secondary">
-            Kích thước: {(file.size / 1024 / 1024).toFixed(2)} MB
-          </Typography>
-          <br />
-          <Typography variant="caption" color="text.secondary">
-            Loại: {file.type}
-          </Typography>
-        </Box>
-      )}
+      ))}
 
       {/* Hiển thị lỗi */}
       {errorMessage && (
         <Typography variant="caption" color="error" sx={{ mt: 1 }}>
           {errorMessage}
-        </Typography>
-      )}
-
-      {error && (
-        <Typography variant="caption" color="error" sx={{ mt: 1 }}>
-          {error}
         </Typography>
       )}
     </Box>

@@ -10,6 +10,7 @@ import {
   Badge,
   Avatar,
   Tooltip,
+  Drawer,
 } from "@mui/material";
 import { useSocket } from "../../context/use[custom]/useSocket";
 import type {
@@ -19,12 +20,14 @@ import type {
 import theme from "../../scss/theme";
 import {
   AttachFile,
+  Close,
   EmojiEmotions,
   Menu,
   Mic,
   Send,
 } from "@mui/icons-material";
 import InputTextField from "../../common/Input/InputTextField";
+import { DateFormatEnum, formatDate, formatDateKR } from "../../hooks/format";
 
 interface MessageListProps {
   messages: Message[];
@@ -45,6 +48,7 @@ const MessageList: React.FC<MessageListProps> = ({
   const [messagesData, setMessages] = useState<Message[]>(messages ?? []);
   const userId = currentUser.id;
   const bottomRef = useRef<HTMLDivElement | null>(null);
+  const [isSearchPanelOpen, setIsSearchPanelOpen] = useState(false);
 
   // socket gửi tin nhắn
   const { emit: sendMessage } = useSocket<any>({
@@ -112,13 +116,14 @@ const MessageList: React.FC<MessageListProps> = ({
     },
   });
 
-  // auto scroll xuống cuối khi có tin nhắn mới
-  // useEffect(() => {
-  //   bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  // }, [messagesData]);
-
   return (
-    <Box flex={1} display="flex" flexDirection="column" minWidth={0}>
+    <Box
+      flex={1}
+      height={"90vh"}
+      display="flex"
+      flexDirection="column"
+      minWidth={0}
+    >
       {/* Chat Header */}
       <Paper
         elevation={0}
@@ -252,11 +257,15 @@ const MessageList: React.FC<MessageListProps> = ({
                         fontSize: "0.75rem",
                       }}
                     >
-                      {new Date(Number(msg.createdAt)).toLocaleString("en-US", {
+                      {formatDate(
+                        DateFormatEnum.HH_MM_A,
+                        Number(msg.createdAt)
+                      )}
+                      {/* {new Date(Number(msg.createdAt)).toLocaleString("en-US", {
                         hour: "2-digit",
                         minute: "2-digit",
                         hour12: true,
-                      })}
+                      })} */}
                     </Typography>
                   </Box>
                 </Box>
@@ -283,6 +292,56 @@ const MessageList: React.FC<MessageListProps> = ({
           )}
           <div ref={bottomRef} />
         </Box>
+
+        {/* Search Panel Drawer */}
+        <Drawer
+          anchor="right"
+          open={isSearchPanelOpen}
+          // onClose={toggleSearchPanel}
+          sx={{
+            "& .MuiDrawer-paper": {
+              width: 400,
+              boxShadow: theme.shadows[8],
+            },
+          }}
+        >
+          <Box
+            sx={{
+              p: 3,
+              background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
+              color: "white",
+            }}
+          >
+            <Box display="flex" alignItems="center" mb={2}>
+              <Typography variant="h6" sx={{ flexGrow: 1 }} fontWeight="600">
+                Find Users
+              </Typography>
+              <IconButton
+                // onClick={toggleSearchPanel}
+                color="inherit"
+                size="small"
+              >
+                <Close />
+              </IconButton>
+            </Box>
+
+            <InputTextField
+              placeholder="Search by name or email..."
+              //   value={searchQuery}
+            />
+          </Box>
+
+          <Box sx={{ p: 2 }}>
+            {/* Search results would go here */}
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ textAlign: "center", py: 4 }}
+            >
+              Search results will appear here
+            </Typography>
+          </Box>
+        </Drawer>
 
         {/* Message Input */}
         <Box

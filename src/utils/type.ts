@@ -359,7 +359,7 @@ export type SearchBookingFlightProps = {
   flight: DataFlight; // DataFlight là kiểu dữ liệu chuyến bay
 };
 
-type Conversation = {
+export type Conversation = {
   userId: number;
   name: string;
   lastMessage: string;

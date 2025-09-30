@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { AttachFile, Delete, Send } from "@mui/icons-material";
 import { useAuth } from "../../context/AuthContext";
-import { FileUploadButtonWithValidation } from "../../components/Admin/modal/FileUploadButtonWithValidation";
+// import { FileUploadButtonWithValidation } from "../../components/Admin/modal/FileUploadButtonWithValidation";
 // import { FileUpload } from "../FileUploader";
 // import FileUploadButton from "../../components/Admin/modal/FileUploadButtonWithValidation";
 // import { FileUploadButton } from "../FileUploader/FileUploadButton";
@@ -110,11 +110,11 @@ const SendEmailToUsers = ({ selectedUser }: SendEmailProps) => {
         value={body}
         onChange={(e) => setBody(e.target.value)}
       />
-      <FileUploadButtonWithValidation
+      {/* <FileUploadButtonWithValidation
         title="test"
         name="test"
         setValues={() => {}}
-      />
+      /> */}
       {/* <FileUpload name="upload" /> */}
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Box display="flex" alignItems="center" gap={1}>

@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import {
   Box,
-  TextField,
   Button,
   List,
   ListItemButton,
@@ -10,14 +8,12 @@ import {
   Typography,
   Stack,
   Paper,
-  InputAdornment,
-  IconButton,
   Collapse,
   Tooltip,
   Avatar,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import type { BaseUserData, UserDataNoGrid } from "../../utils/type";
+import type { BaseUserData } from "../../utils/type";
 import InputTextField from "../../common/Input/InputTextField";
 
 interface SearchUserProps {
@@ -26,44 +22,6 @@ interface SearchUserProps {
   isCollapsed?: boolean;
 }
 
-const mockUsers: BaseUserData[] = [
-  {
-    id: 1,
-    name: "Nguyễn Văn A",
-    email: "a@example.com",
-    password: "",
-    pictureUrl: "",
-  },
-  {
-    id: 2,
-    name: "Trần Thị B",
-    email: "b@example.com",
-    password: "",
-    pictureUrl: "",
-  },
-  {
-    id: 3,
-    name: "Lê Văn C",
-    email: "c@example.com",
-    password: "",
-    pictureUrl: "",
-  },
-  {
-    id: 4,
-    name: "Phạm Thị D",
-    email: "d@example.com",
-    password: "",
-    pictureUrl: "",
-  },
-  {
-    id: 5,
-    name: "Hoàng Văn E",
-    email: "e@example.com",
-    password: "",
-    pictureUrl: "",
-  },
-];
-
 const SearchUser: React.FC<SearchUserProps> = ({
   onUserSelect,
   selectedUser,
@@ -71,7 +29,7 @@ const SearchUser: React.FC<SearchUserProps> = ({
 }) => {
   const [search, setSearch] = useState("");
   // const [users, setUsers] = useState<BaseUserData[]>(mockUsers);
-  const [filteredUsers, setFilteredUsers] = useState<BaseUserData[]>(mockUsers);
+  const [filteredUsers, setFilteredUsers] = useState<BaseUserData[]>([]);
 
   useEffect(() => {
     const filtered = filteredUsers.filter(

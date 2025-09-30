@@ -1,6 +1,6 @@
-import { useEffect } from "react";
+import { memo, useEffect, useState } from "react";
 import { useSocket } from "../../context/use[custom]/useSocket";
-import type { ResConversationsResponse } from "../../utils/type";
+import type { Conversation, ResConversationsResponse } from "../../utils/type";
 import { socket } from "../../context/use[custom]/socket";
 import {
   Box,
@@ -11,15 +11,19 @@ import {
   ListItemButton,
   Avatar,
   Badge,
+  CircularProgress,
   List,
+  Button,
 } from "@mui/material";
 import theme from "../../scss/theme";
-import { Loading } from "../../common/Loading/Loading";
-import { DateFormatEnum, formatDate } from "../../hooks/format";
+import { DateFormatEnum, formatDate, formatDateKR } from "../../hooks/format";
+import InputTextField from "../../common/Input/InputTextField";
+import { Search } from "@mui/icons-material";
+import useDebounce from "../../context/use[custom]/useDebounce";
 const Conversations = ({
   userId,
-  selectedUser,
   handleUserSelect,
+  selectedUser,
 }: {
   userId: number;
   selectedUser: number;
@@ -38,121 +42,290 @@ const Conversations = ({
     },
   });
 
-  // Khi socket sẵn sàng thì emit request
   useEffect(() => {
     if (isConnected) {
       socket.emit("getConversations", { userId });
     }
   }, [isConnected, userId]);
 
+  const [search, setSearch] = useState("");
+  const [filteredUsers, setFilteredUsers] = useState<Conversation[]>([]);
+  const debouncedQuery = useDebounce(search, 500);
+
+  // Cập nhật danh sách khi có data mới
+  useEffect(() => {
+    if (data?.resultCode === "00" && Array.isArray(data.list)) {
+      setFilteredUsers(data.list);
+    }
+  }, [data]);
+
+  // Search với debounce
+  useEffect(() => {
+    if (!data?.list) return;
+
+    if (debouncedQuery.trim() === "") {
+      setFilteredUsers(data.list);
+    } else {
+      const q = debouncedQuery.toLowerCase();
+      const filtered = data.list.filter(
+        (conv) =>
+          conv.name?.toLowerCase().includes(q) ||
+          conv.lastMessage?.toLowerCase().includes(q)
+      );
+      setFilteredUsers(filtered);
+    }
+  }, [debouncedQuery, data]);
+
   return (
-    <Box sx={{ flex: 1, overflow: "auto" }}>
-      {loading ? (
-        <Box sx={{ p: 3, textAlign: "center" }}>
-          <Loading />
-        </Box>
-      ) : data?.resultCode === "00" ? (
-        <List sx={{ py: 0 }}>
-          {data?.list?.map((conv) => (
-            <ListItem key={conv.userId} disablePadding>
+    <Box height={"90vh"} minWidth={0}>
+      <Box
+        display="flex"
+        gap={1}
+        alignItems="center"
+        mb={2}
+        p={2}
+        borderBottom={1}
+        borderColor="divider"
+      >
+        <InputTextField
+          placeholder="Search users..."
+          value={search}
+          onChange={(e) => setSearch(e)}
+          clearable
+        />
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => setSearch(search)} // trigger filter ngay
+          sx={{
+            minWidth: "auto",
+            px: 2,
+            borderRadius: 1,
+          }}
+        >
+          <Search />
+        </Button>
+      </Box>
+      {data?.resultCode === "00" && (
+        <List sx={{ py: 0, height: "100%", overflow: "auto" }}>
+          {filteredUsers?.map((conv, index) => (
+            <ListItem
+              key={conv.userId}
+              disablePadding
+              sx={{
+                borderBottom: index < 1 ? 1 : 0,
+                borderColor: "divider",
+              }}
+            >
               <ListItemButton
                 onClick={() => handleUserSelect?.(conv.userId)}
                 selected={selectedUser === conv.userId}
                 sx={{
                   py: 2,
-                  px: 2,
-                  borderBottom: 1,
-                  borderColor: "divider",
+                  px: 2.5,
+                  gap: 2,
+                  transition: "all 0.2s ease-in-out",
                   "&.Mui-selected": {
                     backgroundColor: "primary.light",
+                    borderRight: 3,
+                    borderColor: "primary.main",
                     "&:hover": {
                       backgroundColor: "primary.light",
                     },
                   },
                   "&:hover": {
                     backgroundColor: "action.hover",
+                    transform: "translateX(2px)",
                   },
                 }}
               >
-                <ListItemAvatar>
+                {/* Avatar with Status */}
+                <ListItemAvatar sx={{ minWidth: "auto" }}>
                   <Badge
                     overlap="circular"
                     anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                     variant="dot"
                     color="success"
+                    sx={{
+                      "& .MuiBadge-dot": {
+                        width: 12,
+                        height: 12,
+                        borderRadius: "50%",
+                        border: "2px solid white",
+                      },
+                    }}
                   >
                     <Avatar
                       sx={{
-                        width: 44,
-                        height: 44,
-                        backgroundColor: "primary.main",
+                        width: 52,
+                        height: 52,
+                        bgcolor: "primary.main",
                         fontWeight: 600,
+                        fontSize: "1.1rem",
+                        boxShadow: theme.shadows[1],
                       }}
                     >
-                      {conv.name?.charAt(0).toUpperCase()}
+                      {conv.name?.charAt(0)?.toUpperCase() || "U"}
                     </Avatar>
                   </Badge>
                 </ListItemAvatar>
 
-                <ListItemText
-                  primary={
-                    <Box
-                      display="flex"
-                      justifyContent="space-between"
-                      alignItems="flex-start"
+                {/* Conversation Content */}
+                <Box sx={{ flex: 1, minWidth: 0 }}>
+                  {/* Header with name and timestamp */}
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "flex-start",
+                      justifyContent: "space-between",
+                      mb: 0.5,
+                    }}
+                  >
+                    <Typography
+                      variant="subtitle1"
+                      noWrap
+                      fontWeight="600"
+                      sx={{
+                        fontSize: "0.95rem",
+                        color:
+                          selectedUser === conv.userId
+                            ? "white"
+                            : "text.primary",
+                      }}
                     >
+                      {conv.name}
+                    </Typography>
+                    {conv.timestamp && (
                       <Typography
-                        variant="subtitle2"
-                        fontWeight="600"
-                        noWrap
-                        sx={{ maxWidth: "60%" }}
-                      >
-                        {conv.name}
-                      </Typography>
-                      {conv.timestamp && (
-                        <Typography variant="caption" color="text.secondary">
-                          {formatDate(
-                            DateFormatEnum.DD_MM_YYYY_HH_MM_SS,
-                            conv.timestamp
-                          )}
-                        </Typography>
-                      )}
-                    </Box>
-                  }
-                  secondary={
-                    <Box
-                      display="flex"
-                      justifyContent="space-between"
-                      alignItems="center"
-                      mt={0.5}
-                    >
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        noWrap
+                        variant="caption"
                         sx={{
-                          maxWidth: "70%",
-                          fontSize: "0.8125rem",
+                          color:
+                            selectedUser === conv.userId
+                              ? "white"
+                              : "text.secondary",
+                          fontSize: "0.75rem",
+                          minWidth: "fit-content",
+                          ml: 1,
                         }}
                       >
-                        {conv.lastMessage || "No messages yet"}
+                        {formatDate(DateFormatEnum.HH_MM_A, conv.timestamp)}
                       </Typography>
-                      {/* Unread badge can be added here */}
-                    </Box>
-                  }
-                />
+                    )}
+                  </Box>
+
+                  {/* Last message preview */}
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Typography
+                      variant="body2"
+                      noWrap
+                      sx={{
+                        maxWidth: "75%",
+                        fontSize: "0.875rem",
+                        color:
+                          selectedUser === conv.userId
+                            ? "rgba(255,255,255,0.9)"
+                            : "text.secondary",
+                        lineHeight: 1.3,
+                      }}
+                    >
+                      {conv.lastMessage || "Bắt đầu cuộc trò chuyện..."}
+                    </Typography>
+                  </Box>
+                </Box>
               </ListItemButton>
             </ListItem>
           ))}
         </List>
-      ) : (
-        <Box sx={{ p: 3, textAlign: "center" }}>
-          <Typography variant="body2" color="text.secondary">
-            {data?.resultMessage || "No conversations found"}
+      )}
+
+      {/* Empty State */}
+      {!loading && data?.resultCode !== "00" && (
+        <Box
+          sx={{
+            p: 4,
+            textAlign: "center",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 1,
+            height: "100%",
+            justifyContent: "center",
+          }}
+        >
+          <Box
+            sx={{
+              width: 64,
+              height: 64,
+              borderRadius: "50%",
+              backgroundColor: "grey.100",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              mb: 1,
+            }}
+          >
+            <Typography variant="h4" color="text.secondary">
+              💬
+            </Typography>
+          </Box>
+          <Typography
+            variant="body1"
+            color="text.secondary"
+            fontWeight="500"
+            gutterBottom
+          >
+            {data?.resultMessage || "Chưa có cuộc trò chuyện nào"}
+          </Typography>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ opacity: 0.8 }}
+          >
+            Bắt đầu trò chuyện bằng cách tìm kiếm người dùng mới
+          </Typography>
+        </Box>
+      )}
+
+      {/* No Conversations State */}
+      {!loading && data?.resultCode === "00" && data?.list?.length === 0 && (
+        <Box
+          sx={{
+            p: 4,
+            textAlign: "center",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 1,
+            height: "100%",
+            justifyContent: "center",
+          }}
+        >
+          <Typography
+            variant="h6"
+            color="text.primary"
+            fontWeight="600"
+            gutterBottom
+          >
+            Chào mừng bạn!
+          </Typography>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ maxWidth: 280, lineHeight: 1.5 }}
+          >
+            Bắt đầu cuộc trò chuyện đầu tiên bằng cách tìm kiếm và chọn người
+            dùng từ danh sách
           </Typography>
         </Box>
       )}
     </Box>
   );
 };
-export default Conversations;
+
+export default memo(Conversations);

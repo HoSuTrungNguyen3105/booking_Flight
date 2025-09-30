@@ -115,7 +115,7 @@ const ChatContainer: React.FC = () => {
   return (
     <Box
       display="flex"
-      height="100vh"
+      height="90vh"
       sx={{ backgroundColor: "background.default" }}
     >
       {/* Sidebar */}
@@ -233,19 +233,6 @@ const ChatContainer: React.FC = () => {
           </Button>
         </Box>
 
-        {/* Search Box */}
-        <Box sx={{ p: 2, borderBottom: 1, borderColor: "divider" }}>
-          <InputTextField
-            placeholder="Search conversations..."
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: 2,
-                backgroundColor: "background.paper",
-              },
-            }}
-          />
-        </Box>
-
         {/* Conversations List */}
         <Conversations
           selectedUser={selectedUser || 0}
@@ -254,58 +241,9 @@ const ChatContainer: React.FC = () => {
         />
       </Paper>
 
-      {/* Search Panel Drawer */}
-      <Drawer
-        anchor="right"
-        open={isSearchPanelOpen}
-        onClose={toggleSearchPanel}
-        sx={{
-          "& .MuiDrawer-paper": {
-            width: 400,
-            boxShadow: theme.shadows[8],
-          },
-        }}
-      >
-        <Box
-          sx={{
-            p: 3,
-            background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
-            color: "white",
-          }}
-        >
-          <Box display="flex" alignItems="center" mb={2}>
-            <Typography variant="h6" sx={{ flexGrow: 1 }} fontWeight="600">
-              Find Users
-            </Typography>
-            <IconButton
-              onClick={toggleSearchPanel}
-              color="inherit"
-              size="small"
-            >
-              <Close />
-            </IconButton>
-          </Box>
-
-          <InputTextField
-            placeholder="Search by name or email..."
-            value={searchQuery}
-          />
-        </Box>
-
-        <Box sx={{ p: 2 }}>
-          {/* Search results would go here */}
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{ textAlign: "center", py: 4 }}
-          >
-            Search results will appear here
-          </Typography>
-        </Box>
-      </Drawer>
-
       {/* Main Chat Area */}
       <MessageList
+        // toggleSearchPanel={toggleSearchPanel}
         selectedUser={receiverId as number}
         messages={messages}
         currentUser={{ id: user?.id! }}

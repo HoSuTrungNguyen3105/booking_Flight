@@ -12,8 +12,15 @@ import {
   type MouseEventHandler,
 } from "react";
 import { sumBy } from "lodash";
-import { INPUT_TYPE, type FileUploaderProps, type TFileUploader } from "./type";
-import { concatStrings, getFileInformation, sizeToBytes } from "../../utils";
+import {
+  INPUT_TYPE,
+  sizeToBytes,
+  type FileUploaderProps,
+  concatStrings,
+  getFileInformation,
+  type TFileUploader,
+} from "./type";
+// import { concatStrings, getFileInformation } from "../../utils";
 import { Image } from "@mui/icons-material";
 
 const FilePreview = ({
