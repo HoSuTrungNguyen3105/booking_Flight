@@ -24,11 +24,18 @@ import AircarftDetail from "./AircraftDetail";
 import { useDeleteAircraftFlight } from "../Api/usePostApi";
 import DialogConfirm from "../../common/Modal/DialogConfirm";
 import DeleteIcon from "../../svgs/delete-2-svgrepo.svg";
+import type { Aircraft } from "../../utils/type";
+import AircraftBatchCreator from "../Admin/component/AircraftBatchCreator";
+
 const AircraftPage = () => {
   const { getAircraftCodeData, refetchGetAircraftCodeData } =
     useGetAircraftCode();
   const [aircraftCodeState, setAircraftCodeState] = useState<string>("");
   const [pageDetail, setPageDetail] = useState(false);
+  const [createBatchMode, setCreateBatchMode] = useState(false);
+  const handleCreateBatch = useCallback(() => {
+    setCreateBatchMode(true);
+  }, [setCreateBatchMode]);
   const [toggleOpenModal, setToggleOpenModal] = useState(false);
   const [selectedCode, setSelectedCode] = useState<string>("");
 
@@ -75,6 +82,9 @@ const AircraftPage = () => {
     if (model.toLowerCase().includes("airbus")) return "Airbus";
     return "Other";
   };
+  if (createBatchMode) {
+    return <AircraftBatchCreator onSuccess={() => setCreateBatchMode(false)} />;
+  }
 
   return (
     <Box p={3}>
@@ -88,15 +98,15 @@ const AircraftPage = () => {
           color="primary"
           variant="outlined"
         />
+        <Button onClick={handleCreateBatch}>Create Aircraft Batch</Button>
       </Stack>
-
       {getAircraftCodeData?.list?.length === 0 ? (
         <Alert severity="info" sx={{ borderRadius: 2 }}>
           Chưa có dữ liệu máy bay. Hãy thêm máy bay mới.
         </Alert>
       ) : (
         <Grid container spacing={2}>
-          {getAircraftCodeData?.list?.map((aircraft: any) => (
+          {getAircraftCodeData?.list?.map((aircraft: Aircraft) => (
             <Grid size={6} key={aircraft.code}>
               <Card
                 sx={{
@@ -127,7 +137,7 @@ const AircraftPage = () => {
                         sx={{ fontWeight: "bold", fontSize: "0.9rem" }}
                       />
                       <Chip
-                        label={getAircraftType(aircraft.model)}
+                        label={getAircraftType(aircraft.model || "")}
                         variant="outlined"
                         size="small"
                         color="secondary"
@@ -151,33 +161,34 @@ const AircraftPage = () => {
                         </Typography>
                         <Chip
                           label={`${aircraft.range} km`}
-                          color={getRangeColor(aircraft.range)}
+                          color={getRangeColor(aircraft.range || 0)}
                           size="small"
                           variant="outlined"
                         />
                       </Stack>
 
-                      {aircraft.capacity && (
-                        <Stack direction="row" justifyContent="space-between">
-                          <Typography variant="body2" color="text.secondary">
-                            Sức chứa:
-                          </Typography>
-                          <Typography variant="body2" fontWeight="500">
-                            {aircraft.capacity} ghế
-                          </Typography>
+                      {aircraft.flights?.map((flight) => (
+                        <Stack
+                          key={flight.flightNo}
+                          direction="column"
+                          spacing={0.5}
+                          sx={{
+                            border: "1px solid #eee",
+                            borderRadius: 2,
+                            p: 1,
+                            backgroundColor: "grey.50",
+                          }}
+                        >
+                          <Stack direction="row" justifyContent="space-between">
+                            <Typography variant="body2" color="text.secondary">
+                              Mã chuyến:
+                            </Typography>
+                            <Typography variant="body2" fontWeight="500">
+                              {flight.flightNo}
+                            </Typography>
+                          </Stack>
                         </Stack>
-                      )}
-
-                      {aircraft.manufacturer && (
-                        <Stack direction="row" justifyContent="space-between">
-                          <Typography variant="body2" color="text.secondary">
-                            Hãng SX:
-                          </Typography>
-                          <Typography variant="body2" fontWeight="500">
-                            {aircraft.manufacturer}
-                          </Typography>
-                        </Stack>
-                      )}
+                      ))}
                     </Stack>
 
                     {/* Actions */}

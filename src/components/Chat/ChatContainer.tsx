@@ -5,7 +5,9 @@ import {
   Button,
   Drawer,
   IconButton,
+  Paper,
   Stack,
+  Tooltip,
   Typography,
   alpha,
 } from "@mui/material";
@@ -111,51 +113,97 @@ const ChatContainer: React.FC = () => {
   }, [incomingMessage]);
 
   return (
-    <Box display="flex" height="80vh">
+    <Box
+      display="flex"
+      height="100vh"
+      sx={{ backgroundColor: "background.default" }}
+    >
       {/* Sidebar */}
-      <Stack
+      <Paper
+        elevation={1}
         sx={{
-          width: isSidebarOpen ? 280 : 0,
+          width: isSidebarOpen ? 320 : 0,
           overflow: "hidden",
-          transition: "width 0.3s ease",
+          transition: "width 0.3s ease-in-out",
           flexDirection: "column",
-          bgcolor: "grey.50",
+          display: "flex",
+          borderRadius: 0,
+          borderRight: 1,
+          borderColor: "divider",
           zIndex: 10,
-          position: "relative",
         }}
       >
         {/* Sidebar Header */}
         <Box
           sx={{
-            p: 2,
-            bgcolor: "primary.main",
+            p: 3,
+            background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
             color: "white",
-            background: `linear-gradient(135deg, ${
-              theme.palette.primary.main
-            } 0%, ${alpha(theme.palette.primary.dark, 0.9)} 100%)`,
           }}
         >
           <Box
             display="flex"
             alignItems="center"
             justifyContent="space-between"
+            mb={2}
           >
-            <Typography variant="h6" fontWeight="600">
-              Tin nhắn {isConnected ? "success" : "default"}
-            </Typography>
             <Box>
-              <IconButton color="inherit" sx={{ mr: 1 }}>
-                <Badge color="error" variant="dot">
-                  <Filter />
-                </Badge>
-              </IconButton>
-              <Button variant="outlined" onClick={toggleSidebar}>
-                {isSidebarOpen ? (
-                  <FaArrowRight size={16} />
-                ) : (
-                  <FaArrowLeft size={16} />
-                )}
-              </Button>
+              <Typography variant="h6" fontWeight="700" fontSize="1.25rem">
+                Enterprise Chat
+              </Typography>
+              <Box display="flex" alignItems="center" mt={0.5}>
+                <Box
+                  sx={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: "50%",
+                    backgroundColor: isConnected
+                      ? "success.main"
+                      : "error.main",
+                    mr: 1,
+                  }}
+                />
+                <Typography variant="caption" fontWeight="500">
+                  {isConnected ? "Connected" : "Disconnected"}
+                </Typography>
+              </Box>
+            </Box>
+
+            <Box display="flex" gap={1}>
+              <Tooltip title="Filter conversations">
+                <IconButton
+                  color="inherit"
+                  size="small"
+                  sx={{
+                    backgroundColor: "rgba(255,255,255,0.1)",
+                    "&:hover": { backgroundColor: "rgba(255,255,255,0.2)" },
+                  }}
+                >
+                  <Badge color="error" variant="dot">
+                    <Filter fontSize="small" />
+                  </Badge>
+                </IconButton>
+              </Tooltip>
+
+              <Tooltip
+                title={isSidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
+              >
+                <IconButton
+                  color="inherit"
+                  size="small"
+                  onClick={toggleSidebar}
+                  sx={{
+                    backgroundColor: "rgba(255,255,255,0.1)",
+                    "&:hover": { backgroundColor: "rgba(255,255,255,0.2)" },
+                  }}
+                >
+                  {isSidebarOpen ? (
+                    <FaArrowLeft size={14} />
+                  ) : (
+                    <FaArrowRight size={14} />
+                  )}
+                </IconButton>
+              </Tooltip>
             </Box>
           </Box>
 
@@ -165,45 +213,48 @@ const ChatContainer: React.FC = () => {
             startIcon={<Group />}
             onClick={toggleSearchPanel}
             sx={{
-              mt: 2,
-              bgcolor: "white",
+              mt: 1,
+              backgroundColor: "white",
               color: "primary.main",
               fontWeight: "600",
               borderRadius: 2,
-              py: 1,
-              "&:hover": { bgcolor: "grey.100", boxShadow: theme.shadows[2] },
+              py: 1.5,
+              textTransform: "none",
+              fontSize: "0.875rem",
+              "&:hover": {
+                backgroundColor: "grey.50",
+                transform: "translateY(-1px)",
+                boxShadow: theme.shadows[4],
+              },
+              transition: "all 0.2s ease",
             }}
           >
-            Tìm người dùng
+            Find Users
           </Button>
         </Box>
 
         {/* Search Box */}
-        <Box
-          sx={{
-            p: 2,
-            bgcolor: "background.paper",
-            borderBottom: 1,
-            borderColor: "divider",
-          }}
-        >
-          <InputTextField placeholder="Tìm kiếm cuộc trò chuyện..." />
+        <Box sx={{ p: 2, borderBottom: 1, borderColor: "divider" }}>
+          <InputTextField
+            placeholder="Search conversations..."
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                borderRadius: 2,
+                backgroundColor: "background.paper",
+              },
+            }}
+          />
         </Box>
 
-        {/* {!isSidebarOpen && (
-          <Button sx={{ mr: 2 }} onClick={toggleSidebar}>
-            <Menu />
-            Return
-          </Button>
-        )} */}
-
-        {/* Conversations */}
+        {/* Conversations List */}
         <Conversations
+          selectedUser={selectedUser || 0}
           handleUserSelect={handleUserSelect}
           userId={user?.id || 0}
         />
-      </Stack>
+      </Paper>
 
+      {/* Search Panel Drawer */}
       <Drawer
         anchor="right"
         open={isSearchPanelOpen}
@@ -211,65 +262,56 @@ const ChatContainer: React.FC = () => {
         sx={{
           "& .MuiDrawer-paper": {
             width: 400,
-            boxSizing: "border-box",
-            boxShadow: theme.shadows[5],
+            boxShadow: theme.shadows[8],
           },
         }}
       >
         <Box
           sx={{
-            p: 2,
-            display: "flex",
-            alignItems: "center",
-            borderBottom: 1,
-            borderColor: "divider",
-            bgcolor: "primary.main",
+            p: 3,
+            background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
             color: "white",
-            background: `linear-gradient(135deg, ${
-              theme.palette.primary.main
-            } 0%, ${alpha(theme.palette.primary.dark, 0.9)} 100%)`,
           }}
         >
-          <Typography variant="h6" sx={{ flexGrow: 1 }} fontWeight="medium">
-            Tìm kiếm người dùng
-          </Typography>
-          <IconButton onClick={toggleSearchPanel} color="inherit">
-            <Close />
-          </IconButton>
+          <Box display="flex" alignItems="center" mb={2}>
+            <Typography variant="h6" sx={{ flexGrow: 1 }} fontWeight="600">
+              Find Users
+            </Typography>
+            <IconButton
+              onClick={toggleSearchPanel}
+              color="inherit"
+              size="small"
+            >
+              <Close />
+            </IconButton>
+          </Box>
+
+          <InputTextField
+            placeholder="Search by name or email..."
+            value={searchQuery}
+          />
         </Box>
 
         <Box sx={{ p: 2 }}>
-          <InputTextField
-            placeholder="Tìm kiếm theo tên hoặc email..."
-            value={searchQuery}
-            // onChange={(e) => handleSearch(e.target.value)}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: 2,
-              },
-            }}
-          />
+          {/* Search results would go here */}
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ textAlign: "center", py: 4 }}
+          >
+            Search results will appear here
+          </Typography>
         </Box>
       </Drawer>
 
-      {/* Message List */}
-      <Box
-        flex={1}
-        overflow="auto"
-        sx={{ color: theme.palette.text.primary, mb: 2 }}
-      >
-        {!isSidebarOpen && (
-          <Button sx={{ mr: 2 }} onClick={toggleSidebar}>
-            <Menu />
-            Return
-          </Button>
-        )}
-        <MessageList
-          selectedUser={receiverId as number}
-          messages={messages}
-          currentUser={{ id: user?.id! }}
-        />
-      </Box>
+      {/* Main Chat Area */}
+      <MessageList
+        selectedUser={receiverId as number}
+        messages={messages}
+        currentUser={{ id: user?.id! }}
+        toggleSidebar={toggleSidebar}
+        isSidebarOpen={isSidebarOpen}
+      />
     </Box>
   );
 };

@@ -21,7 +21,6 @@ import {
   Save,
   Refresh,
 } from "@mui/icons-material";
-import type { Flight } from "../Setting/type";
 import InputTextField from "../Input/InputTextField";
 import SelectDropdown from "../Dropdown/SelectDropdown";
 import DateTimePickerComponent from "../DayPicker";
@@ -29,7 +28,6 @@ import Android12Switch from "../Switch/Switch";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import BaseModal from "../Modal/BaseModal";
-import SeatBooking from "../../components/User/SeatBooking";
 import { DateFormatEnum, formatDateKR } from "../../hooks/format";
 import {
   useGetAllCode,

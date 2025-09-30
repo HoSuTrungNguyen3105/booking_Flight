@@ -1,16 +1,6 @@
 import { memo, useCallback, useState } from "react";
-import {
-  Box,
-  Button,
-  Typography,
-  Stack,
-  Card,
-  Grid,
-  CardContent,
-  Chip,
-  Tooltip,
-} from "@mui/material";
-import { Add, Delete, Edit, ViewList } from "@mui/icons-material";
+import { Box, Button, Typography } from "@mui/material";
+import { Add, Delete } from "@mui/icons-material";
 import InputTextField from "../../../common/Input/InputTextField";
 import {
   useCreateAircraftBatchFlight,
@@ -28,7 +18,11 @@ type AircraftError = {
   errorMessage: string;
 };
 
-const AircraftBatchCreator = () => {
+type ReturnProps = {
+  onSuccess: () => void;
+};
+
+const AircraftBatchCreator = ({ onSuccess }: ReturnProps) => {
   const [aircrafts, setAircrafts] = useState<Aircraft[]>([
     { code: "", model: "", range: 0 },
   ]);
@@ -81,34 +75,25 @@ const AircraftBatchCreator = () => {
 
   const updateAircraft = (
     index: number,
-    field: keyof Aircraft,
+    field: "code" | "range" | "model",
     value: string | number
   ) => {
     const updated = [...aircrafts];
+
     if (field === "range") {
-      updated[index][field] = Number(value);
+      updated[index].range = Number(value);
     } else {
       updated[index][field] = value as string;
     }
+
     setAircrafts(updated);
-  };
-
-  const getAircraftType = (model: string) => {
-    const match = model.match(/^[A-Za-z]+/);
-    return match ? match[0] : "Other";
-  };
-
-  const getRangeColor = (range: number) => {
-    if (range >= 10000) return "success";
-    if (range >= 5000) return "warning";
-    return "error";
   };
 
   const handleSubmit = async () => {
     setLoading(true);
     try {
       const response = await refetchCreateAircraftBatchFlightData(aircrafts);
-
+      console.log("res", response);
       if (response?.resultCode === "00") {
         toast(response?.resultMessage);
         // setAircrafts([{ code: "", model: "", range: 0 }]);
@@ -123,6 +108,7 @@ const AircraftBatchCreator = () => {
 
         if (Object.keys(errorMap).length === 0) {
           setAircrafts([{ code: "", model: "", range: 0 }]);
+          onSuccess();
         }
       } else {
         toast(response?.resultMessage || "Error while create");
@@ -136,96 +122,10 @@ const AircraftBatchCreator = () => {
 
   return (
     <Box sx={{ maxWidth: "100%" }}>
-      {getAircraftCodeData?.list?.map((aircraft: any) => (
-        <Grid size={6} key={aircraft.code}>
-          <Card
-            sx={{
-              borderRadius: 2,
-              height: "100%",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <CardContent sx={{ flexGrow: 1, p: 3 }}>
-              <Stack spacing={2}>
-                {/* Header với mã máy bay */}
-                <Stack
-                  direction="row"
-                  justifyContent="space-between"
-                  alignItems="flex-start"
-                >
-                  <Chip
-                    label={aircraft.code}
-                    color="primary"
-                    size="small"
-                    sx={{ fontWeight: "bold", fontSize: "0.9rem" }}
-                  />
-                  <Chip
-                    label={getAircraftType(aircraft.model)}
-                    variant="outlined"
-                    size="small"
-                    color="secondary"
-                  />
-                </Stack>
-
-                {/* Thông tin model */}
-                <Typography variant="h6" fontWeight="600" color="text.primary">
-                  {aircraft.model}
-                </Typography>
-
-                {/* Thông tin chi tiết */}
-                <Stack spacing={1}>
-                  <Stack direction="row" justifyContent="space-between">
-                    <Typography variant="body2" color="text.secondary">
-                      Tầm bay:
-                    </Typography>
-                    <Chip
-                      label={`${aircraft.range} km`}
-                      color={getRangeColor(aircraft.range)}
-                      size="small"
-                      variant="outlined"
-                    />
-                  </Stack>
-                </Stack>
-                <Stack direction="row" spacing={1} mt={2}>
-                  <Tooltip title="Xóa máy bay">
-                    <Button
-                      size="small"
-                      color="error"
-                      onClick={() => {
-                        setSelectedCode(aircraft.code);
-                        setToggleOpenModal(true);
-                      }}
-                    >
-                      <Delete fontSize="small" />
-                    </Button>
-                  </Tooltip>
-
-                  <Tooltip title="Chỉnh sửa">
-                    <Button size="small" color="warning">
-                      <Edit fontSize="small" />
-                    </Button>
-                  </Tooltip>
-
-                  <Button
-                    variant="contained"
-                    size="small"
-                    startIcon={<ViewList />}
-                    onClick={() => handleViewSeats(aircraft.code)}
-                    sx={{
-                      flex: 1,
-                      borderRadius: 2,
-                      textTransform: "none",
-                    }}
-                  >
-                    Xem chi tiết
-                  </Button>
-                </Stack>
-              </Stack>
-            </CardContent>
-          </Card>
-        </Grid>
-      ))}
+      <Button variant="contained" onClick={onSuccess}>
+        {" "}
+        Return
+      </Button>
       {aircrafts.map((aircraft, index) => (
         <Box
           key={index}

@@ -251,10 +251,10 @@ const routes = [
       //   path: "AircraftBatchCreatorEnhanced",
       //   element: <AircraftBatchCreatorEnhanced />,
       // },
-      {
-        path: "AircraftBatchCreator",
-        element: <AircraftBatchCreator />,
-      },
+      // {
+      //   path: "AircraftBatchCreator",
+      //   element: <AircraftBatchCreator />,
+      // },
       {
         path: "special",
         element: <RevenueDashboard />,

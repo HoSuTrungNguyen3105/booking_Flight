@@ -51,6 +51,7 @@ type SideBarValueTypes =
   | "unlock_request"
   | "facilities"
   | "TerminalContainer"
+  | "BulkMealCreator"
   | "AirportManagementDetail"
   | "TerminalGateContainer"
   | "AirportManagement"
@@ -121,6 +122,11 @@ export const menuData: MenuSection[] = [
           {
             id: "CreateGateForm",
             label: "CreateGateForm",
+            icon: <GppBadIcon />,
+          },
+          {
+            id: "BulkMealCreator",
+            label: "BulkMealCreator",
             icon: <GppBadIcon />,
           },
         ],

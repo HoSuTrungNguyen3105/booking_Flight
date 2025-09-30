@@ -11,13 +11,18 @@ import {
   ListItemButton,
   Avatar,
   Badge,
+  List,
 } from "@mui/material";
 import theme from "../../scss/theme";
+import { Loading } from "../../common/Loading/Loading";
+import { DateFormatEnum, formatDate } from "../../hooks/format";
 const Conversations = ({
   userId,
+  selectedUser,
   handleUserSelect,
 }: {
   userId: number;
+  selectedUser: number;
   handleUserSelect?: (id: number) => void;
 }) => {
   const { data, loading, isConnected } = useSocket<ResConversationsResponse>({
@@ -41,114 +46,113 @@ const Conversations = ({
   }, [isConnected, userId]);
 
   return (
-    <div>
-      {loading && <div>Loading...</div>}
-      {data?.resultCode === "00" ? (
-        <>
+    <Box sx={{ flex: 1, overflow: "auto" }}>
+      {loading ? (
+        <Box sx={{ p: 3, textAlign: "center" }}>
+          <Loading />
+        </Box>
+      ) : data?.resultCode === "00" ? (
+        <List sx={{ py: 0 }}>
           {data?.list?.map((conv) => (
-            <ListItem key={conv.userId}>
+            <ListItem key={conv.userId} disablePadding>
               <ListItemButton
                 onClick={() => handleUserSelect?.(conv.userId)}
+                selected={selectedUser === conv.userId}
                 sx={{
-                  py: 1.5,
+                  py: 2,
                   px: 2,
+                  borderBottom: 1,
+                  borderColor: "divider",
                   "&.Mui-selected": {
-                    backgroundColor: theme.palette.primary.main,
+                    backgroundColor: "primary.light",
                     "&:hover": {
-                      backgroundColor: theme.palette.primary.main,
+                      backgroundColor: "primary.light",
                     },
+                  },
+                  "&:hover": {
+                    backgroundColor: "action.hover",
                   },
                 }}
               >
-                {/* Avatar + trạng thái */}
                 <ListItemAvatar>
                   <Badge
                     overlap="circular"
-                    anchorOrigin={{
-                      vertical: "bottom",
-                      horizontal: "right",
-                    }}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                     variant="dot"
                     color="success"
-                    //invisible={!conv.online}
                   >
                     <Avatar
                       sx={{
-                        width: 48,
-                        height: 48,
-                        // bgcolor: conv.online
-                        //   ? "primary.main"
-                        //   : "grey.400",
+                        width: 44,
+                        height: 44,
+                        backgroundColor: "primary.main",
+                        fontWeight: 600,
                       }}
                     >
-                      {/* {conv.name.charAt(0)} */}
+                      {conv.name?.charAt(0).toUpperCase()}
                     </Avatar>
                   </Badge>
                 </ListItemAvatar>
 
-                {/* Nội dung */}
                 <ListItemText
                   primary={
                     <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                      }}
+                      display="flex"
+                      justifyContent="space-between"
+                      alignItems="flex-start"
                     >
                       <Typography
                         variant="subtitle2"
+                        fontWeight="600"
                         noWrap
-                        fontWeight="medium"
+                        sx={{ maxWidth: "60%" }}
                       >
                         {conv.name}
                       </Typography>
-                      <Typography variant="caption" color="textSecondary">
-                        {/* {conv.timestamp ?? ""} */}
-                      </Typography>
+                      {conv.timestamp && (
+                        <Typography variant="caption" color="text.secondary">
+                          {formatDate(
+                            DateFormatEnum.DD_MM_YYYY_HH_MM_SS,
+                            conv.timestamp
+                          )}
+                        </Typography>
+                      )}
                     </Box>
                   }
                   secondary={
                     <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        mt: 0.5,
-                      }}
+                      display="flex"
+                      justifyContent="space-between"
+                      alignItems="center"
+                      mt={0.5}
                     >
                       <Typography
                         variant="body2"
+                        color="text.secondary"
                         noWrap
                         sx={{
                           maxWidth: "70%",
-                          // fontWeight:
-                          //   conv.unread > 0 ? "600" : "normal",
-                          // color:
-                          //   conv.unread > 0
-                          //     ? "text.primary"
-                          //     : "text.secondary",
+                          fontSize: "0.8125rem",
                         }}
                       >
-                        {conv.lastMessage}
+                        {conv.lastMessage || "No messages yet"}
                       </Typography>
+                      {/* Unread badge can be added here */}
                     </Box>
                   }
                 />
               </ListItemButton>
             </ListItem>
           ))}
-        </>
+        </List>
       ) : (
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          sx={{ textAlign: "center", p: 2 }}
-        >
-          {data?.resultMessage}
-        </Typography>
+        <Box sx={{ p: 3, textAlign: "center" }}>
+          <Typography variant="body2" color="text.secondary">
+            {data?.resultMessage || "No conversations found"}
+          </Typography>
+        </Box>
       )}
-    </div>
+    </Box>
   );
 };
 export default Conversations;

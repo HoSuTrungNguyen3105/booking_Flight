@@ -97,10 +97,13 @@ export type TerminalResponse = DetailResponseMessage<Terminal>;
 
 export type AvailableAircraft = FlightTimeFields;
 
+export type FlightInAircraft = Pick<DataFlight, "flightNo">;
+
 export type Aircraft = {
   code: string;
   range?: number;
   model?: string;
+  flights?: FlightInAircraft[];
 };
 
 export type PasswordProps = {
@@ -183,10 +186,11 @@ export type FlightSeat = {
 
 export type FlightSeatByAircraftResponseMessage =
   DetailResponseMessage<FlightSeat>;
-interface FlightInfoAircraft {
-  flightId: number;
-  flightNo: string;
-}
+
+// interface FlightInfoAircraft {
+//   flightId: number;
+//   flightNo: string;
+// }
 
 export interface Airport {
   code: string;
@@ -197,12 +201,12 @@ export interface Airport {
   updatedAt?: number | string;
 }
 
-interface AircraftCodeName {
-  code: string;
-  model: string;
-  range: number;
-  flights?: FlightInfoAircraft[];
-}
+// export interface AircraftCodeName {
+//   code: string;
+//   model: string;
+//   range: number;
+//   flights?: FlightInfoAircraft[];
+// }
 
 export interface FlightCodeItem {
   code: string;
@@ -213,7 +217,7 @@ interface AllFlightCodeProps {
   airport: FlightCodeItem[];
 }
 
-export type AircraftResponseMessage = DetailResponseMessage<AircraftCodeName>;
+export type AircraftResponseMessage = DetailResponseMessage<Aircraft>;
 
 export type AirportResponseMessage = DetailResponseMessage<Airport>;
 
@@ -359,6 +363,7 @@ type Conversation = {
   userId: number;
   name: string;
   lastMessage: string;
+  timestamp: number;
 };
 
 export type SendMessageProps = {

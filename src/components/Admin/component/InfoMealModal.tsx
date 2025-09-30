@@ -1,4 +1,4 @@
-import React, { forwardRef, useCallback } from "react";
+import React, { forwardRef, useCallback, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -16,8 +16,11 @@ import theme from "../../../scss/theme";
 import type { Meal } from "../../../utils/type";
 import InputTextArea from "../../../common/Input/InputTextArea";
 import type { CreateMealDto } from "./BulkMealCreator";
-import SelectDropdown from "../../../common/Dropdown/SelectDropdown";
+import SelectDropdown, {
+  type ActionType,
+} from "../../../common/Dropdown/SelectDropdown";
 import InputTextField from "../../../common/Input/InputTextField";
+import { useFindAllMealTypes } from "../../Api/useGetApi";
 
 interface MealFormProps {
   meal: CreateMealDto;
@@ -29,19 +32,15 @@ interface MealFormProps {
 const MealForm =
   // = forwardRef<HTMLDivElement, MealFormProps>(
   ({ meal, index, onChange, onRemove }: MealFormProps) => {
-    const getMealTypeOptions = useCallback(() => {
-      return [
-        { value: "BREAKFAST", label: "Breakfast" },
-        { value: "LUNCH", label: "Lunch" },
-        { value: "DINNER", label: "Dinner" },
-        { value: "SNACK", label: "Snack" },
-        { value: "BEVERAGE", label: "Beverage" },
-        { value: "DESSERT", label: "DESSERT" },
-        { value: "DRINK", label: "DRINK" },
-        { value: "NONVEG", label: "NONVEG" },
-        { value: "VEG", label: "VEG" },
-      ];
-    }, []);
+    const { dataMealTypes } = useFindAllMealTypes();
+    const getMealTypeOptions = useCallback((): ActionType[] => {
+      const res =
+        dataMealTypes?.data?.map((i) => ({
+          value: i,
+          label: i,
+        })) ?? [];
+      return res;
+    }, [dataMealTypes]);
 
     return (
       <Card
