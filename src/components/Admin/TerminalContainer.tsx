@@ -226,7 +226,7 @@ const TerminalContainer: React.FC = () => {
   };
 
   const handleAddNew = (type: "gate" | "facility", terminalId: string) => {
-    // setDialogType(type);
+    setDialogType("create");
     setTerminalId(terminalId);
     setDialogOpen((prev) => ({ ...prev, [type]: true }));
   };
@@ -522,6 +522,7 @@ const TerminalContainer: React.FC = () => {
                       onClick={(e) => {
                         e.stopPropagation();
                         handleAddNew("facility", terminal.id);
+                        // handleFacilityClick("create", facility);
                       }}
                     >
                       <Add />

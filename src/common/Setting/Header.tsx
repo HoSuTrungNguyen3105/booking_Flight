@@ -1,6 +1,6 @@
 import { Box, Menu, MenuItem, Stack, Typography } from "@mui/material";
-import Logo from "../../svgs/departures.svg";
-import UserIcon from "../../svgs/user-icon.svg";
+import Logo from "../../svgs/airplane-front-svgrepo-com.svg";
+import UserIcon from "../../svgs/system-users-symbolic.svg";
 import { memo, useCallback, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";

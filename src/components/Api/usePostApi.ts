@@ -692,12 +692,12 @@ type SendManyDto = {
 
 // Kiểu dữ liệu gửi email có CC/BCC
 type SendCcBccDto = {
-  to: string;
-  cc?: string[];
-  bcc?: string[];
+  toList: string[];
   subject: string;
   text: string;
   html?: string;
+  ccList?: string[];
+  bccList?: string[];
 };
 
 export const useSendMail = () => {
