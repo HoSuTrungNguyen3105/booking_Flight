@@ -11,7 +11,7 @@ import {
   IconButton,
 } from "@mui/material";
 import { Edit, Add } from "@mui/icons-material";
-import TabPanel, { type ITabItem } from "../../common/Setting/TabPanel";
+import TabPanel, { type ITabItem } from "../../common/CustomRender/TabPanel";
 import { useGetTerminalData, type CreateGateProps } from "../Api/usePostApi";
 import {
   type Facility,
@@ -19,26 +19,8 @@ import {
   type GateStatus,
   type Terminal,
 } from "../../utils/type";
-import { type ActionType } from "../../common/Dropdown/SelectDropdown";
-import { useFindAllFacilityTypes } from "../Api/useGetApi";
 import CreateGateForm from "../User/CreateGateForm";
 import CreateFacility from "./modal/CreateFacility";
-
-// interface Facility {
-//   id: string;
-//   name: string;
-//   type: string;
-//   terminalId: string;
-//   location?: string;
-//   openingHours?: string;
-// }
-
-const tabs: ITabItem[] = [
-  { label: "Tất cả", value: "all", description: "Hiển thị toàn bộ terminal" },
-  { label: "Khu A", value: "A", description: "Chỉ hiển thị khu A" },
-  { label: "Khu B", value: "B", description: "Chỉ hiển thị khu B" },
-  { label: "Khu C", value: "C", description: "Chỉ hiển thị khu C" },
-];
 
 export type UpdateGateProps = Omit<CreateGateProps, "terminalId">;
 
@@ -222,31 +204,9 @@ const TerminalContainer: React.FC = () => {
     setDialogOpen((prev) => ({ ...prev, gate: true }));
   };
 
-  if (dialogOpen.facility) {
+  const renderDescription = useCallback(() => {
     return (
-      <CreateFacility
-        terminalId={terminalId}
-        onClose={() => {
-          setDialogOpen((prev) => ({ ...prev, facility: false }));
-          refetchGetTerminalData();
-        }}
-      />
-    );
-  }
-
-  return (
-    <>
-      <Stack sx={{ mb: 1 }}>
-        <TabPanel
-          activeTab={activeTab}
-          onChangeTab={(idx) => {
-            setActiveTab(idx);
-            setSelectedTerminal(tabs[idx].value);
-          }}
-          tabs={tabs}
-        />
-      </Stack>
-      <Box sx={{ p: "8px" }}>
+      <>
         <Typography variant="h6" gutterBottom>
           Chú thích
         </Typography>
@@ -292,95 +252,207 @@ const TerminalContainer: React.FC = () => {
           Click vào terminal, gate hoặc tiện nghi để chỉnh sửa. Click nút "+" để
           thêm mới.
         </Alert>
-      </Box>
+      </>
+    );
+  }, []);
 
-      {getTerminalData?.list
-        ?.filter((t) => selectedTerminal === "all" || t.id === selectedTerminal)
-        .map((terminal) => (
-          <PaperContainer
-            key={terminal.id}
-            elevation={2}
-            sx={{ borderLeft: `4px solid ${getTerminalColor(terminal.type)}` }}
-            onClick={() => handleTerminalClick(terminal)}
-          >
-            <EditOverlay
-              sx={{ opacity: 1 }}
-              onClick={(e) => {
-                e.stopPropagation();
-                handleTerminalClick(terminal);
+  const tabs: ITabItem[] = [
+    { label: "Tất cả", value: "all", description: renderDescription() },
+    { label: "Khu A", value: "A", description: renderDescription() },
+    { label: "Khu B", value: "B", description: renderDescription() },
+    { label: "Khu C", value: "C", description: renderDescription() },
+  ];
+
+  if (dialogOpen.facility) {
+    return (
+      <CreateFacility
+        terminalId={terminalId}
+        onClose={() => {
+          setDialogOpen((prev) => ({ ...prev, facility: false }));
+          refetchGetTerminalData();
+        }}
+      />
+    );
+  }
+
+  return (
+    <>
+      <Stack sx={{ mb: 1 }}>
+        <TabPanel
+          activeTab={activeTab}
+          onChangeTab={(idx) => {
+            setActiveTab(idx);
+            setSelectedTerminal(tabs[idx].value);
+          }}
+          tabs={tabs}
+        />
+      </Stack>
+
+      <Box
+        sx={{
+          height: "50vh",
+          overflow: "scroll",
+          p: "8px",
+          // Ẩn thanh cuộn trên mọi trình duyệt
+          scrollbarWidth: "none", // Firefox
+          "&::-webkit-scrollbar": {
+            display: "none", // Chrome, Safari
+          },
+        }}
+      >
+        {getTerminalData?.list
+          ?.filter(
+            (t) => selectedTerminal === "all" || t.id === selectedTerminal
+          )
+          .map((terminal) => (
+            <PaperContainer
+              key={terminal.id}
+              elevation={2}
+              sx={{
+                borderLeft: `4px solid ${getTerminalColor(terminal.type)}`,
               }}
+              onClick={() => handleTerminalClick(terminal)}
             >
-              <Edit fontSize="small" />
-            </EditOverlay>
-
-            <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-              <Box
-                sx={{
-                  width: 24,
-                  height: 24,
-                  borderRadius: "50%",
-                  backgroundColor: getTerminalColor(terminal.type),
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: "white",
-                  fontWeight: "bold",
-                  mr: 2,
+              <EditOverlay
+                sx={{ opacity: 1 }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleTerminalClick(terminal);
                 }}
               >
-                {terminal.code}
-              </Box>
-              <Typography
-                variant="h5"
-                component="h2"
-                color={getTerminalColor(terminal.type)}
-              >
-                {terminal.name} ({terminal.code}) - {terminal.airport.name}
-              </Typography>
-            </Box>
+                <Edit fontSize="small" />
+              </EditOverlay>
 
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="body2" color="text.secondary">
-                {terminal.description} • {terminal.type} •{" "}
-                {terminal.airport.city}
-              </Typography>
-            </Box>
-
-            <Grid container spacing={2}>
-              <Grid size={8}>
-                <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                  <Typography variant="h6">
-                    Cổng ({terminal.gates.length} cổng)
-                  </Typography>
-                  <IconButton
-                    size="small"
-                    sx={{ ml: 1 }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleAddNew("gate", terminal.id);
-                    }}
-                  >
-                    <Add />
-                  </IconButton>
+              <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                <Box
+                  sx={{
+                    width: 24,
+                    height: 24,
+                    borderRadius: "50%",
+                    backgroundColor: getTerminalColor(terminal.type),
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: "white",
+                    fontWeight: "bold",
+                    mr: 2,
+                  }}
+                >
+                  {terminal.code}
                 </Box>
+                <Typography
+                  variant="h5"
+                  component="h2"
+                  color={getTerminalColor(terminal.type)}
+                >
+                  {terminal.name} ({terminal.code}) - {terminal.airport.name}
+                </Typography>
+              </Box>
+
+              <Box sx={{ mb: 2 }}>
+                <Typography variant="body2" color="text.secondary">
+                  {terminal.description} • {terminal.type} •{" "}
+                  {terminal.airport.city}
+                </Typography>
+              </Box>
+
+              <Grid container spacing={2}>
+                <Grid size={8}>
+                  <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                    <Typography variant="h6">
+                      Cổng ({terminal.gates.length} cổng)
+                    </Typography>
+                    <IconButton
+                      size="small"
+                      sx={{ ml: 1 }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleAddNew("gate", terminal.id);
+                      }}
+                    >
+                      <Add />
+                    </IconButton>
+                  </Box>
+
+                  {terminal.gates.length > 0 ? (
+                    <Grid container spacing={1}>
+                      {terminal.gates.map((gate) => (
+                        <Grid size={4} key={gate.id}>
+                          <GateBox
+                            status={gate.status as GateStatus}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleGateClick("update", gate);
+                            }}
+                          >
+                            <Typography variant="body2" fontWeight="bold">
+                              {gate.code}
+                            </Typography>
+                            <Typography variant="caption" display="block">
+                              {getGateStatusText(gate.status)}
+                            </Typography>
+                          </GateBox>
+                        </Grid>
+                      ))}
+                    </Grid>
+                  ) : (
+                    <Box
+                      sx={{
+                        p: 2,
+                        textAlign: "center",
+                        bgcolor: "grey.50",
+                        borderRadius: 1,
+                      }}
+                    >
+                      <Typography variant="body2" color="text.secondary">
+                        Chưa có cổng nào. Click nút + để thêm cổng mới.
+                      </Typography>
+                    </Box>
+                  )}
+                </Grid>
 
                 {terminal.gates.length > 0 ? (
                   <Grid container spacing={1}>
                     {terminal.gates.map((gate) => (
-                      <Grid size={4} key={gate.id}>
+                      <Grid size={12} key={gate.id}>
                         <GateBox
-                          status={gate.status as GateStatus}
+                          status={
+                            gate.assignments.length > 0
+                              ? "OCCUPIED"
+                              : "AVAILABLE"
+                          }
                           onClick={(e) => {
                             e.stopPropagation();
                             handleGateClick("update", gate);
                           }}
                         >
-                          <Typography variant="body2" fontWeight="bold">
-                            {gate.code}
-                          </Typography>
-                          <Typography variant="caption" display="block">
-                            {getGateStatusText(gate.status)}
-                          </Typography>
+                          {gate.assignments.length > 0 ? (
+                            gate.assignments.map((assignment) => (
+                              <Box key={assignment.id} sx={{ mt: 0.5 }}>
+                                <Typography
+                                  variant="caption"
+                                  display="block"
+                                  color="success.main"
+                                >
+                                  Flight #{assignment.flightId}
+                                </Typography>
+                                <Typography variant="caption" display="block">
+                                  AssignedAt: {assignment.assignedAt}
+                                </Typography>
+                                <Typography variant="caption" display="block">
+                                  ReleasedAt: {assignment.releasedAt}
+                                </Typography>
+                              </Box>
+                            ))
+                          ) : (
+                            <Typography
+                              variant="caption"
+                              display="block"
+                              color="text.secondary"
+                            >
+                              Chưa có assignment
+                            </Typography>
+                          )}
                         </GateBox>
                       </Grid>
                     ))}
@@ -395,144 +467,88 @@ const TerminalContainer: React.FC = () => {
                     }}
                   >
                     <Typography variant="body2" color="text.secondary">
-                      Chưa có cổng nào. Click nút + để thêm cổng mới.
+                      Chưa có assignment gate nào. Click nút + để thêm mới.
                     </Typography>
                   </Box>
                 )}
-              </Grid>
 
-              {terminal.gates.length > 0 ? (
-                <Grid container spacing={1}>
-                  {terminal.gates.map((gate) => (
-                    <Grid size={12} key={gate.id}>
-                      <GateBox
-                        status={
-                          gate.assignments.length > 0 ? "OCCUPIED" : "AVAILABLE"
-                        }
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleGateClick("update", gate);
-                        }}
-                      >
-                        {gate.assignments.length > 0 ? (
-                          gate.assignments.map((assignment) => (
-                            <Box key={assignment.id} sx={{ mt: 0.5 }}>
-                              <Typography
-                                variant="caption"
-                                display="block"
-                                color="success.main"
-                              >
-                                Flight #{assignment.flightId}
+                <Grid size={4}>
+                  <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                    <Typography variant="h6">
+                      Tiện nghi ({terminal.facilities.length})
+                    </Typography>
+                    <IconButton
+                      size="small"
+                      sx={{ ml: 1 }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleAddNew("facility", terminal.id);
+                      }}
+                    >
+                      <Add />
+                    </IconButton>
+                  </Box>
+
+                  {terminal.facilities.length > 0 ? (
+                    <Box sx={{ mb: 2 }}>
+                      {terminal.facilities.map((facility) => (
+                        <Chip
+                          key={facility.id}
+                          label={
+                            <Box>
+                              <Typography variant="body2">
+                                {facility.name}
                               </Typography>
                               <Typography variant="caption" display="block">
-                                AssignedAt: {assignment.assignedAt}
-                              </Typography>
-                              <Typography variant="caption" display="block">
-                                ReleasedAt: {assignment.releasedAt}
+                                {facility.type}
                               </Typography>
                             </Box>
-                          ))
-                        ) : (
-                          <Typography
-                            variant="caption"
-                            display="block"
-                            color="text.secondary"
-                          >
-                            Chưa có assignment
-                          </Typography>
-                        )}
-                      </GateBox>
-                    </Grid>
-                  ))}
-                </Grid>
-              ) : (
-                <Box
-                  sx={{
-                    p: 2,
-                    textAlign: "center",
-                    bgcolor: "grey.50",
-                    borderRadius: 1,
-                  }}
-                >
-                  <Typography variant="body2" color="text.secondary">
-                    Chưa có assignment gate nào. Click nút + để thêm mới.
-                  </Typography>
-                </Box>
-              )}
+                          }
+                          size="small"
+                          variant="outlined"
+                          sx={{ m: 0.5 }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleFacilityClick(facility);
+                          }}
+                        />
+                      ))}
+                    </Box>
+                  ) : (
+                    <Box
+                      sx={{
+                        p: 2,
+                        textAlign: "center",
+                        bgcolor: "grey.50",
+                        borderRadius: 1,
+                      }}
+                    >
+                      <Typography variant="body2" color="text.secondary">
+                        Chưa có tiện nghi nào. Click nút + để thêm tiện nghi
+                        mới.
+                      </Typography>
+                    </Box>
+                  )}
 
-              <Grid size={4}>
-                <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                  <Typography variant="h6">
-                    Tiện nghi ({terminal.facilities.length})
-                  </Typography>
-                  <IconButton
-                    size="small"
-                    sx={{ ml: 1 }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleAddNew("facility", terminal.id);
-                    }}
-                  >
-                    <Add />
-                  </IconButton>
-                </Box>
-
-                {terminal.facilities.length > 0 ? (
-                  <Box sx={{ mb: 2 }}>
-                    {terminal.facilities.map((facility) => (
-                      <Chip
-                        key={facility.id}
-                        label={
-                          <Box>
-                            <Typography variant="body2">
-                              {facility.name}
-                            </Typography>
-                            <Typography variant="caption" display="block">
-                              {facility.type}
-                            </Typography>
-                          </Box>
-                        }
-                        size="small"
-                        variant="outlined"
-                        sx={{ m: 0.5 }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleFacilityClick(facility);
-                        }}
-                      />
-                    ))}
-                  </Box>
-                ) : (
+                  {/* Hiển thị thông tin airport */}
                   <Box
-                    sx={{
-                      p: 2,
-                      textAlign: "center",
-                      bgcolor: "grey.50",
-                      borderRadius: 1,
-                    }}
+                    sx={{ mt: 2, p: 2, bgcolor: "grey.50", borderRadius: 1 }}
                   >
+                    <Typography variant="subtitle2" gutterBottom>
+                      Thông tin sân bay:
+                    </Typography>
+                    <Typography variant="body2">
+                      {terminal.airport.name} ({terminal.airport.code})
+                    </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      Chưa có tiện nghi nào. Click nút + để thêm tiện nghi mới.
+                      {terminal.airport.city}, {terminal.airport.city}
                     </Typography>
                   </Box>
-                )}
-
-                {/* Hiển thị thông tin airport */}
-                <Box sx={{ mt: 2, p: 2, bgcolor: "grey.50", borderRadius: 1 }}>
-                  <Typography variant="subtitle2" gutterBottom>
-                    Thông tin sân bay:
-                  </Typography>
-                  <Typography variant="body2">
-                    {terminal.airport.name} ({terminal.airport.code})
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {terminal.airport.city}, {terminal.airport.city}
-                  </Typography>
-                </Box>
+                </Grid>
               </Grid>
-            </Grid>
-          </PaperContainer>
-        ))}
+            </PaperContainer>
+          ))}
+      </Box>
       <CreateGateForm
         open={dialogOpen.gate}
         onClose={() => setDialogOpen((prev) => ({ ...prev, gate: false }))}

@@ -2,15 +2,15 @@ import { Box, Button, Grid } from "@mui/material";
 import { memo, useCallback } from "react";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
 import BaseModal from "../../../common/Modal/BaseModal";
-import type { Airport } from "../../../utils/type";
+import type { CreateAirportReq } from "../../../utils/type";
 import InputTextField from "../../../common/Input/InputTextField";
 
 interface IRequestLeaveActionModalProps {
   open: boolean;
   onClose: () => void;
   onSuccess: () => void;
-  formData: Airport;
-  setFormData: React.Dispatch<React.SetStateAction<Airport>>;
+  formData: CreateAirportReq;
+  setFormData: React.Dispatch<React.SetStateAction<CreateAirportReq>>;
   editingAirport: "update" | "create";
 }
 

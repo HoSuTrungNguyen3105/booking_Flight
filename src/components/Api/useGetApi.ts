@@ -17,11 +17,8 @@ import {
   type AirportResponseMessage,
   type GetAllCodeResponseMessage,
   type Passenger,
-  type SendMessageProps,
-  type MessageApiResponse,
   type TerminalLabelListResponse,
 } from "../../utils/type.ts";
-import type { DropdownOptions } from "../../common/Dropdown/type.ts";
 import { useFetch } from "../../context/use[custom]/useFetch.ts";
 
 const getMethod = {
@@ -33,24 +30,23 @@ type FlightId = {
   id?: number;
 };
 
-export const mapToDropdown = (
-  list: CodeItem[],
-  key: keyof CodeItem,
-  valueKey: keyof CodeItem = "code"
-): DropdownOptions[] => {
+export interface SelectOptions {
+  label: string;
+  value: string;
+}
+
+export const mapStringToDropdown = (list: string[]): SelectOptions[] => {
   return list.map((item) => ({
-    label: item[key] || "",
-    value: item[valueKey] || "",
+    label: item,
+    value: item,
   }));
 };
 
 export const useRandomPassword = () => {
-  // const isValid = !!id;
   const {
     data: fetchUserPw,
     refetch: refetchUserPw,
     loading: loadingUser,
-    setParams: setParamsUser,
   } = useFetch<DetailResponseMessage<string>, null>({
     url: "/sys/users/getRandomPw",
     autoFetch: false,
@@ -60,7 +56,6 @@ export const useRandomPassword = () => {
     fetchUserPw,
     refetchUserPw,
     loadingUser,
-    setParamsUser,
   };
 };
 export interface Booking {
@@ -69,18 +64,6 @@ export interface Booking {
   flightId: number;
   bookingTime: string;
 }
-
-// export interface Passenger {
-//   id: string;
-//   fullName: string;
-//   email: string;
-//   phone: string;
-//   passport: string;
-//   accountLockYn: "Y" | "N";
-//   isEmailVerified: "Y" | "N";
-//   lastLoginDate: string | null;
-//   bookings: Booking[];
-// }
 
 export const useFindAllPassenger = () => {
   const {
@@ -115,32 +98,6 @@ export const useFlightById = ({ id }: FlightId) => {
     refetchFlightId,
   };
 };
-
-// export const useGetMessage = ({ user1Id, user2Id }: SendMessageProps) => {
-//   const { data: fetchGetMessageById, refetch: refetchGetMessageById } =
-//     useFetch<MessageApiResponse, void>({
-//       url: `/sys/messages/${user1Id}/${user2Id}`,
-//       autoFetch: false,
-//       config: getMethod,
-//     });
-//   return {
-//     fetchGetMessageById,
-//     refetchGetMessageById,
-//   };
-// };
-
-// export const useGetSenderMessage = ({ user1Id, user2Id }: SendMessageProps) => {
-//   const { data: fetchGetMessageById, refetch: refetchGetMessageById } =
-//     useFetch<MessageApiResponse, void>({
-//       url: `/sys/messages/${user1Id}/${user2Id}`,
-//       autoFetch: false,
-//       config: getMethod,
-//     });
-//   return {
-//     fetchGetMessageById,
-//     refetchGetMessageById,
-//   };
-// };
 
 export const useFlightMealsById = (id: string) => {
   const { data: fetchFlightMealsById, refetch: refetchFlightMealsById } =
@@ -311,13 +268,11 @@ export const useGetSeatByAircraftCode = (aircraftCode: string) => {
   };
 };
 
-export type UnlockStatus = "PENDING" | "APPROVED" | "REJECTED";
-
 export interface UnlockRequest {
   id: number;
   userId: number;
   reason: string;
-  status: UnlockStatus;
+  status: string;
   createdAt: string;
   approvedAt?: string | null;
   user: {

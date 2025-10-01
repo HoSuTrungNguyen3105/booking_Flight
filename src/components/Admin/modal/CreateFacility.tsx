@@ -1,23 +1,19 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback, memo } from "react";
 import {
   Box,
   Paper,
   Typography,
   TextField,
   Button,
-  MenuItem,
   Grid,
   Container,
-  Alert,
   CircularProgress,
   FormControl,
-  InputLabel,
-  Select,
-  Chip,
 } from "@mui/material";
-import { FacilityType, type Terminal } from "../../../utils/type";
+import { type Terminal } from "../../../utils/type";
 import { OpeningHoursPicker } from "../../../common/DayPicker/date-picker";
 import {
+  mapStringToDropdown,
   useFindAllFacilityTypes,
   useFindTerminalIDStatuses,
 } from "../../Api/useGetApi";
@@ -28,10 +24,13 @@ import {
   type CreateFacilityProps,
 } from "../../Api/usePostApi";
 import InputTextArea from "../../../common/Input/InputTextArea";
+import InputTextField from "../../../common/Input/InputTextField";
+
 type Props = {
   terminalId: string;
   onClose: () => void;
 };
+
 const CreateFacility = ({ onClose, terminalId }: Props) => {
   const [formData, setFormData] = useState<CreateFacilityProps>({
     name: "",
@@ -61,15 +60,13 @@ const CreateFacility = ({ onClose, terminalId }: Props) => {
     text: string;
   } | null>(null);
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  const handleChange =
+    (field: keyof CreateFacilityProps) => (value: string) => {
+      setFormData((prev) => ({
+        ...prev,
+        [field]: value,
+      }));
+    };
 
   const { refetchCreateFacilities } = useCreateFacilities();
 
@@ -107,14 +104,9 @@ const CreateFacility = ({ onClose, terminalId }: Props) => {
 
   const { dataFacilityTypes } = useFindAllFacilityTypes();
 
-  const facilityTypeOptions = useCallback((): ActionType[] => {
-    const res =
-      dataFacilityTypes?.data?.map((i) => ({
-        value: i,
-        label: i,
-      })) ?? [];
-    return res;
-  }, [dataFacilityTypes]);
+  const facilityTypeOptions = mapStringToDropdown(
+    dataFacilityTypes?.data || []
+  );
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
@@ -142,13 +134,9 @@ const CreateFacility = ({ onClose, terminalId }: Props) => {
           <Grid container spacing={3}>
             {/* Facility Name */}
             <Grid size={6}>
-              <TextField
-                required
-                fullWidth
-                label="Facility Name"
-                name="name"
+              <InputTextField
                 value={formData.name}
-                onChange={handleInputChange}
+                onChange={handleChange("name")}
                 placeholder="Enter facility name"
               />
             </Grid>
@@ -157,8 +145,9 @@ const CreateFacility = ({ onClose, terminalId }: Props) => {
             <Grid size={6}>
               <FormControl fullWidth required>
                 <SelectDropdown
-                  options={facilityTypeOptions()}
+                  options={facilityTypeOptions}
                   value={formData.type}
+                  placeholder="Select facility type options"
                   onChange={(value) =>
                     setFormData((prev) => ({
                       ...prev,
@@ -180,6 +169,7 @@ const CreateFacility = ({ onClose, terminalId }: Props) => {
                       terminalId: value as string, // value ở đây là string | number
                     }))
                   }
+                  placeholder="Select terminal ID"
                   options={dataTerminalIdOptions()}
                   disabled={loading}
                 />
@@ -189,12 +179,9 @@ const CreateFacility = ({ onClose, terminalId }: Props) => {
 
             {/* Location */}
             <Grid size={6}>
-              <TextField
-                fullWidth
-                label="Location"
-                name="location"
+              <InputTextField
                 value={formData.location}
-                onChange={handleInputChange}
+                onChange={handleChange("location")}
                 placeholder="e.g., Near Gate A1, Level 2"
               />
             </Grid>
@@ -214,7 +201,7 @@ const CreateFacility = ({ onClose, terminalId }: Props) => {
               <InputTextArea
                 name="description"
                 value={formData.description}
-                //   onChange={handleInputChange}
+                onChange={handleChange("description")}
                 placeholder="Enter facility description and services offered"
               />
             </Grid>
@@ -303,4 +290,4 @@ const CreateFacility = ({ onClose, terminalId }: Props) => {
   );
 };
 
-export default CreateFacility;
+export default memo(CreateFacility);

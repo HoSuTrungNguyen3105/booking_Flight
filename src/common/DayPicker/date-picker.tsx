@@ -29,7 +29,7 @@ export const OpeningHoursPicker = ({ value, onChange }: TimePickerProps) => {
 
   return (
     <LocalizationProvider dateAdapter={AdapterMoment}>
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+      <Box display="flex" alignItems="center" gap={1}>
         <TimePicker
           label="Mở"
           value={startTime}
@@ -38,20 +38,6 @@ export const OpeningHoursPicker = ({ value, onChange }: TimePickerProps) => {
             handleUpdate(newValue, endTime);
           }}
           slotProps={{ textField: { size: "small" } }}
-          // slotProps={{
-          //   textField: {
-          //     size: "small",
-          //     sx: {
-          //       height: "40px", // chỉnh cho bằng InputTextField
-          //       "& .MuiInputBase-root": {
-          //         height: "100%",
-          //       },
-          //       "& input": {
-          //         padding: "4px 8px", // chỉnh padding cho khớp
-          //       },
-          //     },
-          //   },
-          // }}
         />
         <Typography>-</Typography>
         <TimePicker
@@ -62,28 +48,15 @@ export const OpeningHoursPicker = ({ value, onChange }: TimePickerProps) => {
             handleUpdate(startTime, newValue);
           }}
           slotProps={{ textField: { size: "small" } }}
-          // slotProps={{
-          //   textField: {
-          //     size: "small",
-          //     sx: {
-          //       height: "40px", // chỉnh cho bằng InputTextField
-          //       "& .MuiInputBase-root": {
-          //         height: "100%",
-          //       },
-          //       "& input": {
-          //         padding: "4px 8px", // chỉnh padding cho khớp
-          //       },
-          //     },
-          //   },
-          // }}
         />
-        {/* <ChevronRightSharpIcon /> */}
-        {/* <InputTextField
-          ///   sx={{ width: "15rem", height: "90%" }}
-          value={value}
-          readOnly
-          placeholder="00:00 - 00:00"
-        /> */}
+        <Typography
+          sx={{
+            color: value ? "text.primary" : "text.disabled",
+            whiteSpace: "nowrap", // để không bị xuống dòng
+          }}
+        >
+          Time : {value || "00:00 - 00:00"}
+        </Typography>
       </Box>
     </LocalizationProvider>
   );

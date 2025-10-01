@@ -20,6 +20,7 @@ import { DateFormatEnum, formatDate, formatDateKR } from "../../hooks/format";
 import InputTextField from "../../common/Input/InputTextField";
 import { Search } from "@mui/icons-material";
 import useDebounce from "../../context/use[custom]/useDebounce";
+import SidebarSkeleton from "./SidebarSkeleton";
 const Conversations = ({
   userId,
   handleUserSelect,
@@ -106,6 +107,7 @@ const Conversations = ({
           <Search />
         </Button>
       </Box>
+      {/* {loading && <SidebarSkeleton />} */}
       {data?.resultCode === "00" && (
         <List sx={{ py: 0, height: "100%", overflow: "auto" }}>
           {filteredUsers?.map((conv, index) => (

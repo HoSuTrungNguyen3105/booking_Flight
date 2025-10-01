@@ -396,81 +396,77 @@ const Search_layout: React.FC = () => {
     }));
   };
 
-  const renderDataOption2 = React.useCallback(() => {
+  const renderDataOptionDetails = React.useCallback(() => {
     const detailInfoProfile: IDetailItem[] = [
       {
-        title: "id",
-        size: 4,
-        description: (
-          <InputTextField
-            value={flightParams.from}
-            name="from"
-            placeholder="e.g., SGN"
-          />
-        ),
-      },
-      {
-        title: "name",
-        size: 4,
-        description: (
-          <InputTextField
-            value={flightParams.to}
-            name="to"
-            placeholder="e.g., HAN"
-          />
-        ),
-      },
-      {
-        title: "mfaEnabledYn",
-        size: 4,
-        description: (
-          <InputTextField
-            value={String(flightParams.returnDate)}
-            name="returnDate"
-          />
-        ),
-      },
-      {
-        title: "email",
+        title: "Gate",
         size: 6,
         description: (
           <InputTextField
-            name="passengers"
-            placeholder="1"
-            value={String(flightParams.passengers)}
+            value={flightParams.gate}
+            name="gate"
+            placeholder="e.g., A12, B3"
+            onChange={(e) => handleInputChange("gate", e)}
           />
         ),
       },
       {
-        title: "role",
+        title: "Terminal",
         size: 6,
         description: (
           <InputTextField
-            value={flightParams.from}
-            name="from"
-            placeholder="e.g., SGN"
+            value={flightParams.terminal}
+            name="terminal"
+            placeholder="e.g., T1, T2"
+            onChange={(e) => handleInputChange("terminal", e)}
           />
         ),
       },
       {
-        title: "createdAt",
+        title: "Min Price",
         size: 6,
         description: (
           <InputTextField
-            value={flightParams.from}
-            name="from"
-            placeholder="e.g., SGN"
+            name="minPrice"
+            placeholder="Min"
+            value={String(flightParams.minPrice ?? "")}
+            onChange={(e) => handleNumberChange("minPrice", e)}
           />
         ),
       },
       {
-        title: "updatedAt",
+        title: "Max Price",
         size: 6,
         description: (
           <InputTextField
-            value={flightParams.from}
-            name="from"
-            placeholder="e.g., SGN"
+            name="maxPrice"
+            placeholder="Max"
+            value={String(flightParams.maxPrice ?? "")}
+            onChange={(e) => handleNumberChange("maxPrice", e)}
+          />
+        ),
+      },
+      {
+        title: "Min Delay (minutes)",
+        size: 6,
+        description: (
+          <InputTextField
+            name="minDelayMinutes"
+            placeholder="Min"
+            value={String(flightParams.minDelayMinutes ?? "")}
+            onChange={(e) => handleNumberChange("minDelayMinutes", e)}
+          />
+        ),
+      },
+      {
+        title: "Max Delay (minutes)",
+        size: 6,
+        description: (
+          <InputTextField
+            name="maxDelayMinutes"
+            placeholder="Max"
+            value={String(flightParams.maxDelayMinutes ?? "")}
+            onChange={(e) => handleNumberChange("maxDelayMinutes", e)}
           />
         ),
       },
@@ -481,7 +477,7 @@ const Search_layout: React.FC = () => {
         <DetailSection data={detailInfoProfile} />
       </Box>
     );
-  }, []);
+  }, [flightParams]);
 
   if (!selectId) {
     return (
@@ -578,77 +574,11 @@ const Search_layout: React.FC = () => {
               >
                 <StarBorderIcon /> Flight Details
               </Typography>
-              {/* //jjjj */}
             </Grid>
 
-            {mode === "advance" && (
-              <Grid size={12}>
-                <Typography
-                  variant="h6"
-                  gutterBottom
-                  sx={{
-                    color: "primary.main",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 1,
-                  }}
-                >
-                  <StarBorderIcon /> Additional Filters
-                </Typography>
-
-                <FormRow label="Gate">
-                  <InputTextField
-                    value={flightParams.gate}
-                    name="gate"
-                    placeholder="e.g., A12, B3"
-                  />
-                </FormRow>
-
-                <FormRow label="Terminal">
-                  <InputTextField
-                    value={flightParams.terminal}
-                    name="terminal"
-                    placeholder="e.g., T1, T2"
-                  />
-                </FormRow>
-
-                <FormRow label="Price Range">
-                  <Box display="flex" gap={1} alignItems="center">
-                    <InputTextField
-                      name="minPrice"
-                      placeholder="Min"
-                      sx={{ flex: 1 }}
-                      value={String(flightParams.minPrice)}
-                    />
-                    <Typography variant="body2">to</Typography>
-                    <InputTextField
-                      name="maxPrice"
-                      placeholder="Max"
-                      sx={{ flex: 1 }}
-                      value={String(flightParams.maxPrice)}
-                    />
-                  </Box>
-                </FormRow>
-
-                <FormRow label="Delay Range (minutes)">
-                  <Box display="flex" gap={1} alignItems="center">
-                    <InputTextField
-                      name="minDelayMinutes"
-                      placeholder="Min"
-                      sx={{ flex: 1 }}
-                      value={String(flightParams.minDelayMinutes)}
-                    />
-                    <Typography variant="body2">to</Typography>
-                    <InputTextField
-                      name="maxDelayMinutes"
-                      placeholder="Max"
-                      sx={{ flex: 1 }}
-                      value={String(flightParams.maxDelayMinutes)}
-                    />
-                  </Box>
-                </FormRow>
-              </Grid>
-            )}
+            {/* {mode === "advance" && ( */}
+            {renderDataOptionDetails()}
+            {/* )} */}
           </Grid>
 
           <Divider sx={{ my: 3 }} />

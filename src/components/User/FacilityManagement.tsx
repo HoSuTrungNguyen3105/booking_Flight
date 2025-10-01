@@ -67,6 +67,55 @@ const FacilityManagement: React.FC<FacilityManagementProps> = ({
     fetchFacilities();
   }, [terminalId, tabValue]);
 
+  useEffect(() => {
+    // 🚀 Thay vì fetch từ API, dùng mock data
+    const mockFacilities: Facility[] = [
+      {
+        id: "1",
+        name: "Highlands Coffee",
+        type: "RESTAURANT",
+        description: "Quán cà phê nổi tiếng tại sân bay",
+        location: "Tầng 2, gần cổng số 5",
+        openingHours: "06:00-22:00",
+        terminal: { id: "T1", name: "Terminal 1" },
+      },
+      {
+        id: "2",
+        name: "Duty Free Shop",
+        type: "SHOP",
+        description: "Cửa hàng miễn thuế với nhiều sản phẩm",
+        location: "Tầng 1, khu A",
+        openingHours: "08:00-21:00",
+        terminal: { id: "T2", name: "Terminal 2" },
+      },
+      {
+        id: "3",
+        name: "Lotus Lounge",
+        type: "LOUNGE",
+        description: "Phòng chờ hạng thương gia",
+        location: "Tầng 3, gần gate 12",
+        openingHours: "05:00-23:59",
+        terminal: { id: "T1", name: "Terminal 1" },
+      },
+      {
+        id: "4",
+        name: "Vietcombank ATM",
+        type: "ATM",
+        location: "Sảnh đến quốc tế",
+        terminal: { id: "T2", name: "Terminal 2" },
+      },
+      {
+        id: "5",
+        name: "Free Airport Wi-Fi",
+        type: "WIFI",
+        description: "Dịch vụ Wi-Fi miễn phí toàn sân bay",
+        terminal: { id: "T1", name: "Terminal 1" },
+      },
+    ];
+
+    setFacilities(mockFacilities);
+  }, [terminalId, tabValue]);
+
   const fetchFacilities = async () => {
     setLoading(true);
     try {

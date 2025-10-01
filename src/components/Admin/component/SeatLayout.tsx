@@ -24,6 +24,7 @@ import type { Seat } from "../../../utils/type";
 import { Chair, LocalAirport, RestartAlt } from "@mui/icons-material";
 import { useSeatUpdateByIds, type SeatUpdateProps } from "../../Api/usePostApi";
 import SeatManagementModal from "../../User/SeatManagementModal";
+import CreateSeat from "../../User/CreateSeat";
 
 type FlightIdProps = {
   id: number;
@@ -118,6 +119,8 @@ const SeatLayout: React.FC<FlightIdProps> = ({ id }) => {
   // const [selectedSeats, setSelectedSeats] = useState<Seat[]>([]); // Thay đổi từ number[] sang Seat[]
   const [message, setMessage] = useState("");
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [createSeat, setCreateSeat] = useState(false);
+
   const [updateSeat, setUpdateSeat] = useState<SeatUpdateProps>({
     seatIds: [],
     type: "ECONOMY",
@@ -198,6 +201,16 @@ const SeatLayout: React.FC<FlightIdProps> = ({ id }) => {
     });
   };
 
+  if (createSeat) {
+    return (
+      <CreateSeat
+        flightId={id}
+        loading={false}
+        onChange={() => {}}
+      ></CreateSeat>
+    );
+  }
+
   return (
     <Box sx={{ maxWidth: "100%" }}>
       <Box sx={{ borderRadius: 2, p: 1 }}>
@@ -249,6 +262,9 @@ const SeatLayout: React.FC<FlightIdProps> = ({ id }) => {
           {/* Info + Options */}
           <Grid size={6}>
             <Typography>Select one seat</Typography>
+            <Button variant="contained" onClick={() => setCreateSeat(true)}>
+              Create Seat
+            </Button>
             <Button
               variant={maxSelectSeats === 1 ? "contained" : "outlined"}
               onClick={() => setMaxSelectSeats(1)}

@@ -53,6 +53,7 @@ import AirportMap from "../components/User/AirportMap";
 import CreateFacility from "../components/Admin/modal/CreateFacility";
 import AirportManagementDetail from "../components/User/AirportManagementDetail";
 import ChangePasswordInProfile from "../components/User/Security/ChangePasswordInProfile";
+import FlightBatchCreator from "../components/Admin/component/FlightBatchCreator";
 
 export const mockTerminals = [
   {
@@ -286,6 +287,10 @@ const routes = [
       {
         path: "ChatApp",
         element: <ChatApp />,
+      },
+      {
+        path: "FlightBatchCreator",
+        element: <FlightBatchCreator />,
       },
       {
         path: "AirportManagement",

@@ -20,13 +20,14 @@ import {
   LocationOn as LocationIcon,
 } from "@mui/icons-material";
 import { useGetAllAirportInfo } from "../../Api/useGetApi";
-import type { Airport } from "../../../utils/type";
+import type { Airport, CreateAirportReq } from "../../../utils/type";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import TableSection from "../../../common/Setting/TableSection";
 import AirportManageModal from "../modal/AirportManageModal";
+import AirportBatchCreator from "./AirportBatchCreator";
 
 const AirportManagement: React.FC = () => {
-  const { getAirportInfo } = useGetAllAirportInfo();
+  const { getAirportInfo, refetchGetAirportInfo } = useGetAllAirportInfo();
   const [airports, setAirports] = useState<Airport[]>([]);
   const rowAirportsGrid = useMemo(
     () =>
@@ -42,10 +43,14 @@ const AirportManagement: React.FC = () => {
     }
   }, [getAirportInfo]);
   const [openDialog, setOpenDialog] = useState(false);
+  const [changePageBtchCreate, setChangePageBtchCreate] = useState(false);
+  const handleChangePageBtchCreate = () => {
+    setChangePageBtchCreate(true);
+  };
   const [editingAirport, setEditingAirport] = useState<"update" | "create">(
     "create"
   );
-  const [formData, setFormData] = useState<Airport>({
+  const [formData, setFormData] = useState<CreateAirportReq>({
     code: "",
     name: "",
     city: "",
@@ -189,6 +194,16 @@ const AirportManagement: React.FC = () => {
     return flags[country] || "🏳️";
   };
 
+  if (changePageBtchCreate) {
+    return (
+      <AirportBatchCreator
+        onClose={() => {
+          refetchGetAirportInfo(), setChangePageBtchCreate(false);
+        }}
+      />
+    );
+  }
+
   return (
     <Box>
       <Box
@@ -203,6 +218,14 @@ const AirportManagement: React.FC = () => {
           <LocationIcon sx={{ mr: 1, verticalAlign: "bottom" }} />
           Quản lý Sân bay
         </Typography>
+        <Button
+          variant="outlined"
+          startIcon={<AddIcon />}
+          onClick={handleChangePageBtchCreate}
+          sx={{ borderRadius: 2 }}
+        >
+          Create Batch
+        </Button>
         <Button
           variant="contained"
           startIcon={<AddIcon />}

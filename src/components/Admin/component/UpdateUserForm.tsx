@@ -6,27 +6,12 @@ import { useUpdateUserFromAdmin } from "../../Api/usePostApi";
 import { useToast } from "../../../context/ToastContext";
 import SelectDropdown from "../../../common/Dropdown/SelectDropdown";
 import InputTextField from "../../../common/Input/InputTextField";
-
-const departmentOptions = [
-  { label: "IT", value: "IT" },
-  { label: "HR", value: "HR" },
-  { label: "Finance", value: "FINANCE" },
-  { label: "Marketing", value: "MARKETING" },
-];
-
-const positionOptions = [
-  { label: "Manager", value: "MANAGER" },
-  { label: "Staff", value: "STAFF" },
-  { label: "Leader", value: "LEADER" },
-  { label: "Intern", value: "INTERN" },
-];
-
-const statusOptions = [
-  { label: "Đang làm việc", value: EmployeeStatus.ACTIVE },
-  { label: "Nghỉ việc", value: EmployeeStatus.INACTIVE },
-  { label: "Tạm nghỉ", value: EmployeeStatus.SUSPENDED },
-  { label: "Đã chấm dứt", value: EmployeeStatus.TERMINATED },
-];
+import {
+  mapStringToDropdown,
+  useFindAllDepartments,
+  useFindAllEmployeeStatuses,
+  useFindAllPositions,
+} from "../../Api/useGetApi";
 
 type AdminUpdateUserFormProps = {
   data: AdminUpdateUserForm;
@@ -46,6 +31,16 @@ export default function UpdateUserForm({
       baseSalary: data.baseSalary ?? 0,
     },
   });
+
+  const { dataEmployeeStatuses } = useFindAllEmployeeStatuses();
+  const { dataDepartments } = useFindAllDepartments();
+  const { dataPositions } = useFindAllPositions();
+
+  const departmentOptions = mapStringToDropdown(dataDepartments?.data || []);
+
+  const positionOptions = mapStringToDropdown(dataPositions?.data || []);
+
+  const statusOptions = mapStringToDropdown(dataEmployeeStatuses?.data || []);
 
   const toast = useToast();
   const { refetchUpdateUserFromAdmin } = useUpdateUserFromAdmin();
@@ -111,20 +106,6 @@ export default function UpdateUserForm({
             )}
           />
 
-          {/* Hire Date */}
-          {/* <Controller
-            name="hireDate"
-            control={control}
-            render={({ field }) => (
-              <DateTimePickerComponent
-                value={field.value}
-                language="vn"
-                onChange={(val) => setValue("hireDate", val)}
-              />
-            )}
-          /> */}
-
-          {/* Base Salary - Sử dụng TextField tạm để test */}
           <Controller
             name="baseSalary"
             control={control}

@@ -20,7 +20,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import TabPanel, { type ITabItem } from "../../common/Setting/TabPanel";
+import TabPanel, { type ITabItem } from "../../common/CustomRender/TabPanel";
 import theme from "../../scss/theme";
 
 // Styled components

@@ -24,7 +24,6 @@ import { useGetMyInfo } from "../components/Api/useGetApi";
 export type User = {
   email: string;
   password: string;
-  remember?: boolean;
 };
 
 export type UserWithMFA = {
@@ -71,17 +70,10 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const verifyPassword = useCallback(
     async (password: string): Promise<boolean> => {
       try {
-        console.log("🔐 Starting password verification...");
-
         const response = await fetchVerifyPassword({ password });
         const isValidResult = response?.resultCode === "00";
 
-        console.log("🎯 verifyPassword API response:", response);
-        console.log("🎯 isValidResult from API:", isValidResult);
-
-        // ĐẢM BẢO setIsValid ĐƯỢC GỌI
         setIsValid(isValidResult);
-        console.log("🎯 setIsValid called with:", isValidResult);
 
         if (isValidResult) {
           toast("Xác thực thành công", "success");
@@ -91,9 +83,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
         return isValidResult;
       } catch (error: any) {
-        console.error("💥 verifyPassword error:", error);
+        console.error("verifyPassword error:", error);
         setIsValid(false);
-        console.log("🎯 setIsValid called with: false (due to error)");
         toast("Lỗi xác thực mật khẩu", "error");
         return false;
       }

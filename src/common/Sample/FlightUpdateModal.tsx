@@ -28,7 +28,7 @@ import Android12Switch from "../Switch/Switch";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import BaseModal from "../Modal/BaseModal";
-import { DateFormatEnum, formatDateKR } from "../../hooks/format";
+import { DateFormatEnum, formatDate, formatDateKR } from "../../hooks/format";
 import {
   useGetAllCode,
   useGetFlightByIDData,
@@ -279,7 +279,6 @@ const FlightUpdateModal = ({
       ? [
           "Thông tin cơ bản",
           "Thời gian bay",
-          "Seat",
           "Giá vé & Dung lượng",
           "Cổng & Trạng thái",
         ]
@@ -645,7 +644,7 @@ const FlightUpdateModal = ({
                     variant="outlined"
                   />
                   <Chip
-                    label={`Time: ${formatDateKR(
+                    label={`Time: ${formatDate(
                       DateFormatEnum.MMMM_D_YYYY_HH_MM_SS,
                       formData.scheduledDeparture
                     )}`}

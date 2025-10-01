@@ -1,4 +1,4 @@
-import { Skeleton, Box, Typography, Divider } from "@mui/material";
+import { Skeleton, Box, Typography } from "@mui/material";
 import { FaUser } from "react-icons/fa";
 
 const SidebarSkeleton = () => {

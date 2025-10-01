@@ -8,7 +8,7 @@ import MfaSetup from "./MFA";
 import SelectDropdown from "../../common/Dropdown/SelectDropdown";
 import RequestUnlock from "./RequestUnlock";
 import FindAccount from "./components/FindAccount";
-import TabPanel, { type ITabItem } from "../../common/Setting/TabPanel";
+import TabPanel, { type ITabItem } from "../../common/CustomRender/TabPanel";
 import theme from "../../scss/theme";
 import { Loading } from "../../common/Loading/Loading";
 

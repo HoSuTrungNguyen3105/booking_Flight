@@ -199,8 +199,23 @@ export interface Airport {
   country: string;
   createdAt?: number | string;
   updatedAt?: number | string;
+
+  errorCode: string;
+  errorMessage: string;
 }
 
+// type BatchAirportResponse = {
+//     code: string;
+//     errorCode: string;
+//     errorMessage: string;
+// };
+
+export interface CreateAirportReq {
+  code: string;
+  name: string;
+  city: string;
+  country: string;
+}
 // export interface AircraftCodeName {
 //   code: string;
 //   model: string;

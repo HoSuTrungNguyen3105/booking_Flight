@@ -1,10 +1,11 @@
 import { Box, Tab, Tabs, Typography, type SxProps } from "@mui/material";
+import { useCallback, type ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 
 export interface ITabItem {
   label: string;
   value: string;
-  description?: string;
+  description?: string | ReactNode;
   path?: string;
 }
 
@@ -27,33 +28,43 @@ const TabPanel = ({ sx, activeTab, tabs, onChangeTab }: ITabPanelProps) => {
     }
   };
 
+  const renderDescription = useCallback((description: ReactNode) => {
+    if (!description) return null;
+
+    return (
+      <Box bgcolor="white" px="16px" py="12px">
+        {typeof description === "string" ? (
+          <Typography variant="body2" color="grey.500">
+            {description}
+          </Typography>
+        ) : (
+          description
+        )}
+      </Box>
+    );
+  }, []);
+
   return (
     <Box sx={{ ...sx }}>
       <Tabs
         value={activeTab}
-        // onChange={(_, v) => onChangeTab(v)}
         onChange={handleChange}
         sx={{ bgcolor: "white", borderBottom: 1, borderColor: "grey.200" }}
       >
         {tabs.map((tab, idx) => (
           <Tab
+            key={idx}
             label={
               <Typography fontSize={"12px"} variant="button">
                 {tab.label}
               </Typography>
             }
-            key={idx}
           />
         ))}
       </Tabs>
 
-      {tabs[activeTab].description && (
-        <Box bgcolor="white" px="16px" py="12px">
-          <Typography variant="body2" color="grey.500">
-            {tabs[activeTab].description}
-          </Typography>
-        </Box>
-      )}
+      {tabs[activeTab].description &&
+        renderDescription(tabs[activeTab].description)}
     </Box>
   );
 };
