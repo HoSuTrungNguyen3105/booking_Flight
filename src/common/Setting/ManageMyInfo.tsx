@@ -6,12 +6,13 @@ import { Loading } from "../Loading/Loading";
 import UpdateUserModal from "./hooks/UpdateUserModal";
 import AccountLock from "./AccountLock";
 import DeleteUserModal from "./DeleteUserModal";
-import { memo, useState } from "react";
+import { memo, useCallback, useState } from "react";
 import AdminUpdateUserModal from "./hooks/AdminUpdateUserModal";
 import UpdateUserForm from "../../components/Admin/component/UpdateUserForm";
 import type { AdminUpdateUserForm } from "../../utils/type";
 import SendEmailToUsers from "./SendEmailToUsers";
 import TableSection from "./TableSection";
+import type { GridRowId } from "@mui/x-data-grid";
 
 const ManageMyInfo = () => {
   const {
@@ -24,19 +25,23 @@ const ManageMyInfo = () => {
     columns,
     openModal,
   } = useInspectionPerformanceHistory();
-  const [selectedRowIds, setSelectedRowIds] = useState<GridRowDef[]>([]); // State để lưu selected IDs
-  const [selectedRowChange, setSelectedRowCHange] = useState<GridRowDef[]>([]); // State để lưu selected IDs
+  const [selectedRowIds, setSelectedRowIds] = useState<GridRowId[]>([]);
+  const [selectedRowChange, setSelectedRowChange] = useState<GridRowDef[]>([]);
+  const [navigateEmailSend, setNavigateEmailSend] = useState<boolean>(false);
 
-  const handleMealRowSelection = (selectedIds: any[]) => {
-    setSelectedRowCHange(() => {
-      const newSelectedRows = selectedRowIds.filter((row) =>
-        selectedIds.includes(row.id)
-      );
-      console.log("selectedRowChange", selectedRowChange);
-      return newSelectedRows;
-    });
+  const handleMealRowSelection = (selectedIds: GridRowId[]) => {
+    setSelectedRowIds(selectedIds);
+
+    // Nếu anh có toàn bộ dữ liệu rows (ví dụ: data từ API)
+    const newSelectedRows = rows.filter((row) => selectedIds.includes(row.id));
+    setSelectedRowChange(newSelectedRows);
+
+    console.log("selectedRowIds:", selectedIds);
+    console.log("selectedRowChange:", newSelectedRows);
   };
-
+  const handleNavigateEmailSend = useCallback(() => {
+    setNavigateEmailSend(true);
+  }, [setNavigateEmailSend]);
   const [isValidate, setIsValidate] = useState(false);
 
   if (loading) {
@@ -55,10 +60,8 @@ const ManageMyInfo = () => {
     );
   }
 
-  if (selectedRowIds.length > 0) {
-    const selectedEmails = selectedRowIds
-      .map((row) => row.email)
-      .filter(Boolean);
+  if (navigateEmailSend) {
+    const selectedEmails: string[] = selectedRowChange.map((row) => row.email);
     return <SendEmailToUsers selectedUser={selectedEmails} />;
   }
 
@@ -83,10 +86,8 @@ const ManageMyInfo = () => {
         </Button>
       </Box>
 
-      {selectedRow?.length}
-
       <TableSection
-        setRows={setSelectedRowIds}
+        setRows={setSelectedRowChange}
         isLoading={loading}
         nextRowClick
         largeThan
@@ -95,9 +96,11 @@ const ManageMyInfo = () => {
         columns={columns}
       />
 
-      {/* {selectedRowIds.length > 0 && (
-        <Button variant="contained">Send Message</Button>
-      )} */}
+      {selectedRowIds.length > 0 && (
+        <Button onClick={handleNavigateEmailSend} variant="contained">
+          Send Message
+        </Button>
+      )}
 
       {openModal.addUser && (
         <AddUserModal

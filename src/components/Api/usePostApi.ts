@@ -617,11 +617,11 @@ export const useDeleteUserById = () => {
   };
 };
 
-export interface CreateFacilityProps {
+export interface FacilityFormProps {
   name: string;
   type: string;
   description: string;
-  terminalId: string;
+  terminalId?: string;
   location: string;
   openingHours: string;
 }
@@ -643,7 +643,7 @@ export const useCreateGate = () => {
 export const useCreateFacilities = () => {
   const { refetch: refetchCreateFacilities } = useFetch<
     ResponseMessage,
-    CreateFacilityProps
+    FacilityFormProps
   >({
     url: "/sys/flights/facilities",
     autoFetch: false,
@@ -654,19 +654,87 @@ export const useCreateFacilities = () => {
   };
 };
 
+export const useUpdateFacilities = (id: string) => {
+  const { refetch: refetchUpdateFacilities } = useFetch<
+    ResponseMessage,
+    FacilityFormProps
+  >({
+    url: `/sys/flights/facilities/update/${id}`,
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchUpdateFacilities,
+  };
+};
+
 export const useChangePassword = () => {
   const { data: changePassword, refetch: refetchChangePassword } = useFetch<
     ResponseMessage,
     ChangePassword
   >({
     url: "/auth/change-password",
-    defaultValue: { resultCode: "", resultMessage: "" },
     autoFetch: false,
     config: postMethod,
   });
   return {
     changePassword,
     refetchChangePassword,
+  };
+};
+
+type SendManyDto = {
+  toList: string[];
+  subject: string;
+  text: string;
+  html?: string;
+};
+
+// Kiểu dữ liệu gửi email có CC/BCC
+type SendCcBccDto = {
+  to: string;
+  cc?: string[];
+  bcc?: string[];
+  subject: string;
+  text: string;
+  html?: string;
+};
+
+export const useSendMail = () => {
+  // send-one
+  // const { data: sendOneRes, refetch: sendOne } = useFetch<MailResponse, SendOneDto>({
+  //   url: "/service/mail/send-one",
+  //   autoFetch: false,
+  //   config: postMethod,
+  // });
+
+  // send-many
+  const { data: sendManyRes, refetch: sendMany } = useFetch<
+    ResponseMessage,
+    SendManyDto
+  >({
+    url: "/service/mail/send-many",
+    autoFetch: false,
+    config: postMethod,
+  });
+
+  // send-cc-bcc
+  const { data: sendCcBccRes, refetch: sendCcBcc } = useFetch<
+    ResponseMessage,
+    SendCcBccDto
+  >({
+    url: "/service/mail/send-cc-bcc",
+    autoFetch: false,
+    config: postMethod,
+  });
+
+  return {
+    // sendOneRes,
+    sendManyRes,
+    sendCcBccRes,
+    // sendOne,
+    sendMany,
+    sendCcBcc,
   };
 };
 

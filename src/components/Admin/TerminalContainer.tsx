@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { memo, useCallback, useState } from "react";
 import {
   Box,
   Paper,
@@ -9,18 +9,22 @@ import {
   Stack,
   Alert,
   IconButton,
+  alpha,
 } from "@mui/material";
 import { Edit, Add } from "@mui/icons-material";
 import TabPanel, { type ITabItem } from "../../common/CustomRender/TabPanel";
 import { useGetTerminalData, type CreateGateProps } from "../Api/usePostApi";
 import {
   type Facility,
+  type FacilityType,
   type Gate,
   type GateStatus,
   type Terminal,
 } from "../../utils/type";
 import CreateGateForm from "../User/CreateGateForm";
 import CreateFacility from "./modal/CreateFacility";
+import { useFindAllFacilityTypes } from "../Api/useGetApi";
+import theme from "../../scss/theme";
 
 export type UpdateGateProps = Omit<CreateGateProps, "terminalId">;
 
@@ -38,24 +42,32 @@ const PaperContainer = styled(Paper)(({ theme }) => ({
 }));
 
 const GateBox = styled(Box)<{ status: GateStatus }>(({ theme, status }) => {
-  let backgroundColor = theme.palette.grey[300];
-  let color = theme.palette.text.primary;
+  const statusStyles: Record<
+    GateStatus,
+    { backgroundColor: string; color: string }
+  > = {
+    OCCUPIED: {
+      backgroundColor: theme.palette.primary.main,
+      color: theme.palette.primary.contrastText,
+    },
+    CLOSED: {
+      backgroundColor: theme.palette.success.dark,
+      color: theme.palette.primary.light,
+    },
+    AVAILABLE: {
+      backgroundColor: theme.palette.background.default,
+      color: theme.palette.primary.light,
+    },
+    MAINTENANCE: {
+      backgroundColor: theme.palette.warning.main,
+      color: theme.palette.warning.contrastText,
+    },
+  };
 
-  if (status === "OCCUPIED") {
-    backgroundColor = theme.palette.primary.main;
-    color = theme.palette.primary.contrastText;
-  }
-  if (status === "CLOSED") {
-    backgroundColor = theme.palette.success.dark;
-    color = theme.palette.primary.light;
-  }
-  if (status === "AVAILABLE") {
-    backgroundColor = theme.palette.background.default;
-    color = theme.palette.primary.light;
-  } else if (status === "MAINTENANCE") {
-    backgroundColor = theme.palette.warning.main;
-    color = theme.palette.warning.contrastText;
-  }
+  const { backgroundColor, color } = statusStyles[status] || {
+    backgroundColor: theme.palette.grey[300],
+    color: theme.palette.text.primary,
+  };
 
   return {
     padding: theme.spacing(1),
@@ -119,6 +131,28 @@ const TerminalContainer: React.FC = () => {
     openingHours: "",
     flight: "",
   });
+  // const { dataFacilityTypes } = useFindAllFacilityTypes();
+
+  const getFacilityStyle = (type: FacilityType) => {
+    const t = type?.toUpperCase() || "OTHER";
+    switch (t) {
+      case "RESTAURANT":
+        return { label: "Nhà hàng", color: theme.palette.primary.main };
+      case "SHOP":
+        return { label: "Cửa hàng", color: theme.palette.secondary.main };
+      case "LOUNGE":
+        return { label: "Phòng chờ", color: theme.palette.success.main };
+      case "INFORMATION":
+        return { label: "Thông tin", color: theme.palette.info.main };
+      case "SECURITY":
+        return { label: "An ninh", color: theme.palette.error.main };
+      case "TRANSPORTATION":
+        return { label: "Di chuyển", color: theme.palette.warning.main };
+      default:
+        return { label: "Khác", color: theme.palette.grey[700] };
+    }
+  };
+
   const [dialogType, setDialogType] = useState<"update" | "create">("create");
   const [gateForm, setGateForm] = useState<UpdateGateProps>({
     code: "",
@@ -147,8 +181,11 @@ const TerminalContainer: React.FC = () => {
     return statusMap[status] || status;
   };
 
-  const handleFacilityClick = (facility: Facility) => {
-    // setDialogType("facility");
+  const handleFacilityClick = (
+    type: "create" | "update",
+    facility: Facility
+  ) => {
+    setDialogType(type);
     setEditingItem(facility);
     setDialogOpen((prev) => ({ ...prev, facility: true }));
   };
@@ -267,6 +304,8 @@ const TerminalContainer: React.FC = () => {
     return (
       <CreateFacility
         terminalId={terminalId}
+        mode={dialogType}
+        updateData={editingItem as Facility}
         onClose={() => {
           setDialogOpen((prev) => ({ ...prev, facility: false }));
           refetchGetTerminalData();
@@ -491,28 +530,53 @@ const TerminalContainer: React.FC = () => {
 
                   {terminal.facilities.length > 0 ? (
                     <Box sx={{ mb: 2 }}>
-                      {terminal.facilities.map((facility) => (
-                        <Chip
-                          key={facility.id}
-                          label={
-                            <Box>
-                              <Typography variant="body2">
-                                {facility.name}
-                              </Typography>
-                              <Typography variant="caption" display="block">
-                                {facility.type}
-                              </Typography>
-                            </Box>
-                          }
-                          size="small"
-                          variant="outlined"
-                          sx={{ m: 0.5 }}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleFacilityClick(facility);
-                          }}
-                        />
-                      ))}
+                      {terminal.facilities.map((facility) => {
+                        const info = getFacilityStyle(
+                          facility.type as FacilityType
+                        );
+                        const chipBg = alpha(info.color, 0.06);
+                        const chipHoverBg = alpha(info.color, 0.1);
+
+                        return (
+                          <Chip
+                            key={facility.id}
+                            clickable
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleFacilityClick("update", facility);
+                            }}
+                            size="medium"
+                            variant="outlined"
+                            sx={{
+                              m: 0.5,
+                              borderColor: info.color,
+                              color: info.color,
+                              backgroundColor: chipBg,
+                              "&:hover": {
+                                backgroundColor: chipHoverBg,
+                                boxShadow: theme.shadows[1],
+                              },
+                            }}
+                            label={
+                              <Box sx={{ textAlign: "left", lineHeight: 1 }}>
+                                <Typography
+                                  variant="body2"
+                                  sx={{ fontWeight: 600 }}
+                                >
+                                  {facility.name}
+                                </Typography>
+                                <Typography
+                                  variant="caption"
+                                  display="block"
+                                  sx={{ color: info.color, opacity: 0.9 }}
+                                >
+                                  {info.label}
+                                </Typography>
+                              </Box>
+                            }
+                          />
+                        );
+                      })}
                     </Box>
                   ) : (
                     <Box
@@ -561,4 +625,4 @@ const TerminalContainer: React.FC = () => {
   );
 };
 
-export default TerminalContainer;
+export default memo(TerminalContainer);

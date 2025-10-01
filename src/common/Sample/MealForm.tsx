@@ -23,9 +23,13 @@ import {
   Category as CategoryIcon,
   CheckCircle as CheckCircleIcon,
   Save as SaveIcon,
+  LunchDining,
+  DinnerDining,
+  SignalWifi1BarLock,
 } from "@mui/icons-material";
 import InputTextField from "../Input/InputTextField";
 import InputTextArea from "../Input/InputTextArea";
+import SelectDropdown, { type ActionType } from "../Dropdown/SelectDropdown";
 
 interface MealFormProps {
   onSubmit: (data: any) => void;
@@ -39,6 +43,25 @@ const MealForm: React.FC<MealFormProps> = ({ onSubmit }) => {
     price: "",
     isAvailable: true,
   });
+
+  const mealOptions: ActionType[] = [
+    {
+      value: "Breakfast",
+      label: "Bữa sáng",
+      icon: <CategoryIcon color="action" />,
+    },
+    { value: "Lunch", label: "Bữa trưa", icon: <LunchDining color="action" /> },
+    {
+      value: "Dinner",
+      label: "Bữa tối",
+      icon: <DinnerDining color="action" />,
+    },
+    {
+      value: "Snack",
+      label: "Đồ ăn nhẹ",
+      icon: <SignalWifi1BarLock color="action" />,
+    },
+  ];
 
   const [errors, setErrors] = useState({
     name: false,
@@ -135,22 +158,18 @@ const MealForm: React.FC<MealFormProps> = ({ onSubmit }) => {
           {/* Loại bữa ăn */}
           <Grid size={6}>
             <FormControl fullWidth error={errors.mealType}>
-              <Select
+              <SelectDropdown
                 value={form.mealType}
-                label="Loại bữa ăn"
-                onChange={(e) => handleChange("mealType", e.target.value)}
-                sx={{ borderRadius: 2 }}
-                startAdornment={
-                  <InputAdornment position="start">
-                    <CategoryIcon color="action" />
-                  </InputAdornment>
-                }
-              >
-                <MenuItem value="Breakfast">Bữa sáng</MenuItem>
-                <MenuItem value="Lunch">Bữa trưa</MenuItem>
-                <MenuItem value="Dinner">Bữa tối</MenuItem>
-                <MenuItem value="Snack">Đồ ăn nhẹ</MenuItem>
-              </Select>
+                placeholder="Loại bữa ăn"
+                options={mealOptions}
+                onChange={(e) => handleChange("mealType", e)}
+                variant="outlined"
+                // ={
+                //   <InputAdornment position="start">
+                //     <CategoryIcon color="action" />
+                //   </InputAdornment>
+                // }
+              />
               {errors.mealType && (
                 <FormHelperText>Vui lòng chọn loại bữa ăn</FormHelperText>
               )}
@@ -160,6 +179,7 @@ const MealForm: React.FC<MealFormProps> = ({ onSubmit }) => {
           {/* Giá */}
           <Grid size={6}>
             <InputTextField
+              clearable
               value={form.price}
               onChange={(e) => handleChange("price", e)}
               error={errors.price}

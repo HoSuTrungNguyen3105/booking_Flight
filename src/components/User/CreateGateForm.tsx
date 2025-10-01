@@ -302,7 +302,7 @@ const CreateGateForm = ({
                     </FormHelperText>
                   </FormControl>
                 ) : (
-                  <InputTextField value={terminalId} disabled></InputTextField>
+                  <InputTextField value={terminalId} readOnly></InputTextField>
                 )}
               </Grid>
 

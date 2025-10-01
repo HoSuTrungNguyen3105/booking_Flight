@@ -3,7 +3,7 @@ import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import TextField from "@mui/material/TextField";
 import ClearIcon from "../../svgs/window-close.svg";
-import ClearErrorIcon from "../../svgs/window-close.svg";
+import ClearErrorIcon from "../../svgs/eye_close.png";
 import ContentCopyRoundedIcon from "@mui/icons-material/ContentCopyRounded";
 import DoneAllRoundedIcon from "@mui/icons-material/DoneAllRounded";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -44,7 +44,7 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
       showEyeIcon = false,
       startIcon,
       endIcon,
-      clearable = false,
+      clearable = true,
       value,
       disabled,
       onChange = () => {},

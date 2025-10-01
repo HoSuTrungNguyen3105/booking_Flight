@@ -9,18 +9,27 @@ import {
   alpha,
 } from "@mui/material";
 import {
+  CategoryRounded,
   Delete as DeleteIcon,
+  DinnerDining,
+  EmojiFoodBeverage,
+  Fastfood,
+  Icecream,
+  LocalBar,
+  LocalDrink,
+  LunchDining,
   Restaurant as RestaurantIcon,
+  VerticalAlignCenterSharp,
 } from "@mui/icons-material";
 import theme from "../../../scss/theme";
-import type { Meal } from "../../../utils/type";
+import type { Meal, MealType } from "../../../utils/type";
 import InputTextArea from "../../../common/Input/InputTextArea";
 import type { CreateMealDto } from "./BulkMealCreator";
 import SelectDropdown, {
   type ActionType,
 } from "../../../common/Dropdown/SelectDropdown";
 import InputTextField from "../../../common/Input/InputTextField";
-import { useFindAllMealTypes } from "../../Api/useGetApi";
+import { mapStringToDropdown, useFindAllMealTypes } from "../../Api/useGetApi";
 
 interface MealFormProps {
   meal: CreateMealDto;
@@ -33,14 +42,70 @@ const MealForm =
   // = forwardRef<HTMLDivElement, MealFormProps>(
   ({ meal, index, onChange, onRemove }: MealFormProps) => {
     const { dataMealTypes } = useFindAllMealTypes();
-    const getMealTypeOptions = useCallback((): ActionType[] => {
-      const res =
-        dataMealTypes?.data?.map((i) => ({
-          value: i,
-          label: i,
-        })) ?? [];
-      return res;
-    }, [dataMealTypes]);
+
+    // const getMealTypeOptions = mapStringToDropdown(dataMealTypes?.data || []);
+    const getMealIcon = (mealType: MealType) => {
+      switch (mealType) {
+        case "BREAKFAST":
+          return <CategoryRounded color="action" />;
+        case "LUNCH":
+          return <LunchDining color="action" />;
+        case "DINNER":
+          return <DinnerDining color="action" />;
+        case "SNACK":
+          return <Fastfood color="action" />;
+        case "BEVERAGE":
+          return <LocalDrink color="action" />; // đồ uống thường
+        case "DRINK":
+          return <LocalBar color="action" />; // rượu, cocktail
+        case "DESSERT":
+          return <Icecream color="action" />; // tráng miệng
+        case "VEG":
+          return <VerticalAlignCenterSharp color="action" />; // món chay
+        case "NONVEG":
+          return <EmojiFoodBeverage color="action" />; // món mặn
+        default:
+          return null;
+      }
+    };
+
+    const mapMealOptions = useCallback((mealTypes: string[]): ActionType[] => {
+      return mealTypes.map((type) => ({
+        value: type,
+        label: type,
+        icon: getMealIcon(type as MealType),
+      }));
+    }, []);
+
+    const mealOptions = mapMealOptions(dataMealTypes?.data ?? []);
+
+    // const mapMealOptions = (mealTypes: string[]): ActionType[] => {
+    //   return mealTypes.map((type) => ({
+    //     value:
+    //       type === "BREAKFAST"
+    //         ? "Bữa sáng"
+    //         : type === "LUNCH"
+    //         ? "Bữa trưa"
+    //         : type === "DINNER"
+    //         ? "Bữa tối"
+    //         : type === "SNACK"
+    //         ? "Đồ ăn nhẹ"
+    //         : type,
+    //     label:
+    //       type === "BREAKFAST"
+    //         ? "Bữa sáng"
+    //         : type === "LUNCH"
+    //         ? "Bữa trưa"
+    //         : type === "DINNER"
+    //         ? "Bữa tối"
+    //         : type === "SNACK"
+    //         ? "Đồ ăn nhẹ"
+    //         : type,
+    //     icon: getMealIcon(type as MealType),
+    //   }));
+    // };
+
+    // const mealOptions = mapMealOptions(dataMealTypes?.data || []);
 
     return (
       <Card
@@ -128,7 +193,7 @@ const MealForm =
                 <SelectDropdown
                   value={meal.mealType}
                   onChange={(e) => onChange(index, "mealType", e)}
-                  options={getMealTypeOptions()}
+                  options={mealOptions}
                 />
               </Box>
             </Grid>
@@ -142,22 +207,11 @@ const MealForm =
                 >
                   Price ($) *
                 </Typography>
-                <input
+                <InputTextField
                   type="number"
-                  value={meal.price}
-                  onChange={(e) =>
-                    onChange(index, "price", parseFloat(e.target.value) || 0)
-                  }
+                  value={String(meal.price)}
+                  onChange={(e) => onChange(index, "price", parseFloat(e) || 0)}
                   placeholder="0.00"
-                  min="0"
-                  step="0.01"
-                  style={{
-                    width: "100%",
-                    padding: "12px",
-                    border: `1px solid ${theme.palette.divider}`,
-                    borderRadius: "8px",
-                    fontSize: "14px",
-                  }}
                 />
               </Box>
             </Grid>

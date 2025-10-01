@@ -365,6 +365,18 @@ export interface Meal {
   isAvailable: boolean;
   flightMeals: FlightMeal[];
 }
+export type MealType =
+  | "VEG"
+  | "NONVEG"
+  | "DRINK"
+  | "DESSERT"
+  | "BEVERAGE"
+  | "SNACK"
+  | "DINNER"
+  | "LUNCH"
+  | "BREAKFAST";
+
+export type MealRequestDto = Omit<Meal, "id" | "flightMeals">;
 // Kiểu cho mỗi booking, bao gồm thông tin hành khách, flightId, thời gian đặt vé và chi tiết chuyến bay
 export type SearchBookingFlightProps = {
   id: number;
@@ -466,18 +478,17 @@ export type EmailProps = {
 //   user2Id: number;
 // };
 
-export enum FacilityType {
-  RESTAURANT = "RESTAURANT",
-  SHOP = "SHOP",
-  LOUNGE = "LOUNGE",
-  ATM = "ATM",
-  WIFI = "WIFI",
-  CHARGING_STATION = "CHARGING_STATION",
-  INFORMATION = "INFORMATION",
-  MEDICAL = "MEDICAL",
-  PRAYER_ROOM = "PRAYER_ROOM",
-  SMOKING_AREA = "SMOKING_AREA",
-}
+export type FacilityType =
+  | "RESTAURANT"
+  | "SHOP"
+  | "LOUNGE"
+  | "ATM"
+  | "WIFI"
+  | "CHARGING_STATION"
+  | "INFORMATION"
+  | "MEDICAL"
+  | "PRAYER_ROOM"
+  | "SMOKING_AREA";
 
 export type Terminal = {
   id: string;

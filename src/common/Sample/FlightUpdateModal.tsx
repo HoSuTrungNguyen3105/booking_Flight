@@ -28,7 +28,7 @@ import Android12Switch from "../Switch/Switch";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import BaseModal from "../Modal/BaseModal";
-import { DateFormatEnum, formatDate, formatDateKR } from "../../hooks/format";
+import { DateFormatEnum, formatDate } from "../../hooks/format";
 import {
   useGetAllCode,
   useGetFlightByIDData,

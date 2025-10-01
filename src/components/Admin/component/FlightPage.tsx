@@ -10,6 +10,7 @@ import { useState } from "react";
 import { useFlightList } from "../../Api/usePostApi";
 import ImageFlight from "../../../svgs/wallpaper.jpg";
 import type { DataFlight } from "../../../utils/type";
+import { DateFormatEnum, formatDate } from "../../../hooks/format";
 const FlightPage = () => {
   const { flightList } = useFlightList();
   const [selectedFlight, setSelectedFlight] = useState<DataFlight | null>(null);
@@ -59,11 +60,17 @@ const FlightPage = () => {
                     </Typography>
                     <Typography variant="body2" mt={1}>
                       Departure:{" "}
-                      {new Date(flight.scheduledDeparture).toLocaleString()}
+                      {formatDate(
+                        DateFormatEnum.DD_MM_YYYY_HH_MM_SS,
+                        flight.scheduledDeparture
+                      )}
                     </Typography>
                     <Typography variant="body2">
                       Arrival:{" "}
-                      {new Date(flight.scheduledArrival).toLocaleString()}
+                      {formatDate(
+                        DateFormatEnum.DD_MM_YYYY_HH_MM_SS,
+                        flight.scheduledArrival
+                      )}
                     </Typography>
                   </Box>
                   <Box>

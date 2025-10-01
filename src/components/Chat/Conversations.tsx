@@ -260,22 +260,6 @@ const Conversations = ({
             justifyContent: "center",
           }}
         >
-          <Box
-            sx={{
-              width: 64,
-              height: 64,
-              borderRadius: "50%",
-              backgroundColor: "grey.100",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              mb: 1,
-            }}
-          >
-            <Typography variant="h4" color="text.secondary">
-              💬
-            </Typography>
-          </Box>
           <Typography
             variant="body1"
             color="text.secondary"

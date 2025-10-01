@@ -1,8 +1,10 @@
 import {
+  Box,
   FormControl,
   MenuItem,
   Select,
   styled,
+  Typography,
   type SelectChangeEvent,
   type SxProps,
 } from "@mui/material";
@@ -107,14 +109,22 @@ const SelectDropdown: FC<OptionSelectDropdownProps> = ({
           </MenuItem>
         )}
 
-        {options.map(({ label, value, color, disabled }) => (
-          <MenuItem
-            key={value}
-            disabled={disabled}
-            value={value}
-            sx={{ color: color }}
-          >
-            {label}
+        {options.map(({ label, icon, value, color, disabled }) => (
+          <MenuItem key={value} disabled={disabled} value={value}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1.5,
+                color: color || "inherit",
+              }}
+            >
+              {/* Icon */}
+              {icon && <Box sx={{ fontSize: 20, display: "flex" }}>{icon}</Box>}
+
+              {/* Label */}
+              <Typography variant="body2">{label}</Typography>
+            </Box>
           </MenuItem>
         ))}
       </StyledSelect>
