@@ -16,14 +16,17 @@ import {
   Visibility,
   Download,
   CheckCircle,
+  IosShareRounded,
 } from "@mui/icons-material";
 import { GridActionsCellItem, type GridColDef } from "@mui/x-data-grid";
-import { useEffect, useState } from "react";
-import DataTable, { type GridRowDef } from "../../common/DataGrid/index";
+import { useEffect, useMemo, useState } from "react";
+import { type GridRowDef } from "../../common/DataGrid/index";
 import TableSection from "../Setting/TableSection";
 import CreatePayrollModal from "./modal/CreatePayrollModal";
+import { useGetPayrollData } from "../../components/Api/useGetApi";
+import SelectDropdown, { type ActionType } from "../Dropdown/SelectDropdown";
 
-interface Payroll {
+export interface Payroll {
   id: number;
   employeeId: number;
   month: number;
@@ -33,7 +36,7 @@ interface Payroll {
   deductions: number;
   tax: number;
   netPay: number;
-  status: "DRAFT" | "FINALIZED";
+  status: string; //"DRAFT" | "FINALIZED"
   generatedAt: string;
   employee: {
     id: number;
@@ -62,46 +65,44 @@ const PayrollManagement = () => {
     tax: 0,
   });
 
-  // Mock data
-  const payrolls: Payroll[] = [
-    {
-      id: 1,
-      employeeId: 1,
-      month: 2,
-      year: 2024,
-      baseSalary: 50000000,
-      allowances: 5000000,
-      deductions: 2500000,
-      tax: 7500000,
-      netPay: 45000000,
-      status: "FINALIZED",
-      generatedAt: "2024-12-15T00:00:00Z",
-      employee: { id: 1, name: "Nguyễn Văn A", employeeNo: "NV001" },
-    },
-    {
-      id: 2,
-      employeeId: 2,
-      month: 12,
-      year: 2024,
-      baseSalary: 60000000,
-      allowances: 6000000,
-      deductions: 3000000,
-      tax: 9000000,
-      netPay: 54000000,
-      status: "DRAFT",
-      generatedAt: "2024-12-16T00:00:00Z",
-      employee: { id: 2, name: "Trần Thị B", employeeNo: "NV002" },
-    },
+  const options: ActionType[] = [
+    { value: 2023, label: "2023" },
+    { value: 2024, label: "2024" },
+    { value: 2025, label: "2025" },
+    { value: 2022, label: "2022" },
+    { value: 2021, label: "2021" },
+    { value: 2020, label: "2020" },
+    { value: 2019, label: "2019" },
+    { value: 2018, label: "2018" },
+    { value: 2017, label: "2017" },
   ];
+
+  const monthsOptions = Array.from({ length: 12 }, (_, i) => ({
+    value: i + 1,
+    label: `Tháng ${i + 1}`,
+  }));
+
+  const { dataPayrollStatuses } = useGetPayrollData();
+
+  const rowData = useMemo(
+    () =>
+      dataPayrollStatuses?.list?.map((item) => ({
+        ...item,
+        id: item.id,
+      })) || [],
+    [dataPayrollStatuses]
+  );
 
   const maskValue = (value: string | number) => {
     if (!value) return "";
     const str = value.toString();
-    if (str.length <= 3) return str; // nếu ngắn quá thì hiện luôn
-    const visible = str.slice(-3); // lấy 3 ký tự cuối
+    if (str.length <= 3) return str;
+    const visible = str.slice(-3);
     const masked = "*".repeat(str.length - 3);
     return masked + visible;
   };
+
+  const handleSearch = (month: number, year: number) => {};
 
   const [showData, setShowData] = useState(false);
 
@@ -115,16 +116,6 @@ const PayrollManagement = () => {
         showData
           ? params.row.employee.name
           : maskValue(params.row.employee.name),
-      //    (
-      //   <Stack spacing={0.5}>
-      //     <Typography variant="subtitle2">
-      //       {params.row.employee.name}
-      //     </Typography>
-      //     <Typography variant="caption" color="text.secondary">
-      //       {params.row.employee.employeeNo}
-      //     </Typography>
-      //   </Stack>
-      // ),
     },
     {
       field: "period",
@@ -201,18 +192,20 @@ const PayrollManagement = () => {
       renderCell: (params) =>
         [
           <GridActionsCellItem
+            key="toggle-visibility"
             icon={<Visibility />}
             label={showData ? "Ẩn dữ liệu" : "Hiện dữ liệu"}
             onClick={() => setShowData((prev) => !prev)}
           />,
-
           <GridActionsCellItem
+            key="download"
             icon={<Download />}
             label="Tải về"
             onClick={() => handleDownload(params.row)}
           />,
           params.row.status === "DRAFT" && (
             <GridActionsCellItem
+              key="finalize"
               icon={<CheckCircle />}
               label="Duyệt"
               onClick={() => handleFinalize(params.row.id)}
@@ -288,36 +281,31 @@ const PayrollManagement = () => {
             </Button>
 
             <FormControl sx={{ minWidth: 150 }}>
-              <InputLabel>Tháng</InputLabel>
-              <Select
+              <SelectDropdown
                 value={month}
-                onChange={(e) => setMonth(Number(e.target.value))}
-                label="Tháng"
+                onChange={(e) => setMonth(Number(e))}
+                placeholder="Tháng"
+                options={monthsOptions}
               >
-                {Array.from({ length: 12 }, (_, i) => ({
+                {/* {Array.from({ length: 12 }, (_, i) => ({
                   value: i + 1,
                   label: `Tháng ${i + 1}`,
                 })).map((m) => (
                   <MenuItem key={m.value} value={m.value}>
                     {m.label}
                   </MenuItem>
-                ))}
-              </Select>
+                ))} */}
+              </SelectDropdown>
             </FormControl>
 
             <FormControl sx={{ minWidth: 120 }}>
-              <InputLabel>Năm</InputLabel>
-              <Select
+              <Typography variant="body1">Năm</Typography>
+              <SelectDropdown
                 value={year}
-                onChange={(e) => setYear(Number(e.target.value))}
-                label="Năm"
-              >
-                {[2023, 2024, 2025].map((y) => (
-                  <MenuItem key={y} value={y}>
-                    {y}
-                  </MenuItem>
-                ))}
-              </Select>
+                onChange={(e) => setYear(Number(e))}
+                placeholder="Năm"
+                options={options}
+              />
             </FormControl>
           </Stack>
         </Grid>
@@ -333,7 +321,7 @@ const PayrollManagement = () => {
 
       {/* Data Grid */}
       <TableSection
-        rows={payrolls}
+        rows={rowData}
         isLoading={false}
         setRows={setMealRows}
         onSelectedRowIdsChange={handleMealRowSelection}

@@ -13,6 +13,9 @@ import type { AdminUpdateUserForm } from "../../utils/type";
 import SendEmailToUsers from "./SendEmailToUsers";
 import TableSection from "./TableSection";
 import type { GridRowId } from "@mui/x-data-grid";
+import BatchUpdateEmployeeNo, {
+  type UpdateItem,
+} from "../Sample/BatchUpdateEmployeeNo";
 
 const ManageMyInfo = () => {
   const {
@@ -28,6 +31,11 @@ const ManageMyInfo = () => {
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowId[]>([]);
   const [selectedRowChange, setSelectedRowChange] = useState<GridRowDef[]>([]);
   const [navigateEmailSend, setNavigateEmailSend] = useState<boolean>(false);
+  const [selectedUpdateItem, setSelectedUpdateItem] = useState<UpdateItem[]>(
+    []
+  );
+  const [navigateUpdateEmployeeID, setNavigateUpdateEmployeeID] =
+    useState<boolean>(false);
 
   const handleMealRowSelection = (selectedIds: GridRowId[]) => {
     setSelectedRowIds(selectedIds);
@@ -39,10 +47,22 @@ const ManageMyInfo = () => {
     console.log("selectedRowIds:", selectedIds);
     console.log("selectedRowChange:", newSelectedRows);
   };
+
+  // const selectedEmails: string[] = selectedRowChange.map((row) => row);
+
   const handleNavigateEmailSend = useCallback(() => {
     setNavigateEmailSend(true);
   }, [setNavigateEmailSend]);
   const [isValidate, setIsValidate] = useState(false);
+
+  const handleNavigateSelectedUpdateItem = useCallback(() => {
+    const updates: UpdateItem[] = selectedRowChange.map((row) => ({
+      userId: Number(row.id as number), // ép chắc chắn về number
+      employeeNo: String(row.employeeNo ?? ""),
+    }));
+    setSelectedUpdateItem(updates);
+    setNavigateUpdateEmployeeID(true);
+  }, [selectedRowChange]);
 
   if (loading) {
     return <Loading />;
@@ -63,6 +83,10 @@ const ManageMyInfo = () => {
   if (navigateEmailSend) {
     const selectedEmails: string[] = selectedRowChange.map((row) => row.email);
     return <SendEmailToUsers selectedUser={selectedEmails} />;
+  }
+
+  if (navigateUpdateEmployeeID) {
+    return <BatchUpdateEmployeeNo updateItem={selectedUpdateItem} />;
   }
 
   return (
@@ -99,6 +123,12 @@ const ManageMyInfo = () => {
       {selectedRowIds.length > 0 && (
         <Button onClick={handleNavigateEmailSend} variant="contained">
           Send Message
+        </Button>
+      )}
+
+      {selectedRowIds.length > 0 && (
+        <Button onClick={handleNavigateSelectedUpdateItem} variant="contained">
+          Update Employee ID
         </Button>
       )}
 

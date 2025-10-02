@@ -54,6 +54,7 @@ import CreateFacility from "../components/Admin/modal/CreateFacility";
 import AirportManagementDetail from "../components/User/AirportManagementDetail";
 import ChangePasswordInProfile from "../components/User/Security/ChangePasswordInProfile";
 import FlightBatchCreator from "../components/Admin/component/FlightBatchCreator";
+import BatchUpdateEmployeeNo from "../common/Sample/BatchUpdateEmployeeNo";
 
 export const mockTerminals = [
   {
@@ -320,6 +321,10 @@ const routes = [
         path: "flight-book",
         // element: <FlightBooking />,
       },
+      // {
+      //   path: "BatchUpdateEmployeeNo",
+      //   element: <BatchUpdateEmployeeNo />,
+      // },
       {
         path: "manage-my-info",
         element: <ManageMyInfo />,

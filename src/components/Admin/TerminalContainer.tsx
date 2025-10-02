@@ -214,16 +214,16 @@ const TerminalContainer: React.FC = () => {
     openingHours: "",
   });
 
-  const handleChange = (e: string) => {
-    setFacilities({ ...facilities, [e]: e });
-  };
+  // const handleChange = (e: string) => {
+  //   setFacilities({ ...facilities, [e]: e });
+  // };
 
-  const handleSelectChange = (name: string, value: string | number) => {
-    setFacilities((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  // const handleSelectChange = (name: string, value: string | number) => {
+  //   setFacilities((prev) => ({
+  //     ...prev,
+  //     [name]: value,
+  //   }));
+  // };
 
   const handleAddNew = (type: "gate" | "facility", terminalId: string) => {
     setDialogType("create");

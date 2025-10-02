@@ -20,6 +20,10 @@ import {
   type TerminalLabelListResponse,
 } from "../../utils/type.ts";
 import { useFetch } from "../../context/use[custom]/useFetch.ts";
+import type {
+  Payroll,
+  PayrollProps,
+} from "../../common/Sample/PayrollManagement.tsx";
 
 const getMethod = {
   method: MethodType.GET,
@@ -479,6 +483,22 @@ export const useFindAllPayrollStatuses = () => {
     null
   >({
     url: "/sys/enums/payroll-statuses",
+    autoFetch: true,
+    config: getMethod,
+  });
+  return {
+    dataPayrollStatuses: data,
+    refetchPayrollStatuses: refetch,
+    loadingPayrollStatuses: loading,
+  };
+};
+
+export const useGetPayrollData = () => {
+  const { data, refetch, loading } = useFetch<
+    DetailResponseMessage<Payroll>,
+    null
+  >({
+    url: "/sys/payrolls",
     autoFetch: true,
     config: getMethod,
   });

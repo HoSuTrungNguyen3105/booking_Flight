@@ -269,6 +269,7 @@ export type BaseUserData = {
   pictureUrl?: string;
   rank?: string;
   role?: UserRoleType;
+  employeeNo?: string;
   passport?: string;
   baseSalary?: number;
   hireDate?: number;

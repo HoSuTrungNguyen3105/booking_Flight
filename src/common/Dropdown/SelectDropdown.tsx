@@ -41,7 +41,7 @@ const StyledSelect = styled(Select)(({ theme }) => ({
   },
   "& .MuiSelect-select": {
     ...theme.typography.body1,
-    padding: "11px 17px",
+    padding: "8px 12px",
   },
   "& > p": {
     ...theme.typography.body1,
@@ -110,20 +110,52 @@ const SelectDropdown: FC<OptionSelectDropdownProps> = ({
         )}
 
         {options.map(({ label, icon, value, color, disabled }) => (
-          <MenuItem key={value} disabled={disabled} value={value}>
+          <MenuItem
+            key={value}
+            disabled={disabled}
+            value={value}
+            sx={{
+              minHeight: 36,
+              py: 0.5,
+              fontSize: 13,
+              width: "100%", // full chiều rộng dropdown
+            }}
+          >
             <Box
               sx={{
                 display: "flex",
                 alignItems: "center",
-                gap: 1.5,
-                color: color || "inherit",
+                gap: 1,
+                width: "100%", // quan trọng để chiếm hết không gian
+                minWidth: 0, // cho phép Typography co lại
               }}
             >
               {/* Icon */}
-              {icon && <Box sx={{ fontSize: 20, display: "flex" }}>{icon}</Box>}
+              {icon && (
+                <Box
+                  sx={{
+                    fontSize: 18,
+                    display: "flex",
+                    flexShrink: 0,
+                  }}
+                >
+                  {icon}
+                </Box>
+              )}
 
               {/* Label */}
-              <Typography variant="body2">{label}</Typography>
+              <Typography
+                variant="body2"
+                noWrap
+                sx={{
+                  fontSize: 12,
+                  flexGrow: 1,
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {label}
+              </Typography>
             </Box>
           </MenuItem>
         ))}
