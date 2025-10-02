@@ -5,7 +5,13 @@ import InputTextField from "../Input/InputTextField";
 import type { Theme } from "@mui/material/styles";
 import type { SxProps } from "@mui/system";
 // import JobTypeSelector from "../Setting/JobTypeSelector";
-import SelectDropdown from "../Dropdown/SelectDropdown";
+import SelectDropdown, { type ActionType } from "../Dropdown/SelectDropdown";
+
+type FieldValue =
+  | boolean // cho SWITCH
+  | string // cho DROPDOWN
+  | number // nếu dropdown dùng id number
+  | null; // khi chưa chọn gì
 
 export enum FieldType {
   SWITCH = "switch",
@@ -22,12 +28,13 @@ type FormField = {
   label?: string;
   type: FieldType;
   placeholder?: string;
-  options: DropdownOptions[];
-  value: any;
-  sx?: SxProps<Theme>;
+  options: ActionType[];
+  value: FieldValue;
+  sx?: SxProps;
+  readOnly?: boolean;
   disabled?: boolean;
-  onChange?: (value: any) => void;
-  customProps?: Record<string, any>;
+  onChange?: (value: FieldValue) => void;
+  // customProps?: Record<string, any>;
 };
 
 export type IFormField = {
@@ -48,15 +55,15 @@ const FieldRenderer = ({
   value,
   disabled,
   error,
+  readOnly,
   onChange,
   sx,
-  customProps,
 }: IFieldRendererProps) => {
   switch (type) {
     case FieldType.SWITCH:
       return (
         <Android12Switch
-          checked={value}
+          checked={value as boolean}
           disabled={disabled}
           onChange={(e) => onChange(e.target.checked)}
         />
@@ -68,10 +75,9 @@ const FieldRenderer = ({
           sx={{ width: "100%" }}
           placeholder={placeholder}
           options={options}
-          value={value}
+          value={value as string | number}
           disabled={disabled}
           onChange={onChange}
-          {...(customProps || {})}
         />
       );
 
@@ -81,11 +87,11 @@ const FieldRenderer = ({
           {...sx}
           type="password"
           canCopy
-          // realease3phrase
           showEyeIcon
-          value={value}
+          // disabled={disabled}
+          readOnly={readOnly}
+          value={value as string}
           onChange={onChange}
-          {...(customProps || {})}
         />
       );
     case FieldType.INPUT_WITH_TYPE_TEXT:
@@ -95,16 +101,17 @@ const FieldRenderer = ({
           error={error as boolean}
           type="text"
           clearable
-          value={value}
+          readOnly={readOnly}
+          value={value as string}
           onChange={onChange}
-          {...(customProps || {})}
         />
       );
     case FieldType.TEXTAREA:
       return (
         <InputTextArea
+          readOnly={readOnly}
           placeholder={placeholder}
-          value={value}
+          value={value as string}
           disabled={disabled}
         />
       );

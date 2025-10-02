@@ -20,10 +20,8 @@ import {
   type TerminalLabelListResponse,
 } from "../../utils/type.ts";
 import { useFetch } from "../../context/use[custom]/useFetch.ts";
-import type {
-  Payroll,
-  PayrollProps,
-} from "../../common/Sample/PayrollManagement.tsx";
+import type { Payroll } from "../../common/Sample/PayrollManagement.tsx";
+import type { ActionType } from "../../common/Dropdown/SelectDropdown.tsx";
 
 const getMethod = {
   method: MethodType.GET,
@@ -179,6 +177,38 @@ export const useGetFlightByIDData = ({ id }: ReqUserIDProps) => {
     getFlightByIdData,
     refetchGetFlightData,
     loadingFlightData,
+  };
+};
+
+export const useGetUserIdAndNameToDropdownGeneratePayroll = () => {
+  const { refetch, data, loading } = useFetch<
+    DetailResponseMessage<ActionType>,
+    void
+  >({
+    url: "/sys/payrolls/getUserIdAndNameToDropdown",
+    autoFetch: true,
+    config: getMethod,
+  });
+  return {
+    dataGetUserIdAndNameToDropdown: data,
+    refetchGetUserIdAndNameToDropdown: refetch,
+    loadingGetUserIdAndNameToDropdown: loading,
+  };
+};
+
+export const useGetPayrollsById = (id: number) => {
+  const { refetch, data, loading } = useFetch<
+    DetailResponseMessage<Payroll>,
+    void
+  >({
+    url: `/sys/payrolls/payroll/getById/${String(id)}`,
+    autoFetch: !!id,
+    config: getMethod,
+  });
+  return {
+    dataGetPayrollsById: data,
+    refetchGetPayrollsById: refetch,
+    loadingGetPayrollsById: loading,
   };
 };
 

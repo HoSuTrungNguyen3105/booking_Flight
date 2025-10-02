@@ -62,7 +62,7 @@ const TableSection = ({
 
   const handleRowClickDebug = useCallback(
     (row: GridRowDef) => {
-      console.log("Row clicked in TableSection:", row);
+      console.log("Row clicked in TableSection:", row.id);
       handleRowClick?.(row);
     },
     [handleRowClick]

@@ -110,8 +110,8 @@ export const menuData: MenuSection[] = [
             icon: <OtherHousesTwoToneIcon />,
           },
           {
-            id: "AircraftBatchCreator",
-            label: "AircraftBatchCreator",
+            id: "payroll-management",
+            label: "payroll-management",
             icon: <OtherHousesTwoToneIcon />,
           },
           {

@@ -46,7 +46,8 @@ const AddUserModal = ({
 
                 <FieldRenderer
                   {...fields}
-                  disabled={disabled}
+                  disabled={fields.disabled && disabled}
+                  readOnly={fields.readOnly}
                   value={updateInfo[fields.id as keyof typeof updateInfo] ?? ""}
                   placeholder={fields.placeholder}
                   onChange={(val) => handleChange(fields.id, val)}

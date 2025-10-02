@@ -1,45 +1,64 @@
-import {
-  Box,
-  Grid,
-  Typography,
-  Button,
-  TextField,
-  FormControl,
-  Alert,
-} from "@mui/material";
-import { memo, useCallback } from "react";
+import { Box, Grid, Typography, Button, FormControl } from "@mui/material";
+import { memo, useCallback, useState } from "react";
 import BaseModal from "../../Modal/BaseModal";
-import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
-import type { PayrollProps } from "../PayrollManagement";
-import { Dropdown } from "../../Dropdown/Dropdown";
+import type { GeneratePayroll } from "../PayrollManagement";
 import InputTextField from "../../Input/InputTextField";
+import { useGeneratePayroll } from "../../../components/Api/usePostApi";
+import MoneyIcon from "../../../svgs/money-euro-banknote.svg";
+import { Add as AddIcon } from "@mui/icons-material";
+import { useGetUserIdAndNameToDropdownGeneratePayroll } from "../../../components/Api/useGetApi";
+import SelectDropdown from "../../Dropdown/SelectDropdown";
+import FormRow from "../../CustomRender/FormRow";
 
-interface IModalStatisticalDataLearningProps {
+interface IModalGeneratePayrollProps {
   open: boolean;
   onClose: () => void;
   onSuccess: () => void;
-  payrollData: PayrollProps;
-  setPayrollData: React.Dispatch<React.SetStateAction<PayrollProps>>;
 }
 
 const CreatePayrollModal = ({
   open,
   onClose,
   onSuccess,
-  payrollData,
-  setPayrollData,
-}: IModalStatisticalDataLearningProps) => {
+}: IModalGeneratePayrollProps) => {
+  const now = new Date();
+  const month = now.getMonth() + 1;
+  const year = now.getFullYear();
+
+  const [payrollData, setPayrollData] = useState<GeneratePayroll>({
+    employeeId: 0,
+    month: month,
+    year: year,
+    baseSalary: 0,
+    allowances: 0,
+    deductions: 0,
+    tax: 0,
+  });
+  const { refetchGeneratePayroll } = useGeneratePayroll();
+
+  const { dataGetUserIdAndNameToDropdown } =
+    useGetUserIdAndNameToDropdownGeneratePayroll();
+
+  const handleGeneratePayroll = useCallback(async () => {
+    const res = await refetchGeneratePayroll({
+      ...payrollData,
+    });
+    console.log("payrollData", payrollData);
+    if (res?.resultCode === "00") {
+      onClose();
+      onSuccess();
+    }
+  }, []);
+
   const renderActions = useCallback(() => {
     return (
       <Box display="flex" gap={1} justifyContent="flex-end" alignItems="center">
-        <Button variant="contained" onClick={onSuccess}>
-          Lưu
+        <Button variant="contained" onClick={handleGeneratePayroll}>
+          Save
         </Button>
       </Box>
     );
-  }, [onSuccess]);
-
-  const valueEmployee = [{ value: "ss", label: "ss" }];
+  }, [handleGeneratePayroll]);
 
   const renderContent = useCallback(() => {
     if (!payrollData) return null;
@@ -57,32 +76,52 @@ const CreatePayrollModal = ({
           }}
         >
           <Grid container spacing={3}>
+            <Grid size={5}>
+              <FormRow label="Month">
+                <InputTextField value={String(payrollData.month)} disabled />
+              </FormRow>
+            </Grid>
+            <Grid size={5}>
+              <FormRow label="Year">
+                <InputTextField value={String(payrollData.year)} disabled />
+              </FormRow>
+            </Grid>
             {/* Nhân viên */}
             <Grid size={12}>
               <FormControl fullWidth>
-                <Dropdown
-                  options={valueEmployee}
-                  placeholder="Chọn nhân viên"
-                  onChange={() => {}}
-                  value={[]}
+                <SelectDropdown
+                  options={dataGetUserIdAndNameToDropdown?.list || []}
+                  placeholder="Chọn nhân viên chua tao trong nam nay"
+                  onChange={(val) =>
+                    setPayrollData((prev) => ({
+                      ...prev,
+                      employeeId: val as number,
+                    }))
+                  }
+                  value={payrollData.employeeId}
                 />
               </FormControl>
             </Grid>
 
             {/* Lương cơ bản */}
             <Grid size={12}>
-              <TextField
-                fullWidth
-                label="Lương cơ bản"
+              <InputTextField
+                placeholder="Lương cơ bản"
                 type="number"
-                value={payrollData.baseSalary}
+                value={String(payrollData.baseSalary)}
+                endIcon={
+                  <Box
+                    component={"img"}
+                    sx={{ height: 22, width: 22 }}
+                    src={MoneyIcon}
+                  />
+                }
                 onChange={(e) =>
                   setPayrollData((prev) => ({
                     ...prev,
-                    baseSalary: Number(e.target.value),
+                    baseSalary: Number(e),
                   }))
                 }
-                InputProps={{ endAdornment: <span>đ</span> }}
               />
             </Grid>
 
@@ -91,6 +130,13 @@ const CreatePayrollModal = ({
               <InputTextField
                 type="number"
                 value={String(payrollData.allowances)}
+                endIcon={
+                  <Box
+                    component={"img"}
+                    sx={{ height: 22, width: 22 }}
+                    src={MoneyIcon}
+                  />
+                }
                 onChange={(e) =>
                   setPayrollData((prev) => ({
                     ...prev,
@@ -102,65 +148,65 @@ const CreatePayrollModal = ({
 
             {/* Khấu trừ */}
             <Grid size={12}>
-              <TextField
-                fullWidth
-                label="Khấu trừ"
+              <InputTextField
                 type="number"
-                value={payrollData.deductions}
+                value={String(payrollData.deductions)}
+                endIcon={
+                  <Box
+                    component={"img"}
+                    sx={{ height: 22, width: 22 }}
+                    src={MoneyIcon}
+                  />
+                }
                 onChange={(e) =>
                   setPayrollData((prev) => ({
                     ...prev,
-                    deductions: Number(e.target.value),
+                    deductions: Number(e),
                   }))
                 }
-                InputProps={{ endAdornment: <span>đ</span> }}
               />
             </Grid>
 
             {/* Thuế */}
             <Grid size={12}>
-              <TextField
-                fullWidth
-                label="Thuế"
+              <InputTextField
                 type="number"
-                value={payrollData.tax}
+                value={String(payrollData.tax)}
+                endIcon={
+                  <Box
+                    component={"img"}
+                    sx={{ height: 22, width: 22 }}
+                    src={MoneyIcon}
+                  />
+                }
                 onChange={(e) =>
                   setPayrollData((prev) => ({
                     ...prev,
-                    tax: Number(e.target.value),
+                    tax: Number(e),
                   }))
                 }
-                InputProps={{ endAdornment: <span>đ</span> }}
               />
-            </Grid>
-
-            {/* Thực lĩnh */}
-            <Grid size={12}>
-              <Alert severity="info">
-                Thực lĩnh:{" "}
-                {(
-                  payrollData.baseSalary +
-                  payrollData.allowances -
-                  payrollData.deductions -
-                  payrollData.tax
-                ).toLocaleString()}
-                đ
-              </Alert>
             </Grid>
           </Grid>
         </Box>
       </>
     );
-  }, [payrollData, setPayrollData]);
+  }, [
+    payrollData,
+    setPayrollData,
+    month,
+    year,
+    dataGetUserIdAndNameToDropdown?.list,
+  ]);
 
   return (
     <BaseModal
       open={open}
       onClose={onClose}
-      title="Chi tiết bảng lương"
-      Icon={PrivacyTipIcon}
-      maxWidth="lg"
-      sx={{ maxHeight: "600px", width: "lg" }}
+      title="Generate bảng lương"
+      Icon={AddIcon}
+      // maxWidth="lg"
+      // sx={{ maxHeight: "600px", width: "lg" }}
       slots={{ content: renderContent(), actions: renderActions() }}
     />
   );

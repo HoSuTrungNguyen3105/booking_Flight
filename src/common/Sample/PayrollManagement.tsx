@@ -17,14 +17,32 @@ import {
   Download,
   CheckCircle,
   IosShareRounded,
+  MarkEmailRead,
+  VisibilityOff,
 } from "@mui/icons-material";
-import { GridActionsCellItem, type GridColDef } from "@mui/x-data-grid";
-import { useEffect, useMemo, useState } from "react";
+import {
+  GridActionsCellItem,
+  type GridColDef,
+  type GridRowId,
+} from "@mui/x-data-grid";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { type GridRowDef } from "../../common/DataGrid/index";
 import TableSection from "../Setting/TableSection";
 import CreatePayrollModal from "./modal/CreatePayrollModal";
 import { useGetPayrollData } from "../../components/Api/useGetApi";
 import SelectDropdown, { type ActionType } from "../Dropdown/SelectDropdown";
+import { DateFormatEnum, formatDate } from "../../hooks/format";
+import InfoPayrollModal from "./modal/InfoPayrollModal";
+
+export type EmployeeType = {
+  id: number;
+  email: string;
+  name: string;
+  position: string;
+  department: string;
+  payrolls: Payroll[];
+  hireDate: string | null;
+};
 
 export interface Payroll {
   id: number;
@@ -38,32 +56,25 @@ export interface Payroll {
   netPay: number;
   status: string; //"DRAFT" | "FINALIZED"
   generatedAt: string;
-  employee: {
-    id: number;
-    name: string;
-    employeeNo: string;
-    email?: string;
-    role?: string;
-  };
+  employee: EmployeeType;
 }
 
-export type PayrollProps = {
+export interface GeneratePayroll {
+  employeeId: number;
+  month: number;
+  year: number;
   baseSalary: number;
   allowances: number;
   deductions: number;
   tax: number;
-};
+}
 
 const PayrollManagement = () => {
   const [month, setMonth] = useState<number>(new Date().getMonth() + 1);
   const [year, setYear] = useState<number>(new Date().getFullYear());
   const [openGenerateDialog, setOpenGenerateDialog] = useState(false);
-  const [payrollData, setPayrollData] = useState<PayrollProps>({
-    baseSalary: 0,
-    allowances: 0,
-    deductions: 0,
-    tax: 0,
-  });
+  const [openInfoPayrollDialog, setOpenInfoPayrollDialog] = useState(false);
+  const [payrollByEmployeeId, setPayrollByEmployeeId] = useState<number>(0);
 
   const options: ActionType[] = [
     { value: 2023, label: "2023" },
@@ -93,8 +104,12 @@ const PayrollManagement = () => {
     [dataPayrollStatuses]
   );
 
-  const maskValue = (value: string | number) => {
+  const [visibleIds, setVisibleIds] = useState<number[]>([]);
+
+  const maskValue = (value: string | number, isVisible: boolean) => {
     if (!value) return "";
+    if (isVisible) return value.toString();
+
     const str = value.toString();
     if (str.length <= 3) return str;
     const visible = str.slice(-3);
@@ -102,20 +117,15 @@ const PayrollManagement = () => {
     return masked + visible;
   };
 
-  const handleSearch = (month: number, year: number) => {};
-
-  const [showData, setShowData] = useState(false);
-
-  // Data Grid Columns
   const columns: GridColDef[] = [
     {
       field: "employee",
       headerName: "Nhân viên",
       flex: 1,
-      renderCell: (params) =>
-        showData
-          ? params.row.employee.name
-          : maskValue(params.row.employee.name),
+      renderCell: (params) => {
+        const isVisible = visibleIds.includes(params.row.id);
+        return maskValue(params.row.employee.name, isVisible);
+      },
     },
     {
       field: "period",
@@ -131,39 +141,50 @@ const PayrollManagement = () => {
       field: "baseSalary",
       headerName: "Lương cơ bản",
       flex: 1,
-      renderCell: (params) => (
-        <Typography fontWeight="medium">
-          {params.value.toLocaleString()}đ
-        </Typography>
-      ),
+      renderCell: (params) => {
+        const isVisible = visibleIds.includes(params.row.id);
+        return maskValue(params.value, isVisible);
+      },
     },
     {
       field: "allowances",
       headerName: "Phụ cấp",
       flex: 1,
-      renderCell: (params) => `${params.value.toLocaleString()}đ`,
+      renderCell: (params) => {
+        const isVisible = visibleIds.includes(params.row.id);
+        return maskValue(params.value, isVisible);
+      },
     },
     {
       field: "deductions",
       headerName: "Khấu trừ",
       flex: 1,
-      renderCell: (params) => `${params.value.toLocaleString()}đ`,
+      renderCell: (params) => {
+        const isVisible = visibleIds.includes(params.row.id);
+        return maskValue(params.value, isVisible);
+      },
     },
     {
       field: "tax",
       headerName: "Thuế",
       flex: 1,
-      renderCell: (params) => `${params.value.toLocaleString()}đ`,
+      renderCell: (params) => {
+        const isVisible = visibleIds.includes(params.row.id);
+        return maskValue(params.value, isVisible);
+      },
     },
     {
       field: "netPay",
       headerName: "Thực lĩnh",
       flex: 1,
-      renderCell: (params) => (
-        <Typography variant="subtitle1" color="primary" fontWeight="bold">
-          {params.value.toLocaleString()}đ
-        </Typography>
-      ),
+      renderCell: (params) => {
+        const isVisible = visibleIds.includes(params.row.id);
+        return (
+          <Typography variant="subtitle1" color="primary" fontWeight="bold">
+            {maskValue(params.value, isVisible)}
+          </Typography>
+        );
+      },
     },
     {
       field: "status",
@@ -182,8 +203,35 @@ const PayrollManagement = () => {
       headerName: "Ngày tạo",
       flex: 1,
       renderCell: (params) =>
-        new Date(params.value).toLocaleDateString("vi-VN"),
+        formatDate(DateFormatEnum.DD_MM_YYYY_HH_MM_SS, params.value),
     },
+    {
+      field: "showAction",
+      type: "actions",
+      headerName: "Thao tác",
+      flex: 1,
+      renderCell: (params) => {
+        const isVisible = visibleIds.includes(params.row.id);
+
+        const toggleVisibility = () => {
+          setVisibleIds((prev) =>
+            isVisible
+              ? prev.filter((id) => id !== params.row.id)
+              : [...prev, params.row.id]
+          );
+        };
+
+        return [
+          <GridActionsCellItem
+            key="toggle-visibility"
+            icon={isVisible ? <VisibilityOff /> : <Visibility />}
+            label={isVisible ? "Ẩn dữ liệu" : "Hiện dữ liệu"}
+            onClick={toggleVisibility}
+          />,
+        ];
+      },
+    },
+
     {
       field: "actions",
       type: "actions",
@@ -191,12 +239,6 @@ const PayrollManagement = () => {
       flex: 1,
       renderCell: (params) =>
         [
-          <GridActionsCellItem
-            key="toggle-visibility"
-            icon={<Visibility />}
-            label={showData ? "Ẩn dữ liệu" : "Hiện dữ liệu"}
-            onClick={() => setShowData((prev) => !prev)}
-          />,
           <GridActionsCellItem
             key="download"
             icon={<Download />}
@@ -215,9 +257,14 @@ const PayrollManagement = () => {
     },
   ];
 
-  const handleViewDetails = (payroll: Payroll) => {
-    console.log("View details:", payroll);
-  };
+  const filteredData = useMemo(() => {
+    if (!rowData) return [];
+    return rowData.filter((item) => {
+      const matchMonth = month ? item.month === month : true;
+      const matchYear = year ? item.year === year : true;
+      return matchMonth && matchYear;
+    });
+  }, [rowData, month, year]);
 
   const handleDownload = (payroll: Payroll) => {
     console.log("Download:", payroll);
@@ -229,10 +276,16 @@ const PayrollManagement = () => {
 
   const [mealRows, setMealRows] = useState<GridRowDef[]>([]);
 
-  const [selectedMealRows, setSelectedMealRows] = useState<GridRowDef[]>([]);
+  const [selectedPayrollRows, setSelectedPayrollRows] = useState<GridRowDef[]>(
+    []
+  );
 
-  const handleMealRowSelection = (selectedIds: any[]) => {
-    setSelectedMealRows((prev) => {
+  const handleOpenModalInfo = useCallback(() => {
+    console.log("open", selectedPayrollRows);
+  }, [selectedPayrollRows]);
+
+  const handleMealRowSelection = (selectedIds: GridRowId[]) => {
+    setSelectedPayrollRows((prev) => {
       const newSelectedRows = mealRows.filter((row) =>
         selectedIds.includes(row.id)
       );
@@ -240,13 +293,15 @@ const PayrollManagement = () => {
     });
   };
 
-  useEffect(() => {
-    setSelectedMealRows((prev) =>
-      prev.filter((selectedRow) =>
-        mealRows.some((row) => row.id === selectedRow.id)
-      )
-    );
-  }, [mealRows]);
+  // useEffect(() => {
+  //   setSelectedPayrollRows((prev) =>
+  //     prev.filter((selectedRow) =>
+  //       mealRows.some((row) => row.id === selectedRow.id)
+  //     )
+  //   );
+  // }, [mealRows]);
+
+  console.log("setSelectedPayrollRows", mealRows);
 
   return (
     <Box sx={{ height: "70vh" }}>
@@ -286,16 +341,7 @@ const PayrollManagement = () => {
                 onChange={(e) => setMonth(Number(e))}
                 placeholder="Tháng"
                 options={monthsOptions}
-              >
-                {/* {Array.from({ length: 12 }, (_, i) => ({
-                  value: i + 1,
-                  label: `Tháng ${i + 1}`,
-                })).map((m) => (
-                  <MenuItem key={m.value} value={m.value}>
-                    {m.label}
-                  </MenuItem>
-                ))} */}
-              </SelectDropdown>
+              />
             </FormControl>
 
             <FormControl sx={{ minWidth: 120 }}>
@@ -307,6 +353,8 @@ const PayrollManagement = () => {
                 options={options}
               />
             </FormControl>
+
+            <Button>Search</Button>
           </Stack>
         </Grid>
 
@@ -321,9 +369,15 @@ const PayrollManagement = () => {
 
       {/* Data Grid */}
       <TableSection
-        rows={rowData}
+        rows={filteredData}
         isLoading={false}
         setRows={setMealRows}
+        // handleRowClick={handleOpenModalInfo}
+        handleRowClick={(row) => {
+          console.log("Row clicked ngoài:", row.id as number);
+          setPayrollByEmployeeId(row.id as number);
+          setOpenInfoPayrollDialog(true);
+        }}
         onSelectedRowIdsChange={handleMealRowSelection}
         nextRowClick
         largeThan
@@ -333,8 +387,21 @@ const PayrollManagement = () => {
       <CreatePayrollModal
         open={openGenerateDialog}
         onClose={() => setOpenGenerateDialog(false)}
-        payrollData={payrollData}
-        setPayrollData={setPayrollData}
+        //payrollData={payrollData}
+        // year={year}
+        // month={month}
+        //setPayrollData={setPayrollData}
+        onSuccess={() => setOpenGenerateDialog(false)}
+      />
+
+      <InfoPayrollModal
+        open={openInfoPayrollDialog}
+        onClose={() => setOpenInfoPayrollDialog(false)}
+        payrollId={payrollByEmployeeId}
+        //payrollData={payrollData}
+        // year={year}
+        // month={month}
+        //setPayrollData={setPayrollData}
         onSuccess={() => setOpenGenerateDialog(false)}
       />
     </Box>

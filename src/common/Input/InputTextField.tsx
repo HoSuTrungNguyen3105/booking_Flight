@@ -79,10 +79,11 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
     }, [value, copy]);
 
     const readonlyStyles: SxProps = {
-      caretColor: "transparent",
-      pointerEvents: "none",
+      caretColor: "transparent", // ẩn caret
+      pointerEvents: "visible",
       "& .MuiInputBase-input": {
         opacity: 0.7,
+        pointerEvents: "none", // chỉ chặn input
       },
     };
 
@@ -117,6 +118,9 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
         disabled={disabled}
         sx={mergedSx}
         {...restProps}
+        InputProps={{
+          readOnly: readOnly,
+        }}
         slotProps={{
           input: {
             startAdornment: !!startIcon && (
@@ -124,21 +128,25 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
             ),
             endAdornment: shouldShowEndAdornment && (
               <InputAdornment sx={{ gap: 1, paddingRight: 0 }} position="end">
-                {clearable && !!value && !disabled && (
-                  <IconButton
-                    edge="end"
-                    sx={{ cursor: "pointer", padding: "4px" }}
-                    onClick={handleClear}
-                    disabled={disabled}
-                  >
-                    <img
-                      src={error ? ClearErrorIcon : ClearIcon}
-                      width={20}
-                      height={20}
-                      alt="clear"
-                    />
-                  </IconButton>
-                )}
+                {clearable &&
+                  !!value &&
+                  !disabled &&
+                  !showEyeIcon &&
+                  !canCopy && (
+                    <IconButton
+                      edge="end"
+                      sx={{ cursor: "pointer", padding: "4px" }}
+                      onClick={handleClear}
+                      disabled={disabled}
+                    >
+                      <img
+                        src={error ? ClearErrorIcon : ClearIcon}
+                        width={20}
+                        height={20}
+                        alt="clear"
+                      />
+                    </IconButton>
+                  )}
 
                 {type === "password" && showEyeIcon && (
                   <IconButton

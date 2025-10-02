@@ -37,6 +37,10 @@ import type { FlightFormData } from "../../common/Sample/FlightUpdateModal.tsx";
 import type { SearchFlightDto } from "../Admin/Search_layout.tsx";
 import { useSecureFetch } from "../../context/use[custom]/useSecureFetch.ts";
 import type { CreateMealDto } from "../Admin/component/BulkMealCreator.tsx";
+import type {
+  GeneratePayroll,
+  Payroll,
+} from "../../common/Sample/PayrollManagement.tsx";
 
 const postMethod = {
   method: MethodType.POST,
@@ -665,6 +669,18 @@ export const useUpdateFacilities = (id: string) => {
   });
   return {
     refetchUpdateFacilities,
+  };
+};
+
+export const useGeneratePayroll = () => {
+  const { refetch, loading } = useFetch<ResponseMessage, GeneratePayroll>({
+    url: "/sys/payrolls/generate",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchGeneratePayroll: refetch,
+    loadingGeneratePayroll: loading,
   };
 };
 

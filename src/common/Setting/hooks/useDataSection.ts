@@ -17,53 +17,56 @@ export type UpdateUserForm = {
   userAlias?: string;
 };
 
-type FieldConfig = {
-  disabled?: boolean;
-  hidden?: boolean;
-  overrideType?: FieldType;
-};
-
-type FieldConfigs = Record<string, FieldConfig>;
+const roleOptions = [
+  { label: "Thành viên", value: UserRole.USER },
+  { label: "Monitor", value: UserRole.MONITOR },
+  { label: "Quản trị", value: UserRole.ADMIN },
+];
 
 export const useDataSection = (
   data: Partial<UseRCreate & UpdateUserForm>,
   formType?: "register" | "update",
-  isDisable?: boolean,
-  fieldConfigs: FieldConfigs = {}
+  isDisable = false
 ): IFormField[] => {
   return useMemo(() => {
+    const isUpdate = formType === "update";
+    const commonDisabled = isUpdate || isDisable;
+
     const fields: IFormField[] = [
       {
         fields: {
           id: "name",
           label: "Tên đăng nhập",
+          options: [],
+          readOnly: commonDisabled,
           type: FieldType.INPUT_WITH_TYPE_TEXT,
           placeholder: "Nhập tên đăng nhập...",
-          options: [],
-          value: data.name,
-          //disabled: formType === "update", // Ẩn khi là update
+          value: data.name ?? "",
+          disabled: commonDisabled,
         },
       },
       {
         fields: {
           id: "password",
           label: "Mật khẩu",
+          options: [],
+          readOnly: true,
           type: FieldType.INPUT_WITH_TYPE_PASSWORD,
           placeholder: "Nhập mật khẩu...",
-          options: [],
-          value: data.password,
-          disabled: formType === "update", // Ẩn khi là update
+          value: data.password ?? "",
+          disabled: commonDisabled,
         },
       },
       {
         fields: {
           id: "email",
           label: "Email",
-          disabled: formType === "update", // Vô hiệu hóa khi là update
+          options: [],
+          readOnly: commonDisabled,
           type: FieldType.INPUT_WITH_TYPE_TEXT,
           placeholder: "Nhập email...",
-          options: [],
-          value: data.email,
+          value: data.email ?? "",
+          disabled: commonDisabled,
         },
       },
       {
@@ -72,18 +75,13 @@ export const useDataSection = (
           label: "Chọn vai trò",
           type: FieldType.DROPDOWN,
           placeholder: "Chọn vai trò...",
-          options: [
-            { label: "Thành viên", value: UserRole.USER },
-            { label: "Monitor", value: UserRole.MONITOR },
-            { label: "Quản trị", value: UserRole.ADMIN },
-          ],
-          value: data.role,
+          options: roleOptions,
+          value: data.role ?? UserRole.USER,
+          disabled: isDisable, // riêng role chỉ disable khi isDisable true
         },
       },
     ];
 
-    return fields.filter(
-      (f) => !fieldConfigs[f.fields.id]?.disabled && !f.fields.disabled
-    );
-  }, [data, formType, isDisable, fieldConfigs]);
+    return fields;
+  }, [data, formType, isDisable]);
 };
