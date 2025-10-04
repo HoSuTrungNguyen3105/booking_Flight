@@ -9,6 +9,8 @@ import { Add as AddIcon } from "@mui/icons-material";
 import { useGetUserIdAndNameToDropdownGeneratePayroll } from "../../../components/Api/useGetApi";
 import SelectDropdown from "../../Dropdown/SelectDropdown";
 import FormRow from "../../CustomRender/FormRow";
+import { Loading } from "../../Loading/Loading";
+import useDebounce from "../../../context/use[custom]/useDebounce";
 
 interface IModalGeneratePayrollProps {
   open: boolean;
@@ -35,20 +37,19 @@ const CreatePayrollModal = ({
     tax: 0,
   });
   const { refetchGeneratePayroll } = useGeneratePayroll();
-
   const { dataGetUserIdAndNameToDropdown } =
     useGetUserIdAndNameToDropdownGeneratePayroll();
-
   const handleGeneratePayroll = useCallback(async () => {
     const res = await refetchGeneratePayroll({
       ...payrollData,
     });
-    console.log("payrollData", payrollData);
     if (res?.resultCode === "00") {
-      onClose();
+      // onClose();
       onSuccess();
+    } else {
+      console.log("payrollData", payrollData);
     }
-  }, []);
+  }, [refetchGeneratePayroll, onSuccess]);
 
   const renderActions = useCallback(() => {
     return (
@@ -92,12 +93,12 @@ const CreatePayrollModal = ({
                 <SelectDropdown
                   options={dataGetUserIdAndNameToDropdown?.list || []}
                   placeholder="Chọn nhân viên chua tao trong nam nay"
-                  onChange={(val) =>
+                  onChange={(val) => {
                     setPayrollData((prev) => ({
                       ...prev,
-                      employeeId: val as number,
-                    }))
-                  }
+                      employeeId: Number(val),
+                    }));
+                  }}
                   value={payrollData.employeeId}
                 />
               </FormControl>
@@ -191,13 +192,7 @@ const CreatePayrollModal = ({
         </Box>
       </>
     );
-  }, [
-    payrollData,
-    setPayrollData,
-    month,
-    year,
-    dataGetUserIdAndNameToDropdown?.list,
-  ]);
+  }, [payrollData, setPayrollData, dataGetUserIdAndNameToDropdown?.list]);
 
   return (
     <BaseModal

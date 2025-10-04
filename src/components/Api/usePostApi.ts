@@ -891,26 +891,36 @@ export const useUpdateUserFromAdmin = () => {
   };
 };
 
-// export const useUpdateUserFromAdmin = () => {
-//   //TO_DO
-//   // const isValid = !!id;
-//   const {
-//     data: fetchUpdateUserById,
-//     refetch: refetchCreateUser,
-//     loading: loadingUser,
-//     setParams: setParamsUser,
-//   } = useFetch<UserCreateResponse, UserDataNoGrid>({
-//     url: "/sys/users/updateUser",
-//     autoFetch: false,
-//     config: postMethod,
-//   });
-//   return {
-//     fetchUpdateUserById,
-//     refetchCreateUser,
-//     loadingUser,
-//     setParamsUser,
-//   };
-// };
+export interface BatchUpdateEmployeesDto {
+  updates: BatchEmployeeNoReq[];
+}
+
+export type BatchEmployeeNoReq = {
+  userId: number;
+  employeeNo: string;
+};
+
+export type BatchEmployeeNoRes = {
+  message: string;
+  userId: number;
+  employeeNo: string;
+};
+
+export const useUpdateBatchEmployeeNo = () => {
+  // const isValid = !!id;
+  const { refetch, loading } = useFetch<
+    DetailResponseMessage<BatchEmployeeNoRes>,
+    BatchUpdateEmployeesDto
+  >({
+    url: "/sys/users/employee-no/batch",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchUpdateBatchEmployeeNo: refetch,
+    loadingUpdateBatchEmployeeNo: loading,
+  };
+};
 
 export const useUpdateUserInfo = (id: number) => {
   // const isValid = !!id;

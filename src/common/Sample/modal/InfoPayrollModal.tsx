@@ -11,24 +11,22 @@ import FormRow from "../../CustomRender/FormRow";
 interface IModalGeneratePayrollProps {
   open: boolean;
   onClose: () => void;
-  onSuccess: () => void;
   payrollId: number;
 }
 
 const InfoPayrollModal = ({
   open,
   onClose,
-  onSuccess,
   payrollId,
 }: IModalGeneratePayrollProps) => {
-  const { dataGetPayrollsById } = useGetPayrollsById(payrollId);
+  const { dataGetPayrollsById, refetchGetPayrollsById } =
+    useGetPayrollsById(payrollId);
 
-  // useEffect(() => {
-  //   if (!open) {
-  //     // clear state cũ
-  //     setDataGetPayrollsById(undefined);
-  //   }
-  // }, [open]);
+  useEffect(() => {
+    if (open) {
+      refetchGetPayrollsById();
+    }
+  }, [open]);
 
   const renderContent = useCallback(() => {
     const payroll = dataGetPayrollsById?.data;

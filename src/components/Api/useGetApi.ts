@@ -379,25 +379,20 @@ export const useCheckMfaAvailable = () => {
   };
 };
 export const useGetUserList = () => {
-  // const isValid = !!id;
-  const {
-    data: fetchUser,
-    refetch: refetchUser,
-    loading: loadingUser,
-  } = useFetch<UserListManageResponse, UserData>({
-    url: "/sys/users",
-    // params: ,
-    autoFetch: true,
-    config: getMethod,
-  });
+  const { data, refetch, loading } = useFetch<UserListManageResponse, UserData>(
+    {
+      url: "/sys/users",
+      autoFetch: true,
+      config: getMethod,
+    }
+  );
   return {
-    fetchUser,
-    refetchUser,
-    loadingUser,
+    fetchUserList: data,
+    refetchUser: refetch,
+    loadingUser: loading,
   };
 };
 export const useGetUserById = (id: number) => {
-  // const isValid = !!id;
   const { data: fetchUserById, refetch: refetchUserById } = useFetch<
     UserListManageResponse,
     null
@@ -533,9 +528,9 @@ export const useGetPayrollData = () => {
     config: getMethod,
   });
   return {
-    dataPayrollStatuses: data,
-    refetchPayrollStatuses: refetch,
-    loadingPayrollStatuses: loading,
+    dataPayroll: data,
+    refetchPayroll: refetch,
+    loadingPayroll: loading,
   };
 };
 

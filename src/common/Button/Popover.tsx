@@ -16,6 +16,7 @@ const StyledPopover = styled(Popover)<{}>(() => ({
     minWidth: "120px",
   },
 }));
+
 const CustomPopover: React.FC<IButtonSettingProps> = ({
   buttonProps,
   icon,
@@ -60,11 +61,7 @@ const CustomPopover: React.FC<IButtonSettingProps> = ({
                   return (
                     <Box
                       key={index}
-                      sx={{
-                        padding: "8px 12px",
-                        borderRadius: "6px",
-                        cursor: "pointer",
-                      }}
+                      sx={{ cursor: "pointer" }}
                       onClick={() => {
                         handleAction?.(item);
                         handleClose();

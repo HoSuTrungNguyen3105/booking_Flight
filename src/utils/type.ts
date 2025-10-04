@@ -552,6 +552,7 @@ export type Seat = {
   flightId?: number;
   bookingId?: number;
   type: SeatTypeValue;
+  price: number;
   isBooked: boolean;
   isAvailable?: boolean;
   isExtraLegroom?: boolean;

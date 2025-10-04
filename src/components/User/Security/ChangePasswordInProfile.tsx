@@ -12,10 +12,7 @@ import Grid from "@mui/material/Grid";
 import { memo, useState } from "react";
 import { KeyOutlined, LockOpenOutlined } from "@mui/icons-material";
 import VerifyOpt from "../../Auth/components/VerifyOpt";
-import {
-  useChangePassword,
-  useChangePasswordInProfile,
-} from "../../Api/usePostApi";
+import { useChangePasswordInProfile } from "../../Api/usePostApi";
 import InputTextField from "../../../common/Input/InputTextField";
 import { useAuth } from "../../../context/AuthContext";
 import * as yup from "yup";
@@ -62,12 +59,6 @@ const ChangePasswordInProfile = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<FormDataType>({
-    // defaultValues: {
-    //   userId: userId,
-    //   currentPassword: "",
-    //   newPassword: "",
-    //   confirmPassword: "",
-    // },
     resolver: yupResolver(passwordSchema),
   });
 

@@ -96,6 +96,13 @@ const SelectDropdown: FC<OptionSelectDropdownProps> = ({
         MenuProps={{
           disableScrollLock: true,
         }}
+        renderValue={(selected) => {
+          if (!selected) {
+            return <em style={{ color: "grey" }}>{placeholder}</em>;
+          }
+          const option = options.find((o) => o.value === selected);
+          return option ? option.label : String(selected);
+        }}
         displayEmpty
       >
         {defaultValue && (
@@ -103,11 +110,11 @@ const SelectDropdown: FC<OptionSelectDropdownProps> = ({
             {defaultValue}
           </MenuItem>
         )}
-        {placeholder && (
+        {/* {placeholder && (
           <MenuItem sx={{ color: "grey.800" }} value="">
             <em>{placeholder}</em>
           </MenuItem>
-        )}
+        )} */}
 
         {options.map(({ label, icon, value, color, disabled }) => (
           <MenuItem key={value} disabled={disabled} value={value}>

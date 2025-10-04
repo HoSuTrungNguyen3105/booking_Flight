@@ -10,7 +10,7 @@ export const Loading = () => {
         zIndex: theme.zIndex.modal + 1,
         color: "#fff",
         backgroundColor: "rgba(255, 255, 255, 0.9)",
-        backdropFilter: "blur(2px)",
+        backdropFilter: "blur(1px)",
       })}
       open={loading}
       onClick={(e) => e.stopPropagation()}

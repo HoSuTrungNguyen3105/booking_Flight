@@ -5,12 +5,6 @@ import {
   IconButton,
   Typography,
   Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-  Grid,
   Tooltip,
 } from "@mui/material";
 import {
@@ -162,23 +156,6 @@ const AirportManagement: React.FC = () => {
     },
   ];
 
-  // const handleSave = () => {
-  //   if (editingAirport) {
-  //     setAirports((prev) =>
-  //       prev.map((a) =>
-  //         a.code === editingAirport.code
-  //           ? {
-  //               ...a,
-  //               ...formData,
-  //             }
-  //           : a
-  //       )
-  //     );
-  //   } else {
-  //   }
-  //   setOpenDialog(false);
-  // };
-
   const handleDelete = (code: string) => {
     setAirports((prev) => prev.filter((a) => a.code !== code));
   };
@@ -186,7 +163,7 @@ const AirportManagement: React.FC = () => {
   const getCountryFlag = (country: string) => {
     const flags: Record<string, string> = {
       Vietnam: "🇻🇳",
-      "Thai Lan": "🇹🇭",
+      ThaiLan: "🇹🇭",
       Singapore: "🇸🇬",
       Japan: "🇯🇵",
       Korea: "🇰🇷",

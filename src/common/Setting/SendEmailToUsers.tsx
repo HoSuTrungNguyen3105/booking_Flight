@@ -7,12 +7,22 @@ import InputTextField from "../Input/InputTextField";
 import InputTextArea from "../Input/InputTextArea";
 import { useSendMail } from "../../components/Api/usePostApi";
 import { useToast } from "../../context/ToastContext";
+import { EmailAttachmentUploader } from "../FileUploader/FileUploadButton";
+// import { FileUploadButton } from "../FileUploader/FileUploadButton";
 
 type SendEmailProps = {
   selectedUser: string[];
+  onSubmit?: (payload: {
+    to: string[];
+    cc?: string[];
+    bcc?: string[];
+    subject: string;
+    text: string;
+    files?: File[];
+  }) => Promise<void> | void;
 };
 
-const SendEmailToUsers = ({ selectedUser }: SendEmailProps) => {
+const SendEmailToUsers = ({ selectedUser, onSubmit }: SendEmailProps) => {
   const { user } = useAuth();
   const [to, setTo] = useState<string[]>(selectedUser);
   const [cc, setCc] = useState<string[]>([]);
@@ -20,8 +30,11 @@ const SendEmailToUsers = ({ selectedUser }: SendEmailProps) => {
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
   const [broadcast, setBroadcast] = useState(true);
+  const [files, setFiles] = useState<File[]>([]);
+  const [sending, setSending] = useState(false);
 
   const { sendCcBcc } = useSendMail();
+
   const toast = useToast();
 
   const handleSendCcBcc = async () => {
@@ -83,11 +96,36 @@ const SendEmailToUsers = ({ selectedUser }: SendEmailProps) => {
       {/* Broadcast & Buttons */}
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Box display="flex" alignItems="center" gap={1}>
-          <Switch
-            checked={broadcast}
-            onChange={(e) => setBroadcast(e.target.checked)}
+          {/* <FileUploadButton accept=".img,.svg" name="Upload" title="Files" /> */}
+          <EmailAttachmentUploader
+            title="Add Email Attachments"
+            uploadUrl="/api/email/send-cc-bcc"
+            emailData={{
+              toList: ["recipient@example.com"],
+              ccList: ["cc@example.com"],
+              bccList: ["bcc@example.com"],
+              subject: "Test Email with Attachments",
+              text: "This email contains the attached files",
+              html: "<p>This email contains the attached files</p>",
+            }}
+            maxSize="25 MB"
+            maxFiles={5}
+            multiple={true}
+            autoUpload={true}
+            onUploadSuccess={(response, files) => {
+              console.log(
+                "Email with attachments sent successfully:",
+                response
+              );
+            }}
+            onUploadError={(error, files) => {
+              console.error("Failed to send email with attachments:", error);
+            }}
+            headers={{
+              Authorization: "Bearer your-token",
+              "X-Requested-With": "XMLHttpRequest",
+            }}
           />
-          <Typography variant="body2">Broadcast</Typography>
         </Box>
 
         <Box display="flex" gap={1}>

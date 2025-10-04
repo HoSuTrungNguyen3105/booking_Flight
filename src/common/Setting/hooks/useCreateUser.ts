@@ -20,8 +20,8 @@ export const useCreateUser = ({
 }: IUseUpdateUserProps) => {
   //   const api = useApi5();
   const [error, setError] = useState<string>("");
-  const { fetchUser, loadingUser, refetchUser } = useGetUserList();
-  const { fetchUserPw, refetchUserPw } = useRandomPassword();
+  const { fetchUserList, loadingUser, refetchUser } = useGetUserList();
+  const { refetchUserPw } = useRandomPassword();
   const [updateInfo, setUpdateInfo] = useState<UserCreateProps>({
     email: user?.email,
     password: "",
@@ -58,7 +58,6 @@ export const useCreateUser = ({
     };
 
     const res = await refetchCreateUser(payload);
-    console.log("res", res);
     if (res?.resultCode === "00") {
       toast(res.resultMessage, "success");
       onSuccess();
@@ -89,7 +88,7 @@ export const useCreateUser = ({
     fetchCreateUser,
     handleChange,
     handleSubmit,
-    fetchUser,
+    fetchUserList,
     loadingUser,
     refetchUser,
     // updateUser: () => updateUser(),

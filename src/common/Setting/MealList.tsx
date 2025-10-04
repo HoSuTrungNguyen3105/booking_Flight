@@ -30,6 +30,8 @@ export default function MealList() {
     number | null
   >(null);
 
+  const [selectViewDetail, setSelectViewDetail] = useState<boolean>(false);
+
   const handleMealRowSelection = (selectedIds: any[]) => {
     const newSelectedRows = mealRows.filter((row) =>
       selectedIds.includes(row.id)
@@ -143,7 +145,10 @@ export default function MealList() {
         <Button
           size="small"
           variant="outlined"
-          onClick={() => setSelectedFlightToViewInfo(params.row.id)}
+          onClick={() => {
+            setSelectViewDetail(true);
+            setSelectedFlightToViewInfo(params.row.id);
+          }}
         >
           Detail
         </Button>
@@ -165,8 +170,13 @@ export default function MealList() {
     },
   ];
 
-  if (selectedFlightToViewInfo) {
-    return <SeatLayout id={selectedFlightToViewInfo as number} />;
+  if (selectViewDetail) {
+    return (
+      <SeatLayout
+        id={selectedFlightToViewInfo as number}
+        onReturn={() => setSelectViewDetail(false)}
+      />
+    );
   }
 
   if (selectedFlightForSeat) {

@@ -1,6 +1,12 @@
 import React, { memo, useMemo } from "react";
 import { Box, Button, Tooltip, Typography, Stack } from "@mui/material";
-import { StarBorder, WorkOutline, Chair, Wc } from "@mui/icons-material";
+import {
+  StarBorder,
+  WorkOutline,
+  Chair,
+  Wc,
+  Accessibility,
+} from "@mui/icons-material";
 import type { Seat } from "../../../utils/type";
 import theme from "../../../scss/theme";
 
@@ -20,6 +26,7 @@ const ButtonSeat: React.FC<ButtonSeatProps> = ({
     [seat.id, selectedSeats]
   );
   const isBooked = seat.isBooked;
+  const isAvailable = seat.isAvailable;
 
   const { backgroundColor, textColor, borderColor, icon } = useMemo(() => {
     let bg = "#f5f5f5";
@@ -27,7 +34,7 @@ const ButtonSeat: React.FC<ButtonSeatProps> = ({
     let border = "#ccc";
     let ic = null;
 
-    if (isBooked) {
+    if (!isAvailable || isBooked) {
       bg = "#bdbdbd";
       border = "#a9a9a9";
     } else if (isSelected) {
@@ -58,7 +65,7 @@ const ButtonSeat: React.FC<ButtonSeatProps> = ({
       borderColor: border,
       icon: ic,
     };
-  }, [seat.type, isBooked, isSelected]);
+  }, [seat.type, isBooked, isSelected, isAvailable]);
 
   const tooltipTitle = useMemo(
     () => (
@@ -80,16 +87,57 @@ const ButtonSeat: React.FC<ButtonSeatProps> = ({
             Near Restroom
           </Typography>
         )}
+        {seat.isExitRow && (
+          <Typography sx={{ color: theme.palette.primary.main }}>
+            Exit Row
+          </Typography>
+        )}
+        {seat.isExtraLegroom && (
+          <Typography sx={{ color: theme.palette.primary.main }}>
+            Extra Legroom
+          </Typography>
+        )}
+        {seat.isUpperDeck && (
+          <Typography sx={{ color: theme.palette.primary.main }}>
+            Upper Deck
+          </Typography>
+        )}
+        {seat.isHandicapAccessible && (
+          <Typography
+            sx={{
+              color: theme.palette.primary.main,
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <Accessibility fontSize="small" sx={{ mr: 0.5 }} /> Handicap
+            Accessible
+          </Typography>
+        )}
+        {seat.price && (
+          <Typography sx={{ color: theme.palette.primary.main }}>
+            Price: ${seat.price.toFixed(2)}
+          </Typography>
+        )}
+        {seat.note && (
+          <Typography sx={{ color: theme.palette.primary.main }}>
+            Note: {seat.note}
+          </Typography>
+        )}
+        {!isAvailable && (
+          <Typography sx={{ color: "red" }}>Not Available</Typography>
+        )}
+        {isBooked && <Typography sx={{ color: "red" }}>Booked</Typography>}
       </Box>
     ),
-    [seat]
+    [seat, isBooked, isAvailable]
   );
 
   return (
     <Tooltip title={tooltipTitle} arrow>
       <Button
-        onClick={() => !isBooked && handleSelectSeat(seat)}
-        disabled={isBooked}
+        onClick={() => isAvailable && !isBooked && handleSelectSeat(seat)}
+        disabled={!isAvailable || isBooked}
         sx={{
           width: { xs: "36px", sm: "42px", md: "45px" },
           height: { xs: "36px", sm: "42px", md: "45px" },
@@ -101,21 +149,19 @@ const ButtonSeat: React.FC<ButtonSeatProps> = ({
           backgroundColor,
           color: textColor,
           border: `1px solid ${borderColor}`,
-          cursor: isBooked ? "not-allowed" : "pointer",
+          cursor: !isAvailable || isBooked ? "not-allowed" : "pointer",
           transition: "all 0.2s ease",
-          // boxShadow: isSelected
-          //   ? `0px 0px 8px ${theme.palette.primary.main}80`
-          //   : "0px 1px 3px rgba(0,0,0,0.1)",
           "&:hover": {
-            backgroundColor: isBooked
-              ? "#bdbdbd"
-              : isSelected
-              ? theme.palette.primary.dark
-              : theme.palette.primary.light + "30",
+            backgroundColor:
+              !isAvailable || isBooked
+                ? "#bdbdbd"
+                : isSelected
+                ? theme.palette.primary.dark
+                : theme.palette.primary.light + "30",
             color: isSelected
               ? theme.palette.primary.contrastText
               : theme.palette.primary.main,
-            transform: isBooked ? "none" : "scale(1.05)",
+            transform: !isAvailable || isBooked ? "none" : "scale(1.05)",
           },
         }}
       >

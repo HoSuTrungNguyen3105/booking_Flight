@@ -1,33 +1,31 @@
-import React, { useState } from "react";
-import {
-  Box,
-  Button,
-  IconButton,
-  Stack,
-  TextField,
-  Typography,
-  Paper,
-} from "@mui/material";
+import React, { useCallback, useState } from "react";
+import { Button, IconButton, Stack, Typography, Paper } from "@mui/material";
 import { Add, Delete, Send } from "@mui/icons-material";
-import axios from "axios";
-
-export interface UpdateItem {
-  userId: number;
-  employeeNo: string;
-}
+import {
+  useUpdateBatchEmployeeNo,
+  type BatchEmployeeNoReq,
+  type BatchUpdateEmployeesDto,
+} from "../../components/Api/usePostApi";
+import { useToast } from "../../context/ToastContext";
+import InputTextField from "../Input/InputTextField";
 
 type UpdateEmployeeIDProps = {
-  updateItem: UpdateItem[];
+  updateItem: BatchEmployeeNoReq[];
+  onSuccess: () => void;
 };
 
 const BatchUpdateEmployeeNo: React.FC<UpdateEmployeeIDProps> = ({
   updateItem,
+  onSuccess,
 }) => {
-  const [updates, setUpdates] = useState<UpdateItem[]>(updateItem);
-
-  const handleChange = (index: number, field: keyof UpdateItem, value: any) => {
+  const [updates, setUpdates] = useState<BatchEmployeeNoReq[]>(updateItem);
+  const handleChange = (
+    index: number,
+    field: keyof BatchEmployeeNoReq,
+    value: string | number
+  ) => {
     const newUpdates = [...updates];
-    (newUpdates[index][field] as any) = value;
+    (newUpdates[index][field] as string | number) = value;
     setUpdates(newUpdates);
   };
 
@@ -39,20 +37,28 @@ const BatchUpdateEmployeeNo: React.FC<UpdateEmployeeIDProps> = ({
     setUpdates(updates.filter((_, i) => i !== index));
   };
 
-  const handleSubmit = async () => {
+  const { refetchUpdateBatchEmployeeNo } = useUpdateBatchEmployeeNo();
+  const toast = useToast();
+
+  const handleSubmit = useCallback(async () => {
     try {
-      const payload = { updates };
-      const res = await axios.patch("/users/employee-no/batch", payload);
-      console.log("Response:", res.data);
-      alert("Batch update thành công!");
+      const payload: BatchUpdateEmployeesDto = { updates };
+      const res = await refetchUpdateBatchEmployeeNo(payload);
+      if (res?.resultCode === "00") {
+        console.log("Response:", res?.list);
+        toast("Batch update thành công!");
+        onSuccess();
+      }
+      // console.log("Response:", res?.list);
+      else toast("Batch update thành công!", "error");
     } catch (error) {
       console.error(error);
       alert("Có lỗi khi gọi API");
     }
-  };
+  }, [refetchUpdateBatchEmployeeNo, onSuccess, toast]);
 
   return (
-    <Box sx={{ p: 3 }}>
+    <>
       <Typography variant="h5" sx={{ mb: 2, fontWeight: "bold" }}>
         Batch Update Employee No
       </Typography>
@@ -68,21 +74,17 @@ const BatchUpdateEmployeeNo: React.FC<UpdateEmployeeIDProps> = ({
               gap: 2,
             }}
           >
-            <TextField
+            <InputTextField
               type="number"
-              label="User ID"
-              value={row.userId}
-              onChange={(e) =>
-                handleChange(index, "userId", Number(e.target.value))
-              }
+              placeholder="User ID"
+              value={String(row.userId)}
+              onChange={(e) => handleChange(index, "userId", Number(e))}
               sx={{ flex: 1 }}
             />
-            <TextField
-              label="Employee No"
+            <InputTextField
               value={row.employeeNo}
-              onChange={(e) =>
-                handleChange(index, "employeeNo", e.target.value)
-              }
+              placeholder="Employee No"
+              onChange={(e) => handleChange(index, "employeeNo", e)}
               sx={{ flex: 2 }}
             />
             <IconButton
@@ -113,7 +115,7 @@ const BatchUpdateEmployeeNo: React.FC<UpdateEmployeeIDProps> = ({
           Gửi batch update
         </Button>
       </Stack>
-    </Box>
+    </>
   );
 };
 

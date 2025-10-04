@@ -13,9 +13,8 @@ import type { AdminUpdateUserForm } from "../../utils/type";
 import SendEmailToUsers from "./SendEmailToUsers";
 import TableSection from "./TableSection";
 import type { GridRowId } from "@mui/x-data-grid";
-import BatchUpdateEmployeeNo, {
-  type UpdateItem,
-} from "../Sample/BatchUpdateEmployeeNo";
+import BatchUpdateEmployeeNo from "../Sample/BatchUpdateEmployeeNo";
+import type { BatchEmployeeNoReq } from "../../components/Api/usePostApi";
 
 const ManageMyInfo = () => {
   const {
@@ -31,24 +30,18 @@ const ManageMyInfo = () => {
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowId[]>([]);
   const [selectedRowChange, setSelectedRowChange] = useState<GridRowDef[]>([]);
   const [navigateEmailSend, setNavigateEmailSend] = useState<boolean>(false);
-  const [selectedUpdateItem, setSelectedUpdateItem] = useState<UpdateItem[]>(
-    []
-  );
+  const [selectedUpdateItem, setSelectedUpdateItem] = useState<
+    BatchEmployeeNoReq[]
+  >([]);
   const [navigateUpdateEmployeeID, setNavigateUpdateEmployeeID] =
     useState<boolean>(false);
 
   const handleMealRowSelection = (selectedIds: GridRowId[]) => {
     setSelectedRowIds(selectedIds);
 
-    // Nếu anh có toàn bộ dữ liệu rows (ví dụ: data từ API)
     const newSelectedRows = rows.filter((row) => selectedIds.includes(row.id));
     setSelectedRowChange(newSelectedRows);
-
-    console.log("selectedRowIds:", selectedIds);
-    console.log("selectedRowChange:", newSelectedRows);
   };
-
-  // const selectedEmails: string[] = selectedRowChange.map((row) => row);
 
   const handleNavigateEmailSend = useCallback(() => {
     setNavigateEmailSend(true);
@@ -56,10 +49,11 @@ const ManageMyInfo = () => {
   const [isValidate, setIsValidate] = useState(false);
 
   const handleNavigateSelectedUpdateItem = useCallback(() => {
-    const updates: UpdateItem[] = selectedRowChange.map((row) => ({
+    const updates: BatchEmployeeNoReq[] = selectedRowChange.map((row) => ({
       userId: Number(row.id as number), // ép chắc chắn về number
-      employeeNo: String(row.employeeNo ?? ""),
+      employeeNo: String(row.employeeNo),
     }));
+
     setSelectedUpdateItem(updates);
     setNavigateUpdateEmployeeID(true);
   }, [selectedRowChange]);
@@ -86,7 +80,15 @@ const ManageMyInfo = () => {
   }
 
   if (navigateUpdateEmployeeID) {
-    return <BatchUpdateEmployeeNo updateItem={selectedUpdateItem} />;
+    return (
+      <BatchUpdateEmployeeNo
+        onSuccess={() => {
+          setNavigateUpdateEmployeeID(false);
+          handleRefetchUserList();
+        }}
+        updateItem={selectedUpdateItem}
+      />
+    );
   }
 
   return (

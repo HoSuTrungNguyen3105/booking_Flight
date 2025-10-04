@@ -33,6 +33,7 @@ import { useGetPayrollData } from "../../components/Api/useGetApi";
 import SelectDropdown, { type ActionType } from "../Dropdown/SelectDropdown";
 import { DateFormatEnum, formatDate } from "../../hooks/format";
 import InfoPayrollModal from "./modal/InfoPayrollModal";
+import FormRow from "../CustomRender/FormRow";
 
 export type EmployeeType = {
   id: number;
@@ -70,8 +71,12 @@ export interface GeneratePayroll {
 }
 
 const PayrollManagement = () => {
-  const [month, setMonth] = useState<number>(new Date().getMonth() + 1);
-  const [year, setYear] = useState<number>(new Date().getFullYear());
+  const [month, setMonth] = useState<number | undefined>(
+    new Date().getMonth() + 1 || undefined
+  );
+  const [year, setYear] = useState<number | undefined>(
+    new Date().getFullYear() || undefined
+  );
   const [openGenerateDialog, setOpenGenerateDialog] = useState(false);
   const [openInfoPayrollDialog, setOpenInfoPayrollDialog] = useState(false);
   const [payrollByEmployeeId, setPayrollByEmployeeId] = useState<number>(0);
@@ -93,15 +98,15 @@ const PayrollManagement = () => {
     label: `Tháng ${i + 1}`,
   }));
 
-  const { dataPayrollStatuses } = useGetPayrollData();
+  const { dataPayroll, refetchPayroll } = useGetPayrollData();
 
   const rowData = useMemo(
     () =>
-      dataPayrollStatuses?.list?.map((item) => ({
+      dataPayroll?.list?.map((item) => ({
         ...item,
         id: item.id,
       })) || [],
-    [dataPayrollStatuses]
+    [dataPayroll]
   );
 
   const [visibleIds, setVisibleIds] = useState<number[]>([]);
@@ -301,8 +306,6 @@ const PayrollManagement = () => {
   //   );
   // }, [mealRows]);
 
-  console.log("setSelectedPayrollRows", mealRows);
-
   return (
     <Box sx={{ height: "70vh" }}>
       {/* Header */}
@@ -336,25 +339,26 @@ const PayrollManagement = () => {
             </Button>
 
             <FormControl sx={{ minWidth: 150 }}>
-              <SelectDropdown
-                value={month}
-                onChange={(e) => setMonth(Number(e))}
-                placeholder="Tháng"
-                options={monthsOptions}
-              />
+              <FormRow direction="column" label="Tháng">
+                <SelectDropdown
+                  value={month}
+                  onChange={(e) => setMonth(Number(e))}
+                  placeholder="Tháng"
+                  options={monthsOptions}
+                />
+              </FormRow>
             </FormControl>
 
             <FormControl sx={{ minWidth: 120 }}>
-              <Typography variant="body1">Năm</Typography>
-              <SelectDropdown
-                value={year}
-                onChange={(e) => setYear(Number(e))}
-                placeholder="Năm"
-                options={options}
-              />
+              <FormRow direction="column" label="Năm">
+                <SelectDropdown
+                  value={year}
+                  onChange={(e) => setYear(Number(e))}
+                  placeholder="Năm"
+                  options={options}
+                />
+              </FormRow>
             </FormControl>
-
-            <Button>Search</Button>
           </Stack>
         </Grid>
 
@@ -387,22 +391,16 @@ const PayrollManagement = () => {
       <CreatePayrollModal
         open={openGenerateDialog}
         onClose={() => setOpenGenerateDialog(false)}
-        //payrollData={payrollData}
-        // year={year}
-        // month={month}
-        //setPayrollData={setPayrollData}
         onSuccess={() => setOpenGenerateDialog(false)}
       />
 
       <InfoPayrollModal
         open={openInfoPayrollDialog}
-        onClose={() => setOpenInfoPayrollDialog(false)}
         payrollId={payrollByEmployeeId}
-        //payrollData={payrollData}
-        // year={year}
-        // month={month}
-        //setPayrollData={setPayrollData}
-        onSuccess={() => setOpenGenerateDialog(false)}
+        onClose={() => {
+          setOpenGenerateDialog(false);
+          refetchPayroll();
+        }}
       />
     </Box>
   );

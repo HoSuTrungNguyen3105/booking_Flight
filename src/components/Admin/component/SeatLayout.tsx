@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Box,
   Typography,
@@ -25,16 +25,18 @@ import { Chair, LocalAirport, RestartAlt } from "@mui/icons-material";
 import { useSeatUpdateByIds, type SeatUpdateProps } from "../../Api/usePostApi";
 import SeatManagementModal from "../../User/SeatManagementModal";
 import CreateSeat from "../../User/CreateSeat";
+import InfoAndUpdateSeatModal from "../modal/InfoAndUpdateSeatModal";
 
 type FlightIdProps = {
   id: number;
+  onReturn: () => void;
 };
 
-type AircraftSeatTypeProps = "ALL" | "VIP" | "ECONOMY" | "WINDOW";
+type AircraftSeatTypeProps = "ALL" | "VIP" | "ECONOMY" | "FIRST" | "BUSINESS";
 
-const SeatLayout: React.FC<FlightIdProps> = ({ id }) => {
+const SeatLayout: React.FC<FlightIdProps> = ({ id, onReturn }) => {
   const { getAllInfoFlightByIdData } = useGetAllInfoFlightByIDData({ id });
-  const { refetchUpdateSeatByIds } = useSeatUpdateByIds();
+  // const { refetchUpdateSeatByIds } = useSeatUpdateByIds();
   const [selectedSeats, setSelectedSeats] = useState<Seat[]>([]);
   // State để quản lý số ghế tối đa có thể chọn
   const [maxSelectSeats, setMaxSelectSeats] = useState<number>(1);
@@ -120,12 +122,18 @@ const SeatLayout: React.FC<FlightIdProps> = ({ id }) => {
   const [message, setMessage] = useState("");
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [createSeat, setCreateSeat] = useState(false);
+  const [openSeatModal, setOpenSeatModal] = useState(false);
+
+  // form data của seat đang chọn (dùng để truyền xuống modal)
+  const [formData, setFormData] = useState<Seat | null>(null);
 
   const [updateSeat, setUpdateSeat] = useState<SeatUpdateProps>({
     seatIds: [],
     type: "ECONOMY",
     isAvailable: false,
   });
+  const [selectedSeat, setSelectedSeat] = useState<Seat | null>(null);
+
   const handleOpenUpdateModal = useCallback(() => {
     if (selectedSeats.length === 0) {
       setMessage("Please select at least one seat to update.");
@@ -174,8 +182,22 @@ const SeatLayout: React.FC<FlightIdProps> = ({ id }) => {
 
   const filteredSeats = useMemo(() => {
     if (filter === "ALL") return getAllInfoFlightByIdData?.data?.seats;
-    if (filter === "WINDOW")
-      return getAllInfoFlightByIdData?.data?.seats?.filter((s) => s.isBooked);
+    if (filter === "FIRST")
+      return getAllInfoFlightByIdData?.data?.seats?.filter(
+        (s) => s.type === "FIRST"
+      );
+    if (filter === "BUSINESS")
+      return getAllInfoFlightByIdData?.data?.seats?.filter(
+        (s) => s.type === "BUSINESS"
+      );
+    if (filter === "VIP")
+      return getAllInfoFlightByIdData?.data?.seats?.filter(
+        (s) => s.type === "VIP"
+      );
+    if (filter === "ECONOMY")
+      return getAllInfoFlightByIdData?.data?.seats?.filter(
+        (s) => s.type === "ECONOMY"
+      );
     return getAllInfoFlightByIdData?.data?.seats?.filter(
       (s) => s.type === filter
     );
@@ -183,23 +205,86 @@ const SeatLayout: React.FC<FlightIdProps> = ({ id }) => {
 
   const handleSelectSeat = (seat: Seat) => {
     setSelectedSeats((prev) => {
-      const exists = prev.find((s) => s.id === seat.id);
-
+      const exists = prev.some((s) => s.id === seat.id);
       if (exists) {
         return prev.filter((s) => s.id !== seat.id);
       }
 
-      if (maxSelectSeats === 1) {
-        return [seat];
-      } else {
-        if (prev.length < maxSelectSeats) {
-          return [...prev, seat];
-        } else {
-          return prev;
-        }
-      }
+      // add
+      if (maxSelectSeats === 1) return [seat];
+      if (prev.length < maxSelectSeats) return [...prev, seat];
+      return prev;
     });
   };
+
+  // useEffect sẽ chạy khi selectedSeats thay đổi -> side-effect ở đây an toàn
+  useEffect(() => {
+    console.log("selectedSeats updated:", selectedSeats);
+
+    if (selectedSeats.length === 1) {
+      setSelectedSeat(selectedSeats[0]);
+      setOpenSeatModal(true);
+    } else {
+      setSelectedSeat(null);
+      setOpenSeatModal(false);
+    }
+  }, [selectedSeats]);
+
+  // const handleSelectSeat = (seat: Seat) => {
+  //   setSelectedSeats((prev) => {
+  //     const exists = prev.find((s) => s.id === seat.id);
+
+  //     if (exists) {
+  //       return prev.filter((s) => s.id !== seat.id);
+  //     }
+
+  //     if (maxSelectSeats === 1) {
+  //       console.log("formdata", selectedSeats);
+  //       return [seat];
+  //     } else {
+  //       if (prev.length < maxSelectSeats) {
+  //         return [...prev, seat];
+  //       } else {
+  //         return prev;
+  //       }
+  //     }
+  //   });
+  // };
+
+  // const handleSelectSeat = (seat: Seat) => {
+  //   setSelectedSeats((prev) => {
+  //     const exists = prev.find((s) => s.id === seat.id);
+
+  //     let newSeats;
+  //     if (exists) {
+  //       // bỏ chọn seat
+  //       newSeats = prev.filter((s) => s.id !== seat.id);
+  //     } else {
+  //       if (maxSelectSeats === 1) {
+  //         newSeats = [seat];
+  //         //  setFormData(newSeats[0]); // truyền data seat vào modal
+  //         //setOpenSeatModal(true);
+  //         console.log("formdata", selectedSeats);
+  //       } else {
+  //         if (prev.length < maxSelectSeats) {
+  //           newSeats = [...prev, seat];
+  //         } else {
+  //           newSeats = prev;
+  //         }
+  //       }
+  //     }
+
+  //     // nếu chỉ có đúng 1 seat được chọn => mở modal
+  //     // if (newSeats.length === 1) {
+  //     //   setFormData(newSeats[0]); // truyền data seat vào modal
+  //     //   setOpenSeatModal(true);
+  //     // } else {
+  //     //   setOpenSeatModal(false);
+  //     // }
+
+  //     return newSeats;
+  //   });
+  // };
 
   if (createSeat) {
     return (
@@ -225,6 +310,10 @@ const SeatLayout: React.FC<FlightIdProps> = ({ id }) => {
           <Typography variant="h4" fontWeight="bold">
             Scale
           </Typography>
+          <Button onClick={onReturn} variant="contained">
+            {" "}
+            Return
+          </Button>
           <Chip
             icon={<FlightTakeoffIcon />}
             label={getAllInfoFlightByIdData?.data?.aircraft?.model ?? "Unknown"}
@@ -278,6 +367,38 @@ const SeatLayout: React.FC<FlightIdProps> = ({ id }) => {
             >
               Multiple
             </Button>
+
+            {selectedSeat && (
+              <InfoAndUpdateSeatModal
+                open={openSeatModal}
+                onClose={() => setOpenSeatModal(false)}
+                formData={selectedSeat}
+                setFormData={(s) => {
+                  // cập nhật selectedSeat trong state modal -> lưu về server / cập nhật list nếu cần
+                  setSelectedSeat(s as Seat);
+                  // đồng thời cập nhật selectedSeats array nếu muốn sync
+                  // setSelectedSeats((prev) =>
+                  //   prev.map((p) => (p.id === s. ? (s as Seat) : p))
+                  // );
+                }}
+                onSuccess={() => {
+                  // gọi API update ở đây nếu cần
+                  setOpenSeatModal(false);
+                }}
+              />
+            )}
+
+            {/* <InfoAndUpdateSeatModal
+              open={openSeatModal}
+              onClose={() => setOpenSeatModal(false)}
+              formData={formData as Seat}
+              setFormData={setFormData}
+              onSuccess={() => {
+                // xử lý cập nhật seat
+                console.log("Seat updated:", formData);
+                setOpenSeatModal(false);
+              }}
+            /> */}
 
             <DetailSection mode="row" data={detail} />
             {selectedSeats.length > 0 && (
@@ -532,6 +653,17 @@ const SeatLayout: React.FC<FlightIdProps> = ({ id }) => {
             Create Alert
           </Button>
         </Box>
+        {/* <InfoAndUpdateSeatModal
+          open={openSeatModal}
+          onClose={() => setOpenSeatModal(false)}
+          formData={formData as Seat}
+          setFormData={setFormData}
+          onSuccess={() => {
+            // xử lý cập nhật seat
+            console.log("Seat updated:", formData);
+            setOpenSeatModal(false);
+          }}
+        /> */}
       </Box>
     </Box>
   );

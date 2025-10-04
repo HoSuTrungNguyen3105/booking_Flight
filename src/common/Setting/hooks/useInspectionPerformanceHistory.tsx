@@ -6,7 +6,11 @@ import { UserRole, type UserData } from "../../../utils/type";
 import { useAuth } from "../../../context/AuthContext";
 import theme from "../../../scss/theme";
 import { useGetUserList } from "../../../components/Api/useGetApi";
-import { DateFormatEnum, formatDateKR } from "../../../hooks/format";
+import {
+  DateFormatEnum,
+  formatDate,
+  formatDateKR,
+} from "../../../hooks/format";
 import SelectDropdown from "../../Dropdown/SelectDropdown";
 
 const dummyRows = Array.from({ length: 20 }, (_, index) => {
@@ -56,23 +60,23 @@ const dummyRows = Array.from({ length: 20 }, (_, index) => {
   };
 });
 
-const statusColorMapper = {
-  INPROGRESS: "#FFF7DB",
-  COMPLETED: "#DEEFFE",
-  INCOMPLETE: "#F4E7EB",
-};
+// const statusColorMapper = {
+//   INPROGRESS: "#FFF7DB",
+//   COMPLETED: "#DEEFFE",
+//   INCOMPLETE: "#F4E7EB",
+// };
 
-const statusTextMapper = {
-  INPROGRESS: "진행중",
-  COMPLETED: "완료",
-  INCOMPLETE: "미완료",
-};
+// const statusTextMapper = {
+//   INPROGRESS: "진행중",
+//   COMPLETED: "완료",
+//   INCOMPLETE: "미완료",
+// };
 type IInspectionPerformanceHistoryItem = GridRowDef;
 
 export const useInspectionPerformanceHistory = () => {
   const dataTableViewRef = useRef<HTMLDivElement>(null);
   const [headerHeight, setHeaderHeight] = useState(0);
-  const { fetchUser, refetchUser } = useGetUserList();
+  const { fetchUserList, refetchUser } = useGetUserList();
 
   // const [rows, setRows] = useState(dummyRows);
   const [openCheckNow, setOpenCheckNow] = useState(false);
@@ -81,7 +85,7 @@ export const useInspectionPerformanceHistory = () => {
     useState<IInspectionPerformanceHistoryItem | null>(null);
 
   const { user, isAuthenticated } = useAuth();
-  const rows = fetchUser?.list ?? [];
+  const rows = fetchUserList?.list ?? [];
 
   const {
     currentPage,
@@ -197,7 +201,7 @@ export const useInspectionPerformanceHistory = () => {
         renderCell: ({ row }) => <span>{row.rank ? row.rank : "-"}</span>,
       },
       {
-        field: "accountLockYn",
+        field: "employeeNo",
         headerName: "로그인",
         flex: 1,
       },
@@ -205,9 +209,8 @@ export const useInspectionPerformanceHistory = () => {
         field: "createdAt",
         headerName: "상태",
         flex: 1,
-        renderCell: ({ row }) => (
-          <span>{formatDateKR(DateFormatEnum.MMMM_D_YYYY, row.createdAt)}</span>
-        ),
+        renderCell: ({ row }) =>
+          formatDate(DateFormatEnum.MM_DD_YYYY, row.createdAt),
       },
       {
         field: "name",

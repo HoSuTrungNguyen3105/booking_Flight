@@ -72,7 +72,6 @@ export const useDataSection = (
       {
         fields: {
           id: "role",
-          label: "Chọn vai trò",
           type: FieldType.DROPDOWN,
           placeholder: "Chọn vai trò...",
           options: roleOptions,
