@@ -1,4 +1,4 @@
-import React, { forwardRef, useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import {
   Box,
   Typography,
@@ -22,14 +22,14 @@ import {
   VerticalAlignCenterSharp,
 } from "@mui/icons-material";
 import theme from "../../../scss/theme";
-import type { Meal, MealType } from "../../../utils/type";
+import type { MealType } from "../../../utils/type";
 import InputTextArea from "../../../common/Input/InputTextArea";
 import type { CreateMealDto } from "./BulkMealCreator";
 import SelectDropdown, {
   type ActionType,
 } from "../../../common/Dropdown/SelectDropdown";
 import InputTextField from "../../../common/Input/InputTextField";
-import { mapStringToDropdown, useFindAllMealTypes } from "../../Api/useGetApi";
+import { useFindAllMealTypes } from "../../Api/useGetApi";
 
 interface MealFormProps {
   meal: CreateMealDto;
@@ -78,34 +78,6 @@ const MealForm =
     }, []);
 
     const mealOptions = mapMealOptions(dataMealTypes?.data ?? []);
-
-    // const mapMealOptions = (mealTypes: string[]): ActionType[] => {
-    //   return mealTypes.map((type) => ({
-    //     value:
-    //       type === "BREAKFAST"
-    //         ? "Bữa sáng"
-    //         : type === "LUNCH"
-    //         ? "Bữa trưa"
-    //         : type === "DINNER"
-    //         ? "Bữa tối"
-    //         : type === "SNACK"
-    //         ? "Đồ ăn nhẹ"
-    //         : type,
-    //     label:
-    //       type === "BREAKFAST"
-    //         ? "Bữa sáng"
-    //         : type === "LUNCH"
-    //         ? "Bữa trưa"
-    //         : type === "DINNER"
-    //         ? "Bữa tối"
-    //         : type === "SNACK"
-    //         ? "Đồ ăn nhẹ"
-    //         : type,
-    //     icon: getMealIcon(type as MealType),
-    //   }));
-    // };
-
-    // const mealOptions = mapMealOptions(dataMealTypes?.data || []);
 
     return (
       <Card

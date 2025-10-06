@@ -3,7 +3,6 @@ import { memo } from "react";
 import type { UserData } from "../../utils/type";
 import InputTextField from "../Input/InputTextField";
 import { DateFormatEnum, formatDateKR } from "../../hooks/format";
-import { FileUploadButton } from "../FileUploader/FileUploadButton";
 
 interface IUserInfoSectionProps {
   myInfo?: UserData;

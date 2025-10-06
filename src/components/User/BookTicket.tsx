@@ -13,7 +13,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useSearchBooking } from "../Api/usePostApi";
 import { FlightOutlined, RefreshOutlined } from "@mui/icons-material";
-import Zigzag from "../../common/CustomRender/Zigzag";
+import Zigzag from "../../common/IconComponent/Zigzag";
 import type { IDetailItem } from "../../common/DetailSection";
 import DetailSection from "../../common/DetailSection";
 import InputTextField from "../../common/Input/InputTextField";

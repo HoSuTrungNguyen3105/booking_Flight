@@ -2,35 +2,25 @@ import { createBrowserRouter, type RouteObject } from "react-router-dom";
 import MainLayout from "../components/Layout/MainLayout";
 import ErrorPage from "../components/Layout/ErrorPage";
 import Guard from "../guard/Guard";
-// import Home from "../components/Home/Home";
-// import Setting from "../common/Setting/Setting";
 import { FileUpload } from "../common/FileUploader";
 import Hero from "../components/Hero/Hero";
 import BookTicket from "../components/User/BookTicket";
-import Food from "../common/Food/Food";
-// import TableCustom from "../common/Table/Table";
 import { ROUTE_PATHS } from "./RoutePath";
 import ManageLayout from "../components/Layout/ResizeLayout";
 import Search_layout from "../components/Admin/Search_layout";
 import GuestGuard from "../components/Layout/GuardLayout";
-// import InspectionDetails from "../components/User/Profile";
 import { LoginPage } from "../components/Auth/LoginPage";
 import Security from "../common/Setting/Security";
 import FullLayout from "../components/Layout/FullLayout";
-// import CheckboxUI from "../common/Checkbox/CheckboxUI";
-import MealList from "../common/Setting/MealList";
+import MealList from "../components/User/MealList";
 import SecurityManage from "../common/Setting/hooks/SecurityManage";
-// import ProfileUser from "../common/Profile";
 import ManageMyInformation from "../common/Setting/ManageMyInformation";
 import ManageMyInfo from "../common/Setting/ManageMyInfo";
-// import Special from "../common/Setting/hooks/Special";
-// import FlightBooking from "../components/User/FlightBooking";
 import AircraftPage from "../components/User/AircraftPage";
 import UnlockRequestTable from "../components/Auth/UnlockRequestTable";
 import FlightPage from "../components/Admin/component/FlightPage";
 import LeaveRequestGrid from "../components/Admin/component/LeaveRequestGrid";
 import PayrollManagement from "../common/Sample/PayrollManagement";
-import DataSecure from "../common/Setting/DataSecure";
 import AdditionalServicesPage from "../common/Sample/AdditionalServicesPage";
 import ChatContainer from "../components/Chat/ChatContainer";
 import Registration from "../components/Auth/Registration";
@@ -40,21 +30,16 @@ import AirportDiagram from "../components/Admin/TerminalContainer";
 import RevenueDashboard from "../components/User/RevenueDashboard";
 import TicketSalesDashboard from "../components/User/TicketSalesDashboard";
 import FlightRoutesDashboard from "../components/User/FlightRoutesDashboard";
-import AircraftBatchCreator from "../components/Admin/component/AircraftBatchCreator";
 import TerminalGateContainer from "../components/Admin/AirportMasterplan";
 import AirportManagement from "../components/Admin/component/AirportManagement";
 import SendEmailToUsers from "../common/Setting/SendEmailToUsers";
-import CreateGateForm from "../components/User/CreateGateForm";
 import MealForm from "../common/Sample/MealForm";
 import FlightStatisticsPage from "../components/User/FlightStatisticsPage";
-// import FileUploadButtonWithValidation from "../components/Admin/modal/FileUploadButtonWithValidation";
 import BulkMealCreator from "../components/Admin/component/BulkMealCreator";
 import AirportMap from "../components/User/AirportMap";
-import CreateFacility from "../components/Admin/modal/CreateFacility";
 import AirportManagementDetail from "../components/User/AirportManagementDetail";
 import ChangePasswordInProfile from "../components/User/Security/ChangePasswordInProfile";
 import FlightBatchCreator from "../components/Admin/component/FlightBatchCreator";
-import BatchUpdateEmployeeNo from "../common/Sample/BatchUpdateEmployeeNo";
 
 export const mockTerminals = [
   {
@@ -130,22 +115,10 @@ const routes = [
         element: <Guard />,
         children: [{ index: true, element: <Hero /> }],
       },
-      // {
-      //   path: "special",
-      //   element: <Special />,
-      // },
-      // {
-      //   path: ROUTE_PATHS.FILE_UPLOAD.replace("/", ""),
-      //   element: <FileUpload name="fileUploader" />,
-      // },
       {
         path: "FlightPage",
         element: <FlightPage />,
       },
-      // {
-      //   path: ROUTE_PATHS.SAMPLE_FORM.replace("/", ""),
-      //   element: <CheckboxUI />,
-      // },
       {
         path: "/sampleFormData",
         element: <Search_layout />,
@@ -227,36 +200,10 @@ const routes = [
         path: "flightmeals",
         element: <MealList />,
       },
-      // {
-      //   path: "FlightDetailPage",
-      //   element: <FlightDetailPage flight={mockFlights} />,
-      // },
-      // {
-      //   path: "FileUploadButtonWithValidation",
-      //   element: (
-      //     <FileUploadButtonWithValidation
-      //       title="hsh"
-      //       setValues={() => {}}
-      //       name="ssh"
-      //     />
-      //   ),
-      // },
-      {
-        path: ROUTE_PATHS.FOOD.replace("/", ""),
-        element: <Food />,
-      },
       {
         path: "message",
         element: <ChatContainer />,
       },
-      // {
-      //   path: "AircraftBatchCreatorEnhanced",
-      //   element: <AircraftBatchCreatorEnhanced />,
-      // },
-      // {
-      //   path: "AircraftBatchCreator",
-      //   element: <AircraftBatchCreator />,
-      // },
       {
         path: "special",
         element: <RevenueDashboard />,

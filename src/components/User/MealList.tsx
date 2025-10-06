@@ -1,18 +1,21 @@
 import { useMemo, useState, useEffect, useCallback } from "react";
-import { type GridColDef } from "@mui/x-data-grid";
-import { useGetFlightData, useGetMeal } from "../../components/Api/useGetApi";
+import { type GridColDef, type GridRowId } from "@mui/x-data-grid";
+import { useGetFlightData, useGetMeal } from "../Api/useGetApi";
 import { Box, Button, Typography } from "@mui/material";
-import { type GridRowDef } from "../DataGrid/index";
+import { type GridRowDef } from "../../common/DataGrid/index";
 import { DateFormatEnum, formatDateKR } from "../../hooks/format";
-import FlightModalTriggerManagement from "./FlightModalTriggerManagement";
-import TableSection from "./TableSection";
-import SeatBooking from "../../components/User/SeatBooking";
-import SeatLayout from "../../components/Admin/component/SeatLayout";
+import FlightModalTriggerManagement from "../../common/Setting/FlightModalTriggerManagement";
+import TableSection from "../../common/Setting/TableSection";
+import SeatBooking from "./SeatBooking";
+import SeatLayout from "../Admin/component/SeatLayout";
+import MealFlightRelation from "./Security/MealFlightRelation";
 
 export default function MealList() {
   const { flightBookingData, loadingFlightBookingData } = useGetMeal();
   const { getFlightData, refetchGetFlightData, loadingFlightData } =
     useGetFlightData();
+  const [openModalFlightMealRows, setOpenModalFlightMealRows] =
+    useState<boolean>(false);
 
   const [selectedMealRows, setSelectedMealRows] = useState<GridRowDef[]>([]);
   const [selectedFlightRows, setSelectedFlightRows] = useState<GridRowDef[]>(
@@ -21,7 +24,6 @@ export default function MealList() {
   const [mealRows, setMealRows] = useState<GridRowDef[]>([]);
   const [flightRows, setFlightRows] = useState<GridRowDef[]>([]);
 
-  // state quản lý mở SeatBooking
   const [selectedFlightForSeat, setSelectedFlightForSeat] = useState<
     number | null
   >(null);
@@ -31,15 +33,21 @@ export default function MealList() {
   >(null);
 
   const [selectViewDetail, setSelectViewDetail] = useState<boolean>(false);
+  const [selectMealRowId, setSelectMealRowId] = useState<number>(0);
+  const handleMealFlightClickButton = (id: number) => {
+    console.log("id", id);
+    setSelectMealRowId(id);
+    setOpenModalFlightMealRows(true);
+  };
 
-  const handleMealRowSelection = (selectedIds: any[]) => {
+  const handleMealRowSelection = (selectedIds: GridRowId[]) => {
     const newSelectedRows = mealRows.filter((row) =>
       selectedIds.includes(row.id)
     );
     setSelectedMealRows(newSelectedRows);
   };
 
-  const handleFlightRowSelection = (selectedIds: any[]) => {
+  const handleFlightRowSelection = (selectedIds: GridRowId[]) => {
     const newSelectedRows = flightRows.filter((row) =>
       selectedIds.includes(row.id)
     );
@@ -79,7 +87,7 @@ export default function MealList() {
   }, []);
 
   const columnFlightBookingData: GridColDef[] = [
-    { field: "id", headerName: "ID", flex: 1 },
+    { field: "mealCode", headerName: "Meal Code", flex: 1 },
     { field: "name", headerName: "Tên món", flex: 1 },
     { field: "mealType", headerName: "Loại", flex: 1 },
     { field: "price", headerName: "Giá ($)", flex: 1 },
@@ -88,15 +96,17 @@ export default function MealList() {
       field: "flightMeals",
       headerName: "Flight Meals",
       flex: 2,
-      renderCell: ({ value }) =>
-        Array.isArray(value) && value.length > 0 ? (
-          <ul style={{ paddingLeft: 16, margin: 0 }}>
-            {value.map((fm: any) => (
-              <li key={fm.id}>
-                Flight {fm.flightId} - Qty: {fm.quantity} - Price: ${fm.price}
-              </li>
-            ))}
-          </ul>
+      renderCell: (params) =>
+        Array.isArray(params.value) && params.value.length > 0 ? (
+          <Button
+            onClick={() => {
+              const flightMealId = params.row.flightMeals[0].id;
+              handleMealFlightClickButton(flightMealId);
+              setOpenModalFlightMealRows(true);
+            }}
+          >
+            Xem chi tiết
+          </Button>
         ) : (
           "Không có chuyến bay"
         ),
@@ -204,6 +214,13 @@ export default function MealList() {
         onSelectedRowIdsChange={handleMealRowSelection}
         nextRowClick
         largeThan
+      />
+
+      <MealFlightRelation
+        flightMealId={selectMealRowId}
+        open={openModalFlightMealRows}
+        onClose={() => {}}
+        onSuccess={() => {}}
       />
 
       {selectedMealRows.length > 0 && (

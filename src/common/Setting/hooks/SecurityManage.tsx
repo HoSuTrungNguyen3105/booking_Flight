@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import type { TabItem } from "../../../components/Layout/SearchLayout";
 import SearchLayout from "../../../components/Layout/SearchLayout";
-import InspectionSection from "../../Dropdown/InspectionSection";
+import InspectionSection from "../../CustomRender/InspectionSection";
 import type { GridColDef } from "@mui/x-data-grid";
 import { Typography } from "@mui/material";
 import { DateFormatEnum, formatDateKR } from "../../../hooks/format";

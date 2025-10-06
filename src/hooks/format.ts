@@ -20,6 +20,17 @@ const SECOND_TO_MILLISECOND = 1000;
 
 const isValidDate = (targetDate?: MomentInput) => {
   if (!targetDate) return false;
+
+  // Nếu là số => ép thành timestamp để moment hiểu
+  if (typeof targetDate === "number") {
+    return moment(targetDate).isValid();
+  }
+
+  // Nếu là string dạng số => parse về Number
+  if (typeof targetDate === "string" && /^\d+$/.test(targetDate)) {
+    return moment(Number(targetDate)).isValid();
+  }
+
   return moment(targetDate).isValid();
 };
 
@@ -28,7 +39,18 @@ export const formatDate = (
   targetDate?: MomentInput
 ) => {
   if (!isValidDate(targetDate)) return "";
-  return moment(targetDate).format(format);
+
+  let date: moment.Moment;
+
+  if (typeof targetDate === "number") {
+    date = moment(targetDate); // ms timestamp
+  } else if (typeof targetDate === "string" && /^\d+$/.test(targetDate)) {
+    date = moment(Number(targetDate)); // parse string số
+  } else {
+    date = moment(targetDate); // ISO / RFC / Date
+  }
+
+  return date.format(format);
 };
 
 export const formatDateKR = (

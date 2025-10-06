@@ -16,7 +16,7 @@ export const useUpdateUser = ({
   data,
 }: IUseUpdateUserProps) => {
   const [error, setError] = useState<string>("");
-  const { fetchUser, loadingUser, refetchUser } = useGetUserList();
+  const { fetchUserList, loadingUser, refetchUser } = useGetUserList();
   const { fetchCreateUser, refetchCreateUser } = useCreateUserByAdmin();
 
   // formData là nguồn truth, khởi tạo từ data nếu có, hoặc defaults
@@ -82,7 +82,7 @@ export const useUpdateUser = ({
 
   const enableUpdateBtn = useMemo(
     () =>
-      (formData.userAlias?.trim() ?? "") !== "" ||
+      (formData.role?.trim() ?? "") !== "" ||
       (formData.name?.trim() ?? "") !== "",
     [formData]
   );
@@ -96,7 +96,7 @@ export const useUpdateUser = ({
     fetchCreateUser,
     handleChange,
     handleSubmit,
-    fetchUser,
+    // fetchUserList,
     loadingUser,
     refetchUser,
   } as const;

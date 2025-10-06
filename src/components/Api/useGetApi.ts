@@ -23,6 +23,7 @@ import {
 import { useFetch } from "../../context/use[custom]/useFetch.ts";
 import type { Payroll } from "../../common/Sample/PayrollManagement.tsx";
 import type { ActionType } from "../../common/Dropdown/SelectDropdown.tsx";
+import { useEffect } from "react";
 
 const getMethod = {
   method: MethodType.GET,
@@ -101,17 +102,29 @@ export const useFlightById = ({ id }: FlightId) => {
     refetchFlightId,
   };
 };
+export const useGetFlightMealsById = (id: number) => {
+  const {
+    data: fetchFlightMealsById,
+    refetch: refetchFlightMealsById,
+    loading: loadingFlightMealsById,
+    error: errorFlightMealsById,
+  } = useFetch<FlightMealDetailApiResponse, void>({
+    url: `/sys/flight-meals/${id}`,
+    autoFetch: false, // ❌ không fetch ngay
+    config: getMethod,
+  });
 
-export const useFlightMealsById = (id: string) => {
-  const { data: fetchFlightMealsById, refetch: refetchFlightMealsById } =
-    useFetch<FlightMealDetailApiResponse, FlightMealDetailApiResponse>({
-      url: `/sys/flight-meals/${id}`,
-      autoFetch: false,
-      config: getMethod,
-    });
+  useEffect(() => {
+    if (id && id > 0) {
+      refetchFlightMealsById();
+    }
+  }, [id]);
+
   return {
     fetchFlightMealsById,
     refetchFlightMealsById,
+    loadingFlightMealsById,
+    errorFlightMealsById,
   };
 };
 

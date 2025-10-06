@@ -21,10 +21,10 @@ import SignOut from "../../components/Auth/SignOut";
 import ImageThumbnailIcon from "../../svgs/account-avatar-profile-user-11.svg";
 import { Link, useNavigate } from "react-router-dom";
 import { GridMenuIcon } from "@mui/x-data-grid";
-import { ImageThumbnail } from "../Profile/ImageThumbnail";
+import { ImageThumbnail } from "../IconComponent/ImageThumbnail";
 import CustomPopover from "../Button/Popover";
 import { Login } from "@mui/icons-material";
-import LanguageButton from "../Dropdown/Changelng";
+import LanguageButton from "../Dropdown/ChangeLanguageSelect";
 
 export const Header = () => {
   const navItems = ["About", "Package", "Contact"];

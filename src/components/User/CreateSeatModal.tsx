@@ -12,9 +12,6 @@ import AddIcon from "@mui/icons-material/Add";
 import { type CreateSeatDto } from "../Api/usePostApi";
 import BaseModal from "../../common/Modal/BaseModal";
 import InputTextField from "../../common/Input/InputTextField";
-import SelectDropdown, {
-  type ActionType,
-} from "../../common/Dropdown/SelectDropdown";
 import { Loading } from "../../common/Loading/Loading";
 
 interface IModalStatisticalDataLearningProps {
@@ -23,8 +20,6 @@ interface IModalStatisticalDataLearningProps {
   onSuccess: () => void;
   flightId: number;
   loading: boolean;
-  // seatRow : string;
-  // see
 }
 
 const CreateSeatModal = ({

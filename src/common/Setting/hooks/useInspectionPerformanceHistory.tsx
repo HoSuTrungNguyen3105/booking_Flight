@@ -1,6 +1,6 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useClientPagination from "../../../context/use[custom]/useClientPagination";
-import type { GridColDef } from "@mui/x-data-grid";
+import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import type { GridRowDef } from "../../DataGrid";
 import { UserRole, type UserData } from "../../../utils/type";
 import { useAuth } from "../../../context/AuthContext";
@@ -12,6 +12,7 @@ import {
   formatDateKR,
 } from "../../../hooks/format";
 import SelectDropdown from "../../Dropdown/SelectDropdown";
+import { Box, Typography } from "@mui/material";
 
 const dummyRows = Array.from({ length: 20 }, (_, index) => {
   const id = index + 1;
@@ -190,9 +191,47 @@ export const useInspectionPerformanceHistory = () => {
         field: "role",
         flex: 1,
         headerName: "권한",
-        renderCell: ({ row }) => (
-          <span>{row.role === UserRole.ADMIN ? "관리자" : "멤버"}</span>
-        ),
+        // renderCell: ({ row }) => (
+        //   <span>{row.role === UserRole.ADMIN ? "관리자" : "멤버"}</span>
+        // ),
+        renderCell: (params: GridRenderCellParams) => {
+          let bgColor = "";
+          let textColor = "#000";
+
+          switch (params.value) {
+            case UserRole.ADMIN:
+              bgColor = "#FFF36C"; // Yellow
+              break;
+            case UserRole.MONITOR:
+              bgColor = "#E1BEE7"; // Light purple/pink
+              break;
+            case UserRole.USER:
+              bgColor = "#D6ECE7"; // Light blue
+              break;
+            default:
+              bgColor = "#E0E0E0"; // Grey
+          }
+
+          return (
+            <Box display="flex" padding={1}>
+              <Typography
+                sx={{
+                  display: "flex",
+                  backgroundColor: bgColor,
+                  padding: "4px 8px",
+                  borderRadius: "3px",
+                  color: textColor,
+                  width: "90px",
+                  justifyContent: "center",
+                  textAlign: "center",
+                  alignItems: "center",
+                }}
+              >
+                {params.value}
+              </Typography>
+            </Box>
+          );
+        },
       },
       {
         field: "rank",

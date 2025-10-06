@@ -14,7 +14,7 @@ import {
   LocationOn as LocationIcon,
 } from "@mui/icons-material";
 import { useGetAllAirportInfo } from "../../Api/useGetApi";
-import type { Airport, CreateAirportReq } from "../../../utils/type";
+import type { Airport } from "../../../utils/type";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import TableSection from "../../../common/Setting/TableSection";
 import AirportManageModal from "../modal/AirportManageModal";
@@ -44,12 +44,21 @@ const AirportManagement: React.FC = () => {
   const [editingAirport, setEditingAirport] = useState<"update" | "create">(
     "create"
   );
-  const [formData, setFormData] = useState<CreateAirportReq>({
+  const [formData, setFormData] = useState<Airport>({
     code: "",
     name: "",
     city: "",
     country: "",
+    createdAt: "",
+    updatedAt: "",
   });
+
+  //   const [formData, setFormData] = useState<CreateAirportReq>({
+  //   code: "",
+  //   name: "",
+  //   city: "",
+  //   country: "",
+  // });
 
   const handleCreate = () => {
     setEditingAirport("create");
@@ -64,6 +73,8 @@ const AirportManagement: React.FC = () => {
       name: airport.name,
       city: airport.city,
       country: airport.country,
+      createdAt: airport.createdAt,
+      updatedAt: airport.updatedAt,
     });
     setOpenDialog(true);
   };
@@ -82,12 +93,12 @@ const AirportManagement: React.FC = () => {
         />
       ),
     },
-    { field: "name", headerName: "Tên sân bay", flex: 2 },
+    { field: "name", headerName: "Tên sân bay", flex: 1 },
     { field: "city", headerName: "Thành phố", flex: 1 },
     {
       field: "country",
       headerName: "Quốc gia",
-      flex: 1.5,
+      flex: 1,
       renderCell: (params: GridRenderCellParams) => (
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <Typography variant="body2">
@@ -97,34 +108,33 @@ const AirportManagement: React.FC = () => {
         </Box>
       ),
     },
-    {
-      field: "terminalCount",
-      headerName: "Số terminal",
-      flex: 1,
-      renderCell: (params: GridRenderCellParams) => (
-        <Chip
-          label={params.value}
-          color={params.value > 0 ? "secondary" : "default"}
-        />
-      ),
-    },
-    {
-      field: "createdAt",
-      headerName: "Ngày tạo",
-      flex: 1.5,
-      renderCell: (params: GridRenderCellParams) => (
-        <Box sx={{ display: "flex", flexDirection: "column" }}>
-          <Typography variant="caption">
-            Tạo: {new Date(params.value as string).toLocaleDateString("vi-VN")}
-          </Typography>
-          {params.row.updatedAt && (
-            <Typography variant="caption" color="text.secondary">
-              Sửa: {new Date(params.row.updatedAt).toLocaleDateString("vi-VN")}
-            </Typography>
-          )}
-        </Box>
-      ),
-    },
+    // {
+    //   field: "createdAt",
+    //   headerName: "Số terminal",
+    //   flex: 1,
+    //   renderCell: (params: GridRenderCellParams) => (
+    //     <Box sx={{ display: "flex", flexDirection: "column" }}>
+    //       <Chip
+    //         size="small"
+    //         label={` Createed at :${formatDate(
+    //           DateFormatEnum.DD_MM_YYYY_HH_MM_SS,
+    //           params.value
+    //         )}`}
+    //         color="info"
+    //       />
+    //       {params.row.updatedAt && (
+    //         <Chip
+    //           size="small"
+    //           label={formatDate(
+    //             DateFormatEnum.DD_MM_YYYY_HH_MM_SS,
+    //             params.row.updatedAt
+    //           )}
+    //           color="default"
+    //         />
+    //       )}
+    //     </Box>
+    //   ),
+    // },
     {
       field: "actions",
       headerName: "Thao tác",
@@ -160,15 +170,19 @@ const AirportManagement: React.FC = () => {
     setAirports((prev) => prev.filter((a) => a.code !== code));
   };
 
-  const getCountryFlag = (country: string) => {
-    const flags: Record<string, string> = {
-      Vietnam: "🇻🇳",
-      ThaiLan: "🇹🇭",
-      Singapore: "🇸🇬",
-      Japan: "🇯🇵",
-      Korea: "🇰🇷",
-    };
-    return flags[country] || "🏳️";
+  const countryFlags: Record<string, string> = {
+    Vietnam: "🇻🇳",
+    ThaiLan: "🇹🇭",
+    Singapore: "🇸🇬",
+    Japan: "🇯🇵",
+    Korea: "🇰🇷",
+  };
+
+  const getCountryFlag = (country?: string): string => {
+    if (!country) return "🏳️";
+
+    const key = country.trim().toLowerCase();
+    return countryFlags[key] ?? "🏳️";
   };
 
   if (changePageBtchCreate) {
@@ -226,9 +240,9 @@ const AirportManagement: React.FC = () => {
         open={openDialog}
         onClose={() => setOpenDialog(false)}
         editingAirport={editingAirport}
-        formData={formData}
-        setFormData={setFormData}
-      ></AirportManageModal>
+        formEditData={formData}
+        // setFormData={setFormData}
+      />
     </Box>
   );
 };

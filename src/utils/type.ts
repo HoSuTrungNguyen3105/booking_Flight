@@ -221,7 +221,9 @@ export interface Airport {
   country: string;
   createdAt?: number | string;
   updatedAt?: number | string;
+}
 
+export interface AirportTypeWithError {
   errorCode: string;
   errorMessage: string;
 }
@@ -255,6 +257,9 @@ interface AllFlightCodeProps {
 }
 
 export type AircraftResponseMessage = DetailResponseMessage<Aircraft>;
+
+export type AirportCreateResponseMessage =
+  DetailResponseMessage<AirportTypeWithError>;
 
 export type AirportResponseMessage = DetailResponseMessage<Airport>;
 

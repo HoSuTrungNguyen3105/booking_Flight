@@ -4,16 +4,11 @@ import { memo, useCallback, useEffect, useRef, useState } from "react";
 import DataTable, { type GridRowDef } from "../DataGrid/index";
 import SearchIcon from "../../svgs/phone.png";
 import Pagination from "../DataGrid/Pagination";
-import SearchBar from "../CustomRender/SearchBar";
+import SearchBar from "./SearchBar";
 import useClientPagination from "../../context/use[custom]/useClientPagination";
 
 type ISecurityTabSectionProps = {
   columns: GridColDef[];
-  tabs?: {
-    label: string;
-    description: string;
-    content: React.ReactNode;
-  }[];
   rows: GridRowDef[];
   name?: string;
   loading?: boolean;
@@ -24,7 +19,6 @@ type ISecurityTabSectionProps = {
 
 const InspectionSection = ({
   columns,
-  tabs,
   rows,
   loading,
   name = "Total",
@@ -52,10 +46,6 @@ const InspectionSection = ({
   } = useClientPagination({ data: rows });
 
   const renderContent = useCallback(() => {
-    if (tabs && tabs.length > 0) {
-      return null;
-    }
-
     return (
       <Box marginRight={0} display="flex" flexDirection="column" height="100%">
         <Box
@@ -109,15 +99,7 @@ const InspectionSection = ({
         />
       </Box>
     );
-  }, [
-    tabs,
-    totalElements,
-    rows,
-    columns,
-    loading,
-    onSortModelChange,
-    sortModel,
-  ]);
+  }, [totalElements, rows, columns, loading, onSortModelChange, sortModel]);
 
   return (
     <Stack gap="10px" height="100%">

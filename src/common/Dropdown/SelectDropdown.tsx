@@ -110,12 +110,6 @@ const SelectDropdown: FC<OptionSelectDropdownProps> = ({
             {defaultValue}
           </MenuItem>
         )}
-        {/* {placeholder && (
-          <MenuItem sx={{ color: "grey.800" }} value="">
-            <em>{placeholder}</em>
-          </MenuItem>
-        )} */}
-
         {options.map(({ label, icon, value, color, disabled }) => (
           <MenuItem key={value} disabled={disabled} value={value}>
             <Box

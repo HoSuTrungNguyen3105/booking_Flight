@@ -230,9 +230,6 @@ const ConfirmDeleteModal = ({
     },
   ];
 
-  // --------------------
-  // Unlock Requests Table
-  // --------------------
   const unlockRequestColumns: GridColDef[] = [
     { field: "id", headerName: "ID", flex: 1 },
     {

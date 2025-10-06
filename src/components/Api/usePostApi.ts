@@ -30,6 +30,7 @@ import {
   type PasswordProps,
   type CreateAirportReq,
   type AirportResponseMessage,
+  type AirportCreateResponseMessage,
 } from "../../utils/type.ts";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
 import { useFetch } from "../../context/use[custom]/useFetch.ts";
@@ -507,7 +508,7 @@ export const useCreateBatchAirport = () => {
   const {
     refetch: refetchCreateBatchAirport,
     loading: loadingCreateBatchAirport,
-  } = useFetch<AirportResponseMessage, CreateAirportReq[]>({
+  } = useFetch<AirportCreateResponseMessage, CreateAirportReq[]>({
     url: "/sys/flights/airport/batch",
     autoFetch: false,
     config: postMethod,
