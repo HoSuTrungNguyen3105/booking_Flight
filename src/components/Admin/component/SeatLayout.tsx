@@ -22,10 +22,11 @@ import DetailSection, { type IDetailItem } from "../../../common/DetailSection";
 import ButtonSeat from "./ButtonSeat";
 import type { Seat } from "../../../utils/type";
 import { Chair, LocalAirport, RestartAlt } from "@mui/icons-material";
-import { useSeatUpdateByIds, type SeatUpdateProps } from "../../Api/usePostApi";
+import { type SeatUpdateProps } from "../../Api/usePostApi";
 import SeatManagementModal from "../../User/SeatManagementModal";
 import CreateSeat from "../../User/CreateSeat";
 import InfoAndUpdateSeatModal from "../modal/InfoAndUpdateSeatModal";
+import { useToast } from "../../../context/ToastContext";
 
 type FlightIdProps = {
   id: number;
@@ -118,14 +119,9 @@ const SeatLayout: React.FC<FlightIdProps> = ({ id, onReturn }) => {
     wing: !!getAllInfoFlightByIdData?.data?.seats?.some((seat) => seat.isWing),
   });
   const [filter, setFilter] = useState<AircraftSeatTypeProps>("ALL");
-  // const [selectedSeats, setSelectedSeats] = useState<Seat[]>([]); // Thay đổi từ number[] sang Seat[]
-  const [message, setMessage] = useState("");
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [createSeat, setCreateSeat] = useState(false);
   const [openSeatModal, setOpenSeatModal] = useState(false);
-
-  // form data của seat đang chọn (dùng để truyền xuống modal)
-  const [formData, setFormData] = useState<Seat | null>(null);
 
   const [updateSeat, setUpdateSeat] = useState<SeatUpdateProps>({
     seatIds: [],
@@ -133,17 +129,13 @@ const SeatLayout: React.FC<FlightIdProps> = ({ id, onReturn }) => {
     isAvailable: false,
   });
   const [selectedSeat, setSelectedSeat] = useState<Seat | null>(null);
-
+  const toast = useToast();
   const handleOpenUpdateModal = useCallback(() => {
     if (selectedSeats.length === 0) {
-      setMessage("Please select at least one seat to update.");
+      toast("Please select at least one seat to update.");
       return;
     }
-
-    // Lấy thông tin từ ghế đầu tiên
     const firstSeat = selectedSeats[0];
-
-    // Cập nhật state updateSeat với thông tin từ ghế được chọn
     setUpdateSeat({
       seatIds: selectedSeats.map((seat) => seat.id),
       type: firstSeat.type,
@@ -162,7 +154,6 @@ const SeatLayout: React.FC<FlightIdProps> = ({ id, onReturn }) => {
       seatIds: [],
       type: "ECONOMY",
     });
-    setMessage("");
   };
 
   const seatOptionList = [
@@ -217,7 +208,6 @@ const SeatLayout: React.FC<FlightIdProps> = ({ id, onReturn }) => {
     });
   };
 
-  // useEffect sẽ chạy khi selectedSeats thay đổi -> side-effect ở đây an toàn
   useEffect(() => {
     console.log("selectedSeats updated:", selectedSeats);
 
@@ -229,62 +219,6 @@ const SeatLayout: React.FC<FlightIdProps> = ({ id, onReturn }) => {
       setOpenSeatModal(false);
     }
   }, [selectedSeats]);
-
-  // const handleSelectSeat = (seat: Seat) => {
-  //   setSelectedSeats((prev) => {
-  //     const exists = prev.find((s) => s.id === seat.id);
-
-  //     if (exists) {
-  //       return prev.filter((s) => s.id !== seat.id);
-  //     }
-
-  //     if (maxSelectSeats === 1) {
-  //       console.log("formdata", selectedSeats);
-  //       return [seat];
-  //     } else {
-  //       if (prev.length < maxSelectSeats) {
-  //         return [...prev, seat];
-  //       } else {
-  //         return prev;
-  //       }
-  //     }
-  //   });
-  // };
-
-  // const handleSelectSeat = (seat: Seat) => {
-  //   setSelectedSeats((prev) => {
-  //     const exists = prev.find((s) => s.id === seat.id);
-
-  //     let newSeats;
-  //     if (exists) {
-  //       // bỏ chọn seat
-  //       newSeats = prev.filter((s) => s.id !== seat.id);
-  //     } else {
-  //       if (maxSelectSeats === 1) {
-  //         newSeats = [seat];
-  //         //  setFormData(newSeats[0]); // truyền data seat vào modal
-  //         //setOpenSeatModal(true);
-  //         console.log("formdata", selectedSeats);
-  //       } else {
-  //         if (prev.length < maxSelectSeats) {
-  //           newSeats = [...prev, seat];
-  //         } else {
-  //           newSeats = prev;
-  //         }
-  //       }
-  //     }
-
-  //     // nếu chỉ có đúng 1 seat được chọn => mở modal
-  //     // if (newSeats.length === 1) {
-  //     //   setFormData(newSeats[0]); // truyền data seat vào modal
-  //     //   setOpenSeatModal(true);
-  //     // } else {
-  //     //   setOpenSeatModal(false);
-  //     // }
-
-  //     return newSeats;
-  //   });
-  // };
 
   if (createSeat) {
     return (
@@ -374,31 +308,13 @@ const SeatLayout: React.FC<FlightIdProps> = ({ id, onReturn }) => {
                 onClose={() => setOpenSeatModal(false)}
                 formData={selectedSeat}
                 setFormData={(s) => {
-                  // cập nhật selectedSeat trong state modal -> lưu về server / cập nhật list nếu cần
                   setSelectedSeat(s as Seat);
-                  // đồng thời cập nhật selectedSeats array nếu muốn sync
-                  // setSelectedSeats((prev) =>
-                  //   prev.map((p) => (p.id === s. ? (s as Seat) : p))
-                  // );
                 }}
                 onSuccess={() => {
-                  // gọi API update ở đây nếu cần
                   setOpenSeatModal(false);
                 }}
               />
             )}
-
-            {/* <InfoAndUpdateSeatModal
-              open={openSeatModal}
-              onClose={() => setOpenSeatModal(false)}
-              formData={formData as Seat}
-              setFormData={setFormData}
-              onSuccess={() => {
-                // xử lý cập nhật seat
-                console.log("Seat updated:", formData);
-                setOpenSeatModal(false);
-              }}
-            /> */}
 
             <DetailSection mode="row" data={detail} />
             {selectedSeats.length > 0 && (
@@ -511,14 +427,11 @@ const SeatLayout: React.FC<FlightIdProps> = ({ id, onReturn }) => {
 
         <Divider sx={{ my: 3 }} />
 
-        {/* Create Alert Section */}
-
         <Box sx={{ width: { xs: "100%", md: "320px" } }}>
           <Card
             sx={{
               padding: { xs: "16px", sm: "20px" },
               borderRadius: "12px",
-              // boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
               position: "sticky",
               top: 20,
             }}

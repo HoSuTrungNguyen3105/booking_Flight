@@ -18,6 +18,7 @@ import {
   type GetAllCodeResponseMessage,
   type Passenger,
   type TerminalLabelListResponse,
+  type FlightBaggageDetailApiResponse,
 } from "../../utils/type.ts";
 import { useFetch } from "../../context/use[custom]/useFetch.ts";
 import type { Payroll } from "../../common/Sample/PayrollManagement.tsx";
@@ -324,6 +325,21 @@ export const useGetUnlockRequests = () => {
   return {
     getUnlockRequests,
     refetchGetUnlockRequests,
+  };
+};
+
+export const useGetBaggageData = () => {
+  const { refetch: refetchBaggageData, data: dataBaggage } = useFetch<
+    FlightBaggageDetailApiResponse,
+    void
+  >({
+    url: "sys/bookings/baggage",
+    autoFetch: true,
+    config: getMethod,
+  });
+  return {
+    dataBaggage,
+    refetchBaggageData,
   };
 };
 

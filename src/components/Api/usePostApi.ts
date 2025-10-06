@@ -41,6 +41,7 @@ import type {
   GeneratePayroll,
   Payroll,
 } from "../../common/Sample/PayrollManagement.tsx";
+import type { UserWithRelationsData } from "../../common/Sample/type.ts";
 
 const postMethod = {
   method: MethodType.POST,
@@ -229,6 +230,20 @@ export const useFlightUpdate = ({ id }: ReqUserIDProps) => {
     refetchUpdateFlightId,
   };
 };
+
+export const useUpdateSeatsByIds = ({ id }: ReqUserIDProps) => {
+  const { refetch: refetchUpdateSeatsByIds } = useFetch<
+    FlightDetailApiResponse,
+    Partial<FlightFormData>
+  >({
+    url: "/sys/seats/updateSeatsByIds",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchUpdateSeatsByIds,
+  };
+};
 // export const SeatType = {
 //   VIP: "VIP",
 //   BUSINESS: "BUSINESS",
@@ -321,6 +336,19 @@ export const useRequestUnlockAccount = () => {
     useFetch<ResponseMessage, RequestUnlock>({
       url: "/sys/users/request-unlock",
       defaultValue: { resultCode: "", resultMessage: "" },
+      autoFetch: false,
+      config: postMethod,
+    });
+  return {
+    requestUnlockAccount,
+    refetchRequestUnlockAccount,
+  };
+};
+
+export const useDeleteRequestUnlockById = () => {
+  const { data: requestUnlockAccount, refetch: refetchRequestUnlockAccount } =
+    useFetch<ResponseMessage, { id: number }>({
+      url: "/sys/users/request-unlock/delete",
       autoFetch: false,
       config: postMethod,
     });
@@ -540,20 +568,6 @@ export type CreateGateProps = {
   status: string;
 };
 
-// export const useCreateGate = () => {
-//   const { refetch: refetchCreateGate } = useFetch<
-//     ResponseMessage,
-//     CreateGateProps
-//   >({
-//     url: "/auth/setmfa",
-//     autoFetch: false,
-//     config: postMethod,
-//   });
-//   return {
-//     refetchCreateGate,
-//   };
-// };
-
 export const useGetTerminalData = () => {
   const { data: getTerminalData, refetch: refetchGetTerminalData } = useFetch<
     TerminalResponse,
@@ -600,6 +614,23 @@ export const getUserIdByEmail = () => {
   });
   return {
     refetchUserEmailData,
+  };
+};
+type GetIDToDeleteData = {
+  id: number | string;
+};
+export const useGetUserWithRelations = ({ id }: GetIDToDeleteData) => {
+  const {
+    refetch: refetchGetUserWithRelations,
+    data: dataGetUserWithRelations,
+  } = useFetch<DetailResponseMessage<UserWithRelationsData>, void>({
+    url: `/auth/getUserWithRelations/${id as string}`,
+    autoFetch: !!id,
+    config: getMethod,
+  });
+  return {
+    dataGetUserWithRelations,
+    refetchGetUserWithRelations,
   };
 };
 
@@ -672,15 +703,27 @@ export const useUpdateFacilities = (id: string) => {
   };
 };
 
-export const useGeneratePayroll = () => {
-  const { refetch, loading } = useFetch<ResponseMessage, GeneratePayroll>({
-    url: "/sys/payrolls/generate",
+export const useDeletePayroll = () => {
+  const { refetch, loading } = useFetch<ResponseMessage, { id: number }>({
+    url: "/sys/payrolls/delete",
     autoFetch: false,
     config: postMethod,
   });
   return {
-    refetchGeneratePayroll: refetch,
-    loadingGeneratePayroll: loading,
+    refetchDeletePayroll: refetch,
+    loadingDeletePayroll: loading,
+  };
+};
+
+export const useDeleteAttendance = () => {
+  const { refetch, loading } = useFetch<ResponseMessage, { id: number }>({
+    url: "/sys/users/attendance/delete",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchDeleteAttendance: refetch,
+    loadingDeleteAttendance: loading,
   };
 };
 
@@ -950,6 +993,7 @@ export type CreateLeaveRequestDto = {
   days: number;
   reason?: string;
 };
+
 export const useCreateLeaveRequest = () => {
   const {
     data: dataGetLeaveRequest,
@@ -966,6 +1010,24 @@ export const useCreateLeaveRequest = () => {
     refetchGetLeaveRequest,
   };
 };
+
+export const useDeleteLeaveRequest = () => {
+  const {
+    data: dataDeleteLeaveRequest,
+    refetch: refetchDeleteLeaveRequest,
+    loading: loadingDeleteLeaveRequest,
+  } = useFetch<DetailResponseMessage<LeaveRequest>, { id: number }>({
+    url: "/sys/users/leave-requests/delete",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    dataDeleteLeaveRequest,
+    refetchDeleteLeaveRequest,
+    loadingDeleteLeaveRequest,
+  };
+};
+
 export const useGetLeaveRequest = () => {
   const {
     data: dataGetLeaveRequest,

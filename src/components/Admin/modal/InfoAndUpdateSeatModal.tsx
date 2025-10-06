@@ -71,6 +71,11 @@ const InfoAndUpdateSeatModal = ({
     return (
       <Box sx={{ pt: 2 }}>
         <Grid container spacing={2}>
+          <InputTextField
+            placeholder="ID Số ghế"
+            disabled
+            value={formData.id.toString()}
+          />
           <Grid size={6}>
             <InputTextField
               placeholder="Số ghế"
@@ -78,7 +83,6 @@ const InfoAndUpdateSeatModal = ({
               onChange={(e) =>
                 setFormData({ ...formData, seatNumber: Number(e) })
               }
-              //disabled={editingMode === "update"}
             />
           </Grid>
           <Grid size={6}>
@@ -113,88 +117,55 @@ const InfoAndUpdateSeatModal = ({
             />
           </Grid>
 
-          {/* Các option checkbox */}
+          {/* Các option switch */}
           <Grid size={12}>
             <Box display="flex" flexWrap="wrap" gap={2}>
-              <FormControlLabel
-                control={
-                  <LabeledCheckbox
-                    checked={formData.isBooked}
-                    onChange={handleCheckbox("isBooked")}
-                  />
-                }
+              <Android12Switch
+                color="#f44336"
+                checked={formData.isBooked}
+                onChange={handleCheckbox("isBooked")}
                 label="Đã đặt"
               />
-              <FormControlLabel
-                control={
-                  <LabeledCheckbox
-                    checked={formData.isAvailable}
-                    onChange={handleCheckbox("isAvailable")}
-                  />
-                }
+              <Android12Switch
+                color="#4caf50"
+                checked={formData.isAvailable}
+                onChange={handleCheckbox("isAvailable")}
                 label="Có sẵn"
               />
-              <FormControlLabel
-                control={
-                  <LabeledCheckbox
-                    checked={formData.isExitRow}
-                    onChange={handleCheckbox("isExitRow")}
-                  />
-                }
+              <Android12Switch
+                color="#ff9800"
+                checked={formData.isExitRow}
+                onChange={handleCheckbox("isExitRow")}
                 label="Ghế hàng thoát hiểm"
               />
-              <FormControlLabel
-                control={
-                  <LabeledCheckbox
-                    checked={formData.isExtraLegroom}
-                    onChange={handleCheckbox("isExtraLegroom")}
-                  />
-                }
+              <Android12Switch
+                color="#2196f3"
+                checked={formData.isExtraLegroom}
+                onChange={handleCheckbox("isExtraLegroom")}
                 label="Ghế rộng chân"
               />
-              <FormControlLabel
-                control={
-                  <LabeledCheckbox
-                    checked={formData.isHandicapAccessible}
-                    onChange={handleCheckbox("isHandicapAccessible")}
-                  />
-                }
+              <Android12Switch
+                color="#9c27b0"
+                checked={formData.isHandicapAccessible}
+                onChange={handleCheckbox("isHandicapAccessible")}
                 label="Dành cho người khuyết tật"
               />
-              <FormControlLabel
-                control={
-                  <LabeledCheckbox
-                    checked={formData.isNearLavatory}
-                    onChange={handleCheckbox("isNearLavatory")}
-                  />
-                }
+              <Android12Switch
+                color="#795548"
+                checked={formData.isNearLavatory}
+                onChange={handleCheckbox("isNearLavatory")}
                 label="Gần toilet"
               />
-              <FormControlLabel
-                control={
-                  //   <Switch
-                  //     checked={formData.isUpperDeck}
-                  //     onChange={handleCheckbox("isUpperDeck")}
-                  //   />
-                  <Android12Switch
-                    color="#4caf50" // màu custom
-                    label="Bật / Tắt chế độ" // text ngoài
-                    labelOn="Bật"
-                    labelOff="Tắt"
-                    hasLabel // bật label bên trong switch
-                    checked={formData.isUpperDeck}
-                    onChange={handleCheckbox("isUpperDeck")}
-                  />
-                }
+              <Android12Switch
+                color="#4caf50"
+                checked={formData.isUpperDeck}
+                onChange={handleCheckbox("isUpperDeck")}
                 label="Tầng trên"
               />
-              <FormControlLabel
-                control={
-                  <LabeledCheckbox
-                    checked={formData.isWing}
-                    onChange={handleCheckbox("isWing")}
-                  />
-                }
+              <Android12Switch
+                color="#607d8b"
+                checked={formData.isWing}
+                onChange={handleCheckbox("isWing")}
                 label="Gần cánh"
               />
             </Box>

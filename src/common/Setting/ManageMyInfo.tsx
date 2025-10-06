@@ -15,6 +15,7 @@ import TableSection from "./TableSection";
 import type { GridRowId } from "@mui/x-data-grid";
 import BatchUpdateEmployeeNo from "../Sample/BatchUpdateEmployeeNo";
 import type { BatchEmployeeNoReq } from "../../components/Api/usePostApi";
+import ConfirmDeleteModal from "../Sample/modal/ConfirmDeleteModal";
 
 const ManageMyInfo = () => {
   const {
@@ -171,9 +172,9 @@ const ManageMyInfo = () => {
       )}
 
       {openModal.deleteUser && selectedRow && (
-        <DeleteUserModal
+        <ConfirmDeleteModal
           open={openModal.deleteUser}
-          user={selectedRow}
+          id={selectedRow.id}
           onSuccess={() => {
             handleRefetchUserList();
             closeModal("deleteUser");

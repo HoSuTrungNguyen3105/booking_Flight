@@ -93,7 +93,6 @@ const AircraftBatchCreator = ({ onSuccess }: ReturnProps) => {
     setLoading(true);
     try {
       const response = await refetchCreateAircraftBatchFlightData(aircrafts);
-      console.log("res", response);
       if (response?.resultCode === "00") {
         toast(response?.resultMessage);
         // setAircrafts([{ code: "", model: "", range: 0 }]);

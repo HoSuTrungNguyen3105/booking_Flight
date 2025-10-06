@@ -3,7 +3,7 @@ import { memo, useCallback, useState } from "react";
 import BaseModal from "../../Modal/BaseModal";
 import type { GeneratePayroll } from "../PayrollManagement";
 import InputTextField from "../../Input/InputTextField";
-import { useGeneratePayroll } from "../../../components/Api/usePostApi";
+// import { useGeneratePayroll } from "../../../components/Api/usePostApi";
 import MoneyIcon from "../../../svgs/money-euro-banknote.svg";
 import { Add as AddIcon } from "@mui/icons-material";
 import { useGetUserIdAndNameToDropdownGeneratePayroll } from "../../../components/Api/useGetApi";
@@ -36,20 +36,20 @@ const CreatePayrollModal = ({
     deductions: 0,
     tax: 0,
   });
-  const { refetchGeneratePayroll } = useGeneratePayroll();
+  // const { refetchGeneratePayroll } = useGeneratePayroll();
   const { dataGetUserIdAndNameToDropdown } =
     useGetUserIdAndNameToDropdownGeneratePayroll();
   const handleGeneratePayroll = useCallback(async () => {
-    const res = await refetchGeneratePayroll({
-      ...payrollData,
-    });
-    if (res?.resultCode === "00") {
-      // onClose();
-      onSuccess();
-    } else {
-      console.log("payrollData", payrollData);
-    }
-  }, [refetchGeneratePayroll, onSuccess]);
+    // const res = await refetchGeneratePayroll({
+    //   ...payrollData,
+    // });
+    // if (res?.resultCode === "00") {
+    //   // onClose();
+    //   onSuccess();
+    // } else {
+    //   console.log("payrollData", payrollData);
+    // }
+  }, [onSuccess]);
 
   const renderActions = useCallback(() => {
     return (
@@ -87,7 +87,7 @@ const CreatePayrollModal = ({
                 <InputTextField value={String(payrollData.year)} disabled />
               </FormRow>
             </Grid>
-            {/* Nhân viên */}
+
             <Grid size={12}>
               <FormControl fullWidth>
                 <SelectDropdown

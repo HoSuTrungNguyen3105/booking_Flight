@@ -11,10 +11,7 @@ import {
   Tooltip,
 } from "@mui/material";
 import { useSocket } from "../../context/use[custom]/useSocket";
-import type {
-  Message,
-  MessageBetweenUserLoginResponse,
-} from "../../utils/type";
+import type { Message } from "../../utils/type";
 import theme from "../../scss/theme";
 import {
   AttachFile,

@@ -1,167 +1,457 @@
-import { memo, useCallback, useState } from "react";
-import BaseModal from "../../Modal/BaseModal";
-import type { GeneratePayroll } from "../PayrollManagement";
-import InputTextField from "../../Input/InputTextField";
-import { useGeneratePayroll } from "../../../components/Api/usePostApi";
-import { Add as AddIcon } from "@mui/icons-material";
-import { useGetUserIdAndNameToDropdownGeneratePayroll } from "../../../components/Api/useGetApi";
 import {
-  Box,
-  Card,
-  CardContent,
-  Typography,
-  Grid,
-  Divider,
-  Chip,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Button,
-} from "@mui/material";
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type SetStateAction,
+} from "react";
+import BaseModal from "../../Modal/BaseModal";
+import { Add as AddIcon } from "@mui/icons-material";
+import { Box, Typography, Divider, Button } from "@mui/material";
+
+import type { UserWithRelationsData } from "../type";
+import {
+  useDeleteAttendance,
+  useDeleteLeaveRequest,
+  useDeletePayroll,
+  useDeleteRequestUnlockById,
+  useGetUserWithRelations,
+} from "../../../components/Api/usePostApi";
+import { DateFormatEnum, formatDate } from "../../../hooks/format";
+import type { GridColDef } from "@mui/x-data-grid";
+import TableSection from "../../Setting/TableSection";
+import type { GridRowDef } from "../../DataGrid";
+import type { IDetailItem } from "../../DetailSection";
+import DetailSection from "../../DetailSection";
 
 interface IModalGeneratePayrollProps {
   open: boolean;
   onClose: () => void;
   onSuccess: () => void;
+  id: number;
+}
+
+type TableSelectionKey =
+  | "attendance"
+  | "payroll"
+  | "leaveRequests"
+  | "unlockRequests";
+
+interface TableSelections {
+  attendance: GridRowDef[];
+  payroll: GridRowDef[];
+  leaveRequests: GridRowDef[];
+  unlockRequests: GridRowDef[];
 }
 
 const ConfirmDeleteModal = ({
   open,
   onClose,
   onSuccess,
+  id,
 }: IModalGeneratePayrollProps) => {
-  const { refetchGeneratePayroll } = useGeneratePayroll();
+  const { dataGetUserWithRelations, refetchGetUserWithRelations } =
+    useGetUserWithRelations({ id });
 
+  const [selectedRows, setSelectedRows] = useState<TableSelections>({
+    attendance: [],
+    payroll: [],
+    leaveRequests: [],
+    unlockRequests: [],
+  });
+
+  // Hàm update tiện lợi
+  const updateSelectedRows = (
+    key: TableSelectionKey,
+    rows: SetStateAction<GridRowDef[]>
+  ) => {
+    setSelectedRows((prev) => ({
+      ...prev,
+      [key]:
+        typeof rows === "function" ? (rows(prev[key]) as GridRowDef[]) : rows,
+    }));
+  };
+
+  const { refetchDeleteLeaveRequest } = useDeleteLeaveRequest();
+
+  useEffect(() => {
+    if (open) {
+      refetchGetUserWithRelations();
+    }
+  }, [open, id, refetchGetUserWithRelations]);
+
+  const [selectDelete, setSelectDelete] = useState<
+    keyof TableSelections | null
+  >(null);
+
+  const { refetchDeletePayroll } = useDeletePayroll();
+  const { refetchRequestUnlockAccount } = useDeleteRequestUnlockById();
+  const { refetchDeleteAttendance } = useDeleteAttendance();
+
+  const handleDeleteRow = async (table: keyof TableSelections, id: number) => {
+    setSelectDelete(table); // set lại bảng đang xoá
+
+    switch (table) {
+      case "attendance": {
+        await refetchDeleteAttendance({ id });
+        break;
+      }
+      case "unlockRequests": {
+        await refetchRequestUnlockAccount({ id });
+        break;
+      }
+      case "leaveRequests": {
+        await refetchDeleteLeaveRequest({ id });
+        break;
+      }
+      case "payroll": {
+        await refetchDeletePayroll({ id });
+        break;
+      }
+      default: {
+        console.warn("Không có loại bảng hợp lệ để xoá");
+        break;
+      }
+    }
+  };
+
+  const userData: UserWithRelationsData | null = useMemo(() => {
+    const d = dataGetUserWithRelations?.data;
+    if (!d) return null;
+
+    return {
+      name: d.name ?? "",
+      email: d.email ?? "",
+      phone: d.phone ?? null,
+      role: d.role ?? "",
+      rank: d.rank ?? null,
+      status: d.status ?? "",
+      employeeNo: d.employeeNo ?? "",
+      hireDate: d.hireDate ?? null,
+      attendance: d.attendance ?? [],
+      leaveRequests: d.leaveRequests ?? [],
+      payrolls: d.payrolls ?? [],
+      unlockRequests: d.unlockRequests ?? [],
+    };
+  }, [dataGetUserWithRelations]);
+
+  /** Attendance columns */
+  const columnAttendanceList: GridColDef[] = useMemo(
+    () => [
+      { field: "id", headerName: "Attendance ID", flex: 1 },
+      {
+        field: "date",
+        headerName: "Date",
+        flex: 1,
+        renderCell: ({ value }) => (
+          <Typography variant="body2">
+            {formatDate(DateFormatEnum.MMMM_D_YYYY, value)}
+          </Typography>
+        ),
+      },
+      { field: "checkIn", headerName: "Check In", flex: 1 },
+      { field: "checkOut", headerName: "Check Out", flex: 1 },
+      {
+        field: "actions",
+        headerName: "Action",
+        flex: 1,
+        renderCell: ({ row }) => (
+          <Button
+            color="error"
+            onClick={() => handleDeleteRow("attendance", row.id)}
+          >
+            Delete
+          </Button>
+        ),
+      },
+    ],
+    []
+  );
+
+  const leaveRequestColumns: GridColDef[] = [
+    { field: "id", headerName: "ID", flex: 1 },
+    { field: "leaveType", headerName: "Loại nghỉ", flex: 1 },
+    {
+      field: "startDate",
+      headerName: "Ngày bắt đầu",
+      flex: 1.2,
+      renderCell: ({ value }) => (
+        <Typography variant="body2">{formatDate(value)}</Typography>
+      ),
+    },
+    {
+      field: "endDate",
+      headerName: "Ngày kết thúc",
+      flex: 1.2,
+      renderCell: ({ value }) => (
+        <Typography variant="body2">{formatDate(value)}</Typography>
+      ),
+    },
+    {
+      field: "status",
+      headerName: "Trạng thái",
+      flex: 1,
+      renderCell: ({ value }) => (
+        <Typography
+          variant="body2"
+          color={
+            value === "APPROVED"
+              ? "green"
+              : value === "REJECTED"
+              ? "red"
+              : "orange"
+          }
+        >
+          {value}
+        </Typography>
+      ),
+    },
+    {
+      field: "decidedAt",
+      headerName: "Ngày quyết định",
+      flex: 1.2,
+      renderCell: ({ value }) => (
+        <Typography variant="body2">{formatDate(value)}</Typography>
+      ),
+    },
+    {
+      field: "actions",
+      headerName: "Action",
+      flex: 1,
+      renderCell: ({ row }) => (
+        <Button
+          color="error"
+          onClick={() => handleDeleteRow("leaveRequests", row.id)}
+        >
+          Delete
+        </Button>
+      ),
+    },
+  ];
+
+  // --------------------
+  // Unlock Requests Table
+  // --------------------
+  const unlockRequestColumns: GridColDef[] = [
+    { field: "id", headerName: "ID", flex: 1 },
+    {
+      field: "status",
+      headerName: "Trạng thái",
+      flex: 1,
+      renderCell: ({ value }) => (
+        <Typography
+          variant="body2"
+          color={
+            value === "APPROVED"
+              ? "green"
+              : value === "REJECTED"
+              ? "red"
+              : "orange"
+          }
+        >
+          {value}
+        </Typography>
+      ),
+    },
+    {
+      field: "createdAt",
+      headerName: "Ngày tạo",
+      flex: 1.5,
+      renderCell: ({ value }) => (
+        <Typography variant="body2">{formatDate(value)}</Typography>
+      ),
+    },
+  ];
+
+  /** Payroll columns */
+  const columnPayrolls: GridColDef[] = useMemo(
+    () => [
+      { field: "id", headerName: "Payroll ID", flex: 1 },
+      { field: "year", headerName: "Year", flex: 1 },
+      { field: "month", headerName: "Month", flex: 1 },
+      { field: "netPay", headerName: "Net Pay", flex: 1 },
+      {
+        field: "actions",
+        headerName: "Action",
+        flex: 1,
+        renderCell: ({ row }) => (
+          <Button
+            color="error"
+            onClick={() => console.log("Delete payroll", row.id)}
+          >
+            Delete
+          </Button>
+        ),
+      },
+    ],
+    []
+  );
+
+  /** Table rows */
+  const rowDataAttendance = useMemo(
+    () =>
+      userData?.attendance?.map((item) => ({
+        ...item,
+        id: item.id,
+      })) || [],
+    [userData?.attendance]
+  );
+
+  const rowDataPayrolls = useMemo(
+    () =>
+      userData?.payrolls?.map((item) => ({
+        ...item,
+        id: item.id,
+      })) || [],
+    [userData?.payrolls]
+  );
+
+  const rowDataUnlockRequests = useMemo(
+    () =>
+      userData?.unlockRequests?.map((item) => ({
+        ...item,
+        id: item.id,
+      })) || [],
+    [userData?.attendance]
+  );
+
+  const rowDataLeaveRequests = useMemo(
+    () =>
+      userData?.leaveRequests?.map((item) => ({
+        ...item,
+        id: item.id,
+      })) || [],
+    [userData?.payrolls]
+  );
+
+  /** Actions in modal footer */
   const renderActions = useCallback(() => {
     return (
       <Box display="flex" gap={1} justifyContent="flex-end" alignItems="center">
-        <Button variant="contained" onClick={onClose}>
-          Save
+        <Button variant="outlined" onClick={onClose}>
+          Hủy
+        </Button>
+        <Button variant="contained" onClick={onSuccess}>
+          Xác nhận
         </Button>
       </Box>
     );
-  }, [onClose]);
+  }, [onClose, onSuccess]);
 
-  const renderContent = useCallback((data: any) => {
-    // if (!payrollData) return null;
-
-    return (
-      <>
-        <Card sx={{ mb: 3, boxShadow: 3 }}>
-          <CardContent>
-            <Typography variant="h6" gutterBottom>
-              Thông tin nhân viên
+  /** Modal Content */
+  const renderContent = useCallback(
+    (data: UserWithRelationsData) => {
+      const employeeInfo: IDetailItem[] = [
+        { title: "Email", description: data.email, size: 8 },
+        { title: "Mã NV", description: data.employeeNo, size: 6 },
+        { title: "Tên", description: data.name, size: 6 },
+        { title: "Điện thoại", description: data.phone || "Chưa có", size: 6 },
+        { title: "Chức vụ", description: data.role, size: 6 },
+        { title: "Cấp bậc", description: data.rank || "Chưa có", size: 5 },
+        {
+          title: "Ngày vào làm",
+          description: (
+            <Typography>
+              {formatDate(DateFormatEnum.DD_MM_YYYY_HH_MM_SS, data?.hireDate)}
             </Typography>
-            <Divider sx={{ mb: 2 }} />
+          ),
+          size: 5,
+        },
+      ];
 
-            <Grid container spacing={2}>
-              <Grid size={6}>
-                <Typography>Email: {data.email}</Typography>
-                <Typography>Mã NV: {data.employeeNo}</Typography>
-                <Typography>Tên: {data.name}</Typography>
-                <Typography>Điện thoại: {data.phone || "Chưa có"}</Typography>
-              </Grid>
-              <Grid size={6}>
-                <Typography>Chức vụ: {data.role}</Typography>
-                <Typography>Cấp bậc: {data.rank}</Typography>
-                <Typography>
-                  Lương cơ bản: {data.baseSalary.toLocaleString()} đ
-                </Typography>
-                <Typography>
-                  Ngày vào làm:{" "}
-                  {new Date(Number(data.hireDate) * 1000).toLocaleDateString()}
-                </Typography>
-                <Chip
-                  label={data.status}
-                  color={data.status === "ACTIVE" ? "success" : "error"}
-                />
-              </Grid>
-            </Grid>
-          </CardContent>
-        </Card>
+      return (
+        <Box height={"60vh"} width={"50rem"}>
+          <Typography variant="h6" gutterBottom>
+            Thông tin nhân viên
+          </Typography>
 
-        {/* Thống kê */}
-        <Card sx={{ mb: 3, boxShadow: 3 }}>
-          <CardContent>
-            <Typography variant="h6" gutterBottom>
-              Thống kê liên kết
-            </Typography>
-            <Divider sx={{ mb: 2 }} />
-            <Grid container spacing={2}>
-              {Object.entries(data._count).map(([key, value]) => (
-                <Grid size={4} key={key}>
-                  <Typography>
-                    {key}: <strong>{value as number}</strong>
-                  </Typography>
-                </Grid>
-              ))}
-            </Grid>
-          </CardContent>
-        </Card>
+          <Divider sx={{ mb: 2 }} />
 
-        {/* Payrolls */}
-        {data.payrolls?.length > 0 && (
-          <Card sx={{ mb: 3, boxShadow: 3 }}>
-            <CardContent>
+          <DetailSection data={employeeInfo} />
+
+          {data.payrolls?.length > 0 && (
+            <Box sx={{ mb: 3 }}>
               <Typography variant="h6" gutterBottom>
                 Danh sách Payrolls
               </Typography>
-              <Divider sx={{ mb: 2 }} />
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>ID</TableCell>
-                    <TableCell>Allowances</TableCell>
-                    <TableCell>Generated At</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {data.payrolls.map((p: any) => (
-                    <TableRow key={p.id}>
-                      <TableCell>{p.id}</TableCell>
-                      <TableCell>{p.allowances.toLocaleString()} đ</TableCell>
-                      <TableCell>
-                        {new Date(Number(p.generatedAt)).toLocaleString()}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        )}
+              <TableSection
+                setRows={(rows) => updateSelectedRows("payroll", rows)}
+                isLoading={false}
+                nextRowClick
+                rows={rowDataPayrolls}
+                columns={columnPayrolls}
+              />
+            </Box>
+          )}
 
-        {/* Attendance */}
-        {data.attendance?.length > 0 && (
-          <Card sx={{ mb: 3, boxShadow: 3 }}>
-            <CardContent>
+          {/* Attendance */}
+          {data.attendance?.length > 0 && (
+            <Box sx={{ mb: 3 }}>
               <Typography variant="h6" gutterBottom>
                 Attendance
               </Typography>
-              <Divider sx={{ mb: 2 }} />
-              <ul>
-                {data.attendance.map((a: any) => (
-                  <li key={a.id}>Attendance ID: {a.id}</li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-        )}
-      </>
-    );
-  }, []);
+              <TableSection
+                setRows={(rows) => updateSelectedRows("attendance", rows)}
+                isLoading={false}
+                nextRowClick
+                rows={rowDataAttendance}
+                columns={columnAttendanceList}
+              />
+            </Box>
+          )}
+
+          {data.unlockRequests?.length > 0 && (
+            <Box sx={{ mb: 3 }}>
+              <Typography variant="h6" gutterBottom>
+                Danh sách unlock Requests
+              </Typography>
+              <TableSection
+                setRows={(rows) => updateSelectedRows("unlockRequests", rows)}
+                isLoading={false}
+                nextRowClick
+                rows={rowDataUnlockRequests}
+                columns={unlockRequestColumns}
+              />
+            </Box>
+          )}
+
+          {/* Attendance */}
+          {data.leaveRequests?.length > 0 && (
+            <Box sx={{ mb: 3 }}>
+              <Typography variant="h6" gutterBottom>
+                Leave Requests
+              </Typography>
+              <TableSection
+                setRows={(rows) => updateSelectedRows("leaveRequests", rows)}
+                isLoading={false}
+                nextRowClick
+                rows={rowDataLeaveRequests}
+                columns={leaveRequestColumns}
+              />
+            </Box>
+          )}
+        </Box>
+      );
+    },
+    [rowDataPayrolls, rowDataAttendance]
+  );
 
   return (
     <BaseModal
       open={open}
       onClose={onClose}
-      title="Generate bảng lương"
+      title="Chi tiết nhân viên"
       Icon={AddIcon}
-      // maxWidth="lg"
-      // sx={{ maxHeight: "600px", width: "lg" }}
-      slots={{ content: renderContent(2), actions: renderActions() }}
+      maxWidth="lg"
+      slots={{
+        content: userData ? (
+          renderContent(userData)
+        ) : (
+          <Typography>Không có dữ liệu</Typography>
+        ),
+        actions: renderActions(),
+      }}
     />
   );
 };

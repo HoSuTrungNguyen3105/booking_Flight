@@ -23,6 +23,8 @@ interface IModalStatisticalDataLearningProps {
   onSuccess: () => void;
   flightId: number;
   loading: boolean;
+  // seatRow : string;
+  // see
 }
 
 const CreateSeatModal = ({
@@ -55,41 +57,10 @@ const CreateSeatModal = ({
       </Box>
     );
   }, [onSuccess]);
-  const columnActions: ActionType[] = [
-    {
-      value: "A",
-      label: "Action A",
-      color: "primary",
-    },
-    {
-      value: "B",
-      label: "Action B",
-      disabled: false,
-    },
-    {
-      value: "C",
-      label: "Action C",
-      color: "secondary",
-    },
-    {
-      value: "D",
-      label: "Action D",
-      disabled: true,
-    },
-    {
-      value: "E",
-      label: "Action E",
-    },
-    {
-      value: "F",
-      label: "Action F",
-      color: "error",
-    },
-  ];
 
   const renderContent = useCallback(() => {
     return (
-      <Box sx={{ width: "20rem", pt: 2 }}>
+      <Box sx={{ width: "30rem", pt: 2 }}>
         <Typography variant="h6" gutterBottom>
           Seat Information
         </Typography>
@@ -115,9 +86,9 @@ const CreateSeatModal = ({
             <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
               Seat Row
             </Typography>
-            <SelectDropdown
+            <InputTextField
+              disabled
               value={newSeat.seatRow}
-              options={columnActions}
               onChange={(e) => setNewSeat({ ...newSeat, seatRow: e as string })}
             />
           </FormControl>

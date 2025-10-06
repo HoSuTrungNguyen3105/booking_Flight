@@ -173,10 +173,32 @@ export interface LeaveRequest {
   employee: UserData;
 }
 
-// Props cho component
-// interface LeaveRequestProps {
-//   data: LeaveRequest;
-// }
+export type AttendanceStatus =
+  | "PRESENT"
+  | "ABSENT"
+  | "LATE"
+  | "ON_LEAVE"
+  | "REMOTE";
+
+export interface Attendance {
+  id: number;
+  employeeId: number;
+
+  // Decimal thường trả ra string từ Prisma Client => em để string
+  date: string; // Decimal(20,3) -> "20251004.000"
+  checkIn: string; // Decimal(20,3) -> "083000.000"
+  checkOut: string; // Decimal(20,3) -> "173000.000"
+
+  status: AttendanceStatus;
+
+  workedHours?: number | null; // nullable
+  note?: string | null;
+
+  createdAt: string; // Decimal(20,3)
+
+  // Quan hệ với User
+  employee?: UserData; // cần import User interface nếu muốn include
+}
 
 export type FlightSeat = {
   flightId: number;
@@ -443,8 +465,52 @@ export type AircraftCodeBatchProps = {
   errorMessage: string;
 };
 
+export interface Ticket {
+  id: number;
+  ticketNo: string;
+  passengerId: string;
+  flightId: number;
+  seatClass: "ECONOMY" | "BUSINESS";
+  seatNo: string;
+  bookedAt: string; // ISO datetime hoặc number nếu backend trả về timestamp
+
+  // Quan hệ
+  passenger?: Passenger;
+  flight?: DataFlight;
+  boardingPass?: BoardingPass | null;
+  baggage?: Baggage[];
+}
+
+export interface BoardingPass {
+  id: number;
+  ticketId: number;
+  issuedAt: string; // ISO datetime
+  gate: string;
+  boardingTime: string; // ISO datetime
+  flightId: number;
+
+  // Quan hệ
+  ticket?: Ticket;
+  flight?: DataFlight;
+}
+
+export interface Baggage {
+  id: number;
+  flightId: number;
+  weight: number;
+  status: "CHECKED_IN" | "LOADED" | "CLAIMED" | "LOST"; // Enum kiểu an toàn
+  checkedAt: string; // nếu trả về ISO date-time từ backend
+  ticketId: number;
+
+  // Quan hệ
+  flight?: DataFlight;
+  ticket?: Ticket;
+}
+
 export type FlightBookingTicketDetailApiResponse =
   DetailResponseMessage<SearchFlightSearchBookingFlightPropsProps>;
+
+export type FlightBaggageDetailApiResponse = DetailResponseMessage<Baggage>;
 
 export type TerminalLabelListResponse =
   DetailResponseMessage<TerminalLabelValue>;

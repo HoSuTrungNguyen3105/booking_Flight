@@ -3,13 +3,10 @@ import {
   Badge,
   Box,
   Button,
-  Drawer,
   IconButton,
   Paper,
-  Stack,
   Tooltip,
   Typography,
-  alpha,
 } from "@mui/material";
 import { useAuth } from "../../context/AuthContext";
 import MessageList from "./MessageList";
@@ -24,8 +21,7 @@ import type {
   MessageBetweenUserLoginResponse,
 } from "../../utils/type";
 import Conversations from "./Conversations";
-import InputTextField from "../../common/Input/InputTextField";
-import { Close, Filter, Group, Menu } from "@mui/icons-material";
+import { Filter, Group } from "@mui/icons-material";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
 const ChatContainer: React.FC = () => {
@@ -36,16 +32,11 @@ const ChatContainer: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<number | null>(null);
   const [receiverId, setReceiverId] = useState<number | null>(null);
   const userId = user?.id;
-  const [searchQuery, setSearchQuery] = useState("");
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
-  const {
-    data: messagesData,
-    emit: findMessages,
-    loading: loadingMessages,
-  } = useSocket<MessageBetweenUserLoginResponse>({
+  const { emit: findMessages } = useSocket<MessageBetweenUserLoginResponse>({
     event: "findMessagesBetweenUsers",
     autoListen: true,
     onSuccess: (res) => {
