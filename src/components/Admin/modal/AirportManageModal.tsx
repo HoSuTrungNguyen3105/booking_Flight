@@ -27,7 +27,6 @@ const AirportManageModal = ({
     country: "",
   });
 
-  // Khi mở modal và mode là update → set dữ liệu từ formEditData
   useEffect(() => {
     if (open) {
       if (editingAirport === "update" && formEditData) {
@@ -38,7 +37,6 @@ const AirportManageModal = ({
           country: formEditData.country,
         });
       } else {
-        // reset khi tạo mới
         setFormData({
           code: "",
           name: "",

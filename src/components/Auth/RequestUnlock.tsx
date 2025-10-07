@@ -51,7 +51,15 @@ const RequestUnlock = ({
             Vui lòng nhập lý do để gửi yêu cầu mở khóa tài khoản.
           </Typography>
         </Box>
+
         <Box component={"form"} onSubmit={handleSubmit}>
+          <Button
+            variant="contained"
+            onClick={onClose}
+            sx={{ fontSize: "0.9rem", color: "#672222" }}
+          >
+            Return
+          </Button>
           <InputTextArea
             placeholder="Nhập lý do..."
             value={reason}

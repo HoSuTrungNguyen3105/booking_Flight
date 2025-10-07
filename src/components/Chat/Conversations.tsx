@@ -54,11 +54,11 @@ const Conversations = ({
   const debouncedQuery = useDebounce(search, 500);
 
   // Cập nhật danh sách khi có data mới
-  useEffect(() => {
-    if (data?.resultCode === "00" && Array.isArray(data.list)) {
-      setFilteredUsers(data.list);
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (data?.resultCode === "00" && Array.isArray(data.list)) {
+  //     setFilteredUsers(data.list);
+  //   }
+  // }, [data]);
 
   // Search với debounce
   useEffect(() => {

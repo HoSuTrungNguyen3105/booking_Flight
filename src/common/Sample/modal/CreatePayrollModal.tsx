@@ -3,14 +3,11 @@ import { memo, useCallback, useState } from "react";
 import BaseModal from "../../Modal/BaseModal";
 import type { GeneratePayroll } from "../PayrollManagement";
 import InputTextField from "../../Input/InputTextField";
-// import { useGeneratePayroll } from "../../../components/Api/usePostApi";
 import MoneyIcon from "../../../svgs/money-euro-banknote.svg";
 import { Add as AddIcon } from "@mui/icons-material";
 import { useGetUserIdAndNameToDropdownGeneratePayroll } from "../../../components/Api/useGetApi";
 import SelectDropdown from "../../Dropdown/SelectDropdown";
 import FormRow from "../../CustomRender/FormRow";
-import { Loading } from "../../Loading/Loading";
-import useDebounce from "../../../context/use[custom]/useDebounce";
 
 interface IModalGeneratePayrollProps {
   open: boolean;
@@ -79,12 +76,12 @@ const CreatePayrollModal = ({
           <Grid container spacing={3}>
             <Grid size={5}>
               <FormRow label="Month">
-                <InputTextField value={String(payrollData.month)} disabled />
+                <Typography> {payrollData.month}</Typography>
               </FormRow>
             </Grid>
             <Grid size={5}>
               <FormRow label="Year">
-                <InputTextField value={String(payrollData.year)} disabled />
+                <Typography> {payrollData.year}</Typography>
               </FormRow>
             </Grid>
 

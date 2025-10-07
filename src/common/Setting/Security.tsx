@@ -4,7 +4,6 @@ import SearchLayout, {
 } from "../../components/Layout/SearchLayout";
 import ManageMyInfo from "./ManageMyInfo";
 import { Box } from "@mui/material";
-import { FileUpload } from "../FileUploader";
 
 const Security = () => {
   const [tabX, setTab] = useState(0);

@@ -98,7 +98,7 @@ const UserInfoSection = ({ myInfo, onChange }: IUserInfoSectionProps) => {
           {/* 이름 */}
           <FormControl fullWidth>
             <Typography variant="body2" mb={0.5}>
-              이름
+              baseSalary 이름
             </Typography>
             <InputTextField value={String(myInfo?.baseSalary)} disabled />
           </FormControl>
@@ -106,7 +106,7 @@ const UserInfoSection = ({ myInfo, onChange }: IUserInfoSectionProps) => {
           {/* 이름 */}
           <FormControl fullWidth>
             <Typography variant="body2" mb={0.5}>
-              이름
+              name 이름
             </Typography>
             <InputTextField
               value={myInfo?.name}
@@ -117,7 +117,7 @@ const UserInfoSection = ({ myInfo, onChange }: IUserInfoSectionProps) => {
           {/* 닉네임 (선택) */}
           <FormControl fullWidth>
             <Typography variant="body2" mb={0.5}>
-              닉네임 (선택)
+              userAlias 닉네임 (선택)
             </Typography>
             <InputTextField
               value={myInfo?.userAlias}
@@ -128,7 +128,7 @@ const UserInfoSection = ({ myInfo, onChange }: IUserInfoSectionProps) => {
           {/* 이름 */}
           <FormControl fullWidth>
             <Typography variant="body2" mb={0.5}>
-              이름
+              passport
             </Typography>
             <InputTextField
               value={myInfo?.passport}
@@ -139,20 +139,12 @@ const UserInfoSection = ({ myInfo, onChange }: IUserInfoSectionProps) => {
           {/* 닉네임 (선택) */}
           <FormControl fullWidth>
             <Typography variant="body2" mb={0.5}>
-              닉네임 (선택)
+              phone 닉네임 (선택)
             </Typography>
             <InputTextField
               value={myInfo?.phone}
               onChange={(val) => onChange("phone", val)}
             />
-          </FormControl>
-
-          {/* to_do */}
-          <FormControl fullWidth>
-            <Typography variant="body2" mb={0.5}>
-              닉네임 (선택)
-            </Typography>
-            {/* <FileUploadButton name="j" setValues={9}/> */}
           </FormControl>
         </Stack>
       </Box>

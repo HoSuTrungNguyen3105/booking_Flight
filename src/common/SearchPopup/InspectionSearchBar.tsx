@@ -1,5 +1,5 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
-import { memo, useCallback, useState } from "react";
+import { memo } from "react";
 import { DateFormatEnum, formatDateKR } from "../../hooks/format";
 
 export interface ISearchQuery {
@@ -22,13 +22,6 @@ const InspectionSearchBar = ({
   onClickFirst,
   onClickSecond,
 }: ISearchBarProps) => {
-  const [valueStartDate, setValueStartDate] = useState<string | number>(
-    startDate as number
-  );
-  const [valueEndDate, setValueEndDate] = useState<string | number>(
-    endDate as number
-  );
-
   return (
     <Stack
       gap={2}
@@ -43,19 +36,13 @@ const InspectionSearchBar = ({
         <Stack direction="row" gap={2} alignItems="center" width="100%">
           <Box sx={{ flex: 1 }}>
             <Typography>
-              {formatDateKR(
-                DateFormatEnum.YYYY_MM_DD_HH_MM_SS,
-                valueStartDate as number
-              )}
+              {formatDateKR(DateFormatEnum.YYYY_MM_DD_HH_MM_SS, startDate)}
             </Typography>
           </Box>
           -
           <Box sx={{ flex: 1 }}>
             <Typography>
-              {formatDateKR(
-                DateFormatEnum.YYYY_MM_DD_HH_MM_SS,
-                valueStartDate as number
-              )}
+              {formatDateKR(DateFormatEnum.YYYY_MM_DD_HH_MM_SS, endDate)}
             </Typography>
           </Box>
         </Stack>
@@ -64,12 +51,12 @@ const InspectionSearchBar = ({
       <Stack direction="row" alignItems="center" sx={{ flex: 3 }}>
         <Stack direction="row" spacing={2} mt={0.5}>
           <Button
-            disabled={!valueStartDate || !valueEndDate}
+            disabled={!startDate || !endDate}
             variant="contained"
             onClick={() => {
               const query: ISearchQuery = {
-                startDate: valueStartDate,
-                endDate: valueEndDate,
+                startDate: startDate as number,
+                endDate: endDate as number,
               };
               onClickFirst(query);
             }}
@@ -81,7 +68,7 @@ const InspectionSearchBar = ({
             disabled={disabled}
             variant="contained"
             onClick={() => {
-              const dateRange = `${valueStartDate} - ${valueEndDate}`;
+              const dateRange = `${startDate} - ${endDate}`;
               onClickSecond?.(dateRange);
             }}
           >

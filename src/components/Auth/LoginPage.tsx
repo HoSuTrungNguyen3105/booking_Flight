@@ -11,6 +11,8 @@ import FindAccount from "./components/FindAccount";
 import TabPanel, { type ITabItem } from "../../common/CustomRender/TabPanel";
 import theme from "../../scss/theme";
 import { Loading } from "../../common/Loading/Loading";
+import AccountYn from "./AccountYn";
+import Registration from "./Registration";
 
 interface ILoginForm {
   email: string;
@@ -44,19 +46,26 @@ export const LoginPage: React.FC = () => {
       description: "로그인을 위해 아이디와 비밀번호를 입력해주세요.",
     },
     {
-      label: "Change Password",
-      value: "change-password",
+      label: "Register",
+      value: "register",
       description: "비밀번호 변경을 위해 필요한 정보를 입력해주세요.",
     },
-    {
-      label: "Unlock Account",
-      value: "unlock-account",
-      description: "계정 잠금 해제를 요청합니다.",
-    },
+    // {
+    //   label: "Change Password",
+    //   value: "change-password",
+    //   description: "비밀번호 변경을 위해 필요한 정보를 입력해주세요.",
+    // },
+    // {
+    //   label: "Verified Account",
+    //   value: "verified-account",
+    //   description: "계정 잠금 해제를 요청합니다.",
+    // },
   ];
 
   const [changePassword, setChangePassword] = useState(false);
   const [unlockAccount, setUnlockAccount] = useState(false);
+  const [verifiedAccount, setVerifiedAccount] = useState(false);
+
   const { login } = useAuth();
   const [userId, setUserId] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -82,20 +91,25 @@ export const LoginPage: React.FC = () => {
     const loginRes = await login({
       email,
       password: data.password,
-      remember: data.remember,
     });
 
     if (loginRes.requireUnlock) {
       setUnlockAccount(true);
       setUserId(loginRes.userId);
-      setTabValue(2);
+      //setTabValue(2);
+      return;
+    }
+
+    if (loginRes.requireVerified) {
+      // setTabValue(3);
+      setVerifiedAccount(true);
       return;
     }
 
     if (loginRes.requireChangePassword && loginRes.userId) {
       setChangePassword(true);
       setUserId(loginRes.userId);
-      setTabValue(1);
+      // setTabValue(1);
       setLoading(false);
       return;
     }
@@ -185,19 +199,40 @@ export const LoginPage: React.FC = () => {
           </Stack>
         );
 
+      // case 1:
+      //   return <AccountYn mode="forget" onClose={() => setTabValue(0)} />;
+
       case 1:
-        return <FindAccount onClose={() => setTabValue(0)} />;
+        return <Registration email="" onClose={() => setTabValue(0)} />;
 
-      case 2:
-        return <RequestUnlock userId={userId} onClose={() => setTabValue(0)} />;
+      // case 2:
+      //   return <RequestUnlock userId={userId} onClose={() => setTabValue(0)} />;
 
-      default:
-        return null;
+      // case 2:
+      //   return <AccountYn mode="verify" onClose={() => setTabValue(0)} />;
+      // default:
+      //   return null;
     }
   };
 
   if (mfaEmail) {
-    return <MfaSetup email={mfaEmailValue} />;
+    return (
+      <MfaSetup onClose={() => setMfaEmail(false)} email={mfaEmailValue} />
+    );
+  }
+
+  if (verifiedAccount) {
+    return <AccountYn mode="verify" onClose={() => setTabValue(0)} />;
+  }
+
+  if (changePassword) {
+    return <AccountYn mode="change" onClose={() => setChangePassword(false)} />;
+  }
+
+  if (unlockAccount) {
+    return (
+      <RequestUnlock userId={userId} onClose={() => setUnlockAccount(false)} />
+    );
   }
 
   if (loading) {
@@ -216,7 +251,7 @@ export const LoginPage: React.FC = () => {
     >
       <Box
         sx={{
-          width: "456px",
+          width: "30rem",
           mx: "auto",
           border: `1px solid ${theme.palette.grey[200]}`,
           borderRadius: 2,

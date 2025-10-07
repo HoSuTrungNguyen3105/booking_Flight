@@ -19,6 +19,7 @@ import {
   type Passenger,
   type TerminalLabelListResponse,
   type FlightBaggageDetailApiResponse,
+  type TicketResponseMessage,
 } from "../../utils/type.ts";
 import { useFetch } from "../../context/use[custom]/useFetch.ts";
 import type { Payroll } from "../../common/Sample/PayrollManagement.tsx";
@@ -283,6 +284,21 @@ export const useGetAllAirportInfo = () => {
   return {
     getAirportInfo,
     refetchGetAirportInfo,
+  };
+};
+
+export const useGetAllTicketInfo = () => {
+  const { data: getTicketInfo, refetch: refetchGetTicketInfo } = useFetch<
+    TicketResponseMessage,
+    null
+  >({
+    url: "/sys/flights/tickets",
+    autoFetch: true,
+    config: getMethod,
+  });
+  return {
+    getTicketInfo,
+    refetchGetTicketInfo,
   };
 };
 

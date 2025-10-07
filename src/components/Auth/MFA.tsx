@@ -7,7 +7,7 @@ import InputTextField from "../../common/Input/InputTextField";
 import { useAuth } from "../../context/AuthContext";
 import type { EmailProps } from "../../utils/type";
 
-export default function MfaSetup({ email }: EmailProps) {
+export default function MfaSetup({ email, onClose }: EmailProps) {
   const [qrCode, setQrCode] = useState<string | null>(null);
   const [code, setCode] = useState("");
   const [loginMfa, setLoginMfaUi] = useState(false);
@@ -37,7 +37,6 @@ export default function MfaSetup({ email }: EmailProps) {
         toast(data?.resultMessage);
       }
     } catch (err) {
-      toast("Có lỗi khi tạo MFA");
       setCode("");
     }
   };
@@ -47,10 +46,10 @@ export default function MfaSetup({ email }: EmailProps) {
       toast("Vui lòng nhập mã MFA");
       return;
     }
-    if (isSetMfa) {
-      refetchSetLoginMfa();
-      return;
-    }
+    // if (isSetMfa) {
+    //   refetchSetLoginMfa();
+    //   return;
+    // }
     const res = await refetchVerifyMfa({
       email: email ?? "",
       code: code,
@@ -61,7 +60,7 @@ export default function MfaSetup({ email }: EmailProps) {
       setLoginMfaUi(true);
       setCode("");
     } else {
-      toast("Sai mã MFA, thử lại!");
+      toast(res?.resultMessage || "Error");
       setCode("");
     }
   };
@@ -81,10 +80,9 @@ export default function MfaSetup({ email }: EmailProps) {
       toast("Đăng nhập thành công");
       setQrCode(null);
       setLoginMfaUi(true);
-    } else if (res.resultCode === "09") {
-      toast(res.resultMessage);
     } else {
-      toast("Sai mã MFA, thử lại!");
+      // toast(res.resultMessage);
+      setQrCode(null);
     }
   };
 
@@ -105,6 +103,10 @@ export default function MfaSetup({ email }: EmailProps) {
       />
       <Button variant="contained" onClick={fetchQrCode}>
         Tạo QR MFA
+      </Button>
+
+      <Button variant="outlined" onClick={onClose}>
+        Return to register user then set up MFA
       </Button>
 
       {qrCode && (

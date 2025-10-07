@@ -25,7 +25,7 @@ const UpdateUserModal = ({
       onSuccess,
       data,
     });
-  // const handleSubmit = () => {}
+
   const renderActions = useCallback(() => {
     return (
       <Box display="flex" gap={1} justifyContent="flex-end" alignItems="center">

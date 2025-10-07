@@ -61,7 +61,6 @@ const ConfirmDeleteModal = ({
     unlockRequests: [],
   });
 
-  // Hàm update tiện lợi
   const updateSelectedRows = (
     key: TableSelectionKey,
     rows: SetStateAction<GridRowDef[]>
@@ -259,6 +258,19 @@ const ConfirmDeleteModal = ({
         <Typography variant="body2">{formatDate(value)}</Typography>
       ),
     },
+    {
+      field: "actions",
+      headerName: "Action",
+      flex: 1,
+      renderCell: ({ row }) => (
+        <Button
+          color="error"
+          onClick={() => handleDeleteRow("unlockRequests", row.id)}
+        >
+          Delete
+        </Button>
+      ),
+    },
   ];
 
   /** Payroll columns */
@@ -275,7 +287,7 @@ const ConfirmDeleteModal = ({
         renderCell: ({ row }) => (
           <Button
             color="error"
-            onClick={() => console.log("Delete payroll", row.id)}
+            onClick={() => handleDeleteRow("payroll", row.id)}
           >
             Delete
           </Button>
@@ -394,6 +406,21 @@ const ConfirmDeleteModal = ({
                 nextRowClick
                 rows={rowDataAttendance}
                 columns={columnAttendanceList}
+              />
+            </Box>
+          )}
+
+          {data.payrolls?.length > 0 && (
+            <Box sx={{ mb: 3 }}>
+              <Typography variant="h6" gutterBottom>
+                Payroll
+              </Typography>
+              <TableSection
+                setRows={(rows) => updateSelectedRows("payroll", rows)}
+                isLoading={false}
+                nextRowClick
+                rows={rowDataPayrolls}
+                columns={columnPayrolls}
               />
             </Box>
           )}

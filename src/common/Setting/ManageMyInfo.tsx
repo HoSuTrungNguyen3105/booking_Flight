@@ -5,7 +5,6 @@ import AddUserModal from "./hooks/AddUserModal";
 import { Loading } from "../Loading/Loading";
 import UpdateUserModal from "./hooks/UpdateUserModal";
 import AccountLock from "./AccountLock";
-import DeleteUserModal from "./DeleteUserModal";
 import { memo, useCallback, useState } from "react";
 import AdminUpdateUserModal from "./hooks/AdminUpdateUserModal";
 import UpdateUserForm from "../../components/Admin/component/UpdateUserForm";
@@ -51,7 +50,7 @@ const ManageMyInfo = () => {
 
   const handleNavigateSelectedUpdateItem = useCallback(() => {
     const updates: BatchEmployeeNoReq[] = selectedRowChange.map((row) => ({
-      userId: Number(row.id as number), // ép chắc chắn về number
+      userId: Number(row.id as number),
       employeeNo: String(row.employeeNo),
     }));
 

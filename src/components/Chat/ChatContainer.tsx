@@ -109,7 +109,6 @@ const ChatContainer: React.FC = () => {
       height="90vh"
       sx={{ backgroundColor: "background.default" }}
     >
-      {/* Sidebar */}
       <Paper
         elevation={1}
         sx={{

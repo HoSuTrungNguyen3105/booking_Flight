@@ -41,6 +41,7 @@ type SideBarValueTypes =
   | "data-secure"
   | "airports"
   | "SendEmailToUsers"
+  | "TicketSalesDashboard"
   | "airport-list"
   | "domestic"
   | "users"
@@ -92,7 +93,7 @@ export const menuData: MenuSection[] = [
           { id: "TerminalContainer", label: " TerminalContainer" },
           { id: "ChatApp", label: "ChatApp" },
           { id: "facilities", label: "facilities" },
-          { id: "food", label: "food", icon: <GppBadIcon /> },
+          { id: "TicketSalesDashboard", label: "food", icon: <GppBadIcon /> },
           { id: "notifications", label: "notifications", icon: <GppBadIcon /> },
           {
             id: "service",

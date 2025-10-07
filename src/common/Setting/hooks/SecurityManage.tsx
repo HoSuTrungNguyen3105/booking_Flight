@@ -83,7 +83,6 @@ const SecurityManage = () => {
           onRowClick={onRowSelect}
           handleAction={() => {}}
           columns={columnsPassenger}
-          tabs={[]}
           rows={rowData}
           loading={false}
           onSearch={() => {}}

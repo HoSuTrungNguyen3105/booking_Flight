@@ -191,9 +191,6 @@ export const useInspectionPerformanceHistory = () => {
         field: "role",
         flex: 1,
         headerName: "권한",
-        // renderCell: ({ row }) => (
-        //   <span>{row.role === UserRole.ADMIN ? "관리자" : "멤버"}</span>
-        // ),
         renderCell: (params: GridRenderCellParams) => {
           let bgColor = "";
           let textColor = "#000";

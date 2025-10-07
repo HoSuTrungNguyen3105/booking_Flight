@@ -18,10 +18,9 @@ export const useLockAccount = ({
   onSuccess,
   user,
 }: ILockAccountModalProps) => {
-  //   const api = useApis();
   const [error, _] = useState("");
   const { refetchAccountLock } = useAccountLock();
-  const [formData, setFormData] = useState<{ id?: number }>({
+  const [formData] = useState<{ id?: number }>({
     id: user?.id,
   });
 

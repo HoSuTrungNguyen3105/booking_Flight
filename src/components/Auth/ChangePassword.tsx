@@ -24,7 +24,7 @@ interface IUserIdNumber {
   email: string;
 }
 
-const ChangePassword = ({ userId, email }: IUserIdNumber) => {
+const ChangePassword = ({ userId, email, onClose }: IUserIdNumber) => {
   const { refetchChangePassword } = useChangePassword();
   // const [userId, setUserId] = useState<number | undefined>(undefined);
   const [verifyOTPcode, setVerifyOTPcode] = useState(false);

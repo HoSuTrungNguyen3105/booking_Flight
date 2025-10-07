@@ -2,7 +2,7 @@ export const ROUTE_PATHS = {
   LANDING: "/",
   HOME: "/v1",
   INIT: "init",
-  LOGIN: "/login",
+  LOGIN: "loginPage",
   REGISTER: "/Register",
   REGISTRATION_FORM: "/RegistrationForm",
   BOOK_TICKET: "/bookticket",

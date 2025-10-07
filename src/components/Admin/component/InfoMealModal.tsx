@@ -55,15 +55,15 @@ const MealForm =
         case "SNACK":
           return <Fastfood color="action" />;
         case "BEVERAGE":
-          return <LocalDrink color="action" />; // đồ uống thường
+          return <LocalDrink color="action" />;
         case "DRINK":
-          return <LocalBar color="action" />; // rượu, cocktail
+          return <LocalBar color="action" />;
         case "DESSERT":
-          return <Icecream color="action" />; // tráng miệng
+          return <Icecream color="action" />;
         case "VEG":
-          return <VerticalAlignCenterSharp color="action" />; // món chay
+          return <VerticalAlignCenterSharp color="action" />;
         case "NONVEG":
-          return <EmojiFoodBeverage color="action" />; // món mặn
+          return <EmojiFoodBeverage color="action" />;
         default:
           return null;
       }

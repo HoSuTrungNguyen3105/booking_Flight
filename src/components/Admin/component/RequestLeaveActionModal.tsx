@@ -25,84 +25,115 @@ const RequestLeaveActionModal = ({
   selectedRows,
 }: IRequestLeaveActionModalProps) => {
   const [note, setNote] = useState("");
+  const [error, setError] = useState("");
   const { user } = useAuth();
+
   const { fetchApproveLeaveRequest } = useApproveLeaveRequest(
-    selectedRows?.id as number
+    selectedRows?.id ?? 0
   );
-
   const { fetchRejectLeaveRequest } = useRejectLeaveRequest(
-    selectedRows?.id as number
+    selectedRows?.id ?? 0
   );
 
+  // Reset state khi modal mở
   useEffect(() => {
     if (open) {
       setNote("");
+      setError("");
     }
   }, [open]);
 
-  const handleApproveSubmit = useCallback(async () => {
-    const data: SendRequestProps = {
-      approverId: user?.id as number,
-      requestId: selectedRows?.employee.id as number,
-      note: note,
-    };
-    const res = await fetchApproveLeaveRequest({
-      ...data,
-    });
-    if (res?.resultCode == "00") {
-      onSuccess();
-      setNote("");
-    } else setNote("");
-  }, [onSuccess, fetchApproveLeaveRequest]);
+  // ✅ Gộp logic chung cho 2 hành động
+  const handleSubmit = useCallback(
+    async (type: "approve" | "reject") => {
+      if (!user?.id || !selectedRows?.id) return;
+      setError("");
 
-  const handleRejectSubmit = useCallback(async () => {
-    const data: SendRequestProps = {
-      approverId: user?.id as number,
-      requestId: selectedRows?.employee.id as number,
-      note: note,
-    };
-    const res = await fetchRejectLeaveRequest({
-      ...data,
-    });
-    if (res?.resultCode == "00") {
-      onSuccess();
-      setNote("");
-    } else setNote("");
-  }, [onSuccess, fetchRejectLeaveRequest]);
+      const data: SendRequestProps = {
+        approverId: user.id,
+        requestId: selectedRows.id,
+        note,
+      };
 
-  const renderActions = useCallback(() => {
-    return (
-      <Box display="flex" gap={1} justifyContent="flex-end" alignItems="center">
-        <Button onClick={handleApproveSubmit}>Approve</Button>
-        <Button onClick={handleRejectSubmit}>Reject</Button>
-      </Box>
-    );
-  }, [handleApproveSubmit, handleRejectSubmit]);
+      const res =
+        type === "approve"
+          ? await fetchApproveLeaveRequest(data)
+          : await fetchRejectLeaveRequest(data);
 
-  const renderContent = useCallback(() => {
-    return (
-      <Box maxHeight="30rem">
-        <Box>
-          <InputTextField value={String(selectedRows?.id)} disabled />
-          <InputTextField value={note} onChange={(e) => setNote(e)} />
-          <Typography component="p" variant="body2">
-            임시 비밀번호
-          </Typography>
-          <InputTextField value={String(user?.id)} disabled />
-        </Box>
-        {renderActions()}
-      </Box>
-    );
-  }, [selectedRows, note]);
+      if (res?.resultCode === "00") {
+        onSuccess();
+        setNote("");
+      } else {
+        setNote("");
+        setError(res?.resultMessage || "Đã xảy ra lỗi, vui lòng thử lại.");
+      }
+    },
+    [
+      user?.id,
+      selectedRows?.id,
+      note,
+      fetchApproveLeaveRequest,
+      fetchRejectLeaveRequest,
+      onSuccess,
+    ]
+  );
+
+  const renderActions = (
+    <Box
+      display="flex"
+      gap={1}
+      justifyContent="flex-end"
+      alignItems="center"
+      mt={2}
+    >
+      {error && (
+        <Typography color="error" fontSize={"15px"} fontWeight={500}>
+          {error}
+        </Typography>
+      )}
+      <Button variant="contained" onClick={() => handleSubmit("approve")}>
+        Approve
+      </Button>
+      <Button variant="outlined" onClick={() => handleSubmit("reject")}>
+        Reject
+      </Button>
+    </Box>
+  );
+
+  // ✅ Render nội dung modal
+  const renderContent = (
+    <Box display="flex" flexDirection="column" gap={2} maxHeight="30rem">
+      <Typography variant="body2" fontWeight={500}>
+        Leave Request ID
+      </Typography>
+      <InputTextField value={String(selectedRows?.id ?? "")} disabled />
+
+      <Typography variant="body2" fontWeight={500}>
+        Ghi chú
+      </Typography>
+      <InputTextField
+        value={note}
+        onChange={setNote}
+        placeholder="Nhập ghi chú cho yêu cầu"
+      />
+
+      <Typography variant="body2" fontWeight={500}>
+        Approver ID
+      </Typography>
+      <InputTextField value={String(user?.id ?? "")} disabled />
+
+      {renderActions}
+    </Box>
+  );
 
   return (
     <BaseModal
       open={open}
       onClose={onClose}
-      title={`원본 데이터, 통계 데이터 학습 Seq${selectedRows} 상세 정보`}
-      subtitle="-선택된 원본 데이터의 상세 정보를 확인합니다.-"
+      title={`Chi tiết yêu cầu nghỉ (${selectedRows?.id ?? "N/A"})`}
+      subtitle="Bạn có chắc chắn muốn phê duyệt hoặc từ chối yêu cầu này?"
       Icon={PrivacyTipIcon}
-      slots={{ content: renderContent() }}
+      slots={{ content: renderContent }}
     />
   );
 };

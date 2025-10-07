@@ -3,7 +3,11 @@ import { Box, Typography, Chip, Button, Stack } from "@mui/material";
 import { type GridColDef, type GridRenderCellParams } from "@mui/x-data-grid";
 import TableData from "../../../common/DataGrid/index";
 import { useGetLeaveRequest } from "../../Api/usePostApi";
-import { DateFormatEnum, formatDateKR } from "../../../hooks/format";
+import {
+  DateFormatEnum,
+  formatDate,
+  formatDateKR,
+} from "../../../hooks/format";
 import CustomPopover from "../../../common/Button/Popover";
 import RequestLeaveActionModal from "./RequestLeaveActionModal";
 import { UserRole, type LeaveRequest } from "../../../utils/type";
@@ -46,87 +50,6 @@ const LeaveRequestGrid = () => {
     }
   };
 
-  const columns: GridColDef[] = [
-    {
-      field: "id",
-      headerName: "ID",
-      flex: 1,
-    },
-    {
-      field: "employee",
-      headerName: "Nhân viên",
-      flex: 1,
-      renderCell: (params) => params.row.employee?.name,
-    },
-    {
-      field: "startDate",
-      headerName: "Ngày bắt đầu",
-      flex: 1.5,
-      valueFormatter: (value) =>
-        formatDateKR(DateFormatEnum.MM_DD_YYYY_HH_MM_SS, value),
-    },
-    {
-      field: "endDate",
-      headerName: "Ngày kết thúc",
-      flex: 1.5,
-      valueFormatter: (value) =>
-        formatDateKR(DateFormatEnum.MM_DD_YYYY_HH_MM_SS, value),
-    },
-    {
-      field: "days",
-      headerName: "Số ngày",
-      flex: 1,
-      renderCell: (params: GridRenderCellParams) => (
-        <Chip label={`${params.value} ngày`} color="secondary" size="small" />
-      ),
-    },
-    {
-      field: "reason",
-      headerName: "Lý do",
-      flex: 1,
-      renderCell: (params: GridRenderCellParams) => (
-        <CustomPopover
-          icon="Detail"
-          handleAction={() => {}}
-          option={[params.value]}
-        />
-      ),
-    },
-    {
-      field: "status",
-      headerName: "Trạng thái",
-      flex: 1,
-      renderCell: (params: GridRenderCellParams) => (
-        <Chip
-          label={params.value === "PENDING" ? "Chờ duyệt" : params.value}
-          color={getStatusColor(params.value)}
-          size="small"
-        />
-      ),
-    },
-    {
-      field: "appliedAt",
-      headerName: "Ngày đăng ký",
-      flex: 1,
-      renderCell: (params: GridRenderCellParams) =>
-        formatDateKR(DateFormatEnum.MMMM_D_YYYY_HH_MM_SS, params.value),
-    },
-    {
-      field: "actions",
-      flex: 1,
-      headerName: "Thao tác",
-      renderCell: (params: GridRenderCellParams) => (
-        <CustomPopover
-          icon="Detail"
-          handleAction={(opt) => {
-            if (opt === "View") handleView(params.row);
-          }}
-          option={["View"]}
-        />
-      ),
-    },
-  ];
-
   const statuses = [
     {
       key: "PENDING",
@@ -157,12 +80,107 @@ const LeaveRequestGrid = () => {
     },
   ];
 
+  const columns: GridColDef[] = [
+    {
+      field: "employee",
+      headerName: "Nhân viên",
+      flex: 1,
+      renderCell: (params) => params.row.employee?.name,
+    },
+    {
+      field: "startDate",
+      headerName: "Ngày bắt đầu",
+      flex: 1.5,
+      valueFormatter: (value) =>
+        formatDate(DateFormatEnum.MM_DD_YYYY_HH_MM_SS, value),
+    },
+    {
+      field: "endDate",
+      headerName: "Ngày kết thúc",
+      flex: 1.5,
+      valueFormatter: (value) =>
+        formatDate(DateFormatEnum.MM_DD_YYYY_HH_MM_SS, value),
+    },
+    {
+      field: "days",
+      headerName: "Số ngày",
+      flex: 1,
+      renderCell: (params: GridRenderCellParams) => (
+        <Chip label={`${params.value} ngày`} color="secondary" size="small" />
+      ),
+    },
+    {
+      field: "reason",
+      headerName: "Lý do",
+      flex: 1,
+      renderCell: (params: GridRenderCellParams) => (
+        <CustomPopover
+          icon="Detail"
+          hideSubmitButton
+          handleAction={() => {}}
+          option={[params.value]}
+        />
+      ),
+    },
+    {
+      field: "status",
+      headerName: "Trạng thái",
+      flex: 1,
+      renderCell: (params: GridRenderCellParams) => {
+        const status = statuses.find((s) => s.key === params.value);
+
+        return (
+          <Chip
+            label={
+              status?.key === "PENDING"
+                ? "Chờ duyệt"
+                : status?.key === "APPROVED"
+                ? "Đã duyệt"
+                : status?.key === "REJECTED"
+                ? "Từ chối"
+                : "Không xác định"
+            }
+            size="small"
+            sx={{
+              textTransform: "capitalize",
+              ...status?.sx,
+            }}
+          />
+        );
+      },
+    },
+    {
+      field: "appliedAt",
+      headerName: "Ngày đăng ký",
+      flex: 1,
+      renderCell: (params: GridRenderCellParams) =>
+        formatDate(DateFormatEnum.MMMM_D_YYYY_HH_MM_SS, params.value),
+    },
+    {
+      field: "actions",
+      flex: 1,
+      headerName: "Thao tác",
+      renderCell: (params: GridRenderCellParams) => (
+        <CustomPopover
+          icon="Detail"
+          handleAction={(opt) => {
+            if (opt === "View") handleView(params.row);
+          }}
+          option={["View"]}
+        />
+      ),
+    },
+  ];
+
   const [onCreateRequest, setOnCreateRequest] = useState(false);
 
   if (onCreateRequest) {
     return (
       <CreateLeaveRequestForm
-        onSuccess={() => setOnCreateRequest(false)}
+        onSuccess={() => {
+          setOnCreateRequest(false);
+          refetchGetLeaveRequest();
+        }}
         employees={user?.id as number}
       />
     );
@@ -174,17 +192,14 @@ const LeaveRequestGrid = () => {
         <Typography variant="h5" fontWeight="bold" color="primary.main">
           Danh sách đơn xin nghỉ phép
         </Typography>
-        {user?.role === UserRole.USER && (
-          <Box>
-            <Typography></Typography>
-            <Button
-              variant="contained"
-              onClick={() => setOnCreateRequest(true)}
-            >
-              Create Request leave
-            </Button>
-          </Box>
-        )}
+        {/* {user?.role === UserRole.USER && ( */}
+        <Box>
+          <Typography></Typography>
+          <Button variant="contained" onClick={() => setOnCreateRequest(true)}>
+            Create Request leave
+          </Button>
+        </Box>
+        {/* )} */}
       </Stack>
 
       <Box p={2}>

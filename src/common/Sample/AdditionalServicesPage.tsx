@@ -1,193 +1,213 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Box,
   Typography,
   Card,
   CardContent,
-  Checkbox,
-  FormControlLabel,
-  Grid,
   Button,
-  Divider,
-  useTheme,
+  Chip,
+  Stack,
 } from "@mui/material";
 import { useGetBaggageData } from "../../components/Api/useGetApi";
 import type { Baggage } from "../../utils/type";
 import theme from "../../scss/theme";
+import type {
+  GridColDef,
+  GridRenderCellParams,
+  GridRowId,
+} from "@mui/x-data-grid";
+import DataTable from "../DataGrid/index";
+import TableSection from "../Setting/TableSection";
+const getBaggageStatusStyle = (status: string) => {
+  switch (status) {
+    case "CHECKED_IN":
+      return {
+        label: "Đã ký gửi",
+        sx: {
+          background: "linear-gradient(135deg, #43a047, #66bb6a)", // xanh lá
+          color: "#fff",
+          fontWeight: 600,
+          borderRadius: "8px",
+          px: 1.5,
+          py: 0.5,
+        },
+      };
 
-interface AdditionalService {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  checked: boolean;
-}
+    case "LOADED":
+      return {
+        label: "Đã lên máy bay",
+        sx: {
+          background: "linear-gradient(135deg, #2196f3, #42a5f5)", // xanh dương
+          color: "#fff",
+          fontWeight: 600,
+          borderRadius: "8px",
+          px: 1.5,
+          py: 0.5,
+        },
+      };
+
+    case "CLAIMED":
+      return {
+        label: "Đã nhận hành lý",
+        sx: {
+          background: "linear-gradient(135deg, #8e24aa, #ab47bc)", // tím
+          color: "#fff",
+          fontWeight: 600,
+          borderRadius: "8px",
+          px: 1.5,
+          py: 0.5,
+        },
+      };
+
+    case "LOST":
+      return {
+        label: "Thất lạc",
+        sx: {
+          background: "linear-gradient(135deg, #ef5350, #e53935)", // đỏ
+          color: "#fff",
+          fontWeight: 600,
+          borderRadius: "8px",
+          px: 1.5,
+          py: 0.5,
+        },
+      };
+
+    default:
+      return {
+        label: "Không rõ",
+        sx: {
+          background: "linear-gradient(135deg, #bdbdbd, #9e9e9e)",
+          color: "#fff",
+          fontWeight: 600,
+          borderRadius: "8px",
+          px: 1.5,
+          py: 0.5,
+        },
+      };
+  }
+};
 
 const AdditionalServicesPage: React.FC = () => {
   const { dataBaggage, refetchBaggageData } = useGetBaggageData();
-  // const theme = useTheme();
-  const [services, setServices] = useState<Baggage[]>([]);
+  const [rows, setRows] = useState<Baggage[]>([]);
+  const [selectionModel, setSelectionModel] = useState<GridRowId[]>([]);
 
-  useEffect(() => {
-    if (dataBaggage?.list) {
-      setServices(
-        dataBaggage.list.map((item) => ({
-          ...item,
-          checked: false, // thêm mặc định nếu chưa có
-        }))
-      );
-    }
-  }, [dataBaggage]);
+  // useEffect(() => {
+  //   if (dataBaggage?.list) {
+  //     setRows(dataBaggage.list);
+  //   }
+  // }, [dataBaggage]);
 
-  const handleServiceChange =
-    (id: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      setServices(
-        services.map((service) =>
-          service.id === id
-            ? { ...service, checked: event.target.checked }
-            : service
-        )
-      );
-    };
+  const rowData = useMemo(
+    () =>
+      dataBaggage?.list?.map((item) => ({
+        ...item,
+        id: item.id,
+      })) || [],
+    [dataBaggage]
+  );
 
-  const calculateTotal = () => {
-    //  return services
-    // .filter((service) => service.checked)
-    // .reduce((total, service) => total + service.price, 0);
-  };
-
-  const formatCurrency = (amount: number): string => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(amount);
-  };
+  const columns: GridColDef[] = [
+    {
+      field: "flightNo",
+      headerName: "Chuyến bay",
+      flex: 0.5,
+      renderCell: (params: GridRenderCellParams) =>
+        params.row?.flight?.flightNo ?? "---",
+    },
+    {
+      field: "flightTerminal",
+      headerName: "Terminal",
+      flex: 0.5,
+      renderCell: (params: GridRenderCellParams) =>
+        params.row?.flight?.terminal ?? "---",
+    },
+    {
+      field: "ticket",
+      headerName: "Thong tin ghế",
+      flex: 1,
+      renderCell: (params: GridRenderCellParams) => {
+        const seatNo = params.row?.ticket?.seatNo ?? "---";
+        const seatClass = params.row?.ticket?.seatClass ?? "---";
+        return `${seatNo} (${seatClass})`;
+      },
+    },
+    // {
+    //   field: "seatClass",
+    //   headerName: "Hạng ghế",
+    //   flex: 1,
+    //   valueGetter: (params: GridRenderCellParams) => params?.value ?? "—",
+    // },
+    {
+      field: "weight",
+      headerName: "Khối lượng (kg)",
+      flex: 1,
+      renderCell: (params: GridRenderCellParams) => `${params.value ?? 0} kg`,
+    },
+    {
+      field: "status",
+      headerName: "Trạng thái",
+      flex: 1,
+      renderCell: (params) => {
+        const statusStyle = getBaggageStatusStyle(params.value);
+        return (
+          <Chip
+            label={statusStyle.label}
+            sx={{
+              ...statusStyle.sx,
+              textTransform: "capitalize",
+              fontSize: 13,
+            }}
+            size="small"
+          />
+        );
+      },
+    },
+  ];
 
   const handleSubmit = () => {
-    // services.filter((service) => service.checked);
+    // const selectedServices = rows.filter((row) =>
+    //   selectionModel.includes(row.id)
+    // );
+    // console.log("Hành lý đã chọn:", selectedServices);
+    // TODO: gửi dữ liệu hoặc xử lý tiếp
   };
 
+  if (!dataBaggage) {
+    return <Typography>No value</Typography>;
+  }
+
   return (
-    <Box sx={{ maxWidth: "100%", margin: "0 auto", p: 1 }}>
+    <Box sx={{ maxWidth: "100%", mx: "auto" }}>
       <Typography
         variant="h4"
-        sx={{ color: theme.palette.primary.main, fontWeight: "bold", mb: 3 }}
+        sx={{
+          color: theme.palette.primary.main,
+          fontWeight: "bold",
+          mb: 2,
+        }}
       >
-        Dịch vụ bổ sung
+        Dịch vụ Hành lý
       </Typography>
-
-      <Typography variant="body1" sx={{ color: theme.palette.text.primary }}>
-        Nâng cao trải nghiệm chuyến bay của bạn với các dịch vụ bổ sung dưới
-        đây.
-      </Typography>
-
-      <Card sx={{ mb: 3 }}>
-        <CardContent>
-          <Typography
-            variant="h6"
-            component="h2"
-            gutterBottom
-            sx={{ color: theme.palette.primary.main }}
-          >
-            Hành lý ký gửi
-          </Typography>
-
-          <Grid container spacing={2}>
-            {services
-              //  .filter((s) => s.id.includes("luggage"))
-              .map((service) => (
-                <Grid size={12} key={service.id}>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        // checked={service.checked}
-                        onChange={handleServiceChange(service.id)}
-                        sx={{
-                          color: theme.palette.primary.main,
-                          "&.Mui-checked": {
-                            color: theme.palette.primary.main,
-                          },
-                        }}
-                      />
-                    }
-                    label={[]}
-                    sx={{ width: "100%", ml: 0 }}
-                  />
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      width: "100%",
-                    }}
-                  >
-                    <Box>
-                      <Typography
-                        variant="body1"
-                        sx={{
-                          color: theme.palette.primary.main,
-                          fontWeight: 500,
-                        }}
-                      >
-                        {service.flight?.flightNo}
-                      </Typography>
-                      <Typography
-                        variant="body1"
-                        sx={{
-                          color: theme.palette.primary.main,
-                          fontWeight: 500,
-                        }}
-                      >
-                        {service.ticket?.seatNo}
-                      </Typography>
-                      <Typography
-                        variant="body1"
-                        sx={{
-                          color: theme.palette.primary.main,
-                          fontWeight: 500,
-                        }}
-                      >
-                        {service.ticket?.seatClass}
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        sx={{ color: theme.palette.text.secondary }}
-                      >
-                        {service.weight}
-                      </Typography>
-                    </Box>
-                  </Box>
-                </Grid>
-              ))}
-          </Grid>
-        </CardContent>
-      </Card>
-
       <Card>
         <CardContent>
           <Typography
             variant="h6"
-            gutterBottom
-            sx={{ color: theme.palette.primary.main }}
+            sx={{ color: theme.palette.primary.main, mb: 2 }}
           >
-            Tổng cộng
+            Hành lý ký gửi
           </Typography>
 
-          <Divider sx={{ my: 2 }} />
-
-          <Button
-            variant="contained"
-            fullWidth
-            size="large"
-            onClick={handleSubmit}
-            sx={{
-              bgcolor: theme.palette.primary.main,
-              "&:hover": {
-                bgcolor: theme.palette.primary.dark,
-              },
-            }}
-          >
-            Xác nhận dịch vụ bổ sung
-          </Button>
+          <Box sx={{ height: 450, width: "100%" }}>
+            <TableSection
+              rows={rowData}
+              columns={columns}
+              isLoading={false}
+              setRows={() => {}}
+              nextRowClick
+              largeThan
+            />
+          </Box>
         </CardContent>
       </Card>
     </Box>

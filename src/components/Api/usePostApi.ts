@@ -31,6 +31,7 @@ import {
   type CreateAirportReq,
   type AirportResponseMessage,
   type AirportCreateResponseMessage,
+  type RequestSendEmailResponse,
 } from "../../utils/type.ts";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
 import { useFetch } from "../../context/use[custom]/useFetch.ts";
@@ -84,6 +85,20 @@ export const useCreateFlight = () => {
   return {
     createFlightData,
     refetchCreateFlightData,
+  };
+};
+
+export const useSendEmailToVerification = () => {
+  const { refetch: refetchSendEmailToVerification } = useFetch<
+    RequestSendEmailResponse,
+    { id: number }
+  >({
+    url: "/auth/sendEmailToVerification",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchSendEmailToVerification,
   };
 };
 
@@ -483,13 +498,6 @@ export const useGetSeatByFlightId = ({ id }: ReqUserIDProps) => {
     refetchGetSeatByFlightId,
   };
 };
-// interface CreateMealProps {
-//   name: string;
-//   mealType: string;
-//   description?: string | null;
-//   price?: number | null;
-//   isAvailable?: boolean;
-// }
 
 export const useCreateMultiMeal = () => {
   const { refetch: refetchCreateMultiMeal, loading: loadingCreateMultiMeal } =

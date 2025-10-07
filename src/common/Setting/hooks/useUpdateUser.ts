@@ -16,16 +16,15 @@ export const useUpdateUser = ({
   data,
 }: IUseUpdateUserProps) => {
   const [error, setError] = useState<string>("");
-  const { fetchUserList, loadingUser, refetchUser } = useGetUserList();
+  const { loadingUser, refetchUser } = useGetUserList();
   const { fetchCreateUser, refetchCreateUser } = useCreateUserByAdmin();
 
-  // formData là nguồn truth, khởi tạo từ data nếu có, hoặc defaults
   const [formData, setFormData] = useState<UpdateUserForm>(() => ({
     role: data?.role,
     rank: data?.rank,
     name: data?.name,
     userAlias: data?.createdAt,
-    pictureUrl: (data as any)?.pictureUrl,
+    // pictureUrl: (data as any)?.pictureUrl,
   }));
 
   const handleChange = (key: string, value: any) => {
@@ -37,7 +36,7 @@ export const useUpdateUser = ({
       rank: data.rank ?? "",
       name: data.name ?? "",
       userAlias: data.userAlias ?? "",
-      pictureUrl: (data as any)?.pictureUrl ?? "",
+      // pictureUrl: (data as any)?.pictureUrl ?? "",
     });
     // reset error khi load data mới
     setError("");
@@ -59,15 +58,12 @@ export const useUpdateUser = ({
         name: formData.name,
         userAlias: formData.userAlias,
         rank: formData.rank,
-        role: formData.role as any,
-        pictureUrl: formData.pictureUrl,
+        role: formData.role,
       };
 
-      // Nếu anh có API update riêng thì gọi API update ở đây (không dùng create)
-      const res = await refetchCreateUser(payload); // giữ như anh đang dùng; đổi thành update API nếu cần
-
+      const res = await refetchCreateUser(payload);
+      console.log("payload", payload);
       if (res?.resultCode === "00") {
-        // success: gọi callback cha để refresh và đóng modal
         onSuccess?.();
         onClose?.();
       } else {

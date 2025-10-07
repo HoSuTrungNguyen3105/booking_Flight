@@ -146,9 +146,9 @@ const BulkMealCreator: React.FC = () => {
       {/* Header */}
       <Stack
         sx={{
-          p: 4,
-          mb: 4,
-          borderRadius: 3,
+          p: 3,
+          mb: 3,
+          borderRadius: 2,
           background: theme.palette.primary.main,
           color: "white",
         }}

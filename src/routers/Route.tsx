@@ -40,6 +40,8 @@ import AirportMap from "../components/User/AirportMap";
 import AirportManagementDetail from "../components/User/AirportManagementDetail";
 import ChangePasswordInProfile from "../components/User/Security/ChangePasswordInProfile";
 import FlightBatchCreator from "../components/Admin/component/FlightBatchCreator";
+import AuthGuard from "../components/Layout/AuthGuard";
+import TicketTable from "../common/Sample/TicketTable";
 
 export const mockTerminals = [
   {
@@ -83,17 +85,13 @@ const routes = [
     errorElement: <ErrorPage />,
     children: [
       {
-        path: "loginPage",
+        path: ROUTE_PATHS.LOGIN,
         element: (
           <GuestGuard>
             <LoginPage />
           </GuestGuard>
         ),
       },
-      // {
-      //   path: ROUTE_PATHS.FILE_UPLOAD.replace("/", ""),
-      //   element: <FileUpload name="fileUploader" />,
-      // },
       {
         path: "registerPage",
         element: (
@@ -112,8 +110,12 @@ const routes = [
     children: [
       {
         path: ROUTE_PATHS.LANDING, // = "/"
-        element: <Guard />,
-        children: [{ index: true, element: <Hero /> }],
+        element: (
+          <AuthGuard>
+            <Hero />
+          </AuthGuard>
+        ),
+        // children: [{ index: true, element: <Hero /> }],
       },
       {
         path: "FlightPage",
@@ -131,10 +133,6 @@ const routes = [
         path: ROUTE_PATHS.BOOK_TICKET.replace("/", ""),
         element: <BookTicket />,
       },
-      // {
-      //   path: ROUTE_PATHS.SAMPLE.replace("/", ""),
-      //   element: <Home />,
-      // },
     ],
   },
   {
@@ -188,10 +186,10 @@ const routes = [
         path: "unlock_request", //bookseat
         element: <UnlockRequestTable />,
       },
-      // {
-      //   path: "CreateGateForm", //bookseat
-      //   element: <MealForm onSubmit={()=>{}} />,
-      // },
+      {
+        path: "CreateGateForm", //bookseat
+        element: <TicketTable />,
+      },
       // {
       //   path: "data-secure",
       //   element: <DataSecure />,
@@ -268,10 +266,6 @@ const routes = [
         path: "flight-book",
         // element: <FlightBooking />,
       },
-      // {
-      //   path: "BatchUpdateEmployeeNo",
-      //   element: <BatchUpdateEmployeeNo />,
-      // },
       {
         path: "manage-my-info",
         element: <ManageMyInfo />,

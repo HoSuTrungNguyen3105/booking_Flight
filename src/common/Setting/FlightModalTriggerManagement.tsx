@@ -11,18 +11,14 @@ const FlightModalTriggerManagement = ({ id, onSuccess }: FlightIdProps) => {
   const [open, setOpen] = useState(false);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation(); // Ngăn chặn sự kiện click lan truyền
+    event.stopPropagation();
     setOpen(true);
   };
 
   return (
     <>
       <Box display="inline-flex">
-        <Button
-          component="span"
-          variant="contained"
-          onClick={handleClick} // Sử dụng hàm handleClick đã sửa
-        >
+        <Button component="span" variant="contained" onClick={handleClick}>
           {id ? "Update Flight" : "Create Flight"}
         </Button>
       </Box>

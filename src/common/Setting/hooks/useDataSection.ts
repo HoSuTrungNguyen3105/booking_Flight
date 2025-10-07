@@ -1,6 +1,10 @@
 import { useMemo } from "react";
 import { UserRole, type UserRoleType } from "../../../utils/type";
 import { FieldType, type IFormField } from "../../CustomRender/FieldRenderer";
+import {
+  mapStringToDropdown,
+  useFindAllRoles,
+} from "../../../components/Api/useGetApi";
 
 export type UseRCreate = {
   email: string;
@@ -17,11 +21,11 @@ export type UpdateUserForm = {
   userAlias?: string;
 };
 
-const roleOptions = [
-  { label: "Thành viên", value: UserRole.USER },
-  { label: "Monitor", value: UserRole.MONITOR },
-  { label: "Quản trị", value: UserRole.ADMIN },
-];
+// const roleOptions = [
+//   { label: "Thành viên", value: UserRole.USER },
+//   { label: "Monitor", value: UserRole.MONITOR },
+//   { label: "Quản trị", value: UserRole.ADMIN },
+// ];
 
 export const useDataSection = (
   data: Partial<UseRCreate & UpdateUserForm>,
@@ -30,6 +34,8 @@ export const useDataSection = (
 ): IFormField[] => {
   return useMemo(() => {
     const isUpdate = formType === "update";
+    const { dataRoles } = useFindAllRoles();
+    const roleOptions = mapStringToDropdown(dataRoles?.data || []);
     const commonDisabled = isUpdate || isDisable;
 
     const fields: IFormField[] = [

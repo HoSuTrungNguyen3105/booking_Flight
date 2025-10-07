@@ -11,6 +11,8 @@ const VerifyOpt = ({ email, userId }: EmailProps) => {
   const { refetchVerifyOTPcode } = useVerifyOTPCode();
   const [hasValidate, sethasValidate] = useState(false);
   const toast = useToast();
+  console.log("o", userId);
+
   const handleCheckOTPYn = useCallback(async () => {
     if (typeof otpText !== "string" || otpText.trim() === "") {
       toast("Invalid OTP", "error");
@@ -60,7 +62,7 @@ const VerifyOpt = ({ email, userId }: EmailProps) => {
             Xác thực OTP
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Vui lòng nhập mã OTP được gửi đến email/sđt cho tài khoản #{userId}
+            Vui lòng nhập mã OTP được gửi đến email/sđt cho tài khoản #{email}
           </Typography>
         </Box>
 

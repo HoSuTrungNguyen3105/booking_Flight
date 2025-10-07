@@ -7,7 +7,7 @@ import theme from "../../scss/theme";
 import { useFindPassengerById } from "../../components/Api/usePostApi";
 import type { Passenger } from "../../utils/type";
 import DetailSection, { type IDetailItem } from "../DetailSection";
-import { DateFormatEnum, formatDateKR } from "../../hooks/format";
+import { DateFormatEnum, formatDate, formatDateKR } from "../../hooks/format";
 
 type DataSecureProps = {
   passenger: string;
@@ -54,7 +54,7 @@ const DataSecure = ({ passenger, returnButton }: DataSecureProps) => {
         flex: 1,
         renderCell: ({ value }) => (
           <Typography variant="body2">
-            {formatDateKR(DateFormatEnum.MMMM_D_YYYY, value)}
+            {formatDate(DateFormatEnum.MMMM_D_YYYY, value)}
           </Typography>
         ),
       },

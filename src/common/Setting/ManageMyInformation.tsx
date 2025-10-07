@@ -40,16 +40,12 @@ const ManageMyInformation = () => {
   };
 
   const handleUpdateMyInfo = useCallback(async () => {
-    // if ( myInfo?.pictureUrl){
-    //   handleImageUpload(myInfo?.pictureUrl)
-    // }
-    await refetchUpdateUserInfo(myInfo);
-    //console.log("res", res);
+    console.log("myInfo", myInfo);
+    const res = await refetchUpdateUserInfo(myInfo);
+    console.log("res", res);
   }, [myInfo, refetchUpdateUserInfo]);
 
-  const handleRefresh = useCallback(() => {
-    // Logic to refresh data
-  }, []);
+  const handleRefresh = useCallback(() => {}, []);
 
   const renderButtonSection = useCallback(() => {
     return (
@@ -63,11 +59,7 @@ const ManageMyInformation = () => {
           <Button variant="contained" onClick={handleUpdateMyInfo}>
             Save Changes
           </Button>
-          <Button
-            variant="outlined"
-            // disabled={!hasChanges}
-            onClick={handleRefresh}
-          >
+          <Button variant="outlined" onClick={handleRefresh}>
             Refresh
           </Button>
         </Stack>
@@ -87,10 +79,7 @@ const ManageMyInformation = () => {
         overflowX: "hidden",
       }}
     >
-      <UserInfoSection
-        myInfo={myInfo as UserData}
-        onChange={handleUpdateMyInfo}
-      />
+      <UserInfoSection myInfo={myInfo as UserData} onChange={handleChange} />
       {/* <ManagePathAdminSection /> */}
       <DataAccessPermissionSection />
 

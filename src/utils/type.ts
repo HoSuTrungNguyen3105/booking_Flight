@@ -134,6 +134,13 @@ export type UserDataResponse<T> = {
   userId: number;
 };
 
+export type RequestSendEmailResponse = {
+  resultCode: string;
+  resultMessage: string;
+  requireVerified?: boolean;
+  userId: number;
+};
+
 export type RegisterOTPCodeVerifyResponse = {
   resultCode: string;
   resultMessage: string;
@@ -262,6 +269,8 @@ export type AirportCreateResponseMessage =
   DetailResponseMessage<AirportTypeWithError>;
 
 export type AirportResponseMessage = DetailResponseMessage<Airport>;
+
+export type TicketResponseMessage = DetailResponseMessage<Ticket>;
 
 export type GetAllCodeResponseMessage =
   DetailResponseMessage<AllFlightCodeProps>;
@@ -503,7 +512,7 @@ export interface Baggage {
   id: number;
   flightId: number;
   weight: number;
-  status: "CHECKED_IN" | "LOADED" | "CLAIMED" | "LOST"; // Enum kiểu an toàn
+  status: string; // Enum kiểu an toàn : "CHECKED_IN" | "LOADED" | "CLAIMED" | "LOST";
   checkedAt: string; // nếu trả về ISO date-time từ backend
   ticketId: number;
 
@@ -543,12 +552,8 @@ export type FlightAircraftResponse =
 export type EmailProps = {
   email?: string;
   userId?: number;
+  onClose?: () => void;
 };
-
-// export type SendMessageProps = {
-//   user1Id: number;
-//   user2Id: number;
-// };
 
 export type FacilityType =
   | "RESTAURANT"

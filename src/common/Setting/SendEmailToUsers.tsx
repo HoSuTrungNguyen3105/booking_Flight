@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Box, Button, Divider, Stack, Switch, Typography } from "@mui/material";
+import { useState } from "react";
+import { Box, Button, Divider, Stack, Typography } from "@mui/material";
 import { Send } from "@mui/icons-material";
 import { useAuth } from "../../context/AuthContext";
 import ChipInput from "../ChipInput";
@@ -8,7 +8,6 @@ import InputTextArea from "../Input/InputTextArea";
 import { useSendMail } from "../../components/Api/usePostApi";
 import { useToast } from "../../context/ToastContext";
 import { EmailAttachmentUploader } from "../FileUploader/FileUploadButton";
-// import { FileUploadButton } from "../FileUploader/FileUploadButton";
 
 type SendEmailProps = {
   selectedUser: string[];

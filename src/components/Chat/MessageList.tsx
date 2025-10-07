@@ -11,7 +11,10 @@ import {
   Tooltip,
 } from "@mui/material";
 import { useSocket } from "../../context/use[custom]/useSocket";
-import type { Message } from "../../utils/type";
+import type {
+  Message,
+  MessageBetweenUserLoginResponse,
+} from "../../utils/type";
 import theme from "../../scss/theme";
 import {
   AttachFile,
@@ -77,18 +80,17 @@ const MessageList: React.FC<MessageListProps> = ({
   };
 
   // lấy lịch sử tin nhắn khi chọn user
-  // const { data: messageResponse, loading: loadingMessages } =
-  //   useSocket<MessageBetweenUserLoginResponse>({
-  //     event: "findMessagesBetweenUsers",
-  //     autoListen: true,
-  //     onSuccess: (res) => {
-  //       if (res?.data?.resultCode === "00") {
-  //         setMessages(res.data.list || []);
-  //       } else {
-  //         console.warn("Server error:", res?.data?.resultMessage);
-  //       }
-  //     },
-  //   });
+  useSocket<MessageBetweenUserLoginResponse>({
+    event: "findMessagesBetweenUsers",
+    autoListen: true,
+    onSuccess: (res) => {
+      if (res?.data?.resultCode === "00") {
+        setMessages(res.data.list || []);
+      } else {
+        console.warn("Server error:", res?.data?.resultMessage);
+      }
+    },
+  });
 
   // lắng nghe tin nhắn mới từ server
   const { isConnected } = useSocket<Message>({

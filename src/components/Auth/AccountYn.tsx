@@ -1,33 +1,94 @@
 import { Box, Button, FormControl, Paper, Typography } from "@mui/material";
 import { Controller, useForm, useWatch } from "react-hook-form";
-import { memo, useCallback, useState } from "react";
-import Registration from "./Registration";
+import { useCallback, useState } from "react";
 import InputTextField from "../../common/Input/InputTextField";
+import {
+  getUserIdByEmail,
+  useSendEmailToVerification,
+} from "../Api/usePostApi";
 import { useToast } from "../../context/ToastContext";
-import { getUserIdByEmail } from "../Api/usePostApi";
+import Registration from "./Registration";
+import ChangePassword from "./ChangePassword";
+import VerifyOpt from "./components/VerifyOpt";
 
-const AccountYn = () => {
+type AccountModePageProps = {
+  mode: "verify" | "change"; // "verify" → đăng ký / xác minh, "forget" → quên mật khẩu
+  onClose?: () => void;
+};
+
+const AccountModePage = ({ mode, onClose }: AccountModePageProps) => {
   const { control, handleSubmit } = useForm();
-  const [registerUser, setRegisterUser] = useState(false);
+  const email = useWatch({ control, name: "email" });
   const { refetchUserEmailData } = getUserIdByEmail();
   const toast = useToast();
-  const email = useWatch({ control, name: "email" });
-  const handleSubmitEmailValue = useCallback(async () => {
-    if (!email) return;
-    const res = await refetchUserEmailData({ email });
-    if (res?.resultCode !== "00") {
-      setRegisterUser(true);
-    } else {
-      toast(res?.resultMessage as string, "info");
-    }
-  }, [email, refetchUserEmailData]);
 
-  if (registerUser) {
+  const { refetchSendEmailToVerification } = useSendEmailToVerification();
+
+  const [verifyOTPcode, setVerifyOTPcode] = useState(false);
+  const [hasValidate, setHasValidate] = useState(false);
+  const [userId, setUserId] = useState<number | undefined>();
+
+  const handleSubmitEmailValue = useCallback(async () => {
+    if (!email) {
+      toast("Vui lòng nhập email!");
+      return;
+    }
+
+    const res = await refetchUserEmailData({ email });
+
+    if (mode === "verify") {
+      if (res?.resultCode === "00") {
+        const id = res?.data?.userId;
+        if (!id) {
+          toast("Không tìm thấy tài khoản, vui lòng thử lại!", "error");
+          return;
+        }
+
+        setVerifyOTPcode(true);
+        setUserId(id);
+
+        console.log("refetchSendEmailToVerification", id);
+
+        const resr = await refetchSendEmailToVerification({ id });
+        console.log("console", resr);
+      } else {
+        toast("Email đã tồn tại, vui lòng đăng nhập!", "info");
+      }
+    }
+
+    // Nếu mode là "forget" → user có tài khoản
+    if (mode === "change") {
+      if (res?.resultCode !== "00") {
+        setUserId(res?.data?.userId);
+        setHasValidate(true);
+      } else {
+        toast(res?.resultMessage || "Không tìm thấy tài khoản!", "error");
+      }
+    }
+  }, [email, refetchUserEmailData, mode, toast]);
+
+  // --- Giao diện khi đã xác thực email ---
+  // if (registerUser) {
+  //   return (
+  //     <Registration email={email} onClose={() => setRegisterUser(false)} />
+  //   );
+  // }
+
+  if (verifyOTPcode) {
+    return <VerifyOpt userId={userId} email={email} />;
+  }
+
+  if (hasValidate && userId) {
     return (
-      <Registration email={email} onClose={() => setRegisterUser(false)} />
+      <ChangePassword
+        onClose={onClose || (() => {})}
+        email={email}
+        userId={userId}
+      />
     );
   }
 
+  // --- Form nhập email ---
   return (
     <Box
       component="form"
@@ -49,8 +110,9 @@ const AccountYn = () => {
         }}
       >
         <Typography variant="h6" fontWeight={600} textAlign="center" mb={1}>
-          Tìm tài khoản
+          {mode === "change" ? "Tìm tài khoản" : "Xác minh tài khoản"}
         </Typography>
+
         <FormControl fullWidth>
           <Typography variant="body2" color="text.secondary" mb={0.5}>
             Nhập email của bạn
@@ -63,6 +125,7 @@ const AccountYn = () => {
             )}
           />
         </FormControl>
+
         <Button
           onClick={handleSubmit(handleSubmitEmailValue)}
           variant="contained"
@@ -75,4 +138,4 @@ const AccountYn = () => {
   );
 };
 
-export default memo(AccountYn);
+export default AccountModePage;

@@ -62,10 +62,9 @@ const FlightUpdateModal = ({
   onSuccess,
 }: IModalStatisticalDataLearningProps) => {
   const [activeStep, setActiveStep] = useState(0);
-  const { getFlightByIdData, refetchGetFlightData, loadingFlightData } =
-    useGetFlightByIDData({
-      id: mode === "update" && flightId ? flightId : undefined,
-    });
+  const { getFlightByIdData, refetchGetFlightData } = useGetFlightByIDData({
+    id: mode === "update" && flightId ? flightId : undefined,
+  });
 
   const stepTopRef = useRef<HTMLDivElement | null>(null);
 
@@ -241,19 +240,15 @@ const FlightUpdateModal = ({
     }
   }, [open, mode, getFlightByIdData]);
 
-  const optionAirportCode = (getAllCode?.data?.airport ?? []).map(
-    (item, index) => ({
-      value: item.code,
-      label: item.code,
-    })
-  );
+  const optionAirportCode = (getAllCode?.data?.airport ?? []).map((item) => ({
+    value: item.code,
+    label: item.code,
+  }));
 
-  const optionAircraftCode = (getAllCode?.data?.aircraft ?? []).map(
-    (item, index) => ({
-      value: item.code,
-      label: item.code,
-    })
-  );
+  const optionAircraftCode = (getAllCode?.data?.aircraft ?? []).map((item) => ({
+    value: item.code,
+    label: item.code,
+  }));
 
   const optionWay = [
     {
@@ -261,17 +256,6 @@ const FlightUpdateModal = ({
       label: "Một chiều",
     },
     { value: "roundtrip", label: "Khứ hồi" },
-  ];
-
-  const flightStatuses = [
-    { value: "scheduled", label: "Theo lịch" },
-    { value: "BOARDING", label: "Đang lên máy bay" },
-    { value: "DEPARTED", label: "Đã khởi hành" },
-    { value: "ON_TIME", label: "Đang bay" },
-    { value: "LANDED", label: "Đã hạ cánh" },
-    { value: "ARRIVED", label: "Đã đến" },
-    { value: "delayed", label: "Bị trễ" },
-    { value: "cancelled", label: "Bị hủy" },
   ];
 
   const steps =

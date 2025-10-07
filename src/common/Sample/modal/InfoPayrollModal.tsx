@@ -1,7 +1,6 @@
-import { Box, Grid, Typography, Button, FormControl } from "@mui/material";
-import { memo, useCallback, useState, useEffect } from "react";
+import { Box, Grid, Typography } from "@mui/material";
+import { memo, useCallback, useEffect } from "react";
 import BaseModal from "../../Modal/BaseModal";
-import type { GeneratePayroll, Payroll } from "../PayrollManagement";
 import InputTextField from "../../Input/InputTextField";
 import MoneyIcon from "../../../svgs/money-euro-banknote.svg";
 import { Add as AddIcon } from "@mui/icons-material";
