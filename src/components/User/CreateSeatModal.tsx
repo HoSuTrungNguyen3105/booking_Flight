@@ -1,12 +1,4 @@
-import {
-  Box,
-  Button,
-  Stack,
-  Typography,
-  FormControl,
-  FormControlLabel,
-  Checkbox,
-} from "@mui/material";
+import { Box, Button, Stack, Typography, FormControl } from "@mui/material";
 import { memo, useCallback, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import { type CreateSeatDto } from "../Api/usePostApi";
@@ -18,6 +10,7 @@ interface IModalStatisticalDataLearningProps {
   open: boolean;
   onClose: () => void;
   onSuccess: () => void;
+  onChange: (data: CreateSeatDto) => void;
   flightId: number;
   loading: boolean;
 }
@@ -27,6 +20,7 @@ const CreateSeatModal = ({
   onClose,
   flightId,
   onSuccess,
+  onChange,
   loading,
 }: IModalStatisticalDataLearningProps) => {
   const [newSeat, setNewSeat] = useState<CreateSeatDto>({
@@ -36,6 +30,15 @@ const CreateSeatModal = ({
     isBooked: false,
   });
 
+  const handleSave = useCallback(() => {
+    if (!newSeat.seatRow || !newSeat.seatNumber) {
+      alert("Please enter seat row and seat number");
+      return;
+    }
+    onChange(newSeat); // Gửi data lên CreateSeat
+    onSuccess(); // Đóng modal
+  }, [newSeat, onChange, onSuccess]);
+
   if (loading) {
     return <Loading />;
   }
@@ -43,24 +46,36 @@ const CreateSeatModal = ({
   const renderActions = useCallback(() => {
     return (
       <Box display="flex" gap={1} justifyContent="flex-end" alignItems="center">
-        <Button variant="outlined" color="error" onClick={onClose}>
+        <Button variant="outlined" onClick={onClose}>
           Cancel
         </Button>
-        <Button variant="outlined" color="error" onClick={onSuccess}>
-          Delete
+        <Button variant="contained" onClick={handleSave}>
+          Create seat
         </Button>
       </Box>
     );
-  }, [onSuccess]);
+  }, [handleSave, onClose]);
 
   const renderContent = useCallback(() => {
     return (
       <Box sx={{ width: "30rem", pt: 2 }}>
         <Typography variant="h6" gutterBottom>
-          Seat Information
+          Seat Information {flightId}
         </Typography>
 
         <Stack spacing={3}>
+          {/* Seat Row */}
+          <FormControl fullWidth>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+              Seat Row (A-F)
+            </Typography>
+            <InputTextField
+              value={newSeat.seatRow}
+              onChange={(e) => setNewSeat({ ...newSeat, seatRow: e as string })}
+              placeholder="Enter seat row, e.g., A"
+            />
+          </FormControl>
+
           {/* Seat Number */}
           <FormControl fullWidth>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
@@ -70,43 +85,14 @@ const CreateSeatModal = ({
               type="number"
               value={String(newSeat.seatNumber)}
               onChange={(e) =>
-                setNewSeat({ ...newSeat, seatNumber: parseInt(e) || 1 })
+                setNewSeat({
+                  ...newSeat,
+                  seatNumber: parseInt(e) || 1,
+                })
               }
               placeholder="Enter seat number"
             />
           </FormControl>
-
-          {/* Seat Row */}
-          <FormControl fullWidth>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-              Seat Row
-            </Typography>
-            <InputTextField
-              disabled
-              value={newSeat.seatRow}
-              onChange={(e) => setNewSeat({ ...newSeat, seatRow: e as string })}
-            />
-          </FormControl>
-
-          {/* Status */}
-          <Box>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-              Seat Status
-            </Typography>
-            <Stack direction="row" spacing={2}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={newSeat.isBooked}
-                    onChange={(e) =>
-                      setNewSeat({ ...newSeat, isBooked: e.target.checked })
-                    }
-                  />
-                }
-                label="Booked"
-              />
-            </Stack>
-          </Box>
         </Stack>
       </Box>
     );

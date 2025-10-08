@@ -111,12 +111,12 @@ const AircraftPage = () => {
               <Card
                 sx={{
                   borderRadius: 3,
-                  boxShadow: 2,
-                  "&:hover": {
-                    boxShadow: 6,
-                    transform: "translateY(-4px)",
-                    transition: "all 0.3s ease-in-out",
-                  },
+                  // boxShadow: 2,
+                  // "&:hover": {
+                  //   boxShadow: 6,
+                  //   transform: "translateY(-4px)",
+                  //   transition: "all 0.3s ease-in-out",
+                  // },
                   height: "100%",
                   display: "flex",
                   flexDirection: "column",

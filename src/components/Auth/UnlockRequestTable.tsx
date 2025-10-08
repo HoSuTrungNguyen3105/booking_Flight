@@ -115,6 +115,8 @@ const UnlockRequestTable = () => {
         setRows={setUnlockRows}
         rows={rowData}
         columns={columns}
+        largeThan
+        nextRowClick
       />
     </Box>
   );

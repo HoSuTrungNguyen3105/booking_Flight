@@ -16,7 +16,6 @@ import {
 import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import AccessibilityNewIcon from "@mui/icons-material/AccessibilityNew";
 import WcIcon from "@mui/icons-material/Wc";
-import ReviewsIcon from "@mui/icons-material/Reviews";
 import { useGetAllInfoFlightByIDData } from "../../Api/useGetApi";
 import DetailSection, { type IDetailItem } from "../../../common/DetailSection";
 import ButtonSeat from "./ButtonSeat";
@@ -36,10 +35,9 @@ type FlightIdProps = {
 type AircraftSeatTypeProps = "ALL" | "VIP" | "ECONOMY" | "FIRST" | "BUSINESS";
 
 const SeatLayout: React.FC<FlightIdProps> = ({ id, onReturn }) => {
-  const { getAllInfoFlightByIdData } = useGetAllInfoFlightByIDData({ id });
-  // const { refetchUpdateSeatByIds } = useSeatUpdateByIds();
+  const { getAllInfoFlightByIdData, refetchGetAllInfoFlightData } =
+    useGetAllInfoFlightByIDData({ id });
   const [selectedSeats, setSelectedSeats] = useState<Seat[]>([]);
-  // State để quản lý số ghế tối đa có thể chọn
   const [maxSelectSeats, setMaxSelectSeats] = useState<number>(1);
   const detail: IDetailItem[] = [
     {
@@ -94,39 +92,15 @@ const SeatLayout: React.FC<FlightIdProps> = ({ id, onReturn }) => {
     },
   ];
 
-  const [seatOptions, setSeatOptions] = useState({
-    available: !!getAllInfoFlightByIdData?.data?.seats?.some(
-      (seat) => seat.isAvailable
-    ),
-    isBooked: !!getAllInfoFlightByIdData?.data?.seats?.some(
-      (seat) => seat.isBooked
-    ),
-    premiumOnly: !!getAllInfoFlightByIdData?.data?.seats?.some(
-      (seat) => seat.type === "BUSINESS" || seat.type === "FIRST"
-    ),
-    handicapAccessible: !!getAllInfoFlightByIdData?.data?.seats?.some(
-      (seat) => seat.isHandicapAccessible
-    ),
-    lavatory: !!getAllInfoFlightByIdData?.data?.seats?.some(
-      (seat) => seat.isNearLavatory
-    ),
-    exitRow: !!getAllInfoFlightByIdData?.data?.seats?.some(
-      (seat) => seat.isExitRow
-    ),
-    upperDeck: !!getAllInfoFlightByIdData?.data?.seats?.some(
-      (seat) => seat.isUpperDeck
-    ),
-    wing: !!getAllInfoFlightByIdData?.data?.seats?.some((seat) => seat.isWing),
-  });
   const [filter, setFilter] = useState<AircraftSeatTypeProps>("ALL");
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [createSeat, setCreateSeat] = useState(false);
   const [openSeatModal, setOpenSeatModal] = useState(false);
 
-  const [updateSeat, setUpdateSeat] = useState<SeatUpdateProps>({
+  const [updateSeat, setUpdateSeat] = useState<{ seatIds: number[] }>({
     seatIds: [],
-    type: "ECONOMY",
-    isAvailable: false,
+    // type: "ECONOMY",
+    // isAvailable: false,
   });
   const [selectedSeat, setSelectedSeat] = useState<Seat | null>(null);
   const toast = useToast();
@@ -135,10 +109,8 @@ const SeatLayout: React.FC<FlightIdProps> = ({ id, onReturn }) => {
       toast("Please select at least one seat to update.");
       return;
     }
-    const firstSeat = selectedSeats[0];
     setUpdateSeat({
       seatIds: selectedSeats.map((seat) => seat.id),
-      type: firstSeat.type,
     });
 
     setIsUpdateModalOpen(true);
@@ -149,27 +121,12 @@ const SeatLayout: React.FC<FlightIdProps> = ({ id, onReturn }) => {
   };
 
   const handleResetSelections = () => {
-    setSelectedSeats([]);
-    setUpdateSeat({
-      seatIds: [],
-      type: "ECONOMY",
-    });
+    // setSelectedSeats([]);
+    // setUpdateSeat({
+    //   seatIds: [],
+    //   type: "ECONOMY",
+    // });
   };
-
-  const seatOptionList = [
-    { name: "available", label: "Available" },
-    { name: "isBooked", label: "Occupied" },
-    { name: "premiumOnly", label: "Premium Only" },
-    {
-      name: "handicapAccessible",
-      label: "Handicap Accessible",
-      icon: <AccessibilityNewIcon />,
-    },
-    { name: "lavatory", label: "Lavatory", icon: <WcIcon /> },
-    { name: "exitRow", label: "Exit Row" },
-    { name: "upperDeck", label: "Upper Deck" },
-    { name: "wing", label: "Wing" },
-  ];
 
   const filteredSeats = useMemo(() => {
     if (filter === "ALL") return getAllInfoFlightByIdData?.data?.seats;
@@ -200,8 +157,6 @@ const SeatLayout: React.FC<FlightIdProps> = ({ id, onReturn }) => {
       if (exists) {
         return prev.filter((s) => s.id !== seat.id);
       }
-
-      // add
       if (maxSelectSeats === 1) return [seat];
       if (prev.length < maxSelectSeats) return [...prev, seat];
       return prev;
@@ -209,8 +164,6 @@ const SeatLayout: React.FC<FlightIdProps> = ({ id, onReturn }) => {
   };
 
   useEffect(() => {
-    console.log("selectedSeats updated:", selectedSeats);
-
     if (selectedSeats.length === 1) {
       setSelectedSeat(selectedSeats[0]);
       setOpenSeatModal(true);
@@ -224,9 +177,12 @@ const SeatLayout: React.FC<FlightIdProps> = ({ id, onReturn }) => {
     return (
       <CreateSeat
         flightId={id}
+        onSuccess={() => {
+          setCreateSeat(false);
+          refetchGetAllInfoFlightData();
+        }}
         loading={false}
-        onChange={() => {}}
-      ></CreateSeat>
+      />
     );
   }
 
@@ -288,6 +244,13 @@ const SeatLayout: React.FC<FlightIdProps> = ({ id, onReturn }) => {
             <Button variant="contained" onClick={() => setCreateSeat(true)}>
               Create Seat
             </Button>
+            {/* {(!getAllInfoFlightByIdData?.data?.seats ||
+              getAllInfoFlightByIdData.data.seats.length === 0) && (
+              <Button variant="contained" onClick={() => setCreateSeat(true)}>
+                Create Seat
+              </Button>
+            )} */}
+
             <Button
               variant={maxSelectSeats === 1 ? "contained" : "outlined"}
               onClick={() => setMaxSelectSeats(1)}
@@ -312,44 +275,139 @@ const SeatLayout: React.FC<FlightIdProps> = ({ id, onReturn }) => {
                 }}
                 onSuccess={() => {
                   setOpenSeatModal(false);
+                  refetchGetAllInfoFlightData();
+                  setSelectedSeat(null);
                 }}
               />
             )}
 
             <DetailSection mode="row" data={detail} />
+
             {selectedSeats.length > 0 && (
               <>
-                <Typography variant="h6" gutterBottom>
-                  Seat Options
-                </Typography>
-                <Box sx={{ mb: 3 }}>
-                  <FormGroup row>
-                    {seatOptionList.map((opt) => (
-                      <FormControlLabel
-                        key={opt.name}
-                        control={
-                          <Checkbox
-                            checked={
-                              seatOptions[opt.name as keyof typeof seatOptions]
-                            }
-                            onChange={(e) =>
-                              setSeatOptions((prev) => ({
-                                ...prev,
-                                [opt.name]: e.target.checked,
-                              }))
-                            }
-                            icon={opt.icon}
-                            checkedIcon={opt.icon}
-                          />
-                        }
-                        label={opt.label}
-                      />
-                    ))}
-                  </FormGroup>
+                <Box sx={{ width: { xs: "100%", md: "320px" } }}>
+                  <Card
+                    sx={{
+                      padding: { xs: "16px", sm: "20px" },
+                      borderRadius: "12px",
+                      position: "sticky",
+                      top: 20,
+                    }}
+                  >
+                    <Typography variant="h6" sx={{ fontWeight: "700", mb: 2 }}>
+                      Your Selection
+                    </Typography>
+
+                    {selectedSeats.length > 0 ? (
+                      <Box>
+                        <Stack spacing={1} sx={{ mb: 2 }}>
+                          {selectedSeats.map((seat) => {
+                            const getTypeColor = (type: string) => {
+                              switch (type) {
+                                case "FIRST":
+                                  return "#ff9800";
+                                case "BUSINESS":
+                                  return "#2196f3";
+                                default:
+                                  return "#4caf50";
+                              }
+                            };
+
+                            const typeColor = getTypeColor(
+                              seat.type || "ECONOMY"
+                            );
+
+                            return (
+                              <Box
+                                key={seat.id}
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: 1,
+                                  padding: "4px 8px",
+                                  borderRadius: "4px",
+                                  backgroundColor: `${typeColor}10`,
+                                }}
+                              >
+                                <Box
+                                  sx={{
+                                    width: 8,
+                                    height: 8,
+                                    borderRadius: "50%",
+                                    backgroundColor: typeColor,
+                                  }}
+                                />
+                                <Typography variant="body2">
+                                  {seat.seatRow}
+                                  {seat.seatNumber} - {seat.type}
+                                </Typography>
+                                {seat.isBooked && (
+                                  <Chip
+                                    label="Booked"
+                                    size="small"
+                                    color="error"
+                                    sx={{ height: 20, fontSize: "0.7rem" }}
+                                  />
+                                )}
+                              </Box>
+                            );
+                          })}
+                        </Stack>
+
+                        <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            mb: 2,
+                          }}
+                        >
+                          <IconButton
+                            onClick={handleResetSelections}
+                            aria-label="Reset selections"
+                            color="error"
+                            size="small"
+                          >
+                            <RestartAlt />
+                          </IconButton>
+                        </Box>
+
+                        <Divider sx={{ my: 2 }} />
+
+                        <Button
+                          variant="contained"
+                          fullWidth
+                          onClick={handleOpenUpdateModal}
+                          disabled={selectedSeats.length === 0}
+                          sx={{
+                            py: 1.5,
+                            fontSize: "16px",
+                            fontWeight: 600,
+                            borderRadius: "8px",
+                          }}
+                        >
+                          Update
+                        </Button>
+                        <SeatManagementModal
+                          open={isUpdateModalOpen}
+                          selectedSeats={updateSeat}
+                          onSuccess={handleCloseModal}
+                          onClose={handleCloseModal}
+                        />
+                        {updateSeat.seatIds}
+                      </Box>
+                    ) : (
+                      <Box sx={{ textAlign: "center", py: 3 }}>
+                        <Chair sx={{ fontSize: 48, color: "#e0e0e0", mb: 1 }} />
+                        <Typography color="textSecondary">
+                          No seats selected yet. Choose your seats from the map.
+                        </Typography>
+                      </Box>
+                    )}
+                  </Card>
                 </Box>
               </>
             )}
-            <Typography>selectedSeats : {selectedSeats.length}</Typography>
           </Grid>
 
           {/* Seat Map */}
@@ -366,6 +424,9 @@ const SeatLayout: React.FC<FlightIdProps> = ({ id, onReturn }) => {
                 p: 2,
                 bgcolor: "#f5f5f5",
                 borderRadius: 1,
+                height: "30rem", // hoặc "100%", hoặc "calc(100vh - 200px)" tuỳ layout
+                overflowY: "auto", // 👈 Cho phép cuộn dọc
+                scrollbarWidth: "thin",
               }}
             >
               {Array.from({ length: 40 }, (_, rowIndex) => {
@@ -426,157 +487,6 @@ const SeatLayout: React.FC<FlightIdProps> = ({ id, onReturn }) => {
         </Grid>
 
         <Divider sx={{ my: 3 }} />
-
-        <Box sx={{ width: { xs: "100%", md: "320px" } }}>
-          <Card
-            sx={{
-              padding: { xs: "16px", sm: "20px" },
-              borderRadius: "12px",
-              position: "sticky",
-              top: 20,
-            }}
-          >
-            <Typography variant="h6" sx={{ fontWeight: "700", mb: 2 }}>
-              Your Selection
-            </Typography>
-
-            {selectedSeats.length > 0 ? (
-              <Box>
-                <Stack spacing={1} sx={{ mb: 2 }}>
-                  {selectedSeats.map((seat) => {
-                    const getTypeColor = (type: string) => {
-                      switch (type) {
-                        case "FIRST":
-                          return "#ff9800";
-                        case "BUSINESS":
-                          return "#2196f3";
-                        default:
-                          return "#4caf50";
-                      }
-                    };
-
-                    const typeColor = getTypeColor(seat.type || "ECONOMY");
-
-                    return (
-                      <Box
-                        key={seat.id}
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 1,
-                          padding: "4px 8px",
-                          borderRadius: "4px",
-                          backgroundColor: `${typeColor}10`,
-                        }}
-                      >
-                        <Box
-                          sx={{
-                            width: 8,
-                            height: 8,
-                            borderRadius: "50%",
-                            backgroundColor: typeColor,
-                          }}
-                        />
-                        <Typography variant="body2">
-                          {seat.seatRow}
-                          {seat.seatNumber} - {seat.type}
-                        </Typography>
-                        {seat.isBooked && (
-                          <Chip
-                            label="Booked"
-                            size="small"
-                            color="error"
-                            sx={{ height: 20, fontSize: "0.7rem" }}
-                          />
-                        )}
-                      </Box>
-                    );
-                  })}
-                </Stack>
-
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    mb: 2,
-                  }}
-                >
-                  <IconButton
-                    onClick={handleResetSelections}
-                    aria-label="Reset selections"
-                    color="error"
-                    size="small"
-                  >
-                    <RestartAlt />
-                  </IconButton>
-                </Box>
-
-                <Divider sx={{ my: 2 }} />
-
-                <Button
-                  variant="contained"
-                  fullWidth
-                  onClick={handleOpenUpdateModal}
-                  disabled={selectedSeats.length === 0}
-                  sx={{
-                    py: 1.5,
-                    fontSize: "16px",
-                    fontWeight: 600,
-                    borderRadius: "8px",
-                  }}
-                >
-                  Update
-                </Button>
-                <SeatManagementModal
-                  onUpdate={() => {}}
-                  open={isUpdateModalOpen}
-                  selectedSeats={updateSeat}
-                  onSuccess={handleCloseModal}
-                  onClose={handleCloseModal}
-                />
-                {updateSeat.seatIds}
-              </Box>
-            ) : (
-              <Box sx={{ textAlign: "center", py: 3 }}>
-                <Chair sx={{ fontSize: 48, color: "#e0e0e0", mb: 1 }} />
-                <Typography color="textSecondary">
-                  No seats selected yet. Choose your seats from the map.
-                </Typography>
-              </Box>
-            )}
-          </Card>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <Box>
-            <Typography variant="h6" gutterBottom>
-              Create Seat Alert
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Create Aircraft Change Alert
-            </Typography>
-          </Box>
-          <Button variant="contained" startIcon={<ReviewsIcon />}>
-            Create Alert
-          </Button>
-        </Box>
-        {/* <InfoAndUpdateSeatModal
-          open={openSeatModal}
-          onClose={() => setOpenSeatModal(false)}
-          formData={formData as Seat}
-          setFormData={setFormData}
-          onSuccess={() => {
-            // xử lý cập nhật seat
-            console.log("Seat updated:", formData);
-            setOpenSeatModal(false);
-          }}
-        /> */}
       </Box>
     </Box>
   );

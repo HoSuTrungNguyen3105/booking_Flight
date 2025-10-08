@@ -32,6 +32,7 @@ const seatColors = {
   wing: "#ff9800",
   handicap: "#9c27b0",
   lavatory: "#00bcd4",
+  extraLegroom: "#7c99b0",
 };
 
 const ButtonSeat: React.FC<ButtonSeatProps> = ({
@@ -41,11 +42,7 @@ const ButtonSeat: React.FC<ButtonSeatProps> = ({
 }) => {
   const isSelected = selectedSeats.some((s) => s.id === seat.id);
 
-  // ✅ REMOVED: Không có disabled state nào nữa
-  // Tất cả seats đều có thể click được
-
   const { backgroundColor, textColor, borderColor, icon } = useMemo(() => {
-    // 1. Nếu đang được chọn -> luôn override màu
     if (isSelected) {
       return {
         backgroundColor: theme.palette.primary.main,
@@ -55,7 +52,6 @@ const ButtonSeat: React.FC<ButtonSeatProps> = ({
       };
     }
 
-    // 2. Các seat type đặc biệt - TẤT CẢ ĐỀU CLICK ĐƯỢC
     if (seat.isExitRow) {
       return {
         backgroundColor: "#fff",
@@ -77,6 +73,22 @@ const ButtonSeat: React.FC<ButtonSeatProps> = ({
         backgroundColor: "#fff",
         textColor: seatColors.wing,
         borderColor: seatColors.wing,
+        icon: null,
+      };
+    }
+    if (seat.isExtraLegroom) {
+      return {
+        backgroundColor: "#fff",
+        textColor: seatColors.extraLegroom,
+        borderColor: seatColors.extraLegroom,
+        icon: null,
+      };
+    }
+    if (seat.isAvailable) {
+      return {
+        backgroundColor: "#fff",
+        textColor: seatColors.available,
+        borderColor: seatColors.available,
         icon: null,
       };
     }

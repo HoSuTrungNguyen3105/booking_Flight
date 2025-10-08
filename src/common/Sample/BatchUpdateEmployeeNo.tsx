@@ -45,12 +45,9 @@ const BatchUpdateEmployeeNo: React.FC<UpdateEmployeeIDProps> = ({
       const payload: BatchUpdateEmployeesDto = { updates };
       const res = await refetchUpdateBatchEmployeeNo(payload);
       if (res?.resultCode === "00") {
-        console.log("Response:", res?.list);
         toast("Batch update thành công!");
         onSuccess();
       }
-      // console.log("Response:", res?.list);
-      else toast("Batch update thành công!", "error");
     } catch (error) {
       console.error(error);
       alert("Có lỗi khi gọi API");

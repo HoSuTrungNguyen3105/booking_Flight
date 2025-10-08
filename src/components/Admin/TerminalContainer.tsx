@@ -329,13 +329,11 @@ const TerminalContainer: React.FC = () => {
 
       <Box
         sx={{
-          height: "50vh",
+          height: "60vh",
           overflow: "scroll",
-          p: "8px",
-          // Ẩn thanh cuộn trên mọi trình duyệt
-          scrollbarWidth: "none", // Firefox
+          scrollbarWidth: "none",
           "&::-webkit-scrollbar": {
-            display: "none", // Chrome, Safari
+            display: "none",
           },
         }}
       >

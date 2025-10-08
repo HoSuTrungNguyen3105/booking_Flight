@@ -21,12 +21,6 @@ export type UpdateUserForm = {
   userAlias?: string;
 };
 
-// const roleOptions = [
-//   { label: "Thành viên", value: UserRole.USER },
-//   { label: "Monitor", value: UserRole.MONITOR },
-//   { label: "Quản trị", value: UserRole.ADMIN },
-// ];
-
 export const useDataSection = (
   data: Partial<UseRCreate & UpdateUserForm>,
   formType?: "register" | "update",

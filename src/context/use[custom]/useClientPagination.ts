@@ -7,6 +7,7 @@ interface IUseClientPaginationProps<T> {
   initialSortField?: string;
   initialSortDirection?: GridSortDirection;
 }
+
 interface IUseClientPaginationReturn<T> {
   currentPage: number;
   pageSize: number;

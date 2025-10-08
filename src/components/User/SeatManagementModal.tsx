@@ -11,23 +11,20 @@ import AddIcon from "@mui/icons-material/Add";
 import BaseModal from "../../common/Modal/BaseModal";
 import InputTextField from "../../common/Input/InputTextField";
 import SelectDropdown from "../../common/Dropdown/SelectDropdown";
-import type { SeatTypeValue, SeatUpdateProps } from "../Api/usePostApi";
+import { useSeatUpdateByIds } from "../Api/usePostApi";
 import Android12Switch from "../../common/Switch/Switch";
 
 interface IModalStatisticalDataLearningProps {
   open: boolean;
   onClose: () => void;
   onSuccess: () => void;
-  selectedSeats?: SeatUpdateProps;
-  onUpdate: (data: SeatUpdateProps) => void;
+  selectedSeats?: { seatIds: number[] };
 }
 
 const SeatManagementModal = ({
   open,
   onClose,
-  onSuccess,
   selectedSeats,
-  onUpdate,
 }: IModalStatisticalDataLearningProps) => {
   const [type, setType] = useState("ECONOMY");
   const [position, setPosition] = useState("WINDOW");
@@ -39,7 +36,7 @@ const SeatManagementModal = ({
   const [isExitRow, setIsExitRow] = useState(false);
   const [isExtraLegroom, setIsExtraLegroom] = useState(false);
   const [note, setNote] = useState("");
-
+  // const { refetchUpdateSeatByIds } = useSeatUpdateByIds();
   // dropdown options
   const seatTypeOptions = useCallback(
     () => [
@@ -59,19 +56,22 @@ const SeatManagementModal = ({
     []
   );
 
-  const handleUpdate = () => {
-    onUpdate({
-      seatIds: selectedSeats?.seatIds || [],
-      type: type as SeatTypeValue,
-      price,
-      isBooked,
-      isAvailable,
-      isExitRow,
-      isExtraLegroom,
-      note,
-    });
-    onSuccess();
-    onClose();
+  const handleUpdate = async () => {
+    // const res = await refetchUpdateSeatByIds({
+    //   // seatIds: selectedSeats?.seatIds || [],
+    //   // type: type as SeatTypeValue,
+    //   // price,
+    //   // isBooked,
+    //   // isAvailable,
+    //   // isExitRow,
+    //   // isExtraLegroom,
+    //   // note,
+    // });
+    // console.log("res", res);
+    // if (res?.resultCode === "00") {
+    //   onSuccess();
+    //   onClose();
+    // }
   };
 
   const renderActions = useCallback(() => {

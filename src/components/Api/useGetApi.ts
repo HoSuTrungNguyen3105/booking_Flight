@@ -63,6 +63,7 @@ export const useRandomPassword = () => {
     loadingUser,
   };
 };
+
 export interface Booking {
   id: number;
   passengerId: string;
@@ -111,7 +112,7 @@ export const useGetFlightMealsById = (id: number) => {
     error: errorFlightMealsById,
   } = useFetch<FlightMealDetailApiResponse, void>({
     url: `/sys/flight-meals/${id}`,
-    autoFetch: false, // ❌ không fetch ngay
+    autoFetch: false,
     config: getMethod,
   });
 

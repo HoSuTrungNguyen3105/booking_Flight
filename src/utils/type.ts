@@ -247,6 +247,8 @@ export interface CreateAirportReq {
   city: string;
   country: string;
 }
+
+export type UpdateAirportReq = Omit<CreateAirportReq, "code">;
 // export interface AircraftCodeName {
 //   code: string;
 //   model: string;

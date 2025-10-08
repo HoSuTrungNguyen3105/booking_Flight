@@ -32,6 +32,7 @@ import {
   type AirportResponseMessage,
   type AirportCreateResponseMessage,
   type RequestSendEmailResponse,
+  type UpdateAirportReq,
 } from "../../utils/type.ts";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
 import { useFetch } from "../../context/use[custom]/useFetch.ts";
@@ -247,19 +248,18 @@ export const useFlightUpdate = ({ id }: ReqUserIDProps) => {
   };
 };
 
-export const useUpdateSeatsByIds = ({ id }: ReqUserIDProps) => {
-  const { refetch: refetchUpdateSeatsByIds } = useFetch<
-    FlightDetailApiResponse,
-    Partial<FlightFormData>
-  >({
-    url: "/sys/seats/updateSeatsByIds",
-    autoFetch: false,
-    config: postMethod,
-  });
-  return {
-    refetchUpdateSeatsByIds,
-  };
-};
+// export const useUpdateSeatsByIds = ({ id }: ReqUserIDProps) => {
+//   const { refetch: refetchUpdateSeatsByIds } = useFetch<
+//     FlightDetailApiResponse,
+//   >({
+//     url: "/sys/seats/updateSeatsByIds",
+//     autoFetch: false,
+//     config: postMethod,
+//   });
+//   return {
+//     refetchUpdateSeatsByIds,
+//   };
+// };
 // export const SeatType = {
 //   VIP: "VIP",
 //   BUSINESS: "BUSINESS",
@@ -271,17 +271,19 @@ export type SeatPosition = "WINDOW" | "MIDDLE" | "AISLE";
 
 export interface SeatUpdateProps {
   seatIds: number[];
-  type?: SeatTypeValue;
-  price?: number;
-  isBooked?: boolean;
-  isAvailable?: boolean;
-  isExtraLegroom?: boolean;
-  isExitRow?: boolean;
-  isHandicapAccessible?: boolean;
-  isNearLavatory?: boolean;
-  isUpperDeck?: boolean;
-  isWing?: boolean;
-  note?: string;
+  data: {
+    type?: SeatTypeValue;
+    price?: number;
+    isBooked?: boolean;
+    isAvailable?: boolean;
+    isExtraLegroom?: boolean;
+    isExitRow?: boolean;
+    isHandicapAccessible?: boolean;
+    isNearLavatory?: boolean;
+    isUpperDeck?: boolean;
+    isWing?: boolean;
+    note?: string;
+  };
 }
 
 export const useSeatUpdateByIds = () => {
@@ -524,6 +526,19 @@ export const useCreateBatchAirport = () => {
   return {
     refetchCreateBatchAirport,
     loadingCreateBatchAirport,
+  };
+};
+
+export const useUpdateAirportById = (code: number) => {
+  const { refetch: refetchUpdateAirport, loading: loadingUpdateAirport } =
+    useFetch<ResponseMessage, UpdateAirportReq>({
+      url: `/sys/flights/airports/update/${String(code)}`,
+      autoFetch: false,
+      config: postMethod,
+    });
+  return {
+    refetchUpdateAirport,
+    loadingUpdateAirport,
   };
 };
 

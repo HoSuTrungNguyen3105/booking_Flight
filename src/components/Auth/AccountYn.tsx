@@ -7,12 +7,11 @@ import {
   useSendEmailToVerification,
 } from "../Api/usePostApi";
 import { useToast } from "../../context/ToastContext";
-import Registration from "./Registration";
 import ChangePassword from "./ChangePassword";
 import VerifyOpt from "./components/VerifyOpt";
 
 type AccountModePageProps = {
-  mode: "verify" | "change"; // "verify" → đăng ký / xác minh, "forget" → quên mật khẩu
+  mode: "verify" | "change";
   onClose?: () => void;
 };
 

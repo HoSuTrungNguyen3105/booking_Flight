@@ -41,8 +41,7 @@ export const useCreateUser = ({
   }, []);
 
   const toast = useToast();
-  // const [formData, setFormData] = useState<UserCreateProps>(updateInfo);
-  //   const formDetailConfig = useDataSection(formData, false);
+
   const formDetailConfig = useDataSection(updateInfo, "register");
 
   const handleChange = (key: string, value: any) => {

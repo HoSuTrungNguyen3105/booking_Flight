@@ -135,137 +135,135 @@ const CreateFacility = ({ onClose, terminalId, updateData, mode }: Props) => {
   );
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <Paper elevation={3} sx={{ p: 4 }}>
-        <Typography
-          variant="h4"
-          component="h1"
-          gutterBottom
-          color="primary"
-          fontWeight="bold"
-        >
-          {mode === "create" ? "Create New Facility" : "Update Facility"}
-        </Typography>
+    <>
+      <Typography
+        variant="h4"
+        component="h1"
+        gutterBottom
+        color="primary"
+        fontWeight="bold"
+      >
+        {mode === "create" ? "Create New Facility" : "Update Facility"}
+      </Typography>
 
-        <Button onClick={onClose} variant="contained">
-          Return
-        </Button>
+      <Button onClick={onClose} variant="contained">
+        Return
+      </Button>
 
-        <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-          {mode === "create"
-            ? "Add a new facility to the airport management system"
-            : "Update facility information"}
-        </Typography>
+      <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+        {mode === "create"
+          ? "Add a new facility to the airport management system"
+          : "Update facility information"}
+      </Typography>
 
-        <Box component="form" onSubmit={handleSubmit}>
-          <Grid container spacing={3}>
-            {/* Facility Name */}
-            <Grid size={6}>
-              <InputTextField
-                value={formData.name}
-                onChange={handleChange("name")}
-                placeholder="Enter facility name"
+      <Box component="form" onSubmit={handleSubmit}>
+        <Grid container spacing={3}>
+          {/* Facility Name */}
+          <Grid size={6}>
+            <InputTextField
+              value={formData.name}
+              onChange={handleChange("name")}
+              placeholder="Enter facility name"
+            />
+          </Grid>
+
+          {/* Facility Type */}
+          <Grid size={6}>
+            <FormControl fullWidth required>
+              <SelectDropdown
+                options={facilityTypeOptions}
+                value={formData.type}
+                placeholder="Select facility type options"
+                onChange={(value) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    type: value as string,
+                  }))
+                }
               />
-            </Grid>
+            </FormControl>
+          </Grid>
 
-            {/* Facility Type */}
+          {/* Terminal Selection (chỉ hiện khi create) */}
+          {mode === "create" && (
             <Grid size={6}>
               <FormControl fullWidth required>
                 <SelectDropdown
-                  options={facilityTypeOptions}
-                  value={formData.type}
-                  placeholder="Select facility type options"
+                  value={formData.terminalId}
                   onChange={(value) =>
                     setFormData((prev) => ({
                       ...prev,
-                      type: value as string,
+                      terminalId: value as string,
                     }))
                   }
+                  placeholder="Select terminal ID"
+                  options={dataTerminalIdOptions()}
+                  disabled={loading}
                 />
               </FormControl>
+              {loading && <CircularProgress size={24} sx={{ mt: 1 }} />}
             </Grid>
+          )}
 
-            {/* Terminal Selection (chỉ hiện khi create) */}
-            {mode === "create" && (
-              <Grid size={6}>
-                <FormControl fullWidth required>
-                  <SelectDropdown
-                    value={formData.terminalId}
-                    onChange={(value) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        terminalId: value as string,
-                      }))
-                    }
-                    placeholder="Select terminal ID"
-                    options={dataTerminalIdOptions()}
-                    disabled={loading}
-                  />
-                </FormControl>
-                {loading && <CircularProgress size={24} sx={{ mt: 1 }} />}
-              </Grid>
-            )}
-
-            {/* Location */}
-            <Grid size={6}>
-              <InputTextField
-                value={formData.location}
-                onChange={handleChange("location")}
-                placeholder="e.g., Near Gate A1, Level 2"
-              />
-            </Grid>
-
-            {/* Opening Hours */}
-            <Grid size={6}>
-              <OpeningHoursPicker
-                value={formData.openingHours}
-                onChange={(val) =>
-                  setFormData((prev) => ({ ...prev, openingHours: val }))
-                }
-              />
-            </Grid>
-
-            {/* Description */}
-            <Grid size={12}>
-              <InputTextArea
-                name="description"
-                value={formData.description}
-                onChange={handleChange("description")}
-                placeholder="Enter facility description and services offered"
-              />
-            </Grid>
+          {/* Location */}
+          <Grid size={6}>
+            <InputTextField
+              value={formData.location}
+              onChange={handleChange("location")}
+              placeholder="e.g., Near Gate A1, Level 2"
+            />
           </Grid>
 
-          {/* Action Buttons */}
-          <Box
-            sx={{ mt: 4, display: "flex", gap: 2, justifyContent: "flex-end" }}
+          {/* Opening Hours */}
+          <Grid size={6}>
+            <OpeningHoursPicker
+              value={formData.openingHours}
+              onChange={(val) =>
+                setFormData((prev) => ({ ...prev, openingHours: val }))
+              }
+            />
+          </Grid>
+
+          {/* Description */}
+          <Grid size={12}>
+            <InputTextArea
+              name="description"
+              value={formData.description}
+              onChange={handleChange("description")}
+              placeholder="Enter facility description and services offered"
+            />
+          </Grid>
+        </Grid>
+
+        {/* Action Buttons */}
+        <Box
+          sx={{ mt: 4, display: "flex", gap: 2, justifyContent: "flex-end" }}
+        >
+          <Button
+            variant="outlined"
+            size="large"
+            onClick={() => window.history.back()}
           >
-            <Button
-              variant="outlined"
-              size="large"
-              onClick={() => window.history.back()}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              variant="contained"
-              size="large"
-              disabled={submitting || !formData.name || !formData.terminalId}
-              startIcon={submitting ? <CircularProgress size={20} /> : null}
-            >
-              {submitting
-                ? mode === "create"
-                  ? "Creating..."
-                  : "Updating..."
-                : mode === "create"
-                ? "Create Facility"
-                : "Update Facility"}
-            </Button>
-          </Box>
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            variant="contained"
+            size="large"
+            disabled={submitting || !formData.name || !formData.terminalId}
+            startIcon={submitting ? <CircularProgress size={20} /> : null}
+          >
+            {submitting
+              ? mode === "create"
+                ? "Creating..."
+                : "Updating..."
+              : mode === "create"
+              ? "Create Facility"
+              : "Update Facility"}
+          </Button>
         </Box>
-      </Paper>
-    </Container>
+      </Box>
+    </>
   );
 };
 

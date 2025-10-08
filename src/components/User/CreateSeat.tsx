@@ -2,15 +2,41 @@ import { Add } from "@mui/icons-material";
 import { Box, Button, Typography } from "@mui/material";
 import { memo, useState } from "react";
 import CreateSeatModal from "./CreateSeatModal";
+import { useSeatCreate, type CreateSeatDto } from "../Api/usePostApi";
 
-type CreateSeat = {
+type CreateSeatProps = {
   flightId: number;
-  onChange: () => void;
   loading: boolean;
+  onSuccess: () => void;
 };
 
-const CreateSeat = ({ flightId, onChange, loading }: CreateSeat) => {
+const CreateSeat = ({ flightId, loading, onSuccess }: CreateSeatProps) => {
   const [createFormOpen, setCreateFormOpen] = useState(false);
+  const [createState, setCreateState] = useState<CreateSeatDto>();
+  const [createMode, setCreateMode] = useState<"multi" | "one" | null>(null);
+
+  const { refetchSeatCreate } = useSeatCreate();
+
+  const handleCreateSeat = async () => {
+    try {
+      const payload: any = {
+        flightId,
+        ...(createMode === "multi" && {
+          isBooked: false,
+          seatRow: createState?.seatRow,
+          seatNumber: createState?.seatNumber,
+        }),
+      };
+
+      const res = await refetchSeatCreate(payload);
+      console.log("Created seats:", res);
+      if (res?.resultCode === "00") {
+        onSuccess();
+      }
+    } catch (err) {
+      console.error("Error creating seat:", err);
+    }
+  };
 
   return (
     <>
@@ -34,7 +60,10 @@ const CreateSeat = ({ flightId, onChange, loading }: CreateSeat) => {
           <Button
             variant="contained"
             color="primary"
-            onClick={onChange}
+            onClick={() => {
+              setCreateMode("multi");
+              handleCreateSeat();
+            }}
             sx={{ mb: 2 }}
             startIcon={<Add />}
           >
@@ -44,16 +73,19 @@ const CreateSeat = ({ flightId, onChange, loading }: CreateSeat) => {
           <Button
             variant="outlined"
             color="primary"
-            onClick={() => setCreateFormOpen(true)}
+            onClick={() => {
+              setCreateMode("one");
+              setCreateFormOpen(true);
+            }}
             sx={{ mb: 2 }}
           >
             Create Individual Seat
           </Button>
-          {/* <Button onClick={resetSeatToGetData}>Reset</Button> */}
         </Box>
 
         <CreateSeatModal
           flightId={flightId}
+          onChange={handleCreateSeat}
           open={createFormOpen}
           onClose={() => setCreateFormOpen(false)}
           onSuccess={() => setCreateFormOpen(false)}

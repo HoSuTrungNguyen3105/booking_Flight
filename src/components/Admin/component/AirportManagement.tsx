@@ -53,13 +53,6 @@ const AirportManagement: React.FC = () => {
     updatedAt: "",
   });
 
-  //   const [formData, setFormData] = useState<CreateAirportReq>({
-  //   code: "",
-  //   name: "",
-  //   city: "",
-  //   country: "",
-  // });
-
   const handleCreate = () => {
     setEditingAirport("create");
     setFormData({ code: "", name: "", city: "", country: "" });
@@ -108,33 +101,6 @@ const AirportManagement: React.FC = () => {
         </Box>
       ),
     },
-    // {
-    //   field: "createdAt",
-    //   headerName: "Số terminal",
-    //   flex: 1,
-    //   renderCell: (params: GridRenderCellParams) => (
-    //     <Box sx={{ display: "flex", flexDirection: "column" }}>
-    //       <Chip
-    //         size="small"
-    //         label={` Createed at :${formatDate(
-    //           DateFormatEnum.DD_MM_YYYY_HH_MM_SS,
-    //           params.value
-    //         )}`}
-    //         color="info"
-    //       />
-    //       {params.row.updatedAt && (
-    //         <Chip
-    //           size="small"
-    //           label={formatDate(
-    //             DateFormatEnum.DD_MM_YYYY_HH_MM_SS,
-    //             params.row.updatedAt
-    //           )}
-    //           color="default"
-    //         />
-    //       )}
-    //     </Box>
-    //   ),
-    // },
     {
       field: "actions",
       headerName: "Thao tác",

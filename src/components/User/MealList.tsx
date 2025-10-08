@@ -6,7 +6,7 @@ import { type GridRowDef } from "../../common/DataGrid/index";
 import { DateFormatEnum, formatDateKR } from "../../hooks/format";
 import FlightModalTriggerManagement from "../../common/Setting/FlightModalTriggerManagement";
 import TableSection from "../../common/Setting/TableSection";
-import SeatBooking from "./SeatBooking";
+// import SeatBooking from "./SeatBooking";
 import SeatLayout from "../Admin/component/SeatLayout";
 import MealFlightRelation from "./Security/MealFlightRelation";
 
@@ -189,20 +189,20 @@ export default function MealList() {
     );
   }
 
-  if (selectedFlightForSeat) {
-    return (
-      <SeatBooking
-        flightId={selectedFlightForSeat}
-        onSuccess={() => refetchGetFlightData()}
-        // seats={selectedFlightForSeat ?? []} // tùy vào API có trả seats hay không
-        loadingFlightData={loadingFlightData}
-      />
-    );
-  }
+  // if (selectedFlightForSeat) {
+  //   return (
+  //     <SeatBooking
+  //       flightId={selectedFlightForSeat}
+  //       onSuccess={() => refetchGetFlightData()}
+  //       // seats={selectedFlightForSeat ?? []} // tùy vào API có trả seats hay không
+  //       loadingFlightData={loadingFlightData}
+  //     />
+  //   );
+  // }
 
   return (
     <div style={{ height: 500, width: "100%" }}>
-      <Typography variant="h6" gutterBottom>
+      {/* <Typography variant="h6" gutterBottom>
         Meal List
       </Typography>
 
@@ -214,14 +214,14 @@ export default function MealList() {
         onSelectedRowIdsChange={handleMealRowSelection}
         nextRowClick
         largeThan
-      />
+      /> */}
 
-      <MealFlightRelation
+      {/* <MealFlightRelation
         flightMealId={selectMealRowId}
         open={openModalFlightMealRows}
         onClose={() => {}}
         onSuccess={() => {}}
-      />
+      /> */}
 
       {selectedMealRows.length > 0 && (
         <Box sx={{ my: 2, p: 2, bgcolor: "grey.100" }}>

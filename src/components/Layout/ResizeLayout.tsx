@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { menuData, type MenuItem } from "./../../utils/db";
-import Header from "../../common/Setting/Header";
+import Header from "../Admin/Header";
 import theme from "../../scss/theme";
 
 const ResizeLayout = () => {

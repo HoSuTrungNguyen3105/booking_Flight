@@ -39,11 +39,6 @@ export const useChangeLanguage = () => {
     setPendingPayMoney(selected);
   };
 
-  const cancelChanges = () => {
-    setPendingLang(null);
-    setPendingPayMoney(null);
-  };
-
   const confirmSaveChange = () => {
     if (pendingPayMoney) {
       setSelectedPayMoney(pendingPayMoney);

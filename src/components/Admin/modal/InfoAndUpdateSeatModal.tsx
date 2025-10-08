@@ -4,27 +4,8 @@ import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
 import BaseModal from "../../../common/Modal/BaseModal";
 import InputTextField from "../../../common/Input/InputTextField";
 import type { Seat } from "../../../utils/type";
-import LabeledCheckbox from "../../../common/Checkbox/LabeledCheckbox";
-import type { SeatTypeValue } from "../../Api/usePostApi";
+import { useSeatUpdateByIds, type SeatTypeValue } from "../../Api/usePostApi";
 import Android12Switch from "../../../common/Switch/Switch";
-
-// interface Seat {
-//   id: number;
-//   flightId: number;
-//   seatNumber: number;
-//   seatRow: string;
-//   type: string;
-//   price?: number;
-//   note?: string;
-//   isBooked: boolean;
-//   isAvailable: boolean;
-//   isExitRow: boolean;
-//   isExtraLegroom: boolean;
-//   isHandicapAccessible: boolean;
-//   isNearLavatory: boolean;
-//   isUpperDeck: boolean;
-//   isWing: boolean;
-// }
 
 interface ISeatModalProps {
   open: boolean;
@@ -42,6 +23,31 @@ const InfoAndUpdateSeatModal = ({
   setFormData,
   onSuccess,
 }: ISeatModalProps) => {
+  const { refetchUpdateSeatByIds } = useSeatUpdateByIds();
+  const handleUpdate = async () => {
+    const seatId = formData?.id;
+    const seatIds = seatId ? [seatId] : [];
+
+    const res = await refetchUpdateSeatByIds({
+      seatIds,
+      data: {
+        type: formData.type as SeatTypeValue,
+        price: formData.price,
+        isBooked: formData.isBooked,
+        isAvailable: formData.isAvailable,
+        isExitRow: formData.isExitRow,
+        isExtraLegroom: formData.isExtraLegroom,
+        note: formData.note,
+      },
+    });
+    console.log("res", res);
+    console.log("formData", formData);
+
+    if (res?.resultCode === "00") {
+      onSuccess();
+      onClose();
+    }
+  };
   const handleCheckbox =
     (key: keyof Seat) => (e: React.ChangeEvent<HTMLInputElement>) => {
       setFormData({
@@ -57,11 +63,11 @@ const InfoAndUpdateSeatModal = ({
           Đóng
         </Button>
         <Button
-          onClick={onSuccess}
+          onClick={handleUpdate}
           variant="contained"
           disabled={!formData.seatNumber || !formData.seatRow}
         >
-          {/* {editingMode === "update" ? "Cập nhật" : ""} */}
+          Cập nhật
         </Button>
       </Box>
     );
@@ -105,7 +111,7 @@ const InfoAndUpdateSeatModal = ({
             <InputTextField
               placeholder="Giá"
               type="number"
-              value={String(formData.price)}
+              value={formData.price != null ? formData.price.toString() : ""}
               onChange={(e) => setFormData({ ...formData, price: Number(e) })}
             />
           </Grid>

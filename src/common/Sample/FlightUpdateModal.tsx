@@ -30,6 +30,7 @@ import AddIcon from "@mui/icons-material/Add";
 import BaseModal from "../Modal/BaseModal";
 import { DateFormatEnum, formatDate } from "../../hooks/format";
 import {
+  mapStringToDropdown,
   useGetAllCode,
   useGetFlightByIDData,
 } from "../../components/Api/useGetApi";
@@ -240,15 +241,12 @@ const FlightUpdateModal = ({
     }
   }, [open, mode, getFlightByIdData]);
 
-  const optionAirportCode = (getAllCode?.data?.airport ?? []).map((item) => ({
-    value: item.code,
-    label: item.code,
-  }));
-
-  const optionAircraftCode = (getAllCode?.data?.aircraft ?? []).map((item) => ({
-    value: item.code,
-    label: item.code,
-  }));
+  const optionAirportCode = mapStringToDropdown(
+    getAllCode?.data?.airport?.map((e) => e.code as string) ?? []
+  );
+  const optionAircraftCode = mapStringToDropdown(
+    getAllCode?.data?.aircraft?.map((e) => e.code as string) ?? []
+  );
 
   const optionWay = [
     {
@@ -258,20 +256,12 @@ const FlightUpdateModal = ({
     { value: "roundtrip", label: "Khứ hồi" },
   ];
 
-  const steps =
-    mode === "update"
-      ? [
-          "Thông tin cơ bản",
-          "Thời gian bay",
-          "Giá vé & Dung lượng",
-          "Cổng & Trạng thái",
-        ]
-      : [
-          "Thông tin cơ bản",
-          "Thời gian bay",
-          "Giá vé & Dung lượng",
-          "Cổng & Trạng thái",
-        ];
+  const steps = [
+    "Thông tin cơ bản",
+    "Thời gian bay",
+    "Giá vé & Dung lượng",
+    "Cổng & Trạng thái",
+  ];
 
   const handleInputChange = <K extends keyof FlightFormData>(
     field: K,
@@ -299,6 +289,7 @@ const FlightUpdateModal = ({
         <Grid size={12}>
           <InputTextField
             value={formData.flightNo}
+            placeholder="flightNo"
             onChange={(e) => handleInputChange("flightNo", e)}
             startIcon={<AirplaneTicket color="primary" />}
           />
@@ -308,6 +299,7 @@ const FlightUpdateModal = ({
           <FormControl fullWidth>
             <SelectDropdown
               options={optionWay}
+              placeholder="flightType"
               value={formData.flightType || ""}
               onChange={(e) => handleInputChange("flightType", e as string)}
             />
@@ -317,6 +309,7 @@ const FlightUpdateModal = ({
         <Grid size={12}>
           <SelectDropdown
             options={optionAirportCode}
+            placeholder="departureAirport"
             value={formData.departureAirport}
             onChange={(e) => handleInputChange("departureAirport", e as string)}
             //startIcon={<FlightTakeoff color="primary" />}
@@ -326,6 +319,7 @@ const FlightUpdateModal = ({
         <Grid size={12}>
           <SelectDropdown
             options={optionAirportCode}
+            placeholder="arrivalAirport"
             value={formData.arrivalAirport}
             onChange={(e) => handleInputChange("arrivalAirport", e as string)}
             // startIcon={<FlightLand color="primary" />}
@@ -336,6 +330,7 @@ const FlightUpdateModal = ({
           <FormControl fullWidth>
             <SelectDropdown
               options={optionAircraftCode}
+              placeholder="aircraftCode"
               value={formData.aircraftCode}
               onChange={(e) => handleInputChange("aircraftCode", e as string)}
             />
@@ -347,6 +342,7 @@ const FlightUpdateModal = ({
         <Grid size={12}>
           <InputTextField
             value={formData.terminal}
+            placeholder="terminal"
             onChange={(e) => handleInputChange("terminal", e as string)}
           />
         </Grid>

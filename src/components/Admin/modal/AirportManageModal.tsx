@@ -4,6 +4,7 @@ import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
 import BaseModal from "../../../common/Modal/BaseModal";
 import type { Airport, CreateAirportReq } from "../../../utils/type";
 import InputTextField from "../../../common/Input/InputTextField";
+import { useUpdateAirportById } from "../../Api/usePostApi";
 
 interface IRequestLeaveActionModalProps {
   open: boolean;
@@ -20,6 +21,7 @@ const AirportManageModal = ({
   editingAirport,
   formEditData,
 }: IRequestLeaveActionModalProps) => {
+  //const {}=useUpdateAirportById(formEditData.code || '')
   const [formData, setFormData] = useState<CreateAirportReq>({
     code: "",
     name: "",
