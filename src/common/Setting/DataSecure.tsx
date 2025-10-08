@@ -19,23 +19,25 @@ const DataSecure = ({ passenger, returnButton }: DataSecureProps) => {
   const [data, setData] = useState<Passenger | null>(null);
 
   const { dataPassengerById, refetchPassengerById } = useFindPassengerById();
-  useEffect(() => {
-    const fetchPassenger = async () => {
-      try {
-        setLoading(true);
-        const res = await refetchPassengerById({ id: passenger });
-        if (res?.resultCode === "00") {
-          setData(res.data as Passenger);
-        } else {
-          console.error(res?.resultMessage);
-        }
-      } catch (err) {
-        console.error("Fetch passenger error:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
 
+  const fetchPassenger = async () => {
+    try {
+      setLoading(true);
+      const res = await refetchPassengerById({ id: passenger });
+      if (res?.resultCode === "00") {
+        setData(res.data as Passenger);
+      } else {
+        console.error(res?.resultMessage);
+      }
+    } catch (err) {
+      console.error("Fetch passenger error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // const data = dataPassengerById?.data;
+  useEffect(() => {
     if (passenger) {
       fetchPassenger();
     }

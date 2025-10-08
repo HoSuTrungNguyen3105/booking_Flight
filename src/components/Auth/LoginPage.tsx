@@ -1,6 +1,5 @@
 import { Box, Button, FormControl, Stack, Typography } from "@mui/material";
 import { useState } from "react";
-import InputField from "../../common/Input/InputField";
 import { useAuth } from "../../context/AuthContext";
 import { Controller, useForm } from "react-hook-form";
 import InputTextField from "../../common/Input/InputTextField";
@@ -146,7 +145,10 @@ export const LoginPage: React.FC = () => {
                 control={control}
                 name="email"
                 render={({ field }) => (
-                  <InputField {...field} placeholder="아이디를 입력하세요." />
+                  <InputTextField
+                    {...field}
+                    placeholder="아이디를 입력하세요."
+                  />
                 )}
               />
             </FormControl>

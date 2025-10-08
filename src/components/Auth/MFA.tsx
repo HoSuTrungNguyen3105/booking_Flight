@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLoginByMfa, useSetUpMfa, useVerifyMfa } from "../Api/usePostApi";
 import { Box, Button, Typography } from "@mui/material";
-import InputField from "../../common/Input/InputField";
+// import InputField from "../../common/Input/InputField";
 import { useToast } from "../../context/ToastContext";
 import InputTextField from "../../common/Input/InputTextField";
 import { useAuth } from "../../context/AuthContext";
@@ -94,7 +94,7 @@ export default function MfaSetup({ email, onClose }: EmailProps) {
         mt: 4,
       }}
     >
-      <InputField
+      <InputTextField
         sx={{ width: "50%" }}
         value={email}
         disabled

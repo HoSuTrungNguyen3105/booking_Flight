@@ -88,21 +88,21 @@ export const useInspectionPerformanceHistory = () => {
   const { user, isAuthenticated } = useAuth();
   const rows = fetchUserList?.list ?? [];
 
-  const {
-    currentPage,
-    sortModel,
-    totalPages,
-    totalElements,
-    paginatedData,
-    pageSize,
-    onSortModelChange,
-    onPageChange,
-    onPageSizeChange,
-  } = useClientPagination({
-    data: rows,
-    initialSortField: "inspectionTime",
-    initialSortDirection: "asc",
-  });
+  // const {
+  //   currentPage,
+  //   sortModel,
+  //   totalPages,
+  //   totalElements,
+  //   paginatedData,
+  //   pageSize,
+  //   onSortModelChange,
+  //   onPageChange,
+  //   onPageSizeChange,
+  // } = useClientPagination({
+  //   data: rows,
+  //   initialSortField: "inspectionTime",
+  //   initialSortDirection: "asc",
+  // });
 
   type ActionType =
     | "addUser"
@@ -303,27 +303,17 @@ export const useInspectionPerformanceHistory = () => {
     dataTableViewRef,
     headerHeight,
     loading: false,
-    totalCount: totalElements,
-    totalPages: totalPages,
     selectedRow,
     setSelectedRow,
     selectedItemDetailRow,
     setSelectedItemDetailRow,
-    rows: paginatedData,
+    rows,
     openModal,
     toggleOpenModal,
     handleSelectAction,
     handleRefetchUserList,
     columns,
     closeModal,
-    pageInfo: {
-      page: currentPage,
-      size: pageSize,
-    },
-    sortModel,
-    onSortModelChange,
-    onPageChange,
-    onPageSizeChange,
     onRowClick: handleRowClick,
     onSearch: handleSearch,
     openCheckNow,

@@ -32,6 +32,7 @@ interface IInputTextFieldProps {
   value?: string;
   readOnly?: boolean;
   canCopy?: boolean;
+  isEmail?: boolean;
   realease3phrase?: boolean;
   onChange?: (value: string) => void;
   onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
@@ -45,7 +46,7 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
       startIcon,
       endIcon,
       clearable = true,
-      value,
+      value = "",
       disabled,
       onChange = () => {},
       onKeyDown,
@@ -54,17 +55,18 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
       realease3phrase = false,
       sx = {},
       readOnly,
+      isEmail = false,
       ...restProps
     },
     ref
   ) => {
     const [showPassword, setShowPassword] = useState(false);
     const [hasCopy, setHasCopy] = useState(false);
-    const [_, copy] = useCopyToClipboard();
+    const [, copy] = useCopyToClipboard();
 
     const handleTogglePasswordVisibility = useCallback(() => {
-      setShowPassword(!showPassword);
-    }, [showPassword]);
+      setShowPassword((prev) => !prev);
+    }, []);
 
     const handleClear = useCallback(() => {
       onChange("");
@@ -78,21 +80,28 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
       }
     }, [value, copy]);
 
+    // 🔹 Check định dạng email
+    const isEmailValid = useCallback((email: string) => {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    }, []);
+
     const readonlyStyles: SxProps = {
-      caretColor: "transparent", // ẩn caret
+      caretColor: "transparent",
       pointerEvents: "visible",
       "& .MuiInputBase-input": {
         opacity: 0.7,
-        pointerEvents: "none", // chỉ chặn input
+        pointerEvents: "none",
       },
     };
 
-    const mergedSx = useMemo(() => {
-      return {
+    const mergedSx = useMemo(
+      () => ({
         ...sx,
         ...(readOnly ? readonlyStyles : {}),
-      };
-    }, [readOnly, sx]);
+      }),
+      [readOnly, sx]
+    );
 
     const actualInputType = useMemo(() => {
       if (type === "password") {
@@ -112,7 +121,14 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
         type={actualInputType}
         value={value}
         inputRef={ref}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => {
+          const newValue = e.target.value;
+          if (isEmail && !isEmailValid(newValue)) {
+            // ✅ Nếu muốn, có thể bật thông báo hoặc highlight lỗi tại đây
+            // console.warn("Email không hợp lệ:", newValue);
+          }
+          onChange(newValue);
+        }}
         onKeyDown={onKeyDown}
         error={error}
         disabled={disabled}
@@ -120,73 +136,69 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
         {...restProps}
         InputProps={{
           readOnly: readOnly,
-        }}
-        slotProps={{
-          input: {
-            startAdornment: !!startIcon && (
-              <InputAdornment position="start">{startIcon}</InputAdornment>
-            ),
-            endAdornment: shouldShowEndAdornment && (
-              <InputAdornment sx={{ gap: 1, paddingRight: 0 }} position="end">
-                {clearable &&
-                  !!value &&
-                  !disabled &&
-                  !showEyeIcon &&
-                  !canCopy && (
-                    <IconButton
-                      edge="end"
-                      sx={{ cursor: "pointer", padding: "4px" }}
-                      onClick={handleClear}
-                      disabled={disabled}
-                    >
-                      <img
-                        src={error ? ClearErrorIcon : ClearIcon}
-                        width={20}
-                        height={20}
-                        alt="clear"
-                      />
-                    </IconButton>
-                  )}
-
-                {type === "password" && showEyeIcon && (
+          startAdornment: !!startIcon && (
+            <InputAdornment position="start">{startIcon}</InputAdornment>
+          ),
+          endAdornment: shouldShowEndAdornment && (
+            <InputAdornment sx={{ gap: 1, paddingRight: 0 }} position="end">
+              {clearable &&
+                !!value &&
+                !disabled &&
+                !showEyeIcon &&
+                !canCopy && (
                   <IconButton
-                    onClick={handleTogglePasswordVisibility}
-                    disabled={disabled}
                     edge="end"
                     sx={{ cursor: "pointer", padding: "4px" }}
+                    onClick={handleClear}
+                    disabled={disabled}
                   >
-                    {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                    <img
+                      src={error ? ClearErrorIcon : ClearIcon}
+                      width={20}
+                      height={20}
+                      alt="clear"
+                    />
                   </IconButton>
                 )}
 
-                {endIcon && type !== "password" && (
-                  <IconButton
-                    disabled={disabled}
-                    edge="end"
-                    sx={{ cursor: "pointer", padding: "4px" }}
-                  >
-                    {endIcon}
-                  </IconButton>
-                )}
+              {type === "password" && showEyeIcon && (
+                <IconButton
+                  onClick={handleTogglePasswordVisibility}
+                  disabled={disabled}
+                  edge="end"
+                  sx={{ cursor: "pointer", padding: "4px" }}
+                >
+                  {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                </IconButton>
+              )}
 
-                {canCopy && (
-                  <Tooltip title={hasCopy ? "Copied" : "Copy"}>
-                    <IconButton
-                      onClick={handleCopyText}
-                      disabled={disabled}
-                      sx={{ padding: "4px" }}
-                    >
-                      {hasCopy ? (
-                        <DoneAllRoundedIcon />
-                      ) : (
-                        <ContentCopyRoundedIcon />
-                      )}
-                    </IconButton>
-                  </Tooltip>
-                )}
-              </InputAdornment>
-            ),
-          },
+              {endIcon && type !== "password" && (
+                <IconButton
+                  disabled={disabled}
+                  edge="end"
+                  sx={{ cursor: "pointer", padding: "4px" }}
+                >
+                  {endIcon}
+                </IconButton>
+              )}
+
+              {canCopy && (
+                <Tooltip title={hasCopy ? "Copied" : "Copy"}>
+                  <IconButton
+                    onClick={handleCopyText}
+                    disabled={disabled}
+                    sx={{ padding: "4px" }}
+                  >
+                    {hasCopy ? (
+                      <DoneAllRoundedIcon />
+                    ) : (
+                      <ContentCopyRoundedIcon />
+                    )}
+                  </IconButton>
+                </Tooltip>
+              )}
+            </InputAdornment>
+          ),
         }}
         fullWidth
       />

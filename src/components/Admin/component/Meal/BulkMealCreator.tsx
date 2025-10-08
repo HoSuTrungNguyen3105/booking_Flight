@@ -30,7 +30,7 @@ import {
 import type { CreateMealDto, Meal } from "../../../../utils/type";
 import { useCreateMultiMeal } from "../../../Api/usePostApi";
 import theme from "../../../../scss/theme";
-import MealForm from "../../../../common/Sample/MealForm";
+import MealForm from "./InfoMealModal";
 
 const BulkMealCreator: React.FC = () => {
   const lastMealRef = useRef<HTMLDivElement>(null);
@@ -208,13 +208,13 @@ const BulkMealCreator: React.FC = () => {
                 key={index}
                 ref={index === meals.length - 1 ? lastMealRef : null}
               >
-                {/* <MealForm
+                <MealForm
                   key={index}
                   meal={meal}
                   index={index}
                   onChange={updateMeal}
                   onRemove={removeMeal}
-                /> */}
+                />
               </Box>
             ))}
 

@@ -63,7 +63,7 @@ export const useCreateUser = ({ onClose, onSuccess }: IUseUpdateUserProps) => {
       onSuccess();
       onClose();
     } else {
-      toast(res?.resultMessage as string, "info");
+      setError(res?.resultMessage || "Error not found");
     }
   };
 

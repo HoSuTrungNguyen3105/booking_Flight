@@ -1,10 +1,10 @@
 import { Box } from "@mui/material";
-import type { GridRowDef } from "../DataGrid";
-import DataTable from "../DataGrid/index";
-import useClientPagination from "../../context/use[custom]/useClientPagination";
 import type { GridColDef, GridRowId } from "@mui/x-data-grid";
 import { memo, useCallback, useState } from "react";
+import DataTable from "../DataGrid";
 import Pagination from "../DataGrid/Pagination";
+import useClientPagination from "../../context/use[custom]/useClientPagination";
+import type { GridRowDef } from "../DataGrid";
 
 type ITableSectionProps = {
   rows: GridRowDef[];
@@ -14,7 +14,7 @@ type ITableSectionProps = {
   handleRowClick?: (row: GridRowDef) => void;
   nextRowClick?: boolean;
   largeThan?: boolean;
-  onSelectedRowIdsChange?: (selectedIds: GridRowId[]) => void; // Callback ra ngoài
+  onSelectedRowIdsChange?: (selectedIds: GridRowId[]) => void;
 };
 
 const TableSection = ({
@@ -22,8 +22,8 @@ const TableSection = ({
   columns,
   setRows,
   handleRowClick,
-  nextRowClick,
-  largeThan,
+  nextRowClick = false,
+  largeThan = false,
   isLoading,
   onSelectedRowIdsChange,
 }: ITableSectionProps) => {
@@ -41,35 +41,41 @@ const TableSection = ({
     sortModel,
   } = useClientPagination({ data: rows });
 
+  /**
+   * ✅ Khi người dùng chọn dòng, cập nhật state + emit ra ngoài
+   */
   const handleRowSelect = useCallback(
     (selectedIds: Set<GridRowId>) => {
       const selectedIdsArray = Array.from(selectedIds);
-      setSelectedRowIds(selectedIdsArray);
 
-      // Emit ra ngoài nếu có
+      setSelectedRowIds(selectedIdsArray);
       onSelectedRowIdsChange?.(selectedIdsArray);
 
-      // Cập nhật checkYn cho rows
+      // ✅ chỉ cập nhật nếu có sự thay đổi
       setRows((prev) =>
-        prev.map((row) => ({
-          ...row,
-          checkYn: selectedIds.has(row.id),
-        }))
+        prev.map((row) =>
+          row.checkYn === selectedIds.has(row.id)
+            ? row
+            : { ...row, checkYn: selectedIds.has(row.id) }
+        )
       );
     },
     [setRows, onSelectedRowIdsChange]
   );
 
+  /**
+   * ✅ Click vào dòng sẽ gọi callback nếu có
+   */
   const handleRowClickDebug = useCallback(
     (row: GridRowDef) => {
-      console.log("Row clicked in TableSection:", row.id);
+      console.log("👉 Row clicked:", row.id);
       handleRowClick?.(row);
     },
     [handleRowClick]
   );
 
   return (
-    <Box sx={{ width: "100%", padding: "8px", maxHeight: "100vh" }}>
+    <Box sx={{ width: "100%", p: 1, maxHeight: "100vh" }}>
       <Box
         sx={{
           flexGrow: 1,

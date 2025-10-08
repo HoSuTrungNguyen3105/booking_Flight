@@ -1,18 +1,18 @@
 import { useState, useCallback, memo } from "react";
 import { Box, Typography, Chip, Button, Stack } from "@mui/material";
 import { type GridColDef, type GridRenderCellParams } from "@mui/x-data-grid";
-import TableData from "../../../common/DataGrid/index";
-import { useGetLeaveRequest } from "../../Api/usePostApi";
+import TableData from "../../../../common/DataGrid/index";
+import { useGetLeaveRequest } from "../../../Api/usePostApi";
 import {
   DateFormatEnum,
   formatDate,
   formatDateKR,
-} from "../../../hooks/format";
-import CustomPopover from "../../../common/Button/Popover";
+} from "../../../../hooks/format";
+import CustomPopover from "../../../../common/Button/Popover";
 import RequestLeaveActionModal from "./RequestLeaveActionModal";
-import { UserRole, type LeaveRequest } from "../../../utils/type";
-import CreateLeaveRequestForm from "../../User/CreateLeaveRequestForm";
-import { useAuth } from "../../../context/AuthContext";
+import { UserRole, type LeaveRequest } from "../../../../utils/type";
+import CreateLeaveRequestForm from "../../../User/CreateLeaveRequestForm";
+import { useAuth } from "../../../../context/AuthContext";
 
 const LeaveRequestGrid = () => {
   const { user } = useAuth();

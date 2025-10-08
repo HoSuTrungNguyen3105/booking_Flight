@@ -1,15 +1,15 @@
 import { Box, Button, Typography } from "@mui/material";
 import { memo, useCallback, useEffect, useState } from "react";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
-import BaseModal from "../../../common/Modal/BaseModal";
-import InputTextField from "../../../common/Input/InputTextField";
-import { useAuth } from "../../../context/AuthContext";
+import BaseModal from "../../../../common/Modal/BaseModal";
+import InputTextField from "../../../../common/Input/InputTextField";
+import { useAuth } from "../../../../context/AuthContext";
 import {
   useApproveLeaveRequest,
   useRejectLeaveRequest,
   type SendRequestProps,
-} from "../../Api/usePostApi";
-import type { LeaveRequest } from "../../../utils/type";
+} from "../../../Api/usePostApi";
+import type { LeaveRequest } from "../../../../utils/type";
 
 interface IRequestLeaveActionModalProps {
   open: boolean;

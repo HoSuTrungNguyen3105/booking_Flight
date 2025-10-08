@@ -29,6 +29,7 @@ import SelectDropdown, {
 } from "../../../../common/Dropdown/SelectDropdown";
 import InputTextField from "../../../../common/Input/InputTextField";
 import { useFindAllMealTypes } from "../../../Api/useGetApi";
+import InputNumber from "../../../../common/Input/InputNumber";
 
 interface MealFormProps {
   meal: CreateMealDto;
@@ -83,12 +84,6 @@ const MealForm =
         sx={{
           mb: 2,
           border: `2px dashed ${alpha(theme.palette.primary.main, 0.2)}`,
-          transition: "all 0.3s ease",
-          "&:hover": {
-            borderColor: alpha(theme.palette.primary.main, 0.4),
-            transform: "translateY(-2px)",
-            boxShadow: theme.shadows[4],
-          },
         }}
       >
         <CardContent>
@@ -178,10 +173,11 @@ const MealForm =
                 >
                   Price ($) *
                 </Typography>
-                <InputTextField
-                  type="number"
-                  value={String(meal.price)}
-                  onChange={(e) => onChange(index, "price", parseFloat(e) || 0)}
+                <InputNumber
+                  value={meal.price}
+                  min={0}
+                  size="medium"
+                  onChange={(e) => onChange(index, "price", e || 0)}
                   placeholder="0.00"
                 />
               </Box>

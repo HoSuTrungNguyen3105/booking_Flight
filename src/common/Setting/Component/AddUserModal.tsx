@@ -46,16 +46,19 @@ const AddUserModal = ({
                 </Typography>
 
                 {fields.fields.map((field, fieldIndex) => (
-                  <FieldRenderer
-                    key={fieldIndex}
-                    type={field.type}
-                    value={updateInfo[field.id as keyof UserFormConfig] ?? ""}
-                    disabled={field.disabled}
-                    options={field.options}
-                    onChange={(val) =>
-                      handleChange(field.id as keyof UserFormConfig, val)
-                    }
-                  />
+                  <>
+                    <FieldRenderer
+                      key={fieldIndex}
+                      type={field.type}
+                      value={updateInfo[field.id as keyof UserFormConfig] ?? ""}
+                      disabled={field.disabled}
+                      options={field.options}
+                      onChange={(val) =>
+                        handleChange(field.id as keyof UserFormConfig, val)
+                      }
+                    />
+                    <Typography>{error}</Typography>
+                  </>
                 ))}
               </Box>
             )

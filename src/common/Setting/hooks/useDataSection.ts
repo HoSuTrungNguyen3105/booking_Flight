@@ -15,14 +15,21 @@ export type UserFormConfig = {
 
 export const useDataSection = (
   data: Partial<UserFormConfig>,
-  formType?: "register" | "update",
-  isDisable = false
+  formType?: "register" | "update"
+  // isDisable = false
 ): IFormField[] => {
+  // ✅ gọi hook bên ngoài useMemo
+  const { dataRoles } = useFindAllRoles();
+
+  // ✅ map roleOptions tách riêng để tránh chạy lại nhiều lần
+  const roleOptions = useMemo(
+    () => mapStringToDropdown(dataRoles?.data || []),
+    [dataRoles]
+  );
+
   return useMemo(() => {
     const isUpdate = formType === "update";
-    const { dataRoles } = useFindAllRoles();
-    const roleOptions = mapStringToDropdown(dataRoles?.data || []);
-    const commonDisabled = isUpdate || isDisable;
+    const commonDisabled = isUpdate;
 
     const fields: IFormField[] = [
       {
@@ -40,6 +47,7 @@ export const useDataSection = (
         ],
       },
       {
+        visible: isUpdate,
         label: "Mật khẩu",
         fields: [
           {
@@ -76,12 +84,11 @@ export const useDataSection = (
             placeholder: "Chọn vai trò...",
             options: roleOptions,
             value: data.role ?? UserRole.USER,
-            disabled: isDisable, // riêng role chỉ disable khi isDisable true
           },
         ],
       },
     ];
 
     return fields;
-  }, [data, formType, isDisable]);
+  }, [data, formType, roleOptions]);
 };

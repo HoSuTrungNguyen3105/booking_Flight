@@ -189,40 +189,8 @@ export default function MealList() {
     );
   }
 
-  // if (selectedFlightForSeat) {
-  //   return (
-  //     <SeatBooking
-  //       flightId={selectedFlightForSeat}
-  //       onSuccess={() => refetchGetFlightData()}
-  //       // seats={selectedFlightForSeat ?? []} // tùy vào API có trả seats hay không
-  //       loadingFlightData={loadingFlightData}
-  //     />
-  //   );
-  // }
-
   return (
     <div style={{ height: 500, width: "100%" }}>
-      {/* <Typography variant="h6" gutterBottom>
-        Meal List
-      </Typography>
-
-      <TableSection
-        rows={mealRows}
-        columns={columnFlightBookingData}
-        isLoading={loadingFlightBookingData}
-        setRows={setMealRows}
-        onSelectedRowIdsChange={handleMealRowSelection}
-        nextRowClick
-        largeThan
-      /> */}
-
-      {/* <MealFlightRelation
-        flightMealId={selectMealRowId}
-        open={openModalFlightMealRows}
-        onClose={() => {}}
-        onSuccess={() => {}}
-      /> */}
-
       {selectedMealRows.length > 0 && (
         <Box sx={{ my: 2, p: 2, bgcolor: "grey.100" }}>
           <Typography>Selected Meals: {selectedMealRows.length}</Typography>

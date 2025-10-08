@@ -1,17 +1,11 @@
 import InputTextArea from "../Input/InputTextArea";
-import type { DropdownOptions } from "../Dropdown/type";
 import Android12Switch from "../Switch/Switch";
 import InputTextField from "../Input/InputTextField";
-import type { Theme } from "@mui/material/styles";
 import type { SxProps } from "@mui/system";
 // import JobTypeSelector from "../Setting/JobTypeSelector";
 import SelectDropdown, { type ActionType } from "../Dropdown/SelectDropdown";
 
-type FieldValue =
-  | boolean // cho SWITCH
-  | string // cho DROPDOWN
-  | number // nếu dropdown dùng id number
-  | null; // khi chưa chọn gì
+type FieldValue = boolean | string | number | null;
 
 export enum FieldType {
   SWITCH = "switch",

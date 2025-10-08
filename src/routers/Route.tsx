@@ -19,7 +19,7 @@ import ManageMyInfo from "../common/Setting/ManageMyInfo";
 import AircraftPage from "../components/Admin/component/Aircraft/AircraftPage";
 import UnlockRequestTable from "../components/Auth/UnlockRequestTable";
 import FlightPage from "../components/Admin/component/Flight/FlightPage";
-import LeaveRequestGrid from "../components/Admin/component/LeaveRequestGrid";
+import LeaveRequestGrid from "../components/Admin/component/LeaveRequest/LeaveRequestGrid";
 import PayrollManagement from "../common/Sample/PayrollManagement";
 import AdditionalServicesPage from "../common/Sample/AdditionalServicesPage";
 import ChatContainer from "../components/Chat/ChatContainer";
