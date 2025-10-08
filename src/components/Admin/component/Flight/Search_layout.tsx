@@ -13,24 +13,23 @@ import {
   Skeleton,
 } from "@mui/material";
 import { Add, DeleteForever } from "@mui/icons-material";
-import { useSearchFlight } from "../Api/usePostApi";
-import { type DataFlight } from "../../utils/type";
-import FormRow from "../../common/CustomRender/FormRow";
+import { useSearchFlight } from "../../../Api/usePostApi.ts";
+import { type DataFlight } from "../../../../utils/type.ts";
 import type { GridColDef, GridRowId } from "@mui/x-data-grid";
-import { type GridRowDef } from "../../common/DataGrid/index.tsx";
-import InputTextField from "../../common/Input/InputTextField.tsx";
+import { type GridRowDef } from "../../../../common/DataGrid/index.tsx";
+import InputTextField from "../../../../common/Input/InputTextField.tsx";
 import {
   Search as SearchIcon,
   Refresh as RefreshIcon,
   Flight as FlightIcon,
   StarBorder as StarBorderIcon,
 } from "@mui/icons-material";
-import FlightDetail from "./component/FlightDetail.tsx";
-import TableSection from "../../common/Setting/TableSection.tsx";
-import ConfirmPasswordToCallApi from "../../context/common/ConfirmPasswordToCallApi.tsx";
-import { useToast } from "../../context/ToastContext.tsx";
-import type { IDetailItem } from "../../common/DetailSection/index.tsx";
-import DetailSection from "../../common/DetailSection/index.tsx";
+import FlightDetail from "./FlightDetail.tsx";
+import TableSection from "../../../../common/Setting/TableSection.tsx";
+import ConfirmPasswordToCallApi from "../../../../context/common/ConfirmPasswordToCallApi.tsx";
+import { useToast } from "../../../../context/ToastContext.tsx";
+import type { IDetailItem } from "../../../../common/DetailSection/index.tsx";
+import DetailSection from "../../../../common/DetailSection/index.tsx";
 
 type FlightId = {
   id: number;

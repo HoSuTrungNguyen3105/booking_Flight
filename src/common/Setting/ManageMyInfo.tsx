@@ -1,14 +1,14 @@
 import { useInspectionPerformanceHistory } from "./hooks/useInspectionPerformanceHistory";
 import { Box, Button, Typography } from "@mui/material";
 import { type GridRowDef } from "../DataGrid/index";
-import AddUserModal from "./hooks/AddUserModal";
+import AddUserModal from "./Component/AddUserModal";
 import { Loading } from "../Loading/Loading";
-import UpdateUserModal from "./hooks/UpdateUserModal";
+import UpdateUserModal from "./Component/UpdateUserModal";
 import AccountLock from "./AccountLock";
 import DeleteUserModal from "./DeleteUserModal";
 import { memo, useCallback, useState } from "react";
-import AdminUpdateUserModal from "./hooks/AdminUpdateUserModal";
-import UpdateUserForm from "../../components/Admin/component/UpdateUserForm";
+import AdminUpdateUserModal from "./Component/AdminUpdateUserModal";
+import UpdateUserForm from "../../components/User/UpdateUserForm";
 import type { AdminUpdateUserForm } from "../../utils/type";
 import SendEmailToUsers from "./SendEmailToUsers";
 import TableSection from "./TableSection";
@@ -28,6 +28,7 @@ const ManageMyInfo = () => {
     columns,
     openModal,
   } = useInspectionPerformanceHistory();
+
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowId[]>([]);
   const [selectedRowChange, setSelectedRowChange] = useState<GridRowDef[]>([]);
   const [navigateEmailSend, setNavigateEmailSend] = useState<boolean>(false);

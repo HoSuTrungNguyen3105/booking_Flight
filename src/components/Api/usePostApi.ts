@@ -33,17 +33,18 @@ import {
   type AirportCreateResponseMessage,
   type RequestSendEmailResponse,
   type UpdateAirportReq,
+  type CreateMealDto,
 } from "../../utils/type.ts";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
 import { useFetch } from "../../context/use[custom]/useFetch.ts";
 import type { FlightFormData } from "../../common/Sample/FlightUpdateModal.tsx";
-import type { SearchFlightDto } from "../Admin/Search_layout.tsx";
+import type { SearchFlightDto } from "../Admin/component/Flight/Search_layout.tsx";
 import { useSecureFetch } from "../../context/use[custom]/useSecureFetch.ts";
-import type { CreateMealDto } from "../Admin/component/BulkMealCreator.tsx";
-import type {
-  GeneratePayroll,
-  Payroll,
-} from "../../common/Sample/PayrollManagement.tsx";
+// import type { CreateMealDto } from "../Admin/component/BulkMealCreator.tsx";
+// import type {
+//   GeneratePayroll,
+//   Payroll,
+// } from "../../common/Sample/PayrollManagement.tsx";
 import type { UserWithRelationsData } from "../../common/Sample/type.ts";
 
 const postMethod = {
@@ -540,6 +541,19 @@ export const useUpdateAirportById = (code: number) => {
     refetchUpdateAirport,
     loadingUpdateAirport,
   };
+};
+
+export const useCreateBatchGate = () => {
+  const { refetch, data, loading } = useFetch<
+    ResponseMessage,
+    CreateGateProps[]
+  >({
+    url: "/gate/batch-create",
+    config: postMethod,
+    autoFetch: false,
+  });
+
+  return { refetchCreateBatchGate: refetch, data, loading };
 };
 
 // export const useTicketById = (flightParams: UserSearchType) => {

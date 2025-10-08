@@ -1,10 +1,10 @@
-import { useCallback, useMemo, useState } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 import type { TabItem } from "../../../components/Layout/SearchLayout";
 import SearchLayout from "../../../components/Layout/SearchLayout";
 import InspectionSection from "../../CustomRender/InspectionSection";
 import type { GridColDef } from "@mui/x-data-grid";
 import { Typography } from "@mui/material";
-import { DateFormatEnum, formatDateKR } from "../../../hooks/format";
+import { DateFormatEnum, formatDate } from "../../../hooks/format";
 import { useNavigate } from "react-router-dom";
 import type { GridRowDef } from "../../DataGrid";
 import { useFindAllPassenger } from "../../../components/Api/useGetApi";
@@ -35,14 +35,9 @@ export const columnsPassenger: GridColDef[] = [
     field: "lastLoginDate",
     headerName: "Lần đăng nhập cuối",
     flex: 1,
-    renderCell: ({ value }) =>
-      value ? (
-        <Typography>
-          {formatDateKR(DateFormatEnum.MMMM_D_YYYY, value)}
-        </Typography>
-      ) : (
-        <Typography>-</Typography>
-      ),
+    renderCell: ({ value }) => (
+      <Typography>{formatDate(DateFormatEnum.MMMM_D_YYYY, value)}</Typography>
+    ),
   },
 ];
 
@@ -53,14 +48,11 @@ const SecurityManage = () => {
 
   const { dataAllPassenger } = useFindAllPassenger();
 
-  const navigate = useNavigate();
   const onRowSelect = (rowData: GridRowDef) => {
-    // navigate(`/admin/data-secure`, {
-    //   state: { data: rowData, type: tabX },
-    // });
     setGetValuePassenger(true);
     setPassengerId(rowData.id as string);
   };
+
   const rowData = useMemo(
     () =>
       dataAllPassenger?.list?.map((item) => ({
@@ -76,8 +68,8 @@ const SecurityManage = () => {
 
   const tabs: TabItem[] = [
     {
-      label: "Passenger",
-      value: "Passenger",
+      label: "passenger",
+      value: "passenger",
       content: (
         <InspectionSection
           onRowClick={onRowSelect}
@@ -90,11 +82,12 @@ const SecurityManage = () => {
       ),
     },
     {
-      label: "InspectionSection",
+      label: "inspectionSection",
       value: "auto",
       content: <Typography></Typography>,
     },
   ];
+
   if (getValuePassenger)
     return <DataSecure returnButton={handleReturn} passenger={passengerId} />;
 
@@ -110,4 +103,4 @@ const SecurityManage = () => {
   );
 };
 
-export default SecurityManage;
+export default memo(SecurityManage);

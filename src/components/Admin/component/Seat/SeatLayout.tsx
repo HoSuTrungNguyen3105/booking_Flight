@@ -16,16 +16,18 @@ import {
 import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import AccessibilityNewIcon from "@mui/icons-material/AccessibilityNew";
 import WcIcon from "@mui/icons-material/Wc";
-import { useGetAllInfoFlightByIDData } from "../../Api/useGetApi";
-import DetailSection, { type IDetailItem } from "../../../common/DetailSection";
+import { useGetAllInfoFlightByIDData } from "../../../Api/useGetApi";
+import DetailSection, {
+  type IDetailItem,
+} from "../../../../common/DetailSection";
 import ButtonSeat from "./ButtonSeat";
-import type { Seat } from "../../../utils/type";
+import type { Seat } from "../../../../utils/type";
 import { Chair, LocalAirport, RestartAlt } from "@mui/icons-material";
-import { type SeatUpdateProps } from "../../Api/usePostApi";
-import SeatManagementModal from "../../User/SeatManagementModal";
-import CreateSeat from "../../User/CreateSeat";
-import InfoAndUpdateSeatModal from "../modal/InfoAndUpdateSeatModal";
-import { useToast } from "../../../context/ToastContext";
+import { type SeatUpdateProps } from "../../../Api/usePostApi";
+import SeatManagementModal from "../../../User/SeatManagementModal";
+import CreateSeat from "../../../User/CreateSeat";
+import InfoAndUpdateSeatModal from "../../modal/InfoAndUpdateSeatModal";
+import { useToast } from "../../../../context/ToastContext";
 
 type FlightIdProps = {
   id: number;

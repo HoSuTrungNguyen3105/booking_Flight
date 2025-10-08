@@ -11,10 +11,10 @@ import { Controller, useForm } from "react-hook-form";
 import Grid from "@mui/material/Grid";
 import { memo, useState } from "react";
 import { KeyOutlined, LockOpenOutlined } from "@mui/icons-material";
-import VerifyOpt from "../../Auth/components/VerifyOpt";
-import { useChangePasswordInProfile } from "../../Api/usePostApi";
-import InputTextField from "../../../common/Input/InputTextField";
-import { useAuth } from "../../../context/AuthContext";
+import VerifyOpt from "../Auth/VerifyOpt";
+import { useChangePasswordInProfile } from "../Api/usePostApi";
+import InputTextField from "../../common/Input/InputTextField";
+import { useAuth } from "../../context/AuthContext";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 

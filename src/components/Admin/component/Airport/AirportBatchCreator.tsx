@@ -9,9 +9,9 @@ import {
   Typography,
 } from "@mui/material";
 import { Add, Delete } from "@mui/icons-material";
-import type { CreateAirportReq } from "../../../utils/type";
-import InputTextField from "../../../common/Input/InputTextField";
-import { useCreateBatchAirport } from "../../Api/usePostApi";
+import type { CreateAirportReq } from "../../../../utils/type";
+import InputTextField from "../../../../common/Input/InputTextField";
+import { useCreateBatchAirport } from "../../../Api/usePostApi";
 type ReturnProps = {
   onClose: () => void;
 };

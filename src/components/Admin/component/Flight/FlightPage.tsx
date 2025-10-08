@@ -7,10 +7,10 @@ import {
   CardMedia,
 } from "@mui/material";
 import { useState } from "react";
-import { useFlightList } from "../../Api/usePostApi";
-import ImageFlight from "../../../svgs/wallpaper.jpg";
-import type { DataFlight } from "../../../utils/type";
-import { DateFormatEnum, formatDate } from "../../../hooks/format";
+import { useFlightList } from "../../../Api/usePostApi";
+import ImageFlight from "../../../../svgs/wallpaper.jpg";
+import type { DataFlight } from "../../../../utils/type";
+import { DateFormatEnum, formatDate } from "../../../../hooks/format";
 const FlightPage = () => {
   const { flightList } = useFlightList();
   const [selectedFlight, setSelectedFlight] = useState<DataFlight | null>(null);

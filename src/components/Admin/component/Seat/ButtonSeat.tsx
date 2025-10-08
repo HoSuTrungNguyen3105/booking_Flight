@@ -14,8 +14,8 @@ import {
   AirlineSeatLegroomExtra,
   MeetingRoom,
 } from "@mui/icons-material";
-import type { Seat } from "../../../utils/type";
-import theme from "../../../scss/theme";
+import type { Seat } from "../../../../utils/type";
+import theme from "../../../../scss/theme";
 
 interface ButtonSeatProps {
   seat: Seat;

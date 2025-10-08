@@ -1,17 +1,17 @@
 import { Box, Button, Stack } from "@mui/material";
 import { useCallback } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { EmployeeStatus, type AdminUpdateUserForm } from "../../../utils/type";
-import { useUpdateUserFromAdmin } from "../../Api/usePostApi";
-import { useToast } from "../../../context/ToastContext";
-import SelectDropdown from "../../../common/Dropdown/SelectDropdown";
-import InputTextField from "../../../common/Input/InputTextField";
+import { EmployeeStatus, type AdminUpdateUserForm } from "../../utils/type";
+import { useUpdateUserFromAdmin } from "../Api/usePostApi";
+import { useToast } from "../../context/ToastContext";
+import SelectDropdown from "../../common/Dropdown/SelectDropdown";
+import InputTextField from "../../common/Input/InputTextField";
 import {
   mapStringToDropdown,
   useFindAllDepartments,
   useFindAllEmployeeStatuses,
   useFindAllPositions,
-} from "../../Api/useGetApi";
+} from "../Api/useGetApi";
 
 type AdminUpdateUserFormProps = {
   data: AdminUpdateUserForm;

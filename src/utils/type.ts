@@ -353,6 +353,8 @@ export type AdminUpdateUserForm = {
   baseSalary?: number;
 };
 
+export interface CreateMealDto extends Omit<Meal, "id" | "flightMeals"> {}
+
 export type UserUpdateProps = {
   name?: string;
   userAlias?: string;

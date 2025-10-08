@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { type UserData } from "../../../utils/type";
+import {
+  UserRole,
+  type UserData,
+  type UserRoleType,
+} from "../../../utils/type";
 import { useGetUserList } from "../../../components/Api/useGetApi";
-import { useDataSection, type UpdateUserForm } from "./useDataSection";
+import { useDataSection, type UserFormConfig } from "./useDataSection";
 import { useCreateUserByAdmin } from "../../../components/Api/usePostApi";
 
 interface IUseUpdateUserProps {
@@ -19,13 +23,12 @@ export const useUpdateUser = ({
   const { loadingUser, refetchUser } = useGetUserList();
   const { fetchCreateUser, refetchCreateUser } = useCreateUserByAdmin();
 
-  const [formData, setFormData] = useState<UpdateUserForm>(() => ({
-    role: data?.role,
-    rank: data?.rank,
+  const [formData, setFormData] = useState<UserFormConfig>({
+    role: data?.role as UserRoleType,
+    email: data?.email || "",
+    password: data?.password,
     name: data?.name,
-    userAlias: data?.createdAt,
-    // pictureUrl: (data as any)?.pictureUrl,
-  }));
+  });
 
   const handleChange = (key: string, value: any) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
@@ -33,9 +36,11 @@ export const useUpdateUser = ({
   useEffect(() => {
     if (!data) return;
     setFormData({
-      rank: data.rank ?? "",
+      // rank: data.rank ?? "",
       name: data.name ?? "",
-      userAlias: data.userAlias ?? "",
+      role: (data.role || UserRole.USER) as UserRoleType,
+      email: data.email,
+      // userAlias: data.userAlias ?? "",
       // pictureUrl: (data as any)?.pictureUrl ?? "",
     });
     // reset error khi load data mới
@@ -45,7 +50,7 @@ export const useUpdateUser = ({
   // useDataSection lấy config trực tiếp từ formData để luôn cập nhật
   const formDetailConfig = useDataSection(formData, "update");
 
-  const handleChangeFormInput = (key: keyof UpdateUserForm, value: any) => {
+  const handleChangeFormInput = (key: keyof UserFormConfig, value: any) => {
     setFormData((prev) => ({
       ...prev,
       [key]: value,
@@ -54,15 +59,16 @@ export const useUpdateUser = ({
 
   const handleSubmit = async () => {
     try {
-      const payload: UpdateUserForm = {
+      const payload: UserFormConfig = {
         name: formData.name,
-        userAlias: formData.userAlias,
-        rank: formData.rank,
+        email: formData.email,
+        // userAlias: formData.userAlias,
+        // rank: formData.rank,
         role: formData.role,
       };
 
       const res = await refetchCreateUser(payload);
-      console.log("payload", payload);
+
       if (res?.resultCode === "00") {
         onSuccess?.();
         onClose?.();

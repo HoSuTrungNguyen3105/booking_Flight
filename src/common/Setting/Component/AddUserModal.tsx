@@ -3,7 +3,8 @@ import { memo, useCallback } from "react";
 import BaseModal from "../../Modal/BaseModal";
 import AddIcon from "@mui/icons-material/Add";
 import FieldRenderer from "../../CustomRender/FieldRenderer";
-import { useCreateUser } from "./useCreateUser";
+import { useCreateUser } from "../hooks/useCreateUser";
+import type { UserFormConfig } from "../hooks/useDataSection";
 
 interface IModalStatisticalDataLearningProps {
   open: boolean;
@@ -16,7 +17,7 @@ const AddUserModal = ({
   onClose,
   onSuccess,
 }: IModalStatisticalDataLearningProps) => {
-  const { formDetailConfig, updateInfo, handleChange, handleSubmit } =
+  const { formDetailConfig, updateInfo, error, handleChange, handleSubmit } =
     useCreateUser({
       onClose,
       onSuccess,
@@ -25,6 +26,7 @@ const AddUserModal = ({
   const renderActions = useCallback(() => {
     return (
       <Box display="flex" gap={1} justifyContent="flex-end" alignItems="center">
+        {error && <Typography>{error}</Typography>}
         <Button variant="outlined" onClick={handleSubmit}>
           확인
         </Button>
@@ -33,35 +35,31 @@ const AddUserModal = ({
   }, [handleSubmit]);
 
   const renderContent = useCallback(() => {
-    const renderRows = () => {
-      return (
-        <>
-          {formDetailConfig
-            .filter((fieldItem) => !fieldItem.disabled)
-            .map(({ disabled, fields }) => (
-              <Box key={fields.id}>
+    return (
+      <>
+        {formDetailConfig?.map(
+          (fields, index) =>
+            !fields.visible && (
+              <Box key={index}>
                 <Typography variant="body1" sx={{ mb: 1 }}>
                   {fields.label}
                 </Typography>
 
-                <FieldRenderer
-                  {...fields}
-                  disabled={fields.disabled && disabled}
-                  readOnly={fields.readOnly}
-                  value={updateInfo[fields.id as keyof typeof updateInfo] ?? ""}
-                  placeholder={fields.placeholder}
-                  onChange={(val) => handleChange(fields.id, val)}
-                />
+                {fields.fields.map((field, fieldIndex) => (
+                  <FieldRenderer
+                    key={fieldIndex}
+                    type={field.type}
+                    value={updateInfo[field.id as keyof UserFormConfig] ?? ""}
+                    disabled={field.disabled}
+                    options={field.options}
+                    onChange={(val) =>
+                      handleChange(field.id as keyof UserFormConfig, val)
+                    }
+                  />
+                ))}
               </Box>
-            ))}
-        </>
-      );
-    };
-
-    return (
-      <>
-        <Divider sx={{ mb: 2, marginTop: 0, marginBottom: "22px" }} />
-        {renderRows()}
+            )
+        )}
       </>
     );
   }, [formDetailConfig, updateInfo]);

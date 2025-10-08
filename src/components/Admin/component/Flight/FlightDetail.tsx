@@ -6,13 +6,13 @@ import {
   Home,
   Flight,
 } from "@mui/icons-material";
-import type { DataFlight } from "../../../utils/type";
+import type { DataFlight } from "../../../../utils/type";
 import { useNavigate } from "react-router-dom";
-import type { BreadcrumbItem } from "../../../common/BreadCrumb";
-import BreadCrumb from "../../../common/BreadCrumb";
-import type { IDetailItem } from "../../../common/DetailSection";
-import DetailSection from "../../../common/DetailSection";
-import FlightPath from "../../User/FlightPath";
+import type { BreadcrumbItem } from "../../../../common/BreadCrumb";
+import BreadCrumb from "../../../../common/BreadCrumb";
+import type { IDetailItem } from "../../../../common/DetailSection";
+import DetailSection from "../../../../common/DetailSection";
+import FlightPath from "../../../User/FlightPath";
 
 interface FlightDetailPageProps {
   flight?: DataFlight;
@@ -256,17 +256,17 @@ const FlightDetailPage = ({ flight, onBookFlight }: FlightDetailPageProps) => {
 
         {/* Action Buttons */}
         <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end" }}>
-          <Button onClick={handleGoBack} variant="outlined">
+          <Button onClick={handleGoBack} variant="contained">
             Back
           </Button>
-          <Button
+          {/* <Button
             variant="contained"
             color="primary"
             onClick={handleBookFlight}
             disabled={flight.status === "cancelled"}
           >
             Book This Flight
-          </Button>
+          </Button> */}
         </Box>
       </>
     );

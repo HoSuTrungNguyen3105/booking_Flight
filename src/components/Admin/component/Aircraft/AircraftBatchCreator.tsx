@@ -1,16 +1,16 @@
 import { memo, useCallback, useState } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import { Add, Delete } from "@mui/icons-material";
-import InputTextField from "../../../common/Input/InputTextField";
+import DeleteIcon from "../../../../svgs/delete-2-svgrepo.svg";
+import type { Aircraft } from "../../../../utils/type";
+import { useToast } from "../../../../context/ToastContext";
 import {
   useCreateAircraftBatchFlight,
   useDeleteAircraftFlight,
-} from "../../Api/usePostApi";
-import { useToast } from "../../../context/ToastContext";
-import type { Aircraft } from "../../../utils/type";
-import { useGetAircraftCode } from "../../Api/useGetApi";
-import DialogConfirm from "../../../common/Modal/DialogConfirm";
-import DeleteIcon from "../../../svgs/delete-2-svgrepo.svg";
+} from "../../../Api/usePostApi";
+import { useGetAircraftCode } from "../../../Api/useGetApi";
+import InputTextField from "../../../../common/Input/InputTextField";
+import DialogConfirm from "../../../../common/Modal/DialogConfirm";
 
 type AircraftError = {
   code: string;

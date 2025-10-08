@@ -13,11 +13,11 @@ import {
   Delete as DeleteIcon,
   LocationOn as LocationIcon,
 } from "@mui/icons-material";
-import { useGetAllAirportInfo } from "../../Api/useGetApi";
-import type { Airport } from "../../../utils/type";
+import { useGetAllAirportInfo } from "../../../Api/useGetApi";
+import type { Airport } from "../../../../utils/type";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
-import TableSection from "../../../common/Setting/TableSection";
-import AirportManageModal from "../modal/AirportManageModal";
+import TableSection from "../../../../common/Setting/TableSection";
+import AirportManageModal from "../../modal/AirportManageModal";
 import AirportBatchCreator from "./AirportBatchCreator";
 
 const AirportManagement: React.FC = () => {

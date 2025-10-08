@@ -7,7 +7,7 @@ import { DateFormatEnum, formatDateKR } from "../../hooks/format";
 import FlightModalTriggerManagement from "../../common/Setting/FlightModalTriggerManagement";
 import TableSection from "../../common/Setting/TableSection";
 // import SeatBooking from "./SeatBooking";
-import SeatLayout from "../Admin/component/SeatLayout";
+import SeatLayout from "../Admin/component/Seat/SeatLayout";
 import MealFlightRelation from "./Security/MealFlightRelation";
 
 export default function MealList() {

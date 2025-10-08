@@ -21,15 +21,14 @@ import {
   Restaurant as RestaurantIcon,
   VerticalAlignCenterSharp,
 } from "@mui/icons-material";
-import theme from "../../../scss/theme";
-import type { MealType } from "../../../utils/type";
-import InputTextArea from "../../../common/Input/InputTextArea";
-import type { CreateMealDto } from "./BulkMealCreator";
+import theme from "../../../../scss/theme";
+import type { CreateMealDto, MealType } from "../../../../utils/type";
+import InputTextArea from "../../../../common/Input/InputTextArea";
 import SelectDropdown, {
   type ActionType,
-} from "../../../common/Dropdown/SelectDropdown";
-import InputTextField from "../../../common/Input/InputTextField";
-import { useFindAllMealTypes } from "../../Api/useGetApi";
+} from "../../../../common/Dropdown/SelectDropdown";
+import InputTextField from "../../../../common/Input/InputTextField";
+import { useFindAllMealTypes } from "../../../Api/useGetApi";
 
 interface MealFormProps {
   meal: CreateMealDto;

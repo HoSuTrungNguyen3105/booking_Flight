@@ -1,28 +1,6 @@
-import React, { useCallback, useState } from "react";
-import {
-  Box,
-  Typography,
-  Button,
-  Grid,
-  FormControl,
-  Alert,
-  Chip,
-  Divider,
-  FormHelperText,
-  Fade,
-  Card,
-  CardContent,
-  LinearProgress,
-  type Theme,
-  Paper,
-} from "@mui/material";
-import {
-  Add as AddIcon,
-  AirportShuttle as GateIcon,
-  Info as InfoIcon,
-  Close as CloseIcon,
-  CheckCircle as CheckCircleIcon,
-} from "@mui/icons-material";
+import { useCallback, useState } from "react";
+import { Box, Button, Grid, Divider, Paper } from "@mui/material";
+import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import SelectDropdown, {
   type ActionType,
 } from "../../common/Dropdown/SelectDropdown";
@@ -34,7 +12,7 @@ import {
 } from "../Api/useGetApi";
 import BaseModal from "../../common/Modal/BaseModal";
 import { Loading } from "../../common/Loading/Loading";
-import { useCreateGate, type CreateGateProps } from "../Api/usePostApi";
+import { useCreateBatchGate, type CreateGateProps } from "../Api/usePostApi";
 import type { UpdateGateProps } from "../Admin/TerminalContainer";
 
 type IGateModalProps = {
@@ -42,6 +20,7 @@ type IGateModalProps = {
   mode: "create" | "update";
   open: boolean;
   data: UpdateGateProps;
+  setData: React.Dispatch<React.SetStateAction<UpdateGateProps>>;
   onClose: () => void;
   onSuccess: () => void;
 };
@@ -52,21 +31,20 @@ const CreateGateForm = ({
   open,
   onClose,
   data,
+  setData,
   onSuccess,
 }: IGateModalProps) => {
-  const [formData, setFormData] = useState<CreateGateProps>({
-    code: "",
-    terminalId: "",
-    status: "",
-  });
+  const [formData, setFormData] = useState<CreateGateProps[]>([
+    { code: "", terminalId, status: "" },
+  ]);
 
   const [errors, setErrors] = useState<
     Partial<Record<keyof CreateGateProps, string>>
   >({});
-  const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { dataGateStatuses } = useFindAllGateStatuses();
   const { dataTerminalIDStatuses } = useFindTerminalIDStatuses();
+  const { refetchCreateBatchGate } = useCreateBatchGate();
   const terminalOptions: ActionType[] = (
     dataTerminalIDStatuses?.list ?? []
   ).map((t) => ({
@@ -74,6 +52,25 @@ const CreateGateForm = ({
     label: t.label,
     color: "#880e4f",
   }));
+
+  const handleAddGate = () => {
+    setFormData((prev) => [...prev, { code: "", terminalId, status: "" }]);
+  };
+
+  const handleRemoveGate = (index: number) => {
+    setFormData((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  // 📝 Cập nhật giá trị từng dòng
+  const handleChange = (
+    index: number,
+    field: keyof CreateGateProps,
+    value: string
+  ) => {
+    setFormData((prev) =>
+      prev.map((item, i) => (i === index ? { ...item, [field]: value } : item))
+    );
+  };
 
   const gateStatusOptions: ActionType[] =
     (dataGateStatuses?.data || []).map((status) => {
@@ -126,64 +123,30 @@ const CreateGateForm = ({
       }
     };
 
-  const validateForm = (): boolean => {
-    const newErrors: Partial<Record<keyof CreateGateProps, string>> = {};
-
-    if (!formData.code.trim()) {
-      //newErrors.code = "Mã cổng là bắt buộc";
-    } else if (!/^[A-Z0-9]{2,5}$/.test(formData.code)) {
-      //newErrors.code =
-      //"Mã cổng phải gồm 2-5 ký tự chữ in hoa hoặc số (ví dụ: A12, B34)";
-    }
-
-    if (!formData.terminalId) {
-      //  newErrors.terminalId = "Vui lòng chọn terminal";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const { refetchCreateGate } = useCreateGate();
-
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    if (!validateForm()) return;
+  const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      const submitData = {
-        ...formData,
-        terminalId: terminalId,
-      };
-      const res = await refetchCreateGate(submitData);
+      const cleaned = formData.filter((g) => g.code.trim() !== "");
+      const res = await refetchCreateBatchGate(cleaned);
       if (res?.resultCode === "00") {
+        onSuccess();
         onClose();
       }
-      setIsSubmitted(true);
-      setTimeout(() => {
-        setFormData({
-          code: "",
-          terminalId: "",
-          status: "",
-        });
-        setIsSubmitted(false);
-      }, 3000);
     } catch (error) {
-      console.error("Lỗi khi tạo cổng:", error);
+      console.error("Batch create error:", error);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleReset = () => {
-    setFormData({
-      code: "",
-      terminalId: "",
-      status: "",
-    });
-    setErrors({});
-  };
+  // const handleReset = () => {
+  //   setFormData({
+  //     code: "",
+  //     terminalId: "",
+  //     status: "",
+  //   });
+  //   setErrors({});
+  // };
 
   const renderActions = useCallback(() => {
     return (
@@ -198,7 +161,7 @@ const CreateGateForm = ({
               flexWrap: "wrap",
             }}
           >
-            <Button
+            {/* <Button
               variant="outlined"
               onClick={handleReset}
               disabled={isSubmitting}
@@ -206,7 +169,7 @@ const CreateGateForm = ({
               sx={{ borderRadius: 2, px: 3 }}
             >
               Đặt lại
-            </Button>
+            </Button> */}
             <Button
               // type="submit"
               onClick={handleSubmit}
@@ -221,136 +184,85 @@ const CreateGateForm = ({
         </Grid>
       </Box>
     );
-  }, [handleSubmit, isSubmitting, handleReset]);
+  }, [handleSubmit, isSubmitting]);
 
   const renderContent = useCallback(() => {
-    const renderRows = () => {
-      return (
-        <Box component="form" onSubmit={handleSubmit}>
-          <Paper
-            elevation={0}
-            sx={{
-              p: 3,
-              borderRadius: 2,
-              border: "1px solid",
-              borderColor: "divider",
-              bgcolor: "background.paper",
-            }}
-          >
-            <Grid container spacing={3}>
-              <Grid size={6}>
-                <Typography
-                  variant="subtitle2"
-                  color="text.secondary"
-                  gutterBottom
-                >
-                  Code
-                </Typography>
-                {mode === "update" ? (
-                  <FormControl fullWidth>
-                    <InputTextField
-                      value={formData.code}
-                      onChange={(value) =>
-                        setFormData((prev) => ({ ...prev, code: value }))
-                      }
-                      error={!!errors.code}
-                      disabled={isSubmitting}
-                      placeholder="Nhập mã cổng"
-                    />
-                    {errors.code && (
-                      <FormHelperText error>{errors.code}</FormHelperText>
-                    )}
-                  </FormControl>
-                ) : (
-                  <FormControl fullWidth>
-                    <InputTextField
-                      value={formData.code}
-                      onChange={(value) =>
-                        setFormData((prev) => ({ ...prev, code: value }))
-                      }
-                      error={!!errors.code}
-                      disabled={isSubmitting}
-                      placeholder="Nhập mã cổng"
-                    />
-                    {errors.code && (
-                      <FormHelperText error>{errors.code}</FormHelperText>
-                    )}
-                  </FormControl>
-                )}
+    return (
+      <Paper sx={{ p: 2 }}>
+        {mode === "create" ? (
+          <>
+            {formData.map((gate, index) => (
+              <Grid
+                key={index}
+                container
+                spacing={2}
+                alignItems="center"
+                sx={{
+                  borderBottom: "1px solid #eee",
+                  mb: 1,
+                  pb: 1,
+                }}
+              >
+                <Grid size={4}>
+                  <InputTextField
+                    value={gate.code}
+                    placeholder="Gate Code (VD: G01)"
+                    onChange={(v) => handleChange(index, "code", v)}
+                  />
+                </Grid>
+                <Grid size={4}>
+                  <InputTextField value={gate.terminalId} disabled />
+                </Grid>
+                <Grid size={4}>
+                  <SelectDropdown
+                    value={gate.status}
+                    options={gateStatusOptions}
+                    onChange={(v) => handleChange(index, "status", v as string)}
+                  />
+                </Grid>
+                <Grid size={2}>
+                  <Button color="error" onClick={() => handleRemoveGate(index)}>
+                    <DeleteIcon />
+                  </Button>
+                </Grid>
               </Grid>
+            ))}
 
-              {/* Terminal */}
+            <Button
+              onClick={handleAddGate}
+              startIcon={<AddIcon />}
+              sx={{ mt: 1 }}
+            >
+              Thêm dòng mới
+            </Button>
+          </>
+        ) : (
+          <>
+            <Grid container spacing={2}>
+              {/* Code */}
               <Grid size={6}>
-                <Typography
-                  variant="subtitle2"
-                  color="text.secondary"
-                  gutterBottom
-                >
-                  Terminal ID
-                </Typography>
-                {mode === "update" ? (
-                  <FormControl fullWidth error={!!errors.terminalId}>
-                    <SelectDropdown
-                      value={formData.terminalId}
-                      options={terminalOptions}
-                      onChange={handleSelectChange("terminalId")}
-                      error={!!errors.terminalId}
-                      disabled={isSubmitting}
-                    />
-                    <FormHelperText>
-                      {errors.terminalId || "Chọn terminal mà cổng thuộc về"}
-                    </FormHelperText>
-                  </FormControl>
-                ) : (
-                  <InputTextField value={terminalId} readOnly></InputTextField>
-                )}
+                {" "}
+                <InputTextField
+                  value={data.code}
+                  placeholder="Gate Code (VD: G01)"
+                  onChange={
+                    (v) => setData({ ...data, code: v }) // cập nhật 1 dòng duy nhất
+                  }
+                />
               </Grid>
 
               {/* Status */}
               <Grid size={6}>
-                <Typography
-                  variant="subtitle2"
-                  color="text.secondary"
-                  gutterBottom
-                >
-                  Status
-                </Typography>
-                <FormControl fullWidth>
-                  <SelectDropdown
-                    value={formData.status}
-                    onChange={handleSelectChange("status")}
-                    options={gateStatusOptions}
-                    disabled={isSubmitting}
-                  />
-                  <FormHelperText>Trạng thái hoạt động của cổng</FormHelperText>
-                </FormControl>
+                <SelectDropdown
+                  value={data.status}
+                  options={gateStatusOptions}
+                  onChange={(v) => setData({ ...data, status: v as string })}
+                />
               </Grid>
-
-              {/* Progress */}
-              {isSubmitting && (
-                <Grid size={12}>
-                  <LinearProgress sx={{ borderRadius: 1 }} />
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    textAlign="center"
-                    mt={1}
-                  >
-                    Đang xử lý, vui lòng chờ...
-                  </Typography>
-                </Grid>
-              )}
             </Grid>
-          </Paper>
-        </Box>
-      );
-    };
-
-    return (
-      <>
-        <Divider sx={{ mb: 2, marginTop: 0, marginBottom: "22px" }} />
-        {renderRows()}
-      </>
+          </>
+        )}
+      </Paper>
     );
   }, [
     formData,
@@ -359,7 +271,6 @@ const CreateGateForm = ({
     terminalOptions,
     gateStatusOptions,
     handleSelectChange,
-    handleReset,
     handleSubmit,
   ]);
 

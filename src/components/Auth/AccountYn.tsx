@@ -8,7 +8,7 @@ import {
 } from "../Api/usePostApi";
 import { useToast } from "../../context/ToastContext";
 import ChangePassword from "./ChangePassword";
-import VerifyOpt from "./components/VerifyOpt";
+import VerifyOpt from "./VerifyOpt";
 
 type AccountModePageProps = {
   mode: "verify" | "change";

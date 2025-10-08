@@ -13,16 +13,51 @@ export type TerminalView = {
   description?: string;
 };
 
+export const terminals = [
+  {
+    id: "t-1",
+    code: "A",
+    name: "Terminal A",
+    type: "DOMESTIC" as const,
+    x: 20,
+    y: 28,
+  },
+  {
+    id: "t-2",
+    code: "B",
+    name: "Terminal B",
+    type: "INTERNATIONAL" as const,
+    x: 54,
+    y: 22,
+  },
+  {
+    id: "t-3",
+    code: "D",
+    name: "Terminal D",
+    type: "BUSINESS" as const,
+    x: 78,
+    y: 52,
+  },
+  {
+    id: "t-4",
+    code: "C",
+    name: "Terminal C",
+    type: "DOMESTIC" as const,
+    x: 30,
+    y: 68,
+  },
+];
+
 type Props = {
   airportCode?: string;
-  terminals: TerminalView[];
+  // terminals: TerminalView[];
   width?: number | string;
   height?: number | string;
 };
 
 const AirportMap: React.FC<Props> = ({
   airportCode,
-  terminals,
+  // terminals,
   width = "100%",
   height = 520,
 }) => {

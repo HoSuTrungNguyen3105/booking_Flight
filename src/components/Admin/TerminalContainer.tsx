@@ -23,7 +23,6 @@ import {
 } from "../../utils/type";
 import CreateGateForm from "../User/CreateGateForm";
 import CreateFacility from "./modal/CreateFacility";
-import { useFindAllFacilityTypes } from "../Api/useGetApi";
 import theme from "../../scss/theme";
 
 export type UpdateGateProps = Omit<CreateGateProps, "terminalId">;
@@ -204,26 +203,6 @@ const TerminalContainer: React.FC = () => {
     });
     setDialogOpen((prev) => ({ ...prev, terminal: true }));
   };
-
-  const [facilities, setFacilities] = useState({
-    name: "",
-    type: "LOUNGE",
-    description: "",
-    terminalId: "",
-    location: "",
-    openingHours: "",
-  });
-
-  // const handleChange = (e: string) => {
-  //   setFacilities({ ...facilities, [e]: e });
-  // };
-
-  // const handleSelectChange = (name: string, value: string | number) => {
-  //   setFacilities((prev) => ({
-  //     ...prev,
-  //     [name]: value,
-  //   }));
-  // };
 
   const handleAddNew = (type: "gate" | "facility", terminalId: string) => {
     setDialogType("create");
@@ -618,6 +597,7 @@ const TerminalContainer: React.FC = () => {
         onSuccess={() => setDialogOpen((prev) => ({ ...prev, gate: false }))}
         mode={dialogType}
         data={gateForm}
+        setData={setGateForm}
         terminalId={terminalId}
       />
     </>

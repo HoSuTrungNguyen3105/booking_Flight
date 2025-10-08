@@ -1,17 +1,16 @@
 import { memo, useCallback, useState } from "react";
-import OTPInput from "../../../common/Input/OTPInput";
+import OTPInput from "../../common/Input/OTPInput";
 import { Box, Button, Stack, Typography } from "@mui/material";
-import type { EmailProps } from "../../../utils/type";
-import { useVerifyOTPCode } from "../../Api/usePostApi";
-import MfaSetup from "../MFA";
-import { useToast } from "../../../context/ToastContext";
+import type { EmailProps } from "../../utils/type";
+import { useVerifyOTPCode } from "../Api/usePostApi";
+import MfaSetup from "./MFA";
+import { useToast } from "../../context/ToastContext";
 
 const VerifyOpt = ({ email, userId }: EmailProps) => {
   const [otpText, setOtpText] = useState<string>("");
   const { refetchVerifyOTPcode } = useVerifyOTPCode();
   const [hasValidate, sethasValidate] = useState(false);
   const toast = useToast();
-  console.log("o", userId);
 
   const handleCheckOTPYn = useCallback(async () => {
     if (typeof otpText !== "string" || otpText.trim() === "") {

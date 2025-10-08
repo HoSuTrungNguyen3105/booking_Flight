@@ -25,7 +25,6 @@ export enum FieldType {
 
 type FormField = {
   id: string;
-  label?: string;
   type: FieldType;
   placeholder?: string;
   options: ActionType[];
@@ -38,8 +37,10 @@ type FormField = {
 };
 
 export type IFormField = {
-  disabled?: boolean;
-  fields: FormField;
+  label?: string;
+  visible?: boolean;
+  required?: boolean;
+  fields: FormField[];
 };
 
 interface IFieldRendererProps extends Omit<FormField, "id"> {

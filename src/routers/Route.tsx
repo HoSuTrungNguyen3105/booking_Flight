@@ -7,7 +7,7 @@ import Hero from "../components/Hero/Hero";
 import BookTicket from "../components/User/BookTicket";
 import { ROUTE_PATHS } from "./RoutePath";
 import ManageLayout from "../components/Layout/ResizeLayout";
-import Search_layout from "../components/Admin/Search_layout";
+import Search_layout from "../components/Admin/component/Flight/Search_layout";
 import GuestGuard from "../components/Layout/GuardLayout";
 import { LoginPage } from "../components/Auth/LoginPage";
 import Security from "../common/Setting/Security";
@@ -16,9 +16,9 @@ import MealList from "../components/User/MealList";
 import SecurityManage from "../common/Setting/hooks/SecurityManage";
 import ManageMyInformation from "../common/Setting/ManageMyInformation";
 import ManageMyInfo from "../common/Setting/ManageMyInfo";
-import AircraftPage from "../components/User/AircraftPage";
+import AircraftPage from "../components/Admin/component/Aircraft/AircraftPage";
 import UnlockRequestTable from "../components/Auth/UnlockRequestTable";
-import FlightPage from "../components/Admin/component/FlightPage";
+import FlightPage from "../components/Admin/component/Flight/FlightPage";
 import LeaveRequestGrid from "../components/Admin/component/LeaveRequestGrid";
 import PayrollManagement from "../common/Sample/PayrollManagement";
 import AdditionalServicesPage from "../common/Sample/AdditionalServicesPage";
@@ -31,52 +31,17 @@ import RevenueDashboard from "../components/User/RevenueDashboard";
 import TicketSalesDashboard from "../components/User/TicketSalesDashboard";
 import FlightRoutesDashboard from "../components/User/FlightRoutesDashboard";
 import TerminalGateContainer from "../components/Admin/AirportMasterplan";
-import AirportManagement from "../components/Admin/component/AirportManagement";
+import AirportManagement from "../components/Admin/component/Airport/AirportManagement";
 import SendEmailToUsers from "../common/Setting/SendEmailToUsers";
 import MealForm from "../common/Sample/MealForm";
 import FlightStatisticsPage from "../components/User/FlightStatisticsPage";
-import BulkMealCreator from "../components/Admin/component/BulkMealCreator";
 import AirportMap from "../components/User/AirportMap";
 import AirportManagementDetail from "../components/User/AirportManagementDetail";
-import ChangePasswordInProfile from "../components/User/Security/ChangePasswordInProfile";
-import FlightBatchCreator from "../components/Admin/component/FlightBatchCreator";
+import ChangePasswordInProfile from "../components/Profile/ChangePasswordInProfile";
+import FlightBatchCreator from "../components/Admin/component/Flight/FlightBatchCreator";
 import AuthGuard from "../components/Layout/AuthGuard";
 import TicketTable from "../common/Sample/TicketTable";
-
-export const mockTerminals = [
-  {
-    id: "t-1",
-    code: "A",
-    name: "Terminal A",
-    type: "DOMESTIC" as const,
-    x: 20,
-    y: 28,
-  },
-  {
-    id: "t-2",
-    code: "B",
-    name: "Terminal B",
-    type: "INTERNATIONAL" as const,
-    x: 54,
-    y: 22,
-  },
-  {
-    id: "t-3",
-    code: "D",
-    name: "Terminal D",
-    type: "BUSINESS" as const,
-    x: 78,
-    y: 52,
-  },
-  {
-    id: "t-4",
-    code: "C",
-    name: "Terminal C",
-    type: "DOMESTIC" as const,
-    x: 30,
-    y: 68,
-  },
-];
+import BulkMealCreator from "../components/Admin/component/Meal/BulkMealCreator";
 
 const routes = [
   {
@@ -165,7 +130,7 @@ const routes = [
         element: (
           <AirportMap
             airportCode="SGN"
-            terminals={mockTerminals}
+            // terminals={mockTerminals}
             height={540}
           />
         ),

@@ -1,34 +1,33 @@
 import { useEffect, useMemo, useState } from "react";
-import { type UserCreateProps, type UserData } from "../../../utils/type";
+import {
+  UserRole,
+  type UserCreateProps,
+  type UserData,
+} from "../../../utils/type";
 import {
   useGetUserList,
   useRandomPassword,
 } from "../../../components/Api/useGetApi";
-import { useDataSection } from "./useDataSection";
+import { useDataSection, type UserFormConfig } from "./useDataSection";
 import { useCreateUserByAdmin } from "../../../components/Api/usePostApi";
 import { useToast } from "../../../context/ToastContext";
 
 interface IUseUpdateUserProps {
   onClose: () => void;
   onSuccess: () => void;
-  user?: UserData;
 }
-export const useCreateUser = ({
-  onClose,
-  onSuccess,
-  user,
-}: IUseUpdateUserProps) => {
+export const useCreateUser = ({ onClose, onSuccess }: IUseUpdateUserProps) => {
   //   const api = useApi5();
   const [error, setError] = useState<string>("");
   const { fetchUserList, loadingUser, refetchUser } = useGetUserList();
   const { refetchUserPw } = useRandomPassword();
-  const [updateInfo, setUpdateInfo] = useState<UserCreateProps>({
-    email: user?.email,
+  const [updateInfo, setUpdateInfo] = useState<UserFormConfig>({
+    email: "",
     password: "",
-    name: user?.name,
-    role: user?.role,
+    name: "",
+    role: UserRole.USER,
   });
-  // Fetch password khi component mount (nếu cần)
+
   useEffect(() => {
     const generatePassword = async () => {
       const password = await refetchUserPw();
@@ -50,25 +49,28 @@ export const useCreateUser = ({
   const { fetchCreateUser, refetchCreateUser } = useCreateUserByAdmin();
   const handleSubmit = async () => {
     const payload: UserCreateProps = {
-      name: updateInfo.name,
-      email: updateInfo.email,
-      password: updateInfo.password,
-      role: updateInfo.role,
+      // name: updateInfo.name,
+      // email: updateInfo.email,
+      // password: updateInfo.password,
+      // role: updateInfo.role,
+      ...updateInfo,
     };
 
     const res = await refetchCreateUser(payload);
+
     if (res?.resultCode === "00") {
       toast(res.resultMessage, "success");
       onSuccess();
+      onClose();
     } else {
       toast(res?.resultMessage as string, "info");
     }
   };
 
-  const enableUpdateBtn = useMemo(
-    () => updateInfo.name?.trim() !== "" || updateInfo?.email?.trim() !== "",
-    [updateInfo]
-  );
+  // const enableUpdateBtn = useMemo(
+  //   () => updateInfo.name?.trim() !== "" || updateInfo?.email?.trim() !== "",
+  //   [updateInfo]
+  // );
 
   const handleChangeFormInput = (key: keyof typeof updateInfo, value: any) => {
     setUpdateInfo((prev) => ({
@@ -81,8 +83,7 @@ export const useCreateUser = ({
     // isLoading,
     formDetailConfig,
     handleChangeFormInput,
-    enableUpdateBtn,
-    error,
+    // enableUpdateBtn,
     updateInfo,
     fetchCreateUser,
     handleChange,
@@ -90,6 +91,7 @@ export const useCreateUser = ({
     fetchUserList,
     loadingUser,
     refetchUser,
+    error,
     // updateUser: () => updateUser(),
   } as const;
 };

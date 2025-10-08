@@ -109,9 +109,9 @@ const DataSecure = ({ passenger, returnButton }: DataSecureProps) => {
 
   const rowDataMealOrder = useMemo(
     () =>
-      dataPassengerById?.data?.bookings[0].mealOrders.map((item) => ({
+      dataPassengerById?.data?.bookings.map((item) => ({
         ...item,
-        id: item.id,
+        id: item.mealOrders.map((e) => e.id).join(", "),
       })) || [],
     [dataPassengerById]
   );
@@ -136,7 +136,7 @@ const DataSecure = ({ passenger, returnButton }: DataSecureProps) => {
     {
       title: "Lần đăng nhập cuối",
       description: data?.lastLoginDate
-        ? formatDateKR(DateFormatEnum.MMMM_D_YYYY, data.lastLoginDate)
+        ? formatDate(DateFormatEnum.MMMM_D_YYYY, data.lastLoginDate)
         : "None",
     },
     {

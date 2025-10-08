@@ -21,7 +21,10 @@ import SelectDropdown from "../../common/Dropdown/SelectDropdown";
 import { useGetAllCode } from "../Api/useGetApi";
 import DateTimePickerComponent from "../../common/DayPicker";
 import type { DataFlight, SearchBookingFlightProps } from "../../utils/type";
-import type { CabinClassType, SearchFlightDto } from "../Admin/Search_layout";
+import type {
+  CabinClassType,
+  SearchFlightDto,
+} from "../Admin/component/Flight/Search_layout";
 import { DateFormatEnum, formatDateKR } from "../../hooks/format";
 
 const BookTicket = () => {

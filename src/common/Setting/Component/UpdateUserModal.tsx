@@ -3,8 +3,9 @@ import { memo, useCallback } from "react";
 import BaseModal from "../../Modal/BaseModal";
 import AddIcon from "@mui/icons-material/Add";
 import FieldRenderer from "../../CustomRender/FieldRenderer";
-import { useUpdateUser } from "./useUpdateUser";
+import { useUpdateUser } from "../hooks/useUpdateUser";
 import type { UserData } from "../../../utils/type";
+import type { UserFormConfig } from "../hooks/useDataSection";
 
 interface IModalStatisticalDataLearningProps {
   open: boolean;
@@ -39,23 +40,29 @@ const UpdateUserModal = ({
   const renderContent = useCallback(() => {
     return (
       <>
-        <Divider sx={{ mb: 2, marginTop: 0, marginBottom: "22px" }} />
-        <Typography variant="body1">데이터 목록</Typography>
-        {formDetailConfig
-          .filter((fieldItem) => !fieldItem.disabled)
-          .map(({ disabled, fields }) => (
-            <Box key={fields.id}>
-              <Typography variant="body1" sx={{ mb: 1 }}>
-                {fields.label}
-              </Typography>
-              <FieldRenderer
-                {...fields}
-                disabled={disabled}
-                value={formData[fields.id as keyof typeof formData] ?? ""}
-                onChange={(val) => handleChange(fields.id, val)}
-              />
-            </Box>
-          ))}
+        {formDetailConfig?.map(
+          (fields, index) =>
+            !fields.visible && (
+              <Box key={index}>
+                <Typography variant="body1" sx={{ mb: 1 }}>
+                  {fields.label}
+                </Typography>
+
+                {fields.fields.map((field, fieldIndex) => (
+                  <FieldRenderer
+                    key={fieldIndex}
+                    type={field.type}
+                    value={formData[field.id as keyof UserFormConfig] ?? ""}
+                    disabled={field.disabled}
+                    options={field.options}
+                    onChange={(val) =>
+                      handleChange(field.id as keyof UserFormConfig, val)
+                    }
+                  />
+                ))}
+              </Box>
+            )
+        )}
       </>
     );
   }, [formDetailConfig, formData]);

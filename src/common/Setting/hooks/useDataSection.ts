@@ -6,23 +6,15 @@ import {
   useFindAllRoles,
 } from "../../../components/Api/useGetApi";
 
-export type UseRCreate = {
+export type UserFormConfig = {
   email: string;
   name?: string;
-  role?: UserRoleType;
-  password: string;
-};
-
-export type UpdateUserForm = {
-  pictureUrl?: string;
-  rank?: string;
-  role?: UserRoleType;
-  name?: string;
-  userAlias?: string;
+  role: UserRoleType;
+  password?: string;
 };
 
 export const useDataSection = (
-  data: Partial<UseRCreate & UpdateUserForm>,
+  data: Partial<UserFormConfig>,
   formType?: "register" | "update",
   isDisable = false
 ): IFormField[] => {
@@ -34,50 +26,59 @@ export const useDataSection = (
 
     const fields: IFormField[] = [
       {
-        fields: {
-          id: "name",
-          label: "Tên đăng nhập",
-          options: [],
-          readOnly: commonDisabled,
-          type: FieldType.INPUT_WITH_TYPE_TEXT,
-          placeholder: "Nhập tên đăng nhập...",
-          value: data.name ?? "",
-          disabled: commonDisabled,
-        },
+        label: "Tên đăng nhập",
+        fields: [
+          {
+            id: "name",
+            options: [],
+            readOnly: commonDisabled,
+            type: FieldType.INPUT_WITH_TYPE_TEXT,
+            placeholder: "Nhập tên đăng nhập...",
+            value: data.name ?? "",
+            disabled: commonDisabled,
+          },
+        ],
       },
       {
-        fields: {
-          id: "password",
-          label: "Mật khẩu",
-          options: [],
-          readOnly: true,
-          type: FieldType.INPUT_WITH_TYPE_PASSWORD,
-          placeholder: "Nhập mật khẩu...",
-          value: data.password ?? "",
-          disabled: commonDisabled,
-        },
+        label: "Mật khẩu",
+        fields: [
+          {
+            id: "password",
+            options: [],
+            readOnly: true,
+            type: FieldType.INPUT_WITH_TYPE_PASSWORD,
+            placeholder: "Nhập mật khẩu...",
+            value: data.password ?? "",
+            disabled: commonDisabled,
+          },
+        ],
       },
       {
-        fields: {
-          id: "email",
-          label: "Email",
-          options: [],
-          readOnly: commonDisabled,
-          type: FieldType.INPUT_WITH_TYPE_TEXT,
-          placeholder: "Nhập email...",
-          value: data.email ?? "",
-          disabled: commonDisabled,
-        },
+        label: "Email",
+        fields: [
+          {
+            id: "email",
+            options: [],
+            readOnly: commonDisabled,
+            type: FieldType.INPUT_WITH_TYPE_TEXT,
+            placeholder: "Nhập email...",
+            value: data.email ?? "",
+            disabled: commonDisabled,
+          },
+        ],
       },
       {
-        fields: {
-          id: "role",
-          type: FieldType.DROPDOWN,
-          placeholder: "Chọn vai trò...",
-          options: roleOptions,
-          value: data.role ?? UserRole.USER,
-          disabled: isDisable, // riêng role chỉ disable khi isDisable true
-        },
+        label: "Role",
+        fields: [
+          {
+            id: "role",
+            type: FieldType.DROPDOWN,
+            placeholder: "Chọn vai trò...",
+            options: roleOptions,
+            value: data.role ?? UserRole.USER,
+            disabled: isDisable, // riêng role chỉ disable khi isDisable true
+          },
+        ],
       },
     ];
 

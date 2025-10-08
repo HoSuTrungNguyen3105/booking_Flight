@@ -10,7 +10,7 @@ import { Controller, useForm } from "react-hook-form";
 import InputTextField from "../../common/Input/InputTextField";
 import { useChangePassword } from "../Api/usePostApi";
 import { memo, useState } from "react";
-import VerifyOpt from "./components/VerifyOpt";
+import VerifyOpt from "./VerifyOpt";
 
 interface FormDataType {
   userId: number;

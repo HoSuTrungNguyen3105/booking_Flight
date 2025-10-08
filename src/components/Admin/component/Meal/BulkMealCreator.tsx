@@ -27,12 +27,10 @@ import {
   CloudUpload as CloudUploadIcon,
   Preview as PreviewIcon,
 } from "@mui/icons-material";
-import theme from "../../../scss/theme";
-import type { Meal } from "../../../utils/type";
-import MealForm from "./InfoMealModal";
-import { useCreateMultiMeal } from "../../Api/usePostApi";
-
-export interface CreateMealDto extends Omit<Meal, "id" | "flightMeals"> {}
+import type { CreateMealDto, Meal } from "../../../../utils/type";
+import { useCreateMultiMeal } from "../../../Api/usePostApi";
+import theme from "../../../../scss/theme";
+import MealForm from "../../../../common/Sample/MealForm";
 
 const BulkMealCreator: React.FC = () => {
   const lastMealRef = useRef<HTMLDivElement>(null);
@@ -210,13 +208,13 @@ const BulkMealCreator: React.FC = () => {
                 key={index}
                 ref={index === meals.length - 1 ? lastMealRef : null}
               >
-                <MealForm
+                {/* <MealForm
                   key={index}
                   meal={meal}
                   index={index}
                   onChange={updateMeal}
                   onRemove={removeMeal}
-                />
+                /> */}
               </Box>
             ))}
 
