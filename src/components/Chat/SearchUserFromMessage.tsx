@@ -30,10 +30,10 @@ const SearchUserFromMessage: React.FC = () => {
   const { user } = useAuth();
   const userId = user?.id;
 
-  const options: DropdownOptions[] = dataUserFromMessage?.list?.map((e)=>{
-    label : e.email,
-    value: e.
-  })
+  //   const options: DropdownOptions[] = dataUserFromMessage?.list?.map((e)=>{
+  //     label : e.email,
+  //     value: e.
+  //   })
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -92,7 +92,7 @@ const SearchUserFromMessage: React.FC = () => {
 
       {/* Result */}
       <Box sx={{ mt: 3 }}>
-         <Dropdown
+        {/* <Dropdown
                   label="Chọn vai trò"
                   options={options}
                   value={selected}
@@ -101,7 +101,32 @@ const SearchUserFromMessage: React.FC = () => {
                   }
                   placeholder="Chọn 1 option"
                   status="confirmed" // icon xanh
-                />
+                /> */}
+        <Dropdown
+          options={[
+            {
+              value: 1,
+              label: (
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <Avatar sx={{ width: 24, height: 24 }}>A</Avatar>
+                  <Typography>Alice - Admin</Typography>
+                </Box>
+              ),
+            },
+            {
+              value: 2,
+              label: (
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <Avatar sx={{ width: 24, height: 24 }}>B</Avatar>
+                  <Typography>Bob - User</Typography>
+                </Box>
+              ),
+            },
+          ]}
+          value={[]}
+          onChange={(val) => console.log(val)}
+        />
+
         {/* {dataUserFromMessage?.resultCode === "00" &&
         Array.isArray(dataUserFromMessage.list) &&
         dataUserFromMessage.list.length > 0 ? (

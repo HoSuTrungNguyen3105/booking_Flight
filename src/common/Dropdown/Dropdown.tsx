@@ -68,45 +68,62 @@ export const Dropdown = ({
       options={options}
       value={value}
       inputValue={readonly ? "" : inputText}
-      getOptionLabel={(option) => option.label || ""}
+      getOptionLabel={(option) =>
+        typeof option.label === "string" ? option.label : ""
+      }
       onOpen={onOpen}
       onClose={onClose}
       onInputChange={(e, val, reason) => {
         if (!readonly && reason === "input") setInputText(val);
       }}
       onChange={(e, newValue) => {
-        setInputText(Array.isArray(newValue) ? "" : newValue?.label || "");
+        setInputText(
+          Array.isArray(newValue) ? "" : (newValue?.label as string) || ""
+        );
         onChange?.(e, newValue);
       }}
       size={size}
       sx={{ minWidth: 200, ...sx }}
-      renderOption={(props, option, { selected }) =>
-        option.value === "string" || "number" ? (
-          <li {...props}>
-            {multiple && (
-              <Checkbox
-                icon={<UncheckedIcon fontSize="small" color="secondary" />}
-                checkedIcon={<CheckedIcon fontSize="small" color="secondary" />}
-                checked={selected}
-                sx={{ mr: 0.5 }}
-              />
-            )}
-            {option.label}
-          </li>
-        ) : (
-          <li {...props}>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              <Avatar>{option.label.charAt(0).toUpperCase()}</Avatar>
-              <Box>
-                <Typography fontWeight={600}>{option.label}</Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {option.value}
-                </Typography>
-              </Box>
-            </Box>
-          </li>
-        )
-      }
+      // renderOption={(props, option, { selected }) =>
+      //   option.label === "string" || "number" ? (
+      //     <li {...props}>
+      //       {multiple && (
+      //         <Checkbox
+      //           icon={<UncheckedIcon fontSize="small" color="secondary" />}
+      //           checkedIcon={<CheckedIcon fontSize="small" color="secondary" />}
+      //           checked={selected}
+      //           sx={{ mr: 0.5 }}
+      //         />
+      //       )}
+      //       {option.label}
+      //     </li>
+      //   ) : (
+      //     <li {...props}>
+      //       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+      //         <Box>
+      //           <Typography fontWeight={600}>{option.label}</Typography>
+      //           <Typography variant="body2" color="text.secondary">
+      //             {option.value}
+      //           </Typography>
+      //         </Box>
+      //       </Box>
+      //     </li>
+      //   )
+      // }
+      renderOption={(props, option, { selected }) => (
+        <li {...props}>
+          {multiple && (
+            <Checkbox
+              icon={<UncheckedIcon fontSize="small" />}
+              checkedIcon={<CheckedIcon fontSize="small" />}
+              checked={selected}
+              sx={{ mr: 1 }}
+            />
+          )}
+          {/* Render ReactNode trực tiếp */}
+          {option.label}
+        </li>
+      )}
       renderInput={(params) => (
         <TextField
           {...params}
