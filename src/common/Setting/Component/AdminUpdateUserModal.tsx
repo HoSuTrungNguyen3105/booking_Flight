@@ -2,7 +2,7 @@ import { Box, Button, Divider, Stack, Typography } from "@mui/material";
 import { memo, useCallback, useState } from "react";
 import BaseModal from "../../Modal/BaseModal";
 import AddIcon from "@mui/icons-material/Add";
-import type { AdminUpdateUserForm, UserData } from "../../../utils/type";
+import type { UserData } from "../../../utils/type";
 import InputTextField from "../../Input/InputTextField";
 
 interface IModalStatisticalDataLearningProps {

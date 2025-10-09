@@ -8,8 +8,8 @@ import {
 } from "@mui/material";
 import { memo, useCallback, useEffect } from "react";
 import AddIcon from "@mui/icons-material/Add";
-import { useGetFlightMealsById } from "../../Api/useGetApi";
-import BaseModal from "../../../common/Modal/BaseModal";
+import { useGetFlightMealsById } from "../../../Api/useGetApi";
+import BaseModal from "../../../../common/Modal/BaseModal";
 
 interface IModalStatisticalDataLearningProps {
   open: boolean;

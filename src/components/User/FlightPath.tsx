@@ -7,10 +7,12 @@ import {
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import type { LatLngTuple } from "leaflet";
+
 type LatLngTupleProps = {
   departureTime?: LatLngTuple;
   arrivalTime?: LatLngTuple;
 };
+
 const FlightPath = ({ departureTime, arrivalTime }: LatLngTupleProps) => {
   const departure: LatLngTuple = [21.2187, 105.8042];
   const arrival: LatLngTuple = [10.8189, 106.6519]; // SGN

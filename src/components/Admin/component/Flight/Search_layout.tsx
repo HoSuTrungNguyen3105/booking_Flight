@@ -25,7 +25,7 @@ import {
   StarBorder as StarBorderIcon,
 } from "@mui/icons-material";
 import FlightDetail from "./FlightDetail.tsx";
-import TableSection from "../../../../common/Setting/TableSection.tsx";
+import TableSection from "../../../../common/CustomRender/TableSection.tsx";
 import ConfirmPasswordToCallApi from "../../../../context/common/ConfirmPasswordToCallApi.tsx";
 import { useToast } from "../../../../context/ToastContext.tsx";
 import type { IDetailItem } from "../../../../common/DetailSection/index.tsx";

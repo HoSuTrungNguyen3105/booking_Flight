@@ -23,6 +23,7 @@ import type {
 import Conversations from "./Conversations";
 import { Filter, Group } from "@mui/icons-material";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import SearchUser from "./SearchUser";
 
 const ChatContainer: React.FC = () => {
   const { user } = useAuth();
@@ -106,6 +107,7 @@ const ChatContainer: React.FC = () => {
   return (
     <Box
       display="flex"
+      padding={0}
       height="90vh"
       sx={{ backgroundColor: "background.default" }}
     >
@@ -113,8 +115,8 @@ const ChatContainer: React.FC = () => {
         elevation={1}
         sx={{
           width: isSidebarOpen ? 320 : 0,
-          overflow: "hidden",
-          transition: "width 0.3s ease-in-out",
+          // overflow: "hidden",
+          // transition: "width 0.3s ease-in-out",
           flexDirection: "column",
           display: "flex",
           borderRadius: 0,
@@ -211,12 +213,12 @@ const ChatContainer: React.FC = () => {
               py: 1.5,
               textTransform: "none",
               fontSize: "0.875rem",
-              "&:hover": {
-                backgroundColor: "grey.50",
-                transform: "translateY(-1px)",
-                boxShadow: theme.shadows[4],
-              },
-              transition: "all 0.2s ease",
+              // "&:hover": {
+              //   backgroundColor: "grey.50",
+              //   transform: "translateY(-1px)",
+              //   boxShadow: theme.shadows[4],
+              // },
+              // transition: "all 0.2s ease",
             }}
           >
             Find Users
@@ -230,7 +232,6 @@ const ChatContainer: React.FC = () => {
           userId={user?.id || 0}
         />
       </Paper>
-
       {/* Main Chat Area */}
       <MessageList
         // toggleSearchPanel={toggleSearchPanel}
@@ -240,6 +241,8 @@ const ChatContainer: React.FC = () => {
         toggleSidebar={toggleSidebar}
         isSidebarOpen={isSidebarOpen}
       />
+
+      {/* <SearchUser onUserSelect={() => {}} isCollapsed={isSearchPanelOpen} /> */}
     </Box>
   );
 };

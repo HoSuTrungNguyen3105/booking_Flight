@@ -2,14 +2,14 @@ import { Skeleton, Box, Typography } from "@mui/material";
 import { FaUser } from "react-icons/fa";
 
 const SidebarSkeleton = () => {
-  const skeletonContacts = Array.from({ length: 8 });
+  const skeletonContacts = Array.from({ length: 10 });
 
   return (
     <Box
       component="aside"
       sx={{
         height: "100%",
-        width: { xs: "80px", lg: "280px" },
+        // width: { xs: "80px", lg: "280px" },
         borderRight: "1px solid",
         borderColor: "divider",
         display: "flex",
@@ -17,33 +17,11 @@ const SidebarSkeleton = () => {
         transition: "all 0.2s",
       }}
     >
-      {/* Header */}
-      <Box
-        sx={{
-          borderBottom: "1px solid",
-          borderColor: "divider",
-          width: "100%",
-          p: 2,
-        }}
-      >
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <FaUser size={24} />
-          <Typography
-            variant="subtitle1"
-            sx={{ fontWeight: 500, display: { xs: "none", lg: "block" } }}
-          >
-            Contacts
-          </Typography>
-        </Box>
-      </Box>
-
-      {/* Skeleton Contacts */}
       <Box
         sx={{
           flex: 1,
           overflowY: "auto",
           width: "100%",
-          py: 1.5,
         }}
       >
         {skeletonContacts.map((_, idx) => (

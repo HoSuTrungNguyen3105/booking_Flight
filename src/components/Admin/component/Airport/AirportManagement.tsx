@@ -16,7 +16,7 @@ import {
 import { useGetAllAirportInfo } from "../../../Api/useGetApi";
 import type { Airport } from "../../../../utils/type";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
-import TableSection from "../../../../common/Setting/TableSection";
+import TableSection from "../../../../common/CustomRender/TableSection";
 import AirportManageModal from "../../modal/AirportManageModal";
 import AirportBatchCreator from "./AirportBatchCreator";
 

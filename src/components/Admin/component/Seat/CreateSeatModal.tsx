@@ -1,10 +1,9 @@
 import { Box, Button, Stack, Typography, FormControl } from "@mui/material";
 import { memo, useCallback, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
-import { type CreateSeatDto } from "../Api/usePostApi";
-import BaseModal from "../../common/Modal/BaseModal";
-import InputTextField from "../../common/Input/InputTextField";
-import { Loading } from "../../common/Loading/Loading";
+import type { CreateSeatDto } from "../../../Api/usePostApi";
+import InputTextField from "../../../../common/Input/InputTextField";
+import BaseModal from "../../../../common/Modal/BaseModal";
 
 interface IModalStatisticalDataLearningProps {
   open: boolean;
@@ -21,7 +20,6 @@ const CreateSeatModal = ({
   flightId,
   onSuccess,
   onChange,
-  loading,
 }: IModalStatisticalDataLearningProps) => {
   const [newSeat, setNewSeat] = useState<CreateSeatDto>({
     seatNumber: 0,
@@ -39,9 +37,9 @@ const CreateSeatModal = ({
     onSuccess(); // Đóng modal
   }, [newSeat, onChange, onSuccess]);
 
-  if (loading) {
-    return <Loading />;
-  }
+  // if (loading) {
+  //   return <Loading />;
+  // }
 
   const renderActions = useCallback(() => {
     return (

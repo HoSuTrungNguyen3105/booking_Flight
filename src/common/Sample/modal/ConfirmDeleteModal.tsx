@@ -20,7 +20,7 @@ import {
 } from "../../../components/Api/usePostApi";
 import { DateFormatEnum, formatDate } from "../../../hooks/format";
 import type { GridColDef } from "@mui/x-data-grid";
-import TableSection from "../../Setting/TableSection";
+import TableSection from "../../CustomRender/TableSection";
 import type { GridRowDef } from "../../DataGrid";
 import type { IDetailItem } from "../../DetailSection";
 import DetailSection from "../../DetailSection";

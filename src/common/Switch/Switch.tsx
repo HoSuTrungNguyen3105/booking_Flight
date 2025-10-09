@@ -2,7 +2,7 @@ import { styled, Switch, Typography, Box } from "@mui/material";
 import type { Android12SwitchProps } from "./type";
 
 const Android12Switch = ({
-  color = "#1976d2", // default màu xanh MUI
+  color = "#1976d2",
   label,
   switchProps,
   hasLabel = false,

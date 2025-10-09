@@ -8,11 +8,11 @@ import {
 } from "@mui/material";
 import { memo, useCallback, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
-import BaseModal from "../../common/Modal/BaseModal";
-import InputTextField from "../../common/Input/InputTextField";
-import SelectDropdown from "../../common/Dropdown/SelectDropdown";
-import { useSeatUpdateByIds } from "../Api/usePostApi";
-import Android12Switch from "../../common/Switch/Switch";
+import BaseModal from "../../../../common/Modal/BaseModal";
+import InputTextField from "../../../../common/Input/InputTextField";
+import SelectDropdown from "../../../../common/Dropdown/SelectDropdown";
+import { useSeatUpdateByIds } from "../../../Api/usePostApi";
+import Android12Switch from "../../../../common/Switch/Switch";
 
 interface IModalStatisticalDataLearningProps {
   open: boolean;

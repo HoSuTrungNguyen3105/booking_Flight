@@ -1,7 +1,7 @@
 import { Chair, StarHalfSharp, Wc, Window } from "@mui/icons-material";
 import { Box, Card, styled, Typography, useMediaQuery } from "@mui/material";
 import React, { memo, useCallback } from "react";
-import theme from "../../scss/theme";
+import theme from "../../../../scss/theme";
 
 type LegendItemProps = {
   color: string;
@@ -9,7 +9,7 @@ type LegendItemProps = {
   icon?: React.ReactNode;
 };
 
-const BookingCard = styled(Card)(({ theme }) => ({
+const BookingCard = styled(Card)(() => ({
   height: "5rem",
   marginBottom: theme.spacing(2),
   paddingTop: "8px",

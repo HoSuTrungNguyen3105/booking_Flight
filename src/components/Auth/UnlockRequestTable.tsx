@@ -3,7 +3,7 @@ import type { GridColDef } from "@mui/x-data-grid";
 import TableData, { type GridRowDef } from "../../common/DataGrid/index";
 import { useGetUnlockRequests } from "../Api/useGetApi";
 import { useCallback, useMemo, useState } from "react";
-import TableSection from "../../common/Setting/TableSection";
+import TableSection from "../../common/CustomRender/TableSection";
 
 enum TypeColor {
   REJECTED = "REJECTED",

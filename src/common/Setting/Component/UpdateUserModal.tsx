@@ -1,4 +1,4 @@
-import { Box, Button, Divider, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { memo, useCallback } from "react";
 import BaseModal from "../../Modal/BaseModal";
 import AddIcon from "@mui/icons-material/Add";
@@ -7,7 +7,7 @@ import { useUpdateUser } from "../hooks/useUpdateUser";
 import type { UserData } from "../../../utils/type";
 import type { UserFormConfig } from "../hooks/useDataSection";
 
-interface IModalStatisticalDataLearningProps {
+interface IUpdateUserModalProps {
   open: boolean;
   onClose: () => void;
   onSuccess: () => void;
@@ -19,7 +19,7 @@ const UpdateUserModal = ({
   open,
   onClose,
   onSuccess,
-}: IModalStatisticalDataLearningProps) => {
+}: IUpdateUserModalProps) => {
   const { formDetailConfig, formData, handleChange, handleSubmit } =
     useUpdateUser({
       onClose,

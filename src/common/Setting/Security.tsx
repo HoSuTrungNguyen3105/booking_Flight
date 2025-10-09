@@ -11,7 +11,7 @@ const Security = () => {
     {
       label: "Security",
       value: "auto",
-      content: <Box width={"20rem"}></Box>,
+      content: <Box width={"20rem"} />,
     },
     {
       label: "InspectionSection",

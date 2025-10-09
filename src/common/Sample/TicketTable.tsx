@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Box, Chip, Typography, Stack } from "@mui/material";
 import type { GridColDef } from "@mui/x-data-grid";
-import TableSection from "../Setting/TableSection";
+import TableSection from "../CustomRender/TableSection";
 import type { Baggage } from "../../utils/type";
 import { useGetAllTicketInfo } from "../../components/Api/useGetApi";
 import { DateFormatEnum, formatDate } from "../../hooks/format";

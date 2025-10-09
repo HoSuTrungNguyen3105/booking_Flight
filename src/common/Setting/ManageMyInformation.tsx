@@ -4,7 +4,7 @@ import DataAccessPermissionSection from "./DataAccessPermissionSection";
 import DialogConfirm from "../Modal/DialogConfirm";
 import UserInfoSection from "./UserInfoSection";
 import { type UserData, type UserUpdateProps } from "../../utils/type";
-import TransferAuthoritySection from "./hooks/TransferAuthoritySection";
+import TransferAuthoritySection from "./Component/TransferAuthoritySection";
 import { useAuth } from "../../context/AuthContext";
 import { useUpdateUserInfo } from "../../components/Api/usePostApi";
 import type { TFileUploader } from "../FileUploader/type";

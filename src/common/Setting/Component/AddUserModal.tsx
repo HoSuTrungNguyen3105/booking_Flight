@@ -1,4 +1,4 @@
-import { Box, Button, Divider, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { memo, useCallback } from "react";
 import BaseModal from "../../Modal/BaseModal";
 import AddIcon from "@mui/icons-material/Add";
@@ -6,17 +6,13 @@ import FieldRenderer from "../../CustomRender/FieldRenderer";
 import { useCreateUser } from "../hooks/useCreateUser";
 import type { UserFormConfig } from "../hooks/useDataSection";
 
-interface IModalStatisticalDataLearningProps {
+interface IAddUserModalProps {
   open: boolean;
   onClose: () => void;
   onSuccess: () => void;
 }
 
-const AddUserModal = ({
-  open,
-  onClose,
-  onSuccess,
-}: IModalStatisticalDataLearningProps) => {
+const AddUserModal = ({ open, onClose, onSuccess }: IAddUserModalProps) => {
   const { formDetailConfig, updateInfo, error, handleChange, handleSubmit } =
     useCreateUser({
       onClose,

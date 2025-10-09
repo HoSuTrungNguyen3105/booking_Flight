@@ -1,11 +1,14 @@
 import { Box, Button, Grid, FormControlLabel } from "@mui/material";
 import { memo, useCallback } from "react";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
-import BaseModal from "../../../common/Modal/BaseModal";
-import InputTextField from "../../../common/Input/InputTextField";
-import type { Seat } from "../../../utils/type";
-import { useSeatUpdateByIds, type SeatTypeValue } from "../../Api/usePostApi";
-import Android12Switch from "../../../common/Switch/Switch";
+import BaseModal from "../../../../common/Modal/BaseModal";
+import InputTextField from "../../../../common/Input/InputTextField";
+import type { Seat } from "../../../../utils/type";
+import {
+  useSeatUpdateByIds,
+  type SeatTypeValue,
+} from "../../../Api/usePostApi";
+import Android12Switch from "../../../../common/Switch/Switch";
 
 interface ISeatModalProps {
   open: boolean;

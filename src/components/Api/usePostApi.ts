@@ -326,6 +326,32 @@ export const useFindPassengerById = () => {
   });
   return { dataPassengerById, refetchPassengerById };
 };
+export type SearchEmailFromSidebarMessageReq = {
+  email: string;
+  id: number;
+};
+
+export type SearchEmailFromSidebarMessageRes = {
+  email: string;
+  id: number;
+  name: string;
+  employeeNo: string;
+  role: string;
+};
+
+export const useFindUserFromMessage = () => {
+  const { data: dataUserFromMessage, refetch: refetchUserFromMessage } =
+    useFetch<
+      DetailResponseMessage<SearchEmailFromSidebarMessageRes>,
+      SearchEmailFromSidebarMessageReq
+    >({
+      url: "sys/users/findUserFromMessage",
+      autoFetch: false, // thường search thì gọi khi cần
+      config: postMethod,
+    });
+
+  return { dataUserFromMessage, refetchUserFromMessage };
+};
 
 type LoginData = {
   email: string;

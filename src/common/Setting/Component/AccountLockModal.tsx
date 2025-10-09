@@ -1,9 +1,9 @@
 import { Box, Button, Divider, Typography } from "@mui/material";
 import { memo, useCallback } from "react";
 import AddIcon from "@mui/icons-material/Add";
-import { useLockAccount } from "./hooks/useLockAccount";
-import type { UserData } from "../../utils/type";
-import BaseModal from "../Modal/BaseModal";
+import { useLockAccount } from "../hooks/useLockAccount";
+import type { UserData } from "../../../utils/type";
+import BaseModal from "../../Modal/BaseModal";
 
 interface IModalStatisticalDataLearningProps {
   open: boolean;

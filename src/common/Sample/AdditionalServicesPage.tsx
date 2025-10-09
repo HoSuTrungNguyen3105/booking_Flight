@@ -17,7 +17,7 @@ import type {
   GridRowId,
 } from "@mui/x-data-grid";
 import DataTable from "../DataGrid/index";
-import TableSection from "../Setting/TableSection";
+import TableSection from "../CustomRender/TableSection";
 const getBaggageStatusStyle = (status: string) => {
   switch (status) {
     case "CHECKED_IN":

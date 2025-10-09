@@ -1,6 +1,6 @@
 import { createBrowserRouter, type RouteObject } from "react-router-dom";
 import MainLayout from "../components/Layout/MainLayout";
-import ErrorPage from "../components/Layout/ErrorPage";
+import ErrorPage from "../components/Layout/ErrorLayout";
 import Guard from "../guard/Guard";
 import { FileUpload } from "../common/FileUploader";
 import Hero from "../components/Hero/Hero";
@@ -12,8 +12,8 @@ import GuestGuard from "../components/Layout/GuardLayout";
 import { LoginPage } from "../components/Auth/LoginPage";
 import Security from "../common/Setting/Security";
 import FullLayout from "../components/Layout/FullLayout";
-import MealList from "../components/User/MealList";
-import SecurityManage from "../common/Setting/hooks/SecurityManage";
+import MealList from "../components/Admin/component/Meal/MealList";
+import SecurityManage from "../common/Setting/Component/SecurityManage";
 import ManageMyInformation from "../common/Setting/ManageMyInformation";
 import ManageMyInfo from "../common/Setting/ManageMyInfo";
 import AircraftPage from "../components/Admin/component/Aircraft/AircraftPage";

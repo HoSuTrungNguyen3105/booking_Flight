@@ -1,11 +1,11 @@
 import { Box, Button, Divider, Typography, TextField } from "@mui/material";
 import { memo, useCallback, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
-import type { UserData } from "../../utils/type";
-import BaseModal from "../Modal/BaseModal";
-import { useDeleteUserById } from "../../components/Api/usePostApi";
+import type { UserData } from "../../../utils/type";
+import BaseModal from "../../Modal/BaseModal";
+import { useDeleteUserById } from "../../../components/Api/usePostApi";
 
-interface IModalStatisticalDataLearningProps {
+interface IDeleteAccountModalProps {
   open: boolean;
   onClose: () => void;
   onSuccess: () => void;
@@ -17,7 +17,7 @@ const DeleteAccountModal = ({
   onClose,
   onSuccess,
   user,
-}: IModalStatisticalDataLearningProps) => {
+}: IDeleteAccountModalProps) => {
   const { refetchDeleteUser } = useDeleteUserById();
   const [inputId, setInputId] = useState<string>("");
 

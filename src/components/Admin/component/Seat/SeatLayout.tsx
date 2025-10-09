@@ -24,9 +24,9 @@ import ButtonSeat from "./ButtonSeat";
 import type { Seat } from "../../../../utils/type";
 import { Chair, LocalAirport, RestartAlt } from "@mui/icons-material";
 import { type SeatUpdateProps } from "../../../Api/usePostApi";
-import SeatManagementModal from "../../../User/SeatManagementModal";
-import CreateSeat from "../../../User/CreateSeat";
-import InfoAndUpdateSeatModal from "../../modal/InfoAndUpdateSeatModal";
+import SeatManagementModal from "./SeatManagementModal";
+import CreateSeat from "./CreateSeat";
+import InfoAndUpdateSeatModal from "./InfoAndUpdateSeatModal";
 import { useToast } from "../../../../context/ToastContext";
 
 type FlightIdProps = {

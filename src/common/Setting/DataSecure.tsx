@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import type { GridRowDef } from "../DataGrid";
 import { Box, Button, Typography } from "@mui/material";
-import TableSection from "./TableSection";
+import TableSection from "../CustomRender/TableSection";
 import type { GridColDef } from "@mui/x-data-grid";
 import theme from "../../scss/theme";
 import { useFindPassengerById } from "../../components/Api/usePostApi";

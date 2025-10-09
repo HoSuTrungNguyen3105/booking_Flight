@@ -1,14 +1,14 @@
 import { useMemo, useState, useEffect, useCallback } from "react";
 import { type GridColDef, type GridRowId } from "@mui/x-data-grid";
-import { useGetFlightData, useGetMeal } from "../Api/useGetApi";
+import { useGetFlightData, useGetMeal } from "../../../Api/useGetApi";
 import { Box, Button, Typography } from "@mui/material";
-import { type GridRowDef } from "../../common/DataGrid/index";
-import { DateFormatEnum, formatDateKR } from "../../hooks/format";
-import FlightModalTriggerManagement from "../../common/Setting/FlightModalTriggerManagement";
-import TableSection from "../../common/Setting/TableSection";
+import { type GridRowDef } from "../../../../common/DataGrid/index";
+import { DateFormatEnum, formatDateKR } from "../../../../hooks/format";
+import FlightModalTriggerManagement from "../../../../common/Setting/FlightModalTriggerManagement";
+import TableSection from "../../../../common/CustomRender/TableSection";
 // import SeatBooking from "./SeatBooking";
-import SeatLayout from "../Admin/component/Seat/SeatLayout";
-import MealFlightRelation from "./Security/MealFlightRelation";
+import SeatLayout from "../Seat/SeatLayout";
+import MealFlightRelation from "./MealFlightRelation";
 
 export default function MealList() {
   const { flightBookingData, loadingFlightBookingData } = useGetMeal();

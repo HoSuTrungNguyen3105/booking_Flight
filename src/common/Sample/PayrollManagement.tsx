@@ -27,7 +27,7 @@ import {
 } from "@mui/x-data-grid";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { type GridRowDef } from "../../common/DataGrid/index";
-import TableSection from "../Setting/TableSection";
+import TableSection from "../CustomRender/TableSection";
 import CreatePayrollModal from "./modal/CreatePayrollModal";
 import { useGetPayrollData } from "../../components/Api/useGetApi";
 import SelectDropdown, { type ActionType } from "../Dropdown/SelectDropdown";

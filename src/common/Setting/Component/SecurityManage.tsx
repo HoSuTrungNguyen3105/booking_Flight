@@ -5,7 +5,6 @@ import InspectionSection from "../../CustomRender/InspectionSection";
 import type { GridColDef } from "@mui/x-data-grid";
 import { Typography } from "@mui/material";
 import { DateFormatEnum, formatDate } from "../../../hooks/format";
-import { useNavigate } from "react-router-dom";
 import type { GridRowDef } from "../../DataGrid";
 import { useFindAllPassenger } from "../../../components/Api/useGetApi";
 import DataSecure from "../DataSecure";
@@ -92,14 +91,12 @@ const SecurityManage = () => {
     return <DataSecure returnButton={handleReturn} passenger={passengerId} />;
 
   return (
-    <div>
-      <SearchLayout
-        onChangeTab={setTab}
-        activeTab={tabX}
-        title="Layout"
-        tabs={tabs}
-      />
-    </div>
+    <SearchLayout
+      onChangeTab={setTab}
+      activeTab={tabX}
+      title="Layout"
+      tabs={tabs}
+    />
   );
 };
 
