@@ -4,6 +4,9 @@ import {
   TextField,
   InputAdornment,
   Checkbox,
+  Box,
+  Avatar,
+  Typography,
 } from "@mui/material";
 import {
   CheckBoxOutlineBlank as UncheckedIcon,
@@ -77,19 +80,33 @@ export const Dropdown = ({
       }}
       size={size}
       sx={{ minWidth: 200, ...sx }}
-      renderOption={(props, option, { selected }) => (
-        <li {...props}>
-          {multiple && (
-            <Checkbox
-              icon={<UncheckedIcon fontSize="small" color="secondary" />}
-              checkedIcon={<CheckedIcon fontSize="small" color="secondary" />}
-              checked={selected}
-              sx={{ mr: 0.5 }}
-            />
-          )}
-          {option.label}
-        </li>
-      )}
+      renderOption={(props, option, { selected }) =>
+        option.value === "string" || "number" ? (
+          <li {...props}>
+            {multiple && (
+              <Checkbox
+                icon={<UncheckedIcon fontSize="small" color="secondary" />}
+                checkedIcon={<CheckedIcon fontSize="small" color="secondary" />}
+                checked={selected}
+                sx={{ mr: 0.5 }}
+              />
+            )}
+            {option.label}
+          </li>
+        ) : (
+          <li {...props}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Avatar>{option.label.charAt(0).toUpperCase()}</Avatar>
+              <Box>
+                <Typography fontWeight={600}>{option.label}</Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {option.value}
+                </Typography>
+              </Box>
+            </Box>
+          </li>
+        )
+      }
       renderInput={(params) => (
         <TextField
           {...params}

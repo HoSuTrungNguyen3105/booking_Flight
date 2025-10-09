@@ -24,7 +24,7 @@ import { GridMenuIcon } from "@mui/x-data-grid";
 import { ImageThumbnail } from "../IconComponent/ImageThumbnail";
 import CustomPopover from "../Button/Popover";
 import { Login } from "@mui/icons-material";
-import LanguageButton from "../Dropdown/ChangeLanguageSelect";
+import LanguageButton from "../CustomRender/ChangeLanguageSelect";
 
 export const Header = () => {
   const navItems = ["About", "Package", "Contact"];

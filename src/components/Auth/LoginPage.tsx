@@ -252,7 +252,7 @@ export const LoginPage: React.FC = () => {
     >
       <Box
         sx={{
-          width: "40rem",
+          width: "30rem",
           mx: "auto",
           border: `1px solid ${theme.palette.grey[200]}`,
           borderRadius: 2,

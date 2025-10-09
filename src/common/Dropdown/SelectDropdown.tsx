@@ -98,7 +98,11 @@ const SelectDropdown: FC<OptionSelectDropdownProps> = ({
         }}
         renderValue={(selected) => {
           if (!selected) {
-            return <em style={{ color: "grey" }}>{placeholder}</em>;
+            return (
+              <Typography variant="body2" sx={{ color: "grey" }}>
+                {placeholder}
+              </Typography>
+            );
           }
           const option = options.find((o) => o.value === selected);
           return option ? option.label : String(selected);

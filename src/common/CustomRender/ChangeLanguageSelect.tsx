@@ -2,7 +2,7 @@ import { Box, Typography } from "@mui/material";
 import { memo, useCallback } from "react";
 import CustomPopover from "../Button/Popover";
 import { useChangeLanguage } from "../../context/use[custom]/useChangeLng";
-import SelectDropdown from "./SelectDropdown";
+import SelectDropdown from "../Dropdown/SelectDropdown";
 import { useTranslation } from "react-i18next";
 
 const LanguageButton = () => {

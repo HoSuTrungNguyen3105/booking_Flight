@@ -85,5 +85,12 @@ export const vi = {
     username: "Tên đăng nhập",
     password: "Mật khẩu",
     submit: "Gửi",
+
+    hero: {
+      title: "Chào mừng đến với Hệ thống Nội bộ",
+      subtitle: "Nền tảng kết nối và hỗ trợ nhân viên toàn công ty",
+      description:
+        "Nơi cung cấp thông tin, tài nguyên và công cụ làm việc cần thiết cho mọi nhân viên",
+    },
   },
 };

@@ -107,7 +107,7 @@ const Conversations = ({
           <Search />
         </Button>
       </Box>
-      {loading && <SidebarSkeleton />}
+      {/* {loading && <SidebarSkeleton />} */}
       {data?.resultCode === "00" && (
         <List sx={{ py: 0, height: "100%", overflow: "auto" }}>
           {filteredUsers?.map((conv, index) => (

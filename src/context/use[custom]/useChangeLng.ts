@@ -2,8 +2,9 @@ import { useState } from "react";
 import type { DropdownOptions } from "../../common/Dropdown/type";
 import i18n from "../../i18n";
 import { optionLanguage } from "../../i18n/resource";
+import type { ActionType } from "../../common/Dropdown/SelectDropdown";
 
-const currencyOptions: DropdownOptions[] = [
+const currencyOptions: ActionType[] = [
   { label: "USD ($)", value: "usd" },
   { label: "KRW (₩)", value: "krw" },
   { label: "JPY (¥)", value: "jpy" },
@@ -11,21 +12,21 @@ const currencyOptions: DropdownOptions[] = [
 ];
 
 export const useChangeLanguage = () => {
-  const [selectedLang, setSelectedLang] = useState<DropdownOptions | null>(
+  const [selectedLang, setSelectedLang] = useState<ActionType | null>(
     optionLanguage.find((o) => o.value === localStorage.getItem("language")) ||
       null
   );
 
-  const [selectedPayMoney, setSelectedPayMoney] =
-    useState<DropdownOptions | null>(
-      currencyOptions.find(
-        (o) => o.value === localStorage.getItem("currencyOptions")
-      ) || currencyOptions[0]
-    );
+  const [selectedPayMoney, setSelectedPayMoney] = useState<ActionType | null>(
+    currencyOptions.find(
+      (o) => o.value === localStorage.getItem("currencyOptions")
+    ) || currencyOptions[0]
+  );
 
-  const [pendingLang, setPendingLang] = useState<DropdownOptions | null>(null);
-  const [pendingPayMoney, setPendingPayMoney] =
-    useState<DropdownOptions | null>(null);
+  const [pendingLang, setPendingLang] = useState<ActionType | null>(null);
+  const [pendingPayMoney, setPendingPayMoney] = useState<ActionType | null>(
+    null
+  );
 
   const handleLanguageSelect = (newValue: string | number) => {
     const selected = optionLanguage.find((o) => o.value === newValue);

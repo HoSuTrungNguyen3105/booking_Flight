@@ -37,20 +37,19 @@ const AircraftBatchCreator = ({ onSuccess }: ReturnProps) => {
     setAircrafts([...aircrafts, { code: "", model: "", range: 0 }]);
   };
 
-  const { getAircraftCodeData, refetchGetAircraftCodeData } =
-    useGetAircraftCode();
-  const [aircraftCodeState, setAircraftCodeState] = useState<string>("");
-  const [pageDetail, setPageDetail] = useState(false);
+  const { refetchGetAircraftCodeData } = useGetAircraftCode();
+  // const [aircraftCodeState, setAircraftCodeState] = useState<string>("");
+  // const [pageDetail, setPageDetail] = useState(false);
   const [toggleOpenModal, setToggleOpenModal] = useState(false);
   const [selectedCode, setSelectedCode] = useState<string>("");
 
   const { refetchDeleteAircraftFlight, loadingDeleteAircraftFlight } =
     useDeleteAircraftFlight(selectedCode);
 
-  const handleViewSeats = (code: string) => {
-    setAircraftCodeState(code);
-    setPageDetail(true);
-  };
+  // const handleViewSeats = (code: string) => {
+  //   setAircraftCodeState(code);
+  //   setPageDetail(true);
+  // };
 
   const handleDeleteAircraft = useCallback(async () => {
     setToggleOpenModal(false);

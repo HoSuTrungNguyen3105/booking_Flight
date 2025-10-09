@@ -1,9 +1,10 @@
 import type { AutocompleteCloseReason, SxProps } from "@mui/material";
+import type { ReactNode } from "react";
 
 export type DropdownOptions = {
   label: string;
-  value: string | number;
-  [key: string]: any;
+  value: string | number | ReactNode;
+  // [key: string]: any;
 };
 
 export type DropdownStatus = "error" | "confirmed" | "warning" | "default";

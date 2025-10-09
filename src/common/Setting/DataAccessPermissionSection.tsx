@@ -1,4 +1,4 @@
-import { CheckCircle } from "@mui/icons-material";
+import { CheckCircle, Info } from "@mui/icons-material";
 import {
   Box,
   List,
@@ -11,11 +11,9 @@ import { memo } from "react";
 
 const DataAccessPermissionSection = () => {
   const serviceTypes = [
-    { label: "Dữ liệu chuyến bay", color: "primary" },
-    { label: "Dữ liệu sân bay", color: "secondary" },
-    { label: "Dữ liệu máy bay", color: "success" },
-    { label: "Quản lý nhân viên", color: "warning" },
-    { label: "Hệ thống đặt vé", color: "error" },
+    { label: "Dữ liệu chuyến bay", color: "#1976d2" },
+    { label: "Dữ liệu sân bay", color: "#ff0000" },
+    { label: "Dữ liệu máy bay", color: "#00ff00" },
   ];
 
   return (
@@ -68,7 +66,7 @@ const DataAccessPermissionSection = () => {
               }}
             >
               <ListItemIcon>
-                <CheckCircle color={service.color as any} />
+                <CheckCircle sx={{ color: service.color }} />
               </ListItemIcon>
               <ListItemText primary={service.label} />
             </ListItem>

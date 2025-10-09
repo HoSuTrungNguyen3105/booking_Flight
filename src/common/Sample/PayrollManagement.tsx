@@ -5,10 +5,7 @@ import {
   Button,
   Chip,
   Stack,
-  MenuItem,
   FormControl,
-  InputLabel,
-  Select,
 } from "@mui/material";
 import {
   AttachMoney,
@@ -16,8 +13,6 @@ import {
   Visibility,
   Download,
   CheckCircle,
-  IosShareRounded,
-  MarkEmailRead,
   VisibilityOff,
 } from "@mui/icons-material";
 import {
@@ -25,7 +20,7 @@ import {
   type GridColDef,
   type GridRowId,
 } from "@mui/x-data-grid";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { type GridRowDef } from "../../common/DataGrid/index";
 import TableSection from "../CustomRender/TableSection";
 import CreatePayrollModal from "./modal/CreatePayrollModal";
@@ -34,6 +29,8 @@ import SelectDropdown, { type ActionType } from "../Dropdown/SelectDropdown";
 import { DateFormatEnum, formatDate } from "../../hooks/format";
 import InfoPayrollModal from "./modal/InfoPayrollModal";
 import FormRow from "../CustomRender/FormRow";
+import type { DropdownOption } from "../Dropdown/MultiDropdown";
+import MultiDropdown from "../Dropdown/MultiDropdown";
 
 export type EmployeeType = {
   id: number;
@@ -285,9 +282,9 @@ const PayrollManagement = () => {
     []
   );
 
-  const handleOpenModalInfo = useCallback(() => {
-    console.log("open", selectedPayrollRows);
-  }, [selectedPayrollRows]);
+  // const handleOpenModalInfo = useCallback(() => {
+  //   console.log("open", selectedPayrollRows);
+  // }, [selectedPayrollRows]);
 
   const handleMealRowSelection = (selectedIds: GridRowId[]) => {
     setSelectedPayrollRows((prev) => {
@@ -297,6 +294,15 @@ const PayrollManagement = () => {
       return newSelectedRows;
     });
   };
+
+  const [selectedOptions, setSelectedOptions] = useState<DropdownOption[]>([]);
+
+  const optionsDropdown: DropdownOption[] = [
+    { label: "Chuyến bay nội địa", value: "domestic" },
+    { label: "Chuyến bay quốc tế", value: "international" },
+    { label: "Máy bay Airbus A320", value: "airbus-a320" },
+    { label: "Máy bay Boeing 787", value: "boeing-787" },
+  ];
 
   // useEffect(() => {
   //   setSelectedPayrollRows((prev) =>
@@ -337,6 +343,19 @@ const PayrollManagement = () => {
             >
               Tạo Bảng Lương Mới
             </Button>
+
+            <MultiDropdown
+              label="Chọn dịch vụ"
+              placeholder="Chọn chuyến bay..."
+              options={optionsDropdown}
+              value={selectedOptions}
+              onChange={(newValue) => setSelectedOptions(newValue)}
+              helperText={
+                selectedOptions.length === 0
+                  ? "Bạn chưa chọn dịch vụ nào"
+                  : `Đã chọn ${selectedOptions.length} dịch vụ`
+              }
+            />
 
             <FormControl sx={{ minWidth: 150 }}>
               <FormRow direction="column" label="Tháng">

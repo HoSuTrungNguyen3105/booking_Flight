@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { Box, Button, Grid, Divider, Paper } from "@mui/material";
+import { Box, Button, Grid, Divider, Paper, Typography } from "@mui/material";
 import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import SelectDropdown, {
   type ActionType,
@@ -128,6 +128,9 @@ const CreateGateForm = ({
     try {
       const cleaned = formData.filter((g) => g.code.trim() !== "");
       const res = await refetchCreateBatchGate(cleaned);
+      console.log("re", res);
+      console.log("cleaned", cleaned);
+
       if (res?.resultCode === "00") {
         onSuccess();
         onClose();
@@ -161,17 +164,7 @@ const CreateGateForm = ({
               flexWrap: "wrap",
             }}
           >
-            {/* <Button
-              variant="outlined"
-              onClick={handleReset}
-              disabled={isSubmitting}
-              startIcon={<CloseIcon />}
-              sx={{ borderRadius: 2, px: 3 }}
-            >
-              Đặt lại
-            </Button> */}
             <Button
-              // type="submit"
               onClick={handleSubmit}
               variant="contained"
               startIcon={!isSubmitting ? <AddIcon /> : <Loading />}
@@ -188,7 +181,7 @@ const CreateGateForm = ({
 
   const renderContent = useCallback(() => {
     return (
-      <Paper sx={{ p: 2 }}>
+      <Paper sx={{ p: 2, overflow: "auto", height: "10rem" }}>
         {mode === "create" ? (
           <>
             {formData.map((gate, index) => (
@@ -210,9 +203,9 @@ const CreateGateForm = ({
                     onChange={(v) => handleChange(index, "code", v)}
                   />
                 </Grid>
-                <Grid size={4}>
-                  <InputTextField value={gate.terminalId} disabled />
-                </Grid>
+                {/* <Grid size={4}>
+                  <Typography variant="body1">{terminalId}</Typography>
+                </Grid> */}
                 <Grid size={4}>
                   <SelectDropdown
                     value={gate.status}
@@ -227,6 +220,8 @@ const CreateGateForm = ({
                 </Grid>
               </Grid>
             ))}
+
+            <Typography variant="body1">Terminal :{terminalId}</Typography>
 
             <Button
               onClick={handleAddGate}

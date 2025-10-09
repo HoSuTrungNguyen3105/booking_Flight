@@ -4,6 +4,7 @@ import { en } from "./en";
 import { jp } from "./jp";
 import { vi } from "./vi";
 import { ko } from "./ko";
+import type { ActionType } from "../common/Dropdown/SelectDropdown";
 
 export const resources = {
   vi,
@@ -12,7 +13,7 @@ export const resources = {
   ko,
 };
 
-export const optionLanguage: DropdownOptions[] = Object.entries(locales).map(
+export const optionLanguage: ActionType[] = Object.entries(locales).map(
   ([value, label]) => ({
     value,
     label,

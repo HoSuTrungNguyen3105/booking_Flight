@@ -163,7 +163,7 @@ export const useInspectionPerformanceHistory = () => {
           value="관리"
           onChange={(value) => handleSelectAction(row, value as ActionType)}
           options={[
-            { label: "정보 수정", value: "addUser" },
+            // { label: "정보 수정", value: "addUser" },
             { label: "정보 수정", value: "editUser" },
             { label: "MFA 설정 삭제", value: "deleteMfaSettings" },
             { label: "잠금/해금", value: "lock_unlockAccount" },

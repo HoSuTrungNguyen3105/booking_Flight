@@ -1,8 +1,20 @@
 import type { ReactNode } from "react";
-import { AccountCircle } from "@mui/icons-material";
-import GppBadIcon from "@mui/icons-material/GppBad";
-import WifiPasswordRoundedIcon from "@mui/icons-material/WifiPasswordRounded";
-import OtherHousesTwoToneIcon from "@mui/icons-material/OtherHousesTwoTone";
+import {
+  AccountCircle,
+  GppBad,
+  WifiPasswordRounded,
+  OtherHousesTwoTone,
+  FlightTakeoff,
+  Apartment,
+  Groups,
+  BusinessCenter,
+  Email,
+  Notifications,
+  BarChart,
+  Restaurant,
+  Home,
+  Forum,
+} from "@mui/icons-material";
 
 type SideBarValueTypes =
   | "security"
@@ -87,48 +99,44 @@ export const menuData: MenuSection[] = [
         subItems: [
           {
             id: "sampleFileUploader",
-            label: "FileUploader",
+            label: "Tải file",
             icon: <AccountCircle />,
           },
-          { id: "TerminalContainer", label: " TerminalContainer" },
-          { id: "ChatApp", label: "ChatApp" },
-          { id: "facilities", label: "facilities" },
-          { id: "TicketSalesDashboard", label: "food", icon: <GppBadIcon /> },
-          { id: "notifications", label: "notifications", icon: <GppBadIcon /> },
           {
-            id: "service",
-            label: "service",
-            icon: <WifiPasswordRoundedIcon />,
+            id: "TerminalContainer",
+            label: "Quản lý Terminal",
+            icon: <Apartment />,
           },
+          { id: "ChatApp", label: "Trò chuyện", icon: <Forum /> },
+          { id: "facilities", label: "Cơ sở vật chất", icon: <Home /> },
+          {
+            id: "TicketSalesDashboard",
+            label: "Thống kê vé",
+            icon: <BarChart />,
+          },
+          { id: "notifications", label: "Thông báo", icon: <Notifications /> },
+          { id: "service", label: "Dịch vụ", icon: <WifiPasswordRounded /> },
           {
             id: "manage-my-info",
-            label: "Chuyến bay hôm nay",
-            icon: <GppBadIcon />,
+            label: "Thông tin cá nhân",
+            icon: <AccountCircle />,
           },
-          {
-            id: "setting",
-            label: "Bảng mẫu",
-            icon: <OtherHousesTwoToneIcon />,
-          },
+          { id: "setting", label: "Cài đặt", icon: <OtherHousesTwoTone /> },
           {
             id: "payroll-management",
-            label: "payroll-management",
-            icon: <OtherHousesTwoToneIcon />,
+            label: "Quản lý lương",
+            icon: <BusinessCenter />,
           },
           {
             id: "TerminalGateContainer",
-            label: "TerminalGateContainer",
-            icon: <OtherHousesTwoToneIcon />,
+            label: "Quản lý Gate",
+            icon: <Apartment />,
           },
-          {
-            id: "CreateGateForm",
-            label: "CreateGateForm",
-            icon: <GppBadIcon />,
-          },
+          { id: "CreateGateForm", label: "Tạo Gate", icon: <GppBad /> },
           {
             id: "BulkMealCreator",
-            label: "BulkMealCreator",
-            icon: <GppBadIcon />,
+            label: "Tạo suất ăn hàng loạt",
+            icon: <Restaurant />,
           },
         ],
       },
@@ -143,20 +151,52 @@ export const menuData: MenuSection[] = [
         subItems: [
           {
             id: "airport-list",
-            label: "Danh sách",
+            label: "Danh sách sân bay",
             subItems: [
-              { id: "flightmeals", label: "Nhân viên" },
-              { id: "domestic", label: "Nội địa" },
-              { id: "FlightStatisticsPage", label: "FlightStatisticsPage" },
-              { id: "bookticket", label: "book ticket" },
-              { id: "international", label: "Quốc tế" },
-              { id: "ChatApp", label: "ChatApp" },
-              { id: "hero", label: "hero" },
-              { id: "sampleDatePicker", label: "secure" },
-              { id: "payroll-management", label: "Quản lý bảng lương" },
-              { id: "TerminalContainer", label: "ChatApp" },
-              { id: "AirportManagementDetail", label: "secure" },
-              { id: "AirportManagement", label: "Quản lý bảng lương" },
+              { id: "flightmeals", label: "Suất ăn", icon: <Restaurant /> },
+              {
+                id: "domestic",
+                label: "Chuyến bay nội địa",
+                icon: <FlightTakeoff />,
+              },
+              {
+                id: "FlightStatisticsPage",
+                label: "Thống kê chuyến bay",
+                icon: <BarChart />,
+              },
+              { id: "bookticket", label: "Đặt vé", icon: <FlightTakeoff /> },
+              {
+                id: "international",
+                label: "Chuyến bay quốc tế",
+                icon: <FlightTakeoff />,
+              },
+              { id: "ChatApp", label: "Trò chuyện", icon: <Forum /> },
+              { id: "hero", label: "Trang Hero", icon: <Home /> },
+              {
+                id: "sampleDatePicker",
+                label: "Chọn ngày mẫu",
+                icon: <OtherHousesTwoTone />,
+              },
+              {
+                id: "payroll-management",
+                label: "Quản lý lương",
+                icon: <BusinessCenter />,
+              },
+              {
+                id: "TerminalContainer",
+                label: "Quản lý Terminal",
+                icon: <Apartment />,
+              },
+              {
+                id: "AirportManagementDetail",
+                label: "Chi tiết sân bay",
+                icon: <Apartment />,
+              },
+              {
+                id: "AirportManagement",
+                label: "Quản lý sân bay",
+                icon: <Apartment />,
+              },
             ],
           },
         ],
@@ -167,14 +207,22 @@ export const menuData: MenuSection[] = [
         subItems: [
           {
             id: "user-list",
-            label: "Tài khoản",
+            label: "Quản lý tài khoản",
             subItems: [
-              { id: "flight-book", label: "Khách hàng" },
-              { id: "unlock_request", label: "Đặt chỗ" },
-              { id: "special", label: "Nhân viên" },
-              { id: "message", label: "message" },
-              { id: "aircraft", label: "aircraft" },
-              { id: "SendEmailToUsers", label: "SendEmailToUsers" },
+              {
+                id: "flight-book",
+                label: "Khách hàng",
+                icon: <AccountCircle />,
+              },
+              {
+                id: "unlock_request",
+                label: "Yêu cầu mở khóa",
+                icon: <GppBad />,
+              },
+              { id: "special", label: "Nhân viên", icon: <Groups /> },
+              { id: "message", label: "Tin nhắn", icon: <Forum /> },
+              { id: "aircraft", label: "Máy bay", icon: <FlightTakeoff /> },
+              { id: "SendEmailToUsers", label: "Gửi email", icon: <Email /> },
             ],
           },
         ],

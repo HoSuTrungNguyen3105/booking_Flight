@@ -2,7 +2,7 @@ import { Skeleton, Box, Typography } from "@mui/material";
 import { FaUser } from "react-icons/fa";
 
 const SidebarSkeleton = () => {
-  const skeletonContacts = Array.from({ length: 10 });
+  const skeletonContacts = Array.from({ length: 8 });
 
   return (
     <Box

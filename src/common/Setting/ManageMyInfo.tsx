@@ -16,6 +16,9 @@ import type { GridRowId } from "@mui/x-data-grid";
 import BatchUpdateEmployeeNo from "../Sample/BatchUpdateEmployeeNo";
 import type { BatchEmployeeNoReq } from "../../components/Api/usePostApi";
 import ConfirmDeleteModal from "../Sample/modal/ConfirmDeleteModal";
+import SearchUserFromMessage from "../../components/Chat/SearchUserFromMessage";
+import { Dropdown } from "../Dropdown/Dropdown";
+import type { DropdownOptions } from "../Dropdown/type";
 
 const ManageMyInfo = () => {
   const {
@@ -28,6 +31,12 @@ const ManageMyInfo = () => {
     columns,
     openModal,
   } = useInspectionPerformanceHistory();
+
+  // const options = [
+  //   { label: "Admin", value: "admin" },
+  //   { label: "User", value: "user" },
+  //   { label: "Guest", value: "guest" },
+  // ];
 
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowId[]>([]);
   const [selectedRowChange, setSelectedRowChange] = useState<GridRowDef[]>([]);
@@ -112,6 +121,8 @@ const ManageMyInfo = () => {
         <Button variant="contained" onClick={() => toggleOpenModal("addUser")}>
           Create User
         </Button>
+
+        <SearchUserFromMessage />
       </Box>
 
       <TableSection

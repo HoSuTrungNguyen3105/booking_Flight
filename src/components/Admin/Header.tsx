@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { ROUTE_PATHS } from "../../routers/RoutePath";
 import theme from "../../scss/theme";
-import LanguageButton from "../../common/Dropdown/ChangeLanguageSelect";
+import LanguageButton from "../../common/CustomRender/ChangeLanguageSelect";
 
 const Header = () => {
   const { isAdmin, logout, user } = useAuth();

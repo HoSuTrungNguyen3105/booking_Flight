@@ -23,7 +23,7 @@ import type {
 import Conversations from "./Conversations";
 import { Filter, Group } from "@mui/icons-material";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
-import SearchUser from "./SearchUser";
+// import SearchUser from "./SearchUser";
 
 const ChatContainer: React.FC = () => {
   const { user } = useAuth();
@@ -107,18 +107,18 @@ const ChatContainer: React.FC = () => {
   return (
     <Box
       display="flex"
-      padding={0}
       height="90vh"
-      sx={{ backgroundColor: "background.default" }}
+      sx={{ bgcolor: "background.default", overflow: "hidden" }}
     >
+      {/* Sidebar */}
       <Paper
-        elevation={1}
+        elevation={3}
         sx={{
           width: isSidebarOpen ? 320 : 0,
-          // overflow: "hidden",
-          // transition: "width 0.3s ease-in-out",
-          flexDirection: "column",
+          transition: "width 0.3s ease-in-out",
+          overflow: "hidden",
           display: "flex",
+          flexDirection: "column",
           borderRadius: 0,
           borderRight: 1,
           borderColor: "divider",
@@ -128,11 +128,13 @@ const ChatContainer: React.FC = () => {
         {/* Sidebar Header */}
         <Box
           sx={{
-            p: 3,
+            p: 2.5,
             background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
             color: "white",
+            boxShadow: "0px 2px 6px rgba(0,0,0,0.2)",
           }}
         >
+          {/* Title + Status */}
           <Box
             display="flex"
             alignItems="center"
@@ -140,35 +142,25 @@ const ChatContainer: React.FC = () => {
             mb={2}
           >
             <Box>
-              <Typography variant="h6" fontWeight="700" fontSize="1.25rem">
+              <Typography variant="h6" fontWeight="700" fontSize="1.2rem">
                 Enterprise Chat
               </Typography>
               <Box display="flex" alignItems="center" mt={0.5}>
-                <Box
-                  sx={{
-                    width: 8,
-                    height: 8,
-                    borderRadius: "50%",
-                    backgroundColor: isConnected
-                      ? "success.main"
-                      : "error.main",
-                    mr: 1,
-                  }}
-                />
                 <Typography variant="caption" fontWeight="500">
                   {isConnected ? "Connected" : "Disconnected"}
                 </Typography>
               </Box>
             </Box>
 
+            {/* Actions */}
             <Box display="flex" gap={1}>
               <Tooltip title="Filter conversations">
                 <IconButton
                   color="inherit"
                   size="small"
                   sx={{
-                    backgroundColor: "rgba(255,255,255,0.1)",
-                    "&:hover": { backgroundColor: "rgba(255,255,255,0.2)" },
+                    bgcolor: "rgba(255,255,255,0.1)",
+                    "&:hover": { bgcolor: "rgba(255,255,255,0.2)" },
                   }}
                 >
                   <Badge color="error" variant="dot">
@@ -185,8 +177,8 @@ const ChatContainer: React.FC = () => {
                   size="small"
                   onClick={toggleSidebar}
                   sx={{
-                    backgroundColor: "rgba(255,255,255,0.1)",
-                    "&:hover": { backgroundColor: "rgba(255,255,255,0.2)" },
+                    bgcolor: "rgba(255,255,255,0.1)",
+                    "&:hover": { bgcolor: "rgba(255,255,255,0.2)" },
                   }}
                 >
                   {isSidebarOpen ? (
@@ -199,6 +191,7 @@ const ChatContainer: React.FC = () => {
             </Box>
           </Box>
 
+          {/* Find Users Button */}
           <Button
             fullWidth
             variant="contained"
@@ -206,43 +199,43 @@ const ChatContainer: React.FC = () => {
             onClick={toggleSearchPanel}
             sx={{
               mt: 1,
-              backgroundColor: "white",
+              bgcolor: "white",
               color: "primary.main",
-              fontWeight: "600",
+              fontWeight: 600,
               borderRadius: 2,
-              py: 1.5,
+              py: 1.2,
               textTransform: "none",
-              fontSize: "0.875rem",
-              // "&:hover": {
-              //   backgroundColor: "grey.50",
-              //   transform: "translateY(-1px)",
-              //   boxShadow: theme.shadows[4],
-              // },
-              // transition: "all 0.2s ease",
+              fontSize: "0.9rem",
+              transition: "all 0.2s ease",
+              "&:hover": {
+                bgcolor: "grey.50",
+                transform: "translateY(-2px)",
+                boxShadow: theme.shadows[3],
+              },
             }}
           >
             Find Users
           </Button>
         </Box>
 
-        {/* Conversations List */}
+        {/* Conversations */}
         <Conversations
           selectedUser={selectedUser || 0}
           handleUserSelect={handleUserSelect}
           userId={user?.id || 0}
         />
       </Paper>
-      {/* Main Chat Area */}
-      <MessageList
-        // toggleSearchPanel={toggleSearchPanel}
-        selectedUser={receiverId as number}
-        messages={messages}
-        currentUser={{ id: user?.id! }}
-        toggleSidebar={toggleSidebar}
-        isSidebarOpen={isSidebarOpen}
-      />
 
-      {/* <SearchUser onUserSelect={() => {}} isCollapsed={isSearchPanelOpen} /> */}
+      {/* Main Chat Area */}
+      <Box flexGrow={1} display="flex" flexDirection="column">
+        <MessageList
+          selectedUser={receiverId as number}
+          messages={messages}
+          currentUser={{ id: user?.id! }}
+          toggleSidebar={toggleSidebar}
+          isSidebarOpen={isSidebarOpen}
+        />
+      </Box>
     </Box>
   );
 };

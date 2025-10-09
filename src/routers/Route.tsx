@@ -1,7 +1,6 @@
 import { createBrowserRouter, type RouteObject } from "react-router-dom";
 import MainLayout from "../components/Layout/MainLayout";
 import ErrorPage from "../components/Layout/ErrorLayout";
-import Guard from "../guard/Guard";
 import { FileUpload } from "../common/FileUploader";
 import Hero from "../components/Hero/Hero";
 import BookTicket from "../components/User/BookTicket";
@@ -23,7 +22,6 @@ import LeaveRequestGrid from "../components/Admin/component/LeaveRequest/LeaveRe
 import PayrollManagement from "../common/Sample/PayrollManagement";
 import AdditionalServicesPage from "../common/Sample/AdditionalServicesPage";
 import ChatContainer from "../components/Chat/ChatContainer";
-import Registration from "../components/Auth/Registration";
 import FlightPath from "../components/User/FlightPath";
 import ChatApp from "../components/Chat/HeaderChat";
 import AirportDiagram from "../components/Admin/TerminalContainer";
@@ -57,15 +55,14 @@ const routes = [
           </GuestGuard>
         ),
       },
-      {
-        path: "registerPage",
-        element: (
-          <GuestGuard>
-            <Registration email="fghdjs" onClose={() => {}} />
-            {/* AccountYn */}
-          </GuestGuard>
-        ),
-      },
+      // {
+      //   path: "registerPage",
+      //   element: (
+      //     <GuestGuard>
+      //       <Registration email="fghdjs" onClose={() => {}} />
+      //     </GuestGuard>
+      //   ),
+      // },
     ],
   },
   {
@@ -80,7 +77,6 @@ const routes = [
             <Hero />
           </AuthGuard>
         ),
-        // children: [{ index: true, element: <Hero /> }],
       },
       {
         path: "FlightPage",
@@ -110,69 +106,59 @@ const routes = [
     errorElement: <ErrorPage />,
     children: [
       {
-        path: "international",
+        path: ROUTE_PATHS.INTERNATIONAL,
         element: <Security />,
       },
       {
-        path: "sampleDatePicker",
+        path: ROUTE_PATHS.SAMPLE_DATE_PICKER,
         element: <LeaveRequestGrid />,
       },
       {
-        path: "domestic",
+        path: ROUTE_PATHS.DOMESTIC,
         element: <SecurityManage />,
       },
       {
-        path: "BulkMealCreator",
+        path: ROUTE_PATHS.BULK_MEAL_CREATOR,
         element: <BulkMealCreator />,
       },
       {
-        path: "AirportMap",
-        element: (
-          <AirportMap
-            airportCode="SGN"
-            // terminals={mockTerminals}
-            height={540}
-          />
-        ),
+        path: ROUTE_PATHS.AIRPORT_MAP,
+        element: <AirportMap airportCode="SGN" height={540} />,
       },
       {
-        path: "FlightStatisticsPage",
+        path: ROUTE_PATHS.FLIGHT_STATISTICS,
         element: <FlightStatisticsPage />,
       },
       {
-        path: "service",
+        path: ROUTE_PATHS.SERVICE,
         element: <AdditionalServicesPage />,
       },
       {
-        path: "MealForm",
+        path: ROUTE_PATHS.MEAL_FORM,
         element: <MealForm onSubmit={() => {}} />,
       },
       {
-        path: "unlock_request", //bookseat
+        path: ROUTE_PATHS.UNLOCK_REQUEST,
         element: <UnlockRequestTable />,
       },
       {
-        path: "CreateGateForm", //bookseat
+        path: ROUTE_PATHS.CREATE_GATE_FORM,
         element: <TicketTable />,
       },
-      // {
-      //   path: "data-secure",
-      //   element: <DataSecure />,
-      // },
       {
-        path: "flightmeals",
+        path: ROUTE_PATHS.FLIGHT_MEALS,
         element: <MealList />,
       },
       {
-        path: "message",
+        path: ROUTE_PATHS.MESSAGE,
         element: <ChatContainer />,
       },
       {
-        path: "special",
+        path: ROUTE_PATHS.SPECIAL,
         element: <RevenueDashboard />,
       },
       {
-        path: "special/one",
+        path: ROUTE_PATHS.SPECIAL_ONE,
         element: <FlightRoutesDashboard />,
       },
       {
@@ -180,75 +166,71 @@ const routes = [
         element: <Search_layout />,
       },
       {
-        path: "hero",
+        path: ROUTE_PATHS.TicketSalesDashboard,
         element: <TicketSalesDashboard />,
       },
-      // {
-      //   path: "facilities",
-      //   element: <CreateFacility />,
-      // },
       {
-        path: "TerminalContainer",
+        path: ROUTE_PATHS.TERMINAL_CONTAINER,
         element: <AirportDiagram />,
       },
       {
-        path: "AirportManagementDetail",
+        path: ROUTE_PATHS.AIRPORT_MANAGEMENT_DETAIL,
         element: <AirportManagementDetail />,
       },
       {
-        path: "ChatApp",
+        path: ROUTE_PATHS.CHAT_APP,
         element: <ChatApp />,
       },
       {
-        path: "FlightBatchCreator",
+        path: ROUTE_PATHS.FLIGHT_BATCH_CREATOR,
         element: <FlightBatchCreator />,
       },
       {
-        path: "AirportManagement",
+        path: ROUTE_PATHS.AIRPORT_MANAGEMENT,
         element: <AirportManagement />,
       },
       {
-        path: "TerminalGateContainer",
+        path: ROUTE_PATHS.TERMINAL_GATE_CONTAINER,
         element: <TerminalGateContainer />,
       },
       {
-        path: "FlightPath",
+        path: ROUTE_PATHS.FLIGHT_PATH,
         element: <FlightPath />,
       },
       {
-        path: "setting",
+        path: ROUTE_PATHS.SETTING,
         element: <ManageMyInformation />,
       },
       {
-        path: ROUTE_PATHS.FILE_UPLOAD.replace("/", ""),
+        path: ROUTE_PATHS.FILE_UPLOAD,
         element: <FileUpload name="fileUploader" />,
       },
       {
-        path: ROUTE_PATHS.BOOK_TICKET.replace("/", ""),
+        path: ROUTE_PATHS.BOOK_TICKET,
         element: <BookTicket />,
       },
       {
-        path: "flight-book",
+        path: ROUTE_PATHS.FLIGHT_BOOK,
         // element: <FlightBooking />,
       },
       {
-        path: "manage-my-info",
+        path: ROUTE_PATHS.MANAGE_MY_INFO,
         element: <ManageMyInfo />,
       },
       {
-        path: "payroll-management",
+        path: ROUTE_PATHS.PAYROLL_MANAGEMENT,
         element: <PayrollManagement />,
       },
       {
-        path: "aircraft",
+        path: ROUTE_PATHS.AIRCRAFT,
         element: <AircraftPage />,
       },
       {
-        path: "ChangePasswordInProfile",
+        path: ROUTE_PATHS.CHANGE_PASSWORD_PROFILE,
         element: <ChangePasswordInProfile />,
       },
       {
-        path: "SendEmailToUsers",
+        path: ROUTE_PATHS.SEND_EMAIL_TO_USERS,
         element: <SendEmailToUsers selectedUser={[]} />,
       },
     ],
