@@ -9,49 +9,113 @@ import {
   Chip,
   styled,
   type BoxProps,
+  alpha,
 } from "@mui/material";
+import { Home, Refresh, ArrowBack } from "@mui/icons-material";
 import {
-  ErrorOutline,
-  Home,
-  Refresh,
-  ReportProblem,
-} from "@mui/icons-material";
-import { useRouteError, isRouteErrorResponse, Link } from "react-router-dom";
+  useRouteError,
+  isRouteErrorResponse,
+  Link,
+  useNavigate,
+} from "react-router-dom";
 import { memo } from "react";
-import theme from "../../scss/theme";
-import ErrorIcon from "../../svgs/error-404.png";
 
-const BoxWrapper = styled(Box)<BoxProps>(({ theme }) => ({
-  [theme.breakpoints.down("md")]: {
-    width: "90vw",
+const GradientBox = styled(Box)<BoxProps>(({ theme }) => ({
+  minHeight: "100vh",
+  background: `linear-gradient(135deg, ${alpha(
+    theme.palette.primary.main,
+    0.03
+  )} 0%, ${alpha(theme.palette.secondary.main, 0.03)} 100%)`,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  position: "relative",
+  overflow: "hidden",
+  "&::before": {
+    content: '""',
+    position: "absolute",
+    top: -100,
+    right: -100,
+    width: 300,
+    height: 300,
+    borderRadius: "50%",
+    background: `radial-gradient(circle, ${alpha(
+      theme.palette.primary.main,
+      0.1
+    )} 0%, transparent 70%)`,
+  },
+  "&::after": {
+    content: '""',
+    position: "absolute",
+    bottom: -50,
+    left: -50,
+    width: 200,
+    height: 200,
+    borderRadius: "50%",
+    background: `radial-gradient(circle, ${alpha(
+      theme.palette.secondary.main,
+      0.1
+    )} 0%, transparent 70%)`,
   },
 }));
 
-const Img = styled("img")(({ theme }) => ({
-  marginBottom: theme.spacing(10),
-  [theme.breakpoints.down("lg")]: {
-    height: 450,
-    marginTop: theme.spacing(10),
+const FloatingIllustration = styled("img")(({ theme }) => ({
+  width: "100%",
+  maxWidth: 280,
+  height: "auto",
+  filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.1))",
+  animation: "float 6s ease-in-out infinite",
+  "@keyframes float": {
+    "0%, 100%": {
+      transform: "translateY(0px)",
+    },
+    "50%": {
+      transform: "translateY(-20px)",
+    },
   },
   [theme.breakpoints.down("md")]: {
-    height: 400,
-  },
-  [theme.breakpoints.up("lg")]: {
-    marginTop: theme.spacing(13),
+    maxWidth: 200,
+    marginBottom: theme.spacing(4),
   },
 }));
 
-const TreeIllustration = styled("img")(({ theme }) => ({
-  left: 0,
-  bottom: "5rem",
-  position: "absolute",
-  [theme.breakpoints.down("lg")]: {
-    bottom: 0,
+const GlassPaper = styled(Paper)(({ theme }) => ({
+  backdropFilter: "blur(10px)",
+  backgroundColor: alpha(theme.palette.background.paper, 0.8),
+  border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+  borderRadius: 24,
+  padding: theme.spacing(4),
+  boxShadow: "0 8px 32px rgba(0, 0, 0, 0.08)",
+  position: "relative",
+  zIndex: 1,
+}));
+
+const ActionButton = styled(Button)(({ theme }) => ({
+  borderRadius: 12,
+  padding: theme.spacing(1.5, 3),
+  fontWeight: 600,
+  textTransform: "none",
+  fontSize: "1rem",
+  transition: "all 0.3s ease",
+  "&:hover": {
+    transform: "translateY(-2px)",
+    boxShadow: "0 8px 20px rgba(0, 0, 0, 0.15)",
+  },
+}));
+
+const StatusChip = styled(Chip)(() => ({
+  borderRadius: 8,
+  fontWeight: 600,
+  borderWidth: 2,
+  "&.MuiChip-outlined": {
+    borderWidth: 2,
   },
 }));
 
 const ErrorLayout = () => {
   const error = useRouteError();
+  const navigate = useNavigate();
+  const theme = useTheme();
 
   if (error) {
     console.error("Route error:", error);
@@ -59,130 +123,147 @@ const ErrorLayout = () => {
     console.warn("ErrorPage rendered but no error was found");
   }
 
+  const getErrorMessage = () => {
+    if (!error) return "No error details available";
+
+    if (isRouteErrorResponse(error)) {
+      return error.statusText || error.data?.message || `Error ${error.status}`;
+    }
+
+    if (error instanceof Error) {
+      return error.message;
+    }
+
+    return "An unknown error occurred";
+  };
+
   return (
-    <Container maxWidth="lg">
-      <Box
-        sx={{
-          minHeight: "100vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          py: 8,
-        }}
-      >
-        <BoxWrapper>
-          <Typography variant="h1">404</Typography>
-          <Typography
-            variant="h5"
-            sx={{ mb: 1, fontSize: "1.5rem !important" }}
-          >
-            Page Not Found ⚠️
-          </Typography>
-          <Typography variant="body2">
-            We couldn&prime;t find the page you are looking for.
-          </Typography>
-        </BoxWrapper>
-        <Img src={ErrorIcon} />
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            mb: 3,
-          }}
+    <GradientBox>
+      <Container maxWidth="lg" sx={{ position: "relative", zIndex: 1 }}>
+        <Stack
+          direction={{ xs: "column", lg: "row" }}
+          spacing={6}
+          alignItems="center"
+          justifyContent="center"
+          sx={{ py: 8 }}
         >
-          <ErrorOutline
+          <Box
             sx={{
-              fontSize: 80,
-              color: theme.palette.error.main,
-              opacity: 0.8,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              textAlign: { xs: "center", lg: "left" },
+              flex: 1,
             }}
-          />
-        </Box>
-        <Paper
-          variant="outlined"
-          sx={{
-            p: 3,
-            mb: 4,
-            backgroundColor: theme.palette.grey[50],
-            borderColor: theme.palette.divider,
-            borderRadius: 2,
-          }}
-        >
-          <Stack spacing={2} alignItems="center">
-            <ReportProblem color="warning" />
-            <Typography variant="body1" color="text.secondary">
-              <i>
-                {
-                  error
-                    ? isRouteErrorResponse(error)
-                      ? error.statusText ||
-                        error.data?.message ||
-                        `Error ${error.status}`
-                      : error instanceof Error
-                      ? error.message
-                      : "An unknown error occurred"
-                    : "No error details available" // Xử lý khi error là null
-                }
-              </i>
+          >
+            <FloatingIllustration
+              // src="/api/placeholder/280/280"
+              alt="Error Illustration"
+              onError={(e) => {
+                e.currentTarget.src = `data:image/svg+xml,${encodeURIComponent(`
+                  <svg width="280" height="280" viewBox="0 0 280 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="140" cy="140" r="120" fill="${theme.palette.primary.main}" fill-opacity="0.1"/>
+                    <path d="M120 120L160 160M160 120L120 160" stroke="${theme.palette.primary.main}" stroke-width="3"/>
+                    <circle cx="140" cy="140" r="80" stroke="${theme.palette.primary.main}" stroke-width="2" fill="none"/>
+                  </svg>
+                `)}`;
+              }}
+            />
+
+            <Typography
+              variant="h1"
+              sx={{
+                fontSize: { xs: "4rem", md: "6rem" },
+                fontWeight: 800,
+                background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+                backgroundClip: "text",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                mb: 1,
+              }}
+            >
+              404
+            </Typography>
+
+            <Typography
+              variant="h4"
+              sx={{
+                fontWeight: 700,
+                mb: 1,
+                color: theme.palette.text.primary,
+              }}
+            >
+              Page Not Found
+            </Typography>
+
+            <Typography
+              variant="body1"
+              sx={{
+                color: "text.secondary",
+                fontSize: "1.1rem",
+                maxWidth: 400,
+              }}
+            >
+              Oops! The page you're looking for seems to have wandered off into
+              the digital void.
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{
+                color: "text.secondary",
+                fontStyle: "italic",
+                mb: 2,
+                fontSize: "1.1rem",
+                lineHeight: 1.6,
+              }}
+            >
+              {getErrorMessage()}
             </Typography>
 
             {isRouteErrorResponse(error) && error.status && (
-              <Chip
+              <StatusChip
                 label={`Status: ${error.status}`}
-                color="error"
+                color="warning"
                 variant="outlined"
               />
             )}
-          </Stack>
-          {/* </Paper> */}
 
-          {/* Action Buttons */}
-          <Stack
-            direction={{ xs: "column", sm: "row" }}
-            spacing={2}
-            justifyContent="center"
-          >
-            <Button
-              variant="contained"
-              component={Link}
-              to="/"
-              startIcon={<Home />}
-              size="large"
-              sx={{
-                borderRadius: 2,
-                px: 4,
-                py: 1,
-              }}
+            <Stack
+              direction={{ xs: "column", sm: "row" }}
+              spacing={2}
+              justifyContent="center"
             >
-              Go Home
-            </Button>
+              <ActionButton
+                variant="contained"
+                LinkComponent={Link}
+                startIcon={<Home />}
+                sx={{
+                  background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
+                }}
+              >
+                Go Home
+              </ActionButton>
 
-            <Button
-              variant="outlined"
-              onClick={() => window.location.reload()}
-              startIcon={<Refresh />}
-              size="large"
-              sx={{
-                borderRadius: 2,
-                px: 4,
-                py: 1,
-              }}
-            >
-              Refresh Page
-            </Button>
-          </Stack>
+              <ActionButton
+                variant="outlined"
+                onClick={() => navigate(-1)}
+                startIcon={<ArrowBack />}
+              >
+                Go Back
+              </ActionButton>
 
-          {/* Additional Help */}
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{ mt: 4, opacity: 0.7 }}
-          >
-            If the problem persists, please contact support.
-          </Typography>
-        </Paper>
-      </Box>
-    </Container>
+              <ActionButton
+                variant="outlined"
+                onClick={() => window.location.reload()}
+                startIcon={<Refresh />}
+              >
+                Refresh
+              </ActionButton>
+            </Stack>
+          </Box>
+        </Stack>
+      </Container>
+    </GradientBox>
   );
 };
 
