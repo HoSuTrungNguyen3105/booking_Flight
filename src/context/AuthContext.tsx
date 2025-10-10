@@ -78,14 +78,13 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         if (isValidResult) {
           toast("Xác thực thành công", "success");
         } else {
-          toast(response?.resultMessage || "Mật khẩu không chính xác", "error");
+          toast(response?.resultMessage || "Lỗi xác thực mật khẩu", "error");
         }
 
         return isValidResult;
-      } catch (error: any) {
+      } catch (error) {
         console.error("verifyPassword error:", error);
         setIsValid(false);
-        toast("Lỗi xác thực mật khẩu", "error");
         return false;
       }
     },

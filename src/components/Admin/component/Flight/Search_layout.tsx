@@ -11,6 +11,7 @@ import {
   Divider,
   Chip,
   Skeleton,
+  Stack,
 } from "@mui/material";
 import { Add, DeleteForever } from "@mui/icons-material";
 import { useSearchFlight } from "../../../Api/usePostApi.ts";
@@ -524,11 +525,10 @@ const Search_layout: React.FC = () => {
     <Box
       component="form"
       onSubmit={handleSearchSubmit(onSubmitValue)}
-      sx={{ p: 2 }}
+      // sx={{ p: 2 }}
     >
-      <Paper
-        elevation={2}
-        sx={{ p: 2, mb: 2, bgcolor: "primary.main", color: "white" }}
+      <Stack
+        sx={{ p: 2, mb: 2, backgroundColor: "primary.main", color: "white" }}
       >
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <FlightIcon fontSize="large" />
@@ -539,7 +539,7 @@ const Search_layout: React.FC = () => {
         <Typography variant="body2" sx={{ opacity: 0.9, mt: 0.5 }}>
           Find your perfect flight with advanced search options
         </Typography>
-      </Paper>
+      </Stack>
 
       <Card elevation={3} sx={{ mb: 3 }}>
         <CardContent sx={{ p: 3 }}>

@@ -7,6 +7,7 @@ import { useAuth } from "../../context/AuthContext";
 import { ROUTE_PATHS } from "../../routers/RoutePath";
 import theme from "../../scss/theme";
 import LanguageButton from "../../common/CustomRender/ChangeLanguageSelect";
+import SearchUserFromMessage from "../Chat/SearchUserFromMessage";
 
 const Header = () => {
   const { isAdmin, logout, user } = useAuth();
@@ -52,6 +53,9 @@ const Header = () => {
       >
         <Stack direction="column" spacing={3} sx={{ pt: 2, pb: 2 }}>
           <LanguageButton />
+        </Stack>
+        <Stack direction="column" spacing={3} sx={{ pt: 2, pb: 2 }}>
+          <SearchUserFromMessage />
         </Stack>
         <Box
           display="flex"

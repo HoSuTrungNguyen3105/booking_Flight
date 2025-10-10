@@ -2,7 +2,7 @@ import { memo, useState } from "react";
 import SearchLayout, {
   type TabItem,
 } from "../../components/Layout/SearchLayout";
-import ManageMyInfo from "./ManageMyInfo";
+import ManageMyInfo from "../../components/Profile/ManageMyInfo";
 import { Box } from "@mui/material";
 
 const Security = () => {

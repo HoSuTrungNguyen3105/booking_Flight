@@ -1,24 +1,24 @@
-import { useInspectionPerformanceHistory } from "./hooks/useInspectionPerformanceHistory";
+import { useInspectionPerformanceHistory } from "../../common/Setting/hooks/useInspectionPerformanceHistory";
 import { Box, Button, Typography } from "@mui/material";
-import { type GridRowDef } from "../DataGrid/index";
-import AddUserModal from "./Component/AddUserModal";
-import { Loading } from "../Loading/Loading";
-import UpdateUserModal from "./Component/UpdateUserModal";
-import AccountLock from "./Component/AccountLockModal";
+import { type GridRowDef } from "../../common/DataGrid/index";
+import AddUserModal from "../../common/Setting/Component/AddUserModal";
+import { Loading } from "../../common/Loading/Loading";
+import UpdateUserModal from "../../common/Setting/Component/UpdateUserModal";
+import AccountLock from "../../common/Setting/Component/AccountLockModal";
 // import DeleteUserModal from "./DeleteUserModal";
 import { memo, useCallback, useState } from "react";
-import AdminUpdateUserModal from "./Component/AdminUpdateUserModal";
-import UpdateUserForm from "../../components/User/UpdateUserForm";
+import AdminUpdateUserModal from "../../common/Setting/Component/AdminUpdateUserModal";
+import UpdateUserForm from "../User/UpdateUserForm";
 import type { AdminUpdateUserForm } from "../../utils/type";
-import SendEmailToUsers from "./SendEmailToUsers";
-import TableSection from "../CustomRender/TableSection";
+import SendEmailToUsers from "../../common/Setting/SendEmailToUsers";
+import TableSection from "../../common/CustomRender/TableSection";
 import type { GridRowId } from "@mui/x-data-grid";
-import BatchUpdateEmployeeNo from "../Sample/BatchUpdateEmployeeNo";
-import type { BatchEmployeeNoReq } from "../../components/Api/usePostApi";
-import ConfirmDeleteModal from "../Sample/modal/ConfirmDeleteModal";
-import SearchUserFromMessage from "../../components/Chat/SearchUserFromMessage";
-import { Dropdown } from "../Dropdown/Dropdown";
-import type { DropdownOptions } from "../Dropdown/type";
+import BatchUpdateEmployeeNo from "../../common/Sample/BatchUpdateEmployeeNo";
+import type { BatchEmployeeNoReq } from "../Api/usePostApi";
+import ConfirmDeleteModal from "../../context/common/ConfirmDeleteModal";
+import SearchUserFromMessage from "../Chat/SearchUserFromMessage";
+import { Dropdown } from "../../common/Dropdown/Dropdown";
+import type { DropdownOptions } from "../../common/Dropdown/type";
 
 const ManageMyInfo = () => {
   const {
@@ -121,8 +121,6 @@ const ManageMyInfo = () => {
         <Button variant="contained" onClick={() => toggleOpenModal("addUser")}>
           Create User
         </Button>
-
-        <SearchUserFromMessage />
       </Box>
 
       <TableSection

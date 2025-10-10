@@ -1,41 +1,95 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useCallback, useEffect } from "react";
 import {
   Autocomplete,
   TextField,
   InputAdornment,
-  Checkbox,
   Box,
-  Avatar,
   Typography,
+  CircularProgress,
 } from "@mui/material";
 import {
-  CheckBoxOutlineBlank as UncheckedIcon,
-  CheckBox as CheckedIcon,
   ErrorOutline as ErrorIcon,
   Warning as WarningIcon,
   CheckCircle as ConfirmedIcon,
 } from "@mui/icons-material";
 import type { DropdownOptions, DropdownType } from "./type";
+import useDebounce from "../../context/use[custom]/useDebounce";
+
+// Thêm interface cho hàm call API
+interface ApiCallFunction {
+  (searchText: string): Promise<DropdownOptions[]>;
+}
+
+interface DropdownProps extends DropdownType {
+  size?: "small" | "medium";
+  apiCall?: ApiCallFunction; // Hàm call API từ bên ngoài
+  debounceDelay?: number; // Thời gian debounce (ms)
+}
 
 export const Dropdown = ({
   options = [],
-  value = [],
+  // value = null,
   sx,
   label = "",
   customInput,
   onOpen,
   onClose,
   onChange,
-  multiple,
   placeholder = "",
   status,
+  onInputChange,
   readonly,
   disabled,
-  disableCloseOnSelect,
+  disableCloseOnSelect = false,
   size = "small",
-}: DropdownType & { size?: "small" | "medium" }) => {
+  apiCall, // Hàm call API
+  debounceDelay = 300, // Mặc định 300ms
+}: DropdownProps) => {
   const [inputText, setInputText] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [apiOptions, setApiOptions] = useState<DropdownOptions[]>([]);
+
+  // 👇 Chỉ dùng single selection
   const [selected, setSelected] = useState<DropdownOptions | null>(null);
+
+  const debouncedSearchText = useDebounce(inputText, debounceDelay);
+
+  // Hàm fetch data từ API
+  const fetchOptions = useCallback(
+    async (searchText: string) => {
+      if (!apiCall) return;
+
+      try {
+        setIsLoading(true);
+        const data = await apiCall(searchText);
+        setApiOptions(data);
+      } catch (error) {
+        console.error("Error fetching options:", error);
+        setApiOptions([]);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [apiCall]
+  );
+
+  // Effect để gọi API khi debounced search text thay đổi
+  useEffect(() => {
+    if (debouncedSearchText.trim() !== "" && apiCall) {
+      fetchOptions(debouncedSearchText);
+    } else if (debouncedSearchText.trim() === "" && apiCall) {
+      // Nếu search text rỗng, reset options
+      setApiOptions([]);
+    }
+  }, [debouncedSearchText, fetchOptions, apiCall]);
+
+  // Kết hợp options từ props và từ API
+  const combinedOptions = useMemo(() => {
+    if (apiCall) {
+      return apiOptions;
+    }
+    return options;
+  }, [options, apiOptions, apiCall]);
 
   const borderColor = useMemo(() => {
     const colorMap: Record<string, string> = {
@@ -47,6 +101,10 @@ export const Dropdown = ({
   }, [status]);
 
   const renderEndIcon = () => {
+    if (isLoading) {
+      return <CircularProgress size={20} />;
+    }
+
     switch (status) {
       case "warning":
         return <WarningIcon color="warning" />;
@@ -61,83 +119,34 @@ export const Dropdown = ({
 
   return (
     <Autocomplete
-      multiple={multiple}
+      multiple={false} // 👈 Luôn là false
       disablePortal
       disableCloseOnSelect={disableCloseOnSelect}
       readOnly={readonly}
       disabled={disabled}
-      options={options}
+      options={combinedOptions}
       value={selected}
       inputValue={readonly ? "" : inputText}
+      loading={isLoading}
       getOptionLabel={(option) =>
         typeof option.label === "string" ? option.label : ""
       }
       onOpen={onOpen}
       onClose={onClose}
-      // onInputChange={(e, val, reason) => {
-      //   if (!readonly && reason === "input") setInputText(val);
-      // }}
       onInputChange={(e, val, reason) => {
         if (reason === "input") {
           setInputText(val);
-          // refetchUserFromMessage({ id: userId, email: val })
+          onInputChange?.(val);
         }
       }}
-      onChange={(e, newValue) => {
+      // 👇 Đơn giản hóa onChange
+      onChange={(event, newValue) => {
         setSelected(newValue);
-        setInputText(
-          Array.isArray(newValue) ? "" : (newValue?.label as string) || ""
-        );
-        //
-        onChange?.(e, newValue);
+        onChange?.(event, newValue);
       }}
-      // onChange={(e, newValue) => {
-      //   setInputText(
-      //     Array.isArray(newValue) ? "" : (newValue?.label as string) || ""
-      //   );
-      //   onChange?.(e, newValue);
-      // }}
       size={size}
-      sx={{ minWidth: 200, ...sx }}
-      // renderOption={(props, option, { selected }) =>
-      //   option.label === "string" || "number" ? (
-      //     <li {...props}>
-      //       {multiple && (
-      //         <Checkbox
-      //           icon={<UncheckedIcon fontSize="small" color="secondary" />}
-      //           checkedIcon={<CheckedIcon fontSize="small" color="secondary" />}
-      //           checked={selected}
-      //           sx={{ mr: 0.5 }}
-      //         />
-      //       )}
-      //       {option.label}
-      //     </li>
-      //   ) : (
-      //     <li {...props}>
-      //       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-      //         <Box>
-      //           <Typography fontWeight={600}>{option.label}</Typography>
-      //           <Typography variant="body2" color="text.secondary">
-      //             {option.value}
-      //           </Typography>
-      //         </Box>
-      //       </Box>
-      //     </li>
-      //   )
-      // }
-      renderOption={(props, option, { selected }) => (
-        <li {...props}>
-          {multiple && (
-            <Checkbox
-              icon={<UncheckedIcon fontSize="small" />}
-              checkedIcon={<CheckedIcon fontSize="small" />}
-              checked={selected}
-              sx={{ mr: 1 }}
-            />
-          )}
-          {option.label}
-        </li>
-      )}
+      sx={{ minWidth: 600, ...sx }}
+      renderOption={(props, option) => <li {...props}>{option.label}</li>}
       renderInput={(params) => (
         <TextField
           {...params}
@@ -148,18 +157,9 @@ export const Dropdown = ({
             ...sx,
             "& .MuiOutlinedInput-root": {
               cursor: "pointer",
-              "& fieldset": {
-                borderColor: borderColor,
-                cursor: "pointer",
-              },
-              "&:hover fieldset": {
-                borderColor: borderColor,
-                cursor: "pointer",
-              },
-              "&.Mui-focused fieldset": {
-                borderColor: borderColor,
-                cursor: "pointer",
-              },
+              "& fieldset": { borderColor, cursor: "pointer" },
+              "&:hover fieldset": { borderColor, cursor: "pointer" },
+              "&.Mui-focused fieldset": { borderColor, cursor: "pointer" },
             },
           }}
           InputProps={{
@@ -174,7 +174,7 @@ export const Dropdown = ({
             ),
             endAdornment: (
               <>
-                {multiple && !readonly && params.InputProps.endAdornment}
+                {!readonly && params.InputProps.endAdornment}
                 {renderEndIcon() && (
                   <InputAdornment position="end">
                     {renderEndIcon()}

@@ -69,7 +69,7 @@ export const useSecureFetch = <T extends Partial<ResponseMessage>, P>({
   );
 
   const handlePasswordConfirm = useCallback(
-    async (password: string): Promise<DetailResponseMessage<any>> => {
+    async (password: string): Promise<DetailResponseMessage<string>> => {
       try {
         const isValidResult = await verifyPassword(password);
 
@@ -77,6 +77,7 @@ export const useSecureFetch = <T extends Partial<ResponseMessage>, P>({
           isValidRef.current = true;
           setIsAuthenticated(true);
           setOpenModalConfirm(false);
+
           if (pendingRequest) {
             const result = await fetch.refetch(
               pendingRequest.extra,
@@ -84,17 +85,14 @@ export const useSecureFetch = <T extends Partial<ResponseMessage>, P>({
             );
             setPendingRequest(null);
             if (result) {
-              return result as DetailResponseMessage<any>;
+              return result as DetailResponseMessage<string>;
             }
           }
-
           return { resultCode: "00", resultMessage: "Xác thực thành công" };
-        } else {
-          return {
-            resultCode: "01",
-            resultMessage: "Mật khẩu không chính xác",
-          };
         }
+
+        // ✅ Trường hợp password không hợp lệ
+        return { resultCode: "01", resultMessage: "Mật khẩu không chính xác" };
       } catch (error) {
         console.error("Password verification error:", error);
         return { resultCode: "99", resultMessage: "Lỗi xác thực" };

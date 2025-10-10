@@ -6,24 +6,24 @@ import {
   useState,
   type SetStateAction,
 } from "react";
-import BaseModal from "../../Modal/BaseModal";
+import BaseModal from "../../common/Modal/BaseModal";
 import { Add as AddIcon } from "@mui/icons-material";
 import { Box, Typography, Divider, Button } from "@mui/material";
 
-import type { UserWithRelationsData } from "../type";
+import type { UserWithRelationsData } from "../../common/Sample/type";
 import {
   useDeleteAttendance,
   useDeleteLeaveRequest,
   useDeletePayroll,
   useDeleteRequestUnlockById,
   useGetUserWithRelations,
-} from "../../../components/Api/usePostApi";
-import { DateFormatEnum, formatDate } from "../../../hooks/format";
+} from "../../components/Api/usePostApi";
+import { DateFormatEnum, formatDate } from "../../hooks/format";
 import type { GridColDef } from "@mui/x-data-grid";
-import TableSection from "../../CustomRender/TableSection";
-import type { GridRowDef } from "../../DataGrid";
-import type { IDetailItem } from "../../DetailSection";
-import DetailSection from "../../DetailSection";
+import TableSection from "../../common/CustomRender/TableSection";
+import type { GridRowDef } from "../../common/DataGrid";
+import type { IDetailItem } from "../../common/DetailSection";
+import DetailSection from "../../common/DetailSection";
 
 interface IModalGeneratePayrollProps {
   open: boolean;

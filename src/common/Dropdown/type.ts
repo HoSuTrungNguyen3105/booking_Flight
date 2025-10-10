@@ -32,6 +32,7 @@ export type DropdownType = {
   options?: DropdownOptions[];
   value: DropdownOptions[] | DropdownOptions | null;
   sx?: SxProps;
+  onInputChange?: (value: string) => void; // 👈 thêm callback riêng
   label?: string;
   customInput?: React.ReactNode;
   onOpen?: (event: React.SyntheticEvent) => void;

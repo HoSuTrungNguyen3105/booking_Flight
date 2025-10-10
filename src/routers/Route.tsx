@@ -14,7 +14,7 @@ import FullLayout from "../components/Layout/FullLayout";
 import MealList from "../components/Admin/component/Meal/MealList";
 import SecurityManage from "../common/Setting/Component/SecurityManage";
 import ManageMyInformation from "../common/Setting/ManageMyInformation";
-import ManageMyInfo from "../common/Setting/ManageMyInfo";
+import ManageMyInfo from "../components/Profile/ManageMyInfo";
 import AircraftPage from "../components/Admin/component/Aircraft/AircraftPage";
 import UnlockRequestTable from "../components/Auth/UnlockRequestTable";
 import FlightPage from "../components/Admin/component/Flight/FlightPage";

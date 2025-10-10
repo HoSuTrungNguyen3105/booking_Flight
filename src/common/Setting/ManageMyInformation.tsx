@@ -8,6 +8,7 @@ import TransferAuthoritySection from "./Component/TransferAuthoritySection";
 import { useAuth } from "../../context/AuthContext";
 import { useUpdateUserInfo } from "../../components/Api/usePostApi";
 import type { TFileUploader } from "../FileUploader/type";
+import AccountSettings from "../../components/Auth/AccountSettings";
 
 const ManageMyInformation = () => {
   const { user } = useAuth();
@@ -81,13 +82,15 @@ const ManageMyInformation = () => {
     >
       <UserInfoSection myInfo={myInfo as UserData} onChange={handleChange} />
       {/* <ManagePathAdminSection /> */}
-      <DataAccessPermissionSection />
+
+      {/* <DataAccessPermissionSection />
 
       <TransferAuthoritySection
         myInfo={myInfo as UserData}
         setOpenModal={() => setToggleOpenModal(!toggleOpenModal)}
-      />
+      /> */}
 
+      <AccountSettings />
       {/* <TimeInfoSection /> */}
 
       {renderButtonSection()}
