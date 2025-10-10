@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import FacilityManagement from "./FacilityManagement";
+import FacilityManagement from "../../../User/FacilityManagement";
 import { Box, Button } from "@mui/material";
-import CreateTerminalDialog from "./CreateTerminalDialog";
+import CreateTerminalDialog from "../../../User/CreateTerminalDialog";
 
 const AirportManagementDetail: React.FC = () => {
   const [createTerminalDialogOpen, setCreateTerminalDialogOpen] =

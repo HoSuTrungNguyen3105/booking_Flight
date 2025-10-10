@@ -12,7 +12,7 @@ import type { BreadcrumbItem } from "../../../../common/BreadCrumb";
 import BreadCrumb from "../../../../common/BreadCrumb";
 import type { IDetailItem } from "../../../../common/DetailSection";
 import DetailSection from "../../../../common/DetailSection";
-import FlightPath from "../../../User/FlightPath";
+import FlightPath from "./FlightPath";
 
 interface FlightDetailPageProps {
   flight?: DataFlight;

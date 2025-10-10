@@ -27,9 +27,11 @@ import {
   DinnerDining,
   SignalWifi1BarLock,
 } from "@mui/icons-material";
-import InputTextField from "../Input/InputTextField";
-import InputTextArea from "../Input/InputTextArea";
-import SelectDropdown, { type ActionType } from "../Dropdown/SelectDropdown";
+import InputTextField from "../../../../common/Input/InputTextField";
+import InputTextArea from "../../../../common/Input/InputTextArea";
+import SelectDropdown, {
+  type ActionType,
+} from "../../../../common/Dropdown/SelectDropdown";
 
 interface MealFormProps {
   onSubmit: (data: any) => void;

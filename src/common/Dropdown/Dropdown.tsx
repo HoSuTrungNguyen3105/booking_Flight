@@ -15,7 +15,7 @@ import {
   Warning as WarningIcon,
   CheckCircle as ConfirmedIcon,
 } from "@mui/icons-material";
-import type { DropdownType } from "./type";
+import type { DropdownOptions, DropdownType } from "./type";
 
 export const Dropdown = ({
   options = [],
@@ -35,6 +35,7 @@ export const Dropdown = ({
   size = "small",
 }: DropdownType & { size?: "small" | "medium" }) => {
   const [inputText, setInputText] = useState("");
+  const [selected, setSelected] = useState<DropdownOptions | null>(null);
 
   const borderColor = useMemo(() => {
     const colorMap: Record<string, string> = {
@@ -66,22 +67,36 @@ export const Dropdown = ({
       readOnly={readonly}
       disabled={disabled}
       options={options}
-      value={value}
+      value={selected}
       inputValue={readonly ? "" : inputText}
       getOptionLabel={(option) =>
         typeof option.label === "string" ? option.label : ""
       }
       onOpen={onOpen}
       onClose={onClose}
+      // onInputChange={(e, val, reason) => {
+      //   if (!readonly && reason === "input") setInputText(val);
+      // }}
       onInputChange={(e, val, reason) => {
-        if (!readonly && reason === "input") setInputText(val);
+        if (reason === "input") {
+          setInputText(val);
+          // refetchUserFromMessage({ id: userId, email: val })
+        }
       }}
       onChange={(e, newValue) => {
+        setSelected(newValue);
         setInputText(
           Array.isArray(newValue) ? "" : (newValue?.label as string) || ""
         );
+        //
         onChange?.(e, newValue);
       }}
+      // onChange={(e, newValue) => {
+      //   setInputText(
+      //     Array.isArray(newValue) ? "" : (newValue?.label as string) || ""
+      //   );
+      //   onChange?.(e, newValue);
+      // }}
       size={size}
       sx={{ minWidth: 200, ...sx }}
       // renderOption={(props, option, { selected }) =>
@@ -120,7 +135,6 @@ export const Dropdown = ({
               sx={{ mr: 1 }}
             />
           )}
-          {/* Render ReactNode trực tiếp */}
           {option.label}
         </li>
       )}
@@ -133,7 +147,7 @@ export const Dropdown = ({
           sx={{
             ...sx,
             "& .MuiOutlinedInput-root": {
-              cursor: "pointer", // con trỏ khi hover
+              cursor: "pointer",
               "& fieldset": {
                 borderColor: borderColor,
                 cursor: "pointer",

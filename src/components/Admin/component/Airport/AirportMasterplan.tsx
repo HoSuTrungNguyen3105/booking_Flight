@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Box, Paper, Typography, Stack, Chip } from "@mui/material";
-import DetailTerminalModal from "./modal/DetailTerminalModal";
+import DetailTerminalModal from "../../modal/DetailTerminalModal";
 
 export type AreaKey =
   | "all"

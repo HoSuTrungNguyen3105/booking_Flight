@@ -20,8 +20,10 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import TabPanel, { type ITabItem } from "../../common/CustomRender/TabPanel";
-import theme from "../../scss/theme";
+import TabPanel, {
+  type ITabItem,
+} from "../../../../common/CustomRender/TabPanel";
+import theme from "../../../../scss/theme";
 
 // Styled components
 const RouteCard = styled(Card)(({ theme }) => ({

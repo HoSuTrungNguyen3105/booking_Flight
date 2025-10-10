@@ -28,8 +28,8 @@ import {
   ComposedChart,
   Area,
 } from "recharts";
-import type { DataFlight } from "../../utils/type";
-import { useGetFlightData } from "../Api/useGetApi";
+import type { DataFlight } from "../../../../utils/type";
+import { useGetFlightData } from "../../../Api/useGetApi";
 import {
   FlightTakeoff,
   Schedule,

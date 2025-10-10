@@ -96,7 +96,7 @@ export const useSecureFetch = <T extends Partial<ResponseMessage>, P>({
           };
         }
       } catch (error) {
-        console.error("❌ Password verification error:", error);
+        console.error("Password verification error:", error);
         return { resultCode: "99", resultMessage: "Lỗi xác thực" };
       }
     },

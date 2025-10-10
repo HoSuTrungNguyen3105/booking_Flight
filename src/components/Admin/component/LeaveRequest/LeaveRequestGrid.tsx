@@ -11,7 +11,7 @@ import {
 import CustomPopover from "../../../../common/Button/Popover";
 import RequestLeaveActionModal from "./RequestLeaveActionModal";
 import { UserRole, type LeaveRequest } from "../../../../utils/type";
-import CreateLeaveRequestForm from "../../../User/CreateLeaveRequestForm";
+import CreateLeaveRequestForm from "./CreateLeaveRequestForm";
 import { useAuth } from "../../../../context/AuthContext";
 
 const LeaveRequestGrid = () => {

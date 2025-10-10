@@ -20,7 +20,7 @@ import {
 } from "@mui/icons-material";
 import { useGetAircraftCode } from "../../../Api/useGetApi";
 import { memo, useCallback, useState } from "react";
-import AircarftDetail from "../../../User/AircraftDetail";
+import AircarftDetail from "./AircraftDetail";
 import { useDeleteAircraftFlight } from "../../../Api/usePostApi";
 import DialogConfirm from "../../../../common/Modal/DialogConfirm";
 import DeleteIcon from "../../../../svgs/delete-2-svgrepo.svg";
