@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { memo, useCallback, useEffect, useState } from "react";
 import { Box, Button, Typography, Avatar, Stack } from "@mui/material";
 import { Search } from "@mui/icons-material";
 import {
@@ -32,39 +32,34 @@ const SearchUserFromMessage: React.FC = () => {
     }
   };
 
-  const handleSearch = useCallback(async () => {
-    if (searchData || !userId) return;
-    const res = await refetchUserFromMessage({ id: userId, email: searchData });
-    if (res?.resultCode === "00") {
-      setOptionWhenSearch(res.list as SearchEmailFromSidebarMessageRes[]);
-    }
-    const mapped = optionWhenSearch?.map((e) => ({
-      value: e.id,
-      label: (
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <Avatar sx={{ width: 24, height: 24 }}>
-            {e.name?.charAt(0).toUpperCase()}
-          </Avatar>
-          <Box>
-            <Typography fontWeight={600}>{e.name}</Typography>
-            <Typography variant="body2" color="text.secondary">
-              {e.email}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Mã NV: {e.employeeNo} • Role: {e.role}
-            </Typography>
-          </Box>
-        </Box>
-      ),
-    }));
-    setOptions(mapped as DropdownOptions[]);
-  }, []);
+  //   const handleSearch = useCallback(()=>{
+
+  //   },[])
 
   useEffect(() => {
     if (dataUserFromMessage?.list) {
-      handleSearch();
+      const mapped = optionWhenSearch?.map((e) => ({
+        value: e.id,
+        label: (
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Avatar sx={{ width: 24, height: 24 }}>
+              {e.name?.charAt(0).toUpperCase()}
+            </Avatar>
+            <Box>
+              <Typography fontWeight={600}>{e.name}</Typography>
+              <Typography variant="body2" color="text.secondary">
+                {e.email}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Mã NV: {e.employeeNo} • Role: {e.role}
+              </Typography>
+            </Box>
+          </Box>
+        ),
+      }));
+      setOptions(mapped as DropdownOptions[]);
     }
-  }, [dataUserFromMessage, handleSearch]);
+  }, [dataUserFromMessage]);
 
   return (
     <Box sx={{ p: 3 }}>
@@ -82,12 +77,7 @@ const SearchUserFromMessage: React.FC = () => {
             }
           }}
         />
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleSearch}
-          startIcon={<Search />}
-        >
+        <Button variant="contained" color="primary" startIcon={<Search />}>
           Tìm kiếm
         </Button>
       </Stack>
@@ -95,4 +85,4 @@ const SearchUserFromMessage: React.FC = () => {
   );
 };
 
-export default SearchUserFromMessage;
+export default memo(SearchUserFromMessage);

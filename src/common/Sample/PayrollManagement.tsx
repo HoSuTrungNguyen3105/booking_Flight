@@ -24,7 +24,10 @@ import { useCallback, useMemo, useState } from "react";
 import { type GridRowDef } from "../../common/DataGrid/index";
 import TableSection from "../CustomRender/TableSection";
 import CreatePayrollModal from "./modal/CreatePayrollModal";
-import { useGetPayrollData } from "../../components/Api/useGetApi";
+import {
+  useExportExcel,
+  useGetPayrollData,
+} from "../../components/Api/useGetApi";
 import SelectDropdown, { type ActionType } from "../Dropdown/SelectDropdown";
 import { DateFormatEnum, formatDate } from "../../hooks/format";
 import InfoPayrollModal from "./modal/InfoPayrollModal";
@@ -105,6 +108,7 @@ const PayrollManagement = () => {
       })) || [],
     [dataPayroll]
   );
+  const { exportExcel, loading } = useExportExcel();
 
   const [visibleIds, setVisibleIds] = useState<number[]>([]);
 
@@ -304,17 +308,8 @@ const PayrollManagement = () => {
     { label: "Máy bay Boeing 787", value: "boeing-787" },
   ];
 
-  // useEffect(() => {
-  //   setSelectedPayrollRows((prev) =>
-  //     prev.filter((selectedRow) =>
-  //       mealRows.some((row) => row.id === selectedRow.id)
-  //     )
-  //   );
-  // }, [mealRows]);
-
   return (
     <Box sx={{ height: "70vh" }}>
-      {/* Header */}
       <Grid container spacing={3}>
         <Grid size={12}>
           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
@@ -335,28 +330,6 @@ const PayrollManagement = () => {
       <Grid container spacing={2} sx={{ mb: 3 }}>
         <Grid size={12}>
           <Stack direction="row" spacing={2} alignItems="center">
-            <Button
-              variant="contained"
-              startIcon={<Add />}
-              onClick={() => setOpenGenerateDialog(true)}
-              size="large"
-            >
-              Tạo Bảng Lương Mới
-            </Button>
-
-            <MultiDropdown
-              label="Chọn dịch vụ"
-              placeholder="Chọn chuyến bay..."
-              options={optionsDropdown}
-              value={selectedOptions}
-              onChange={(newValue) => setSelectedOptions(newValue)}
-              helperText={
-                selectedOptions.length === 0
-                  ? "Bạn chưa chọn dịch vụ nào"
-                  : `Đã chọn ${selectedOptions.length} dịch vụ`
-              }
-            />
-
             <FormControl sx={{ minWidth: 150 }}>
               <FormRow direction="column" label="Tháng">
                 <SelectDropdown
@@ -381,9 +354,25 @@ const PayrollManagement = () => {
           </Stack>
         </Grid>
 
+        <Grid size={6}>
+          <Button
+            variant="contained"
+            startIcon={<Add />}
+            onClick={() => setOpenGenerateDialog(true)}
+            size="large"
+          >
+            Tạo Bảng Lương Mới
+          </Button>
+        </Grid>
+
         <Grid size={12}>
           <Stack direction="row" spacing={1} justifyContent="flex-end">
-            <Button variant="outlined" startIcon={<Download />}>
+            <Button
+              variant="outlined"
+              onClick={exportExcel}
+              disabled={loading}
+              startIcon={<Download />}
+            >
               Export Excel
             </Button>
           </Stack>

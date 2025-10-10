@@ -288,6 +288,43 @@ export const useGetAllAirportInfo = () => {
   };
 };
 
+// export const useGetAllAirportInfo = () => {
+//   const { refetch, loading } = useFetch<Blob, void>({
+//     url,
+//     config: {
+//       method: "GET",
+//       responseType: "blob",
+//     },
+//     autoFetch: false,
+//   });
+// };
+
+export const useExportExcel = () => {
+  const { refetch, loading } = useFetch<DetailResponseMessage<Blob>, void>({
+    url: "/sys/users/exportPayrollsToExcel",
+    config: {
+      method: "GET",
+      responseType: "blob",
+    },
+    autoFetch: false,
+  });
+
+  const exportExcel = async () => {
+    const res = await refetch();
+    if (res) {
+      const url = window.URL.createObjectURL(new Blob([res.data as Blob]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "payroll.xlsx");
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    }
+  };
+
+  return { exportExcel, loading };
+};
+
 export const useGetAllTicketInfo = () => {
   const { data: getTicketInfo, refetch: refetchGetTicketInfo } = useFetch<
     TicketResponseMessage,
