@@ -44,8 +44,8 @@ export type DropdownType = {
   status?: DropdownStatus;
   readonly?: boolean;
   disabled?: boolean;
-  filterSelectedOptions?: boolean; // ✅ mới thêm
-  autoHighlight?: boolean; // ✅ mới thêm
+  filterSelectedOptions?: boolean;
+  autoHighlight?: boolean;
   openOnFocus?: boolean;
   disableCloseOnSelect?: boolean;
   onChange: (

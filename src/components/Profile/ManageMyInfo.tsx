@@ -17,7 +17,7 @@ import BatchUpdateEmployeeNo from "../../common/Sample/BatchUpdateEmployeeNo";
 import type { BatchEmployeeNoReq } from "../Api/usePostApi";
 import ConfirmDeleteModal from "../../context/common/ConfirmDeleteModal";
 import SearchUserFromMessage from "../Chat/SearchUserFromMessage";
-import { Dropdown } from "../../common/Dropdown/Dropdown";
+import { Dropdown } from "../../common/Dropdown/SearchInputWithList";
 import type { DropdownOptions } from "../../common/Dropdown/type";
 
 const ManageMyInfo = () => {

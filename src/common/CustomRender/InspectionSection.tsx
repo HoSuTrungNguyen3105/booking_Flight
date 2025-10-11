@@ -6,6 +6,7 @@ import SearchIcon from "../../svgs/icon-search.svg";
 import Pagination from "../DataGrid/Pagination";
 import SearchBar from "./SearchBar";
 import useClientPagination from "../../context/use[custom]/useClientPagination";
+import TableSection from "./TableSection";
 
 type ISecurityTabSectionProps = {
   columns: GridColDef[];
@@ -47,7 +48,7 @@ const InspectionSection = ({
 
   const renderContent = useCallback(() => {
     return (
-      <Box marginRight={0} display="flex" flexDirection="column" height="100%">
+      <Box marginRight={0} display="flex" flexDirection="column">
         <Box
           sx={{
             display: "flex",
@@ -77,26 +78,17 @@ const InspectionSection = ({
           </Box>
         </Box>
 
-        <Box display="flex" minHeight={rows.length === 0 ? "60vh" : "auto"}>
-          <DataTable
-            checkboxSelection={false}
-            hideColumnHeaderCheckbox
-            sortModel={sortModel}
-            onSortModelChange={onSortModelChange}
+        <Box display="flex">
+          <TableSection
             columns={columns}
             rows={paginatedData}
-            loading={loading}
-            onRowClick={onRowClick}
+            isLoading={loading as boolean}
+            nextRowClick={true}
+            setRows={() => {}}
+            handleRowClick={onRowClick}
+            largeThan
           />
         </Box>
-        <Pagination
-          currentPage={currentPage}
-          totalResult={totalElements}
-          totalPage={totalPages}
-          pageSize={pageSize}
-          onPageChange={onPageChange}
-          onPageSizeChange={onPageSizeChange}
-        />
       </Box>
     );
   }, [totalElements, rows, columns, loading, onSortModelChange, sortModel]);

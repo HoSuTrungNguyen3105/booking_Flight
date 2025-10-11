@@ -25,7 +25,6 @@ const SingleDateRangePickerComponent: React.FC<Props> = ({
   language,
   status = "default",
   sx,
-  inputClassName = "",
   placeHolder = "YYYY.MM.DD",
   disabled = false,
   readOnly = false,

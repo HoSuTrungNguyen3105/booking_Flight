@@ -111,9 +111,9 @@ const DataSecure = ({ passenger, returnButton }: DataSecureProps) => {
 
   const rowDataMealOrder = useMemo(
     () =>
-      dataPassengerById?.data?.bookings.map((item) => ({
+      dataPassengerById?.data?.bookings[0].mealOrders.map((item) => ({
         ...item,
-        id: item.mealOrders.map((e) => e.id).join(", "),
+        id: item.id,
       })) || [],
     [dataPassengerById]
   );

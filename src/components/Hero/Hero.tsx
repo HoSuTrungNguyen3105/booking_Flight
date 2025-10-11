@@ -10,7 +10,7 @@ const Hero: React.FC = () => {
   return (
     <Box
       sx={{
-        height: "480px",
+        height: "560px",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
@@ -31,7 +31,7 @@ const Hero: React.FC = () => {
           left: 0,
           width: "100%",
           height: "100%",
-          backgroundColor: "rgba(0, 0, 0, 0.5)", // Lớp phủ mờ
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
         },
       }}
     >

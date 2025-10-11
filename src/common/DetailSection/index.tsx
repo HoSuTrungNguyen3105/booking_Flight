@@ -75,7 +75,7 @@ const DetailSection = ({
             <Typography
               variant="body2"
               color="grey.500"
-              sx={{ minWidth: mode === "row" ? 120 : "auto" }} // để title gọn đẹp
+              sx={{ minWidth: mode === "row" ? 120 : "auto" }}
             >
               {item.title}
             </Typography>

@@ -109,10 +109,16 @@ export const Header = () => {
                 한글시스템명
               </Typography>
             </Box>
+            <Box
+              sx={{
+                padding: { xs: "4px", sm: "6px" },
+              }}
+            >
+              <LanguageButton />
+            </Box>
           </Stack>
 
-          {/* Middle section - Navigation links and Search (visible on desktop) */}
-          {!isMobile && (
+          {/* {!isMobile && (
             <Stack
               direction="row"
               alignItems="center"
@@ -137,7 +143,7 @@ export const Header = () => {
                 </Button>
               ))}
             </Stack>
-          )}
+          )} */}
 
           {/* Right section - Actions and Login */}
           <Stack direction="row" alignItems="center" spacing={2}>
@@ -170,19 +176,6 @@ export const Header = () => {
                 }`,
               }}
             >
-              <Box
-                sx={{
-                  padding: { xs: "4px", sm: "6px" },
-                  borderRadius: "6px",
-                  display: { xs: "none", sm: "block" },
-                  "&:hover": {
-                    backgroundColor: theme.palette.action.hover,
-                  },
-                }}
-              >
-                <LanguageButton />
-              </Box>
-
               {isAuthenticated ? (
                 <Stack direction="row" alignItems="center" spacing={1}>
                   <CustomPopover
