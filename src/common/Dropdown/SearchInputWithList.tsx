@@ -27,7 +27,7 @@ interface DropdownProps extends DropdownType {
   size?: "small" | "medium";
   apiCall?: ApiCallFunction;
   debounceDelay?: number;
-  customOutPut: ReactNode;
+  customOutPut?: (option: DropdownOptions) => ReactNode; // Changed to function that returns ReactNode
 }
 
 export const SearchInputWithList = ({
@@ -46,7 +46,6 @@ export const SearchInputWithList = ({
   const [isLoading, setIsLoading] = useState(false);
   const [apiOptions, setApiOptions] = useState<DropdownOptions[]>([]);
   const [showList, setShowList] = useState(false);
-  // const [selected, setSelected] = useState<DropdownOptions | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const debouncedSearchText = useDebounce(inputText, debounceDelay);
@@ -59,7 +58,7 @@ export const SearchInputWithList = ({
         setIsLoading(true);
         const data = await apiCall(searchText);
         setApiOptions(data);
-        setShowList(true); // Show list when we have results
+        setShowList(true);
       } catch (error) {
         console.error("Error fetching options:", error);
         setApiOptions([]);
@@ -96,8 +95,7 @@ export const SearchInputWithList = ({
     return status && colorMap[status] ? colorMap[status] : undefined;
   }, [status]);
 
-  const handleInputChange = (event: string) => {
-    const value = event;
+  const handleInputChange = (value: string) => {
     setInputText(value);
     onInputChange?.(value);
 
@@ -111,7 +109,6 @@ export const SearchInputWithList = ({
   };
 
   const handleOptionSelect = (option: DropdownOptions) => {
-    // setSelected(option);
     setInputText(typeof option.label === "string" ? option.label : "");
     setShowList(false);
     onChange?.(null as any, option);
@@ -119,6 +116,21 @@ export const SearchInputWithList = ({
 
   const handleClickAway = () => {
     setShowList(false);
+  };
+
+  // Render the content for each list item
+  const renderListItemContent = (option: DropdownOptions) => {
+    if (customOutPut) {
+      // If customOutPut is provided as a function, call it with the option
+      return customOutPut(option);
+    } else {
+      // Default rendering - show the label
+      return (
+        <ListItemText
+          primary={typeof option.label === "string" ? option.label : "Option"}
+        />
+      );
+    }
   };
 
   return (
@@ -166,17 +178,9 @@ export const SearchInputWithList = ({
                     "&:hover": {
                       backgroundColor: "action.hover",
                     },
-                    "&.Mui-selected": {
-                      backgroundColor: "primary.main",
-                      color: "primary.contrastText",
-                    },
                   }}
                 >
-                  {customOutPut ? (
-                    <ListItemText primary={option.label} />
-                  ) : (
-                    customOutPut
-                  )}
+                  {renderListItemContent(option)}
                 </ListItem>
               ))}
             </List>

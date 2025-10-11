@@ -83,14 +83,14 @@ const ManageMyInformation = () => {
       <UserInfoSection myInfo={myInfo as UserData} onChange={handleChange} />
       {/* <ManagePathAdminSection /> */}
 
-      {/* <DataAccessPermissionSection />
+      <DataAccessPermissionSection />
 
       <TransferAuthoritySection
         myInfo={myInfo as UserData}
         setOpenModal={() => setToggleOpenModal(!toggleOpenModal)}
-      /> */}
+      />
 
-      <AccountSettings />
+      {/* <AccountSettings /> */}
       {/* <TimeInfoSection /> */}
 
       {renderButtonSection()}

@@ -890,6 +890,21 @@ export const useResetPasswordByMfa = () => {
     refetchChangePassword,
   };
 };
+
+export const useForgotPassword = () => {
+  const { refetch: refetchForgotPassword } = useFetch<
+    ResponseMessage,
+    { email: string }
+  >({
+    url: "/auth/forgot-password",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchForgotPassword,
+  };
+};
+
 export type PassengerFormData = {
   name: string;
   email: string;

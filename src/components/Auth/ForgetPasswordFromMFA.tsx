@@ -3,16 +3,18 @@ import { Box, Button, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { useToast } from "../../context/ToastContext";
 import { useCheckMfaAvailable } from "../Api/useGetApi";
+// import Input from "../Admin/component/Input";
 import { Link } from "react-router-dom";
 import InputTextField from "../../common/Input/InputTextField";
 
 interface FormDataType {
   email: string;
+  mfaCode?: string;
 }
 
-const ForgetPassword = () => {
+const ForgetPasswordFromMFA = () => {
   const { control, watch } = useForm<FormDataType>({
-    defaultValues: { email: "" },
+    defaultValues: { email: "", mfaCode: "" },
   });
   const toast = useToast();
   const [loading, setLoading] = useState(false);
@@ -71,4 +73,4 @@ const ForgetPassword = () => {
   );
 };
 
-export default memo(ForgetPassword);
+export default memo(ForgetPasswordFromMFA);
