@@ -10,7 +10,7 @@ import { memo, useCallback, useState } from "react";
 import AdminUpdateUserModal from "../../common/Setting/Component/AdminUpdateUserModal";
 import UpdateUserForm from "../User/UpdateUserForm";
 import type { AdminUpdateUserForm } from "../../utils/type";
-import SendEmailToUsers from "../../common/Setting/SendEmailToUsers";
+import SendEmailToUsers from "../Auth/SendEmailToUsers";
 import TableSection from "../../common/CustomRender/TableSection";
 import type { GridRowId } from "@mui/x-data-grid";
 import BatchUpdateEmployeeNo from "../../common/Sample/BatchUpdateEmployeeNo";

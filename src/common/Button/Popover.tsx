@@ -34,9 +34,6 @@ const CustomPopover: React.FC<IButtonSettingProps> = ({
     setAnchorEl(null);
   };
 
-  const isOptionStringArray =
-    Array.isArray(option) && option.every((i) => typeof i === "string");
-
   return (
     <>
       <Button

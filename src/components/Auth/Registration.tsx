@@ -19,7 +19,6 @@ const Registration = ({ email }: RegisterProps) => {
     email: email || "",
     password: "",
     phone: "",
-    passport: "",
     role: "USER",
   });
 
@@ -87,14 +86,6 @@ const Registration = ({ email }: RegisterProps) => {
             setFormData((prev) => ({ ...prev, phone: value }))
           }
         />
-        <InputTextField
-          value={formData.passport}
-          placeholder="passport"
-          onChange={(value) =>
-            setFormData((prev) => ({ ...prev, passport: value }))
-          }
-        />
-
         <Button variant="contained" color="primary" onClick={onSubmit}>
           Đăng ký
         </Button>

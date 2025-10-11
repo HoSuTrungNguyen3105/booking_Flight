@@ -2,12 +2,12 @@ import { useState } from "react";
 import { Box, Button, Divider, Stack, Typography } from "@mui/material";
 import { Send } from "@mui/icons-material";
 import { useAuth } from "../../context/AuthContext";
-import ChipInput from "../ChipInput";
-import InputTextField from "../Input/InputTextField";
-import InputTextArea from "../Input/InputTextArea";
-import { useSendMail } from "../../components/Api/usePostApi";
+import ChipInput from "../../common/ChipInput";
+import InputTextField from "../../common/Input/InputTextField";
+import InputTextArea from "../../common/Input/InputTextArea";
+import { useSendMail } from "../Api/usePostApi";
 import { useToast } from "../../context/ToastContext";
-import { EmailAttachmentUploader } from "../FileUploader/FileUploadButton";
+import { EmailAttachmentUploader } from "../../common/FileUploader/FileUploadButton";
 
 type SendEmailProps = {
   selectedUser: string[];

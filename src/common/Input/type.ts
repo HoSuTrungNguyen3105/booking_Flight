@@ -30,6 +30,7 @@ export type InputFieldProps = {
   helperText?: string;
   allowHypen?: boolean;
 };
+
 export interface IInputTextFieldProps {
   type?: HTMLInputTypeAttribute;
   placeholder2: string;
@@ -63,12 +64,14 @@ export type InputNumberProps = {
   textAlign?: "left" | "right";
   sx?: SxProps;
 };
+
 export const ICON_BY_STATUS: Record<InputFieldStatus, ReactNode> = {
   default: null,
   confirmed: null,
   error: null,
   warning: null,
 };
+
 export const INPUT_HEIGHT_BY_SIZE: Record<TInputSize, number> = {
   small: 28,
   medium: 32,

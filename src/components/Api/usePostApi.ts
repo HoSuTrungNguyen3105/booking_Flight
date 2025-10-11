@@ -37,7 +37,7 @@ import {
 } from "../../utils/type.ts";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
 import { useFetch } from "../../context/use[custom]/useFetch.ts";
-import type { FlightFormData } from "../../common/Sample/FlightUpdateModal.tsx";
+import type { FlightFormData } from "../Admin/component/Flight/FlightUpdateModal.tsx";
 import type { SearchFlightDto } from "../Admin/component/Flight/Search_layout.tsx";
 import { useSecureFetch } from "../../context/use[custom]/useSecureFetch.ts";
 // import type { CreateMealDto } from "../Admin/component/BulkMealCreator.tsx";
@@ -896,7 +896,6 @@ export type PassengerFormData = {
   role: string;
   password: string;
   phone: string;
-  passport: string;
 };
 
 export const useRegisterUser = () => {
@@ -912,6 +911,7 @@ export const useRegisterUser = () => {
     refetchRegister,
   };
 };
+
 type VerifyOTPProps = {
   userId?: number;
   otp: string;

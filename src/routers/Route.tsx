@@ -30,7 +30,7 @@ import TicketSalesDashboard from "../components/User/TicketSalesDashboard";
 import FlightRoutesDashboard from "../components/Admin/component/Flight/FlightRoutesDashboard";
 import TerminalGateContainer from "../components/Admin/component/Airport/AirportMasterplan";
 import AirportManagement from "../components/Admin/component/Airport/AirportManagement";
-import SendEmailToUsers from "../common/Setting/SendEmailToUsers";
+import SendEmailToUsers from "../components/Auth/SendEmailToUsers";
 import MealForm from "../components/Admin/component/Meal/MealForm";
 import FlightStatisticsPage from "../components/Admin/component/Flight/FlightStatisticsPage";
 import AirportMap from "../components/User/AirportMap";

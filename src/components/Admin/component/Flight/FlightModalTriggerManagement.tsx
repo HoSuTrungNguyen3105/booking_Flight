@@ -1,5 +1,5 @@
 import { memo, useState } from "react";
-import FlightUpdateModal from "../Sample/FlightUpdateModal";
+import FlightUpdateModal from "./FlightUpdateModal";
 import { Box, Button } from "@mui/material";
 
 type FlightIdProps = {

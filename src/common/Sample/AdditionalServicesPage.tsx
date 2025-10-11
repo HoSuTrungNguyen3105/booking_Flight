@@ -1,22 +1,8 @@
-import React, { useEffect, useMemo, useState } from "react";
-import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  Button,
-  Chip,
-  Stack,
-} from "@mui/material";
+import React, { useMemo } from "react";
+import { Box, Typography, Card, CardContent, Chip } from "@mui/material";
 import { useGetBaggageData } from "../../components/Api/useGetApi";
-import type { Baggage } from "../../utils/type";
 import theme from "../../scss/theme";
-import type {
-  GridColDef,
-  GridRenderCellParams,
-  GridRowId,
-} from "@mui/x-data-grid";
-import DataTable from "../DataGrid/index";
+import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import TableSection from "../CustomRender/TableSection";
 const getBaggageStatusStyle = (status: string) => {
   switch (status) {
@@ -88,15 +74,7 @@ const getBaggageStatusStyle = (status: string) => {
 };
 
 const AdditionalServicesPage: React.FC = () => {
-  const { dataBaggage, refetchBaggageData } = useGetBaggageData();
-  const [rows, setRows] = useState<Baggage[]>([]);
-  const [selectionModel, setSelectionModel] = useState<GridRowId[]>([]);
-
-  // useEffect(() => {
-  //   if (dataBaggage?.list) {
-  //     setRows(dataBaggage.list);
-  //   }
-  // }, [dataBaggage]);
+  const { dataBaggage } = useGetBaggageData();
 
   const rowData = useMemo(
     () =>
@@ -164,14 +142,6 @@ const AdditionalServicesPage: React.FC = () => {
       },
     },
   ];
-
-  const handleSubmit = () => {
-    // const selectedServices = rows.filter((row) =>
-    //   selectionModel.includes(row.id)
-    // );
-    // console.log("Hành lý đã chọn:", selectedServices);
-    // TODO: gửi dữ liệu hoặc xử lý tiếp
-  };
 
   if (!dataBaggage) {
     return <Typography>No value</Typography>;

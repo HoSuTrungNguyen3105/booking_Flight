@@ -1,7 +1,9 @@
 import React, { type FC } from "react";
+
 type ZigzagType = {
   items: React.ReactNode;
 };
+
 const Zigzag: FC<ZigzagType> = ({ items }) => {
   const width = 150;
   const height = 50;

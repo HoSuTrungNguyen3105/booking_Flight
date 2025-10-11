@@ -299,23 +299,65 @@ export const useGetAllAirportInfo = () => {
 //   });
 // };
 
-export const useExportExcel = () => {
-  const { refetch, loading } = useFetch<DetailResponseMessage<Blob>, void>({
-    url: "/sys/users/exportPayrollsToExcel",
-    config: {
-      method: "GET",
-      responseType: "blob",
-    },
+export const useExportPayrollExcel = () => {
+  const { refetch, loading } = useFetch<DetailResponseMessage<string>, void>({
+    url: "/sys/users/init/exportPayrollsToExcel",
+    config: getMethod,
     autoFetch: false,
   });
 
   const exportExcel = async () => {
     const res = await refetch();
-    if (res) {
-      const url = window.URL.createObjectURL(new Blob([res.data as Blob]));
+    if (res?.data) {
+      const byteCharacters = atob(res.data); // decode base64
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+
+      const blob = new Blob([byteArray], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+
+      const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
       link.setAttribute("download", "payroll.xlsx");
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    }
+  };
+
+  return { exportExcel, loading };
+};
+
+export const useExportFlightExcel = () => {
+  const { refetch, loading } = useFetch<DetailResponseMessage<string>, void>({
+    url: "/sys/users/init/exportFlightsToExcel",
+    config: getMethod,
+    autoFetch: false,
+  });
+
+  const exportExcel = async () => {
+    const res = await refetch();
+    if (res?.data) {
+      const byteCharacters = atob(res.data);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+
+      const blob = new Blob([byteArray], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "flights.xlsx");
       document.body.appendChild(link);
       link.click();
       link.remove();

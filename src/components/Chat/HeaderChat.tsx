@@ -1,19 +1,12 @@
 import React, { useState, useEffect } from "react";
 import {
   Box,
-  Paper,
   Typography,
   TextField,
   InputAdornment,
   IconButton,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  ListItemButton,
   Avatar,
   Badge,
-  Chip,
   Button,
   Drawer,
   AppBar,
@@ -33,7 +26,6 @@ import {
   Chat as ChatIcon,
   Group as GroupIcon,
   Send as SendIcon,
-  MoreVert as MoreVertIcon,
   AttachFile as AttachFileIcon,
   EmojiEmotions as EmojiIcon,
   Mic as MicIcon,
@@ -51,11 +43,9 @@ import { useSocket } from "../../context/use[custom]/useSocket";
 import type {
   Message,
   MessageBetweenUserLoginResponse,
-  ResConversationsResponse,
 } from "../../utils/type";
 import { socket } from "../../context/use[custom]/socket";
 import { useAuth } from "../../context/AuthContext";
-import ChatContainer from "./ChatContainer";
 
 const ChatApp = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -68,21 +58,9 @@ const ChatApp = () => {
   );
   const { user } = useAuth();
   const userId = user?.id;
-  // const { data, loading } = useSocket<ResConversationsResponse>({
-  //   event: "getConversationsResponse",
-  //   autoListen: true,
-  //   userId,
-  //   onSuccess: (res) => {
-  //     if (res?.resultCode === "00") {
-  //       console.log("Conversations:", res.list);
-  //     } else {
-  //       console.warn(" Server error:", res?.resultMessage);
-  //     }
-  //   },
-  // });
 
   const [selectedUser, setSelectedUser] = useState<number | null>(null);
-  const { emit: sendMessage, loading: sending } = useSocket<any>({
+  const { emit: sendMessage } = useSocket<any>({
     event: "send_message",
     autoListen: false,
     onSuccess: (res) => {
@@ -106,32 +84,18 @@ const ChatApp = () => {
     setMessage("");
   };
 
-  const {
-    data: messagesData,
-    emit: findMessages,
-    loading: loadingMessages,
-  } = useSocket<MessageBetweenUserLoginResponse>({
-    event: "findMessagesBetweenUsers",
-    autoListen: true,
-    onSuccess: (res) => {
-      if (res?.data?.resultCode === "00") {
-        console.log("Messages between users");
-      } else {
-        console.warn("Server error:", res?.data?.resultMessage);
-      }
-    },
-  });
-
-  // --- Khi chọn user ---
-  const handleUserSelect = (user: number) => {
-    setSelectedUser(user);
-    setReceiverId(user);
-    setIsSearchPanelOpen(false);
-
-    if (userId && user) {
-      findMessages({ userId, user2Id: user }); // emit socket
-    }
-  };
+  const { data: messagesData, loading: loadingMessages } =
+    useSocket<MessageBetweenUserLoginResponse>({
+      event: "findMessagesBetweenUsers",
+      autoListen: true,
+      onSuccess: (res) => {
+        if (res?.data?.resultCode === "00") {
+          console.log("Messages between users");
+        } else {
+          console.warn("Server error:", res?.data?.resultMessage);
+        }
+      },
+    });
 
   const [conversationMenuAnchor, setConversationMenuAnchor] =
     useState<null | HTMLElement>(null);
@@ -142,26 +106,16 @@ const ChatApp = () => {
     setIsSearchPanelOpen(!isSearchPanelOpen);
   };
 
-  // const { data: incomingMessage } = useSocket<Message>({
-  //   event: "new_message",
-  //   autoListen: true,
-  //   userId: user?.id,
-  //   onSuccess: (msg) => {
-  //     console.log("Tin nhắn mới nhận:", msg);
-  //   },
-  // });
-
-  const { data: newMessage, isConnected } = useSocket<Message>({
+  const { isConnected } = useSocket<Message>({
     event: "new_message",
     autoListen: true,
     userId,
     onSuccess: (message) => {
-      // Kiểm tra xem tin nhắn có thuộc cuộc trò chuyện hiện tại không
       if (
         userId &&
         (message.senderId === userId || message.receiverId === userId)
       ) {
-        // setMessage((prev) => [...prev, message]);
+        console.error("Lỗi nhận tin nhắn");
       }
     },
     onError: (error) => {

@@ -20,20 +20,18 @@ import {
   type GridColDef,
   type GridRowId,
 } from "@mui/x-data-grid";
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { type GridRowDef } from "../../common/DataGrid/index";
 import TableSection from "../CustomRender/TableSection";
 import CreatePayrollModal from "./modal/CreatePayrollModal";
 import {
-  useExportExcel,
+  useExportPayrollExcel,
   useGetPayrollData,
 } from "../../components/Api/useGetApi";
 import SelectDropdown, { type ActionType } from "../Dropdown/SelectDropdown";
 import { DateFormatEnum, formatDate } from "../../hooks/format";
 import InfoPayrollModal from "./modal/InfoPayrollModal";
 import FormRow from "../CustomRender/FormRow";
-import type { DropdownOption } from "../Dropdown/MultiDropdown";
-import MultiDropdown from "../Dropdown/MultiDropdown";
 
 export type EmployeeType = {
   id: number;
@@ -108,7 +106,7 @@ const PayrollManagement = () => {
       })) || [],
     [dataPayroll]
   );
-  const { exportExcel, loading } = useExportExcel();
+  const { exportExcel, loading } = useExportPayrollExcel();
 
   const [visibleIds, setVisibleIds] = useState<number[]>([]);
 
@@ -286,10 +284,6 @@ const PayrollManagement = () => {
     []
   );
 
-  // const handleOpenModalInfo = useCallback(() => {
-  //   console.log("open", selectedPayrollRows);
-  // }, [selectedPayrollRows]);
-
   const handleMealRowSelection = (selectedIds: GridRowId[]) => {
     setSelectedPayrollRows((prev) => {
       const newSelectedRows = mealRows.filter((row) =>
@@ -298,15 +292,6 @@ const PayrollManagement = () => {
       return newSelectedRows;
     });
   };
-
-  const [selectedOptions, setSelectedOptions] = useState<DropdownOption[]>([]);
-
-  const optionsDropdown: DropdownOption[] = [
-    { label: "Chuyến bay nội địa", value: "domestic" },
-    { label: "Chuyến bay quốc tế", value: "international" },
-    { label: "Máy bay Airbus A320", value: "airbus-a320" },
-    { label: "Máy bay Boeing 787", value: "boeing-787" },
-  ];
 
   return (
     <Box sx={{ height: "70vh" }}>

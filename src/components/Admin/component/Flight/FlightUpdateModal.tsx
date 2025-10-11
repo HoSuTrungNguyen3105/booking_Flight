@@ -21,25 +21,22 @@ import {
   Save,
   Refresh,
 } from "@mui/icons-material";
-import InputTextField from "../Input/InputTextField";
-import SelectDropdown from "../Dropdown/SelectDropdown";
-import DateTimePickerComponent from "../DayPicker";
-import Android12Switch from "../Switch/Switch";
+import InputTextField from "../../../../common/Input/InputTextField";
+import SelectDropdown from "../../../../common/Dropdown/SelectDropdown";
+import DateTimePickerComponent from "../../../../common/DayPicker";
+import Android12Switch from "../../../../common/Switch/Switch";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
-import BaseModal from "../Modal/BaseModal";
-import { DateFormatEnum, formatDate } from "../../hooks/format";
+import BaseModal from "../../../../common/Modal/BaseModal";
+import { DateFormatEnum, formatDate } from "../../../../hooks/format";
 import {
   mapStringToDropdown,
   useGetAllCode,
   useGetFlightByIDData,
-} from "../../components/Api/useGetApi";
-import {
-  useCreateFlight,
-  useFlightUpdate,
-} from "../../components/Api/usePostApi";
-import type { DataFlight } from "../../utils/type";
-import { useToast } from "../../context/ToastContext";
+} from "../../../Api/useGetApi";
+import { useCreateFlight, useFlightUpdate } from "../../../Api/usePostApi";
+import type { DataFlight } from "../../../../utils/type";
+import { useToast } from "../../../../context/ToastContext";
 
 export type FlightFormData = Omit<DataFlight, "meals">;
 

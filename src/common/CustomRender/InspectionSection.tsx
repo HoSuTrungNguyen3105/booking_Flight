@@ -2,7 +2,7 @@ import { Box, Button, Stack, Typography } from "@mui/material";
 import type { GridColDef } from "@mui/x-data-grid";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import DataTable, { type GridRowDef } from "../DataGrid/index";
-import SearchIcon from "../../svgs/phone.png";
+import SearchIcon from "../../svgs/icon-search.svg";
 import Pagination from "../DataGrid/Pagination";
 import SearchBar from "./SearchBar";
 import useClientPagination from "../../context/use[custom]/useClientPagination";

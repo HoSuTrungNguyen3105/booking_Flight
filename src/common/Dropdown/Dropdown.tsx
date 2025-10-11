@@ -42,19 +42,17 @@ export const Dropdown = ({
   disabled,
   disableCloseOnSelect = false,
   size = "small",
-  apiCall, // Hàm call API
-  debounceDelay = 300, // Mặc định 300ms
+  apiCall,
+  debounceDelay = 300,
 }: DropdownProps) => {
   const [inputText, setInputText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [apiOptions, setApiOptions] = useState<DropdownOptions[]>([]);
 
-  // 👇 Chỉ dùng single selection
   const [selected, setSelected] = useState<DropdownOptions | null>(null);
 
   const debouncedSearchText = useDebounce(inputText, debounceDelay);
 
-  // Hàm fetch data từ API
   const fetchOptions = useCallback(
     async (searchText: string) => {
       if (!apiCall) return;
@@ -73,7 +71,6 @@ export const Dropdown = ({
     [apiCall]
   );
 
-  // Effect để gọi API khi debounced search text thay đổi
   useEffect(() => {
     if (debouncedSearchText.trim() !== "" && apiCall) {
       fetchOptions(debouncedSearchText);

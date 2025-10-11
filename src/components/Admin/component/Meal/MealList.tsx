@@ -1,14 +1,18 @@
 import { useMemo, useState, useEffect, useCallback } from "react";
 import { type GridColDef, type GridRowId } from "@mui/x-data-grid";
-import { useGetFlightData, useGetMeal } from "../../../Api/useGetApi";
-import { Box, Button, Typography } from "@mui/material";
+import {
+  useExportFlightExcel,
+  useGetFlightData,
+  useGetMeal,
+} from "../../../Api/useGetApi";
+import { Box, Button, Grid, Stack, Typography } from "@mui/material";
 import { type GridRowDef } from "../../../../common/DataGrid/index";
 import { DateFormatEnum, formatDateKR } from "../../../../hooks/format";
-import FlightModalTriggerManagement from "../../../../common/Setting/FlightModalTriggerManagement";
+import FlightModalTriggerManagement from "../Flight/FlightModalTriggerManagement";
 import TableSection from "../../../../common/CustomRender/TableSection";
 // import SeatBooking from "./SeatBooking";
 import SeatLayout from "../Seat/SeatLayout";
-import MealFlightRelation from "./MealFlightRelation";
+import { Download } from "@mui/icons-material";
 
 export default function MealList() {
   const { flightBookingData, loadingFlightBookingData } = useGetMeal();
@@ -16,7 +20,7 @@ export default function MealList() {
     useGetFlightData();
   const [openModalFlightMealRows, setOpenModalFlightMealRows] =
     useState<boolean>(false);
-
+  const { exportExcel, loading } = useExportFlightExcel();
   const [selectedMealRows, setSelectedMealRows] = useState<GridRowDef[]>([]);
   const [selectedFlightRows, setSelectedFlightRows] = useState<GridRowDef[]>(
     []
@@ -191,39 +195,20 @@ export default function MealList() {
 
   return (
     <div style={{ height: 500, width: "100%" }}>
-      {selectedMealRows.length > 0 && (
-        <Box sx={{ my: 2, p: 2, bgcolor: "grey.100" }}>
-          <Typography>Selected Meals: {selectedMealRows.length}</Typography>
-          <ul>
-            {selectedMealRows.map((row) => (
-              <li key={row.id}>{row.name || row.id}</li>
-            ))}
-          </ul>
-          <Button
-            variant="outlined"
-            onClick={() => {
-              setSelectedMealRows([]);
-              setMealRows([]);
-            }}
-            sx={{ mt: 1 }}
-          >
-            Clear Meal Selection
-          </Button>
-          <Button
-            variant="contained"
-            onClick={() => handleDeleteMeals(selectedMealRows)}
-            sx={{ mt: 1 }}
-          >
-            Delete Meal
-          </Button>
-        </Box>
-      )}
-
       <FlightModalTriggerManagement onSuccess={() => refetchGetFlightData()} />
 
       <Typography variant="h6" gutterBottom sx={{ mt: 4 }}>
         Flight List
       </Typography>
+
+      <Button
+        variant="contained"
+        onClick={exportExcel}
+        disabled={loading}
+        startIcon={<Download />}
+      >
+        Export Excel
+      </Button>
 
       <TableSection
         columns={columnsFlightData}

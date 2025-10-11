@@ -3,7 +3,6 @@ import {
   Container,
   Typography,
   Button,
-  Paper,
   Stack,
   useTheme,
   Chip,
@@ -15,12 +14,13 @@ import { Home, Refresh, ArrowBack } from "@mui/icons-material";
 import {
   useRouteError,
   isRouteErrorResponse,
-  Link,
+  // Link,
   useNavigate,
 } from "react-router-dom";
-import { memo } from "react";
+import { memo, useCallback } from "react";
+import theme from "../../scss/theme";
 
-const GradientBox = styled(Box)<BoxProps>(({ theme }) => ({
+const GradientBox = styled(Box)<BoxProps>(() => ({
   minHeight: "100vh",
   background: `linear-gradient(135deg, ${alpha(
     theme.palette.primary.main,
@@ -59,7 +59,7 @@ const GradientBox = styled(Box)<BoxProps>(({ theme }) => ({
   },
 }));
 
-const FloatingIllustration = styled("img")(({ theme }) => ({
+const FloatingIllustration = styled("img")(() => ({
   width: "100%",
   maxWidth: 280,
   height: "auto",
@@ -79,18 +79,7 @@ const FloatingIllustration = styled("img")(({ theme }) => ({
   },
 }));
 
-const GlassPaper = styled(Paper)(({ theme }) => ({
-  backdropFilter: "blur(10px)",
-  backgroundColor: alpha(theme.palette.background.paper, 0.8),
-  border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
-  borderRadius: 24,
-  padding: theme.spacing(4),
-  boxShadow: "0 8px 32px rgba(0, 0, 0, 0.08)",
-  position: "relative",
-  zIndex: 1,
-}));
-
-const ActionButton = styled(Button)(({ theme }) => ({
+const ActionButton = styled(Button)(() => ({
   borderRadius: 12,
   padding: theme.spacing(1.5, 3),
   fontWeight: 600,
@@ -116,6 +105,10 @@ const ErrorLayout = () => {
   const error = useRouteError();
   const navigate = useNavigate();
   const theme = useTheme();
+
+  const returnHome = useCallback(() => {
+    navigate("/");
+  }, [navigate]);
 
   if (error) {
     console.error("Route error:", error);
@@ -157,7 +150,7 @@ const ErrorLayout = () => {
             }}
           >
             <FloatingIllustration
-              // src="/api/placeholder/280/280"
+              src="/api/placeholder/280/280"
               alt="Error Illustration"
               onError={(e) => {
                 e.currentTarget.src = `data:image/svg+xml,${encodeURIComponent(`
@@ -173,12 +166,7 @@ const ErrorLayout = () => {
             <Typography
               variant="h1"
               sx={{
-                fontSize: { xs: "4rem", md: "6rem" },
                 fontWeight: 800,
-                background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
-                backgroundClip: "text",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
                 mb: 1,
               }}
             >
@@ -235,11 +223,11 @@ const ErrorLayout = () => {
             >
               <ActionButton
                 variant="contained"
-                LinkComponent={Link}
+                onClick={returnHome}
                 startIcon={<Home />}
-                sx={{
-                  background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
-                }}
+                // sx={{
+                //   background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
+                // }}
               >
                 Go Home
               </ActionButton>
