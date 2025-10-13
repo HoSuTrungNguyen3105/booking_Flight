@@ -298,8 +298,8 @@ export type CreateGateReq = {
 export type UserRoleType = UserRole.ADMIN | UserRole.USER | UserRole.MONITOR;
 
 export type BaseUserData = {
-  id: number;
   email: string;
+  id: number;
   name?: string;
   authType?: string;
   userAlias?: string;
@@ -308,7 +308,6 @@ export type BaseUserData = {
   rank?: string;
   role?: UserRoleType;
   employeeNo?: string;
-  passport?: string;
   baseSalary?: number;
   hireDate?: number;
   phone?: string;
@@ -378,13 +377,6 @@ export type SocketResponseMessage<T = null> = {
     resultMessage: string;
   };
 };
-
-// export interface Airport {
-//   code: string;
-//   name: string;
-//   city: string;
-//     country: string;
-// }
 
 export interface FlightMeal {
   id: number;
@@ -520,7 +512,6 @@ export interface Baggage {
   checkedAt: string; // nếu trả về ISO date-time từ backend
   ticketId: number;
 
-  // Quan hệ
   flight?: DataFlight;
   ticket?: Ticket;
 }

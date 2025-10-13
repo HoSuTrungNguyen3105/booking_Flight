@@ -125,17 +125,6 @@ const UserInfoSection = ({ myInfo, onChange }: IUserInfoSectionProps) => {
             />
           </FormControl>
 
-          {/* 이름 */}
-          <FormControl fullWidth>
-            <Typography variant="body2" mb={0.5}>
-              passport
-            </Typography>
-            <InputTextField
-              value={myInfo?.passport}
-              onChange={(val) => onChange("passport", val)}
-            />
-          </FormControl>
-
           {/* 닉네임 (선택) */}
           <FormControl fullWidth>
             <Typography variant="body2" mb={0.5}>

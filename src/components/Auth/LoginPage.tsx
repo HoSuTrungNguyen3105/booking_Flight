@@ -91,6 +91,7 @@ export const LoginPage: React.FC = () => {
     const loginRes = await login({
       email,
       password: data.password,
+      authType: formData.authType,
     });
 
     if (loginRes.requireUnlock) {

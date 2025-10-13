@@ -11,6 +11,7 @@ import {
   useLoginUser,
   useUpdateUserRank,
   useVerifyPw,
+  type LoginReqProps,
 } from "../components/Api/usePostApi";
 import { useToast } from "./ToastContext";
 import {
@@ -20,11 +21,6 @@ import {
   type UserListResponse,
 } from "../utils/type";
 import { useGetMyInfo } from "../components/Api/useGetApi";
-
-export type User = {
-  email: string;
-  password: string;
-};
 
 export type UserWithMFA = {
   email: string;
@@ -43,7 +39,7 @@ interface AuthContextType {
   verifyPassword: (password: string) => Promise<boolean>;
   setValid: (valid: boolean) => void;
   resetValidation: () => void;
-  login: (userData: User) => Promise<UserListResponse>;
+  login: (userData: LoginReqProps) => Promise<UserListResponse>;
   loginWithGGAuthenticator: (userData: UserWithMFA) => Promise<DataResponseId>;
   logout: () => void;
 }
@@ -109,7 +105,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (userId) localStorage.setItem("userId", String(userId));
   };
 
-  const login = async (userData: User): Promise<UserListResponse> => {
+  const login = async (userData: LoginReqProps): Promise<UserListResponse> => {
     const res = await refetchLogin(userData);
     if (res?.resultCode === "00" && res.data) {
       const accessToken = res.accessToken;

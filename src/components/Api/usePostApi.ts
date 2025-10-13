@@ -353,17 +353,17 @@ export const useFindUserFromMessage = () => {
   return { dataUserFromMessage, refetchUserFromMessage };
 };
 
-type LoginData = {
+export type LoginReqProps = {
   email: string;
   password: string;
+  authType: string;
 };
 export const useLoginUser = () => {
   const { data: loginUserData, refetch: refetchLogin } = useFetch<
     UserListResponse,
-    LoginData
+    LoginReqProps
   >({
     url: "/auth/login",
-    defaultValue: { resultCode: "", resultMessage: "", userId: 0 },
     autoFetch: false,
     config: postMethod,
   });
