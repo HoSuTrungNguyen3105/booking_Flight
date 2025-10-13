@@ -56,29 +56,32 @@ export const ApiProvider = ({ children }: { children: ReactNode }) => {
   );
   const get: ApiContextType["get"] = useCallback(
     (url, params, config) => {
-      const newConfig = config || params ? { params, ...config } : undefined;
-      return handleRequest("get", url, undefined, newConfig);
+      return handleRequest("get", url, undefined, { ...config, params });
     },
     [handleRequest]
   );
+
   const post: ApiContextType["post"] = useCallback(
     (url, data, config) => {
       return handleRequest("post", url, data, config);
     },
     [handleRequest]
   );
-  const del: ApiContextType["delete"] = useCallback(
-    (url, config) => {
-      return handleRequest("delete", url, config);
-    },
-    [handleRequest]
-  );
+
   const update: ApiContextType["update"] = useCallback(
     (url, data, config) => {
       return handleRequest("put", url, data, config);
     },
     [handleRequest]
   );
+
+  const del: ApiContextType["delete"] = useCallback(
+    (url, config) => {
+      return handleRequest("delete", url, undefined, config);
+    },
+    [handleRequest]
+  );
+
   return (
     <ApiContext.Provider
       value={{ get, post, delete: del, update, loading, error }}

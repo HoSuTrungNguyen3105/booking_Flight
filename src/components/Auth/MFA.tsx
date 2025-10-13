@@ -11,7 +11,6 @@ export default function MfaSetup({ email, onClose }: EmailProps) {
   const [qrCode, setQrCode] = useState<string | null>(null);
   const [code, setCode] = useState("");
   const [loginMfa, setLoginMfaUi] = useState(false);
-  const { refetchSetLoginMfa } = useLoginByMfa();
   const { refetchVerifyMfa } = useVerifyMfa();
   const { loginWithGGAuthenticator } = useAuth();
   const { refetchSetUpMfa } = useSetUpMfa();
@@ -89,9 +88,17 @@ export default function MfaSetup({ email, onClose }: EmailProps) {
   return (
     <Box
       sx={{
-        textAlign: "center",
+        // textAlign: "center",
+        // justifyContent: "center",
+        // mt: 4,
+
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
         justifyContent: "center",
-        mt: 4,
+        minHeight: "60vh",
+        gap: 3,
+        p: 3,
       }}
     >
       <InputTextField
@@ -102,7 +109,7 @@ export default function MfaSetup({ email, onClose }: EmailProps) {
         placeholder="Nhập email"
       />
       <Button variant="contained" onClick={fetchQrCode}>
-        Tạo QR MFA
+        Render QR MFA
       </Button>
 
       <Button variant="outlined" onClick={onClose}>
@@ -115,7 +122,7 @@ export default function MfaSetup({ email, onClose }: EmailProps) {
           <Box component="img" src={qrCode} alt="QR Code MFA" />
           <Box>
             <InputTextField
-              sx={{ width: "20%" }}
+              sx={{ width: "50%" }}
               value={code}
               onChange={(e) => setCode(e)}
             />
@@ -125,7 +132,48 @@ export default function MfaSetup({ email, onClose }: EmailProps) {
           </Box>
         </Box>
       )}
+
       {loginMfa && (
+        <Box
+          sx={{
+            width: "100%",
+            maxWidth: 400,
+            textAlign: "center",
+            p: 3,
+            border: 1,
+            borderColor: "divider",
+            borderRadius: 2,
+            backgroundColor: "background.paper",
+          }}
+        >
+          <Typography variant="h6" gutterBottom color="primary.main">
+            Xác thực đăng nhập
+          </Typography>
+
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+            Vui lòng nhập mã xác thực từ ứng dụng Authenticator
+          </Typography>
+
+          <InputTextField
+            sx={{ width: "50%", padding: "10px" }}
+            value={code}
+            placeholder="Nhập mã 6 số"
+            onChange={(e) => setCode(e)}
+          />
+
+          <Button
+            variant="contained"
+            onClick={handleLoginMfa}
+            fullWidth
+            size="large"
+            disabled={!code || code.length !== 6}
+          >
+            Đăng nhập
+          </Button>
+        </Box>
+      )}
+
+      {/* {loginMfa && (
         <Box>
           <p>Login MFA </p>
           <InputTextField
@@ -137,7 +185,7 @@ export default function MfaSetup({ email, onClose }: EmailProps) {
             Xác thực
           </Button>
         </Box>
-      )}
+      )} */}
     </Box>
   );
 }

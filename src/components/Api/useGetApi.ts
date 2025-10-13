@@ -487,22 +487,6 @@ export const useFlightList = () => {
   };
 };
 
-type CheckMfaProps = {
-  email: string;
-};
-
-export const useCheckMfaAvailable = () => {
-  const { refetch: refetchMfaCheck } = useFetch<ResponseMessage, CheckMfaProps>(
-    {
-      url: `/auth/checkMfaSettingYn`,
-      autoFetch: false,
-      config: getMethod,
-    }
-  );
-  return {
-    refetchMfaCheck,
-  };
-};
 export const useGetUserList = () => {
   const { data, refetch, loading } = useFetch<UserListManageResponse, UserData>(
     {

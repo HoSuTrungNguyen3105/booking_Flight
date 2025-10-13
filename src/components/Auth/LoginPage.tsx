@@ -12,6 +12,8 @@ import { Loading } from "../../common/Loading/Loading";
 import AccountYn from "./AccountYn";
 import Registration from "./Registration";
 import ForgetPassword from "./ForgetPassword";
+import { useToast } from "../../context/ToastContext";
+import { useCheckMfaAvailable } from "../Api/usePostApi";
 
 interface ILoginForm {
   email: string;
@@ -36,7 +38,7 @@ export const LoginPage: React.FC = () => {
   const [tabValue, setTabValue] = useState(0);
   const [mfaEmail, setMfaEmail] = useState(false);
   const [mfaEmailValue, setMfaEmailValue] = useState("");
-
+  const toast = useToast();
   const tabs: ITabItem[] = [
     {
       label: "Login",
@@ -56,7 +58,7 @@ export const LoginPage: React.FC = () => {
 
   const [unlockAccount, setUnlockAccount] = useState(false);
   const [verifiedAccount, setVerifiedAccount] = useState(false);
-
+  const { refetchMfaCheck } = useCheckMfaAvailable();
   const { login } = useAuth();
   const [userId, setUserId] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -74,7 +76,14 @@ export const LoginPage: React.FC = () => {
 
     if (formData.authType === "MFA") {
       setMfaEmailValue(email);
-      setLoading(false);
+      const res = await refetchMfaCheck({ email });
+
+      console.log("res", res);
+      if (res?.resultCode !== "00") {
+        setLoading(false);
+        toast(res?.resultMessage || "Error");
+        return;
+      }
       setMfaEmail(true);
       return;
     }
@@ -138,10 +147,7 @@ export const LoginPage: React.FC = () => {
                 control={control}
                 name="email"
                 render={({ field }) => (
-                  <InputTextField
-                    {...field}
-                    placeholder="아이디를 입력하세요."
-                  />
+                  <InputTextField {...field} placeholder="Email." />
                 )}
               />
             </FormControl>
@@ -155,7 +161,11 @@ export const LoginPage: React.FC = () => {
                   control={control}
                   name="password"
                   render={({ field }) => (
-                    <InputTextField {...field} type="password" />
+                    <InputTextField
+                      {...field}
+                      placeholder="Password "
+                      type="password"
+                    />
                   )}
                 />
               </FormControl>

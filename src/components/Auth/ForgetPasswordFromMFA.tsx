@@ -2,10 +2,9 @@ import { memo, useState } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { useToast } from "../../context/ToastContext";
-import { useCheckMfaAvailable } from "../Api/useGetApi";
-// import Input from "../Admin/component/Input";
 import { Link } from "react-router-dom";
 import InputTextField from "../../common/Input/InputTextField";
+import { useCheckMfaAvailable } from "../Api/usePostApi";
 
 interface FormDataType {
   email: string;
@@ -32,8 +31,8 @@ const ForgetPasswordFromMFA = () => {
         toast(res.resultMessage, "info");
         return;
       }
-    } catch (err: any) {
-      console.error("Reset error:", err.message);
+    } catch (err) {
+      console.error("Reset error:", err);
       toast("Không thể đặt lại mật khẩu", "error");
     } finally {
       setLoading(false);

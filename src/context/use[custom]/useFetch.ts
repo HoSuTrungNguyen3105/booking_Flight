@@ -49,14 +49,23 @@ export const useFetch = <T extends Partial<ResponseMessage>, P>({
         signal: controller?.signal,
       };
       try {
+        // const fetchMethod =
+        //   method === MethodType.POST
+        //     ? post<T, P>(finalUrl, extra ?? currentParams, finalConfig)
+        //     : method === MethodType.PUT || method === MethodType.PATCH
+        //     ? update<T, P>(finalUrl, extra ?? currentParams, finalConfig)
+        //     : method === MethodType.DELETE
+        //     ? del<T>(finalUrl, extra ?? finalConfig)
+        //     : get<T, P>(finalUrl, extra ?? currentParams, finalConfig);
+
         const fetchMethod =
           method === MethodType.POST
-            ? post<T, P>(finalUrl, extra ?? currentParams, finalConfig)
+            ? post<T, P>(finalUrl, extra ?? currentParams, finalConfig) // body
             : method === MethodType.PUT || method === MethodType.PATCH
-            ? update<T, P>(finalUrl, extra ?? currentParams, finalConfig)
+            ? update<T, P>(finalUrl, extra ?? currentParams, finalConfig) // body
             : method === MethodType.DELETE
-            ? del<T>(finalUrl, extra ?? finalConfig)
-            : get<T, P>(finalUrl, extra ?? currentParams, finalConfig);
+            ? del<T>(finalUrl, finalConfig) // thường k cần body
+            : get<T, P>(finalUrl, extra ?? currentParams, finalConfig); // query
 
         const res = await fetchMethod;
         setData(res);

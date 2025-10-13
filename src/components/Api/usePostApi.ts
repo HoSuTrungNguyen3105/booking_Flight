@@ -891,6 +891,23 @@ export const useResetPasswordByMfa = () => {
   };
 };
 
+type CheckMfaProps = {
+  email: string;
+};
+
+export const useCheckMfaAvailable = () => {
+  const { refetch: refetchMfaCheck } = useFetch<ResponseMessage, CheckMfaProps>(
+    {
+      url: "/auth/checkMfaSettingYn",
+      autoFetch: false,
+      config: postMethod,
+    }
+  );
+  return {
+    refetchMfaCheck,
+  };
+};
+
 export const useForgotPassword = () => {
   const { refetch: refetchForgotPassword } = useFetch<
     DetailResponseMessage<{ userId: number }>,

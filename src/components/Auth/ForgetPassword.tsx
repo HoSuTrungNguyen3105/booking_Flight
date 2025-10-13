@@ -2,8 +2,6 @@ import { memo, useState } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { useToast } from "../../context/ToastContext";
-import { useCheckMfaAvailable } from "../Api/useGetApi";
-import { Link } from "react-router-dom";
 import InputTextField from "../../common/Input/InputTextField";
 import { useForgotPassword } from "../Api/usePostApi";
 import VerifyOpt from "./VerifyOpt";
