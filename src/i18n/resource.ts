@@ -1,5 +1,4 @@
 import { locales } from "./languageConfig";
-import type { DropdownOptions } from "../common/Dropdown/type";
 import { en } from "./en";
 import { jp } from "./jp";
 import { vi } from "./vi";

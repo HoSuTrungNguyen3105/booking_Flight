@@ -5,9 +5,9 @@ import {
   useUpdateBatchEmployeeNo,
   type BatchEmployeeNoReq,
   type BatchUpdateEmployeesDto,
-} from "../../components/Api/usePostApi";
+} from "../Api/usePostApi";
 import { useToast } from "../../context/ToastContext";
-import InputTextField from "../Input/InputTextField";
+import InputTextField from "../../common/Input/InputTextField";
 
 type UpdateEmployeeIDProps = {
   updateItem: BatchEmployeeNoReq[];

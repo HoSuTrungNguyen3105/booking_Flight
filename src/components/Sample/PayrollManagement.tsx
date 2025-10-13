@@ -22,16 +22,15 @@ import {
 } from "@mui/x-data-grid";
 import { useMemo, useState } from "react";
 import { type GridRowDef } from "../../common/DataGrid/index";
-import TableSection from "../CustomRender/TableSection";
+import TableSection from "../../common/CustomRender/TableSection";
 import CreatePayrollModal from "./modal/CreatePayrollModal";
-import {
-  useExportPayrollExcel,
-  useGetPayrollData,
-} from "../../components/Api/useGetApi";
-import SelectDropdown, { type ActionType } from "../Dropdown/SelectDropdown";
+import { useExportPayrollExcel, useGetPayrollData } from "../Api/useGetApi";
+import SelectDropdown, {
+  type ActionType,
+} from "../../common/Dropdown/SelectDropdown";
 import { DateFormatEnum, formatDate } from "../../hooks/format";
 import InfoPayrollModal from "./modal/InfoPayrollModal";
-import FormRow from "../CustomRender/FormRow";
+import FormRow from "../../common/CustomRender/FormRow";
 
 export type EmployeeType = {
   id: number;

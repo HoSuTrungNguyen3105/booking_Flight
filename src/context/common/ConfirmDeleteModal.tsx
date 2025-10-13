@@ -10,7 +10,7 @@ import BaseModal from "../../common/Modal/BaseModal";
 import { Add as AddIcon } from "@mui/icons-material";
 import { Box, Typography, Divider, Button } from "@mui/material";
 
-import type { UserWithRelationsData } from "../../common/Sample/type";
+import type { UserWithRelationsData } from "../../components/Sample/type";
 import {
   useDeleteAttendance,
   useDeleteLeaveRequest,

@@ -1,11 +1,11 @@
 import { Box, Grid, Typography } from "@mui/material";
 import { memo, useCallback, useEffect } from "react";
-import BaseModal from "../../Modal/BaseModal";
-import InputTextField from "../../Input/InputTextField";
+import BaseModal from "../../../common/Modal/BaseModal";
+import InputTextField from "../../../common/Input/InputTextField";
 import MoneyIcon from "../../../svgs/money-euro-banknote.svg";
 import { Add as AddIcon } from "@mui/icons-material";
-import { useGetPayrollsById } from "../../../components/Api/useGetApi";
-import FormRow from "../../CustomRender/FormRow";
+import { useGetPayrollsById } from "../../Api/useGetApi";
+import FormRow from "../../../common/CustomRender/FormRow";
 
 interface IModalGeneratePayrollProps {
   open: boolean;

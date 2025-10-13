@@ -2,7 +2,7 @@ import { Box, Button, Stack } from "@mui/material";
 import { useCallback, useState } from "react";
 import DataAccessPermissionSection from "./DataAccessPermissionSection";
 import DialogConfirm from "../Modal/DialogConfirm";
-import UserInfoSection from "./UserInfoSection";
+import UserInfoSection from "../../components/User/UserInfoSection";
 import { type UserData, type UserUpdateProps } from "../../utils/type";
 import TransferAuthoritySection from "./Component/TransferAuthoritySection";
 import { useAuth } from "../../context/AuthContext";

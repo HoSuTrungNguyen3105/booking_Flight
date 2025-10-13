@@ -1,4 +1,4 @@
-import type { UnlockRequest } from "../../components/Api/useGetApi";
+import type { UnlockRequest } from "../Api/useGetApi";
 import type { Attendance, LeaveRequest } from "../../utils/type";
 import type { Payroll } from "./PayrollManagement";
 

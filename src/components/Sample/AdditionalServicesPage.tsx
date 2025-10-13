@@ -1,9 +1,9 @@
 import React, { useMemo } from "react";
 import { Box, Typography, Card, CardContent, Chip } from "@mui/material";
-import { useGetBaggageData } from "../../components/Api/useGetApi";
+import { useGetBaggageData } from "../Api/useGetApi";
 import theme from "../../scss/theme";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
-import TableSection from "../CustomRender/TableSection";
+import TableSection from "../../common/CustomRender/TableSection";
 const getBaggageStatusStyle = (status: string) => {
   switch (status) {
     case "CHECKED_IN":

@@ -1,13 +1,13 @@
 import { Box, Grid, Typography, Button, FormControl } from "@mui/material";
 import { memo, useCallback, useState } from "react";
-import BaseModal from "../../Modal/BaseModal";
+import BaseModal from "../../../common/Modal/BaseModal";
 import type { GeneratePayroll } from "../PayrollManagement";
-import InputTextField from "../../Input/InputTextField";
+import InputTextField from "../../../common/Input/InputTextField";
 import MoneyIcon from "../../../svgs/money-euro-banknote.svg";
 import { Add as AddIcon } from "@mui/icons-material";
-import { useGetUserIdAndNameToDropdownGeneratePayroll } from "../../../components/Api/useGetApi";
-import SelectDropdown from "../../Dropdown/SelectDropdown";
-import FormRow from "../../CustomRender/FormRow";
+import { useGetUserIdAndNameToDropdownGeneratePayroll } from "../../Api/useGetApi";
+import SelectDropdown from "../../../common/Dropdown/SelectDropdown";
+import FormRow from "../../../common/CustomRender/FormRow";
 
 interface IModalGeneratePayrollProps {
   open: boolean;

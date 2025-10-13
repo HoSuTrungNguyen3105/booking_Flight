@@ -19,8 +19,8 @@ import AircraftPage from "../components/Admin/component/Aircraft/AircraftPage";
 import UnlockRequestTable from "../components/Auth/UnlockRequestTable";
 import FlightPage from "../components/Admin/component/Flight/FlightPage";
 import LeaveRequestGrid from "../components/Admin/component/LeaveRequest/LeaveRequestGrid";
-import PayrollManagement from "../common/Sample/PayrollManagement";
-import AdditionalServicesPage from "../common/Sample/AdditionalServicesPage";
+import PayrollManagement from "../components/Sample/PayrollManagement";
+import AdditionalServicesPage from "../components/Sample/AdditionalServicesPage";
 import ChatContainer from "../components/Chat/ChatContainer";
 import FlightPath from "../components/Admin/component/Flight/FlightPath";
 import ChatApp from "../components/Chat/HeaderChat";
@@ -38,7 +38,7 @@ import AirportManagementDetail from "../components/Admin/component/Airport/Airpo
 import ChangePasswordInProfile from "../components/Profile/ChangePasswordInProfile";
 import FlightBatchCreator from "../components/Admin/component/Flight/FlightBatchCreator";
 import AuthGuard from "../components/Layout/AuthGuard";
-import TicketTable from "../common/Sample/TicketTable";
+import TicketTable from "../components/Sample/TicketTable";
 import BulkMealCreator from "../components/Admin/component/Meal/BulkMealCreator";
 
 const routes = [

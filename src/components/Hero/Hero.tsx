@@ -45,7 +45,7 @@ const Hero: React.FC = () => {
             fontSize: isMobile ? "2rem" : "3rem",
           }}
         >
-          {t("hero.title", "Chào mừng đến với Hệ thống Nội bộ")}
+          {t("tittle1")}
         </Typography>
 
         <Typography
@@ -56,10 +56,7 @@ const Hero: React.FC = () => {
             fontSize: isMobile ? "1.1rem" : "1.5rem",
           }}
         >
-          {t(
-            "hero.subtitle",
-            "Nền tảng kết nối và hỗ trợ nhân viên toàn công ty"
-          )}
+          {t("tittle2")}
         </Typography>
 
         <Box
@@ -78,10 +75,7 @@ const Hero: React.FC = () => {
               fontWeight: 400,
             }}
           >
-            {t(
-              "hero.description",
-              "Nơi cung cấp thông tin, tài nguyên và công cụ làm việc cần thiết cho mọi nhân viên"
-            )}
+            {t("description2")}
           </Typography>
         </Box>
       </Box>

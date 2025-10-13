@@ -45,7 +45,7 @@ import { useSecureFetch } from "../../context/use[custom]/useSecureFetch.ts";
 //   GeneratePayroll,
 //   Payroll,
 // } from "../../common/Sample/PayrollManagement.tsx";
-import type { UserWithRelationsData } from "../../common/Sample/type.ts";
+import type { UserWithRelationsData } from "../Sample/type.ts";
 
 const postMethod = {
   method: MethodType.POST,
