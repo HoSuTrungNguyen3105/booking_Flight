@@ -11,11 +11,11 @@ import theme from "../../scss/theme";
 import { Loading } from "../../common/Loading/Loading";
 import AccountYn from "./AccountYn";
 import Registration from "./Registration";
+import ForgetPassword from "./ForgetPassword";
 
 interface ILoginForm {
   email: string;
   password: string;
-  remember?: boolean;
 }
 
 type AuthType = "ID,PW" | "DEV" | "MFA";
@@ -41,26 +41,19 @@ export const LoginPage: React.FC = () => {
     {
       label: "Login",
       value: "login",
-      description: "로그인을 위해 아이디와 비밀번호를 입력해주세요.",
+      description: "Login .",
     },
     {
       label: "Register",
       value: "register",
-      description: "비밀번호 변경을 위해 필요한 정보를 입력해주세요.",
+      description:
+        "Please enter the information required to change your password.",
     },
-    // {
-    //   label: "Change Password",
-    //   value: "change-password",
-    //   description: "비밀번호 변경을 위해 필요한 정보를 입력해주세요.",
-    // },
-    // {
-    //   label: "Verified Account",
-    //   value: "verified-account",
-    //   description: "계정 잠금 해제를 요청합니다.",
-    // },
   ];
 
   const [changePassword, setChangePassword] = useState(false);
+  const [forgotPassword, setForgotPassword] = useState(false);
+
   const [unlockAccount, setUnlockAccount] = useState(false);
   const [verifiedAccount, setVerifiedAccount] = useState(false);
 
@@ -126,7 +119,7 @@ export const LoginPage: React.FC = () => {
           <Stack direction="column" spacing={3} sx={{ mt: 3 }}>
             <FormControl fullWidth>
               <Typography variant="body1" mb={0.5}>
-                인증 방법
+                Authentication Method
               </Typography>
               <SelectDropdown
                 value={formData.authType}
@@ -139,7 +132,7 @@ export const LoginPage: React.FC = () => {
 
             <FormControl fullWidth>
               <Typography variant="body1" mb={0.5}>
-                아이디
+                Email
               </Typography>
               <Controller
                 control={control}
@@ -156,21 +149,27 @@ export const LoginPage: React.FC = () => {
             {formData.authType !== "MFA" && (
               <FormControl fullWidth>
                 <Typography variant="body1" mb={0.5}>
-                  비밀번호
+                  Password
                 </Typography>
                 <Controller
                   control={control}
                   name="password"
                   render={({ field }) => (
-                    <InputTextField
-                      {...field}
-                      placeholder="비밀번호를 입력하세요."
-                      type="password"
-                    />
+                    <InputTextField {...field} type="password" />
                   )}
                 />
               </FormControl>
             )}
+
+            <Button variant="text">
+              <Typography
+                variant="body2"
+                color="primary"
+                onClick={() => setForgotPassword(true)}
+              >
+                Forget password ?
+              </Typography>
+            </Button>
 
             <Box
               sx={{
@@ -200,19 +199,8 @@ export const LoginPage: React.FC = () => {
           </Stack>
         );
 
-      // case 1:
-      //   return <AccountYn mode="forget" onClose={() => setTabValue(0)} />;
-
       case 1:
         return <Registration email="" onClose={() => setTabValue(0)} />;
-
-      // case 2:
-      //   return <RequestUnlock userId={userId} onClose={() => setTabValue(0)} />;
-
-      // case 2:
-      //   return <AccountYn mode="verify" onClose={() => setTabValue(0)} />;
-      // default:
-      //   return null;
     }
   };
 
@@ -228,6 +216,10 @@ export const LoginPage: React.FC = () => {
 
   if (changePassword) {
     return <AccountYn mode="change" onClose={() => setChangePassword(false)} />;
+  }
+
+  if (forgotPassword) {
+    return <ForgetPassword />;
   }
 
   if (unlockAccount) {

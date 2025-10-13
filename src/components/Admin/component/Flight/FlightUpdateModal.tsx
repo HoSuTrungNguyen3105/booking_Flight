@@ -84,10 +84,6 @@ const FlightUpdateModal = ({
     priceFirst: 0,
     gateId: "",
     terminal: "",
-    isCancelled: false,
-    delayMinutes: 0,
-    cancellationReason: "",
-    delayReason: "",
   });
 
   const mapFlightToFormData = (
@@ -451,65 +447,69 @@ const FlightUpdateModal = ({
           />
         </Grid>
 
-        <Grid size={12}>
-          <FormControlLabel
-            control={
-              <Android12Switch
-                label="Enable Feature"
-                checked={formData.isCancelled}
-                onChange={(e) =>
-                  handleInputChange("isCancelled", e.target.checked)
-                }
-              />
-            }
-            label={
-              <Box display="flex" alignItems="center">
-                {formData.isCancelled ? (
-                  <>
-                    <Cancel color="error" sx={{ mr: 1 }} />
-                    <Typography color="error">Chuyến bay đã bị hủy</Typography>
-                  </>
-                ) : (
-                  <>
-                    <CheckCircle color="success" sx={{ mr: 1 }} />
-                    <Typography color="success.main">
-                      Chuyến bay đang hoạt động
-                    </Typography>
-                  </>
-                )}
-                <Grid size={12}>
-                  <InputTextField
-                    type="number"
-                    value={String(formData.delayMinutes)}
-                    onChange={(e) =>
-                      handleInputChange("delayMinutes", parseInt(e))
-                    }
-                  />
-                </Grid>
-                {formData.isCancelled === true && (
-                  <>
-                    <Cancel color="error" sx={{ mr: 1 }} />
+        {mode === "update" && (
+          <Grid size={12}>
+            <FormControlLabel
+              control={
+                <Android12Switch
+                  label="Enable Feature"
+                  checked={formData.isCancelled}
+                  onChange={(e) =>
+                    handleInputChange("isCancelled", e.target.checked)
+                  }
+                />
+              }
+              label={
+                <Box display="flex" alignItems="center">
+                  {formData.isCancelled ? (
+                    <>
+                      <Cancel color="error" sx={{ mr: 1 }} />
+                      <Typography color="error">
+                        Chuyến bay đã bị hủy
+                      </Typography>
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle color="success" sx={{ mr: 1 }} />
+                      <Typography color="success.main">
+                        Chuyến bay đang hoạt động
+                      </Typography>
+                    </>
+                  )}
+                  <Grid size={12}>
                     <InputTextField
-                      value={formData.cancellationReason}
-                      placeholder="Chuyến bay đã bị hủy"
+                      type="number"
+                      value={String(formData.delayMinutes)}
+                      onChange={(e) =>
+                        handleInputChange("delayMinutes", parseInt(e))
+                      }
                     />
-                  </>
-                )}
-                {formData?.delayMinutes !== undefined &&
-                  formData.delayMinutes !== null &&
-                  formData.delayMinutes > 0 && (
+                  </Grid>
+                  {formData.isCancelled === true && (
                     <>
                       <Cancel color="error" sx={{ mr: 1 }} />
                       <InputTextField
-                        value={formData?.delayReason || ""}
-                        placeholder="Chuyến bay bị delay"
+                        value={formData.cancellationReason}
+                        placeholder="Chuyến bay đã bị hủy"
                       />
                     </>
                   )}
-              </Box>
-            }
-          />
-        </Grid>
+                  {formData?.delayMinutes !== undefined &&
+                    formData.delayMinutes !== null &&
+                    formData.delayMinutes > 0 && (
+                      <>
+                        <Cancel color="error" sx={{ mr: 1 }} />
+                        <InputTextField
+                          value={formData?.delayReason || ""}
+                          placeholder="Chuyến bay bị delay"
+                        />
+                      </>
+                    )}
+                </Box>
+              }
+            />
+          </Grid>
+        )}
       </Grid>
     ),
     [handleInputChange]

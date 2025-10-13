@@ -5,6 +5,8 @@ import { useToast } from "../../context/ToastContext";
 import { useCheckMfaAvailable } from "../Api/useGetApi";
 import { Link } from "react-router-dom";
 import InputTextField from "../../common/Input/InputTextField";
+import { useForgotPassword } from "../Api/usePostApi";
+import VerifyOpt from "./VerifyOpt";
 
 interface FormDataType {
   email: string;
@@ -16,27 +18,33 @@ const ForgetPassword = () => {
   });
   const toast = useToast();
   const [loading, setLoading] = useState(false);
-  const [requireMfa, setRequireMfa] = useState(false);
-  const { refetchMfaCheck } = useCheckMfaAvailable();
+  const [navigateOTP, setNavigateOTP] = useState(false);
+  const { refetchForgotPassword } = useForgotPassword();
+  const [userId, setUserId] = useState<number | null>(null);
   const email = watch("email");
 
   const onHandleValueHasValid = async () => {
     try {
       setLoading(true);
-      const res = await refetchMfaCheck({ email });
+      const res = await refetchForgotPassword({ email });
 
       if (res?.resultCode === "00") {
-        setRequireMfa(true);
+        setNavigateOTP(true);
+        setUserId(res.data?.userId ?? null);
         toast(res.resultMessage, "info");
         return;
       }
-    } catch (err: any) {
-      console.error("Reset error:", err.message);
+    } catch (err) {
+      console.error("Reset error:", err);
       toast("Không thể đặt lại mật khẩu", "error");
     } finally {
       setLoading(false);
     }
   };
+
+  if (navigateOTP && userId) {
+    return <VerifyOpt email={email} userId={userId} />;
+  }
 
   return (
     <Box sx={{ textAlign: "center", mt: 4 }}>
@@ -47,13 +55,6 @@ const ForgetPassword = () => {
 
         <InputTextField name="email" placeholder="Email" />
 
-        {requireMfa && (
-          <Box sx={{ mt: 2 }}>
-            <Typography>MFA Code</Typography>
-            <InputTextField name="mfaCode" placeholder="Nhập MFA code" />
-          </Box>
-        )}
-
         <Button
           type="submit"
           onClick={onHandleValueHasValid}
@@ -63,10 +64,6 @@ const ForgetPassword = () => {
           {loading ? "Đang xử lý..." : "Xác nhận"}
         </Button>
       </form>
-
-      <Box sx={{ mt: 2 }}>
-        <Link to="/init/loginPage">Đã có tài khoản? Đăng nhập ngay</Link>
-      </Box>
     </Box>
   );
 };

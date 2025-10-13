@@ -1,6 +1,5 @@
 import React, { memo, useCallback, useEffect, useState } from "react";
-import { Box, Button, Typography, Avatar, Stack } from "@mui/material";
-import { Search } from "@mui/icons-material";
+import { Box, Stack, Grid } from "@mui/material";
 import {
   useFindUserFromMessage,
   type SearchEmailFromSidebarMessageRes,
@@ -9,71 +8,69 @@ import { useAuth } from "../../context/AuthContext";
 import useDebounce from "../../context/use[custom]/useDebounce";
 import type { DropdownOptions } from "../../common/Dropdown/type";
 import { SearchInputWithList } from "../../common/Dropdown/SearchInputWithList";
-import type { DetailResponseMessage, ResponseMessage } from "../../utils/type";
 
 const SearchUserFromMessage: React.FC = () => {
   const [query, setQuery] = useState("");
   const searchData = useDebounce(query, 300);
   const [options, setOptions] = useState<DropdownOptions[]>([]);
 
-  const { dataUserFromMessage, refetchUserFromMessage } =
-    useFindUserFromMessage();
+  const { refetchUserFromMessage } = useFindUserFromMessage();
   const { user } = useAuth();
   const userId = user?.id;
 
   const [optionWhenSearch, setOptionWhenSearch] =
     useState<SearchEmailFromSidebarMessageRes[]>();
 
-  // Sửa lại hàm handleInputChange để chỉ cập nhật query
-  const handleInputChange = useCallback((searchText: string) => {
-    setQuery(searchText);
-  }, []);
+  // Sửa lại hàm handleInputChange để trả về promise đúng format
+  const handleInputChange = useCallback(
+    async (searchText: string): Promise<DropdownOptions[]> => {
+      setQuery(searchText);
 
-  // Effect để gọi API khi searchData thay đổi
-  useEffect(() => {
-    const fetchUsers = async () => {
-      if (!searchData.trim() || !userId) {
+      if (!searchText.trim() || !userId) {
         setOptions([]);
-        setOptionWhenSearch([]);
-        return;
+        return [];
       }
 
       try {
         const res = await refetchUserFromMessage({
           id: userId,
-          email: searchData,
+          email: searchText,
         });
         if (res?.resultCode === "00" && res.list) {
+          const mappedOptions = res.list.map(
+            (e: SearchEmailFromSidebarMessageRes) => ({
+              value: e.id,
+              label: e.name || e.email, // Dùng string cho label
+              data: e, // Lưu toàn bộ data để dùng trong custom render
+            })
+          );
           setOptionWhenSearch(res.list);
-        } else {
-          setOptionWhenSearch([]);
+          setOptions(mappedOptions);
+          return mappedOptions;
         }
+        return [];
       } catch (error) {
         console.error("Search error:", error);
-        setOptions([]);
-        setOptionWhenSearch([]);
+        return [];
       }
-    };
+    },
+    [userId, refetchUserFromMessage]
+  );
 
-    fetchUsers();
-  }, [searchData, userId, refetchUserFromMessage]);
-
-  // Effect để map data thành options
+  // Effect để xử lý khi có data từ API
   useEffect(() => {
     if (optionWhenSearch && optionWhenSearch.length > 0) {
       const mapped = optionWhenSearch.map((e) => ({
         value: e.id,
-        label: e.name || e.email || "", // Đảm bảo label là string
+        label: e.name || e.email, // Label phải là string
         data: e, // Lưu thêm data để render custom
       }));
       setOptions(mapped);
-    } else {
-      setOptions([]);
     }
   }, [optionWhenSearch]);
 
   const handleOptionSelect = useCallback(
-    (event: any, selectedOption: DropdownOptions | null) => {
+    (selectedOption: DropdownOptions | null) => {
       if (selectedOption) {
         console.log("Selected user:", selectedOption);
         // Xử lý khi chọn user
@@ -82,58 +79,22 @@ const SearchUserFromMessage: React.FC = () => {
     []
   );
 
-  // Custom output render function
-  const renderCustomOutput = (
-    option: DetailResponseMessage<SearchEmailFromSidebarMessageRes>
-  ) => {
-    const userData = option.data as SearchEmailFromSidebarMessageRes;
-
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          gap: 1,
-          py: 1,
-          width: "100%",
-        }}
-      >
-        <Avatar sx={{ width: 24, height: 24, fontSize: "0.8rem" }}>
-          {userData?.name?.charAt(0)?.toUpperCase() ||
-            userData?.email?.charAt(0)?.toUpperCase() ||
-            "U"}
-        </Avatar>
-        <Box sx={{ flex: 1 }}>
-          <Typography fontWeight={600} variant="body2">
-            {userData?.name || "No name"}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {userData?.email || "No email"}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Mã NV: {userData?.employeeNo || "N/A"} • Role:{" "}
-            {userData?.role || "N/A"}
-          </Typography>
-        </Box>
-      </Box>
-    );
-  };
+  console.log("[options[0]]", options[0]);
 
   return (
     <Box sx={{ p: 3 }}>
       <Stack direction="row" spacing={2} alignItems="center">
         <SearchInputWithList
+          value={[options[0]]}
           options={options}
+          label="Search Users"
           placeholder="Type to search..."
-          onInputChange={handleInputChange}
+          apiCall={handleInputChange}
           onChange={handleOptionSelect}
-          customOutPut={renderCustomOutput}
+          // customOutPut={renderCustomOutput}
           debounceDelay={500}
-          disabled={false}
+          status="confirmed"
         />
-        <Button variant="contained" color="primary" startIcon={<Search />}>
-          Tìm kiếm
-        </Button>
       </Stack>
     </Box>
   );

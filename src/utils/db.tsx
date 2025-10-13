@@ -108,7 +108,6 @@ export const menuData: MenuSection[] = [
             icon: <Apartment />,
           },
           { id: "ChatApp", label: "Trò chuyện", icon: <Forum /> },
-          { id: "facilities", label: "Cơ sở vật chất", icon: <Home /> },
           {
             id: "TicketSalesDashboard",
             label: "Thống kê vé",

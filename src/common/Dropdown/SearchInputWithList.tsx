@@ -27,7 +27,7 @@ interface DropdownProps extends DropdownType {
   size?: "small" | "medium";
   apiCall?: ApiCallFunction;
   debounceDelay?: number;
-  customOutPut?: (option: DropdownOptions) => ReactNode; // Changed to function that returns ReactNode
+  customOutPut?: () => ReactNode; // Changed to function that returns ReactNode
 }
 
 export const SearchInputWithList = ({
@@ -108,10 +108,16 @@ export const SearchInputWithList = ({
     }
   };
 
+  // const handleOptionSelect = (option: DropdownOptions) => {
+  //   setInputText(typeof option.label === "string" ? option.label : "");
+  //   setShowList(false);
+  //   onChange?.(null as any, option);
+  // };
+
   const handleOptionSelect = (option: DropdownOptions) => {
     setInputText(typeof option.label === "string" ? option.label : "");
     setShowList(false);
-    onChange?.(null as any, option);
+    onChange?.(option); // giờ gọi thẳng option
   };
 
   const handleClickAway = () => {
@@ -122,7 +128,7 @@ export const SearchInputWithList = ({
   const renderListItemContent = (option: DropdownOptions) => {
     if (customOutPut) {
       // If customOutPut is provided as a function, call it with the option
-      return customOutPut(option);
+      return customOutPut();
     } else {
       // Default rendering - show the label
       return (

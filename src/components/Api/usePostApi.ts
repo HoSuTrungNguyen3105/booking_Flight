@@ -893,7 +893,7 @@ export const useResetPasswordByMfa = () => {
 
 export const useForgotPassword = () => {
   const { refetch: refetchForgotPassword } = useFetch<
-    ResponseMessage,
+    DetailResponseMessage<{ userId: number }>,
     { email: string }
   >({
     url: "/auth/forgot-password",

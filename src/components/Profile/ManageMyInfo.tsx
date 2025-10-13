@@ -5,10 +5,9 @@ import AddUserModal from "../../common/Setting/Component/AddUserModal";
 import { Loading } from "../../common/Loading/Loading";
 import UpdateUserModal from "../../common/Setting/Component/UpdateUserModal";
 import AccountLock from "../../common/Setting/Component/AccountLockModal";
-// import DeleteUserModal from "./DeleteUserModal";
 import { memo, useCallback, useState } from "react";
 import AdminUpdateUserModal from "../../common/Setting/Component/AdminUpdateUserModal";
-import UpdateUserForm from "../User/UpdateUserForm";
+import UpdateUserForm from "./UpdateUserForm";
 import type { AdminUpdateUserForm } from "../../utils/type";
 import SendEmailToUsers from "../Auth/SendEmailToUsers";
 import TableSection from "../../common/CustomRender/TableSection";
@@ -16,9 +15,6 @@ import type { GridRowId } from "@mui/x-data-grid";
 import BatchUpdateEmployeeNo from "../../common/Sample/BatchUpdateEmployeeNo";
 import type { BatchEmployeeNoReq } from "../Api/usePostApi";
 import ConfirmDeleteModal from "../../context/common/ConfirmDeleteModal";
-import SearchUserFromMessage from "../Chat/SearchUserFromMessage";
-import { Dropdown } from "../../common/Dropdown/SearchInputWithList";
-import type { DropdownOptions } from "../../common/Dropdown/type";
 
 const ManageMyInfo = () => {
   const {

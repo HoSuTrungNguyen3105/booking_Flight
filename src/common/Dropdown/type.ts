@@ -48,10 +48,11 @@ export type DropdownType = {
   autoHighlight?: boolean;
   openOnFocus?: boolean;
   disableCloseOnSelect?: boolean;
-  onChange: (
-    event: React.SyntheticEvent<Element, Event>,
-    newValue: DropdownOptions[] | null | DropdownOptions
-  ) => void;
+  onChange?: (option: DropdownOptions | null) => void;
+  // onChange: (
+  //   event: React.SyntheticEvent<Element, Event>,
+  //   newValue: DropdownOptions[] | null | DropdownOptions
+  // ) => void;
 };
 
 export type DropdownOptionTypes = {
