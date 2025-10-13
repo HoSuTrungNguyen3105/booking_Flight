@@ -1,6 +1,5 @@
 import {
   type FlightDetailApiResponse,
-  type CodeItem,
   type UserListManageResponse,
   type UserData,
   type DetailResponseMessage,
@@ -8,7 +7,6 @@ import {
   type FlightListApiResponse,
   type MealResponse,
   type FlightResponse,
-  type ResponseMessage,
   type SeatResponseMessage,
   type AircraftResponseMessage,
   type FlightSeatByAircraftResponseMessage,
@@ -518,7 +516,7 @@ export const useGetUserById = (id: number) => {
 };
 
 export const useFindTerminalIDStatuses = () => {
-  const { data, refetch, loading } = useFetch<TerminalLabelListResponse, void>({
+  const { data, loading } = useFetch<TerminalLabelListResponse, void>({
     url: "/sys/gates/findTerminalID",
     autoFetch: true,
     config: getMethod,

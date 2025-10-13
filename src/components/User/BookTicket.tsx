@@ -20,7 +20,7 @@ import InputTextField from "../../common/Input/InputTextField";
 import SelectDropdown from "../../common/Dropdown/SelectDropdown";
 import { useGetAllCode } from "../Api/useGetApi";
 import DateTimePickerComponent from "../../common/DayPicker";
-import type { DataFlight, SearchBookingFlightProps } from "../../utils/type";
+import type { SearchBookingFlightProps } from "../../utils/type";
 import type {
   CabinClassType,
   SearchFlightDto,
@@ -28,7 +28,7 @@ import type {
 import { DateFormatEnum, formatDateKR } from "../../hooks/format";
 
 const BookTicket = () => {
-  const [flightParams, setFlightParams] = React.useState<SearchFlightDto>({
+  const [flightParams, _] = React.useState<SearchFlightDto>({
     from: "",
     to: "",
     status: "",
@@ -54,7 +54,6 @@ const BookTicket = () => {
     defaultValues: flightParams,
   });
 
-  // Thay đổi state để lưu thông tin booking thay vì chỉ flight
   const [outboundBookings, setOutboundBookings] = React.useState<
     SearchBookingFlightProps[]
   >([]);
@@ -104,19 +103,15 @@ const BookTicket = () => {
     return new Date(bookingTime).toLocaleString();
   };
 
-  const optionAirportCode = (getAllCode?.data?.airport ?? []).map(
-    (item, index) => ({
-      value: item.code,
-      label: item.code,
-    })
-  );
+  const optionAirportCode = (getAllCode?.data?.airport ?? []).map((item) => ({
+    value: item.code,
+    label: item.code,
+  }));
 
-  const optionAircraftCode = (getAllCode?.data?.aircraft ?? []).map(
-    (item, index) => ({
-      value: item.code,
-      label: item.code,
-    })
-  );
+  const optionAircraftCode = (getAllCode?.data?.aircraft ?? []).map((item) => ({
+    value: item.code,
+    label: item.code,
+  }));
 
   const detail: IDetailItem[] = [
     {

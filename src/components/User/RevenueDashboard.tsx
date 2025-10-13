@@ -5,7 +5,6 @@ import {
   Grid,
   CardContent,
   LinearProgress,
-  useTheme,
 } from "@mui/material";
 import { FlightTakeoff, FlightLand, AccessTime } from "@mui/icons-material";
 
@@ -70,11 +69,7 @@ const bookingData: BookingData[] = [
 ];
 
 const RevenueDashboard: React.FC = () => {
-  const theme = useTheme();
   const totalIncome = revenueData.reduce((sum, data) => sum + data.income, 0);
-  const totalExpense = revenueData.reduce((sum, data) => sum + data.expense, 0);
-  const growthPercentage = 25; // From last month
-
   const maxValue = Math.max(...revenueData.map((d) => d.income));
 
   return (
@@ -129,7 +124,7 @@ const RevenueDashboard: React.FC = () => {
               mt: 3,
             }}
           >
-            {revenueData.map((data, index) => (
+            {revenueData.map((data, _) => (
               <Box
                 key={data.month}
                 sx={{

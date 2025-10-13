@@ -23,7 +23,7 @@ import {
 import { useMemo, useState } from "react";
 import { type GridRowDef } from "../../common/DataGrid/index";
 import TableSection from "../../common/CustomRender/TableSection";
-import CreatePayrollModal from "./modal/CreatePayrollModal";
+import CreatePayrollModal from "../Profile/CreatePayrollModal";
 import { useExportPayrollExcel, useGetPayrollData } from "../Api/useGetApi";
 import SelectDropdown, {
   type ActionType,

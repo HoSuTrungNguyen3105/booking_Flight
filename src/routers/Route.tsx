@@ -33,7 +33,7 @@ import AirportManagement from "../components/Admin/component/Airport/AirportMana
 import SendEmailToUsers from "../components/Auth/SendEmailToUsers";
 import MealForm from "../components/Admin/component/Meal/MealForm";
 import FlightStatisticsPage from "../components/Admin/component/Flight/FlightStatisticsPage";
-import AirportMap from "../components/User/AirportMap";
+import AirportMap from "../components/Admin/component/Flight/AirportMap";
 import AirportManagementDetail from "../components/Admin/component/Airport/AirportManagementDetail";
 import ChangePasswordInProfile from "../components/Profile/ChangePasswordInProfile";
 import FlightBatchCreator from "../components/Admin/component/Flight/FlightBatchCreator";

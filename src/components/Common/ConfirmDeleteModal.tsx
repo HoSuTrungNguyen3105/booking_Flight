@@ -10,14 +10,14 @@ import BaseModal from "../../common/Modal/BaseModal";
 import { Add as AddIcon } from "@mui/icons-material";
 import { Box, Typography, Divider, Button } from "@mui/material";
 
-import type { UserWithRelationsData } from "../../components/Sample/type";
+import type { UserWithRelationsData } from "../Sample/type";
 import {
   useDeleteAttendance,
   useDeleteLeaveRequest,
   useDeletePayroll,
   useDeleteRequestUnlockById,
   useGetUserWithRelations,
-} from "../../components/Api/usePostApi";
+} from "../Api/usePostApi";
 import { DateFormatEnum, formatDate } from "../../hooks/format";
 import type { GridColDef } from "@mui/x-data-grid";
 import TableSection from "../../common/CustomRender/TableSection";

@@ -12,9 +12,9 @@ import type { AdminUpdateUserForm } from "../../utils/type";
 import SendEmailToUsers from "../Auth/SendEmailToUsers";
 import TableSection from "../../common/CustomRender/TableSection";
 import type { GridRowId } from "@mui/x-data-grid";
-import BatchUpdateEmployeeNo from "../User/BatchUpdateEmployeeNo";
+import BatchUpdateEmployeeNo from "../User/Security/BatchUpdateEmployeeNo";
 import type { BatchEmployeeNoReq } from "../Api/usePostApi";
-import ConfirmDeleteModal from "../../context/common/ConfirmDeleteModal";
+import ConfirmDeleteModal from "../Common/ConfirmDeleteModal";
 
 const ManageMyInfo = () => {
   const {

@@ -1,5 +1,4 @@
-import { Skeleton, Box, Typography } from "@mui/material";
-import { FaUser } from "react-icons/fa";
+import { Skeleton, Box } from "@mui/material";
 
 const SidebarSkeleton = () => {
   const skeletonContacts = Array.from({ length: 8 });
@@ -9,7 +8,6 @@ const SidebarSkeleton = () => {
       component="aside"
       sx={{
         height: "100%",
-        // width: { xs: "80px", lg: "280px" },
         borderRight: "1px solid",
         borderColor: "divider",
         display: "flex",
