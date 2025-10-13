@@ -157,10 +157,8 @@ export const LoginPage: React.FC = () => {
               </FormControl>
             )}
 
-            <Button variant="text" onClick={() => setViewMode("forgotPw")}>
-              <Typography variant="body2" color="primary">
-                Forget password ?
-              </Typography>
+            <Button variant="outlined" onClick={() => setViewMode("forgotPw")}>
+              Forget password ?
             </Button>
 
             <Box display="flex" justifyContent="flex-end" alignItems="center">
@@ -202,7 +200,7 @@ export const LoginPage: React.FC = () => {
     case "changePw":
       return <AccountYn mode="change" onClose={() => setViewMode("login")} />;
     case "forgotPw":
-      return <ForgetPassword />;
+      return <ForgetPassword onClose={() => setViewMode("forgotPw")} />;
     case "unlock":
       return (
         <RequestUnlock userId={userId} onClose={() => setViewMode("login")} />

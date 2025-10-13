@@ -84,7 +84,7 @@ const FieldRenderer = ({
           canCopy
           showEyeIcon
           // disabled={disabled}
-          readOnly={readOnly}
+          readOnly={!readOnly}
           value={value as string}
           onChange={onChange}
         />

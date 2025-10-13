@@ -19,32 +19,36 @@ const AddUserModal = ({ open, onClose, onSuccess }: IAddUserModalProps) => {
       onSuccess,
     });
 
-  const renderActions = useCallback(() => {
-    return (
+  const renderActions = useCallback(
+    () => (
       <Box display="flex" gap={1} justifyContent="flex-end" alignItems="center">
-        {error && <Typography>{error}</Typography>}
+        {error && (
+          <Typography color="error" variant="body2">
+            {error}
+          </Typography>
+        )}
         <Button variant="outlined" onClick={handleSubmit}>
-          확인
+          Confirm
         </Button>
       </Box>
-    );
-  }, [handleSubmit]);
+    ),
+    [handleSubmit, error]
+  );
 
-  const renderContent = useCallback(() => {
-    return (
+  const renderContent = useCallback(
+    () => (
       <>
         {formDetailConfig?.map(
-          (fields, index) =>
-            !fields.visible && (
-              <Box key={index}>
+          (section, index) =>
+            !section.visible && (
+              <Box key={index} mb={2}>
                 <Typography variant="body1" sx={{ mb: 1 }}>
-                  {fields.label}
+                  {section.label}
                 </Typography>
 
-                {fields.fields.map((field, fieldIndex) => (
-                  <>
+                {section.fields.map((field, fieldIndex) => (
+                  <Box key={fieldIndex} mb={1}>
                     <FieldRenderer
-                      key={fieldIndex}
                       type={field.type}
                       value={updateInfo[field.id as keyof UserFormConfig] ?? ""}
                       disabled={field.disabled}
@@ -53,22 +57,22 @@ const AddUserModal = ({ open, onClose, onSuccess }: IAddUserModalProps) => {
                         handleChange(field.id as keyof UserFormConfig, val)
                       }
                     />
-                    <Typography>{error}</Typography>
-                  </>
+                  </Box>
                 ))}
               </Box>
             )
         )}
       </>
-    );
-  }, [formDetailConfig, updateInfo]);
+    ),
+    [formDetailConfig, updateInfo, handleChange]
+  );
 
   return (
     <BaseModal
       open={open}
       onClose={onClose}
-      title="원본 데이터, 통계 데이터 학습 Seq$ 상세 정보"
-      subtitle="-선택된 원본 데이터의 상세 정보를 확인합니다.-"
+      title="User Information"
+      subtitle="Fill in the details for the new user. Please make sure all required fields are correctly entered before submitting the form."
       Icon={AddIcon}
       slots={{ content: renderContent(), actions: renderActions() }}
     />

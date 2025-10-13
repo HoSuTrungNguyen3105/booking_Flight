@@ -49,10 +49,6 @@ export const useCreateUser = ({ onClose, onSuccess }: IUseUpdateUserProps) => {
   const { fetchCreateUser, refetchCreateUser } = useCreateUserByAdmin();
   const handleSubmit = async () => {
     const payload: UserCreateProps = {
-      // name: updateInfo.name,
-      // email: updateInfo.email,
-      // password: updateInfo.password,
-      // role: updateInfo.role,
       ...updateInfo,
     };
 

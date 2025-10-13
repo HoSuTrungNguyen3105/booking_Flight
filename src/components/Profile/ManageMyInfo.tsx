@@ -15,6 +15,7 @@ import type { GridRowId } from "@mui/x-data-grid";
 import BatchUpdateEmployeeNo from "../User/Security/BatchUpdateEmployeeNo";
 import type { BatchEmployeeNoReq } from "../Api/usePostApi";
 import ConfirmDeleteModal from "../Common/ConfirmDeleteModal";
+import DeleteUserModal from "../../common/Setting/Component/DeleteUserModal";
 
 const ManageMyInfo = () => {
   const {
@@ -27,12 +28,6 @@ const ManageMyInfo = () => {
     columns,
     openModal,
   } = useInspectionPerformanceHistory();
-
-  // const options = [
-  //   { label: "Admin", value: "admin" },
-  //   { label: "User", value: "user" },
-  //   { label: "Guest", value: "guest" },
-  // ];
 
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowId[]>([]);
   const [selectedRowChange, setSelectedRowChange] = useState<GridRowDef[]>([]);
@@ -178,9 +173,10 @@ const ManageMyInfo = () => {
       )}
 
       {openModal.deleteUser && selectedRow && (
-        <ConfirmDeleteModal
+        <DeleteUserModal
           open={openModal.deleteUser}
-          id={selectedRow.id}
+          // id={selectedRow.id}
+          user={selectedRow}
           onSuccess={() => {
             handleRefetchUserList();
             closeModal("deleteUser");

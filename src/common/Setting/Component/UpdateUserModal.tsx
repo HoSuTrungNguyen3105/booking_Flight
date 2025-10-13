@@ -20,59 +20,68 @@ const UpdateUserModal = ({
   onClose,
   onSuccess,
 }: IUpdateUserModalProps) => {
-  const { formDetailConfig, formData, handleChange, handleSubmit } =
+  const { formDetailConfig, formData, error, handleChange, handleSubmit } =
     useUpdateUser({
       onClose,
       onSuccess,
       data,
     });
 
-  const renderActions = useCallback(() => {
-    return (
+  const renderActions = useCallback(
+    () => (
       <Box display="flex" gap={1} justifyContent="flex-end" alignItems="center">
+        {error && (
+          <Typography color="error" variant="body2">
+            {error}
+          </Typography>
+        )}
         <Button variant="outlined" onClick={handleSubmit}>
-          확인
+          Update
         </Button>
       </Box>
-    );
-  }, [handleSubmit]);
+    ),
+    [handleSubmit, error]
+  );
 
-  const renderContent = useCallback(() => {
-    return (
+  const renderContent = useCallback(
+    () => (
       <>
         {formDetailConfig?.map(
-          (fields, index) =>
-            !fields.visible && (
-              <Box key={index}>
+          (section, index) =>
+            !section.visible && (
+              <Box key={index} mb={2}>
                 <Typography variant="body1" sx={{ mb: 1 }}>
-                  {fields.label}
+                  {section.label}
                 </Typography>
 
-                {fields.fields.map((field, fieldIndex) => (
-                  <FieldRenderer
-                    key={fieldIndex}
-                    type={field.type}
-                    value={formData[field.id as keyof UserFormConfig] ?? ""}
-                    disabled={field.disabled}
-                    options={field.options}
-                    onChange={(val) =>
-                      handleChange(field.id as keyof UserFormConfig, val)
-                    }
-                  />
+                {section.fields.map((field, fieldIndex) => (
+                  <Box key={fieldIndex} mb={1}>
+                    <FieldRenderer
+                      type={field.type}
+                      readOnly={field.readOnly}
+                      value={formData[field.id as keyof UserFormConfig] ?? ""}
+                      disabled={field.disabled}
+                      options={field.options}
+                      onChange={(val) =>
+                        handleChange(field.id as keyof UserFormConfig, val)
+                      }
+                    />
+                  </Box>
                 ))}
               </Box>
             )
         )}
       </>
-    );
-  }, [formDetailConfig, formData]);
+    ),
+    [formDetailConfig, formData, handleChange]
+  );
 
   return (
     <BaseModal
       open={open}
       onClose={onClose}
-      title={`원본 데이터, 통계 데이터 학습 Seq$ 상세 정보`}
-      subtitle="-선택된 원본 데이터의 상세 정보를 확인합니다.-"
+      title="Update User Information"
+      subtitle="Edit the details of the selected user. Make sure any updates are accurate and reflect the latest information before saving changes."
       Icon={AddIcon}
       slots={{ content: renderContent(), actions: renderActions() }}
     />

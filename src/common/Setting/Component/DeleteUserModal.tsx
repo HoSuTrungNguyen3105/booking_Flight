@@ -4,6 +4,7 @@ import AddIcon from "@mui/icons-material/Add";
 import type { UserData } from "../../../utils/type";
 import BaseModal from "../../Modal/BaseModal";
 import { useDeleteUserById } from "../../../components/Api/usePostApi";
+import theme from "../../../scss/theme";
 
 interface IDeleteAccountModalProps {
   open: boolean;
@@ -33,7 +34,11 @@ const DeleteAccountModal = ({
     return (
       <Box display="flex" gap={1} justifyContent="flex-end" alignItems="center">
         {String(user?.id) === inputId && (
-          <Button variant="outlined" color="error" onClick={onDeleteOnChange}>
+          <Button
+            variant="contained"
+            sx={{ backgroundColor: theme.palette.error.main }}
+            onClick={onDeleteOnChange}
+          >
             Delete
           </Button>
         )}

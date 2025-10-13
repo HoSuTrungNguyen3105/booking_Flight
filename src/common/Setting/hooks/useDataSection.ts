@@ -18,10 +18,8 @@ export const useDataSection = (
   formType?: "register" | "update"
   // isDisable = false
 ): IFormField[] => {
-  // ✅ gọi hook bên ngoài useMemo
   const { dataRoles } = useFindAllRoles();
 
-  // ✅ map roleOptions tách riêng để tránh chạy lại nhiều lần
   const roleOptions = useMemo(
     () => mapStringToDropdown(dataRoles?.data || []),
     [dataRoles]
@@ -29,6 +27,7 @@ export const useDataSection = (
 
   return useMemo(() => {
     const isUpdate = formType === "update";
+
     const commonDisabled = isUpdate;
 
     const fields: IFormField[] = [

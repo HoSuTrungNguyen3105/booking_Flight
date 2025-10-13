@@ -125,13 +125,13 @@ export const useInspectionPerformanceHistory = () => {
       currentUserId?: number;
       isAuthenticated: boolean;
     }) => {
-      if (!isAuthenticated) return null;
-      if (!currentUserId) return null;
-      if (row.id === currentUserId) return null;
+      // if (!isAuthenticated) return null;
+      // if (!currentUserId) return null;
+      // if (row.id === currentUserId) return null;
       return (
         <SelectDropdown
-          defaultValue="관리"
-          value="관리"
+          defaultValue="Options"
+          value="Options"
           onChange={(value) => handleSelectAction(row, value as ActionType)}
           options={[
             { label: "Edit", value: "editUser" },
