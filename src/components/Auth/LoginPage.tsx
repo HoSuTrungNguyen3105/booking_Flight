@@ -21,6 +21,14 @@ interface ILoginForm {
 }
 
 type AuthType = "ID,PW" | "DEV" | "MFA";
+type ViewMode =
+  | "login"
+  | "register"
+  | "mfa"
+  | "verify"
+  | "changePw"
+  | "forgotPw"
+  | "unlock";
 
 export const LoginPage: React.FC = () => {
   const AUTH_TYPE_OPTIONS: { label: string; value: AuthType }[] = [
@@ -29,22 +37,23 @@ export const LoginPage: React.FC = () => {
     { label: "DEV", value: "DEV" },
   ];
 
-  const [formData, setFormData] = useState({
-    authType: AUTH_TYPE_OPTIONS[0].value,
-    email: "",
-    password: "",
+  const [authType, setAuthType] = useState<AuthType>("ID,PW");
+  const [tabValue, setTabValue] = useState(0);
+  const [viewMode, setViewMode] = useState<ViewMode>("login");
+  const [mfaEmailValue, setMfaEmailValue] = useState("");
+  const [userId, setUserId] = useState(0);
+  const [loading, setLoading] = useState(false);
+
+  const toast = useToast();
+  const { refetchMfaCheck } = useCheckMfaAvailable();
+  const { login } = useAuth();
+
+  const { handleSubmit, watch, control } = useForm<ILoginForm>({
+    defaultValues: { email: "", password: "" },
   });
 
-  const [tabValue, setTabValue] = useState(0);
-  const [mfaEmail, setMfaEmail] = useState(false);
-  const [mfaEmailValue, setMfaEmailValue] = useState("");
-  const toast = useToast();
   const tabs: ITabItem[] = [
-    {
-      label: "Login",
-      value: "login",
-      description: "Login .",
-    },
+    { label: "Login", value: "login", description: "Login ." },
     {
       label: "Register",
       value: "register",
@@ -53,73 +62,51 @@ export const LoginPage: React.FC = () => {
     },
   ];
 
-  const [changePassword, setChangePassword] = useState(false);
-  const [forgotPassword, setForgotPassword] = useState(false);
-
-  const [unlockAccount, setUnlockAccount] = useState(false);
-  const [verifiedAccount, setVerifiedAccount] = useState(false);
-  const { refetchMfaCheck } = useCheckMfaAvailable();
-  const { login } = useAuth();
-  const [userId, setUserId] = useState(0);
-  const [loading, setLoading] = useState(false);
-
-  const { handleSubmit, watch, control } = useForm<ILoginForm>({
-    defaultValues: {
-      email: "",
-      password: "",
-    },
-  });
-
   const onSubmit = async (data: ILoginForm) => {
-    const email = watch("email");
     setLoading(true);
+    const email = watch("email");
 
-    if (formData.authType === "MFA") {
-      setMfaEmailValue(email);
-      const res = await refetchMfaCheck({ email });
+    try {
+      if (authType === "MFA") {
+        setMfaEmailValue(email);
+        const res = await refetchMfaCheck({ email });
 
-      console.log("res", res);
-      if (res?.resultCode !== "00") {
-        setLoading(false);
-        toast(res?.resultMessage || "Error");
+        if (res?.resultCode !== "00") {
+          toast(res?.resultMessage || "Error");
+          return;
+        }
+
+        setViewMode("mfa");
         return;
       }
-      setMfaEmail(true);
-      return;
-    }
 
-    const loginRes = await login({
-      email,
-      password: data.password,
-      authType: formData.authType,
-    });
+      const loginRes = await login({
+        email,
+        password: data.password,
+        authType,
+      });
 
-    if (loginRes.requireUnlock) {
-      setUnlockAccount(true);
-      setUserId(loginRes.userId);
-      //setTabValue(2);
-      return;
-    }
+      if (loginRes.requireUnlock) {
+        setViewMode("unlock");
+        setUserId(loginRes.userId);
+        return;
+      }
 
-    if (loginRes.requireVerified) {
-      // setTabValue(3);
-      setVerifiedAccount(true);
-      return;
-    }
+      if (loginRes.requireVerified) {
+        setViewMode("verify");
+        return;
+      }
 
-    if (loginRes.requireChangePassword && loginRes.userId) {
-      setChangePassword(true);
-      setUserId(loginRes.userId);
-      // setTabValue(1);
+      if (loginRes.requireChangePassword && loginRes.userId) {
+        setViewMode("changePw");
+        setUserId(loginRes.userId);
+        return;
+      }
+    } catch (error) {
+      toast("Unexpected error occurred", "error");
+    } finally {
       setLoading(false);
-      return;
     }
-
-    setLoading(false);
-  };
-
-  const handleChangeFormInput = (key: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [key]: value }));
   };
 
   const renderTabContent = () => {
@@ -132,10 +119,8 @@ export const LoginPage: React.FC = () => {
                 Authentication Method
               </Typography>
               <SelectDropdown
-                value={formData.authType}
-                onChange={(val) =>
-                  handleChangeFormInput("authType", val as AuthType)
-                }
+                value={authType}
+                onChange={(val) => setAuthType(val as AuthType)}
                 options={AUTH_TYPE_OPTIONS}
               />
             </FormControl>
@@ -153,7 +138,7 @@ export const LoginPage: React.FC = () => {
               />
             </FormControl>
 
-            {formData.authType !== "MFA" && (
+            {authType !== "MFA" && (
               <FormControl fullWidth>
                 <Typography variant="body1" mb={0.5}>
                   Password
@@ -172,37 +157,25 @@ export const LoginPage: React.FC = () => {
               </FormControl>
             )}
 
-            <Button variant="text">
-              <Typography
-                variant="body2"
-                color="primary"
-                onClick={() => setForgotPassword(true)}
-              >
+            <Button variant="text" onClick={() => setViewMode("forgotPw")}>
+              <Typography variant="body2" color="primary">
                 Forget password ?
               </Typography>
             </Button>
 
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "flex-end",
-                alignItems: "center",
-              }}
-            >
+            <Box display="flex" justifyContent="flex-end" alignItems="center">
               <Button
                 type="submit"
                 disabled={loading}
                 variant="contained"
                 sx={{
                   backgroundColor: theme.palette.primary.main,
-                  "&:hover": {
-                    backgroundColor: theme.palette.primary.dark,
-                  },
+                  "&:hover": { backgroundColor: theme.palette.primary.dark },
                 }}
               >
                 {loading
                   ? "Loading..."
-                  : formData.authType === "MFA"
+                  : authType === "MFA"
                   ? "Send Verification Code"
                   : "Submit"}
               </Button>
@@ -215,34 +188,30 @@ export const LoginPage: React.FC = () => {
     }
   };
 
-  if (mfaEmail) {
-    return (
-      <MfaSetup onClose={() => setMfaEmail(false)} email={mfaEmailValue} />
-    );
+  // 🚀 Ưu tiên loading trước
+  if (loading) return <Loading />;
+
+  // 🚀 View mode switch
+  switch (viewMode) {
+    case "mfa":
+      return (
+        <MfaSetup onClose={() => setViewMode("login")} email={mfaEmailValue} />
+      );
+    case "verify":
+      return <AccountYn mode="verify" onClose={() => setViewMode("login")} />;
+    case "changePw":
+      return <AccountYn mode="change" onClose={() => setViewMode("login")} />;
+    case "forgotPw":
+      return <ForgetPassword />;
+    case "unlock":
+      return (
+        <RequestUnlock userId={userId} onClose={() => setViewMode("login")} />
+      );
+    default:
+      break;
   }
 
-  if (verifiedAccount) {
-    return <AccountYn mode="verify" onClose={() => setTabValue(0)} />;
-  }
-
-  if (changePassword) {
-    return <AccountYn mode="change" onClose={() => setChangePassword(false)} />;
-  }
-
-  if (forgotPassword) {
-    return <ForgetPassword />;
-  }
-
-  if (unlockAccount) {
-    return (
-      <RequestUnlock userId={userId} onClose={() => setUnlockAccount(false)} />
-    );
-  }
-
-  if (loading) {
-    return <Loading />;
-  }
-
+  // 🚀 Default: Login/Register
   return (
     <Box
       component="form"
@@ -285,7 +254,6 @@ export const LoginPage: React.FC = () => {
               },
             }}
           />
-
           {renderTabContent()}
         </Box>
       </Box>

@@ -3,7 +3,7 @@ import { memo, useCallback, useState } from "react";
 import BaseModal from "../../common/Modal/BaseModal";
 import type { GeneratePayroll } from "../Sample/PayrollManagement";
 import InputTextField from "../../common/Input/InputTextField";
-import MoneyIcon from "../../../svgs/money-euro-banknote.svg";
+import MoneyIcon from "../../svgs/money-euro-banknote.svg";
 import { Add as AddIcon } from "@mui/icons-material";
 import { useGetUserIdAndNameToDropdownGeneratePayroll } from "../Api/useGetApi";
 import SelectDropdown from "../../common/Dropdown/SelectDropdown";

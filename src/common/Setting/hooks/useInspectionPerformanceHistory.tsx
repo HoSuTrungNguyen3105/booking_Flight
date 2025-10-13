@@ -61,25 +61,12 @@ const dummyRows = Array.from({ length: 20 }, (_, index) => {
   };
 });
 
-// const statusColorMapper = {
-//   INPROGRESS: "#FFF7DB",
-//   COMPLETED: "#DEEFFE",
-//   INCOMPLETE: "#F4E7EB",
-// };
-
-// const statusTextMapper = {
-//   INPROGRESS: "진행중",
-//   COMPLETED: "완료",
-//   INCOMPLETE: "미완료",
-// };
 type IInspectionPerformanceHistoryItem = GridRowDef;
 
 export const useInspectionPerformanceHistory = () => {
   const dataTableViewRef = useRef<HTMLDivElement>(null);
   const [headerHeight, setHeaderHeight] = useState(0);
   const { fetchUserList, refetchUser } = useGetUserList();
-
-  // const [rows, setRows] = useState(dummyRows);
   const [openCheckNow, setOpenCheckNow] = useState(false);
   const [selectedRow, setSelectedRow] = useState<UserData | null>(null);
   const [selectedItemDetailRow, setSelectedItemDetailRow] =
@@ -87,22 +74,6 @@ export const useInspectionPerformanceHistory = () => {
 
   const { user, isAuthenticated } = useAuth();
   const rows = fetchUserList?.list ?? [];
-
-  // const {
-  //   currentPage,
-  //   sortModel,
-  //   totalPages,
-  //   totalElements,
-  //   paginatedData,
-  //   pageSize,
-  //   onSortModelChange,
-  //   onPageChange,
-  //   onPageSizeChange,
-  // } = useClientPagination({
-  //   data: rows,
-  //   initialSortField: "inspectionTime",
-  //   initialSortDirection: "asc",
-  // });
 
   type ActionType =
     | "addUser"
@@ -163,14 +134,16 @@ export const useInspectionPerformanceHistory = () => {
           value="관리"
           onChange={(value) => handleSelectAction(row, value as ActionType)}
           options={[
-            // { label: "정보 수정", value: "addUser" },
-            { label: "정보 수정", value: "editUser" },
-            { label: "MFA 설정 삭제", value: "deleteMfaSettings" },
-            { label: "잠금/해금", value: "lock_unlockAccount" },
-            { label: "비밀번호 초기화", value: "resetPassword" },
-            { label: "관리자 권한 이전", value: "transferAdminPermission" },
+            { label: "Edit", value: "editUser" },
+            { label: "Delete MFA Settings", value: "deleteMfaSettings" },
+            { label: "Lock/Unlock", value: "lock_unlockAccount" },
+            { label: "Reset Password", value: "resetPassword" },
             {
-              label: "삭제",
+              label: "Transfer Admin Permission",
+              value: "transferAdminPermission",
+            },
+            {
+              label: "Delete User",
               value: "deleteUser",
               color: theme.palette.error.main,
             },
