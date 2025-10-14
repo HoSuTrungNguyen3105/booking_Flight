@@ -546,7 +546,8 @@ export type FlightAircraftResponse =
 
 export type EmailProps = {
   email?: string;
-  userId?: number;
+  // userId?: number;
+  authType: string;
   onClose?: () => void;
 };
 

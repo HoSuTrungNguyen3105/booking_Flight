@@ -25,9 +25,10 @@ import { useGetMyInfo } from "../components/Api/useGetApi";
 export type UserWithMFA = {
   email: string;
   code: string;
+  authType: string;
 };
 
-export type AuthType = "DEV" | "IDPW";
+export type AuthType = "MFA" | "IDPW";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -127,7 +128,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const res = await refetchSetLoginMfa({
       email: userData.email,
       code: userData.code,
+      authType: userData.authType,
     });
+    console.log("res mfa", userData);
     if (res?.resultCode === "00" && res.data) {
       const accessToken = res.accessToken;
       const id = res.data.id;

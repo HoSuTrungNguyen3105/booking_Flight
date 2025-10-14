@@ -114,22 +114,19 @@ const TerminalContainer: React.FC = () => {
     facility: false,
     assignments: false,
   });
-  // const [dialogType, setDialogType] = useState<
-  //   "terminal" | "gate" | "facility"
-  // >("facility");
   const { getTerminalData, refetchGetTerminalData } = useGetTerminalData();
   const [editingItem, setEditingItem] = useState<
     Terminal | Facility | Gate | null
   >(null);
-  const [formData, setFormData] = useState({
-    name: "",
-    code: "",
-    status: "",
-    type: "",
-    location: "",
-    openingHours: "",
-    flight: "",
-  });
+  // const [formData, setFormData] = useState({
+  //   name: "",
+  //   code: "",
+  //   status: "",
+  //   type: "",
+  //   location: "",
+  //   openingHours: "",
+  //   flight: "",
+  // });
   // const { dataFacilityTypes } = useFindAllFacilityTypes();
 
   const getFacilityStyle = (type: FacilityType) => {
@@ -191,16 +188,16 @@ const TerminalContainer: React.FC = () => {
 
   const handleTerminalClick = (terminal: Terminal) => {
     // setDialogType("terminal");
+    // setFormData({
+    //   name: terminal.name,
+    //   code: terminal.id,
+    //   status: "available",
+    //   type: "",
+    //   location: "",
+    //   openingHours: "",
+    //   flight: "",
+    // });
     setEditingItem(terminal);
-    setFormData({
-      name: terminal.name,
-      code: terminal.id,
-      status: "available",
-      type: "",
-      location: "",
-      openingHours: "",
-      flight: "",
-    });
     setDialogOpen((prev) => ({ ...prev, terminal: true }));
   };
 

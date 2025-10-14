@@ -604,12 +604,14 @@ interface MfaRequest {
 interface MfaRequestLogin {
   email: string;
   code: string;
+  authType: string;
 }
 
 interface MfaCodeRequest {
   email: string;
   code: string;
 }
+
 export const useSetUpMfa = () => {
   const { data: setUpMfa, refetch: refetchSetUpMfa } = useFetch<
     MFAAuthResponse,

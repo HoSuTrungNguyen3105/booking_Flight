@@ -186,14 +186,16 @@ export const LoginPage: React.FC = () => {
     }
   };
 
-  // 🚀 Ưu tiên loading trước
   if (loading) return <Loading />;
 
-  // 🚀 View mode switch
   switch (viewMode) {
     case "mfa":
       return (
-        <MfaSetup onClose={() => setViewMode("login")} email={mfaEmailValue} />
+        <MfaSetup
+          authType={authType}
+          onClose={() => setViewMode("login")}
+          email={mfaEmailValue}
+        />
       );
     case "verify":
       return <AccountYn mode="verify" onClose={() => setViewMode("login")} />;

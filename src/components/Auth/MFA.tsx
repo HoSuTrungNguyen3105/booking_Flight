@@ -7,7 +7,7 @@ import InputTextField from "../../common/Input/InputTextField";
 import { useAuth } from "../../context/AuthContext";
 import type { EmailProps } from "../../utils/type";
 
-export default function MfaSetup({ email, onClose }: EmailProps) {
+export default function MfaSetup({ email, onClose, authType }: EmailProps) {
   const [qrCode, setQrCode] = useState<string | null>(null);
   const [code, setCode] = useState("");
   const [loginMfa, setLoginMfaUi] = useState(false);
@@ -73,6 +73,7 @@ export default function MfaSetup({ email, onClose }: EmailProps) {
     const res = await loginWithGGAuthenticator({
       email: email ?? "",
       code: code,
+      authType: authType,
     });
 
     if (res?.resultCode === "00") {
