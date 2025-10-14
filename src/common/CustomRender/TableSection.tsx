@@ -42,7 +42,7 @@ const TableSection = ({
   } = useClientPagination({ data: rows });
 
   /**
-   * ✅ Khi người dùng chọn dòng, cập nhật state + emit ra ngoài
+   *  Khi người dùng chọn dòng, cập nhật state + emit ra ngoài
    */
   const handleRowSelect = useCallback(
     (selectedIds: Set<GridRowId>) => {
@@ -51,7 +51,6 @@ const TableSection = ({
       setSelectedRowIds(selectedIdsArray);
       onSelectedRowIdsChange?.(selectedIdsArray);
 
-      // ✅ chỉ cập nhật nếu có sự thay đổi
       setRows((prev) =>
         prev.map((row) =>
           row.checkYn === selectedIds.has(row.id)
@@ -64,11 +63,10 @@ const TableSection = ({
   );
 
   /**
-   * ✅ Click vào dòng sẽ gọi callback nếu có
+   * Click vào dòng sẽ gọi callback nếu có
    */
   const handleRowClickDebug = useCallback(
     (row: GridRowDef) => {
-      console.log("👉 Row clicked:", row.id);
       handleRowClick?.(row);
     },
     [handleRowClick]

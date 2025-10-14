@@ -588,6 +588,7 @@ const TerminalContainer: React.FC = () => {
             </PaperContainer>
           ))}
       </Box>
+
       <CreateGateForm
         open={dialogOpen.gate}
         onClose={() => setDialogOpen((prev) => ({ ...prev, gate: false }))}

@@ -7,7 +7,7 @@ import UpdateUserModal from "../../common/Setting/Component/UpdateUserModal";
 import AccountLock from "../../common/Setting/Component/AccountLockModal";
 import { memo, useCallback, useState } from "react";
 import AdminUpdateUserModal from "../../common/Setting/Component/AdminUpdateUserModal";
-import UpdateUserForm from "./UpdateUserForm";
+import UpdateUserForm from "../../common/Setting/Component/UpdateUserForm";
 import type { AdminUpdateUserForm } from "../../utils/type";
 import SendEmailToUsers from "../Auth/SendEmailToUsers";
 import TableSection from "../../common/CustomRender/TableSection";

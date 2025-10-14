@@ -680,6 +680,28 @@ export const getUserIdByEmail = () => {
     refetchUserEmailData,
   };
 };
+
+export type RequestChangeRoleProps = {
+  userId: number;
+  fromUserId: number;
+  employeeNo: string;
+};
+
+export const useRequestChangeRole = () => {
+  const {
+    refetch: refetchRequestChangeRole,
+    loading: loadingRequestChangeRole,
+  } = useFetch<ResponseMessage, RequestChangeRoleProps>({
+    url: "/sys/users/request-change-role",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchRequestChangeRole,
+    loadingRequestChangeRole,
+  };
+};
+
 type GetIDToDeleteData = {
   id: number | string;
 };

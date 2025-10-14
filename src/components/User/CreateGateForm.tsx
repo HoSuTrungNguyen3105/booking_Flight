@@ -1,5 +1,13 @@
 import { useCallback, useState } from "react";
-import { Box, Button, Grid, Divider, Paper, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Grid,
+  Divider,
+  Paper,
+  Typography,
+  Stack,
+} from "@mui/material";
 import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import SelectDropdown, {
   type ActionType,
@@ -111,7 +119,6 @@ const CreateGateForm = ({
       }
     }) ?? [];
 
-  // Dùng cho SelectDropdown (trả về value trực tiếp)
   const handleSelectChange =
     (field: keyof CreateGateProps) => (value: string | number) => {
       setFormData((prev) => ({
@@ -128,9 +135,6 @@ const CreateGateForm = ({
     try {
       const cleaned = formData.filter((g) => g.code.trim() !== "");
       const res = await refetchCreateBatchGate(cleaned);
-      console.log("re", res);
-      console.log("cleaned", cleaned);
-
       if (res?.resultCode === "00") {
         onSuccess();
         onClose();
@@ -141,15 +145,6 @@ const CreateGateForm = ({
       setIsSubmitting(false);
     }
   };
-
-  // const handleReset = () => {
-  //   setFormData({
-  //     code: "",
-  //     terminalId: "",
-  //     status: "",
-  //   });
-  //   setErrors({});
-  // };
 
   const renderActions = useCallback(() => {
     return (
@@ -181,7 +176,9 @@ const CreateGateForm = ({
 
   const renderContent = useCallback(() => {
     return (
-      <Paper sx={{ p: 2, overflow: "auto", height: "10rem" }}>
+      <Paper
+        sx={{ p: 2, minWidth: "30rem", overflow: "auto", height: "10rem" }}
+      >
         {mode === "create" ? (
           <>
             {formData.map((gate, index) => (
@@ -203,15 +200,16 @@ const CreateGateForm = ({
                     onChange={(v) => handleChange(index, "code", v)}
                   />
                 </Grid>
-                {/* <Grid size={4}>
-                  <Typography variant="body1">{terminalId}</Typography>
-                </Grid> */}
-                <Grid size={4}>
-                  <SelectDropdown
-                    value={gate.status}
-                    options={gateStatusOptions}
-                    onChange={(v) => handleChange(index, "status", v as string)}
-                  />
+                <Grid size={5}>
+                  <Stack sx={{ width: "10rem" }}>
+                    <SelectDropdown
+                      value={gate.status}
+                      options={gateStatusOptions}
+                      onChange={(v) =>
+                        handleChange(index, "status", v as string)
+                      }
+                    />
+                  </Stack>
                 </Grid>
                 <Grid size={2}>
                   <Button color="error" onClick={() => handleRemoveGate(index)}>
@@ -240,9 +238,7 @@ const CreateGateForm = ({
                 <InputTextField
                   value={data.code}
                   placeholder="Gate Code (VD: G01)"
-                  onChange={
-                    (v) => setData({ ...data, code: v }) // cập nhật 1 dòng duy nhất
-                  }
+                  onChange={(v) => setData({ ...data, code: v })}
                 />
               </Grid>
 

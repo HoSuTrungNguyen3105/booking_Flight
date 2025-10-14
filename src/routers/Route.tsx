@@ -40,6 +40,7 @@ import FlightBatchCreator from "../components/Admin/component/Flight/FlightBatch
 import AuthGuard from "../components/Layout/AuthGuard";
 import TicketTable from "../components/Sample/TicketTable";
 import BulkMealCreator from "../components/Admin/component/Meal/BulkMealCreator";
+import TransferAdminTable from "../common/Setting/Component/TransferAdminTable";
 
 const routes = [
   {
@@ -99,9 +100,12 @@ const routes = [
   {
     path: ROUTE_PATHS.ADMIN,
     element: (
-      // <AuthGuard allowedRoles={["ADMIN"]}>
-      <ManageLayout />
-      // </AuthGuard>
+      // // <AuthGuard allowedRoles={["ADMIN"]}>
+      // <ManageLayout />
+      // // </AuthGuard>
+      <AuthGuard allowedRoles={["ADMIN"]}>
+        <ManageLayout />
+      </AuthGuard>
     ),
     errorElement: <ErrorPage />,
     children: [
@@ -144,6 +148,10 @@ const routes = [
       {
         path: ROUTE_PATHS.CREATE_GATE_FORM,
         element: <TicketTable />,
+      },
+      {
+        path: ROUTE_PATHS.TRANSFER_ADMIN,
+        element: <TransferAdminTable />,
       },
       {
         path: ROUTE_PATHS.FLIGHT_MEALS,

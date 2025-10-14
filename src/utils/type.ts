@@ -164,6 +164,8 @@ export type DataResponseId = {
 //   email: string;
 // }
 
+export type TypeStatus = "PENDING" | "APPROVED" | "REJECTED";
+
 export interface LeaveRequest {
   id: number;
   employeeId: number;
@@ -172,7 +174,7 @@ export interface LeaveRequest {
   endDate: string;
   days: number;
   reason?: string | null;
-  status: "PENDING" | "APPROVED" | "REJECTED" | "CANCELLED";
+  status: TypeStatus;
   approverId?: number | null;
   approverNote?: string | null;
   appliedAt: string;
@@ -550,6 +552,16 @@ export type EmailProps = {
   authType: string;
   onClose?: () => void;
 };
+
+export interface TransferAdmin {
+  id: number;
+  userId: number;
+  fromUserId: number;
+  toUserId: number;
+  status: TypeStatus;
+  requestedAt: string | number;
+  approvedAt?: string | number | null;
+}
 
 export type FacilityType =
   | "RESTAURANT"

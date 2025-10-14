@@ -42,8 +42,7 @@ const AdminUpdateUserModal = ({
   const renderContent = useCallback(() => {
     const renderRows = () => {
       return (
-        <Stack>
-          <Divider sx={{ mb: 2, marginTop: 0, marginBottom: "22px" }} />
+        <Stack spacing={2}>
           <Typography variant="body1">
             Nhập ID xác nhận xóa tài khoản. Ex : {String(data?.id)}
           </Typography>

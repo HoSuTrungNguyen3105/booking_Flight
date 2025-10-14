@@ -15,69 +15,15 @@ import {
   Home,
   Forum,
 } from "@mui/icons-material";
+import type { ROUTE_PATHS } from "../routers/RoutePath";
 
-type SideBarValueTypes =
-  | "security"
-  | "setting"
-  | "sampleFileUploader"
-  | "flight-book"
-  | "airplane"
-  | "airport"
-  | "ticket"
-  | "bookseat"
-  | "manage/message"
-  | "CreateGateForm"
-  | "user"
-  | "SeatLayout"
-  | "message"
-  | "flightSchedule"
-  | "ChatApp"
-  | "FlightStatisticsPage"
-  | "hero"
-  | "flightStatus"
-  | "flightManagement"
-  | "airplaneManagement"
-  | "airplaneType"
-  | "aircraft"
-  | "flightmeals"
-  | "airplaneSchedule"
-  | "airplaneTicket"
-  | "service"
-  | "international"
-  | "overview"
-  | "food"
-  | "bookticket"
-  | "sampleTimepicker"
-  | "manage-my-info"
-  | "special"
-  | "data-secure"
-  | "airports"
-  | "SendEmailToUsers"
-  | "TicketSalesDashboard"
-  | "airport-list"
-  | "domestic"
-  | "users"
-  | "AircraftBatchCreator"
-  | "flight_update"
-  | "user-list"
-  | "customers"
-  | "unlock_request"
-  | "facilities"
-  | "TerminalContainer"
-  | "BulkMealCreator"
-  | "AirportManagementDetail"
-  | "TerminalGateContainer"
-  | "AirportManagement"
-  | "TerminalGateContainer"
-  | "notifications"
-  | "sampleDatePicker"
-  | "payroll-management";
+export type SideBarValueTypes = (typeof ROUTE_PATHS)[keyof typeof ROUTE_PATHS];
 
 export type MenuItem = {
   id: SideBarValueTypes;
   label: string;
   icon?: ReactNode;
-  displayYn?: string; // hoặc SideBarValueTypes nếu có định nghĩa
+  displayYn?: string;
   adminOnly?: boolean;
   visible?: boolean;
   path?: string;
@@ -94,7 +40,7 @@ export const menuData: MenuSection[] = [
     title: "Tab 1",
     items: [
       {
-        id: "overview",
+        id: "/dashboard",
         label: "Tổng quan",
         subItems: [
           {
@@ -145,11 +91,11 @@ export const menuData: MenuSection[] = [
     title: "Tab 2",
     items: [
       {
-        id: "airports",
+        id: "aircraft",
         label: "Sân bay",
         subItems: [
           {
-            id: "airport-list",
+            id: "AirportManagement",
             label: "Danh sách sân bay",
             subItems: [
               { id: "flightmeals", label: "Suất ăn", icon: <Restaurant /> },
@@ -169,7 +115,11 @@ export const menuData: MenuSection[] = [
                 label: "Chuyến bay quốc tế",
                 icon: <FlightTakeoff />,
               },
-              { id: "ChatApp", label: "Trò chuyện", icon: <Forum /> },
+              {
+                id: "TransferAdminTable",
+                label: "Quảnê lý Terminal",
+                icon: <Apartment />,
+              },
               { id: "hero", label: "Trang Hero", icon: <Home /> },
               {
                 id: "sampleDatePicker",
@@ -201,11 +151,11 @@ export const menuData: MenuSection[] = [
         ],
       },
       {
-        id: "users",
+        id: "SendEmailToUsers",
         label: "Người dùng",
         subItems: [
           {
-            id: "user-list",
+            id: "/RegistrationForm",
             label: "Quản lý tài khoản",
             subItems: [
               {

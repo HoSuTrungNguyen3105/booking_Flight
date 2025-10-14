@@ -18,6 +18,7 @@ import {
   type TerminalLabelListResponse,
   type FlightBaggageDetailApiResponse,
   type TicketResponseMessage,
+  type TransferAdmin,
 } from "../../utils/type.ts";
 import { useFetch } from "../../context/use[custom]/useFetch.ts";
 import type { Payroll } from "../Sample/PayrollManagement.tsx";
@@ -59,6 +60,23 @@ export const useRandomPassword = () => {
     fetchUserPw,
     refetchUserPw,
     loadingUser,
+  };
+};
+
+export const usefindAllTransferRequests = () => {
+  const {
+    data: dataFindAllTransferRequests,
+    refetch: refetchFindAllTransferRequests,
+    loading: loadingFindAllTransferRequests,
+  } = useFetch<DetailResponseMessage<TransferAdmin>, null>({
+    url: "/sys/users/findAllTransferRequests",
+    autoFetch: true,
+    config: getMethod,
+  });
+  return {
+    dataFindAllTransferRequests,
+    refetchFindAllTransferRequests,
+    loadingFindAllTransferRequests,
   };
 };
 

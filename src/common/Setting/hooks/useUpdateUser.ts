@@ -21,7 +21,7 @@ export const useUpdateUser = ({
 }: IUseUpdateUserProps) => {
   const [error, setError] = useState<string>("");
   const { loadingUser, refetchUser } = useGetUserList();
-  const { fetchCreateUser, refetchCreateUser } = useCreateUserByAdmin();
+  // const { fetchCreateUser, refetchCreateUser } = useCreateUserByAdmin();
 
   const [formData, setFormData] = useState<UserFormConfig>({
     role: data?.role as UserRoleType,
@@ -67,15 +67,15 @@ export const useUpdateUser = ({
         role: formData.role,
       };
 
-      const res = await refetchCreateUser(payload);
+      // const res = await refetchCreateUser(payload);
 
-      if (res?.resultCode === "00") {
-        onSuccess?.();
-        onClose?.();
-      } else {
-        setError(res?.resultMessage ?? "Cập nhật thất bại");
-        console.error("Update user failed:", res);
-      }
+      // if (res?.resultCode === "00") {
+      //   onSuccess?.();
+      //   onClose?.();
+      // } else {
+      //   setError(res?.resultMessage ?? "Cập nhật thất bại");
+      //   console.error("Update user failed:", res);
+      // }
     } catch (err: any) {
       setError(err?.message ?? "Lỗi khi gọi API");
       console.error("Update exception:", err);
@@ -95,7 +95,6 @@ export const useUpdateUser = ({
     enableUpdateBtn,
     error,
     formData,
-    fetchCreateUser,
     handleChange,
     handleSubmit,
     // fetchUserList,

@@ -31,6 +31,7 @@ export const ROUTE_PATHS = {
   MEAL_FORM: "MealForm",
   UNLOCK_REQUEST: "unlock_request",
   CREATE_GATE_FORM: "CreateGateForm",
+  TRANSFER_ADMIN: "TransferAdminTable",
   FLIGHT_MEALS: "flightmeals",
   MESSAGE: "message",
   SPECIAL: "special",
@@ -51,31 +52,4 @@ export const ROUTE_PATHS = {
   AIRCRAFT: "aircraft",
   CHANGE_PASSWORD_PROFILE: "ChangePasswordInProfile",
   SEND_EMAIL_TO_USERS: "SendEmailToUsers",
-};
-
-// export const ROUTE_PATHS = {
-//   AUTH: {
-//     LOGIN: "/login",
-//     REGISTER: "/Register",
-//     LOGOUT: "/logout",
-//     REGISTRATION_FORM: "/RegistrationForm",
-//   },
-//   USER: {
-//     HOME: "/",
-//     BOOK_TICKET: "/bookticket",
-//   },
-//   ADMIN: {
-//     ROOT: "/admin",
-//     REVENUE: "/overview/revenue",
-//   },
-//   SAMPLE: {
-//     BUTTON: "/sampleButton",
-//     FORM: "/sampleFormDemo",
-//     FILE_UPLOAD: "/sampleFileUploader",
-//     TIME_PICKER: "/sampleTimepicker",
-//     TABLE: "/table",
-//   },
-//   COMMON: {
-//     FOOD: "/food",
-//   },
-// };
+} as const;
