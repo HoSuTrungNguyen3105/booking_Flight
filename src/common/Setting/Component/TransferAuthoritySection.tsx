@@ -1,18 +1,32 @@
-import { Box, Button, Typography } from "@mui/material";
-import { memo, useCallback } from "react";
+import {
+  Box,
+  Button,
+  Typography,
+  TextField,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from "@mui/material";
+import { memo, useCallback, useState } from "react";
 import { UserRole, type UserData } from "../../../utils/type";
 import theme from "../../../scss/theme";
+import { useTranslation } from "react-i18next";
 
 interface ITransferAuthoritySectionProps {
   myInfo?: UserData;
-  setOpenModal: (type: "approve" | "transfer") => void;
+  setOpenModal: (type: "approve" | "transfer", employeeNo?: string) => void;
 }
 
 const TransferAuthoritySection = ({
   myInfo,
   setOpenModal,
 }: ITransferAuthoritySectionProps) => {
-  const isAdmin = myInfo?.userRole === UserRole.ADMIN;
+  const { t } = useTranslation();
+  const [open, setOpen] = useState(false);
+  const [employeeNo, setEmployeeNo] = useState("");
+
+  const isAdmin = myInfo?.role === UserRole.ADMIN;
   const canTransferAdmin =
     isAdmin &&
     myInfo.fromTransferAdminUserYn === "N" &&
@@ -25,36 +39,68 @@ const TransferAuthoritySection = ({
   if (!canTransferAdmin && !isProgressTransferAdmin) return null;
 
   const handleButtonClick = useCallback(() => {
-    isAdmin ? setOpenModal("transfer") : setOpenModal("approve");
+    if (isAdmin) {
+      setOpen(true);
+    } else {
+      setOpenModal("approve");
+    }
   }, [isAdmin, setOpenModal]);
+
+  const handleSubmit = () => {
+    if (employeeNo.trim()) {
+      setOpenModal("transfer", employeeNo);
+      setOpen(false);
+      setEmployeeNo("");
+    }
+  };
 
   return (
     <Box
-      sx={{
-        backgroundColor: theme.palette.background.paper,
-        padding: "8px 12px",
-        border: `1px solid ${theme.palette.grey[200]}`,
-        marginBottom: "8px",
-      }}
+      sx={
+        {
+          //backgroundColor: theme.palette.background.paper,
+          //padding: "8px 12px",
+          //border: `1px solid ${theme.palette.grey[200]}`,
+          // marginBottom: "8px",
+        }
+      }
     >
       <Box mb={1}>
         <Typography component="p" variant="subtitle1" fontWeight="bold">
-          권한 이관
+          {t("transferAuthority")}
         </Typography>
         <Typography variant="body2" color="grey.500">
-          관리자 권한은 한 명만 가능합니다. 관리자 권한 이관 과정은 받는 사람이
-          확인될 때 까지 유지됩니다.
+          {t("transferInfo")}
         </Typography>
         {isProgressTransferAdmin && (
           <Typography variant="body2" color="grey.500">
-            권한 이관 요청이 진행중입니다.
+            {t("transferInProgress")}
           </Typography>
         )}
       </Box>
 
       <Button variant="contained" onClick={handleButtonClick}>
-        {isAdmin ? "권한 이관 요청" : "권한 이관 승인"}
+        {isAdmin ? t("transferRequest") : t("transferApprove")}
       </Button>
+
+      {/* Modal nhập employeeNo */}
+      <Dialog open={open} onClose={() => setOpen(false)}>
+        <DialogTitle>{t("inputEmployeeNo")}</DialogTitle>
+        <DialogContent>
+          <TextField
+            label={t("inputEmployeeNo")}
+            value={employeeNo}
+            onChange={(e) => setEmployeeNo(e.target.value)}
+            fullWidth
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpen(false)}>{t("cancel")}</Button>
+          <Button onClick={handleSubmit} variant="contained">
+            {t("confirm")}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

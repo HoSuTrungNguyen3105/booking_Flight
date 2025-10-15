@@ -80,15 +80,15 @@ const ManageMyInformation = () => {
         overflowX: "hidden",
       }}
     >
-      <UserInfoSection myInfo={myInfo as UserData} onChange={handleChange} />
-      {/* <ManagePathAdminSection /> */}
-
-      <DataAccessPermissionSection />
-
       <TransferAuthoritySection
         myInfo={myInfo as UserData}
         setOpenModal={() => setToggleOpenModal(!toggleOpenModal)}
       />
+
+      <UserInfoSection myInfo={myInfo as UserData} onChange={handleChange} />
+      {/* <ManagePathAdminSection /> */}
+
+      <DataAccessPermissionSection />
 
       {/* <AccountSettings /> */}
       {/* <TimeInfoSection /> */}

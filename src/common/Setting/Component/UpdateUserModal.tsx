@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import { memo, useCallback } from "react";
 import BaseModal from "../../Modal/BaseModal";
 import AddIcon from "@mui/icons-material/Add";
@@ -45,7 +45,7 @@ const UpdateUserModal = ({
 
   const renderContent = useCallback(
     () => (
-      <>
+      <Stack sx={{ maxHeight: "50vh", overflowY: "auto" }}>
         {formDetailConfig?.map(
           (section, index) =>
             !section.visible && (
@@ -71,7 +71,7 @@ const UpdateUserModal = ({
               </Box>
             )
         )}
-      </>
+      </Stack>
     ),
     [formDetailConfig, formData, handleChange]
   );
@@ -81,7 +81,8 @@ const UpdateUserModal = ({
       open={open}
       onClose={onClose}
       title="Update User Information"
-      subtitle="Edit the details of the selected user. Make sure any updates are accurate and reflect the latest information before saving changes."
+      subtitle="Edit the details of the selected user."
+      fullWidth={true}
       Icon={AddIcon}
       slots={{ content: renderContent(), actions: renderActions() }}
     />

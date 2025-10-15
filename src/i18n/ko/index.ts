@@ -84,5 +84,15 @@ export const ko = {
     switch_change_language: "언어 변경",
     searchResults: "검색결과",
     switch_change_currency: "통화 변경",
+
+    transferAuthority: "권한 이관",
+    transferInfo:
+      "관리자 권한은 한 명만 가능합니다. 권한 이관 과정은 받는 사람이 확인할 때까지 유지됩니다.",
+    transferInProgress: "권한 이관 요청이 진행 중입니다.",
+    transferRequest: "권한 이관 요청",
+    transferApprove: "권한 이관 승인",
+    inputEmployeeNo: "사원번호 입력",
+    cancel: "취소",
+    confirm: "확인",
   },
 };

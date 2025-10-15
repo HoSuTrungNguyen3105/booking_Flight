@@ -151,7 +151,6 @@ const TicketTable: React.FC = () => {
                   sx={{
                     ...sx,
                     borderRadius: "6px",
-                    // boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
                   }}
                 />
               );
@@ -164,7 +163,7 @@ const TicketTable: React.FC = () => {
   ];
 
   return (
-    <Box sx={{ height: 700, width: "100%", mt: 3 }}>
+    <Box sx={{ height: "auto", width: "100%" }}>
       {error && (
         <Typography color="error" mb={1}>
           {error}

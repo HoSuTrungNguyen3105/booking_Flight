@@ -59,6 +59,16 @@ export const jp = {
     warningbtn: "警告",
     switch_change_currency: "通貨を変更",
 
+    transferAuthority: "権限移管",
+    transferInfo:
+      "管理者権限は1人のみ可能です。移管プロセスは受信者が確認するまで維持されます。",
+    transferInProgress: "権限移管リクエストが進行中です。",
+    transferRequest: "権限移管リクエスト",
+    transferApprove: "権限移管承認",
+    inputEmployeeNo: "従業員番号を入力",
+    cancel: "キャンセル",
+    confirm: "確認",
+
     switch_language: "言語を切り替え",
     radio_button_status: "ラジオボタンの状態とカラーバリエーション",
     radio_description_1:

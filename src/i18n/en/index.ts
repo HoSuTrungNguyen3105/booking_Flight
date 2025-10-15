@@ -20,6 +20,16 @@ export const en = {
     tittle2: "Status",
     switch_change_currency: "Change Currency",
 
+    transferAuthority: "Transfer Authority",
+    transferInfo:
+      "Only one admin authority is allowed. The transfer process will remain until the recipient confirms.",
+    transferInProgress: "Authority transfer request is in progress.",
+    transferRequest: "Request Transfer",
+    transferApprove: "Approve Transfer",
+    inputEmployeeNo: "Enter Employee No",
+    cancel: "Cancel",
+    confirm: "Confirm",
+
     content1:
       "• The Single Selection type allows you to select one item from a list of options, and the selected item is displayed in the Field as text.",
     content2:

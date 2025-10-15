@@ -14,7 +14,7 @@ export type UserFormConfig = {
   name?: string;
   role: UserRoleType;
   password?: string;
-
+  employeeNo?: string;
   department?: string;
   position?: string;
   baseSalary?: number;
@@ -99,6 +99,18 @@ export const useDataSection = (
             placeholder: "Chọn vai trò...",
             options: roleOptions,
             value: data.role ?? UserRole.USER,
+          },
+        ],
+      },
+      {
+        label: "employeeNo",
+        fields: [
+          {
+            id: "employeeNo",
+            type: FieldType.INPUT_WITH_TYPE_TEXT,
+            placeholder: "Nhập employeeNo...",
+            value: data.employeeNo ?? "",
+            options: [],
           },
         ],
       },

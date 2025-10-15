@@ -72,7 +72,8 @@ const AddUserModal = ({ open, onClose, onSuccess }: IAddUserModalProps) => {
       open={open}
       onClose={onClose}
       title="User Information"
-      subtitle="Fill in the details for the new user. Please make sure all required fields are correctly entered before submitting the form."
+      subtitle="Fill in the details"
+      fullWidth={true}
       Icon={AddIcon}
       slots={{ content: renderContent(), actions: renderActions() }}
     />

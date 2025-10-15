@@ -320,6 +320,8 @@ export type BaseUserData = {
   accountLockYn?: string;
   mfaEnabledYn?: string;
   mfaSecretKey?: string;
+  toTransferAdminUserYn?: string;
+  fromTransferAdminUserYn?: string;
 };
 
 export type UserData = BaseUserData &

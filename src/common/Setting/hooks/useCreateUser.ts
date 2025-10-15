@@ -17,7 +17,7 @@ interface IUseUpdateUserProps {
   onSuccess: () => void;
 }
 export const useCreateUser = ({ onClose, onSuccess }: IUseUpdateUserProps) => {
-  //   const api = useApi5();
+  //   const api = useApi();
   const [error, setError] = useState<string>("");
   const { fetchUserList, loadingUser, refetchUser } = useGetUserList();
   const { refetchUserPw } = useRandomPassword();
@@ -26,6 +26,7 @@ export const useCreateUser = ({ onClose, onSuccess }: IUseUpdateUserProps) => {
     password: "",
     name: "",
     role: UserRole.USER,
+    employeeNo: "",
   });
 
   useEffect(() => {
@@ -48,6 +49,13 @@ export const useCreateUser = ({ onClose, onSuccess }: IUseUpdateUserProps) => {
   };
   const { fetchCreateUser, refetchCreateUser } = useCreateUserByAdmin();
   const handleSubmit = async () => {
+    if (updateInfo.email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(updateInfo.email)) {
+        setError("Invalid email format");
+        return;
+      }
+    }
     const payload: UserCreateProps = {
       ...updateInfo,
     };
@@ -77,6 +85,7 @@ export const useCreateUser = ({ onClose, onSuccess }: IUseUpdateUserProps) => {
 
   return {
     // isLoading,
+    error,
     formDetailConfig,
     handleChangeFormInput,
     // enableUpdateBtn,
@@ -87,7 +96,6 @@ export const useCreateUser = ({ onClose, onSuccess }: IUseUpdateUserProps) => {
     fetchUserList,
     loadingUser,
     refetchUser,
-    error,
     // updateUser: () => updateUser(),
   } as const;
 };

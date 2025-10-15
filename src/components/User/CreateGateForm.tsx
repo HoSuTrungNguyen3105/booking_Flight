@@ -69,7 +69,6 @@ const CreateGateForm = ({
     setFormData((prev) => prev.filter((_, i) => i !== index));
   };
 
-  // 📝 Cập nhật giá trị từng dòng
   const handleChange = (
     index: number,
     field: keyof CreateGateProps,

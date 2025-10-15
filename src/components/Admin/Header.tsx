@@ -29,7 +29,7 @@ const Header = () => {
   const handleClickProfile = useCallback(() => {
     handleClose();
     if (isAdmin) {
-      navigate(ROUTE_PATHS.HOME);
+      navigate(ROUTE_PATHS.LANDING);
     } else {
       navigate(ROUTE_PATHS.ADMIN);
     }

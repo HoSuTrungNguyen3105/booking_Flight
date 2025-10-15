@@ -80,7 +80,18 @@ export const vi = {
     switch_required: "Bắt buộc",
     switch_in_use: "Đang sử dụng",
     switch_change_language: "Thay đổi ngôn ngữ",
-    switch_change_currency: "Thay đổi ngôn ngữ",
+    switch_change_currency: "Thay đổi tiền tệ",
+
+    transferAuthority: "Chuyển quyền quản trị",
+    transferInfo:
+      "Chỉ có một quản trị viên được phép. Quá trình chuyển quyền sẽ duy trì cho đến khi người nhận xác nhận.",
+    transferInProgress: "Yêu cầu chuyển quyền đang được xử lý.",
+    transferRequest: "Yêu cầu chuyển quyền",
+    transferApprove: "Phê duyệt chuyển quyền",
+    inputEmployeeNo: "Nhập mã nhân viên",
+    cancel: "Hủy",
+    confirm: "Xác nhận",
+
     searchResults: "Kết quả tìm kiếm",
     title_login: "Đăng nhập",
     username: "Tên đăng nhập",

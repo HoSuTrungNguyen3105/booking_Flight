@@ -158,12 +158,12 @@ export const useInspectionPerformanceHistory = () => {
       {
         field: "email",
         flex: 1,
-        headerName: "아이디",
+        headerName: "email",
       },
       {
         field: "role",
         flex: 1,
-        headerName: "권한",
+        headerName: "role",
         renderCell: (params: GridRenderCellParams) => {
           let bgColor = "";
           let textColor = "#000";
@@ -204,31 +204,33 @@ export const useInspectionPerformanceHistory = () => {
         },
       },
       {
-        field: "rank",
-        headerName: "생성시간",
+        field: "accountLockYn",
+        headerName: "accountLockYn",
         flex: 1,
-        renderCell: ({ row }) => <span>{row.rank ? row.rank : "-"}</span>,
+        renderCell: ({ row }) => (
+          <span>{row.accountLockYn === "Y" ? "Locked" : "Unlocked"}</span>
+        ),
       },
       {
         field: "employeeNo",
-        headerName: "로그인",
+        headerName: "employeeNo",
         flex: 1,
       },
       {
         field: "createdAt",
-        headerName: "상태",
+        headerName: "createdAt",
         flex: 1,
         renderCell: ({ row }) =>
           formatDate(DateFormatEnum.MM_DD_YYYY, row.createdAt),
       },
       {
         field: "name",
-        headerName: "상태",
+        headerName: "name",
         flex: 1,
       },
       {
         field: "actions",
-        headerName: "설정",
+        headerName: "actions",
         flex: 1,
         renderCell: ({ row }) => (
           <DropdownCell
