@@ -23,7 +23,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { GridMenuIcon } from "@mui/x-data-grid";
 import { ImageThumbnail } from "../IconComponent/ImageThumbnail";
 import CustomPopover from "../Button/Popover";
-import { Login } from "@mui/icons-material";
+import { AccountCircle, Login } from "@mui/icons-material";
 import LanguageButton from "../CustomRender/ChangeLanguageSelect";
 
 export const Header = () => {
@@ -118,34 +118,6 @@ export const Header = () => {
             </Box>
           </Stack>
 
-          {/* {!isMobile && (
-            <Stack
-              direction="row"
-              alignItems="center"
-              spacing={3}
-              flexGrow={1}
-              justifyContent="center"
-            >
-              {navItems.map((item) => (
-                <Button
-                  key={item}
-                  sx={{
-                    color: theme.palette.text.primary,
-                    textTransform: "none",
-                    fontWeight: 600,
-                    "&:hover": {
-                      color: theme.palette.primary.main,
-                      bgcolor: "transparent",
-                    },
-                  }}
-                >
-                  {item}
-                </Button>
-              ))}
-            </Stack>
-          )} */}
-
-          {/* Right section - Actions and Login */}
           <Stack direction="row" alignItems="center" spacing={2}>
             {isMobile ? (
               <IconButton
@@ -162,28 +134,29 @@ export const Header = () => {
               direction="row"
               alignItems="center"
               spacing={{ xs: 1, sm: 2 }}
-              sx={{
-                padding: { xs: "2px 4px", sm: "4px 8px" },
-                borderRadius: "8px",
-                backgroundColor:
-                  theme.palette.mode === "dark"
-                    ? "rgba(255, 255, 255, 0.05)"
-                    : "rgba(0, 0, 0, 0.02)",
-                border: `1px solid ${
-                  theme.palette.mode === "dark"
-                    ? "rgba(255, 255, 255, 0.1)"
-                    : "rgba(0, 0, 0, 0.1)"
-                }`,
-              }}
+              sx={{ p: { xs: "2px 4px", sm: "4px 8px" } }}
             >
               {isAuthenticated ? (
                 <Stack direction="row" alignItems="center" spacing={1}>
                   <CustomPopover
-                    icon="Profile"
+                    icon={
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
+                      >
+                        <AccountCircle fontSize="small" />
+                        <Typography
+                          variant="body2"
+                          sx={{ display: { xs: "none", sm: "inline" } }}
+                        >
+                          Profile
+                        </Typography>
+                      </Box>
+                    }
                     option={["Dashboard"]}
                     handleAction={handleOpenProfile}
                     hideSubmitButton
                   />
+
                   <ImageThumbnail
                     url={ImageThumbnailIcon}
                     sx={{
@@ -192,34 +165,36 @@ export const Header = () => {
                       borderRadius: "50%",
                     }}
                   />
+
                   <SignOut />
                 </Stack>
               ) : (
-                <Link to="/init/loginPage" style={{ textDecoration: "none" }}>
-                  <Button
-                    variant="outlined"
-                    size="small"
-                    sx={{
-                      color: theme.palette.primary.main,
-                      borderColor: theme.palette.primary.main,
-                      borderRadius: "20px",
-                      padding: { xs: "4px 12px", sm: "6px 16px" },
-                      minWidth: "auto",
-                      "&:hover": {
-                        backgroundColor: theme.palette.primary.main,
-                        color: theme.palette.primary.contrastText,
-                      },
-                    }}
+                <Button
+                  component={Link}
+                  to="/init/loginPage"
+                  variant="outlined"
+                  size="small"
+                  sx={{
+                    color: theme.palette.primary.main,
+                    borderColor: theme.palette.primary.main,
+                    borderRadius: "20px",
+                    px: { xs: 1.5, sm: 2 },
+                    minWidth: "auto",
+                    "&:hover": {
+                      backgroundColor: theme.palette.primary.main,
+                      color: theme.palette.primary.contrastText,
+                    },
+                  }}
+                >
+                  <Login sx={{ fontSize: 16, mr: { xs: 0, sm: 0.5 } }} />
+                  <Typography
+                    variant="body2"
+                    component="span"
+                    sx={{ display: { xs: "none", sm: "inline" } }}
                   >
-                    <Login sx={{ fontSize: 16, mr: { xs: 0, sm: 0.5 } }} />
-                    <Box
-                      component="span"
-                      sx={{ display: { xs: "none", sm: "inline" } }}
-                    >
-                      Login
-                    </Box>
-                  </Button>
-                </Link>
+                    Login
+                  </Typography>
+                </Button>
               )}
             </Stack>
           </Stack>

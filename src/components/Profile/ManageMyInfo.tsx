@@ -16,8 +16,11 @@ import BatchUpdateEmployeeNo from "../User/Security/BatchUpdateEmployeeNo";
 import type { BatchEmployeeNoReq } from "../Api/usePostApi";
 import ConfirmDeleteModal from "../Common/ConfirmDeleteModal";
 import DeleteUserModal from "../../common/Setting/Component/DeleteUserModal";
+import TransferAdminModal from "../../common/Setting/Component/TransferAdminModal";
+import { useAuth } from "../../context/AuthContext";
 
 const ManageMyInfo = () => {
+  const { user } = useAuth();
   const {
     loading,
     handleRefetchUserList,
@@ -160,6 +163,20 @@ const ManageMyInfo = () => {
       )}
 
       {openModal.transferAdminPermission && selectedRow && (
+        <TransferAdminModal
+          open={openModal.transferAdminPermission}
+          userId={selectedRow}
+          fromUserId={user?.id!}
+          // onSuccess={() => {
+          //   handleRefetchUserList();
+          //   closeModal("transferAdminPermission");
+          //   setIsValidate(true);
+          // }}
+          onClose={() => closeModal("transferAdminPermission")}
+        />
+      )}
+
+      {/* {openModal.transferAdminPermission && selectedRow && (
         <AdminUpdateUserModal
           open={openModal.transferAdminPermission}
           data={selectedRow}
@@ -170,7 +187,7 @@ const ManageMyInfo = () => {
           }}
           onClose={() => closeModal("transferAdminPermission")}
         />
-      )}
+      )} */}
 
       {openModal.deleteUser && selectedRow && (
         <DeleteUserModal

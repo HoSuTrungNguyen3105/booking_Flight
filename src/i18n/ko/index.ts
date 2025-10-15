@@ -83,5 +83,6 @@ export const ko = {
     switch_in_use: "사용 중",
     switch_change_language: "언어 변경",
     searchResults: "검색결과",
+    switch_change_currency: "통화 변경",
   },
 };

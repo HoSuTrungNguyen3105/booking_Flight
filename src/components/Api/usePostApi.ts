@@ -690,6 +690,7 @@ export type RequestChangeRoleProps = {
 export const useRequestChangeRole = () => {
   const {
     refetch: refetchRequestChangeRole,
+    error: errorRequestChangeRole,
     loading: loadingRequestChangeRole,
   } = useFetch<ResponseMessage, RequestChangeRoleProps>({
     url: "/sys/users/request-change-role",
@@ -697,8 +698,22 @@ export const useRequestChangeRole = () => {
     config: postMethod,
   });
   return {
+    errorRequestChangeRole,
     refetchRequestChangeRole,
     loadingRequestChangeRole,
+  };
+};
+
+export const useApproveTransfer = ({ id }: { id: number }) => {
+  const { refetch: refetchApproveTransfer, loading: loadingApproveTransfer } =
+    useFetch<ResponseMessage, void>({
+      url: `/sys/users/approveTransfer/${String(id)}`,
+      autoFetch: false,
+      config: postMethod,
+    });
+  return {
+    refetchApproveTransfer,
+    loadingApproveTransfer,
   };
 };
 

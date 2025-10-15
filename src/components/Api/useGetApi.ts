@@ -68,8 +68,8 @@ export const usefindAllTransferRequests = () => {
     data: dataFindAllTransferRequests,
     refetch: refetchFindAllTransferRequests,
     loading: loadingFindAllTransferRequests,
-  } = useFetch<DetailResponseMessage<TransferAdmin>, null>({
-    url: "/sys/users/findAllTransferRequests",
+  } = useFetch<DetailResponseMessage<TransferAdmin>, void>({
+    url: "/sys/users/view/all-transfer-requests",
     autoFetch: true,
     config: getMethod,
   });

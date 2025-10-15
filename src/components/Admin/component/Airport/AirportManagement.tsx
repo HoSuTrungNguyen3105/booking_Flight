@@ -105,8 +105,6 @@ const AirportManagement: React.FC = () => {
       field: "actions",
       headerName: "Thao tác",
       flex: 1,
-      sortable: false,
-      filterable: false,
       renderCell: (params: GridRenderCellParams) => (
         <Box sx={{ display: "flex", gap: 1 }}>
           <Tooltip title="Chỉnh sửa">

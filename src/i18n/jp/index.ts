@@ -57,6 +57,7 @@ export const jp = {
     successbtn: "成功",
     errorbtn: "エラー",
     warningbtn: "警告",
+    switch_change_currency: "通貨を変更",
 
     switch_language: "言語を切り替え",
     radio_button_status: "ラジオボタンの状態とカラーバリエーション",

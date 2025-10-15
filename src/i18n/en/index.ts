@@ -18,6 +18,8 @@ export const en = {
     toastError: "Something went wrong. Please try again!",
     tittle1: "Basic Type - Single Selection",
     tittle2: "Status",
+    switch_change_currency: "Change Currency",
+
     content1:
       "• The Single Selection type allows you to select one item from a list of options, and the selected item is displayed in the Field as text.",
     content2:

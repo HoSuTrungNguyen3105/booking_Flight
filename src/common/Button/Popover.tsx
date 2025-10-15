@@ -38,9 +38,17 @@ const CustomPopover: React.FC<IButtonSettingProps> = ({
     <>
       <Button
         {...buttonProps}
-        variant="contained"
+        variant="outlined"
         onClick={handleClick}
-        sx={{ minWidth: "23px", position: "relative", ...buttonProps?.sx }}
+        sx={{
+          px: 1.5,
+          minWidth: "80px",
+          display: "flex",
+          position: "relative",
+          alignItems: "center",
+          gap: 1,
+          ...buttonProps?.sx,
+        }}
       >
         {icon}
       </Button>
@@ -73,7 +81,6 @@ const CustomPopover: React.FC<IButtonSettingProps> = ({
               })
             : null}
 
-          {/* Button luôn render nếu hideSubmitButton = false */}
           {!hideSubmitButton && (
             <Button
               variant="contained"

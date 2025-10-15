@@ -80,6 +80,7 @@ export const vi = {
     switch_required: "Bắt buộc",
     switch_in_use: "Đang sử dụng",
     switch_change_language: "Thay đổi ngôn ngữ",
+    switch_change_currency: "Thay đổi ngôn ngữ",
     searchResults: "Kết quả tìm kiếm",
     title_login: "Đăng nhập",
     username: "Tên đăng nhập",

@@ -1,10 +1,12 @@
-import React, { useMemo } from "react";
-import { Box, Chip } from "@mui/material";
-import type { GridColDef } from "@mui/x-data-grid";
+import React, { useMemo, useState } from "react";
+import { Box, Button, Chip, IconButton, Tooltip } from "@mui/material";
+import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { DateFormatEnum, formatDate } from "../../../hooks/format";
 import TableSection from "../../CustomRender/TableSection";
 import type { TypeStatus } from "../../../utils/type";
 import { usefindAllTransferRequests } from "../../../components/Api/useGetApi";
+import { useApproveTransfer } from "../../../components/Api/usePostApi";
+import RejectIcon from "../../../svgs/deny-svgrepo-com.svg";
 
 const TransferAdminTable = () => {
   const {
@@ -12,6 +14,17 @@ const TransferAdminTable = () => {
     loadingFindAllTransferRequests,
     refetchFindAllTransferRequests,
   } = usefindAllTransferRequests();
+  const [transferRequestId, setTransferRequestId] = useState<number | null>(
+    null
+  );
+  const [actionTransfer, setActionTransfer] = useState<"approve" | "reject">(
+    "approve"
+  );
+  const [openDialog, setOpenDialog] = useState(false);
+  const { refetchApproveTransfer } = useApproveTransfer({
+    id: transferRequestId as number,
+  });
+
   const renderStatus = (status: TypeStatus) => {
     switch (status) {
       case "APPROVED":
@@ -31,6 +44,18 @@ const TransferAdminTable = () => {
       })) || [],
     [dataFindAllTransferRequests]
   );
+
+  const handleApprove = (id: number) => {
+    setActionTransfer("reject");
+    setTransferRequestId(id);
+    setOpenDialog(true);
+  };
+
+  const handleReject = (id: number) => {
+    setActionTransfer("reject");
+    setTransferRequestId(id);
+    setOpenDialog(true);
+  };
 
   const columns: GridColDef[] = useMemo(
     () => [
@@ -64,6 +89,38 @@ const TransferAdminTable = () => {
             params as string | number
           ),
       },
+      {
+        field: "actions",
+        headerName: "Thao tác",
+        flex: 1,
+        renderCell: (params: GridRenderCellParams) => (
+          <Box sx={{ display: "flex", gap: 1 }}>
+            <Tooltip title="Reject">
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => handleReject(params.row)}
+                size="small"
+              >
+                <Box
+                  component="img"
+                  sx={{ height: 12, width: 12 }}
+                  src={RejectIcon}
+                  alt="reject"
+                />
+              </Button>
+            </Tooltip>
+            <Tooltip title="Approve">
+              <Button
+                variant="contained"
+                color="error"
+                onClick={() => handleApprove(params.row.code)}
+                size="small"
+              ></Button>
+            </Tooltip>
+          </Box>
+        ),
+      },
     ],
     []
   );
@@ -84,6 +141,10 @@ const TransferAdminTable = () => {
         columns={columns}
         isLoading={loadingFindAllTransferRequests}
         setRows={() => {}}
+        handleRowClick={(params) => {
+          console.log("Clicked row ID:", params.id);
+          setTransferRequestId(params.id as number);
+        }}
       />
     </Box>
   );
