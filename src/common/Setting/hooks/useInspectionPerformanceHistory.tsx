@@ -81,6 +81,7 @@ export const useInspectionPerformanceHistory = () => {
     | "deleteMfaSettings"
     | "lock_unlockAccount"
     | "resetPassword"
+    | "permissionChangeRole"
     | "transferAdminPermission"
     | "deleteUser";
 
@@ -91,6 +92,7 @@ export const useInspectionPerformanceHistory = () => {
     lock_unlockAccount: false,
     resetPassword: false,
     transferAdminPermission: false,
+    permissionChangeRole: false,
     deleteUser: false,
   });
 
@@ -141,6 +143,11 @@ export const useInspectionPerformanceHistory = () => {
             {
               label: "Transfer Admin Permission",
               value: "transferAdminPermission",
+            },
+            {
+              label: "Permission Change Role",
+              value: "permissionChangeRole",
+              color: theme.palette.warning.dark,
             },
             {
               label: "Delete User",

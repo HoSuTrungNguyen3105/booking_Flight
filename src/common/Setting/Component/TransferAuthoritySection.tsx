@@ -36,7 +36,7 @@ const TransferAuthoritySection = ({
     myInfo.fromTransferAdminUserYn === "Y" &&
     myInfo.toTransferAdminUserYn === "N";
 
-  if (!canTransferAdmin && !isProgressTransferAdmin) return null;
+  // if (!canTransferAdmin && !isProgressTransferAdmin) return null;
 
   const handleButtonClick = useCallback(() => {
     if (isAdmin) {
@@ -56,14 +56,12 @@ const TransferAuthoritySection = ({
 
   return (
     <Box
-      sx={
-        {
-          //backgroundColor: theme.palette.background.paper,
-          //padding: "8px 12px",
-          //border: `1px solid ${theme.palette.grey[200]}`,
-          // marginBottom: "8px",
-        }
-      }
+      sx={{
+        backgroundColor: theme.palette.background.paper,
+        padding: "8px 12px",
+        border: `1px solid ${theme.palette.grey[200]}`,
+        marginBottom: "8px",
+      }}
     >
       <Box mb={1}>
         <Typography component="p" variant="subtitle1" fontWeight="bold">

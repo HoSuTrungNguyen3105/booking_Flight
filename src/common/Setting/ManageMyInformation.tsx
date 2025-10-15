@@ -96,7 +96,7 @@ const ManageMyInformation = () => {
       {renderButtonSection()}
 
       <DialogConfirm
-        icon="warning"
+        // icon="warning"
         cancelLabel="Exit"
         open={toggleOpenModal}
         onClose={() => setToggleOpenModal(false)}

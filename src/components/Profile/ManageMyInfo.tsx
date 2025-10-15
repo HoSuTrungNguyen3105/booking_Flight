@@ -18,6 +18,7 @@ import type { BatchEmployeeNoReq } from "../Api/usePostApi";
 import DeleteUserModal from "../../common/Setting/Component/DeleteUserModal";
 import TransferAdminModal from "../../common/Setting/Component/TransferAdminModal";
 import { useAuth } from "../../context/AuthContext";
+import PermissionRoleModal from "../../common/Setting/Component/PermissionRoleModal";
 
 const ManageMyInfo = () => {
   const { user } = useAuth();
@@ -176,18 +177,18 @@ const ManageMyInfo = () => {
         />
       )}
 
-      {/* {openModal.transferAdminPermission && selectedRow && (
-        <AdminUpdateUserModal
-          open={openModal.transferAdminPermission}
+      {openModal.permissionChangeRole && selectedRow && (
+        <PermissionRoleModal
+          open={openModal.permissionChangeRole}
           data={selectedRow}
           onSuccess={() => {
             handleRefetchUserList();
-            closeModal("transferAdminPermission");
-            setIsValidate(true);
+            closeModal("permissionChangeRole");
+            // setIsValidate(true);
           }}
-          onClose={() => closeModal("transferAdminPermission")}
+          onClose={() => closeModal("permissionChangeRole")}
         />
-      )} */}
+      )}
 
       {openModal.deleteUser && selectedRow && (
         <DeleteUserModal

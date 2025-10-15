@@ -704,6 +704,23 @@ export const useRequestChangeRole = () => {
   };
 };
 
+export const usePermissionChangeRole = () => {
+  const {
+    refetch: refetchPermissionChangeRole,
+    error: errorPermissionChangeRole,
+    loading: loadingPermissionChangeRole,
+  } = useFetch<ResponseMessage, { id: number; employeeNo: string }>({
+    url: "/sys/users/permission-change-role",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchPermissionChangeRole,
+    errorPermissionChangeRole,
+    loadingPermissionChangeRole,
+  };
+};
+
 export const useApproveTransfer = ({ id }: { id: number }) => {
   const { refetch: refetchApproveTransfer, loading: loadingApproveTransfer } =
     useFetch<ResponseMessage, void>({
