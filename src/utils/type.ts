@@ -351,9 +351,10 @@ export type AdminUpdateUserForm = {
   id: number;
   department?: string;
   position?: string;
-  hireDate?: number;
-  status?: EmployeeStatus;
   baseSalary?: number;
+  status?: EmployeeStatus;
+  name?: string;
+  role?: UserRole;
 };
 
 export interface CreateMealDto extends Omit<Meal, "id" | "flightMeals"> {}

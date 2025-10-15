@@ -163,7 +163,6 @@ const TransferAdminTable = () => {
         isLoading={loadingFindAllTransferRequests}
         setRows={() => {}}
         handleRowClick={(params) => {
-          console.log("Clicked row ID:", params.id);
           setTransferRequestId(params.id as number);
         }}
       />

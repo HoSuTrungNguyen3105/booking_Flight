@@ -33,7 +33,9 @@ export default function UpdateUserForm({
   });
 
   const { dataEmployeeStatuses } = useFindAllEmployeeStatuses();
+
   const { dataDepartments } = useFindAllDepartments();
+
   const { dataPositions } = useFindAllPositions();
 
   const departmentOptions = mapStringToDropdown(dataDepartments?.data || []);

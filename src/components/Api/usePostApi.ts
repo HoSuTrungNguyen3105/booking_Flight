@@ -44,6 +44,7 @@ import { useSecureFetch } from "../../context/use[custom]/useSecureFetch.ts";
 //   Payroll,
 // } from "../../common/Sample/PayrollManagement.tsx";
 import type { UserWithRelationsData } from "../Sample/type.ts";
+import type { UserFormConfig } from "../../common/Setting/hooks/useDataSection.ts";
 
 const postMethod = {
   method: MethodType.POST,
@@ -1087,7 +1088,7 @@ export const useUpdateUserFromAdmin = () => {
   const { refetch: refetchUpdateUserFromAdmin, loading: loadingUser } =
     useFetch<
       DetailResponseMessage<ResAdminUpdateUserProps>,
-      AdminUpdateUserForm
+      Partial<UserFormConfig>
     >({
       url: "/sys/users/updateUserFromAdmin",
       autoFetch: false,

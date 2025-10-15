@@ -10,6 +10,7 @@ import {
 } from "../../../components/Api/useGetApi";
 
 export type UserFormConfig = {
+  id?: number;
   email: string;
   name?: string;
   role: UserRoleType;

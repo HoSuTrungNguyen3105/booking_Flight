@@ -27,10 +27,12 @@ const TransferAuthoritySection = ({
   const [employeeNo, setEmployeeNo] = useState("");
 
   const isAdmin = myInfo?.role === UserRole.ADMIN;
+
   const canTransferAdmin =
     isAdmin &&
     myInfo.fromTransferAdminUserYn === "N" &&
     myInfo.toTransferAdminUserYn !== "Y";
+
   const isProgressTransferAdmin =
     isAdmin &&
     myInfo.fromTransferAdminUserYn === "Y" &&
