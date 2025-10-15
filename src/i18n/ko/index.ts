@@ -85,6 +85,15 @@ export const ko = {
     searchResults: "검색결과",
     switch_change_currency: "통화 변경",
 
+    lockTitle: "계정 잠금",
+    unlockTitle: "계정 잠금 해제",
+    lockSubtitle: "해당 사용자의 계정을 잠그시겠습니까?",
+    unlockSubtitle: "해당 사용자의 계정 잠금을 해제하시겠습니까?",
+    lockButton: "잠금",
+    unlockButton: "해제",
+    lockSuccess: "계정이 정상적으로 잠겼습니다.",
+    unlockSuccess: "계정이 정상적으로 잠금 해제되었습니다.",
+
     transferAuthority: "권한 이관",
     transferInfo:
       "관리자 권한은 한 명만 가능합니다. 권한 이관 과정은 받는 사람이 확인할 때까지 유지됩니다.",

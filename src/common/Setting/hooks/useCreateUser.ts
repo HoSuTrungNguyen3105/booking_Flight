@@ -1,13 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
-import {
-  UserRole,
-  type UserCreateProps,
-  type UserData,
-} from "../../../utils/type";
-import {
-  useGetUserList,
-  useRandomPassword,
-} from "../../../components/Api/useGetApi";
+import { useEffect, useState } from "react";
+import { UserRole, type UserCreateProps } from "../../../utils/type";
+import { useRandomPassword } from "../../../components/Api/useGetApi";
 import { useDataSection, type UserFormConfig } from "./useDataSection";
 import { useCreateUserByAdmin } from "../../../components/Api/usePostApi";
 import { useToast } from "../../../context/ToastContext";
@@ -19,7 +12,6 @@ interface IUseUpdateUserProps {
 export const useCreateUser = ({ onClose, onSuccess }: IUseUpdateUserProps) => {
   //   const api = useApi();
   const [error, setError] = useState<string>("");
-  const { fetchUserList, loadingUser, refetchUser } = useGetUserList();
   const { refetchUserPw } = useRandomPassword();
   const [updateInfo, setUpdateInfo] = useState<UserFormConfig>({
     email: "",
@@ -32,7 +24,7 @@ export const useCreateUser = ({ onClose, onSuccess }: IUseUpdateUserProps) => {
   useEffect(() => {
     const generatePassword = async () => {
       const password = await refetchUserPw();
-      if (password) {
+      if (password?.resultCode === "00") {
         setUpdateInfo((prev) => ({ ...prev, password: password.data }));
       }
     };
@@ -47,7 +39,7 @@ export const useCreateUser = ({ onClose, onSuccess }: IUseUpdateUserProps) => {
   const handleChange = (key: string, value: any) => {
     setUpdateInfo((prev) => ({ ...prev, [key]: value }));
   };
-  const { fetchCreateUser, refetchCreateUser } = useCreateUserByAdmin();
+  const { refetchCreateUser } = useCreateUserByAdmin();
   const handleSubmit = async () => {
     if (updateInfo.email) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -71,31 +63,11 @@ export const useCreateUser = ({ onClose, onSuccess }: IUseUpdateUserProps) => {
     }
   };
 
-  // const enableUpdateBtn = useMemo(
-  //   () => updateInfo.name?.trim() !== "" || updateInfo?.email?.trim() !== "",
-  //   [updateInfo]
-  // );
-
-  const handleChangeFormInput = (key: keyof typeof updateInfo, value: any) => {
-    setUpdateInfo((prev) => ({
-      ...prev,
-      [key]: value,
-    }));
-  };
-
   return {
-    // isLoading,
     error,
     formDetailConfig,
-    handleChangeFormInput,
-    // enableUpdateBtn,
     updateInfo,
-    fetchCreateUser,
     handleChange,
     handleSubmit,
-    fetchUserList,
-    loadingUser,
-    refetchUser,
-    // updateUser: () => updateUser(),
   } as const;
 };

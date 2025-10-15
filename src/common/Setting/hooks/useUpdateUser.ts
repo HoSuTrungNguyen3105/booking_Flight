@@ -1,12 +1,10 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   UserRole,
   type UserData,
   type UserRoleType,
 } from "../../../utils/type";
-import { useGetUserList } from "../../../components/Api/useGetApi";
 import { useDataSection, type UserFormConfig } from "./useDataSection";
-import { useCreateUserByAdmin } from "../../../components/Api/usePostApi";
 
 interface IUseUpdateUserProps {
   onClose: () => void;
@@ -20,8 +18,6 @@ export const useUpdateUser = ({
   data,
 }: IUseUpdateUserProps) => {
   const [error, setError] = useState<string>("");
-  const { loadingUser, refetchUser } = useGetUserList();
-  // const { fetchCreateUser, refetchCreateUser } = useCreateUserByAdmin();
 
   const [formData, setFormData] = useState<UserFormConfig>({
     role: data?.role as UserRoleType,
@@ -47,15 +43,7 @@ export const useUpdateUser = ({
     setError("");
   }, [data]);
 
-  // useDataSection lấy config trực tiếp từ formData để luôn cập nhật
   const formDetailConfig = useDataSection(formData, "update");
-
-  const handleChangeFormInput = (key: keyof UserFormConfig, value: any) => {
-    setFormData((prev) => ({
-      ...prev,
-      [key]: value,
-    }));
-  };
 
   const handleSubmit = async () => {
     try {
@@ -76,8 +64,8 @@ export const useUpdateUser = ({
       //   setError(res?.resultMessage ?? "Cập nhật thất bại");
       //   console.error("Update user failed:", res);
       // }
-    } catch (err: any) {
-      setError(err?.message ?? "Lỗi khi gọi API");
+    } catch (err) {
+      setError((err as string) ?? "Lỗi khi gọi API");
       console.error("Update exception:", err);
     }
   };
@@ -91,14 +79,9 @@ export const useUpdateUser = ({
 
   return {
     formDetailConfig,
-    handleChangeFormInput,
-    enableUpdateBtn,
     error,
     formData,
     handleChange,
     handleSubmit,
-    // fetchUserList,
-    loadingUser,
-    refetchUser,
   } as const;
 };

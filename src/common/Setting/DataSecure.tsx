@@ -206,13 +206,13 @@ const DataSecure = ({ passenger, returnButton }: DataSecureProps) => {
         </Button>
         <Box borderTop={1} paddingTop={2} borderColor={"grey.200"}>
           {renderDataSection(
-            "하위 파일 목록",
+            "Booking List",
             columnBookingList,
             rowData,
             isLoading
           )}
           {renderDataSection(
-            "연관 점검 항목",
+            "Meal Order",
             columnMealOrder,
             rowDataMealOrder,
             isLoading

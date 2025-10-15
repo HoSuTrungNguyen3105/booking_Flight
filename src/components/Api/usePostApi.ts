@@ -626,6 +626,21 @@ export const useSetUpMfa = () => {
     refetchSetUpMfa,
   };
 };
+
+export const useResetPassword = () => {
+  const { refetch: refetchResetPassword } = useFetch<
+    ResponseMessage,
+    { userId: number; tempPassword: string }
+  >({
+    url: "/auth/resetTempPassword",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchResetPassword,
+  };
+};
+
 export type CreateGateProps = {
   code: string;
   terminalId: string;

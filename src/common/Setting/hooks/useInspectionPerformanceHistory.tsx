@@ -1,65 +1,13 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import useClientPagination from "../../../context/use[custom]/useClientPagination";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import type { GridRowDef } from "../../DataGrid";
 import { UserRole, type UserData } from "../../../utils/type";
 import { useAuth } from "../../../context/AuthContext";
 import theme from "../../../scss/theme";
 import { useGetUserList } from "../../../components/Api/useGetApi";
-import {
-  DateFormatEnum,
-  formatDate,
-  formatDateKR,
-} from "../../../hooks/format";
+import { DateFormatEnum, formatDate } from "../../../hooks/format";
 import SelectDropdown from "../../Dropdown/SelectDropdown";
 import { Box, Typography } from "@mui/material";
-
-const dummyRows = Array.from({ length: 20 }, (_, index) => {
-  const id = index + 1;
-  const today = new Date();
-  const inspectionDate = new Date(today);
-  inspectionDate.setDate(today.getDate() - index);
-
-  // Random status selection
-  const statusOptions = ["INPROGRESS", "COMPLETED", "INCOMPLETE"];
-  const inspectionStatus =
-    statusOptions[Math.floor(Math.random() * statusOptions.length)];
-
-  // Random review status
-  const reviewCount = Math.floor(Math.random() * 5);
-  const reviewStatus = reviewCount > 0 ? `${reviewCount}건` : "없음";
-
-  // Random scope
-  const scopeOptions = [
-    "전체",
-    "네트워크",
-    "서버",
-    "애플리케이션",
-    "데이터베이스",
-  ];
-  const itemScope =
-    scopeOptions[Math.floor(Math.random() * scopeOptions.length)];
-
-  // Random situation
-  const situationOptions = ["수동", "배치"];
-  const inspectionStartType =
-    situationOptions[Math.floor(Math.random() * situationOptions.length)];
-
-  // Random inspector
-  const inspectors = ["김점검", "이검사", "박확인", "최감독", "정관리"];
-  const lastInspector =
-    inspectors[Math.floor(Math.random() * inspectors.length)];
-
-  return {
-    id,
-    inspectionTime: inspectionDate.toLocaleString("ko-KR"),
-    itemScope,
-    inspectionStartType,
-    reviewStatus,
-    inspectionStatus,
-    lastInspector,
-  };
-});
 
 type IInspectionPerformanceHistoryItem = GridRowDef;
 

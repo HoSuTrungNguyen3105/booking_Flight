@@ -83,7 +83,6 @@ const FieldRenderer = ({
           type="password"
           canCopy
           showEyeIcon
-          // disabled={disabled}
           readOnly={!readOnly}
           value={value as string}
           onChange={onChange}
@@ -99,6 +98,7 @@ const FieldRenderer = ({
           readOnly={readOnly}
           value={value as string}
           onChange={onChange}
+          placeholder={placeholder}
         />
       );
     case FieldType.TEXTAREA:

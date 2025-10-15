@@ -1,19 +1,27 @@
 import React, { useMemo, useState } from "react";
-import { Box, Button, Chip, IconButton, Tooltip } from "@mui/material";
+import {
+  Box,
+  Button,
+  Chip,
+  IconButton,
+  Tooltip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Typography,
+} from "@mui/material";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { DateFormatEnum, formatDate } from "../../../hooks/format";
 import TableSection from "../../CustomRender/TableSection";
 import type { TypeStatus } from "../../../utils/type";
 import { usefindAllTransferRequests } from "../../../components/Api/useGetApi";
 import { useApproveTransfer } from "../../../components/Api/usePostApi";
-import RejectIcon from "../../../svgs/deny-svgrepo-com.svg";
+import { CheckCircle, Cancel } from "@mui/icons-material";
 
 const TransferAdminTable = () => {
-  const {
-    dataFindAllTransferRequests,
-    loadingFindAllTransferRequests,
-    refetchFindAllTransferRequests,
-  } = usefindAllTransferRequests();
+  const { dataFindAllTransferRequests, loadingFindAllTransferRequests } =
+    usefindAllTransferRequests();
   const [transferRequestId, setTransferRequestId] = useState<number | null>(
     null
   );
@@ -21,16 +29,27 @@ const TransferAdminTable = () => {
     "approve"
   );
   const [openDialog, setOpenDialog] = useState(false);
+
   const { refetchApproveTransfer } = useApproveTransfer({
     id: transferRequestId as number,
   });
 
+  // Status UI
   const renderStatus = (status: TypeStatus) => {
     switch (status) {
       case "APPROVED":
-        return <Chip label="Approved" color="success" size="small" />;
+        return (
+          <Chip
+            icon={<CheckCircle />}
+            label="Approved"
+            color="success"
+            size="small"
+          />
+        );
       case "REJECTED":
-        return <Chip label="Rejected" color="error" size="small" />;
+        return (
+          <Chip icon={<Cancel />} label="Rejected" color="error" size="small" />
+        );
       default:
         return <Chip label="Pending" color="warning" size="small" />;
     }
@@ -46,7 +65,7 @@ const TransferAdminTable = () => {
   );
 
   const handleApprove = (id: number) => {
-    setActionTransfer("reject");
+    setActionTransfer("approve");
     setTransferRequestId(id);
     setOpenDialog(true);
   };
@@ -55,6 +74,15 @@ const TransferAdminTable = () => {
     setActionTransfer("reject");
     setTransferRequestId(id);
     setOpenDialog(true);
+  };
+
+  const handleConfirm = () => {
+    if (actionTransfer === "approve") {
+      refetchApproveTransfer();
+    } else {
+      console.log("Reject API call...");
+    }
+    setOpenDialog(false);
   };
 
   const columns: GridColDef[] = useMemo(
@@ -66,7 +94,7 @@ const TransferAdminTable = () => {
       {
         field: "status",
         headerName: "Status",
-        width: 130,
+        width: 150,
         renderCell: (params) => renderStatus(params.value as TypeStatus),
       },
       {
@@ -95,28 +123,21 @@ const TransferAdminTable = () => {
         flex: 1,
         renderCell: (params: GridRenderCellParams) => (
           <Box sx={{ display: "flex", gap: 1 }}>
-            <Tooltip title="Reject">
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => handleReject(params.row)}
-                size="small"
-              >
-                <Box
-                  component="img"
-                  sx={{ height: 12, width: 12 }}
-                  src={RejectIcon}
-                  alt="reject"
-                />
-              </Button>
-            </Tooltip>
             <Tooltip title="Approve">
-              <Button
-                variant="contained"
+              <IconButton
+                color="success"
+                onClick={() => handleApprove(params.row.id)}
+              >
+                <CheckCircle />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Reject">
+              <IconButton
                 color="error"
-                onClick={() => handleApprove(params.row.code)}
-                size="small"
-              ></Button>
+                onClick={() => handleReject(params.row.id)}
+              >
+                <Cancel />
+              </IconButton>
             </Tooltip>
           </Box>
         ),
@@ -133,7 +154,7 @@ const TransferAdminTable = () => {
         bgcolor: "background.paper",
         p: 2,
         borderRadius: 2,
-        boxShadow: 2,
+        boxShadow: 3,
       }}
     >
       <TableSection
@@ -146,6 +167,31 @@ const TransferAdminTable = () => {
           setTransferRequestId(params.id as number);
         }}
       />
+
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+        <DialogTitle>Xác nhận thao tác</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Bạn có chắc chắn muốn{" "}
+            <strong
+              style={{ color: actionTransfer === "approve" ? "green" : "red" }}
+            >
+              {actionTransfer === "approve" ? "APPROVE" : "REJECT"}
+            </strong>{" "}
+            yêu cầu này không?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDialog(false)}>Hủy</Button>
+          <Button
+            variant="contained"
+            color={actionTransfer === "approve" ? "success" : "error"}
+            onClick={handleConfirm}
+          >
+            Xác nhận
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

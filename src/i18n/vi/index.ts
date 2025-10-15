@@ -2,7 +2,6 @@ export const vi = {
   translation: {
     welcome: "Chào mừng đến với React và react-i18next",
     title1: "Trạng thái & Biến thể màu của Checkbox",
-    title: "Trạng thái & Biến thể màu của Checkbox",
     description1:
       "• Có thể chọn nhiều lựa chọn, và tùy vào tình huống, tất cả có thể được chọn hoặc không chọn mặc định.",
     description2:
@@ -97,12 +96,19 @@ export const vi = {
     username: "Tên đăng nhập",
     password: "Mật khẩu",
     submit: "Gửi",
+    lockTitle: "Khóa tài khoản",
+    unlockTitle: "Mở khóa tài khoản",
+    lockSubtitle: "Bạn có chắc muốn khóa tài khoản của người dùng này không?",
+    unlockSubtitle:
+      "Bạn có chắc muốn mở khóa tài khoản của người dùng này không?",
+    lockButton: "Khóa",
+    unlockButton: "Mở khóa",
+    lockSuccess: "Khóa tài khoản thành công.",
+    unlockSuccess: "Mở khóa tài khoản thành công.",
 
-    hero: {
-      title: "Chào mừng đến với Hệ thống Nội bộ",
-      subtitle: "Nền tảng kết nối và hỗ trợ nhân viên toàn công ty",
-      description:
-        "Nơi cung cấp thông tin, tài nguyên và công cụ làm việc cần thiết cho mọi nhân viên",
-    },
+    title: "Chào mừng đến với Hệ thống Nội bộ",
+    subtitle: "Nền tảng kết nối và hỗ trợ nhân viên toàn công ty",
+    description:
+      "Nơi cung cấp thông tin, tài nguyên và công cụ làm việc cần thiết cho mọi nhân viên",
   },
 };

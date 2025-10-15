@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 import type { UserData } from "../../../utils/type";
 import { useToast } from "../../../context/ToastContext";
 import { useAccountLock } from "../../../components/Api/usePostApi";
+import { useTranslation } from "react-i18next";
 
 interface ILockAccountModalProps {
   onClose: () => void;
@@ -24,12 +25,13 @@ export const useLockAccount = ({
     id: user?.id,
   });
 
+  const { t } = useTranslation();
+
   const isLocked = user?.accountLockYn === "Y";
-  const title = isLocked ? "계정 잠금 해제" : "계정 잠금";
-  const subtitle = isLocked
-    ? "아래의 사용자의 계정의 잠금 상태를 해제합니다."
-    : "아래의 사용자의 계정을 잠금 상태로 만듭니다.";
-  const buttonTitle = isLocked ? "해제" : "잠금";
+
+  const title = isLocked ? t("unlockTitle") : t("lockTitle");
+  const subtitle = isLocked ? t("unlockSubtitle") : t("lockSubtitle");
+  const buttonTitle = isLocked ? t("unlockButton") : t("lockButton");
   const toast = useToast();
 
   const handleLockAccount = useCallback(async () => {
@@ -42,19 +44,16 @@ export const useLockAccount = ({
       const result = await refetchAccountLock(params);
 
       if (result?.resultCode === "00") {
-        const message = isLocked
-          ? "사용자 잠금해제가 정상적으로 완료되었습니다."
-          : "사용자 잠금이 정상적으로 완료되었습니다.";
-        toast(`${message}`, "success");
+        toast(result.resultMessage, "success");
         onClose();
         onSuccess();
       } else {
-        toast(`${result?.resultMessage}`, "error");
+        toast(result?.resultMessage || t("error"), "error");
       }
     } catch (error) {
       console.error("Error locking/unlocking account:", error);
     }
-  }, [isLocked, user, onSuccess, onClose]);
+  }, [isLocked, user, onSuccess, onClose, t]);
 
   return {
     formData,

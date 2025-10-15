@@ -98,5 +98,14 @@ export const jp = {
     username: "ユーザー名",
     password: "パスワード",
     submit: "送信",
+
+    lockTitle: "アカウントをロック",
+    unlockTitle: "アカウントを解除",
+    lockSubtitle: "このユーザーのアカウントをロックしてもよろしいですか？",
+    unlockSubtitle: "このユーザーのアカウントを解除してもよろしいですか？",
+    lockButton: "ロック",
+    unlockButton: "解除",
+    lockSuccess: "アカウントが正常にロックされました。",
+    unlockSuccess: "アカウントが正常に解除されました。",
   },
 };

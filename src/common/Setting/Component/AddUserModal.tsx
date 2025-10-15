@@ -53,6 +53,7 @@ const AddUserModal = ({ open, onClose, onSuccess }: IAddUserModalProps) => {
                       value={updateInfo[field.id as keyof UserFormConfig] ?? ""}
                       disabled={field.disabled}
                       options={field.options}
+                      placeholder={field.placeholder}
                       onChange={(val) =>
                         handleChange(field.id as keyof UserFormConfig, val)
                       }

@@ -80,23 +80,19 @@ const ManageMyInformation = () => {
         overflowX: "hidden",
       }}
     >
-      <TransferAuthoritySection
-        myInfo={myInfo as UserData}
-        setOpenModal={() => setToggleOpenModal(!toggleOpenModal)}
-      />
-
       <UserInfoSection myInfo={myInfo as UserData} onChange={handleChange} />
       {/* <ManagePathAdminSection /> */}
 
       <DataAccessPermissionSection />
 
-      {/* <AccountSettings /> */}
-      {/* <TimeInfoSection /> */}
+      <TransferAuthoritySection
+        myInfo={myInfo as UserData}
+        setOpenModal={() => setToggleOpenModal(!toggleOpenModal)}
+      />
 
       {renderButtonSection()}
 
       <DialogConfirm
-        // icon="warning"
         cancelLabel="Exit"
         open={toggleOpenModal}
         onClose={() => setToggleOpenModal(false)}

@@ -19,6 +19,7 @@ import DeleteUserModal from "../../common/Setting/Component/DeleteUserModal";
 import TransferAdminModal from "../../common/Setting/Component/TransferAdminModal";
 import { useAuth } from "../../context/AuthContext";
 import PermissionRoleModal from "../../common/Setting/Component/PermissionRoleModal";
+import ResetPasswordModal from "../../common/Setting/Component/ResetPasswordModal";
 
 const ManageMyInfo = () => {
   const { user } = useAuth();
@@ -212,6 +213,18 @@ const ManageMyInfo = () => {
             closeModal("lock_unlockAccount");
           }}
           onClose={() => closeModal("lock_unlockAccount")}
+        />
+      )}
+
+      {openModal.resetPassword && selectedRow && (
+        <ResetPasswordModal
+          open={openModal.resetPassword}
+          user={selectedRow}
+          onSuccess={() => {
+            handleRefetchUserList();
+            closeModal("resetPassword");
+          }}
+          onClose={() => closeModal("resetPassword")}
         />
       )}
     </Box>

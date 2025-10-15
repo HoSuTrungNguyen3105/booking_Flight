@@ -36,8 +36,6 @@ const TransferAuthoritySection = ({
     myInfo.fromTransferAdminUserYn === "Y" &&
     myInfo.toTransferAdminUserYn === "N";
 
-  // if (!canTransferAdmin && !isProgressTransferAdmin) return null;
-
   const handleButtonClick = useCallback(() => {
     if (isAdmin) {
       setOpen(true);
@@ -53,6 +51,8 @@ const TransferAuthoritySection = ({
       setEmployeeNo("");
     }
   };
+
+  if (!canTransferAdmin && !isProgressTransferAdmin) return null;
 
   return (
     <Box
