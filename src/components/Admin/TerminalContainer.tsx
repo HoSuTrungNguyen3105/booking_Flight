@@ -21,11 +21,12 @@ import {
   type GateStatus,
   type Terminal,
 } from "../../utils/type";
-import CreateGateForm from "../User/CreateGateForm";
 import CreateFacility from "./modal/CreateFacility";
 import theme from "../../scss/theme";
+import CreateGateModal from "./component/Gate/CreateGateModal";
 
-export type UpdateGateProps = Omit<CreateGateProps, "terminalId">;
+export type UpdateGateProps = Pick<Gate, "id"> &
+  Omit<CreateGateProps, "terminalId">;
 
 // Styled components
 const PaperContainer = styled(Paper)(({ theme }) => ({
@@ -153,6 +154,7 @@ const TerminalContainer: React.FC = () => {
   const [gateForm, setGateForm] = useState<UpdateGateProps>({
     code: "",
     status: "",
+    id: "",
   });
 
   const [terminalId, setTerminalId] = useState("");
@@ -212,6 +214,7 @@ const TerminalContainer: React.FC = () => {
     setGateForm({
       code: gate.code,
       status: gate.status,
+      id: gate.id,
     });
     console.log("gate, ", gate);
     setDialogOpen((prev) => ({ ...prev, gate: true }));
@@ -589,12 +592,15 @@ const TerminalContainer: React.FC = () => {
           ))}
       </Box>
 
-      <CreateGateForm
+      <CreateGateModal
         open={dialogOpen.gate}
         onClose={() => setDialogOpen((prev) => ({ ...prev, gate: false }))}
-        onSuccess={() => setDialogOpen((prev) => ({ ...prev, gate: false }))}
+        onSuccess={() => {
+          setDialogOpen((prev) => ({ ...prev, gate: false }));
+          refetchGetTerminalData();
+        }}
         mode={dialogType}
-        data={gateForm}
+        data={gateForm as Gate}
         setData={setGateForm}
         terminalId={terminalId}
       />

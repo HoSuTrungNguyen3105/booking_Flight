@@ -55,6 +55,7 @@ const CustomPopover: React.FC<IButtonSettingProps> = ({
 
       <StyledPopover
         open={Boolean(anchorEl)}
+        disableScrollLock
         anchorEl={anchorEl}
         onClose={handleClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "left" }}

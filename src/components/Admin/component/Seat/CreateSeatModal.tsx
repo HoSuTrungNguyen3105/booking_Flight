@@ -33,13 +33,9 @@ const CreateSeatModal = ({
       alert("Please enter seat row and seat number");
       return;
     }
-    onChange(newSeat); // Gửi data lên CreateSeat
-    onSuccess(); // Đóng modal
+    onChange(newSeat);
+    onSuccess();
   }, [newSeat, onChange, onSuccess]);
-
-  // if (loading) {
-  //   return <Loading />;
-  // }
 
   const renderActions = useCallback(() => {
     return (

@@ -1,23 +1,54 @@
 import { Box, Button, Stack } from "@mui/material";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import DataAccessPermissionSection from "./DataAccessPermissionSection";
 import DialogConfirm from "../Modal/DialogConfirm";
 import UserInfoSection from "../../components/User/UserInfoSection";
-import { type UserData, type UserUpdateProps } from "../../utils/type";
+import { UserRole, type UserData } from "../../utils/type";
 import TransferAuthoritySection from "./Component/TransferAuthoritySection";
 import { useAuth } from "../../context/AuthContext";
 import { useUpdateUserInfo } from "../../components/Api/usePostApi";
 import type { TFileUploader } from "../FileUploader/type";
-import AccountSettings from "../../components/Auth/AccountSettings";
+
+export type UserDataToUpdate = Pick<
+  UserData,
+  | "id"
+  | "name"
+  | "phone"
+  | "email"
+  | "userAlias"
+  | "authType"
+  | "rank"
+  | "role"
+  | "hireDate"
+  | "baseSalary"
+>;
 
 const ManageMyInformation = () => {
   const { user } = useAuth();
-  const [hasChanges, setHasChanges] = useState(false);
-  const [toggleOpenModal, setToggleOpenModal] = useState(false);
-  const { refetchUpdateUserInfo } = useUpdateUserInfo(user?.id as number);
-  const [myInfo, setMyInfo] = useState<UserUpdateProps>(user as UserData);
 
-  const handleChange = (field: keyof UserData, value: string) => {
+  const initialMyInfo: UserDataToUpdate = {
+    id: user?.id ?? 0,
+    name: user?.name ?? "",
+    email: user?.email ?? "",
+    phone: user?.phone ?? "",
+    userAlias: user?.userAlias ?? "",
+    authType: user?.authType ?? "",
+    rank: user?.rank ?? "",
+    role: user?.role ?? UserRole.USER,
+    hireDate: user?.hireDate ?? 0,
+    baseSalary: user?.baseSalary ?? 0,
+  };
+
+  const [myInfo, setMyInfo] = useState<UserDataToUpdate>(initialMyInfo);
+  const [hasChanges, setHasChanges] = useState(false);
+  const [openConfirmModal, setOpenConfirmModal] = useState(false);
+  const { refetchUpdateUserInfo } = useUpdateUserInfo(user?.id as number);
+
+  useEffect(() => {
+    setHasChanges(JSON.stringify(myInfo) !== JSON.stringify(user));
+  }, [myInfo, user]);
+
+  const handleChange = (field: keyof UserDataToUpdate, value: string) => {
     setMyInfo((prev) => ({
       ...prev,
       [field]: value,
@@ -29,44 +60,47 @@ const ManageMyInformation = () => {
     if (!file) return;
 
     const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = async () => {
-      const base64Image = reader.result as string;
-
+    reader.onload = () => {
       setMyInfo((prev) => ({
         ...prev,
-        pictureUrl: base64Image,
+        pictureUrl: reader.result as string,
       }));
     };
+    reader.readAsDataURL(file);
   };
 
   const handleUpdateMyInfo = useCallback(async () => {
-    console.log("myInfo", myInfo);
-    const res = await refetchUpdateUserInfo(myInfo);
-    console.log("res", res);
+    try {
+      console.log("Updating my info:", myInfo);
+      const res = await refetchUpdateUserInfo(myInfo);
+      if (res?.resultCode === "00") {
+        setOpenConfirmModal(false);
+        setHasChanges(false);
+      }
+    } catch (error) {
+      console.error("Update error:", error);
+    }
   }, [myInfo, refetchUpdateUserInfo]);
 
-  const handleRefresh = useCallback(() => {}, []);
+  const handleRefresh = useCallback(() => {
+    setMyInfo(user as UserDataToUpdate);
+    setHasChanges(false);
+  }, [user]);
 
-  const renderButtonSection = useCallback(() => {
-    return (
-      <Stack
-        direction="row"
-        spacing={1}
-        justifyContent={"flex-end"}
-        alignItems={"center"}
+  const renderButtonSection = () => (
+    <Stack direction="row" justifyContent="flex-end" spacing={1} mt={2}>
+      <Button
+        variant="contained"
+        disabled={!hasChanges}
+        onClick={() => setOpenConfirmModal(true)}
       >
-        <Stack direction="row" spacing={1} justifyContent={"flex-end"}>
-          <Button variant="contained" onClick={handleUpdateMyInfo}>
-            Save Changes
-          </Button>
-          <Button variant="outlined" onClick={handleRefresh}>
-            Refresh
-          </Button>
-        </Stack>
-      </Stack>
-    );
-  }, [hasChanges]);
+        Save Changes
+      </Button>
+      <Button variant="outlined" onClick={handleRefresh}>
+        Refresh
+      </Button>
+    </Stack>
+  );
 
   return (
     <Box
@@ -78,28 +112,28 @@ const ManageMyInformation = () => {
         borderColor: "divider",
         overflowY: "auto",
         overflowX: "hidden",
+        p: 2,
       }}
     >
-      <UserInfoSection myInfo={myInfo as UserData} onChange={handleChange} />
-      {/* <ManagePathAdminSection /> */}
+      <UserInfoSection myInfo={myInfo} onChange={handleChange} />
 
       <DataAccessPermissionSection />
 
       <TransferAuthoritySection
         myInfo={myInfo as UserData}
-        setOpenModal={() => setToggleOpenModal(!toggleOpenModal)}
+        setOpenModal={() => setOpenConfirmModal(true)}
       />
 
       {renderButtonSection()}
 
       <DialogConfirm
-        cancelLabel="Exit"
-        open={toggleOpenModal}
-        onClose={() => setToggleOpenModal(false)}
-        onConfirm={() => {}}
-        title="Xác nhận"
-        message="Bạn có chắc chắn muốn thực hiện hành động này không?"
-        confirmLabel="Xác nhận"
+        cancelLabel="Cancel"
+        open={openConfirmModal}
+        onClose={() => setOpenConfirmModal(false)}
+        onConfirm={handleUpdateMyInfo}
+        title="Xác nhận cập nhật"
+        message="Bạn có chắc chắn muốn lưu thay đổi thông tin cá nhân không?"
+        confirmLabel="Lưu"
       />
     </Box>
   );

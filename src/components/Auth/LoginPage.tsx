@@ -103,7 +103,8 @@ export const LoginPage: React.FC = () => {
         return;
       }
     } catch (error) {
-      toast("Unexpected error occurred", "error");
+      console.error("Login error:", error);
+      // toast("Unexpected error occurred", "error");
     } finally {
       setLoading(false);
     }

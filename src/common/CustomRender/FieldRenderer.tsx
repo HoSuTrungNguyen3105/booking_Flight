@@ -42,7 +42,7 @@ export type IFormField = {
 interface IFieldRendererProps extends Omit<FormField, "id"> {
   error?: boolean | string;
   disabled?: boolean;
-  onChange: (value: any) => void;
+  onChange: (value: FieldValue) => void;
 }
 
 const FieldRenderer = ({

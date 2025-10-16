@@ -11,29 +11,35 @@ import {
 import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import SelectDropdown, {
   type ActionType,
-} from "../../common/Dropdown/SelectDropdown";
-import InputTextField from "../../common/Input/InputTextField";
-import theme from "../../scss/theme";
+} from "../../../../common/Dropdown/SelectDropdown";
+import InputTextField from "../../../../common/Input/InputTextField";
+import theme from "../../../../scss/theme";
 import {
   useFindAllGateStatuses,
   useFindTerminalIDStatuses,
-} from "../Api/useGetApi";
-import BaseModal from "../../common/Modal/BaseModal";
-import { Loading } from "../../common/Loading/Loading";
-import { useCreateBatchGate, type CreateGateProps } from "../Api/usePostApi";
-import type { UpdateGateProps } from "../Admin/TerminalContainer";
+} from "../../../Api/useGetApi";
+import BaseModal from "../../../../common/Modal/BaseModal";
+import { Loading } from "../../../../common/Loading/Loading";
+import {
+  useCreateBatchGate,
+  useUpdateGate,
+  type CreateGateProps,
+} from "../../../Api/usePostApi";
+import type { UpdateGateProps } from "../../TerminalContainer";
+import type { Gate } from "../../../../utils/type";
+import { useToast } from "../../../../context/ToastContext";
 
 type IGateModalProps = {
   terminalId: string;
   mode: "create" | "update";
   open: boolean;
-  data: UpdateGateProps;
+  data: Gate;
   setData: React.Dispatch<React.SetStateAction<UpdateGateProps>>;
   onClose: () => void;
   onSuccess: () => void;
 };
 
-const CreateGateForm = ({
+const ManageGateModal = ({
   mode,
   terminalId,
   open,
@@ -53,6 +59,8 @@ const CreateGateForm = ({
   const { dataGateStatuses } = useFindAllGateStatuses();
   const { dataTerminalIDStatuses } = useFindTerminalIDStatuses();
   const { refetchCreateBatchGate } = useCreateBatchGate();
+  const { refetchUpdateGate } = useUpdateGate({ id: data.id });
+  const toast = useToast();
   const terminalOptions: ActionType[] = (
     dataTerminalIDStatuses?.list ?? []
   ).map((t) => ({
@@ -75,7 +83,9 @@ const CreateGateForm = ({
     value: string
   ) => {
     setFormData((prev) =>
-      prev.map((item, i) => (i === index ? { ...item, [field]: value } : item))
+      prev.map((item, i) =>
+        i === index ? { ...item, [field]: value, terminalId } : item
+      )
     );
   };
 
@@ -129,21 +139,50 @@ const CreateGateForm = ({
       }
     };
 
-  const handleSubmit = async () => {
+  const handleSubmit = useCallback(async () => {
     setIsSubmitting(true);
-    try {
-      const cleaned = formData.filter((g) => g.code.trim() !== "");
-      const res = await refetchCreateBatchGate(cleaned);
-      if (res?.resultCode === "00") {
-        onSuccess();
-        onClose();
+    if (mode === "create") {
+      try {
+        const cleaned = formData.filter((g) => g.code.trim() !== "");
+        const res = await refetchCreateBatchGate(cleaned);
+
+        if (res?.resultCode === "00") {
+          onSuccess();
+          onClose();
+        }
+      } catch (error) {
+        console.error("Batch create error:", error);
+      } finally {
+        setIsSubmitting(false);
       }
-    } catch (error) {
-      console.error("Batch create error:", error);
-    } finally {
-      setIsSubmitting(false);
+    } else if (mode === "update") {
+      try {
+        const res = await refetchUpdateGate({
+          code: data.code,
+          status: data.status,
+        });
+
+        if (res?.resultCode === "00") {
+          onSuccess();
+          onClose();
+        } else {
+          toast(res?.resultMessage || "Error", "error");
+        }
+      } catch (error) {
+        console.error("Update gate error:", error);
+      } finally {
+        setIsSubmitting(false);
+      }
     }
-  };
+  }, [
+    mode,
+    formData,
+    data,
+    onSuccess,
+    onClose,
+    refetchCreateBatchGate,
+    refetchUpdateGate,
+  ]);
 
   const renderActions = useCallback(() => {
     return (
@@ -173,96 +212,79 @@ const CreateGateForm = ({
     );
   }, [handleSubmit, isSubmitting]);
 
+  const renderCreateForm = () => (
+    <>
+      {formData.map((gate, index) => (
+        <Grid
+          key={index}
+          container
+          spacing={2}
+          alignItems="center"
+          sx={{ borderBottom: "1px solid #eee", mb: 1, pb: 1 }}
+        >
+          <Grid size={4}>
+            <InputTextField
+              value={gate.code}
+              placeholder="Gate Code (VD: G01)"
+              onChange={(v) => handleChange(index, "code", v)}
+            />
+          </Grid>
+
+          <Grid size={5}>
+            <Stack sx={{ width: "10rem" }}>
+              <SelectDropdown
+                value={gate.status}
+                options={gateStatusOptions}
+                onChange={(v) => handleChange(index, "status", v as string)}
+              />
+            </Stack>
+          </Grid>
+
+          <Grid size={2}>
+            <Button color="error" onClick={() => handleRemoveGate(index)}>
+              <DeleteIcon />
+            </Button>
+          </Grid>
+        </Grid>
+      ))}
+
+      <Typography variant="body1">Terminal : {terminalId}</Typography>
+
+      <Button onClick={handleAddGate} startIcon={<AddIcon />} sx={{ mt: 1 }}>
+        Thêm dòng mới
+      </Button>
+    </>
+  );
+
+  const renderUpdateForm = () => (
+    <Grid container spacing={2}>
+      <Grid size={6}>
+        <InputTextField
+          value={data.code}
+          placeholder="Gate Code (VD: G01)"
+          onChange={(v) => setData({ ...data, code: v })}
+        />
+      </Grid>
+
+      <Grid size={6}>
+        <SelectDropdown
+          value={data.status}
+          options={gateStatusOptions}
+          onChange={(v) => setData({ ...data, status: v as string })}
+        />
+      </Grid>
+    </Grid>
+  );
+
   const renderContent = useCallback(() => {
     return (
       <Paper
         sx={{ p: 2, minWidth: "30rem", overflow: "auto", height: "10rem" }}
       >
-        {mode === "create" ? (
-          <>
-            {formData.map((gate, index) => (
-              <Grid
-                key={index}
-                container
-                spacing={2}
-                alignItems="center"
-                sx={{
-                  borderBottom: "1px solid #eee",
-                  mb: 1,
-                  pb: 1,
-                }}
-              >
-                <Grid size={4}>
-                  <InputTextField
-                    value={gate.code}
-                    placeholder="Gate Code (VD: G01)"
-                    onChange={(v) => handleChange(index, "code", v)}
-                  />
-                </Grid>
-                <Grid size={5}>
-                  <Stack sx={{ width: "10rem" }}>
-                    <SelectDropdown
-                      value={gate.status}
-                      options={gateStatusOptions}
-                      onChange={(v) =>
-                        handleChange(index, "status", v as string)
-                      }
-                    />
-                  </Stack>
-                </Grid>
-                <Grid size={2}>
-                  <Button color="error" onClick={() => handleRemoveGate(index)}>
-                    <DeleteIcon />
-                  </Button>
-                </Grid>
-              </Grid>
-            ))}
-
-            <Typography variant="body1">Terminal :{terminalId}</Typography>
-
-            <Button
-              onClick={handleAddGate}
-              startIcon={<AddIcon />}
-              sx={{ mt: 1 }}
-            >
-              Thêm dòng mới
-            </Button>
-          </>
-        ) : (
-          <>
-            <Grid container spacing={2}>
-              {/* Code */}
-              <Grid size={6}>
-                {" "}
-                <InputTextField
-                  value={data.code}
-                  placeholder="Gate Code (VD: G01)"
-                  onChange={(v) => setData({ ...data, code: v })}
-                />
-              </Grid>
-
-              {/* Status */}
-              <Grid size={6}>
-                <SelectDropdown
-                  value={data.status}
-                  options={gateStatusOptions}
-                  onChange={(v) => setData({ ...data, status: v as string })}
-                />
-              </Grid>
-            </Grid>
-          </>
-        )}
+        {mode === "create" ? renderCreateForm() : renderUpdateForm()}
       </Paper>
     );
-  }, [
-    formData,
-    errors,
-    isSubmitting,
-    terminalOptions,
-    gateStatusOptions,
-    handleSelectChange,
-    handleSubmit,
-  ]);
+  }, [formData, data, gateStatusOptions, terminalId]);
 
   return (
     <BaseModal
@@ -276,4 +298,4 @@ const CreateGateForm = ({
   );
 };
 
-export default CreateGateForm;
+export default ManageGateModal;

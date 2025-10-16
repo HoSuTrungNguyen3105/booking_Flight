@@ -4,10 +4,11 @@ import type { UserData } from "../../utils/type";
 import InputTextField from "../../common/Input/InputTextField";
 import { DateFormatEnum, formatDateKR } from "../../hooks/format";
 import { useTranslation } from "react-i18next";
+import type { UserDataToUpdate } from "../../common/Setting/ManageMyInformation";
 
 interface IUserInfoSectionProps {
-  myInfo?: UserData;
-  onChange: (field: keyof UserData, value: string) => void;
+  myInfo?: UserDataToUpdate;
+  onChange: (field: keyof UserDataToUpdate, value: string) => void;
 }
 
 const UserInfoSection = ({ myInfo, onChange }: IUserInfoSectionProps) => {

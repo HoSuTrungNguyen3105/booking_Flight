@@ -573,7 +573,7 @@ export const useCreateBatchGate = () => {
     ResponseMessage,
     CreateGateProps[]
   >({
-    url: "/gate/batch-create",
+    url: "/sys/gates/batch-create",
     config: postMethod,
     autoFetch: false,
   });
@@ -806,6 +806,20 @@ export const useCreateGate = () => {
   });
   return {
     refetchCreateGate,
+  };
+};
+
+export const useUpdateGate = ({ id }: { id: string }) => {
+  const { refetch: refetchUpdateGate } = useFetch<
+    ResponseMessage,
+    Omit<CreateGateProps, "terminalId">
+  >({
+    url: `/sys/gates/update/${id}`,
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchUpdateGate,
   };
 };
 

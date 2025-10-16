@@ -19,7 +19,7 @@ const CreateSeat = ({ flightId, loading, onSuccess }: CreateSeatProps) => {
 
   const handleCreateSeat = async () => {
     try {
-      const payload: any = {
+      const payload = {
         flightId,
         ...(createMode === "multi" && {
           isBooked: false,
@@ -29,7 +29,6 @@ const CreateSeat = ({ flightId, loading, onSuccess }: CreateSeatProps) => {
       };
 
       const res = await refetchSeatCreate(payload);
-      console.log("Created seats:", res);
       if (res?.resultCode === "00") {
         onSuccess();
       }

@@ -117,7 +117,10 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       await fetchMyInfo(id);
       return res;
     } else {
-      toast((res?.resultMessage as string) || "Đăng nhập thất bại", "error");
+      toast(
+        (res?.resultMessage as string) || "Unexpected error occurred",
+        "error"
+      );
       return res as UserListResponse;
     }
   };

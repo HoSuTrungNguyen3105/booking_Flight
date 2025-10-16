@@ -4,7 +4,6 @@ import type { ReactNode } from "react";
 export type DropdownOptions = {
   label: string | ReactNode;
   value: string | number;
-  // [key: string]: any;
 };
 
 export type DropdownStatus = "error" | "confirmed" | "warning" | "default";

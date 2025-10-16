@@ -40,13 +40,6 @@ export type TFileUploader = {
 //   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
 // };
 
-export const convertToString = (value: any): string => {
-  if (value === undefined || value === null) {
-    return "";
-  }
-  return String(value);
-};
-
 export const quickValue = <T, K>(
   status: boolean,
   trueValue: T,
@@ -76,13 +69,19 @@ export const sizeToBytes = (size: string) => {
   return 0;
 };
 
-export const bytesToSize = (bytes: number, decimals = 2) => {
+export const convertToString = (value: number): string => {
+  if (value === undefined || value === null) {
+    return "";
+  }
+  return String(value);
+};
+
+export const bytesToSize = (bytes: number, decimals = 2): string => {
   if (!Number(bytes)) return "0 B";
   const dm = decimals < 0 ? 0 : decimals;
   const index = Math.floor(Math.log(bytes) / Math.log(KB_TO_BYTES));
-  return convertToString(
-    parseFloat((bytes / KB_TO_BYTES ** index).toFixed(dm)) + SIZE_TYPE[index]
-  );
+  const size = parseFloat((bytes / KB_TO_BYTES ** index).toFixed(dm));
+  return `${size} ${SIZE_TYPE[index]}`;
 };
 
 export const getFileInformation = (fileName: string) => {

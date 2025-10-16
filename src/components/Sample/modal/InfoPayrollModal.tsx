@@ -172,7 +172,7 @@ const InfoPayrollModal = ({
                   overflow: "auto",
                 }}
               >
-                {payroll.employee?.payrolls?.map((p: any) => (
+                {payroll.employee?.payrolls?.map((p) => (
                   <Box
                     key={p.id}
                     sx={{ mb: 1, p: 1, borderBottom: "1px solid #eee" }}
