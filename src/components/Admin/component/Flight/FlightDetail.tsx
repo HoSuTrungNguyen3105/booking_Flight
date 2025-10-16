@@ -13,6 +13,7 @@ import BreadCrumb from "../../../../common/BreadCrumb";
 import type { IDetailItem } from "../../../../common/DetailSection";
 import DetailSection from "../../../../common/DetailSection";
 import FlightPath from "./FlightPath";
+import { DateFormatEnum, formatDate } from "../../../../hooks/format";
 
 interface FlightDetailPageProps {
   flight?: DataFlight;
@@ -65,30 +66,37 @@ const FlightDetailPage = ({ flight, onBookFlight }: FlightDetailPageProps) => {
     );
   }, [flight.flightId]);
 
-  // Tạo dữ liệu cho DetailSection - Thông tin lịch trình
   const scheduleData: IDetailItem[] = [
     {
       title: "Scheduled Departure",
-      description: new Date(Number(flight.scheduledDeparture)).toLocaleString(),
+      description: formatDate(
+        DateFormatEnum.DD_MM_YYYY_HH_MM_SS,
+        flight.scheduledDeparture
+      ),
       size: 4,
     },
     {
       title: "Actual Departure",
-      description: flight.actualDeparture
-        ? new Date(Number(flight.actualDeparture)).toLocaleString()
-        : "-",
+      description: formatDate(
+        DateFormatEnum.DD_MM_YYYY_HH_MM_SS,
+        flight.actualDeparture
+      ),
       size: 4,
     },
     {
       title: "Scheduled Arrival",
-      description: new Date(Number(flight.scheduledArrival)).toLocaleString(),
+      description: formatDate(
+        DateFormatEnum.DD_MM_YYYY_HH_MM_SS,
+        flight.scheduledArrival
+      ),
       size: 4,
     },
     {
       title: "Actual Arrival",
-      description: flight.actualArrival
-        ? new Date(Number(flight.actualArrival)).toLocaleString()
-        : "-",
+      description: formatDate(
+        DateFormatEnum.DD_MM_YYYY_HH_MM_SS,
+        flight.actualArrival
+      ),
       size: 4,
     },
     {
@@ -103,7 +111,6 @@ const FlightDetailPage = ({ flight, onBookFlight }: FlightDetailPageProps) => {
     },
   ];
 
-  // Tạo dữ liệu cho DetailSection - Thông tin sân bay
   const airportData: IDetailItem[] = [
     {
       title: "Departure Airport",
@@ -158,12 +165,11 @@ const FlightDetailPage = ({ flight, onBookFlight }: FlightDetailPageProps) => {
     },
   ];
 
-  // Tạo dữ liệu cho DetailSection - Thông tin giá
   const priceData: IDetailItem[] = [
     {
       title: "Economy Price",
       description: flight.priceEconomy
-        ? `$${flight.priceEconomy.toLocaleString()}`
+        ? `${flight.priceEconomy.toLocaleString()}`
         : "-",
       size: 4,
     },
@@ -183,7 +189,6 @@ const FlightDetailPage = ({ flight, onBookFlight }: FlightDetailPageProps) => {
     },
   ];
 
-  // Thông tin hủy chuyến (nếu có)
   const cancellationData: IDetailItem[] =
     flight.isCancelled && flight.cancellationReason
       ? [
@@ -254,19 +259,10 @@ const FlightDetailPage = ({ flight, onBookFlight }: FlightDetailPageProps) => {
           <FlightPath />
         </Paper>
 
-        {/* Action Buttons */}
         <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end" }}>
           <Button onClick={handleGoBack} variant="contained">
             Back
           </Button>
-          {/* <Button
-            variant="contained"
-            color="primary"
-            onClick={handleBookFlight}
-            disabled={flight.status === "cancelled"}
-          >
-            Book This Flight
-          </Button> */}
         </Box>
       </>
     );

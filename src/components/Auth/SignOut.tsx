@@ -1,7 +1,8 @@
 import { memo, useState, useCallback } from "react";
 import { useAuth } from "../../context/AuthContext";
 import DialogConfirm from "../../common/Modal/DialogConfirm";
-import { Button } from "@mui/material";
+import { Box, Button } from "@mui/material";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 const SignOut = () => {
   const { logout } = useAuth();
@@ -16,7 +17,9 @@ const SignOut = () => {
 
   return (
     <>
-      <Button onClick={handleOpen}>Sign Out</Button>
+      <Button onClick={handleOpen} startIcon={<LogoutIcon />}>
+        Sign Out
+      </Button>
       <DialogConfirm
         open={open}
         onConfirm={handleConfirm}

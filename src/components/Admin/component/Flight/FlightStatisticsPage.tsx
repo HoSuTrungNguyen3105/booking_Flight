@@ -9,6 +9,7 @@ import {
   useTheme,
   alpha,
   LinearProgress,
+  Stack,
 } from "@mui/material";
 import {
   PieChart,
@@ -388,55 +389,57 @@ const FlightStatisticsPage: React.FC = () => {
             >
               Flights by Airline
             </Typography>
-            <ResponsiveContainer width="100%" height="90%">
-              <PieChart>
-                <Pie
-                  data={airlineData}
-                  dataKey="value"
-                  nameKey="name"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={100}
-                  label={({ name, percent }) =>
-                    `${name}: ${((percent as number) * 100).toFixed(0)}%`
-                  }
-                  labelLine={false}
-                >
-                  {airlineData.map((entry, index) => (
-                    <Cell
-                      key={`cell-airline-${index}`}
-                      fill={entry.color}
-                      stroke={theme.palette.background.paper}
-                      strokeWidth={2}
-                    />
-                  ))}
-                </Pie>
-                <Tooltip
-                  formatter={(value, name, props) => [
-                    value,
-                    `${name}: ${(
-                      (Number(value) / stats.totalFlights) *
-                      100
-                    ).toFixed(1)}%`,
-                  ]}
-                />
-                <Legend
-                  verticalAlign="bottom"
-                  height={36}
-                  formatter={(value, entry, index) => (
-                    <Box
-                      component="span"
-                      sx={{
-                        color: theme.palette.text.primary,
-                        fontSize: "0.75rem",
-                      }}
-                    >
-                      {value}
-                    </Box>
-                  )}
-                />
-              </PieChart>
-            </ResponsiveContainer>
+            <Stack>
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={airlineData}
+                    dataKey="value"
+                    nameKey="name"
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={100}
+                    label={({ name, percent }) =>
+                      `${name}: ${((percent as number) * 100).toFixed(0)}%`
+                    }
+                    labelLine={false}
+                  >
+                    {airlineData.map((entry, index) => (
+                      <Cell
+                        key={`cell-airline-${index}`}
+                        fill={entry.color}
+                        stroke={theme.palette.background.paper}
+                        strokeWidth={2}
+                      />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    formatter={(value, name, props) => [
+                      value,
+                      `${name}: ${(
+                        (Number(value) / stats.totalFlights) *
+                        100
+                      ).toFixed(1)}%`,
+                    ]}
+                  />
+                  <Legend
+                    verticalAlign="bottom"
+                    height={36}
+                    formatter={(value, entry, index) => (
+                      <Box
+                        component="span"
+                        sx={{
+                          color: theme.palette.text.primary,
+                          fontSize: "0.75rem",
+                        }}
+                      >
+                        {value}
+                      </Box>
+                    )}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </Stack>
           </Paper>
         </Grid>
 

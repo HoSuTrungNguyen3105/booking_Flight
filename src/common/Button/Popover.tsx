@@ -3,7 +3,8 @@ import React, { memo, useState, type ReactNode } from "react";
 
 export interface IButtonSettingProps {
   option?: ReactNode[];
-  icon: ReactNode;
+  text: string;
+  icon?: ReactNode;
   buttonProps?: React.ComponentProps<typeof Button>;
   handleAction: (opt: any) => void;
   hideSubmitButton?: boolean;
@@ -20,6 +21,7 @@ const StyledPopover = styled(Popover)<{}>(() => ({
 const CustomPopover: React.FC<IButtonSettingProps> = ({
   buttonProps,
   icon,
+  text,
   handleAction,
   option,
   hideSubmitButton = false,
@@ -39,18 +41,19 @@ const CustomPopover: React.FC<IButtonSettingProps> = ({
       <Button
         {...buttonProps}
         variant="outlined"
+        startIcon={icon}
         onClick={handleClick}
         sx={{
-          px: 1.5,
+          // px: 1.5,
           minWidth: "80px",
           display: "flex",
           position: "relative",
           alignItems: "center",
-          gap: 1,
+          // gap: 1,
           ...buttonProps?.sx,
         }}
       >
-        {icon}
+        {text}
       </Button>
 
       <StyledPopover

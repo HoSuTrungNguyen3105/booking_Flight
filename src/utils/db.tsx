@@ -98,17 +98,18 @@ export const menuData: MenuSection[] = [
             id: "AirportManagement",
             label: "Danh sách sân bay",
             subItems: [
-              { id: "flightmeals", label: "Suất ăn", icon: <Restaurant /> },
+              { id: "flightlist", label: "Flight", icon: <Restaurant /> },
+              { id: "meals", label: "Suất ăn", icon: <Restaurant /> },
               {
                 id: "domestic",
                 label: "Chuyến bay nội địa",
                 icon: <FlightTakeoff />,
               },
-              {
-                id: "FlightStatisticsPage",
-                label: "Thống kê chuyến bay",
-                icon: <BarChart />,
-              },
+              // {
+              //   id: "FlightStatisticsPage",
+              //   label: "Thống kê chuyến bay",
+              //   icon: <BarChart />,
+              // },
               { id: "bookticket", label: "Đặt vé", icon: <FlightTakeoff /> },
               {
                 id: "international",
@@ -118,19 +119,17 @@ export const menuData: MenuSection[] = [
               {
                 id: "TransferAdminTable",
                 label: "Quảnê lý Terminal",
-                icon: <Apartment />,
               },
-              { id: "hero", label: "Trang Hero", icon: <Home /> },
               {
                 id: "sampleDatePicker",
                 label: "Chọn ngày mẫu",
                 icon: <OtherHousesTwoTone />,
               },
-              {
-                id: "payroll-management",
-                label: "Quản lý lương",
-                icon: <BusinessCenter />,
-              },
+              // {
+              //   id: "FlightStatisticsPage",
+              //   label: "FlightStatisticsPage",
+              //   icon: <BusinessCenter />,
+              // },
               {
                 id: "TerminalContainer",
                 label: "Quản lý Terminal",

@@ -60,33 +60,13 @@ const LanguageButton = () => {
 
   const renderDropdown = useCallback(() => {
     return (
-      <Box sx={{ maxWidth: "200px", minWidth: "200px" }}>
-        {renderContent()}
-        {/* {renderActions()} */}
-      </Box>
+      <Box sx={{ maxWidth: "200px", minWidth: "200px" }}>{renderContent()}</Box>
     );
   }, [renderContent]);
 
-  const renderIconLabel = useCallback(() => {
-    return (
-      <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-        {/* <Box
-          component="img"
-          src={LanguageIcon}
-          alt="language"
-          sx={{ width: 16, height: 16 }}
-        /> */}
-        <Typography variant="body2" sx={{ color: "text.primary" }}>
-          Language
-        </Typography>
-      </Box>
-    );
-  }, []);
-
   return (
     <CustomPopover
-      // icon={renderIconLabel()}
-      icon={"Language"}
+      text={"Language"}
       handleAction={handleSaveChange}
       option={[renderDropdown()]}
       hideSubmitButton={false}

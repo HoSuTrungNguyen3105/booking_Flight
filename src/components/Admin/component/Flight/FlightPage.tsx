@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { useFlightList } from "../../../Api/usePostApi";
-import ImageFlight from "../../../../svgs/wallpaper.jpg";
+// import ImageFlight from "../../../../svgs/wallpaper.jpg";
 import type { DataFlight } from "../../../../utils/type";
 import { DateFormatEnum, formatDate } from "../../../../hooks/format";
 const FlightPage = () => {
@@ -42,12 +42,12 @@ const FlightPage = () => {
                 },
               }}
             >
-              <CardMedia
+              {/* <CardMedia
                 component="img"
                 height="180"
                 image={ImageFlight}
                 alt={"img"}
-              />
+              /> */}
               <CardContent>
                 <Typography variant="h6" fontWeight="bold" gutterBottom>
                   Flight {flight.flightNo}

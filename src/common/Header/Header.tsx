@@ -139,32 +139,21 @@ export const Header = () => {
               {isAuthenticated ? (
                 <Stack direction="row" alignItems="center" spacing={1}>
                   <CustomPopover
-                    icon={
-                      <Box
-                        sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
-                      >
-                        <AccountCircle fontSize="small" />
-                        <Typography
-                          variant="body2"
-                          sx={{ display: { xs: "none", sm: "inline" } }}
-                        >
-                          Profile
-                        </Typography>
-                      </Box>
-                    }
+                    icon={<AccountCircle sx={{ fontSize: 20 }} />}
+                    text="Profile"
                     option={["Dashboard"]}
                     handleAction={handleOpenProfile}
                     hideSubmitButton
                   />
 
-                  <ImageThumbnail
+                  {/* <ImageThumbnail
                     url={ImageThumbnailIcon}
                     sx={{
                       width: { xs: 28, sm: 32 },
                       height: { xs: 28, sm: 32 },
                       borderRadius: "50%",
                     }}
-                  />
+                  /> */}
 
                   <SignOut />
                 </Stack>

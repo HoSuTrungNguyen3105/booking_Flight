@@ -8,14 +8,14 @@ import {
 import { Box, Button, Grid, Stack, Typography } from "@mui/material";
 import { type GridRowDef } from "../../../../common/DataGrid/index";
 import { DateFormatEnum, formatDateKR } from "../../../../hooks/format";
-import FlightModalTriggerManagement from "../Flight/FlightModalTriggerManagement";
+import FlightModalTriggerManagement from "./FlightModalTriggerManagement";
 import TableSection from "../../../../common/CustomRender/TableSection";
 // import SeatBooking from "./SeatBooking";
 import SeatLayout from "../Seat/SeatLayout";
 import { Download } from "@mui/icons-material";
 
-export default function MealList() {
-  const { flightBookingData, loadingFlightBookingData } = useGetMeal();
+export default function FlightList() {
+  // const { flightBookingData, loadingFlightBookingData } = useGetMeal();
   const { getFlightData, refetchGetFlightData, loadingFlightData } =
     useGetFlightData();
   const [openModalFlightMealRows, setOpenModalFlightMealRows] =
@@ -58,15 +58,15 @@ export default function MealList() {
     setSelectedFlightRows(newSelectedRows);
   };
 
-  const rowsFlightBookingData: GridRowDef[] = useMemo(
-    () =>
-      flightBookingData?.list?.map((f) => ({
-        ...f,
-        id: f.id,
-        checkYn: false,
-      })) ?? [],
-    [flightBookingData]
-  );
+  // const rowsFlightBookingData: GridRowDef[] = useMemo(
+  //   () =>
+  //     flightBookingData?.list?.map((f) => ({
+  //       ...f,
+  //       id: f.id,
+  //       checkYn: false,
+  //     })) ?? [],
+  //   [flightBookingData]
+  // );
 
   const rowsGetFlightData: GridRowDef[] = useMemo(
     () =>
@@ -78,9 +78,9 @@ export default function MealList() {
     [getFlightData]
   );
 
-  useEffect(() => {
-    setMealRows(rowsFlightBookingData);
-  }, [rowsFlightBookingData]);
+  // useEffect(() => {
+  //   setMealRows(rowsFlightBookingData);
+  // }, [rowsFlightBookingData]);
 
   useEffect(() => {
     setFlightRows(rowsGetFlightData);

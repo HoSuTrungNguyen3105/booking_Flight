@@ -114,7 +114,7 @@ export const LoginPage: React.FC = () => {
     switch (tabValue) {
       case 0:
         return (
-          <Stack direction="column" spacing={3} sx={{ mt: 3 }}>
+          <Stack direction="column" spacing={2} sx={{ mt: 1 }}>
             <FormControl fullWidth>
               <Typography variant="body1" mb={0.5}>
                 Authentication Method
