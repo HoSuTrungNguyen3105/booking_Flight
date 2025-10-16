@@ -149,7 +149,7 @@ export const useDataSection = (
         fields: [
           {
             id: "baseSalary",
-            type: FieldType.INPUT_WITH_TYPE_TEXT,
+            type: FieldType.INPUT_WITH_NUMBER,
             placeholder: "Nhập lương cơ bản...",
             value: data.baseSalary ?? 0,
             options: [],

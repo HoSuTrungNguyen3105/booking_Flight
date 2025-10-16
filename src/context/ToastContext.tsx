@@ -101,10 +101,10 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
                     border: "1px solid white",
                     backgroundColor:
                       toast.type === "success"
-                        ? "#054b1fff"
+                        ? "#065f46"
                         : toast.type === "error"
-                        ? "#971a1aff"
-                        : "#0c4a6e",
+                        ? "#7f1d1d"
+                        : "#0f172a",
                     color: "#fff",
                     display: "flex",
                     alignItems: "center",

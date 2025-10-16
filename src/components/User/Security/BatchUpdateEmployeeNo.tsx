@@ -12,11 +12,13 @@ import InputTextField from "../../../common/Input/InputTextField";
 type UpdateEmployeeIDProps = {
   updateItem: BatchEmployeeNoReq[];
   onSuccess: () => void;
+  onClose: () => void;
 };
 
 const BatchUpdateEmployeeNo: React.FC<UpdateEmployeeIDProps> = ({
   updateItem,
   onSuccess,
+  onClose,
 }) => {
   const [updates, setUpdates] = useState<BatchEmployeeNoReq[]>(updateItem);
   const handleChange = (
@@ -59,6 +61,9 @@ const BatchUpdateEmployeeNo: React.FC<UpdateEmployeeIDProps> = ({
       <Typography variant="h5" sx={{ mb: 2, fontWeight: "bold" }}>
         Batch Update Employee No
       </Typography>
+      <Button onClick={onClose} variant="outlined">
+        Return
+      </Button>
 
       <Stack spacing={2}>
         {updates.map((row, index) => (

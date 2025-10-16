@@ -4,6 +4,7 @@ import InputTextField from "../Input/InputTextField";
 import type { SxProps } from "@mui/system";
 // import JobTypeSelector from "../Setting/JobTypeSelector";
 import SelectDropdown, { type ActionType } from "../Dropdown/SelectDropdown";
+import InputNumber from "../Input/InputNumber";
 
 type FieldValue = boolean | string | number | null;
 
@@ -14,6 +15,7 @@ export enum FieldType {
   INPUT_WITH_TYPE_TEXT = "input_text",
   TEXTAREA = "textarea",
   DATE = "date",
+  INPUT_WITH_NUMBER = "input_number",
   CHECKBOX_SELECT = "checkbox_select",
 }
 
@@ -99,6 +101,19 @@ const FieldRenderer = ({
           value={value as string}
           onChange={onChange}
           placeholder={placeholder}
+        />
+      );
+    case FieldType.INPUT_WITH_NUMBER:
+      return (
+        <InputNumber
+          {...sx}
+          value={value as number}
+          onChange={onChange}
+          placeholder={placeholder}
+          isSeparator
+          min={0}
+          size="small"
+          textAlign="right"
         />
       );
     case FieldType.TEXTAREA:

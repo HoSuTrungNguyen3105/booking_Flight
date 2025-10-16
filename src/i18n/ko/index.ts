@@ -18,6 +18,20 @@ export const ko = {
     toastError: "문제가 발생했습니다. 다시 시도하세요!",
     tittle1: "기본 유형 - 단일 선택",
     tittle2: "상태",
+
+    myInfo: "내 정보 관리",
+    myInfoDesc:
+      "자신의 입력 정보를 확인하고 권한 관련 등록, 주요 서비스 유형, 로그인 시간, 생성 시간등을 확인할 수 있습니다.",
+    email: "아이디",
+    authType: "인증 방식",
+    role: "권한",
+    hireDate: "입사일",
+    rank: "직급",
+    baseSalary: "기본 급여",
+    name: "이름",
+    userAlias: "닉네임 (선택)",
+    phone: "전화번호 (선택)",
+
     content1:
       "• 단일 선택 유형은 옵션 목록에서 하나의 항목을 선택할 수 있게 하며, 선택한 항목은 필드에 텍스트로 표시됩니다.",
     content2:
@@ -48,7 +62,7 @@ export const ko = {
       "첨부할 파일을 선택하거나 여기에 drag & drop 하세요(썸네일).",
     userInformation: "사용자 정보",
     noResults: "결과가 없습니다",
-    name: "이름",
+
     department: "부서",
     location: "위치",
     success: "작업이 성공적으로 수행되었습니다!",

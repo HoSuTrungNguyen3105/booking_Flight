@@ -76,13 +76,14 @@ export const useUpdateUser = ({
         role: formData.role,
       };
       const res = await refetchUpdateUserFromAdmin(payload);
+      console.log("payload", payload);
       toast(res?.resultMessage || "Success", "success");
       onSuccess();
     } catch (error) {
       console.error("Error updating user:", error);
       toast("Cập nhật thất bại", "error");
     }
-  }, [onSuccess, refetchUpdateUserFromAdmin]);
+  }, [formData, onSuccess, refetchUpdateUserFromAdmin, toast]);
 
   // const handleSubmit = async () => {
   //   try {

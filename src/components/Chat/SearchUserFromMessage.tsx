@@ -79,8 +79,6 @@ const SearchUserFromMessage: React.FC = () => {
     []
   );
 
-  console.log("[options[0]]", options[0]);
-
   return (
     <Box sx={{ p: 3 }}>
       <Stack direction="row" spacing={2} alignItems="center">

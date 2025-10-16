@@ -72,7 +72,6 @@ const InputNumber = ({
           inputProps: {
             style: { textAlign, border: "none" },
             min,
-            // className: clsx("input-number-container", inputErrorClass),
             defaultValue,
             placeholder,
           },

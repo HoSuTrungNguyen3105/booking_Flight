@@ -89,6 +89,9 @@ const ManageMyInfo = () => {
   if (navigateUpdateEmployeeID) {
     return (
       <BatchUpdateEmployeeNo
+        onClose={() => {
+          setNavigateUpdateEmployeeID(false);
+        }}
         onSuccess={() => {
           setNavigateUpdateEmployeeID(false);
           handleRefetchUserList();

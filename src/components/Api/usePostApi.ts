@@ -1135,7 +1135,7 @@ export const useUpdateUserInfo = (id: number) => {
   // const isValid = !!id;
   const { refetch: refetchUpdateUserInfo, loading: loadingUpdateUserInfo } =
     useFetch<ResponseMessage, UserUpdateProps>({
-      url: `/sys/users/updateUserInfo/${id}`,
+      url: `/sys/users/updateMyInfo/${id}`,
       autoFetch: false,
       config: postMethod,
     });

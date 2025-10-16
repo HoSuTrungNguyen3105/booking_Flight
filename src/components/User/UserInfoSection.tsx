@@ -3,6 +3,7 @@ import { memo } from "react";
 import type { UserData } from "../../utils/type";
 import InputTextField from "../../common/Input/InputTextField";
 import { DateFormatEnum, formatDateKR } from "../../hooks/format";
+import { useTranslation } from "react-i18next";
 
 interface IUserInfoSectionProps {
   myInfo?: UserData;
@@ -10,6 +11,8 @@ interface IUserInfoSectionProps {
 }
 
 const UserInfoSection = ({ myInfo, onChange }: IUserInfoSectionProps) => {
+  const { t } = useTranslation();
+
   return (
     <Box
       sx={{
@@ -32,11 +35,10 @@ const UserInfoSection = ({ myInfo, onChange }: IUserInfoSectionProps) => {
         }}
       >
         <Typography component="p" variant="overline">
-          내 정보 관리
+          {t("myInfo")}
         </Typography>
         <Typography variant="body2" color="grey.500">
-          자신의 입력 정보를 확인하고 권한 관련 등록, 주요 서비스 유형, 로그인
-          시간, 생성 시간등을 확인할 수 있습니다.
+          {t("myInfoDesc")}
         </Typography>
       </Box>
 
@@ -50,34 +52,34 @@ const UserInfoSection = ({ myInfo, onChange }: IUserInfoSectionProps) => {
         }}
       >
         <Stack spacing={2} sx={{ width: "384px" }}>
-          {/* 아이디 */}
+          {/* Email */}
           <FormControl fullWidth>
             <Typography variant="body2" mb={0.5}>
-              아이디
+              {t("email")}
             </Typography>
             <InputTextField value={myInfo?.email} disabled />
           </FormControl>
 
-          {/* 인증 방식 */}
+          {/* Auth Type */}
           <FormControl fullWidth>
             <Typography variant="body2" mb={0.5}>
-              인증 방식
+              {t("authType")}
             </Typography>
             <InputTextField value={myInfo?.authType} disabled />
           </FormControl>
 
-          {/* 권한 */}
+          {/* Role */}
           <FormControl fullWidth>
             <Typography variant="body2" mb={0.5}>
-              권한
+              {t("role")}
             </Typography>
             <InputTextField value={myInfo?.role} disabled />
           </FormControl>
 
-          {/* 이름 */}
+          {/* Hire Date */}
           <FormControl fullWidth>
             <Typography variant="body2" mb={0.5}>
-              이름
+              {t("hireDate")}
             </Typography>
             <InputTextField
               value={formatDateKR(
@@ -88,25 +90,26 @@ const UserInfoSection = ({ myInfo, onChange }: IUserInfoSectionProps) => {
             />
           </FormControl>
 
+          {/* Rank */}
           <FormControl fullWidth>
             <Typography variant="body2" mb={0.5}>
-              아이디
+              {t("rank")}
             </Typography>
             <InputTextField value={myInfo?.rank} disabled />
           </FormControl>
 
-          {/* 이름 */}
+          {/* Base Salary */}
           <FormControl fullWidth>
             <Typography variant="body2" mb={0.5}>
-              baseSalary 이름
+              {t("baseSalary")}
             </Typography>
             <InputTextField value={String(myInfo?.baseSalary)} disabled />
           </FormControl>
 
-          {/* 이름 */}
+          {/* Name */}
           <FormControl fullWidth>
             <Typography variant="body2" mb={0.5}>
-              name 이름
+              {t("name")}
             </Typography>
             <InputTextField
               value={myInfo?.name}
@@ -114,10 +117,10 @@ const UserInfoSection = ({ myInfo, onChange }: IUserInfoSectionProps) => {
             />
           </FormControl>
 
-          {/* 닉네임 (선택) */}
+          {/* Alias */}
           <FormControl fullWidth>
             <Typography variant="body2" mb={0.5}>
-              userAlias 닉네임 (선택)
+              {t("userAlias")}
             </Typography>
             <InputTextField
               value={myInfo?.userAlias}
@@ -125,10 +128,10 @@ const UserInfoSection = ({ myInfo, onChange }: IUserInfoSectionProps) => {
             />
           </FormControl>
 
-          {/* 닉네임 (선택) */}
+          {/* Phone */}
           <FormControl fullWidth>
             <Typography variant="body2" mb={0.5}>
-              phone 닉네임 (선택)
+              {t("phone")}
             </Typography>
             <InputTextField
               value={myInfo?.phone}

@@ -338,6 +338,7 @@ export type UserCreateProps = {
   name?: string;
   role?: UserRoleType;
   password?: string;
+  employeeNo?: string;
 };
 
 export enum EmployeeStatus {
