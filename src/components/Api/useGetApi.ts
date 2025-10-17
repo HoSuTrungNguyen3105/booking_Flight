@@ -19,6 +19,7 @@ import {
   type FlightBaggageDetailApiResponse,
   type TicketResponseMessage,
   type TransferAdmin,
+  type StatusResponseMessage,
 } from "../../utils/type.ts";
 import { useFetch } from "../../context/use[custom]/useFetch.ts";
 import type { Payroll } from "../Sample/PayrollManagement.tsx";
@@ -282,6 +283,21 @@ export const useGetAllAircraftInfo = () => {
   return {
     getAircraftInfo,
     refetchGetAircraftInfo,
+  };
+};
+
+export const useGetAllFlightIds = () => {
+  const { data: getAllFlightIds, refetch: refetchGetAllFlightIds } = useFetch<
+    StatusResponseMessage,
+    null
+  >({
+    url: "/sys/flights/flightIds",
+    autoFetch: true,
+    config: getMethod,
+  });
+  return {
+    getAllFlightIds,
+    refetchGetAllFlightIds,
   };
 };
 

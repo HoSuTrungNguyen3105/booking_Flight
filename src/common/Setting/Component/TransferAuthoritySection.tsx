@@ -12,9 +12,10 @@ import { memo, useCallback, useState } from "react";
 import { UserRole, type UserData } from "../../../utils/type";
 import theme from "../../../scss/theme";
 import { useTranslation } from "react-i18next";
+import type { UserDataToTransferAdmin } from "../ManageMyInformation";
 
 interface ITransferAuthoritySectionProps {
-  myInfo?: UserData;
+  myInfo?: UserDataToTransferAdmin;
   setOpenModal: (type: "approve" | "transfer", employeeNo?: string) => void;
 }
 
@@ -32,6 +33,12 @@ const TransferAuthoritySection = ({
     isAdmin &&
     myInfo.fromTransferAdminUserYn === "N" &&
     myInfo.toTransferAdminUserYn !== "Y";
+
+  console.log(" myInfo.fromTransferAdminUserYn ;", myInfo);
+  console.log(
+    " myInfo.fromTransferAdminUserYn ;",
+    myInfo?.toTransferAdminUserYn
+  );
 
   const isProgressTransferAdmin =
     isAdmin &&

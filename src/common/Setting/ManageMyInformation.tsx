@@ -23,6 +23,16 @@ export type UserDataToUpdate = Pick<
   | "baseSalary"
 >;
 
+export type UserDataToTransferAdmin = Pick<
+  UserData,
+  | "id"
+  | "name"
+  | "role"
+  | "employeeNo"
+  | "fromTransferAdminUserYn"
+  | "toTransferAdminUserYn"
+>;
+
 const ManageMyInformation = () => {
   const { user } = useAuth();
 
@@ -37,6 +47,15 @@ const ManageMyInformation = () => {
     role: user?.role ?? UserRole.USER,
     hireDate: user?.hireDate ?? 0,
     baseSalary: user?.baseSalary ?? 0,
+  };
+
+  const transferToMyInfo: UserDataToTransferAdmin = {
+    id: user?.id ?? 0,
+    name: user?.name ?? "",
+    role: user?.role ?? UserRole.USER,
+    employeeNo: user?.employeeNo ?? "",
+    fromTransferAdminUserYn: user?.fromTransferAdminUserYn,
+    toTransferAdminUserYn: user?.toTransferAdminUserYn,
   };
 
   const [myInfo, setMyInfo] = useState<UserDataToUpdate>(initialMyInfo);
@@ -120,7 +139,7 @@ const ManageMyInformation = () => {
       <DataAccessPermissionSection />
 
       <TransferAuthoritySection
-        myInfo={myInfo as UserData}
+        myInfo={transferToMyInfo}
         setOpenModal={() => setOpenConfirmModal(true)}
       />
 

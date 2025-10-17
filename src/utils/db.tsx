@@ -158,7 +158,7 @@ export const menuData: MenuSection[] = [
             label: "Quản lý tài khoản",
             subItems: [
               {
-                id: "flight-book",
+                id: "support",
                 label: "Khách hàng",
                 icon: <AccountCircle />,
               },

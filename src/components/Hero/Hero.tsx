@@ -1,43 +1,11 @@
 import React from "react";
-import {
-  Typography,
-  Box,
-  useMediaQuery,
-  Card,
-  CardContent,
-  Stack,
-  Paper,
-} from "@mui/material";
+import { Typography, Box, useMediaQuery } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import theme from "../../scss/theme";
-
-interface Props {
-  title: string;
-  desc: string;
-  icon?: React.ReactNode;
-}
-
-const FeatureCard: React.FC<Props> = ({ title, desc, icon }) => {
-  return (
-    <Card elevation={0} sx={{ textAlign: "center", p: 2 }}>
-      <CardContent>
-        <Box sx={{ mb: 1 }}>{icon}</Box>
-        <Typography variant="h6">{title}</Typography>
-        <Typography variant="body2" color="text.secondary">
-          {desc}
-        </Typography>
-      </CardContent>
-    </Card>
-  );
-};
 
 const Hero: React.FC = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const { t } = useTranslation();
-
-  const totalFlights = 128; // Example static data
-  const airports = 15;
-  const pending = 5;
 
   return (
     <Box
@@ -68,7 +36,7 @@ const Hero: React.FC = () => {
       }}
     >
       <Box sx={{ position: "relative", zIndex: 2 }}>
-        {/* <Typography
+        <Typography
           variant="h2"
           fontWeight="bold"
           sx={{
@@ -78,42 +46,7 @@ const Hero: React.FC = () => {
           }}
         >
           {t("tittle1")}
-        </Typography> */}
-
-        {/* <Typography variant="h3" component="h1" gutterBottom>
-          Manage Flights — Central Dashboard
         </Typography>
-        <Typography variant="subtitle1" color="text.secondary" sx={{ mb: 3 }}>
-          Monitor flight operations, create new flights, check statuses and
-          manage gates.
-        </Typography> */}
-
-        <Paper
-          elevation={0}
-          sx={{
-            p: 4,
-            mb: 6,
-            textAlign: "center",
-            backgroundColor: theme.palette.primary.main,
-            color: "white",
-            borderRadius: 2,
-          }}
-        >
-          <Typography
-            variant="h3"
-            component="h1"
-            gutterBottom
-            sx={{ fontWeight: "bold", fontSize: isMobile ? "2rem" : "3rem" }}
-          >
-            {t("tittle1")}
-          </Typography>
-          <Typography
-            variant="h6"
-            sx={{ opacity: 0.9, maxWidth: "800px", margin: "0 auto" }}
-          >
-            Welcome to your comprehensive flight management dashboard
-          </Typography>
-        </Paper>
 
         <Typography
           variant="h5"
@@ -145,33 +78,6 @@ const Hero: React.FC = () => {
             {t("description2")}
           </Typography>
         </Box>
-        <Stack
-          direction={{ xs: "column", sm: "row" }}
-          spacing={2}
-          justifyContent="center"
-          alignItems="center"
-        >
-          <Box>
-            <Typography variant="h5">{totalFlights}</Typography>
-            <Typography variant="caption" color="text.secondary">
-              Total Flights
-            </Typography>
-          </Box>
-          <Box>
-            <Typography variant="h5">{airports}</Typography>
-            <Typography variant="caption" color="text.secondary">
-              Airports
-            </Typography>
-          </Box>
-          <Box>
-            <Typography variant="h5" color="warning.main">
-              {pending}
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              Pending Actions
-            </Typography>
-          </Box>
-        </Stack>
       </Box>
     </Box>
   );

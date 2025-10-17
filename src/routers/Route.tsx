@@ -42,6 +42,7 @@ import TicketTable from "../components/Sample/TicketTable";
 import BulkMealCreator from "../components/Admin/component/Meal/BulkMealCreator";
 import TransferAdminTable from "../common/Setting/Component/TransferAdminTable";
 import MealList from "../components/Admin/component/Meal/MealListTable";
+import FlightStatus from "../components/Admin/modal/FlightStatus";
 
 const routes = [
   {
@@ -237,6 +238,10 @@ const routes = [
       {
         path: ROUTE_PATHS.AIRCRAFT,
         element: <AircraftPage />,
+      },
+      {
+        path: ROUTE_PATHS.SUPPORT,
+        element: <FlightStatus />,
       },
       {
         path: ROUTE_PATHS.CHANGE_PASSWORD_PROFILE,

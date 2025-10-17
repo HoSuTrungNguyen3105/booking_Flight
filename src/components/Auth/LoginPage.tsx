@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { Controller, useForm } from "react-hook-form";
 import InputTextField from "../../common/Input/InputTextField";
-import MfaSetup from "./MFA";
+import MfaSetup from "./MfaSetup";
 import SelectDropdown from "../../common/Dropdown/SelectDropdown";
 import RequestUnlock from "./RequestUnlock";
 import TabPanel, { type ITabItem } from "../../common/CustomRender/TabPanel";
@@ -85,6 +85,8 @@ export const LoginPage: React.FC = () => {
         password: data.password,
         authType,
       });
+
+      console.log("ed", loginRes);
 
       if (loginRes.requireUnlock) {
         setViewMode("unlock");

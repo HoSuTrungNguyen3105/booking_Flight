@@ -41,7 +41,7 @@ const ChangePassword = ({ userId, email, onClose }: IUserIdNumber) => {
     try {
       const response = await refetchChangePassword(data);
       if (response?.resultCode === "00") {
-        // onClose();
+        onClose();
         setVerifyOTPcode(true);
       }
     } catch (err) {
@@ -94,6 +94,7 @@ const ChangePassword = ({ userId, email, onClose }: IUserIdNumber) => {
               render={({ field }) => (
                 <InputTextField
                   {...field}
+                  showEyeIcon
                   type="password"
                   placeholder="Mật khẩu mới"
                 />
@@ -112,6 +113,7 @@ const ChangePassword = ({ userId, email, onClose }: IUserIdNumber) => {
               render={({ field }) => (
                 <InputTextField
                   {...field}
+                  showEyeIcon
                   type="password"
                   placeholder="Xác nhận mật khẩu"
                 />
@@ -120,8 +122,11 @@ const ChangePassword = ({ userId, email, onClose }: IUserIdNumber) => {
             <Box display="flex" alignItems="flex-start" gap={1} mt={1}>
               {/* <img src="/assets/icons/error.svg" alt="error" /> */}
               <Typography variant="subtitle2" color="error">
-                비밀번호는 영문 대/소문자, 숫자, 특수문자 조합 <br />
-                8자 이상 ~ 20자 이하
+                Password must include a combination of uppercase/lowercase{" "}
+                <br />
+                letters, numbers, and special characters, and be between 8 to 20{" "}
+                <br />
+                characters long.
               </Typography>
             </Box>
           </FormControl>

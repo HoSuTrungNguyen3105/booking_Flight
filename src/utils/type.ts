@@ -267,6 +267,14 @@ interface AllFlightCodeProps {
   airport: FlightCodeItem[];
 }
 
+export type FlightInStatus = {
+  flightId: number;
+  flightNo: string;
+  status: string;
+};
+
+export type StatusResponseMessage = DetailResponseMessage<FlightInStatus>;
+
 export type AircraftResponseMessage = DetailResponseMessage<Aircraft>;
 
 export type AirportCreateResponseMessage =
@@ -552,8 +560,8 @@ export type FlightAircraftResponse =
 
 export type EmailProps = {
   email?: string;
-  // userId?: number;
-  authType: string;
+  userId?: number;
+  authType?: string;
   onClose?: () => void;
 };
 

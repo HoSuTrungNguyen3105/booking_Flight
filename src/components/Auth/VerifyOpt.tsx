@@ -3,7 +3,7 @@ import OTPInput from "../../common/Input/OTPInput";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import type { EmailProps } from "../../utils/type";
 import { useVerifyOTPCode } from "../Api/usePostApi";
-import MfaSetup from "./MFA";
+import MfaSetup from "./MfaSetup";
 import { useToast } from "../../context/ToastContext";
 
 const VerifyOpt = ({ email, userId }: EmailProps) => {
@@ -34,7 +34,7 @@ const VerifyOpt = ({ email, userId }: EmailProps) => {
   }, [otpText, userId, sethasValidate, refetchVerifyOTPcode, toast]);
 
   if (hasValidate) {
-    return <MfaSetup email={email} />;
+    return <MfaSetup authType="login" email={email} />;
   }
 
   return (

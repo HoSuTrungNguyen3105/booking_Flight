@@ -133,7 +133,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       code: userData.code,
       authType: userData.authType,
     });
-    console.log("res mfa", userData);
     if (res?.resultCode === "00" && res.data) {
       const accessToken = res.accessToken;
       const id = res.data.id;

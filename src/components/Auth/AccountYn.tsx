@@ -21,6 +21,8 @@ const AccountModePage = ({ mode, onClose }: AccountModePageProps) => {
   const { refetchUserEmailData } = getUserIdByEmail();
   const toast = useToast();
 
+  console.log("res", mode);
+
   const { refetchSendEmailToVerification } = useSendEmailToVerification();
 
   const [verifyOTPcode, setVerifyOTPcode] = useState(false);
@@ -57,11 +59,11 @@ const AccountModePage = ({ mode, onClose }: AccountModePageProps) => {
 
     // Nếu mode là "forget" → user có tài khoản
     if (mode === "change") {
-      if (res?.resultCode !== "00") {
+      if (res?.resultCode === "00") {
         setUserId(res?.data?.userId);
         setHasValidate(true);
       } else {
-        toast(res?.resultMessage || "Không tìm thấy tài khoản!", "error");
+        toast("Không tìm thấy tài khoản!", "error");
       }
     }
   }, [email, refetchUserEmailData, mode, toast]);
@@ -74,7 +76,7 @@ const AccountModePage = ({ mode, onClose }: AccountModePageProps) => {
   // }
 
   if (verifyOTPcode) {
-    return <VerifyOpt userId={userId} email={email} />;
+    return <VerifyOpt authType="" userId={userId} email={email} />;
   }
 
   if (hasValidate && userId) {

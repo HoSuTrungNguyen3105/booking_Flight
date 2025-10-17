@@ -19,7 +19,7 @@ export const ROUTE_PATHS = {
   PROFILE: "/profile",
   SETTINGS: "/settings",
   DASHBOARD: "/dashboard",
-  SUPPORT: "/support",
+  SUPPORT: "support",
   NOTIFICATIONS: "notifications",
   INTERNATIONAL: "international",
   SAMPLE_DATE_PICKER: "sampleDatePicker",
