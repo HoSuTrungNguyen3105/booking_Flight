@@ -55,6 +55,8 @@ export type InputNumberProps = {
   min?: number;
   status?: InputFieldStatus;
   disabled?: boolean;
+  startIcon?: React.ReactNode;
+  endIcon?: React.ReactNode;
   onChange?: (value: number | null) => void;
   onBlur?: (
     e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>

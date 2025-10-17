@@ -62,9 +62,6 @@ const TableSection = ({
     [setRows, onSelectedRowIdsChange]
   );
 
-  /**
-   * Click vào dòng sẽ gọi callback nếu có
-   */
   const handleRowClickDebug = useCallback(
     (row: GridRowDef) => {
       handleRowClick?.(row);
@@ -78,7 +75,7 @@ const TableSection = ({
         sx={{
           flexGrow: 1,
           overflow: "auto",
-          height: largeThan ? "30rem" : "10rem",
+          height: largeThan ? "30rem" : "20rem",
         }}
       >
         <DataTable

@@ -23,7 +23,7 @@ import {
 import { useMemo, useState } from "react";
 import { type GridRowDef } from "../../common/DataGrid/index";
 import TableSection from "../../common/CustomRender/TableSection";
-import CreatePayrollModal from "../Profile/CreatePayrollModal";
+import CreatePayrollModal from "./modal/CreatePayrollModal";
 import { useExportPayrollExcel, useGetPayrollData } from "../Api/useGetApi";
 import SelectDropdown, {
   type ActionType,
@@ -79,9 +79,9 @@ const PayrollManagement = () => {
   const [payrollByEmployeeId, setPayrollByEmployeeId] = useState<number>(0);
 
   const options: ActionType[] = [
-    { value: 2023, label: "2023" },
-    { value: 2024, label: "2024" },
     { value: 2025, label: "2025" },
+    { value: 2024, label: "2024" },
+    { value: 2023, label: "2023" },
     { value: 2022, label: "2022" },
     { value: 2021, label: "2021" },
     { value: 2020, label: "2020" },
@@ -376,7 +376,7 @@ const PayrollManagement = () => {
         }}
         onSelectedRowIdsChange={handleMealRowSelection}
         nextRowClick
-        largeThan
+        // largeThan
         columns={columns}
       />
 
@@ -390,7 +390,7 @@ const PayrollManagement = () => {
         open={openInfoPayrollDialog}
         payrollId={payrollByEmployeeId}
         onClose={() => {
-          setOpenGenerateDialog(false);
+          setOpenInfoPayrollDialog(false);
           refetchPayroll();
         }}
       />

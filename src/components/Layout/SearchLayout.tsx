@@ -23,7 +23,7 @@ const TabLayout = ({
   onChangeTab,
 }: ISearchLayoutProps) => {
   return (
-    <Stack px={2} pb={2} height="100%" gap="10px">
+    <Stack px={2} pb={2} height="100%">
       <Box>
         <Typography variant="subtitle1">{title}</Typography>
         {description && (

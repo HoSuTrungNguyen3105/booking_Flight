@@ -1,4 +1,4 @@
-import { Box, Button, Divider, Typography } from "@mui/material";
+import { Box, Button, Divider } from "@mui/material";
 import { memo, useCallback } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import { useLockAccount } from "../hooks/useLockAccount";

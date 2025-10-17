@@ -1,8 +1,7 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   EmployeeStatus,
   UserRole,
-  type AdminUpdateUserForm,
   type UserData,
   type UserRoleType,
 } from "../../../utils/type";
@@ -79,43 +78,12 @@ export const useUpdateUser = ({
       console.log("payload", payload);
       toast(res?.resultMessage || "Success", "success");
       onSuccess();
+      onClose();
     } catch (error) {
       console.error("Error updating user:", error);
       toast("Cập nhật thất bại", "error");
     }
   }, [formData, onSuccess, refetchUpdateUserFromAdmin, toast]);
-
-  // const handleSubmit = async () => {
-  //   try {
-  //     const payload: UserFormConfig = {
-  //       name: formData.name,
-  //       email: formData.email,
-  //       // userAlias: formData.userAlias,
-  //       // rank: formData.rank,
-  //       role: formData.role,
-  //     };
-
-  // const res = await refetchCreateUser(payload);
-
-  // if (res?.resultCode === "00") {
-  //   onSuccess?.();
-  //   onClose?.();
-  // } else {
-  //   setError(res?.resultMessage ?? "Cập nhật thất bại");
-  //   console.error("Update user failed:", res);
-  // }
-  //   } catch (err) {
-  //     setError((err as string) ?? "Lỗi khi gọi API");
-  //     console.error("Update exception:", err);
-  //   }
-  // };
-
-  const enableUpdateBtn = useMemo(
-    () =>
-      (formData.role?.trim() ?? "") !== "" ||
-      (formData.name?.trim() ?? "") !== "",
-    [formData]
-  );
 
   return {
     formDetailConfig,

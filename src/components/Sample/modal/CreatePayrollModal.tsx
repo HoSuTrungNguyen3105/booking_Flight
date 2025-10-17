@@ -1,13 +1,15 @@
 import { Box, Grid, Typography, Button, FormControl } from "@mui/material";
 import { memo, useCallback, useState } from "react";
-import BaseModal from "../../common/Modal/BaseModal";
-import type { GeneratePayroll } from "../Sample/PayrollManagement";
-import InputTextField from "../../common/Input/InputTextField";
+import BaseModal from "../../../common/Modal/BaseModal";
+import type { GeneratePayroll } from "../PayrollManagement";
+import InputTextField from "../../../common/Input/InputTextField";
 import MoneyIcon from "../../svgs/money-euro-banknote.svg";
 import { Add as AddIcon } from "@mui/icons-material";
-import { useGetUserIdAndNameToDropdownGeneratePayroll } from "../Api/useGetApi";
-import SelectDropdown from "../../common/Dropdown/SelectDropdown";
-import FormRow from "../../common/CustomRender/FormRow";
+import { useGetUserIdAndNameToDropdownGeneratePayroll } from "../../Api/useGetApi";
+import SelectDropdown from "../../../common/Dropdown/SelectDropdown";
+import FormRow from "../../../common/CustomRender/FormRow";
+import LocalAtmIcon from "@mui/icons-material/LocalAtm";
+import InputNumber from "../../../common/Input/InputNumber";
 
 interface IModalGeneratePayrollProps {
   open: boolean;
@@ -63,24 +65,25 @@ const CreatePayrollModal = ({
 
     return (
       <>
-        <Typography component="p" variant="body2" sx={{ mb: 1 }}>
+        <Typography component="p" variant="body2" gutterBottom>
           Thông tin bảng lương
         </Typography>
         <Box
           sx={{
             overflow: "auto",
-            maxHeight: "400px",
+            height: "300px",
             scrollbarWidth: "none",
           }}
         >
-          <Grid container spacing={3}>
+          <Grid container spacing={1}>
             <Grid size={5}>
-              <FormRow label="Month">
+              <FormRow label="Month :">
                 <Typography> {payrollData.month}</Typography>
               </FormRow>
             </Grid>
+
             <Grid size={5}>
-              <FormRow label="Year">
+              <FormRow label="Year :">
                 <Typography> {payrollData.year}</Typography>
               </FormRow>
             </Grid>
@@ -102,18 +105,13 @@ const CreatePayrollModal = ({
             </Grid>
 
             {/* Lương cơ bản */}
-            <Grid size={12}>
-              <InputTextField
+            <FormControl fullWidth>
+              <InputNumber
+                size="large"
+                isSeparator
                 placeholder="Lương cơ bản"
-                type="number"
-                value={String(payrollData.baseSalary)}
-                endIcon={
-                  <Box
-                    component={"img"}
-                    sx={{ height: 22, width: 22 }}
-                    src={MoneyIcon}
-                  />
-                }
+                value={payrollData.baseSalary}
+                endIcon={<LocalAtmIcon />}
                 onChange={(e) =>
                   setPayrollData((prev) => ({
                     ...prev,
@@ -121,20 +119,14 @@ const CreatePayrollModal = ({
                   }))
                 }
               />
-            </Grid>
+            </FormControl>
 
-            {/* Phụ cấp */}
-            <Grid size={12}>
-              <InputTextField
-                type="number"
-                value={String(payrollData.allowances)}
-                endIcon={
-                  <Box
-                    component={"img"}
-                    sx={{ height: 22, width: 22 }}
-                    src={MoneyIcon}
-                  />
-                }
+            <FormControl fullWidth>
+              <InputNumber
+                size="large"
+                isSeparator
+                value={payrollData.allowances}
+                endIcon={<LocalAtmIcon />}
                 onChange={(e) =>
                   setPayrollData((prev) => ({
                     ...prev,
@@ -142,20 +134,14 @@ const CreatePayrollModal = ({
                   }))
                 }
               />
-            </Grid>
+            </FormControl>
 
-            {/* Khấu trừ */}
-            <Grid size={12}>
-              <InputTextField
-                type="number"
-                value={String(payrollData.deductions)}
-                endIcon={
-                  <Box
-                    component={"img"}
-                    sx={{ height: 22, width: 22 }}
-                    src={MoneyIcon}
-                  />
-                }
+            <FormControl fullWidth>
+              <InputNumber
+                isSeparator
+                size="large"
+                value={payrollData.deductions}
+                endIcon={<LocalAtmIcon />}
                 onChange={(e) =>
                   setPayrollData((prev) => ({
                     ...prev,
@@ -163,20 +149,13 @@ const CreatePayrollModal = ({
                   }))
                 }
               />
-            </Grid>
-
-            {/* Thuế */}
-            <Grid size={12}>
-              <InputTextField
-                type="number"
-                value={String(payrollData.tax)}
-                endIcon={
-                  <Box
-                    component={"img"}
-                    sx={{ height: 22, width: 22 }}
-                    src={MoneyIcon}
-                  />
-                }
+            </FormControl>
+            <FormControl fullWidth>
+              <InputNumber
+                isSeparator
+                size="large"
+                value={payrollData.tax}
+                endIcon={<LocalAtmIcon />}
                 onChange={(e) =>
                   setPayrollData((prev) => ({
                     ...prev,
@@ -184,7 +163,7 @@ const CreatePayrollModal = ({
                   }))
                 }
               />
-            </Grid>
+            </FormControl>
           </Grid>
         </Box>
       </>
@@ -197,8 +176,6 @@ const CreatePayrollModal = ({
       onClose={onClose}
       title="Generate bảng lương"
       Icon={AddIcon}
-      // maxWidth="lg"
-      // sx={{ maxHeight: "600px", width: "lg" }}
       slots={{ content: renderContent(), actions: renderActions() }}
     />
   );

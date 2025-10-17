@@ -1,6 +1,5 @@
 import { Box, FormControl, Stack, Typography } from "@mui/material";
 import { memo } from "react";
-import type { UserData } from "../../utils/type";
 import InputTextField from "../../common/Input/InputTextField";
 import { DateFormatEnum, formatDateKR } from "../../hooks/format";
 import { useTranslation } from "react-i18next";

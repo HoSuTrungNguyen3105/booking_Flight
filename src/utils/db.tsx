@@ -98,11 +98,6 @@ export const menuData: MenuSection[] = [
                 label: "Chuyến bay nội địa",
                 icon: <FlightTakeoff />,
               },
-              // {
-              //   id: "FlightStatisticsPage",
-              //   label: "Thống kê chuyến bay",
-              //   icon: <BarChart />,
-              // },
               { id: "bookticket", label: "Đặt vé", icon: <FlightTakeoff /> },
               {
                 id: "international",

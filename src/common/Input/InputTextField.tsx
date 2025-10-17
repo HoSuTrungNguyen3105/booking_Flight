@@ -124,8 +124,6 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
         onChange={(e) => {
           const newValue = e.target.value;
           if (isEmail && !isEmailValid(newValue)) {
-            // ✅ Nếu muốn, có thể bật thông báo hoặc highlight lỗi tại đây
-            // console.warn("Email không hợp lệ:", newValue);
           }
           onChange(newValue);
         }}

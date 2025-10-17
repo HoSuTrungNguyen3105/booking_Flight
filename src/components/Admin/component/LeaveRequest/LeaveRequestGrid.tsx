@@ -193,10 +193,15 @@ const LeaveRequestGrid = () => {
         <Typography variant="h5" fontWeight="bold" color="primary.main">
           Danh sách đơn xin nghỉ phép
         </Typography>
-        <Button variant="contained" onClick={() => setOnCreateRequest(true)}>
-          Create Request leave
-        </Button>
       </Stack>
+
+      <Button
+        size="medium"
+        variant="contained"
+        onClick={() => setOnCreateRequest(true)}
+      >
+        Create Request leave
+      </Button>
 
       <Box p={2}>
         <Typography variant="subtitle2" fontWeight="bold" mb={1}>

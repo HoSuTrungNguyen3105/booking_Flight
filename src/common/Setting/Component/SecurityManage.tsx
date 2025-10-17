@@ -80,11 +80,11 @@ const SecurityManage = () => {
         />
       ),
     },
-    {
-      label: "inspectionSection",
-      value: "auto",
-      content: <Typography></Typography>,
-    },
+    // {
+    //   label: "inspectionSection",
+    //   value: "auto",
+    //   content: <Typography></Typography>,
+    // },
   ];
 
   if (getValuePassenger)
@@ -94,7 +94,7 @@ const SecurityManage = () => {
     <SearchLayout
       onChangeTab={setTab}
       activeTab={tabX}
-      title="Layout"
+      title="Security Manage"
       tabs={tabs}
     />
   );

@@ -1,4 +1,4 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Chip, Grid, Typography } from "@mui/material";
 import { memo, useCallback, useEffect } from "react";
 import BaseModal from "../../../common/Modal/BaseModal";
 import InputTextField from "../../../common/Input/InputTextField";
@@ -31,11 +31,49 @@ const InfoPayrollModal = ({
     const payroll = dataGetPayrollsById?.data;
     if (!payroll) return null;
 
+    // Format currency function
+    const formatCurrency = (amount: number) => {
+      return new Intl.NumberFormat("vi-VN", {
+        style: "currency",
+        currency: "VND",
+      }).format(amount);
+    };
+
+    type PayrollStatus =
+      | "paid"
+      | "pending"
+      | "processing"
+      | "cancelled"
+      | "draft";
+    type ChipColor = "success" | "warning" | "info" | "error" | "default";
+
+    const getStatusColor = (status: string): ChipColor => {
+      const statusColors: Record<PayrollStatus, ChipColor> = {
+        paid: "success",
+        pending: "warning",
+        processing: "info",
+        cancelled: "error",
+        draft: "default",
+      };
+
+      const normalizedStatus = status.toLowerCase() as PayrollStatus;
+      return statusColors[normalizedStatus] ?? "default";
+    };
+
     return (
-      <>
-        <Typography component="p" variant="body2" sx={{ mb: 1 }}>
-          Thông tin bảng lương (Read Only)
-        </Typography>
+      <Box sx={{ height: "25rem" }}>
+        <Box sx={{ bgcolor: "primary.50", borderRadius: 2 }}>
+          <Typography variant="body2" color="text.secondary">
+            Tổng lương thực nhận
+          </Typography>
+          <Chip
+            label={payroll.status}
+            color={getStatusColor(payroll.status)}
+            variant="filled"
+            size="small"
+          />
+        </Box>
+
         <Box
           sx={{ overflow: "auto", maxHeight: "400px", scrollbarWidth: "none" }}
         >
@@ -157,8 +195,6 @@ const InfoPayrollModal = ({
                 />
               </FormRow>
             </Grid>
-
-            {/* Lịch sử payrolls */}
             <Grid size={12}>
               <Typography variant="subtitle1" sx={{ mt: 2, mb: 1 }}>
                 Lịch sử bảng lương nhân viên
@@ -186,7 +222,7 @@ const InfoPayrollModal = ({
             </Grid>
           </Grid>
         </Box>
-      </>
+      </Box>
     );
   }, [dataGetPayrollsById?.data]);
 
@@ -196,6 +232,7 @@ const InfoPayrollModal = ({
       onClose={onClose}
       title="Thông tin bảng lương"
       Icon={AddIcon}
+      maxWidth="md"
       slots={{ content: renderContent(), actions: null }}
     />
   );

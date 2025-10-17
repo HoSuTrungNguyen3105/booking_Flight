@@ -18,10 +18,8 @@ import {
 } from "@mui/material";
 import { useAuth } from "../../context/AuthContext";
 import SignOut from "../../components/Auth/SignOut";
-import ImageThumbnailIcon from "../../svgs/account-avatar-profile-user-11.svg";
 import { Link, useNavigate } from "react-router-dom";
 import { GridMenuIcon } from "@mui/x-data-grid";
-import { ImageThumbnail } from "../IconComponent/ImageThumbnail";
 import CustomPopover from "../Button/Popover";
 import { AccountCircle, Login } from "@mui/icons-material";
 import LanguageButton from "../CustomRender/ChangeLanguageSelect";

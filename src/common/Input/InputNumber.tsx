@@ -1,6 +1,6 @@
 import { memo, useEffect, useState } from "react";
 import { INPUT_HEIGHT_BY_SIZE, type InputNumberProps } from "./type";
-import { TextField } from "@mui/material";
+import { IconButton, InputAdornment, TextField } from "@mui/material";
 
 const InputNumber = ({
   placeholder = "",
@@ -8,7 +8,8 @@ const InputNumber = ({
   sx,
   defaultValue,
   min = 0,
-  //   status = "default",
+  startIcon,
+  endIcon,
   onChange,
   onBlur,
   disabled = false,
@@ -19,8 +20,6 @@ const InputNumber = ({
   const [valueText, setValueText] = useState<string>(
     value?.toString() ?? defaultValue?.toString() ?? ""
   );
-
-  //   const inputErrorClass = status === "error" ? "input-error" : "";
 
   const addCommas = (num: string) =>
     num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -35,7 +34,6 @@ const InputNumber = ({
     return val;
   };
 
-  // ✅ chỉ xử lý onChange ở đây, không để trong useEffect
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const convertValue = removeNonNumeric(event.target.value);
     const formattedValue = isSeparator ? addCommas(convertValue) : convertValue;
@@ -46,11 +44,10 @@ const InputNumber = ({
     onChange?.(Number.isNaN(parsed) ? null : parsed);
   };
 
-  // ✅ chỉ đồng bộ valueText khi prop value thay đổi từ ngoài
   useEffect(() => {
     const convertValue = value?.toString() ?? "";
     setValueText(isSeparator ? addCommas(convertValue) : convertValue);
-  }, [value]);
+  }, [value, isSeparator]);
 
   return (
     <TextField
@@ -65,19 +62,30 @@ const InputNumber = ({
         ...sx,
       }}
       size={size === "small" ? "small" : undefined}
-      slotProps={{
-        formHelperText: { error: true },
-        input: {
-          autoComplete: "off",
-          inputProps: {
-            style: { textAlign, border: "none" },
-            min,
-            defaultValue,
-            placeholder,
-          },
-        },
+      InputProps={{
+        startAdornment: startIcon && (
+          <InputAdornment position="start">{startIcon}</InputAdornment>
+        ),
+        endAdornment: endIcon ? (
+          <InputAdornment position="end">
+            <IconButton
+              disabled={disabled}
+              edge="end"
+              sx={{ cursor: "pointer", padding: "4px" }}
+            >
+              {endIcon}
+            </IconButton>
+          </InputAdornment>
+        ) : undefined,
+      }}
+      inputProps={{
+        style: { textAlign, border: "none" },
+        min,
+        defaultValue,
+        placeholder,
       }}
     />
   );
 };
+
 export default memo(InputNumber);

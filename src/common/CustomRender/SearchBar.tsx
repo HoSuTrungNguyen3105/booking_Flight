@@ -116,7 +116,7 @@ const SearchBar = ({ disabled = false, onSearch }: ISearchBarProps) => {
           <InputTextField
             value={searchText}
             disabled={disabled}
-            //onChange={handleSearchTextChange}
+            onChange={handleSearchTextChange}
             onKeyDown={handleKeyDown}
             placeholder="검색 단어를 입력해주세요."
           />
