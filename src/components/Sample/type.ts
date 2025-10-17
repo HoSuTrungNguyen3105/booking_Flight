@@ -1,21 +1,32 @@
 import type { UnlockRequest } from "../Api/useGetApi";
-import type { Attendance, LeaveRequest } from "../../utils/type";
+import type {
+  Attendance,
+  LeaveRequest,
+  TransferAdmin,
+  UserData,
+} from "../../utils/type";
 import type { Payroll } from "./PayrollManagement";
 
-export interface UserWithRelationsData {
-  name: string;
-  email: string;
-  phone: string | null;
-  role: string;
-  rank: string | null;
-  status: string;
-  employeeNo: string | null;
-  hireDate: number | string | null;
+export type UserWithRelationsData = Pick<
+  UserData,
+  | "name"
+  | "email"
+  | "phone"
+  | "role"
+  | "rank"
+  | "status"
+  | "employeeNo"
+  | "hireDate"
+  | "lastLoginDate"
+  | "department"
+  | "position"
+> & {
   attendance: AttendanceProps[];
   leaveRequests: LeaveRequest[];
   payrolls: Payroll[];
   unlockRequests: UnlockRequest[];
-}
+  transferAdmin: TransferAdmin;
+};
 
 export type AttendanceProps = Pick<
   Attendance,

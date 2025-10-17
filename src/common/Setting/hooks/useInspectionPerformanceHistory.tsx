@@ -29,6 +29,7 @@ export const useInspectionPerformanceHistory = () => {
     | "deleteMfaSettings"
     | "lock_unlockAccount"
     | "resetPassword"
+    | "relationData"
     | "permissionChangeRole"
     | "transferAdminPermission"
     | "deleteUser";
@@ -39,6 +40,7 @@ export const useInspectionPerformanceHistory = () => {
     deleteMfaSettings: false,
     lock_unlockAccount: false,
     resetPassword: false,
+    relationData: false,
     transferAdminPermission: false,
     permissionChangeRole: false,
     deleteUser: false,
@@ -96,6 +98,11 @@ export const useInspectionPerformanceHistory = () => {
               label: "Permission Change Role",
               value: "permissionChangeRole",
               color: theme.palette.warning.dark,
+            },
+            {
+              label: "Relation Data",
+              value: "relationData",
+              color: theme.palette.info.dark,
             },
             {
               label: "Delete User",

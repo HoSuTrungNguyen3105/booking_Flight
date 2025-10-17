@@ -44,11 +44,6 @@ export const menuData: MenuSection[] = [
         label: "Tổng quan",
         subItems: [
           {
-            id: "sampleFileUploader",
-            label: "Tải file",
-            icon: <AccountCircle />,
-          },
-          {
             id: "TerminalContainer",
             label: "Quản lý Terminal",
             icon: <Apartment />,

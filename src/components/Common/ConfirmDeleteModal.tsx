@@ -24,6 +24,7 @@ import TableSection from "../../common/CustomRender/TableSection";
 import type { GridRowDef } from "../../common/DataGrid";
 import type { IDetailItem } from "../../common/DetailSection";
 import DetailSection from "../../common/DetailSection";
+import type { UserRoleType } from "../../utils/type";
 
 interface IModalGeneratePayrollProps {
   open: boolean;
@@ -33,6 +34,7 @@ interface IModalGeneratePayrollProps {
 }
 
 type TableSelectionKey =
+  | "transferAdmin"
   | "attendance"
   | "payroll"
   | "leaveRequests"
@@ -43,6 +45,7 @@ interface TableSelections {
   payroll: GridRowDef[];
   leaveRequests: GridRowDef[];
   unlockRequests: GridRowDef[];
+  transferAdmin: GridRowDef[];
 }
 
 const ConfirmDeleteModal = ({
@@ -59,6 +62,7 @@ const ConfirmDeleteModal = ({
     payroll: [],
     leaveRequests: [],
     unlockRequests: [],
+    transferAdmin: [],
   });
 
   const updateSelectedRows = (
@@ -80,16 +84,16 @@ const ConfirmDeleteModal = ({
     }
   }, [open, id, refetchGetUserWithRelations]);
 
-  const [selectDelete, setSelectDelete] = useState<
-    keyof TableSelections | null
-  >(null);
+  // const [selectDelete, setSelectDelete] = useState<
+  //   keyof TableSelections | null
+  // >(null);
 
   const { refetchDeletePayroll } = useDeletePayroll();
   const { refetchRequestUnlockAccount } = useDeleteRequestUnlockById();
   const { refetchDeleteAttendance } = useDeleteAttendance();
 
   const handleDeleteRow = async (table: keyof TableSelections, id: number) => {
-    setSelectDelete(table); // set lại bảng đang xoá
+    // setSelectDelete(table);
 
     switch (table) {
       case "attendance": {
@@ -122,12 +126,18 @@ const ConfirmDeleteModal = ({
     return {
       name: d.name ?? "",
       email: d.email ?? "",
-      phone: d.phone ?? null,
-      role: d.role ?? "",
-      rank: d.rank ?? null,
+      phone: d.phone ?? "",
+      role: d.role as UserRoleType,
+      rank: d.rank ?? undefined,
       status: d.status ?? "",
+
+      position: d.position ?? "",
+      lastLoginDate: d.lastLoginDate ?? 0,
+      department: d.department ?? "",
+
       employeeNo: d.employeeNo ?? "",
-      hireDate: d.hireDate ?? null,
+      hireDate: d.hireDate ?? undefined,
+      transferAdmin: d.transferAdmin ?? [],
       attendance: d.attendance ?? [],
       leaveRequests: d.leaveRequests ?? [],
       payrolls: d.payrolls ?? [],
@@ -158,7 +168,10 @@ const ConfirmDeleteModal = ({
         renderCell: ({ row }) => (
           <Button
             color="error"
-            onClick={() => handleDeleteRow("attendance", row.id)}
+            onClick={() => {
+              handleDeleteRow("attendance", row.id);
+              refetchGetUserWithRelations();
+            }}
           >
             Delete
           </Button>
@@ -167,6 +180,84 @@ const ConfirmDeleteModal = ({
     ],
     []
   );
+
+  const transferAdminColumns: GridColDef[] = [
+    {
+      field: "id",
+      headerName: "ID",
+      flex: 0.5,
+    },
+    {
+      field: "userId",
+      headerName: "User ID",
+      flex: 1,
+    },
+    {
+      field: "fromUserId",
+      headerName: "From User",
+      flex: 1,
+    },
+    {
+      field: "toUserId",
+      headerName: "To User",
+      flex: 1,
+    },
+    {
+      field: "status",
+      headerName: "Status",
+      flex: 1,
+      renderCell: (params) => {
+        const value = params.value as string;
+        let color = "default";
+        if (value === "APPROVED") color = "success";
+        if (value === "REJECTED") color = "error";
+        if (value === "PENDING") color = "warning";
+
+        return (
+          <Box
+            style={{
+              padding: "6px 12px",
+              borderRadius: 1,
+              backgroundColor:
+                color === "success"
+                  ? "#d1fae5"
+                  : color === "error"
+                  ? "#fee2e2"
+                  : color === "warning"
+                  ? "#fef3c7"
+                  : "#f3f4f6",
+              color:
+                color === "success"
+                  ? "#065f46"
+                  : color === "error"
+                  ? "#991b1b"
+                  : color === "warning"
+                  ? "#92400e"
+                  : "#374151",
+            }}
+          >
+            {value}
+          </Box>
+        );
+      },
+    },
+    {
+      field: "actions",
+      headerName: "Action",
+      flex: 1,
+      renderCell: ({ row }) => (
+        <Button
+          color="error"
+          onClick={() => {
+            handleDeleteRow("transferAdmin", row.id);
+            refetchGetUserWithRelations();
+          }}
+        >
+          Delete
+        </Button>
+      ),
+    },
+  ];
 
   const leaveRequestColumns: GridColDef[] = [
     { field: "id", headerName: "ID", flex: 1 },
@@ -221,7 +312,10 @@ const ConfirmDeleteModal = ({
       renderCell: ({ row }) => (
         <Button
           color="error"
-          onClick={() => handleDeleteRow("leaveRequests", row.id)}
+          onClick={() => {
+            handleDeleteRow("leaveRequests", row.id);
+            refetchGetUserWithRelations();
+          }}
         >
           Delete
         </Button>
@@ -265,7 +359,10 @@ const ConfirmDeleteModal = ({
       renderCell: ({ row }) => (
         <Button
           color="error"
-          onClick={() => handleDeleteRow("unlockRequests", row.id)}
+          onClick={() => {
+            handleDeleteRow("unlockRequests", row.id);
+            refetchGetUserWithRelations();
+          }}
         >
           Delete
         </Button>
@@ -287,7 +384,10 @@ const ConfirmDeleteModal = ({
         renderCell: ({ row }) => (
           <Button
             color="error"
-            onClick={() => handleDeleteRow("payroll", row.id)}
+            onClick={() => {
+              handleDeleteRow("payroll", row.id);
+              refetchGetUserWithRelations();
+            }}
           >
             Delete
           </Button>
@@ -315,6 +415,12 @@ const ConfirmDeleteModal = ({
       })) || [],
     [userData?.payrolls]
   );
+
+  const rowTransferAdmin = useMemo(() => {
+    if (!userData?.transferAdmin) return [];
+    const transfer = userData.transferAdmin;
+    return Array.isArray(transfer) ? transfer : [transfer];
+  }, [userData?.transferAdmin]);
 
   const rowDataUnlockRequests = useMemo(
     () =>
@@ -355,9 +461,27 @@ const ConfirmDeleteModal = ({
         { title: "Email", description: data.email, size: 8 },
         { title: "Mã NV", description: data.employeeNo, size: 6 },
         { title: "Tên", description: data.name, size: 6 },
-        { title: "Điện thoại", description: data.phone || "Chưa có", size: 6 },
+        { title: "Điện thoại", description: data.phone, size: 6 },
         { title: "Chức vụ", description: data.role, size: 6 },
-        { title: "Cấp bậc", description: data.rank || "Chưa có", size: 5 },
+        { title: "Cấp bậc", description: data.rank, size: 5 },
+        {
+          title: "Department",
+          description: data.department,
+          size: 6,
+        },
+        { title: "position", description: data.position, size: 6 },
+        {
+          title: "Last Login Date",
+          description: (
+            <Typography>
+              {formatDate(
+                DateFormatEnum.DD_MM_YYYY_HH_MM_SS,
+                data?.lastLoginDate
+              )}
+            </Typography>
+          ),
+          size: 5,
+        },
         {
           title: "Ngày vào làm",
           description: (
@@ -390,6 +514,21 @@ const ConfirmDeleteModal = ({
                 nextRowClick
                 rows={rowDataPayrolls}
                 columns={columnPayrolls}
+              />
+            </Box>
+          )}
+
+          {data.transferAdmin && (
+            <Box sx={{ mb: 3 }}>
+              <Typography variant="h6" gutterBottom>
+                Transfer Admin
+              </Typography>
+              <TableSection
+                setRows={(rows) => updateSelectedRows("transferAdmin", rows)}
+                isLoading={false}
+                nextRowClick
+                rows={rowTransferAdmin}
+                columns={transferAdminColumns}
               />
             </Box>
           )}

@@ -555,6 +555,21 @@ export const useCreateBatchAirport = () => {
   };
 };
 
+export const useUpdateFlightStatus = ({ id }: { id: number }) => {
+  const {
+    refetch: refetchUpdateFlightStatus,
+    loading: loadingUpdateFlightStatus,
+  } = useFetch<ResponseMessage, { status: string }>({
+    url: `/sys/flights/updateFlightStatus/${String(id)}`,
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchUpdateFlightStatus,
+    loadingUpdateFlightStatus,
+  };
+};
+
 export const useUpdateAirportById = (code: number) => {
   const { refetch: refetchUpdateAirport, loading: loadingUpdateAirport } =
     useFetch<ResponseMessage, UpdateAirportReq>({
@@ -737,16 +752,20 @@ export const usePermissionChangeRole = () => {
   };
 };
 
-export const useApproveTransfer = ({ id }: { id: number }) => {
-  const { refetch: refetchApproveTransfer, loading: loadingApproveTransfer } =
-    useFetch<ResponseMessage, void>({
-      url: `/sys/users/approveTransfer/${String(id)}`,
+export const useApproveOrRejectTransfer = () => {
+  const {
+    refetch: refetchApproveOrRejectTransfer,
+    loading: loadingApproveOrRejectTransfer,
+  } = useFetch<ResponseMessage, { userId: number; mode: "approve" | "reject" }>(
+    {
+      url: "/sys/users/modeTransfer",
       autoFetch: false,
       config: postMethod,
-    });
+    }
+  );
   return {
-    refetchApproveTransfer,
-    loadingApproveTransfer,
+    refetchApproveOrRejectTransfer,
+    loadingApproveOrRejectTransfer,
   };
 };
 

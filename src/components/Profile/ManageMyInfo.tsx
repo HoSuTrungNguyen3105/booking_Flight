@@ -14,7 +14,7 @@ import TableSection from "../../common/CustomRender/TableSection";
 import type { GridRowId } from "@mui/x-data-grid";
 import BatchUpdateEmployeeNo from "../User/Security/BatchUpdateEmployeeNo";
 import type { BatchEmployeeNoReq } from "../Api/usePostApi";
-// import ConfirmDeleteModal from "../Common/ConfirmDeleteModal";
+import ConfirmDeleteModal from "../Common/ConfirmDeleteModal";
 import DeleteUserModal from "../../common/Setting/Component/DeleteUserModal";
 import TransferAdminModal from "../../common/Setting/Component/TransferAdminModal";
 import { useAuth } from "../../context/AuthContext";
@@ -191,6 +191,19 @@ const ManageMyInfo = () => {
             // setIsValidate(true);
           }}
           onClose={() => closeModal("permissionChangeRole")}
+        />
+      )}
+
+      {openModal.relationData && selectedRow && (
+        <ConfirmDeleteModal
+          open={openModal.relationData}
+          // id={selectedRow.id}
+          id={selectedRow.id}
+          onSuccess={() => {
+            handleRefetchUserList();
+            closeModal("relationData");
+          }}
+          onClose={() => closeModal("relationData")}
         />
       )}
 

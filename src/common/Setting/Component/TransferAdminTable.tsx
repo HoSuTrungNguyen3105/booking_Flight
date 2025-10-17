@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import {
   Box,
   Button,
@@ -16,12 +16,16 @@ import { DateFormatEnum, formatDate } from "../../../hooks/format";
 import TableSection from "../../CustomRender/TableSection";
 import type { TypeStatus } from "../../../utils/type";
 import { usefindAllTransferRequests } from "../../../components/Api/useGetApi";
-import { useApproveTransfer } from "../../../components/Api/usePostApi";
 import { CheckCircle, Cancel } from "@mui/icons-material";
+import { useApproveOrRejectTransfer } from "../../../components/Api/usePostApi";
+import { useToast } from "../../../context/ToastContext";
 
 const TransferAdminTable = () => {
-  const { dataFindAllTransferRequests, loadingFindAllTransferRequests } =
-    usefindAllTransferRequests();
+  const {
+    dataFindAllTransferRequests,
+    refetchFindAllTransferRequests,
+    loadingFindAllTransferRequests,
+  } = usefindAllTransferRequests();
   const [transferRequestId, setTransferRequestId] = useState<number | null>(
     null
   );
@@ -30,10 +34,11 @@ const TransferAdminTable = () => {
   );
   const [openDialog, setOpenDialog] = useState(false);
 
-  const { refetchApproveTransfer } = useApproveTransfer({
-    id: transferRequestId as number,
-  });
+  // const { refetchApproveTransfer } = useApproveTransfer({
+  //   id: transferRequestId as number,
+  // });
 
+  const { refetchApproveOrRejectTransfer } = useApproveOrRejectTransfer();
   // Status UI
   const renderStatus = (status: TypeStatus) => {
     switch (status) {
@@ -75,15 +80,51 @@ const TransferAdminTable = () => {
     setTransferRequestId(id);
     setOpenDialog(true);
   };
+  const toast = useToast();
 
-  const handleConfirm = () => {
-    if (actionTransfer === "approve") {
-      refetchApproveTransfer();
-    } else {
-      console.log("Reject API call...");
+  // const handleConfirm = useCallback(async () => {
+  //   if (actionTransfer === "approve") {
+  //     // refetchApproveTransfer();
+  //     const res = await refetchApproveOrRejectTransfer({
+  //       userId: transferRequestId || 0,
+  //       mode: actionTransfer,
+  //     });
+  //     toast(res?.resultMessage || "Success");
+  //   } else {
+  //     const res = await refetchApproveOrRejectTransfer({
+  //       userId: transferRequestId || 0,
+  //       mode: actionTransfer,
+  //     });
+  //     toast(res?.resultMessage || "Success");
+  //   }
+  //   setOpenDialog(false);
+  // }, []);
+
+  const handleConfirm = useCallback(async () => {
+    if (!transferRequestId) return toast("Something went wrong!", "error");
+
+    try {
+      const res = await refetchApproveOrRejectTransfer({
+        userId: transferRequestId,
+        mode: actionTransfer,
+      });
+
+      if (res?.resultCode === "00") {
+        toast(res?.resultMessage || "Success");
+        refetchFindAllTransferRequests();
+      }
+    } catch (error) {
+      console.error("Error approving/rejecting transfer:", error);
+      toast("Something went wrong!");
+    } finally {
+      setOpenDialog(false);
     }
-    setOpenDialog(false);
-  };
+  }, [
+    actionTransfer,
+    transferRequestId,
+    refetchApproveOrRejectTransfer,
+    toast,
+  ]);
 
   const columns: GridColDef[] = useMemo(
     () => [
@@ -100,16 +141,6 @@ const TransferAdminTable = () => {
       {
         field: "requestedAt",
         headerName: "Requested At",
-        width: 180,
-        valueFormatter: (params) =>
-          formatDate(
-            DateFormatEnum.DD_MM_YYYY_HH_MM_SS,
-            params as string | number
-          ),
-      },
-      {
-        field: "approvedAt",
-        headerName: "Approved At",
         width: 180,
         valueFormatter: (params) =>
           formatDate(
@@ -149,19 +180,34 @@ const TransferAdminTable = () => {
   return (
     <Box
       sx={{
-        height: 500,
+        height: "auto",
         width: "100%",
-        bgcolor: "background.paper",
-        p: 2,
-        borderRadius: 2,
-        boxShadow: 3,
       }}
     >
+      <Box
+        sx={{
+          backgroundColor: "white",
+          padding: "10px 16px",
+          border: 1,
+          borderColor: "grey.200",
+          borderLeft: "none",
+          borderRight: "none",
+        }}
+      >
+        <Typography component="p" variant="subtitle1" fontWeight="600">
+          Transfer Admin Authority
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          You can request or approve the transfer of admin privileges.
+        </Typography>
+      </Box>
       <TableSection
         rows={rowAllTransferRequests}
         columns={columns}
         isLoading={loadingFindAllTransferRequests}
         setRows={() => {}}
+        nextRowClick
+        largeThan
         handleRowClick={(params) => {
           setTransferRequestId(params.id as number);
         }}

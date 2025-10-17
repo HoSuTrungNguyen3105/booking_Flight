@@ -315,9 +315,12 @@ export type BaseUserData = {
   userAlias?: string;
   remember?: boolean;
   pictureUrl?: string;
+  status: string;
   rank?: string;
   role?: UserRoleType;
   employeeNo?: string;
+  department: string;
+  position: string;
   baseSalary?: number;
   hireDate?: number;
   phone?: string;
@@ -325,6 +328,7 @@ export type BaseUserData = {
   createdAt?: string;
   prevPassword?: string;
   loginFailCnt?: number;
+  lastLoginDate: number;
   accountLockYn?: string;
   mfaEnabledYn?: string;
   mfaSecretKey?: string;

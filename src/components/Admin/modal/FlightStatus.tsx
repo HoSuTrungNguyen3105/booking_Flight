@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   Typography,
   Paper,
@@ -15,6 +15,7 @@ import { useGetAllFlightIds } from "../../Api/useGetApi";
 import SelectDropdown, {
   type ActionType,
 } from "../../../common/Dropdown/SelectDropdown";
+import { useUpdateFlightStatus } from "../../Api/usePostApi";
 
 type ValidChipColor = ChipProps["color"];
 
@@ -100,19 +101,21 @@ const FlightStatus = () => {
   const { getAllFlightIds } = useGetAllFlightIds();
   const [edited, setEdited] = useState<Record<number, string>>({});
 
+  const [flightId, setFlightId] = useState<number>(0);
+
   const handleChange = (flightId: number, newStatus: string) => {
     setEdited((prev) => ({ ...prev, [flightId]: newStatus }));
   };
 
-  const onUpdateStatus = (id: number, status: string) => {
-    // TODO: Implement API call to update flight status
-    console.log(`Updating flight ${id} to status: ${status}`);
+  const { refetchUpdateFlightStatus } = useUpdateFlightStatus({ id: flightId });
 
-    // After successful update, you might want to:
-    // 1. Refresh the flight list
-    // 2. Remove the flight from edited state
-    // 3. Show success notification
-  };
+  const onUpdateStatus = useCallback(async (id: number, status: string) => {
+    // TODO: Implement API call to update flight status
+    const res = await refetchUpdateFlightStatus({
+      status,
+    });
+    console.log(`Updating flight ${id} to status: ${status}`, res);
+  }, []);
 
   const handleSave = (flightId: number) => {
     const newStatus = edited[flightId];
