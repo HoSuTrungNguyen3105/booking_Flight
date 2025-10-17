@@ -11,11 +11,11 @@ import {
   type ChipProps,
 } from "@mui/material";
 import { Save as SaveIcon } from "@mui/icons-material";
-import { useGetAllFlightIds } from "../../Api/useGetApi";
+import { useGetAllFlightIds } from "../../../Api/useGetApi";
 import SelectDropdown, {
   type ActionType,
-} from "../../../common/Dropdown/SelectDropdown";
-import { useUpdateFlightStatus } from "../../Api/usePostApi";
+} from "../../../../common/Dropdown/SelectDropdown";
+import { useUpdateFlightStatus } from "../../../Api/usePostApi";
 
 type ValidChipColor = ChipProps["color"];
 
@@ -98,30 +98,32 @@ const statusOptions: ActionType[] = [
 ];
 
 const FlightStatus = () => {
-  const { getAllFlightIds } = useGetAllFlightIds();
+  const { getAllFlightIds, refetchGetAllFlightIds } = useGetAllFlightIds();
   const [edited, setEdited] = useState<Record<number, string>>({});
 
-  const [flightId, setFlightId] = useState<number>(0);
+  // const [flightId, setFlightId] = useState<number | null>(null);
 
   const handleChange = (flightId: number, newStatus: string) => {
     setEdited((prev) => ({ ...prev, [flightId]: newStatus }));
   };
 
-  const { refetchUpdateFlightStatus } = useUpdateFlightStatus({ id: flightId });
+  const { refetchUpdateFlightStatus } = useUpdateFlightStatus();
 
   const onUpdateStatus = useCallback(async (id: number, status: string) => {
-    // TODO: Implement API call to update flight status
+    // setFlightId(id);
     const res = await refetchUpdateFlightStatus({
+      id,
       status,
     });
-    console.log(`Updating flight ${id} to status: ${status}`, res);
+    if (res?.resultCode === "00") {
+      refetchGetAllFlightIds();
+    }
   }, []);
 
   const handleSave = (flightId: number) => {
     const newStatus = edited[flightId];
     if (newStatus) {
       onUpdateStatus(flightId, newStatus);
-      // Optionally clear the edited state for this flight after save
       setEdited((prev) => {
         const newState = { ...prev };
         delete newState[flightId];

@@ -90,7 +90,6 @@ const ManageMyInformation = () => {
 
   const handleUpdateMyInfo = useCallback(async () => {
     try {
-      console.log("Updating my info:", myInfo);
       const res = await refetchUpdateUserInfo(myInfo);
       if (res?.resultCode === "00") {
         setOpenConfirmModal(false);
@@ -136,7 +135,7 @@ const ManageMyInformation = () => {
     >
       <UserInfoSection myInfo={myInfo} onChange={handleChange} />
 
-      <DataAccessPermissionSection />
+      {/* <DataAccessPermissionSection /> */}
 
       <TransferAuthoritySection
         myInfo={transferToMyInfo}

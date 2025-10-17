@@ -555,12 +555,12 @@ export const useCreateBatchAirport = () => {
   };
 };
 
-export const useUpdateFlightStatus = ({ id }: { id: number }) => {
+export const useUpdateFlightStatus = () => {
   const {
     refetch: refetchUpdateFlightStatus,
     loading: loadingUpdateFlightStatus,
-  } = useFetch<ResponseMessage, { status: string }>({
-    url: `/sys/flights/updateFlightStatus/${String(id)}`,
+  } = useFetch<ResponseMessage, { id: number; status: string }>({
+    url: "/sys/flights/updateFlightStatus",
     autoFetch: false,
     config: postMethod,
   });

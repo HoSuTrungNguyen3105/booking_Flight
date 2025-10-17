@@ -42,7 +42,7 @@ import TicketTable from "../components/Sample/TicketTable";
 import BulkMealCreator from "../components/Admin/component/Meal/BulkMealCreator";
 import TransferAdminTable from "../common/Setting/Component/TransferAdminTable";
 import MealList from "../components/Admin/component/Meal/MealListTable";
-import FlightStatus from "../components/Admin/modal/FlightStatus";
+import FlightStatus from "../components/Admin/component/Flight/FlightStatus";
 
 const routes = [
   {

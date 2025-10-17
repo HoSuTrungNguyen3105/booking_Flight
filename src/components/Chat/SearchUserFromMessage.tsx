@@ -1,17 +1,14 @@
 import React, { memo, useCallback, useEffect, useState } from "react";
-import { Box, Stack, Grid } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import {
   useFindUserFromMessage,
   type SearchEmailFromSidebarMessageRes,
 } from "../Api/usePostApi";
 import { useAuth } from "../../context/AuthContext";
-import useDebounce from "../../context/use[custom]/useDebounce";
 import type { DropdownOptions } from "../../common/Dropdown/type";
 import { SearchInputWithList } from "../../common/Dropdown/SearchInputWithList";
 
 const SearchUserFromMessage: React.FC = () => {
-  const [query, setQuery] = useState("");
-  const searchData = useDebounce(query, 300);
   const [options, setOptions] = useState<DropdownOptions[]>([]);
 
   const { refetchUserFromMessage } = useFindUserFromMessage();
@@ -21,11 +18,8 @@ const SearchUserFromMessage: React.FC = () => {
   const [optionWhenSearch, setOptionWhenSearch] =
     useState<SearchEmailFromSidebarMessageRes[]>();
 
-  // Sửa lại hàm handleInputChange để trả về promise đúng format
   const handleInputChange = useCallback(
     async (searchText: string): Promise<DropdownOptions[]> => {
-      setQuery(searchText);
-
       if (!searchText.trim() || !userId) {
         setOptions([]);
         return [];

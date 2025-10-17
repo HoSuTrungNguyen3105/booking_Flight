@@ -440,7 +440,6 @@ const ConfirmDeleteModal = ({
     [userData?.payrolls]
   );
 
-  /** Actions in modal footer */
   const renderActions = useCallback(() => {
     return (
       <Box display="flex" gap={1} justifyContent="flex-end" alignItems="center">
@@ -503,7 +502,7 @@ const ConfirmDeleteModal = ({
 
           <DetailSection data={employeeInfo} />
 
-          {data.payrolls?.length > 0 && (
+          {selectedRows.payroll.length > 0 && (
             <Box sx={{ mb: 3 }}>
               <Typography variant="h6" gutterBottom>
                 Danh sách Payrolls
@@ -518,7 +517,7 @@ const ConfirmDeleteModal = ({
             </Box>
           )}
 
-          {data.transferAdmin && (
+          {selectedRows.transferAdmin && (
             <Box sx={{ mb: 3 }}>
               <Typography variant="h6" gutterBottom>
                 Transfer Admin
@@ -534,7 +533,7 @@ const ConfirmDeleteModal = ({
           )}
 
           {/* Attendance */}
-          {data.attendance?.length > 0 && (
+          {selectedRows.attendance?.length > 0 && (
             <Box sx={{ mb: 3 }}>
               <Typography variant="h6" gutterBottom>
                 Attendance
@@ -549,7 +548,7 @@ const ConfirmDeleteModal = ({
             </Box>
           )}
 
-          {data.payrolls?.length > 0 && (
+          {selectedRows.payroll?.length > 0 && (
             <Box sx={{ mb: 3 }}>
               <Typography variant="h6" gutterBottom>
                 Payroll
@@ -564,7 +563,7 @@ const ConfirmDeleteModal = ({
             </Box>
           )}
 
-          {data.unlockRequests?.length > 0 && (
+          {selectedRows.unlockRequests?.length > 0 && (
             <Box sx={{ mb: 3 }}>
               <Typography variant="h6" gutterBottom>
                 Danh sách unlock Requests
@@ -580,7 +579,7 @@ const ConfirmDeleteModal = ({
           )}
 
           {/* Attendance */}
-          {data.leaveRequests?.length > 0 && (
+          {selectedRows.leaveRequests?.length > 0 && (
             <Box sx={{ mb: 3 }}>
               <Typography variant="h6" gutterBottom>
                 Leave Requests
@@ -597,7 +596,7 @@ const ConfirmDeleteModal = ({
         </Box>
       );
     },
-    [rowDataPayrolls, rowDataAttendance]
+    [rowDataPayrolls, selectedRows, rowDataAttendance]
   );
 
   return (

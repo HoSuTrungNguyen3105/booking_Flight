@@ -1,9 +1,10 @@
 import React, { useMemo } from "react";
-import { Box, Typography, Card, CardContent, Chip } from "@mui/material";
+import { Box, Typography, Card, CardContent, Chip, Stack } from "@mui/material";
 import { useGetBaggageData } from "../Api/useGetApi";
 import theme from "../../scss/theme";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import TableSection from "../../common/CustomRender/TableSection";
+
 const getBaggageStatusStyle = (status: string) => {
   switch (status) {
     case "CHECKED_IN":
@@ -154,32 +155,21 @@ const AdditionalServicesPage: React.FC = () => {
         sx={{
           color: theme.palette.primary.main,
           fontWeight: "bold",
-          mb: 2,
+          mb: 1,
         }}
       >
-        Dịch vụ Hành lý
+        Baggage Management
       </Typography>
-      <Card>
-        <CardContent>
-          <Typography
-            variant="h6"
-            sx={{ color: theme.palette.primary.main, mb: 2 }}
-          >
-            Hành lý ký gửi
-          </Typography>
-
-          <Box sx={{ height: 450, width: "100%" }}>
-            <TableSection
-              rows={rowData}
-              columns={columns}
-              isLoading={false}
-              setRows={() => {}}
-              nextRowClick
-              largeThan
-            />
-          </Box>
-        </CardContent>
-      </Card>
+      <Box sx={{ width: "100%" }}>
+        <TableSection
+          rows={rowData}
+          columns={columns}
+          isLoading={false}
+          setRows={() => {}}
+          nextRowClick
+          largeThan
+        />
+      </Box>
     </Box>
   );
 };

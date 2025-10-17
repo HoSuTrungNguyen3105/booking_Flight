@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { Box, Chip, Typography, Stack } from "@mui/material";
 import type { GridColDef } from "@mui/x-data-grid";
 import TableSection from "../../common/CustomRender/TableSection";
@@ -7,9 +7,8 @@ import { useGetAllTicketInfo } from "../Api/useGetApi";
 import { DateFormatEnum, formatDate } from "../../hooks/format";
 
 const TicketTable: React.FC = () => {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const { getTicketInfo } = useGetAllTicketInfo();
+  const { getTicketInfo, loadingGetTicketInfo } = useGetAllTicketInfo();
+
   const rowData = useMemo(
     () =>
       getTicketInfo?.list?.map((item) => ({
@@ -18,23 +17,6 @@ const TicketTable: React.FC = () => {
       })) || [],
     [getTicketInfo]
   );
-
-  const fetchTickets = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      //   const res = await axios.get("http://localhost:3000/api/tickets");
-      //   setTickets(res.data);
-    } catch (err) {
-      setError("Không thể tải danh sách vé!");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchTickets();
-  }, []);
 
   const getBaggageStatusColor = (status: string) => {
     switch (status) {
@@ -88,7 +70,7 @@ const TicketTable: React.FC = () => {
   const columns: GridColDef[] = [
     { field: "ticketNo", headerName: "Mã vé", flex: 1 },
     { field: "passengerId", headerName: "Hành khách", flex: 1 },
-    { field: "flightId", headerName: "Mã Bay", flex: 0.5 },
+    { field: "flightId", headerName: "Mã Bay", flex: 1 },
     {
       field: "seatClass",
       headerName: "Hạng ghế",
@@ -101,11 +83,11 @@ const TicketTable: React.FC = () => {
         />
       ),
     },
-    { field: "seatNo", headerName: "Số ghế", flex: 0.5 },
+    { field: "seatNo", headerName: "Số ghế", flex: 1 },
     {
       field: "bookedAt",
       headerName: "Ngày đặt",
-      flex: 1.2,
+      flex: 1,
       renderCell: (params) => {
         const timestamp = Number(params.value);
         const date = new Date(timestamp);
@@ -115,7 +97,7 @@ const TicketTable: React.FC = () => {
     {
       field: "boardingPass",
       headerName: "Thẻ lên máy bay",
-      flex: 2,
+      flex: 1,
       renderCell: (params) =>
         params.value ? (
           <Stack spacing={0.5}>
@@ -137,10 +119,10 @@ const TicketTable: React.FC = () => {
     {
       field: "baggage",
       headerName: "Hành lý",
-      flex: 2,
+      flex: 1,
       renderCell: (params) =>
         params.value && params.value.length > 0 ? (
-          <Stack spacing={0.5}>
+          <Box>
             {params.value.map((b: Baggage) => {
               const { label, sx } = getBaggageStatusColor(b.status);
               return (
@@ -155,7 +137,7 @@ const TicketTable: React.FC = () => {
                 />
               );
             })}
-          </Stack>
+          </Box>
         ) : (
           <Typography color="text.secondary">Không có</Typography>
         ),
@@ -164,15 +146,13 @@ const TicketTable: React.FC = () => {
 
   return (
     <Box sx={{ height: "auto", width: "100%" }}>
-      {error && (
-        <Typography color="error" mb={1}>
-          {error}
-        </Typography>
-      )}
+      <Typography variant="h5" fontWeight="bold" gutterBottom>
+        Ticket Management
+      </Typography>
       <TableSection
         rows={rowData}
         columns={columns}
-        isLoading={loading}
+        isLoading={loadingGetTicketInfo}
         setRows={() => {}}
         nextRowClick
         largeThan

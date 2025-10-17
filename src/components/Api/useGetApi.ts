@@ -396,10 +396,11 @@ export const useExportFlightExcel = () => {
 };
 
 export const useGetAllTicketInfo = () => {
-  const { data: getTicketInfo, refetch: refetchGetTicketInfo } = useFetch<
-    TicketResponseMessage,
-    null
-  >({
+  const {
+    data: getTicketInfo,
+    refetch: refetchGetTicketInfo,
+    loading: loadingGetTicketInfo,
+  } = useFetch<TicketResponseMessage, null>({
     url: "/sys/flights/tickets",
     autoFetch: true,
     config: getMethod,
@@ -407,6 +408,7 @@ export const useGetAllTicketInfo = () => {
   return {
     getTicketInfo,
     refetchGetTicketInfo,
+    loadingGetTicketInfo,
   };
 };
 

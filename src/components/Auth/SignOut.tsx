@@ -1,7 +1,7 @@
 import { memo, useState, useCallback } from "react";
 import { useAuth } from "../../context/AuthContext";
 import DialogConfirm from "../../common/Modal/DialogConfirm";
-import { Box, Button } from "@mui/material";
+import { Button } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
 
 const SignOut = () => {

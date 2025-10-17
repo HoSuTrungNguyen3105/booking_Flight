@@ -115,7 +115,7 @@ const LeaveRequestGrid = () => {
       flex: 1,
       renderCell: (params: GridRenderCellParams) => (
         <CustomPopover
-          icon="Detail"
+          text="Detail"
           hideSubmitButton
           handleAction={() => {}}
           option={[params.value]}
@@ -162,7 +162,8 @@ const LeaveRequestGrid = () => {
       headerName: "Thao tác",
       renderCell: (params: GridRenderCellParams) => (
         <CustomPopover
-          icon="Detail"
+          hideSubmitButton
+          text="Detail"
           handleAction={(opt) => {
             if (opt === "View") handleView(params.row);
           }}
@@ -192,14 +193,9 @@ const LeaveRequestGrid = () => {
         <Typography variant="h5" fontWeight="bold" color="primary.main">
           Danh sách đơn xin nghỉ phép
         </Typography>
-        {/* {user?.role === UserRole.USER && ( */}
-        <Box>
-          <Typography></Typography>
-          <Button variant="contained" onClick={() => setOnCreateRequest(true)}>
-            Create Request leave
-          </Button>
-        </Box>
-        {/* )} */}
+        <Button variant="contained" onClick={() => setOnCreateRequest(true)}>
+          Create Request leave
+        </Button>
       </Stack>
 
       <Box p={2}>

@@ -15,6 +15,8 @@ const UnlockRequestTable = () => {
   const { getUnlockRequests } = useGetUnlockRequests();
   const [unlockRows, setUnlockRows] = useState<GridRowDef[]>([]);
 
+  console.log("unlockRows", unlockRows);
+
   const rowData = useMemo(
     () =>
       getUnlockRequests?.list?.map((item) => ({
@@ -107,8 +109,8 @@ const UnlockRequestTable = () => {
 
   return (
     <Box sx={{ height: 400, width: "100%" }}>
-      <Typography variant="h6" fontWeight="bold" mb={2}>
-        Unlock Request
+      <Typography variant="h5" fontWeight="bold" gutterBottom>
+        Unlock Request Management
       </Typography>
       <TableSection
         isLoading={false}

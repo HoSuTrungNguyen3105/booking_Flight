@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Badge, Box, Button, Chip, Typography } from "@mui/material";
 import { memo, useCallback, useEffect, useState } from "react";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
 import BaseModal from "../../../../common/Modal/BaseModal";
@@ -10,6 +10,8 @@ import {
   type SendRequestProps,
 } from "../../../Api/usePostApi";
 import type { LeaveRequest } from "../../../../utils/type";
+import { Note, Person } from "@mui/icons-material";
+import InputTextArea from "../../../../common/Input/InputTextArea";
 
 interface IRequestLeaveActionModalProps {
   open: boolean;
@@ -43,7 +45,6 @@ const RequestLeaveActionModal = ({
     }
   }, [open]);
 
-  // ✅ Gộp logic chung cho 2 hành động
   const handleSubmit = useCallback(
     async (type: "approve" | "reject") => {
       if (!user?.id || !selectedRows?.id) return;
@@ -100,28 +101,78 @@ const RequestLeaveActionModal = ({
     </Box>
   );
 
-  // ✅ Render nội dung modal
   const renderContent = (
-    <Box display="flex" flexDirection="column" gap={2} maxHeight="30rem">
-      <Typography variant="body2" fontWeight={500}>
-        Leave Request ID
-      </Typography>
-      <InputTextField value={String(selectedRows?.id ?? "")} disabled />
+    <Box display="flex" flexDirection="column" gap={3} maxHeight="30rem">
+      {/* Header */}
+      <Box>
+        <Typography variant="h6" fontWeight={600} gutterBottom>
+          Xử lý yêu cầu nghỉ phép
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          Vui lòng xem xét và phê duyệt yêu cầu nghỉ phép
+        </Typography>
+      </Box>
 
-      <Typography variant="body2" fontWeight={500}>
-        Ghi chú
-      </Typography>
-      <InputTextField
-        value={note}
-        onChange={setNote}
-        placeholder="Nhập ghi chú cho yêu cầu"
-      />
+      <Box>
+        <Box display="flex" alignItems="center" gap={1} mb={1}>
+          <Badge color="primary" />
+          <Typography variant="body2" fontWeight={500}>
+            Mã yêu cầu
+          </Typography>
+        </Box>
+        <InputTextField
+          value={String(selectedRows?.id ?? "")}
+          disabled
+          sx={{
+            "& .MuiInputBase-input": {
+              fontWeight: 500,
+              backgroundColor: "action.hover",
+            },
+          }}
+        />
+      </Box>
 
-      <Typography variant="body2" fontWeight={500}>
-        Approver ID
-      </Typography>
-      <InputTextField value={String(user?.id ?? "")} disabled />
+      <Box>
+        <Box display="flex" alignItems="center" gap={1} mb={1}>
+          <Note fontSize="small" color="primary" />
+          <Typography variant="body2" fontWeight={500}>
+            Ghi chú
+          </Typography>
+          <Chip
+            label="Tùy chọn"
+            size="small"
+            variant="outlined"
+            color="default"
+          />
+        </Box>
+        <InputTextArea
+          value={note}
+          onChange={setNote}
+          placeholder="Nhập ghi chú cho yêu cầu nghỉ phép..."
+        />
+      </Box>
 
+      {/* Approver Info */}
+      <Box>
+        <Box display="flex" alignItems="center" gap={1} mb={1}>
+          <Person fontSize="small" color="primary" />
+          <Typography variant="body2" fontWeight={500}>
+            Người phê duyệt
+          </Typography>
+        </Box>
+        <InputTextField value={String(user?.id ?? "")} disabled />
+        {user?.name && (
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            sx={{ mt: 0.5, display: "block" }}
+          >
+            {user.name}
+          </Typography>
+        )}
+      </Box>
+
+      {/* Actions */}
       {renderActions}
     </Box>
   );

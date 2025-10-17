@@ -9,7 +9,7 @@ import {
   DialogActions,
 } from "@mui/material";
 import { memo, useCallback, useState } from "react";
-import { UserRole, type UserData } from "../../../utils/type";
+import { UserRole } from "../../../utils/type";
 import theme from "../../../scss/theme";
 import { useTranslation } from "react-i18next";
 import type { UserDataToTransferAdmin } from "../ManageMyInformation";
@@ -33,12 +33,6 @@ const TransferAuthoritySection = ({
     isAdmin &&
     myInfo.fromTransferAdminUserYn === "N" &&
     myInfo.toTransferAdminUserYn !== "Y";
-
-  console.log(" myInfo.fromTransferAdminUserYn ;", myInfo);
-  console.log(
-    " myInfo.fromTransferAdminUserYn ;",
-    myInfo?.toTransferAdminUserYn
-  );
 
   const isProgressTransferAdmin =
     isAdmin &&

@@ -12,7 +12,6 @@ import {
   Notifications,
   BarChart,
   Restaurant,
-  Home,
   Forum,
 } from "@mui/icons-material";
 import type { ROUTE_PATHS } from "../routers/RoutePath";
@@ -48,7 +47,6 @@ export const menuData: MenuSection[] = [
             label: "Quản lý Terminal",
             icon: <Apartment />,
           },
-          { id: "ChatApp", label: "Trò chuyện", icon: <Forum /> },
           {
             id: "TicketSalesDashboard",
             label: "Thống kê vé",
