@@ -232,7 +232,8 @@ export interface Airport {
   updatedAt?: number | string;
 }
 
-export interface AirportTypeWithError {
+export interface TypeWithErrorResponse {
+  code?: string;
   errorCode: string;
   errorMessage: string;
 }
@@ -278,7 +279,7 @@ export type StatusResponseMessage = DetailResponseMessage<FlightInStatus>;
 export type AircraftResponseMessage = DetailResponseMessage<Aircraft>;
 
 export type AirportCreateResponseMessage =
-  DetailResponseMessage<AirportTypeWithError>;
+  DetailResponseMessage<TypeWithErrorResponse>;
 
 export type AirportResponseMessage = DetailResponseMessage<Airport>;
 

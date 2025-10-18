@@ -11,20 +11,22 @@ import {
 } from "@mui/material";
 import { Add, Delete } from "@mui/icons-material";
 import axios from "axios";
+import type { FlightFormData } from "./FlightUpdateModal";
+import { useCreateMultiFlight } from "../../../Api/usePostApi";
 
-type CreateFlightDto = {
-  flightNo: string;
-  flightType: string;
-  departureAirport: string;
-  arrivalAirport: string;
-  status: string;
-  aircraftCode: string;
-  terminal: string;
-  scheduledDeparture: string;
-  scheduledArrival: string;
-  priceEconomy: number;
-  priceBusiness: number;
-};
+// type CreateFlightDto = {
+//   flightNo: string;
+//   flightType: string;
+//   departureAirport: string;
+//   arrivalAirport: string;
+//   status: string;
+//   aircraftCode: string;
+//   terminal: string;
+//   scheduledDeparture: string;
+//   scheduledArrival: string;
+//   priceEconomy: number;
+//   priceBusiness: number;
+// };
 
 type FlightError = {
   errorCode: string;
@@ -32,7 +34,7 @@ type FlightError = {
 };
 
 const FlightBatchCreator: React.FC = () => {
-  const [flights, setFlights] = useState<CreateFlightDto[]>([
+  const [flights, setFlights] = useState<FlightFormData[]>([
     {
       flightNo: "",
       flightType: "",
@@ -41,8 +43,8 @@ const FlightBatchCreator: React.FC = () => {
       status: "SCHEDULED",
       aircraftCode: "",
       terminal: "",
-      scheduledDeparture: "",
-      scheduledArrival: "",
+      scheduledDeparture: 0,
+      scheduledArrival: 0,
       priceEconomy: 0,
       priceBusiness: 0,
     },
@@ -52,7 +54,7 @@ const FlightBatchCreator: React.FC = () => {
 
   const handleChange = (
     index: number,
-    field: keyof CreateFlightDto,
+    field: keyof FlightFormData,
     value: string | number
   ) => {
     const newFlights = [...flights];
@@ -71,8 +73,8 @@ const FlightBatchCreator: React.FC = () => {
         status: "SCHEDULED",
         aircraftCode: "",
         terminal: "",
-        scheduledDeparture: "",
-        scheduledArrival: "",
+        scheduledDeparture: 0,
+        scheduledArrival: 0,
         priceEconomy: 0,
         priceBusiness: 0,
       },
@@ -84,30 +86,27 @@ const FlightBatchCreator: React.FC = () => {
     setFlights(flights.filter((_, i) => i !== index));
   };
 
+  const { refetchCreateMultiFlight } = useCreateMultiFlight();
+
   const handleSubmit = async () => {
     try {
-      const res = await axios.post(
-        "http://localhost:3000/flights/createMany",
-        flights
-      );
-      const result = res.data;
-
-      if (result.resultCode === "00") {
+      const result = await refetchCreateMultiFlight(flights);
+      console.log("res", result);
+      if (result?.resultCode === "00") {
         const errorMap: Record<number, string> = {};
-        result.list?.forEach((item: FlightError, idx: number) => {
-          if (item.errorCode !== "00") {
-            errorMap[idx] = item.errorMessage;
-          }
-        });
+        // result.?.forEach((item: FlightError, idx: number) => {
+        //   if (item.errorCode !== "00") {
+        //     errorMap[idx] = item.errorMessage;
+        //   }
+        // });
         setErrors(errorMap);
 
-        // reset những flight thành công
         const newFlights = flights.map((f, idx) =>
           errorMap[idx] ? f : { ...f, flightNo: "", aircraftCode: "" }
         );
         setFlights(newFlights);
       } else {
-        alert(result.resultMessage || "Có lỗi xảy ra");
+        console.error(result?.resultMessage);
       }
     } catch (err) {
       console.error(err);

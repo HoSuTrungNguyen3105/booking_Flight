@@ -1,11 +1,7 @@
-import { useMemo, useState, useEffect, useCallback } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { type GridColDef, type GridRowId } from "@mui/x-data-grid";
-import {
-  useExportFlightExcel,
-  useGetFlightData,
-  useGetMeal,
-} from "../../../Api/useGetApi";
-import { Box, Button, Grid, Stack, Typography } from "@mui/material";
+import { useExportFlightExcel, useGetFlightData } from "../../../Api/useGetApi";
+import { Box, Button, Typography } from "@mui/material";
 import { type GridRowDef } from "../../../../common/DataGrid/index";
 import { DateFormatEnum, formatDateKR } from "../../../../hooks/format";
 import FlightModalTriggerManagement from "./FlightModalTriggerManagement";
@@ -18,38 +14,38 @@ export default function FlightList() {
   // const { flightBookingData, loadingFlightBookingData } = useGetMeal();
   const { getFlightData, refetchGetFlightData, loadingFlightData } =
     useGetFlightData();
-  const [openModalFlightMealRows, setOpenModalFlightMealRows] =
-    useState<boolean>(false);
+  // const [openModalFlightMealRows, setOpenModalFlightMealRows] =
+  //   useState<boolean>(false);
   const { exportExcel, loading } = useExportFlightExcel();
-  const [selectedMealRows, setSelectedMealRows] = useState<GridRowDef[]>([]);
+  // const [selectedMealRows, setSelectedMealRows] = useState<GridRowDef[]>([]);
   const [selectedFlightRows, setSelectedFlightRows] = useState<GridRowDef[]>(
     []
   );
-  const [mealRows, setMealRows] = useState<GridRowDef[]>([]);
+  // const [mealRows, setMealRows] = useState<GridRowDef[]>([]);
   const [flightRows, setFlightRows] = useState<GridRowDef[]>([]);
 
-  const [selectedFlightForSeat, setSelectedFlightForSeat] = useState<
-    number | null
-  >(null);
+  // const [selectedFlightForSeat, setSelectedFlightForSeat] = useState<
+  //   number | null
+  // >(null);
 
   const [selectedFlightToViewInfo, setSelectedFlightToViewInfo] = useState<
     number | null
   >(null);
 
   const [selectViewDetail, setSelectViewDetail] = useState<boolean>(false);
-  const [selectMealRowId, setSelectMealRowId] = useState<number>(0);
-  const handleMealFlightClickButton = (id: number) => {
-    console.log("id", id);
-    setSelectMealRowId(id);
-    setOpenModalFlightMealRows(true);
-  };
+  // const [selectMealRowId, setSelectMealRowId] = useState<number>(0);
+  // const handleMealFlightClickButton = (id: number) => {
+  //   console.log("id", id);
+  //   setSelectMealRowId(id);
+  //   setOpenModalFlightMealRows(true);
+  // };
 
-  const handleMealRowSelection = (selectedIds: GridRowId[]) => {
-    const newSelectedRows = mealRows.filter((row) =>
-      selectedIds.includes(row.id)
-    );
-    setSelectedMealRows(newSelectedRows);
-  };
+  // const handleMealRowSelection = (selectedIds: GridRowId[]) => {
+  //   const newSelectedRows = mealRows.filter((row) =>
+  //     selectedIds.includes(row.id)
+  //   );
+  //   setSelectedMealRows(newSelectedRows);
+  // };
 
   const handleFlightRowSelection = (selectedIds: GridRowId[]) => {
     const newSelectedRows = flightRows.filter((row) =>
@@ -85,37 +81,6 @@ export default function FlightList() {
   useEffect(() => {
     setFlightRows(rowsGetFlightData);
   }, [rowsGetFlightData]);
-
-  const handleDeleteMeals = useCallback((mealIds: GridRowDef[]) => {
-    console.log("Deleting meals with IDs:", mealIds);
-  }, []);
-
-  const columnFlightBookingData: GridColDef[] = [
-    { field: "mealCode", headerName: "Meal Code", flex: 1 },
-    { field: "name", headerName: "Tên món", flex: 1 },
-    { field: "mealType", headerName: "Loại", flex: 1 },
-    { field: "price", headerName: "Giá ($)", flex: 1 },
-    { field: "description", headerName: "Mô tả", flex: 1.5 },
-    {
-      field: "flightMeals",
-      headerName: "Flight Meals",
-      flex: 2,
-      renderCell: (params) =>
-        Array.isArray(params.value) && params.value.length > 0 ? (
-          <Button
-            onClick={() => {
-              const flightMealId = params.row.flightMeals[0].id;
-              handleMealFlightClickButton(flightMealId);
-              setOpenModalFlightMealRows(true);
-            }}
-          >
-            Xem chi tiết
-          </Button>
-        ) : (
-          "Không có chuyến bay"
-        ),
-    },
-  ];
 
   const columnsFlightData: GridColDef[] = [
     { field: "flightNo", headerName: "Flight No", flex: 1 },
@@ -168,20 +133,20 @@ export default function FlightList() {
         </Button>
       ),
     },
-    {
-      field: "seatOption",
-      headerName: "Seat",
-      flex: 1,
-      renderCell: (params) => (
-        <Button
-          size="small"
-          variant="outlined"
-          onClick={() => setSelectedFlightForSeat(params.row.id)}
-        >
-          Manage Seats
-        </Button>
-      ),
-    },
+    // {
+    //   field: "seatOption",
+    //   headerName: "Seat",
+    //   flex: 1,
+    //   renderCell: (params) => (
+    //     <Button
+    //       size="small"
+    //       variant="outlined"
+    //       onClick={() => setSelectedFlightForSeat(params.row.id)}
+    //     >
+    //       Manage Seats
+    //     </Button>
+    //   ),
+    // },
   ];
 
   if (selectViewDetail) {

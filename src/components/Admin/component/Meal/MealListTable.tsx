@@ -117,7 +117,10 @@ export default function MealList() {
   }
 
   return (
-    <div style={{ height: 500, width: "100%" }}>
+    <Box sx={{ height: 500, width: "100%" }}>
+      <Typography component="p" variant="subtitle1" fontWeight="600">
+        Meal List
+      </Typography>
       <TableSection
         columns={columnFlightMealData}
         setRows={setFlightRows}
@@ -145,6 +148,6 @@ export default function MealList() {
           </Button>
         </Box>
       )}
-    </div>
+    </Box>
   );
 }

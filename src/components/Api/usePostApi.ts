@@ -555,6 +555,20 @@ export const useCreateBatchAirport = () => {
   };
 };
 
+export const useCreateMultiFlight = () => {
+  const { refetch: refetchCreateMultiFlight } = useFetch<
+    ResponseMessage,
+    FlightFormData[]
+  >({
+    url: "/sys/flights/bulk-create",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchCreateMultiFlight,
+  };
+};
+
 export const useUpdateFlightStatus = () => {
   const {
     refetch: refetchUpdateFlightStatus,

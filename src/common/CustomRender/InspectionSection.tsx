@@ -1,11 +1,8 @@
-import { Box, Button, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack } from "@mui/material";
 import type { GridColDef } from "@mui/x-data-grid";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
-import DataTable, { type GridRowDef } from "../DataGrid/index";
-import SearchIcon from "../../svgs/icon-search.svg";
-import Pagination from "../DataGrid/Pagination";
+import { type GridRowDef } from "../DataGrid/index";
 import SearchBar from "./SearchBar";
-import useClientPagination from "../../context/use[custom]/useClientPagination";
 import TableSection from "./TableSection";
 
 type ISecurityTabSectionProps = {
@@ -15,17 +12,14 @@ type ISecurityTabSectionProps = {
   loading?: boolean;
   onSearch?: (query: string) => void;
   onRowClick: (rowData: GridRowDef) => void;
-  handleAction?: () => void;
 };
 
 const InspectionSection = ({
   columns,
   rows,
   loading,
-  name = "Total",
   onSearch = () => {},
   onRowClick,
-  handleAction = () => {},
 }: ISecurityTabSectionProps) => {
   const headerRef = useRef<HTMLDivElement>(null);
   const [headerHeight, setHeaderHeight] = useState(0);
@@ -33,18 +27,6 @@ const InspectionSection = ({
   useEffect(() => {
     setHeaderHeight(headerRef.current?.getBoundingClientRect().bottom || 0);
   }, []);
-
-  // const {
-  //   totalElements,
-  //   paginatedData,
-  //   pageSize,
-  //   onPageChange,
-  //   sortModel,
-  //   onPageSizeChange,
-  //   currentPage,
-  //   totalPages,
-  //   onSortModelChange,
-  // } = useClientPagination({ data: rows });
 
   const renderContent = useCallback(() => {
     return (

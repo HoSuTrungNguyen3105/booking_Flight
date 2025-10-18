@@ -1,11 +1,6 @@
 import { Box, Button, Chip, Paper, Typography, Container } from "@mui/material";
 import { memo, useCallback, useEffect } from "react";
-import {
-  Schedule,
-  AirplanemodeActive,
-  Home,
-  Flight,
-} from "@mui/icons-material";
+import { Home, Flight } from "@mui/icons-material";
 import type { DataFlight } from "../../../../utils/type";
 import { useNavigate } from "react-router-dom";
 import type { BreadcrumbItem } from "../../../../common/BreadCrumb";
@@ -14,6 +9,7 @@ import type { IDetailItem } from "../../../../common/DetailSection";
 import DetailSection from "../../../../common/DetailSection";
 import FlightPath from "./FlightPath";
 import { DateFormatEnum, formatDate } from "../../../../hooks/format";
+import { FaSlash } from "react-icons/fa";
 
 interface FlightDetailPageProps {
   flight?: DataFlight;
@@ -49,7 +45,7 @@ const FlightDetailPage = ({ flight, onBookFlight }: FlightDetailPageProps) => {
         icon: <Home sx={{ fontSize: 16 }} />,
       },
       {
-        label: "Flights",
+        label: "Admin",
         href: "/admin",
         icon: <Flight sx={{ fontSize: 16 }} />,
       },
@@ -58,12 +54,7 @@ const FlightDetailPage = ({ flight, onBookFlight }: FlightDetailPageProps) => {
       },
     ];
 
-    return (
-      <BreadCrumb
-        items={breadcrumbItems}
-        separator={<span style={{ margin: "0 8px" }}>/</span>}
-      />
-    );
+    return <BreadCrumb items={breadcrumbItems} separator={<FaSlash />} />;
   }, [flight.flightId]);
 
   const scheduleData: IDetailItem[] = [

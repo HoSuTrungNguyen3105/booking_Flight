@@ -72,7 +72,6 @@ const SecurityManage = () => {
       content: (
         <InspectionSection
           onRowClick={onRowSelect}
-          handleAction={() => {}}
           columns={columnsPassenger}
           rows={rowData}
           loading={false}

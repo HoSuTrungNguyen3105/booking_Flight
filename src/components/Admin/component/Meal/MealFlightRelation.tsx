@@ -6,7 +6,7 @@ import {
   Divider,
   CircularProgress,
 } from "@mui/material";
-import { memo, useCallback, useEffect } from "react";
+import { memo, useCallback } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import { useGetFlightMealsById } from "../../../Api/useGetApi";
 import BaseModal from "../../../../common/Modal/BaseModal";

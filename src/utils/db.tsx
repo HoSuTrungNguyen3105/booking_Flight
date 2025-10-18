@@ -119,8 +119,8 @@ export const menuData: MenuSection[] = [
               //   icon: <BusinessCenter />,
               // },
               {
-                id: "TerminalContainer",
-                label: "Quản lý Terminal",
+                id: "FlightBatchCreator",
+                label: "Quản lý FlightBatchCreator",
                 icon: <Apartment />,
               },
               {

@@ -11,7 +11,7 @@ import GuestGuard from "../components/Layout/GuardLayout";
 import { LoginPage } from "../components/Auth/LoginPage";
 import Security from "../common/Setting/Security";
 import FullLayout from "../components/Layout/FullLayout";
-import FlightList from "../components/Admin/component/Flight/FlightList";
+// import FlightList from "../components/Admin/component/Flight/FlightList";
 import SecurityManage from "../common/Setting/Component/SecurityManage";
 import ManageMyInformation from "../common/Setting/ManageMyInformation";
 import ManageMyInfo from "../components/Profile/ManageMyInfo";
@@ -43,6 +43,7 @@ import BulkMealCreator from "../components/Admin/component/Meal/BulkMealCreator"
 import TransferAdminTable from "../common/Setting/Component/TransferAdminTable";
 import MealList from "../components/Admin/component/Meal/MealListTable";
 import FlightStatus from "../components/Admin/component/Flight/FlightStatus";
+import FlightManagement from "../components/Admin/component/Flight/FlightManagement";
 
 const routes = [
   {
@@ -156,8 +157,8 @@ const routes = [
         element: <TransferAdminTable />,
       },
       {
-        path: "flightlist",
-        element: <FlightList />,
+        path: "FlightManagement",
+        element: <FlightManagement />,
       },
       {
         path: ROUTE_PATHS.FLIGHT_MEALS,

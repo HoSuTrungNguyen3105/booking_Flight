@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Box,
   Typography,
@@ -46,11 +46,10 @@ const BulkMealCreator: React.FC = () => {
   ]);
   const [activeStep, setActiveStep] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
+  // const [isSuccess, setIsSuccess] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [createdMeals, setCreatedMeals] = useState<CreateMealDto[]>([]);
-  const { refetchCreateMultiMeal, loadingCreateMultiMeal } =
-    useCreateMultiMeal();
+  const { refetchCreateMultiMeal } = useCreateMultiMeal();
   const steps = ["Add Meals", "Review", "Complete"];
 
   const addMeal = () => {
@@ -100,9 +99,9 @@ const BulkMealCreator: React.FC = () => {
 
       // Gọi API thật
       const res = await refetchCreateMultiMeal(meals);
-      console.log("res", res);
+      // console.log("res", res);
       if (res?.resultCode === "00") {
-        setIsSuccess(true);
+        // setIsSuccess(true);
         setActiveStep(2);
         setCreatedMeals(meals); // nếu muốn lưu lại meal đã tạo
       } else {
@@ -127,7 +126,7 @@ const BulkMealCreator: React.FC = () => {
       },
     ]);
     setActiveStep(0);
-    setIsSuccess(false);
+    // setIsSuccess(false);
   };
 
   useEffect(() => {

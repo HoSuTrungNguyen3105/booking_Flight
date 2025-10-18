@@ -52,11 +52,20 @@ const CreateSeatModal = ({
 
   const renderContent = useCallback(() => {
     return (
-      <Box sx={{ width: "30rem", pt: 2 }}>
+      <Box
+        sx={{
+          width: "28rem",
+          pt: 2,
+          px: 2,
+          display: "flex",
+          flexDirection: "column",
+          gap: 3,
+        }}
+      >
+        {" "}
         <Typography variant="h6" gutterBottom>
           Seat Information {flightId}
         </Typography>
-
         <Stack spacing={3}>
           {/* Seat Row */}
           <FormControl fullWidth>
@@ -65,7 +74,10 @@ const CreateSeatModal = ({
             </Typography>
             <InputTextField
               value={newSeat.seatRow}
-              onChange={(e) => setNewSeat({ ...newSeat, seatRow: e as string })}
+              // onChange={(e) => setNewSeat({ ...newSeat, seatRow: e as string })}
+              onChange={(e) =>
+                setNewSeat({ ...newSeat, seatRow: e.toUpperCase() })
+              }
               placeholder="Enter seat row, e.g., A"
             />
           </FormControl>
@@ -90,7 +102,7 @@ const CreateSeatModal = ({
         </Stack>
       </Box>
     );
-  }, [newSeat]);
+  }, [newSeat, flightId]);
 
   return (
     <BaseModal
