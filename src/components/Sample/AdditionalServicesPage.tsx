@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { Box, Typography, Card, CardContent, Chip, Stack } from "@mui/material";
+import { Box, Typography, Chip } from "@mui/material";
 import { useGetBaggageData } from "../Api/useGetApi";
 import theme from "../../scss/theme";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
@@ -111,12 +111,6 @@ const AdditionalServicesPage: React.FC = () => {
         return `${seatNo} (${seatClass})`;
       },
     },
-    // {
-    //   field: "seatClass",
-    //   headerName: "Hạng ghế",
-    //   flex: 1,
-    //   valueGetter: (params: GridRenderCellParams) => params?.value ?? "—",
-    // },
     {
       field: "weight",
       headerName: "Khối lượng (kg)",

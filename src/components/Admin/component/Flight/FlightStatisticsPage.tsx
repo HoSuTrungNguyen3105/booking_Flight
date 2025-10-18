@@ -30,7 +30,7 @@ import {
   Area,
 } from "recharts";
 import type { DataFlight } from "../../../../utils/type";
-import { useGetFlightData } from "../../../Api/useGetApi";
+import { useGetAllFlightIds, useGetFlightData } from "../../../Api/useGetApi";
 import {
   FlightTakeoff,
   Schedule,
@@ -39,29 +39,27 @@ import {
 } from "@mui/icons-material";
 
 const STATUS_COLORS: { [key: string]: string } = {
-  Scheduled: "#14b8a6", // Teal - Đúng giờ/Theo lịch trình
-  Boarding: "#2563eb", // Blue - Đang lên máy bay
-  Departed: "#f59e42", // Amber - Đã cất cánh
-  Landed: "#10b981", // Emerald - Đã hạ cánh
-  Delayed: "#ef4444", // Red - Bị hoãn
-  Cancelled: "#64748b", // Slate - Đã hủy
+  Scheduled: "#14b8a6",
+  Boarding: "#2563eb",
+  Departed: "#f59e42",
+  Landed: "#10b981",
+  Delayed: "#ef4444",
+  Cancelled: "#64748b",
 };
 
-// Màu sắc cho các hãng bay (có thể mở rộng)
 const AIRLINE_COLORS: { [key: string]: string } = {
-  VN: "#0ea5e9", // Vietnam Airlines
-  VJ: "#f472b6", // VietJet Air
-  QH: "#a3e635", // Bamboo Airways
-  default: "#94a3b8", // Màu mặc định cho các hãng chưa định nghĩa
+  VN: "#0ea5e9",
+  VJ: "#f472b6",
+  QH: "#a3e635",
+  default: "#94a3b8",
 };
-
-// Danh sách các sân bay chính (dùng cho trục Y)
-const MAJOR_AIRPORTS = ["SGN", "HAN", "DAD", "CXR", "PQC", "VDO", "VCA", "DLI"];
 
 const FlightStatisticsPage: React.FC = () => {
   const theme = useTheme();
   const { getFlightData, loadingFlightData } = useGetFlightData();
   const [flights, setFlights] = useState<DataFlight[]>([]);
+
+  const { getAllFlightIds } = useGetAllFlightIds();
 
   useEffect(() => {
     if (getFlightData?.list) {
@@ -97,13 +95,13 @@ const FlightStatisticsPage: React.FC = () => {
     };
   }, [flights]);
 
-  const statusCounts = Object.keys(STATUS_COLORS)
-    .map((status) => ({
-      name: status,
-      value: flights.filter((f) => f.status === status).length || 0,
-      color: STATUS_COLORS[status],
-    }))
-    .filter((item) => item.value > 0);
+  // const statusCounts = Object.keys(STATUS_COLORS)
+  //   .map((status) => ({
+  //     name: status,
+  //     value: flights.filter((f) => f.status === status).length || 0,
+  //     color: STATUS_COLORS[status],
+  //   }))
+  //   .filter((item) => item.value > 0);
 
   const airlines = [
     ...new Set(flights.map((f) => f.arrivalAirportRel?.name as string)),
@@ -125,18 +123,17 @@ const FlightStatisticsPage: React.FC = () => {
         airport: f.departureAirport,
         flightNo: f.flightNo,
         status: f.status,
-        size: 8 + Math.abs(delayMinutes) / 10, // Vary dot size based on delay
+        size: 8 + Math.abs(delayMinutes) / 10,
       };
     })
     .filter((item) => item.delay !== 0);
 
-  // 4. Dữ liệu cho biểu đồ cột: Số chuyến bay theo sân bay khởi hành
-  const departureAirportCounts = MAJOR_AIRPORTS.map((airport) => ({
+  const departureAirportCounts = getAllFlightIds?.list?.map((airport) => ({
     name: airport,
-    flights: flights.filter((f) => f.departureAirport === airport).length,
+    flights: flights.filter((f) => f.departureAirport === airport.flightNo)
+      .length,
   }));
 
-  // 5. Dữ liệu cho biểu đồ hiệu suất theo giờ
   const hourlyPerformance = useMemo(() => {
     const hours = Array.from({ length: 24 }, (_, i) => i);
     return hours.map((hour) => {

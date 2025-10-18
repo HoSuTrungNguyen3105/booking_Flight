@@ -1,13 +1,13 @@
 import { memo, useCallback, useMemo, useState } from "react";
-import type { TabItem } from "../../../components/Layout/SearchLayout";
-import SearchLayout from "../../../components/Layout/SearchLayout";
-import InspectionSection from "../../CustomRender/InspectionSection";
+import type { TabItem } from "../Layout/SearchLayout";
+import SearchLayout from "../Layout/SearchLayout";
+import InspectionSection from "../../common/CustomRender/InspectionSection";
 import type { GridColDef } from "@mui/x-data-grid";
 import { Typography } from "@mui/material";
-import { DateFormatEnum, formatDate } from "../../../hooks/format";
-import type { GridRowDef } from "../../DataGrid";
-import { useFindAllPassenger } from "../../../components/Api/useGetApi";
-import DataSecure from "../DataSecure";
+import { DateFormatEnum, formatDate } from "../../hooks/format";
+import type { GridRowDef } from "../../common/DataGrid";
+import { useFindAllPassenger } from "../Api/useGetApi";
+import DataSecure from "../../common/Setting/DataSecure";
 
 export const columnsPassenger: GridColDef[] = [
   { field: "fullName", headerName: "Họ và tên", flex: 1 },

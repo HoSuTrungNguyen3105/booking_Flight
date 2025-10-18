@@ -12,7 +12,7 @@ import { LoginPage } from "../components/Auth/LoginPage";
 import Security from "../common/Setting/Security";
 import FullLayout from "../components/Layout/FullLayout";
 // import FlightList from "../components/Admin/component/Flight/FlightList";
-import SecurityManage from "../common/Setting/Component/SecurityManage";
+import SecurityManage from "../components/Sample/SecurityManage";
 import ManageMyInformation from "../common/Setting/ManageMyInformation";
 import ManageMyInfo from "../components/Profile/ManageMyInfo";
 import AircraftPage from "../components/Admin/component/Aircraft/AircraftPage";
