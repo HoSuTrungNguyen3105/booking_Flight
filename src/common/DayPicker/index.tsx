@@ -64,7 +64,7 @@ const DateTimePickerComponent: React.FC<Props> = ({
           value={date}
           onChange={handleChange}
           enableAccessibleFieldDOMStructure={false}
-          slots={{
+          slotProps={{
             textField: (params) => (
               <TextField
                 {...params}

@@ -11,6 +11,7 @@ import {
 import { memo, useCallback, useState, type FC, type ReactNode } from "react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import { uniqueId } from "lodash";
 
 export interface ActionType {
   value?: string | number;
@@ -99,7 +100,7 @@ const SelectDropdown: FC<OptionSelectDropdownProps> = ({
         renderValue={(selected) => {
           if (!selected) {
             return (
-              <Typography variant="body2" sx={{ color: "grey" }}>
+              <Typography variant="caption" sx={{ color: "grey" }}>
                 {placeholder}
               </Typography>
             );
@@ -115,7 +116,11 @@ const SelectDropdown: FC<OptionSelectDropdownProps> = ({
           </MenuItem>
         )}
         {options.map(({ label, icon, value, color, disabled }) => (
-          <MenuItem key={value} disabled={disabled} value={value}>
+          <MenuItem
+            key={uniqueId(`menu_${value}_`)}
+            disabled={disabled}
+            value={value}
+          >
             <Box
               sx={{
                 display: "flex",

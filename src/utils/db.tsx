@@ -48,8 +48,8 @@ export const menuData: MenuSection[] = [
             icon: <Apartment />,
           },
           {
-            id: "TicketSalesDashboard",
-            label: "Thống kê vé",
+            id: "FlightManagement",
+            label: "FlightManagement",
             icon: <BarChart />,
           },
           { id: "notifications", label: "Thông báo", icon: <Notifications /> },

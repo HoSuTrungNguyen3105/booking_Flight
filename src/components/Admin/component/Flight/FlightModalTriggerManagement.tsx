@@ -1,5 +1,5 @@
 import { memo, useState } from "react";
-import FlightUpdateModal from "./FlightUpdateModal";
+import FlightManagementModal from "./FlightManagementModal";
 import { Box, Button } from "@mui/material";
 
 type FlightIdProps = {
@@ -24,7 +24,7 @@ const FlightModalTriggerManagement = ({ id, onSuccess }: FlightIdProps) => {
       </Box>
 
       {open && (
-        <FlightUpdateModal
+        <FlightManagementModal
           mode={id ? "update" : "create"}
           open={open}
           onClose={() => setOpen(false)}

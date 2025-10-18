@@ -75,7 +75,7 @@ const TableSection = ({
         sx={{
           flexGrow: 1,
           overflow: "auto",
-          height: largeThan ? "30rem" : "20rem",
+          height: largeThan ? "29rem" : "20rem",
         }}
       >
         <DataTable

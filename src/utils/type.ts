@@ -261,6 +261,7 @@ export type UpdateAirportReq = Omit<CreateAirportReq, "code">;
 
 export interface FlightCodeItem {
   code: string;
+  value: string;
 }
 
 interface AllFlightCodeProps {

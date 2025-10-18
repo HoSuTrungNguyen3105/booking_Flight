@@ -35,7 +35,7 @@ import {
 } from "../../utils/type.ts";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
 import { useFetch } from "../../context/use[custom]/useFetch.ts";
-import type { FlightFormData } from "../Admin/component/Flight/FlightUpdateModal.tsx";
+import type { FlightFormData } from "../Admin/component/Flight/FlightManagementModal.tsx";
 import type { SearchFlightDto } from "../Admin/component/Flight/Search_layout.tsx";
 import { useSecureFetch } from "../../context/use[custom]/useSecureFetch.ts";
 // import type { CreateMealDto } from "../Admin/component/BulkMealCreator.tsx";

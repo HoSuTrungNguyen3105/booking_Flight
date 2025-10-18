@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { Add, Delete } from "@mui/icons-material";
 import axios from "axios";
-import type { FlightFormData } from "./FlightUpdateModal";
+import type { FlightFormData } from "./FlightManagementModal";
 import { useCreateMultiFlight } from "../../../Api/usePostApi";
 
 // type CreateFlightDto = {

@@ -159,21 +159,25 @@ export default function FlightList() {
   }
 
   return (
-    <div style={{ height: 500, width: "100%" }}>
-      <FlightModalTriggerManagement onSuccess={() => refetchGetFlightData()} />
-
-      <Typography variant="h6" gutterBottom sx={{ mt: 4 }}>
+    <>
+      <Typography variant="h6" gutterBottom>
         Flight List
       </Typography>
 
-      <Button
-        variant="contained"
-        onClick={exportExcel}
-        disabled={loading}
-        startIcon={<Download />}
-      >
-        Export Excel
-      </Button>
+      <Box sx={{ display: "flex", justifyContent: "start", gap: 1 }}>
+        <Button
+          variant="contained"
+          onClick={exportExcel}
+          disabled={loading}
+          startIcon={<Download />}
+        >
+          Export Excel
+        </Button>
+
+        <FlightModalTriggerManagement
+          onSuccess={() => refetchGetFlightData()}
+        />
+      </Box>
 
       <TableSection
         columns={columnsFlightData}
@@ -185,7 +189,7 @@ export default function FlightList() {
         largeThan
       />
 
-      {selectedFlightRows.length > 0 && (
+      {/* {selectedFlightRows.length > 0 && (
         <Box sx={{ my: 2, p: 2, bgcolor: "grey.100" }}>
           <Typography>Selected Flights: {selectedFlightRows.length}</Typography>
           <ul>
@@ -201,7 +205,7 @@ export default function FlightList() {
             Clear Flight Selection
           </Button>
         </Box>
-      )}
-    </div>
+      )} */}
+    </>
   );
 }

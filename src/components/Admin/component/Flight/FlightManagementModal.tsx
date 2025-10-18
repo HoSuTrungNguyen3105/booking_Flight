@@ -37,12 +37,13 @@ import {
 import { useCreateFlight, useFlightUpdate } from "../../../Api/usePostApi";
 import type { DataFlight } from "../../../../utils/type";
 import { useToast } from "../../../../context/ToastContext";
+import FormRow from "../../../../common/CustomRender/FormRow";
 
 export type FlightFormData = Omit<DataFlight, "meals">;
 
 type FlightFormMode = "create" | "update";
 
-interface IModalStatisticalDataLearningProps {
+interface IModalFlightManageProps {
   open: boolean;
   onClose: () => void;
   onSuccess: () => void;
@@ -52,30 +53,35 @@ interface IModalStatisticalDataLearningProps {
   mode: FlightFormMode;
 }
 
-const FlightUpdateModal = ({
+const FlightManagementModal = ({
   flightId,
   open,
   mode,
   onClose,
   onSuccess,
-}: IModalStatisticalDataLearningProps) => {
+}: IModalFlightManageProps) => {
   const [activeStep, setActiveStep] = useState(0);
+
   const { getFlightByIdData, refetchGetFlightData } = useGetFlightByIDData({
     id: mode === "update" && flightId ? flightId : undefined,
   });
+
+  const toast = useToast();
 
   const stepTopRef = useRef<HTMLDivElement | null>(null);
 
   const { refetchCreateFlightData } = useCreateFlight();
 
   const { refetchUpdateFlightId } = useFlightUpdate({ id: flightId });
+
   const { getAllCode } = useGetAllCode();
+
   const createDefaultFormData = (): FlightFormData => ({
     flightNo: "",
     flightType: "",
     departureAirport: "",
     arrivalAirport: "",
-    status: "scheduled",
+    status: "SCHEDULED",
     aircraftCode: "",
     scheduledDeparture: 0,
     scheduledArrival: 0,
@@ -121,11 +127,9 @@ const FlightUpdateModal = ({
     }
   }, [getFlightByIdData?.data, mode]);
 
-  // Hàm refetch toàn bộ data
   const handleRefetchAllData = useCallback(async () => {
     try {
       if (mode === "update" && flightId) {
-        // Refetch flight data
         await refetchGetFlightData();
       }
     } catch (error) {
@@ -138,8 +142,6 @@ const FlightUpdateModal = ({
       ? mapFlightToFormData(getFlightByIdData?.data)
       : createDefaultFormData()
   );
-
-  const toast = useToast();
 
   const handleSave = useCallback(async () => {
     try {
@@ -168,8 +170,6 @@ const FlightUpdateModal = ({
           }),
         };
 
-        console.log("res", updateData);
-
         const response = await refetchUpdateFlightId(updateData);
 
         if (response?.resultCode === "00") {
@@ -191,18 +191,18 @@ const FlightUpdateModal = ({
           priceEconomy: formData.priceEconomy,
           priceBusiness: formData.priceBusiness,
           priceFirst: formData.priceFirst,
-          // gateId: "",
           terminal: formData.terminal,
         };
+        console.log("res", createData);
 
         const response = await refetchCreateFlightData(createData);
 
         if (response?.resultCode === "00") {
-          toast(response?.resultMessage as string, "success");
+          toast(response?.resultMessage || "Success create", "success");
           onSuccess();
           onClose();
         } else {
-          toast(response?.resultMessage as string, "error");
+          toast(response?.resultMessage || "Error create", "error");
         }
       }
     } catch (error) {
@@ -234,12 +234,17 @@ const FlightUpdateModal = ({
     }
   }, [open, mode, getFlightByIdData]);
 
-  const optionAirportCode = mapStringToDropdown(
-    getAllCode?.data?.airport?.map((e) => e.code as string) ?? []
-  );
-  const optionAircraftCode = mapStringToDropdown(
-    getAllCode?.data?.aircraft?.map((e) => e.code as string) ?? []
-  );
+  const optionAirportCode =
+    getAllCode?.data?.airport?.map((e) => ({
+      label: ` ${e.value}`,
+      value: e.code,
+    })) ?? [];
+
+  const optionAircraftCode =
+    getAllCode?.data?.aircraft?.map((e) => ({
+      label: ` ${e.value}`,
+      value: e.code,
+    })) ?? [];
 
   const optionWay = [
     {
@@ -320,18 +325,17 @@ const FlightUpdateModal = ({
         </Grid>
 
         <Grid size={12}>
-          <FormControl fullWidth>
+          <FormRow label="aircraftCode">
             <SelectDropdown
               options={optionAircraftCode}
               placeholder="aircraftCode"
               value={formData.aircraftCode}
               onChange={(e) => handleInputChange("aircraftCode", e as string)}
             />
-          </FormControl>
+          </FormRow>
         </Grid>
 
         {/* TO_DO */}
-
         <Grid size={12}>
           <InputTextField
             value={formData.terminal}
@@ -656,4 +660,4 @@ const FlightUpdateModal = ({
   );
 };
 
-export default memo(FlightUpdateModal);
+export default memo(FlightManagementModal);

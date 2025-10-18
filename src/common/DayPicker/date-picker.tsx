@@ -4,8 +4,6 @@ import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { Box, Typography } from "@mui/material";
 import moment, { type Moment } from "moment";
-import InputTextField from "../Input/InputTextField";
-import ChevronRightSharpIcon from "@mui/icons-material/ChevronRightSharp";
 
 type TimePickerProps = {
   value: string;

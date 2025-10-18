@@ -1,4 +1,4 @@
-import { Box, Button, Grid, FormControlLabel } from "@mui/material";
+import { Box, Button, Grid } from "@mui/material";
 import { memo, useCallback } from "react";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
 import BaseModal from "../../../../common/Modal/BaseModal";

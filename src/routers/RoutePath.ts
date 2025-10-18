@@ -12,6 +12,7 @@ export const ROUTE_PATHS = {
   TIME_PICKER: "sampleTimepicker",
   SAMPLE_BUTTON: "sampleButton",
   TABLE: "table",
+  FLIGHTMANAGE: "FlightManagement",
   SAMPLE_FORM: "sampleFormDemo",
   SAMPLE: "sample",
   ADMIN: "/admin",

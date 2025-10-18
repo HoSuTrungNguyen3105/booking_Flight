@@ -157,7 +157,7 @@ const routes = [
         element: <TransferAdminTable />,
       },
       {
-        path: "FlightManagement",
+        path: ROUTE_PATHS.FLIGHTMANAGE,
         element: <FlightManagement />,
       },
       {
