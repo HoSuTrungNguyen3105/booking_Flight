@@ -38,10 +38,10 @@ import AirportManagementDetail from "../components/Admin/component/Airport/Airpo
 import ChangePasswordInProfile from "../components/Profile/ChangePasswordInProfile";
 import FlightBatchCreator from "../components/Admin/component/Flight/FlightBatchCreator";
 import AuthGuard from "../components/Layout/AuthGuard";
-import TicketTable from "../components/Sample/TicketTable";
-import BulkMealCreator from "../components/Admin/component/Meal/BulkMealCreator";
+// import TicketTable from "../components/Sample/TicketList";
+// import BulkMealCreator from "../components/Admin/component/Meal/BulkMealCreator";
 import TransferAdminTable from "../common/Setting/Component/TransferAdminTable";
-import MealList from "../components/Admin/component/Meal/MealListTable";
+import MealList from "../components/Admin/component/Meal/MealList";
 import FlightStatus from "../components/Admin/component/Flight/FlightStatus";
 import FlightManagement from "../components/Admin/component/Flight/FlightManagement";
 
@@ -117,7 +117,7 @@ const routes = [
         element: <Security />,
       },
       {
-        path: ROUTE_PATHS.SAMPLE_DATE_PICKER,
+        path: ROUTE_PATHS.LEAVE_REQUEST_TABLE,
         element: <LeaveRequestGrid />,
       },
       {
@@ -126,7 +126,7 @@ const routes = [
       },
       {
         path: ROUTE_PATHS.BULK_MEAL_CREATOR,
-        element: <BulkMealCreator />,
+        // element: <BulkMealCreator />,
       },
       {
         path: ROUTE_PATHS.AIRPORT_MAP,
@@ -150,7 +150,7 @@ const routes = [
       },
       {
         path: ROUTE_PATHS.CREATE_GATE_FORM,
-        element: <TicketTable />,
+        // element: <TicketTable />,
       },
       {
         path: ROUTE_PATHS.TRANSFER_ADMIN,
@@ -242,7 +242,7 @@ const routes = [
       },
       {
         path: ROUTE_PATHS.SUPPORT,
-        element: <FlightStatus />,
+        // element: <FlightStatus />,
       },
       {
         path: ROUTE_PATHS.CHANGE_PASSWORD_PROFILE,

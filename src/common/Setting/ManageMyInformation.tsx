@@ -91,6 +91,7 @@ const ManageMyInformation = () => {
   const handleUpdateMyInfo = useCallback(async () => {
     try {
       const res = await refetchUpdateUserInfo(myInfo);
+      console.log("res", myInfo);
       if (res?.resultCode === "00") {
         setOpenConfirmModal(false);
         setHasChanges(false);

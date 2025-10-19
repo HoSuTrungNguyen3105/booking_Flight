@@ -209,7 +209,7 @@ const TransferAdminTable = () => {
         nextRowClick
         largeThan
         handleRowClick={(params) => {
-          setTransferRequestId(params.id as number);
+          setTransferRequestId(params.userId as number);
         }}
       />
 

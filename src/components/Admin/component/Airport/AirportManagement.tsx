@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Box,
   Chip,
@@ -17,12 +17,14 @@ import { useGetAllAirportInfo } from "../../../Api/useGetApi";
 import type { Airport } from "../../../../utils/type";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import TableSection from "../../../../common/CustomRender/TableSection";
-import AirportManageModal from "../../modal/AirportManageModal";
+import AirportManageModal from "./AirportManageModal";
 import AirportBatchCreator from "./AirportBatchCreator";
+import DialogConfirm from "../../../../common/Modal/DialogConfirm";
+import { useDeleteAirportById } from "../../../Api/usePostApi";
 
 const AirportManagement: React.FC = () => {
   const { getAirportInfo, refetchGetAirportInfo } = useGetAllAirportInfo();
-  const [airports, setAirports] = useState<Airport[]>([]);
+  // const [airports, setAirports] = useState<Airport[]>([]);
   const rowAirportsGrid = useMemo(
     () =>
       getAirportInfo?.list?.map((item) => ({
@@ -31,12 +33,20 @@ const AirportManagement: React.FC = () => {
       })) || [],
     [getAirportInfo]
   );
-  useEffect(() => {
-    if (getAirportInfo?.list) {
-      setAirports(getAirportInfo.list);
-    }
-  }, [getAirportInfo]);
-  const [openDialog, setOpenDialog] = useState(false);
+
+  // Quản lý create/update/bulk modal
+  const [toggleOpenModal, setToggleOpenModal] = useState({
+    create: false,
+    createBulk: false,
+    update: false,
+  });
+
+  const { refetchDeleteAirport } = useDeleteAirportById();
+
+  // Quản lý dialog confirm delete
+  const [openConfirm, setOpenConfirm] = useState(false);
+  const [selectedCode, setSelectedCode] = useState<string | null>(null);
+
   const [changePageBtchCreate, setChangePageBtchCreate] = useState(false);
   const handleChangePageBtchCreate = () => {
     setChangePageBtchCreate(true);
@@ -49,27 +59,66 @@ const AirportManagement: React.FC = () => {
     name: "",
     city: "",
     country: "",
-    createdAt: "",
-    updatedAt: "",
+    // createdAt: 0,
+    // updatedAt: 0,
   });
+
+  //   const handleCreate = (type: keyof typeof toggleOpenModal) => {
+  //     setEditingAirport("create");
+  //     setFormData({ code: "", name: "", city: "", country: "" });
+  //     setToggleOpenModal((prev) => ({
+  //     ...prev,
+  //     [type]: true,
+  //   }));
+  //   };
+
+  //   const handleClose = (type: keyof typeof toggleOpenModal) => {
+  //   setToggleOpenModal((prev) => ({
+  //     ...prev,
+  //     [type]: false,
+  //   }));
+  // };
+
+  const handleOpen = (type: keyof typeof toggleOpenModal) => {
+    setToggleOpenModal((prev) => ({ ...prev, [type]: true }));
+  };
+
+  const handleClose = (type: keyof typeof toggleOpenModal) => {
+    setToggleOpenModal((prev) => ({ ...prev, [type]: false }));
+  };
 
   const handleCreate = () => {
     setEditingAirport("create");
     setFormData({ code: "", name: "", city: "", country: "" });
-    setOpenDialog(true);
+    handleOpen("create");
   };
 
   const handleEdit = (airport: Airport) => {
     setEditingAirport("update");
-    setFormData({
-      code: airport.code,
-      name: airport.name,
-      city: airport.city,
-      country: airport.country,
-      createdAt: airport.createdAt,
-      updatedAt: airport.updatedAt,
-    });
-    setOpenDialog(true);
+    setFormData(airport);
+    handleOpen("update");
+  };
+
+  // const handleEdit = (airport: Airport , type: keyof typeof toggleOpenModal) => {
+  //   setEditingAirport("update");
+  //   setFormData({
+  //     code: airport.code,
+  //     name: airport.name,
+  //     city: airport.city,
+  //     country: airport.country,
+  //     createdAt: airport.createdAt,
+  //     updatedAt: airport.updatedAt,
+  //   });
+  //   setToggleOpenModal((prev) => ({
+  //   ...prev,
+  //   [type]: true,
+  // }));
+  // };
+
+  const handleOpenDeleteClick = (code: string) => {
+    console.log("row", code);
+    setSelectedCode(code);
+    setOpenConfirm(true);
   };
 
   const columns: GridColDef[] = [
@@ -94,9 +143,9 @@ const AirportManagement: React.FC = () => {
       flex: 1,
       renderCell: (params: GridRenderCellParams) => (
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <Typography variant="body2">
+          {/* <Typography variant="body2">
             {getCountryFlag(params.value)}
-          </Typography>
+          </Typography> */}
           <Typography variant="body1">{params.value}</Typography>
         </Box>
       ),
@@ -119,7 +168,7 @@ const AirportManagement: React.FC = () => {
           <Tooltip title="Xóa">
             <IconButton
               color="error"
-              onClick={() => handleDelete(params.row.code)}
+              onClick={() => handleOpenDeleteClick(params.row.code)}
               size="small"
             >
               <DeleteIcon />
@@ -130,23 +179,18 @@ const AirportManagement: React.FC = () => {
     },
   ];
 
-  const handleDelete = (code: string) => {
-    setAirports((prev) => prev.filter((a) => a.code !== code));
-  };
+  // const handleDelete = useCallback( async(code: string) => {
+  //   // setAirports((prev) => prev.filter((a) => a.code !== code));
+  //   const res = await refetchDeleteAirport
+  // },[])
 
-  const countryFlags: Record<string, string> = {
-    Vietnam: "🇻🇳",
-    ThaiLan: "🇹🇭",
-    Singapore: "🇸🇬",
-    Japan: "🇯🇵",
-    Korea: "🇰🇷",
-  };
-
-  const getCountryFlag = (country?: string): string => {
-    if (!country) return "🏳️";
-
-    const key = country.trim().toLowerCase();
-    return countryFlags[key] ?? "🏳️";
+  const handleConfirmDelete = async () => {
+    if (selectedCode) {
+      const res = await refetchDeleteAirport({ code: selectedCode });
+      console.log("Deleting airport:", res);
+      setOpenConfirm(false);
+      refetchGetAirportInfo();
+    }
   };
 
   if (changePageBtchCreate) {
@@ -164,7 +208,7 @@ const AirportManagement: React.FC = () => {
       <Box
         sx={{
           display: "flex",
-          justifyContent: "space-between",
+          justifyContent: "flex-start",
           alignItems: "center",
           mb: 3,
         }}
@@ -173,11 +217,13 @@ const AirportManagement: React.FC = () => {
           <LocationIcon sx={{ mr: 1, verticalAlign: "bottom" }} />
           Quản lý Sân bay
         </Typography>
+      </Box>
+
+      <Box sx={{ display: "flex", justifyContent: "start", gap: 1 }}>
         <Button
           variant="outlined"
           startIcon={<AddIcon />}
           onClick={handleChangePageBtchCreate}
-          sx={{ borderRadius: 2 }}
         >
           Create Batch
         </Button>
@@ -185,7 +231,6 @@ const AirportManagement: React.FC = () => {
           variant="contained"
           startIcon={<AddIcon />}
           onClick={handleCreate}
-          sx={{ borderRadius: 2 }}
         >
           Thêm Sân bay
         </Button>
@@ -199,13 +244,27 @@ const AirportManagement: React.FC = () => {
         largeThan
         nextRowClick
       />
+
       <AirportManageModal
-        onSuccess={() => {}}
-        open={openDialog}
-        onClose={() => setOpenDialog(false)}
+        onSuccess={() => refetchGetAirportInfo()}
+        open={toggleOpenModal.create || toggleOpenModal.update}
+        onClose={() => {
+          handleClose("create");
+          handleClose("update");
+        }}
         editingAirport={editingAirport}
         formEditData={formData}
         // setFormData={setFormData}
+      />
+
+      <DialogConfirm
+        cancelLabel="Hủy"
+        open={openConfirm}
+        onClose={() => setOpenConfirm(false)}
+        onConfirm={handleConfirmDelete}
+        title="Xác nhận xóa"
+        message={`Bạn có chắc chắn muốn xóa sân bay ${selectedCode} không? Hành động này không thể hoàn tác.`}
+        confirmLabel="Xác nhận xóa"
       />
     </Box>
   );

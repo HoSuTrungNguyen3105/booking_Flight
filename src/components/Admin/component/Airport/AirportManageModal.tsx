@@ -1,10 +1,11 @@
 import { Box, Button, Grid } from "@mui/material";
 import { memo, useCallback, useEffect, useState } from "react";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
-import BaseModal from "../../../common/Modal/BaseModal";
-import type { Airport, CreateAirportReq } from "../../../utils/type";
-import InputTextField from "../../../common/Input/InputTextField";
-import { useUpdateAirportById } from "../../Api/usePostApi";
+import BaseModal from "../../../../common/Modal/BaseModal";
+import type { Airport, CreateAirportReq } from "../../../../utils/type";
+import InputTextField from "../../../../common/Input/InputTextField";
+import { useCreateAirport } from "../../../Api/usePostApi";
+import { useToast } from "../../../../context/ToastContext";
 
 interface IRequestLeaveActionModalProps {
   open: boolean;
@@ -21,7 +22,9 @@ const AirportManageModal = ({
   editingAirport,
   formEditData,
 }: IRequestLeaveActionModalProps) => {
-  //const {}=useUpdateAirportById(formEditData.code || '')
+  // const {}=useUpdateAirportById(formEditData.code || '')
+  const { refetchUpdateAirport } = useCreateAirport();
+  const toast = useToast();
   const [formData, setFormData] = useState<CreateAirportReq>({
     code: "",
     name: "",
@@ -49,6 +52,16 @@ const AirportManageModal = ({
     }
   }, [open, editingAirport, formEditData]);
 
+  const handleSubmit = useCallback(async () => {
+    const res = await refetchUpdateAirport(formData);
+    console.log("formData", formData);
+    if (res?.resultCode === "00") {
+      onSuccess();
+    } else {
+      toast(res?.resultMessage || "Error while create ", "error");
+    }
+  }, [onSuccess, formData, toast]);
+
   const renderActions = useCallback(() => {
     return (
       <Box display="flex" gap={1} justifyContent="flex-end" alignItems="center">
@@ -56,7 +69,7 @@ const AirportManageModal = ({
           Close
         </Button>
         <Button
-          onClick={onSuccess}
+          onClick={handleSubmit}
           variant="contained"
           disabled={
             !formData.code ||

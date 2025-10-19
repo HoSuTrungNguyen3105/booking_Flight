@@ -2,13 +2,10 @@ import React, { memo, useState } from "react";
 import {
   Box,
   FormControl,
-  Select,
-  MenuItem,
   Button,
   Typography,
   Grid,
   Paper,
-  InputAdornment,
   Divider,
   Alert,
   Fade,
@@ -18,8 +15,6 @@ import {
 } from "@mui/material";
 import {
   Restaurant as RestaurantIcon,
-  AttachMoney as MoneyIcon,
-  Description as DescriptionIcon,
   Category as CategoryIcon,
   CheckCircle as CheckCircleIcon,
   Save as SaveIcon,

@@ -17,9 +17,11 @@ type ReturnProps = {
 };
 const AirportBatchCreator: React.FC<ReturnProps> = ({ onClose }) => {
   const { refetchCreateBatchAirport } = useCreateBatchAirport();
+
   const [airports, setAirports] = useState<CreateAirportReq[]>([
     { code: "", name: "", city: "", country: "" },
   ]);
+
   const [errors, setErrors] = useState<Record<number, string>>({});
 
   const handleChange = (
@@ -71,17 +73,26 @@ const AirportBatchCreator: React.FC<ReturnProps> = ({ onClose }) => {
   };
 
   return (
-    <Box p={3}>
+    <Box p={1} gap={1}>
       <Typography variant="h5" mb={2} fontWeight="bold">
         Tạo danh sách sân bay
       </Typography>
 
-      <Button onClick={onClose}>Return</Button>
+      <Button variant="contained" onClick={onClose}>
+        Return
+      </Button>
 
       {airports.map((airport, index) => (
         <Card
-          key={index}
-          sx={{ mb: 2, p: 2, border: "1px solid #ddd", borderRadius: 2 }}
+          key={airport.code || airport.name}
+          sx={{
+            mb: 2,
+            mt: 2,
+            p: 2,
+            gap: 2,
+            border: "1px solid #ddd",
+            borderRadius: 1,
+          }}
         >
           <CardContent>
             <Grid container spacing={2} alignItems="center">
@@ -89,28 +100,31 @@ const AirportBatchCreator: React.FC<ReturnProps> = ({ onClose }) => {
                 <InputTextField
                   value={airport.code}
                   onChange={(e) => handleChange(index, "code", e.toUpperCase())}
+                  placeholder="code"
                 />
               </Grid>
               <Grid size={3}>
                 <InputTextField
                   value={airport.name}
                   onChange={(e) => handleChange(index, "name", e)}
+                  placeholder="name"
                 />
               </Grid>
               <Grid size={3}>
                 <InputTextField
                   value={airport.city}
                   onChange={(e) => handleChange(index, "city", e)}
+                  placeholder="city"
                 />
               </Grid>
-              <Grid size={2}>
+              <Grid size={3}>
                 <InputTextField
                   placeholder="country"
                   value={airport.country}
                   onChange={(e) => handleChange(index, "country", e)}
                 />
               </Grid>
-              <Grid size={1}>
+              <Grid size={12}>
                 <IconButton
                   color="primary"
                   onClick={() => handleRemoveAirport(index)}
@@ -119,12 +133,17 @@ const AirportBatchCreator: React.FC<ReturnProps> = ({ onClose }) => {
                   <Delete />
                 </IconButton>
               </Grid>
+              {errors[index] && (
+                <Typography color="error" variant="caption">
+                  {errors[index]}
+                </Typography>
+              )}
             </Grid>
-            {errors[index] && (
+            {/* {errors[index] && (
               <Typography color="error" variant="caption">
                 {errors[index]}
               </Typography>
-            )}
+            )} */}
           </CardContent>
         </Card>
       ))}

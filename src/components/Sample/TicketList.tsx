@@ -6,7 +6,7 @@ import type { Baggage } from "../../utils/type";
 import { useGetAllTicketInfo } from "../Api/useGetApi";
 import { DateFormatEnum, formatDate } from "../../hooks/format";
 
-const TicketTable: React.FC = () => {
+const TicketList: React.FC = () => {
   const { getTicketInfo, loadingGetTicketInfo } = useGetAllTicketInfo();
 
   const rowData = useMemo(
@@ -145,9 +145,9 @@ const TicketTable: React.FC = () => {
   ];
 
   return (
-    <Box sx={{ height: "auto", width: "100%" }}>
-      <Typography variant="h5" fontWeight="bold" gutterBottom>
-        Ticket Management
+    <Box sx={{ height: 500, width: "100%" }}>
+      <Typography variant="h6" gutterBottom>
+        Ticket List
       </Typography>
       <TableSection
         rows={rowData}
@@ -161,4 +161,4 @@ const TicketTable: React.FC = () => {
   );
 };
 
-export default TicketTable;
+export default TicketList;

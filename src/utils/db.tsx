@@ -13,6 +13,7 @@ import {
   BarChart,
   Restaurant,
   Forum,
+  TimeToLeave,
 } from "@mui/icons-material";
 import type { ROUTE_PATHS } from "../routers/RoutePath";
 
@@ -39,7 +40,7 @@ export const menuData: MenuSection[] = [
     title: "Tab 1",
     items: [
       {
-        id: "/dashboard",
+        id: "/admin",
         label: "Tổng quan",
         subItems: [
           {
@@ -84,14 +85,13 @@ export const menuData: MenuSection[] = [
     title: "Tab 2",
     items: [
       {
-        id: "aircraft",
+        id: "/admin",
         label: "Sân bay",
         subItems: [
           {
             id: "AirportManagement",
             label: "Danh sách sân bay",
             subItems: [
-              { id: "flightlist", label: "Flight", icon: <Restaurant /> },
               { id: "meals", label: "Suất ăn", icon: <Restaurant /> },
               {
                 id: "domestic",
@@ -109,9 +109,9 @@ export const menuData: MenuSection[] = [
                 label: "Quảnê lý Terminal",
               },
               {
-                id: "sampleDatePicker",
-                label: "Chọn ngày mẫu",
-                icon: <OtherHousesTwoTone />,
+                id: "LeaveRequestTable",
+                label: "Leave Request Table",
+                icon: <TimeToLeave />,
               },
               // {
               //   id: "FlightStatisticsPage",
@@ -142,7 +142,7 @@ export const menuData: MenuSection[] = [
         label: "Người dùng",
         subItems: [
           {
-            id: "/RegistrationForm",
+            id: "/dashboard",
             label: "Quản lý tài khoản",
             subItems: [
               {

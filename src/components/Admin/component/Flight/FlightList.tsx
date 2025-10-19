@@ -9,6 +9,7 @@ import TableSection from "../../../../common/CustomRender/TableSection";
 // import SeatBooking from "./SeatBooking";
 import SeatLayout from "../Seat/SeatLayout";
 import { Download } from "@mui/icons-material";
+import FlightStatus from "./FlightStatus";
 
 export default function FlightList() {
   // const { flightBookingData, loadingFlightBookingData } = useGetMeal();
@@ -156,6 +157,10 @@ export default function FlightList() {
         onReturn={() => setSelectViewDetail(false)}
       />
     );
+  }
+
+  if (selectViewDetail) {
+    return <FlightStatus onReturn={() => setSelectViewDetail(false)} />;
   }
 
   return (

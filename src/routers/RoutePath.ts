@@ -23,7 +23,7 @@ export const ROUTE_PATHS = {
   SUPPORT: "support",
   NOTIFICATIONS: "notifications",
   INTERNATIONAL: "international",
-  SAMPLE_DATE_PICKER: "sampleDatePicker",
+  LEAVE_REQUEST_TABLE: "LeaveRequestTable",
   DOMESTIC: "domestic",
   BULK_MEAL_CREATOR: "BulkMealCreator",
   AIRPORT_MAP: "AirportMap",

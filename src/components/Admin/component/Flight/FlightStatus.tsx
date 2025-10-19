@@ -97,7 +97,7 @@ const statusOptions: ActionType[] = [
   },
 ];
 
-const FlightStatus = () => {
+const FlightStatus = ({ onReturn }: { onReturn: () => void }) => {
   const { getAllFlightIds, refetchGetAllFlightIds } = useGetAllFlightIds();
   const [edited, setEdited] = useState<Record<number, string>>({});
 
@@ -183,6 +183,11 @@ const FlightStatus = () => {
             Manage flight status and updates in real-time
           </Typography>
         </Box>
+
+        <Button onClick={onReturn} variant="contained">
+          {" "}
+          Return
+        </Button>
 
         {/* Flight List */}
         <Grid container spacing={3}>

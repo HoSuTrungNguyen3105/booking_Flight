@@ -118,25 +118,25 @@ const FacilityManagement: React.FC<FacilityManagementProps> = ({
 
   const fetchFacilities = async () => {
     setLoading(true);
-    try {
-      let url = "http://localhost:3000/facilities";
-      if (terminalId) {
-        url += `/terminal/${terminalId}`;
-      } else if (tabValue > 0) {
-        const types = ["RESTAURANT", "SHOP", "LOUNGE", "ATM", "WIFI"];
-        url += `/type/${types[tabValue - 1]}`;
-      }
+    // try {
+    //   let url = "http://localhost:3000/facilities";
+    //   if (terminalId) {
+    //     url += `/terminal/${terminalId}`;
+    //   } else if (tabValue > 0) {
+    //     const types = ["RESTAURANT", "SHOP", "LOUNGE", "ATM", "WIFI"];
+    //     url += `/type/${types[tabValue - 1]}`;
+    //   }
 
-      const response = await fetch(url);
-      if (response.ok) {
-        const data = await response.json();
-        setFacilities(data);
-      }
-    } catch (error) {
-      console.error("Error fetching facilities:", error);
-    } finally {
-      setLoading(false);
-    }
+    //   const response = await fetch(url);
+    //   if (response.ok) {
+    //     const data = await response.json();
+    //     setFacilities(data);
+    //   }
+    // } catch (error) {
+    //   console.error("Error fetching facilities:", error);
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   const handleSubmit = async () => {

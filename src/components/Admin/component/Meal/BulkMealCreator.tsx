@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { memo, useEffect, useRef, useState } from "react";
 import {
   Box,
   Typography,
@@ -18,6 +18,7 @@ import {
   Fade,
   Zoom,
   Stack,
+  Divider,
 } from "@mui/material";
 import {
   Add as AddIcon,
@@ -31,8 +32,10 @@ import type { CreateMealDto, Meal } from "../../../../utils/type";
 import { useCreateMultiMeal } from "../../../Api/usePostApi";
 import theme from "../../../../scss/theme";
 import MealForm from "./InfoMealModal";
-
-const BulkMealCreator: React.FC = () => {
+type BulkMealCreatorProps = {
+  onSuccess: () => void;
+};
+const BulkMealCreator: React.FC<BulkMealCreatorProps> = ({ onSuccess }) => {
   const lastMealRef = useRef<HTMLDivElement>(null);
   const [meals, setMeals] = useState<CreateMealDto[]>([
     {
@@ -103,7 +106,7 @@ const BulkMealCreator: React.FC = () => {
       if (res?.resultCode === "00") {
         // setIsSuccess(true);
         setActiveStep(2);
-        setCreatedMeals(meals); // nếu muốn lưu lại meal đã tạo
+        setCreatedMeals(meals);
       } else {
         console.error("Error creating meals:", res?.resultMessage);
       }
@@ -139,40 +142,9 @@ const BulkMealCreator: React.FC = () => {
   }, [meals.length]);
 
   return (
-    <Box sx={{ maxWidth: "100%" }}>
-      {/* Header */}
-      <Stack
-        sx={{
-          p: 3,
-          mb: 3,
-          borderRadius: 2,
-          background: theme.palette.primary.main,
-          color: "white",
-        }}
-      >
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
-          <RestaurantIcon sx={{ fontSize: 40 }} />
-          <Box>
-            <Typography variant="h4" fontWeight="bold">
-              Bulk Meal Creator
-            </Typography>
-            <Typography variant="subtitle1" sx={{ opacity: 0.9 }}>
-              Create multiple meals at once with ease
-            </Typography>
-          </Box>
-        </Box>
-
-        {/* <Chip
-          label={`${validMealsCount} valid meal${
-            validMealsCount !== 1 ? "s" : ""
-          } ready`}
-          variant="filled"
-          sx={{ background: "rgba(255,255,255,0.2)", color: "white" }}
-        /> */}
-      </Stack>
-
+    <Box sx={{ maxHeight: "35rem", gap: 1 }}>
       {/* Stepper */}
-      <Stepper activeStep={activeStep} sx={{ mb: 4 }}>
+      <Stepper activeStep={activeStep} sx={{ mb: 3, mt: 3 }}>
         {steps.map((label) => (
           <Step key={label}>
             <StepLabel>{label}</StepLabel>
@@ -351,6 +323,10 @@ const BulkMealCreator: React.FC = () => {
             <Button variant="contained" onClick={handleReset} size="large">
               Create More Meals
             </Button>
+
+            <Button variant="outlined" onClick={onSuccess} size="large">
+              Return
+            </Button>
           </Box>
         </Zoom>
       )}
@@ -388,4 +364,4 @@ const BulkMealCreator: React.FC = () => {
   );
 };
 
-export default BulkMealCreator;
+export default memo(BulkMealCreator);

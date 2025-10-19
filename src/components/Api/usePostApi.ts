@@ -597,6 +597,34 @@ export const useUpdateAirportById = (code: number) => {
   };
 };
 
+type DeleteAirportProps = { code: string };
+
+export const useDeleteAirportById = () => {
+  const { refetch: refetchDeleteAirport, loading: loadingDeleteAirport } =
+    useFetch<ResponseMessage, DeleteAirportProps>({
+      url: "/sys/flights/airports/delete",
+      autoFetch: false,
+      config: postMethod,
+    });
+  return {
+    refetchDeleteAirport,
+    loadingDeleteAirport,
+  };
+};
+
+export const useCreateAirport = () => {
+  const { refetch: refetchUpdateAirport, loading: loadingUpdateAirport } =
+    useFetch<ResponseMessage, CreateAirportReq>({
+      url: "/sys/flights/airports",
+      autoFetch: false,
+      config: postMethod,
+    });
+  return {
+    refetchUpdateAirport,
+    loadingUpdateAirport,
+  };
+};
+
 export const useCreateBatchGate = () => {
   const { refetch, data, loading } = useFetch<
     ResponseMessage,

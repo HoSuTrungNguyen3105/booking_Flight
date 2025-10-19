@@ -378,9 +378,13 @@ export type UserUpdateProps = {
   name?: string;
   userAlias?: string;
   role?: UserRoleType;
-  pictureUrl?: string;
-  passport?: string;
   phone?: string;
+  pictureUrl?: string;
+  baseSalary?: number;
+  departmentId?: string;
+  position?: string;
+  employeeNo?: string;
+  hireDate?: number;
 };
 
 export type DetailResponseMessage<T = null> = {
