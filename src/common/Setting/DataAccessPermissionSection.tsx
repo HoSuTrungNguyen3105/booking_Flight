@@ -1,4 +1,4 @@
-import { CheckCircle, Info } from "@mui/icons-material";
+import { CheckCircle } from "@mui/icons-material";
 import {
   Box,
   List,
@@ -8,31 +8,32 @@ import {
   Typography,
 } from "@mui/material";
 import { memo } from "react";
+import { useTranslation } from "react-i18next";
 
 const DataAccessPermissionSection = () => {
+  const { t } = useTranslation();
+
   const serviceTypes = [
-    { label: "Dữ liệu chuyến bay", color: "#1976d2" },
-    { label: "Dữ liệu sân bay", color: "#ff0000" },
-    { label: "Dữ liệu máy bay", color: "#00ff00" },
+    { label: "Dữ liệu chuyến bay", color: "#0D47A1" },
+    { label: "Dữ liệu sân bay", color: "#D32F2F" },
+    { label: "Dữ liệu máy bay", color: "#2E7D32" },
   ];
 
   return (
-    <Box>
+    <Box gap={1}>
       <Box
         sx={{
-          backgroundColor: "white",
-          padding: "10px 16px",
           border: 1,
-          borderColor: "grey.200",
-          borderLeft: "none",
-          borderRight: "none",
+          backgroundColor: "white",
+          borderColor: "divider",
+          p: 1,
         }}
       >
         <Typography component="p" variant="subtitle1" fontWeight="600">
-          Quyền truy cập dữ liệu
+          {t("data_access_title")}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Các dịch vụ mà bạn (Admin) có quyền kiểm tra và quản lý.
+          {t("data_access_description")}
         </Typography>
       </Box>
 
@@ -44,15 +45,12 @@ const DataAccessPermissionSection = () => {
           backgroundColor: "white",
         }}
       >
-        <Typography component="p" p={1} variant="body2">
-          서비스 유형
-        </Typography>
         <List
           dense
           disablePadding
           sx={{
-            maxHeight: "8rem", // Giới hạn chiều cao toàn bộ danh sách
-            overflowY: "auto", // Khi vượt quá thì sẽ có scroll
+            maxHeight: "8rem",
+            overflowY: "auto",
             border: 1,
             borderColor: "grey.200",
           }}

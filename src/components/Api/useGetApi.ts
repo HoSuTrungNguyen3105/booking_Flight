@@ -22,7 +22,7 @@ import {
   type StatusResponseMessage,
 } from "../../utils/type.ts";
 import { useFetch } from "../../context/use[custom]/useFetch.ts";
-import type { Payroll } from "../Sample/PayrollManagement.tsx";
+import type { Payroll } from "../Admin/component/Payroll/PayrollManagement.tsx";
 import type { ActionType } from "../../common/Dropdown/SelectDropdown.tsx";
 import { useEffect } from "react";
 

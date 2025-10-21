@@ -86,7 +86,7 @@ const SelectDropdown: FC<OptionSelectDropdownProps> = ({
   return (
     <FormControl fullWidth error={error}>
       <StyledSelect
-        value={value}
+        value={value ?? ""}
         variant={variant}
         onChange={handleChange}
         onOpen={handleOpen}

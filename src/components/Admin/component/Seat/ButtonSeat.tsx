@@ -111,7 +111,6 @@ const ButtonSeat: React.FC<ButtonSeatProps> = ({
       };
     }
 
-    // 3. Mặc định theo type
     switch (seat.type) {
       case "VIP":
         return {

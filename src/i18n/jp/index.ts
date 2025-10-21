@@ -48,6 +48,9 @@ export const jp = {
     placeholder: "検索",
     userInformation: "ユーザー情報",
     noResults: "結果がありません",
+    data_access_title: "データアクセス権限",
+    data_access_description:
+      "管理者（Admin）が確認および管理できるサービスです。",
     myInfo: "マイ情報管理",
     myInfoDesc:
       "入力した情報を確認し、権限関連の登録、主要なサービス種類、ログイン時間、作成時間などを確認できます。",

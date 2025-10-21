@@ -5,7 +5,7 @@ import type {
   TransferAdmin,
   UserData,
 } from "../../utils/type";
-import type { Payroll } from "./PayrollManagement";
+import type { Payroll } from "../Admin/component/Payroll/PayrollManagement";
 
 export type UserWithRelationsData = Pick<
   UserData,

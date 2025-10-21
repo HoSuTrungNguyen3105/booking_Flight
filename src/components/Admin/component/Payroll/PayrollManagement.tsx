@@ -15,22 +15,19 @@ import {
   CheckCircle,
   VisibilityOff,
 } from "@mui/icons-material";
-import {
-  GridActionsCellItem,
-  type GridColDef,
-  type GridRowId,
-} from "@mui/x-data-grid";
+import { GridActionsCellItem, type GridColDef } from "@mui/x-data-grid";
 import { useMemo, useState } from "react";
-import { type GridRowDef } from "../../common/DataGrid/index";
-import TableSection from "../../common/CustomRender/TableSection";
-import CreatePayrollModal from "./modal/CreatePayrollModal";
-import { useExportPayrollExcel, useGetPayrollData } from "../Api/useGetApi";
+import TableSection from "../../../../common/CustomRender/TableSection";
+import {
+  useExportPayrollExcel,
+  useGetPayrollData,
+} from "../../../Api/useGetApi";
 import SelectDropdown, {
   type ActionType,
-} from "../../common/Dropdown/SelectDropdown";
-import { DateFormatEnum, formatDate } from "../../hooks/format";
-import InfoPayrollModal from "./modal/InfoPayrollModal";
-import FormRow from "../../common/CustomRender/FormRow";
+} from "../../../../common/Dropdown/SelectDropdown";
+import { DateFormatEnum, formatDate } from "../../../../hooks/format";
+import FormRow from "../../../../common/CustomRender/FormRow";
+import ManagementPayrollModal from "./modal/ManagementPayrollModal";
 
 export type EmployeeType = {
   id: number;
@@ -74,8 +71,9 @@ const PayrollManagement = () => {
   const [year, setYear] = useState<number | undefined>(
     new Date().getFullYear() || undefined
   );
+  const [mode, setMode] = useState<"info" | "create">("info");
   const [openGenerateDialog, setOpenGenerateDialog] = useState(false);
-  const [openInfoPayrollDialog, setOpenInfoPayrollDialog] = useState(false);
+  // const [openInfoPayrollDialog, setOpenInfoPayrollDialog] = useState(false);
   const [payrollByEmployeeId, setPayrollByEmployeeId] = useState<number>(0);
 
   const options: ActionType[] = [
@@ -277,21 +275,6 @@ const PayrollManagement = () => {
     console.log("Finalize:", id);
   };
 
-  const [mealRows, setMealRows] = useState<GridRowDef[]>([]);
-
-  const [selectedPayrollRows, setSelectedPayrollRows] = useState<GridRowDef[]>(
-    []
-  );
-
-  const handleMealRowSelection = (selectedIds: GridRowId[]) => {
-    setSelectedPayrollRows((prev) => {
-      const newSelectedRows = mealRows.filter((row) =>
-        selectedIds.includes(row.id)
-      );
-      return newSelectedRows;
-    });
-  };
-
   return (
     <Box sx={{ height: "70vh" }}>
       <Grid container spacing={3}>
@@ -342,7 +325,10 @@ const PayrollManagement = () => {
           <Button
             variant="contained"
             startIcon={<Add />}
-            onClick={() => setOpenGenerateDialog(true)}
+            onClick={() => {
+              setOpenGenerateDialog(true);
+              setMode("create");
+            }}
             size="large"
           >
             Tạo Bảng Lương Mới
@@ -363,37 +349,38 @@ const PayrollManagement = () => {
         </Grid>
       </Grid>
 
-      {/* Data Grid */}
       <TableSection
         rows={filteredData}
         isLoading={false}
-        setRows={setMealRows}
-        // handleRowClick={handleOpenModalInfo}
+        setRows={() => {}}
         handleRowClick={(row) => {
-          console.log("Row clicked ngoài:", row.id as number);
           setPayrollByEmployeeId(row.id as number);
-          setOpenInfoPayrollDialog(true);
+          setOpenGenerateDialog(true);
+          setMode("info");
         }}
-        onSelectedRowIdsChange={handleMealRowSelection}
         nextRowClick
-        // largeThan
         columns={columns}
       />
 
-      <CreatePayrollModal
+      <ManagementPayrollModal
+        mode={mode}
         open={openGenerateDialog}
+        payrollId={payrollByEmployeeId}
         onClose={() => setOpenGenerateDialog(false)}
-        onSuccess={() => setOpenGenerateDialog(false)}
+        onSuccess={() => {
+          setOpenGenerateDialog(false);
+          refetchPayroll();
+        }}
       />
 
-      <InfoPayrollModal
+      {/* <InfoPayrollModal
         open={openInfoPayrollDialog}
         payrollId={payrollByEmployeeId}
         onClose={() => {
           setOpenInfoPayrollDialog(false);
           refetchPayroll();
         }}
-      />
+      /> */}
     </Box>
   );
 };

@@ -1,12 +1,12 @@
 import { Box, Button, Stack } from "@mui/material";
-import { useCallback, useState, useEffect } from "react";
-// import DataAccessPermissionSection from "./DataAccessPermissionSection";
+import { useCallback, useState, useEffect, useMemo } from "react";
 import DialogConfirm from "../Modal/DialogConfirm";
 import UserInfoSection from "../../components/User/UserInfoSection";
-import { UserRole, type UserData } from "../../utils/type";
 import TransferAuthoritySection from "./TransferAuthoritySection";
 import { useAuth } from "../../context/AuthContext";
 import { useUpdateUserInfo } from "../../components/Api/usePostApi";
+import { UserRole, type UserData } from "../../utils/type";
+import DataAccessPermissionSection from "./DataAccessPermissionSection";
 
 export type UserDataToUpdate = Pick<
   UserData,
@@ -34,39 +34,46 @@ export type UserDataToTransferAdmin = Pick<
 
 const ManageMyInformation = () => {
   const { user } = useAuth();
+  const [mode, setMode] = useState<"info" | "update">("info");
+  const [openConfirmModal, setOpenConfirmModal] = useState(false);
+  const [hasChanges, setHasChanges] = useState(false);
 
-  const initialMyInfo: UserDataToUpdate = {
-    id: user?.id ?? 0,
-    name: user?.name ?? "",
-    email: user?.email ?? "",
-    phone: user?.phone ?? "",
-    userAlias: user?.userAlias ?? "",
-    authType: user?.authType ?? "",
-    rank: user?.rank ?? "",
-    role: user?.role ?? UserRole.USER,
-    hireDate: user?.hireDate ?? 0,
-    baseSalary: user?.baseSalary ?? 0,
-  };
+  const userId = user?.id ?? 0;
+  const { refetchUpdateUserInfo } = useUpdateUserInfo(userId);
 
-  // const { refetchGetMyInfo } = useGetMyInfo();
+  const initialMyInfo = useMemo<UserDataToUpdate>(
+    () => ({
+      id: userId,
+      name: user?.name ?? "",
+      email: user?.email ?? "",
+      phone: user?.phone ?? "",
+      userAlias: user?.userAlias ?? "",
+      authType: user?.authType ?? "",
+      rank: user?.rank ?? "",
+      role: user?.role ?? UserRole.USER,
+      hireDate: user?.hireDate ?? 0,
+      baseSalary: user?.baseSalary ?? 0,
+    }),
+    [user, userId]
+  );
 
-  const transferToMyInfo: UserDataToTransferAdmin = {
-    id: user?.id ?? 0,
-    name: user?.name ?? "",
-    role: user?.role ?? UserRole.USER,
-    employeeNo: user?.employeeNo ?? "",
-    fromTransferAdminUserYn: user?.fromTransferAdminUserYn,
-    toTransferAdminUserYn: user?.toTransferAdminUserYn,
-  };
+  const transferToMyInfo = useMemo<UserDataToTransferAdmin>(
+    () => ({
+      id: userId,
+      name: user?.name ?? "",
+      role: user?.role ?? UserRole.USER,
+      employeeNo: user?.employeeNo ?? "",
+      fromTransferAdminUserYn: user?.fromTransferAdminUserYn,
+      toTransferAdminUserYn: user?.toTransferAdminUserYn,
+    }),
+    [user, userId]
+  );
 
   const [myInfo, setMyInfo] = useState<UserDataToUpdate>(initialMyInfo);
-  const [hasChanges, setHasChanges] = useState(false);
-  const [openConfirmModal, setOpenConfirmModal] = useState(false);
-  const { refetchUpdateUserInfo } = useUpdateUserInfo(user?.id as number);
 
   useEffect(() => {
-    setHasChanges(JSON.stringify(myInfo) !== JSON.stringify(user));
-  }, [myInfo, user]);
+    setHasChanges(JSON.stringify(myInfo) !== JSON.stringify(initialMyInfo));
+  }, [myInfo, initialMyInfo]);
 
   const handleChange = (field: keyof UserDataToUpdate, value: string) => {
     setMyInfo((prev) => ({
@@ -75,55 +82,55 @@ const ManageMyInformation = () => {
     }));
   };
 
-  // const handleImageUpload = (files: TFileUploader[]) => {
-  //   const file = files[0]?.raw;
-  //   if (!file) return;
-
-  //   const reader = new FileReader();
-  //   reader.onload = () => {
-  //     setMyInfo((prev) => ({
-  //       ...prev,
-  //       pictureUrl: reader.result as string,
-  //     }));
-  //   };
-  //   reader.readAsDataURL(file);
-  // };
-
-  const handleUpdateMyInfo = useCallback(
-    async (id: number) => {
-      if (!id) return;
-      try {
-        const res = await refetchUpdateUserInfo(myInfo);
-        if (res?.resultCode === "00") {
-          setOpenConfirmModal(false);
-          setHasChanges(false);
-          // refetchGetMyInfo(id);
-        }
-      } catch (error) {
-        console.error("Update error:", error);
+  const handleUpdateMyInfo = useCallback(async () => {
+    try {
+      const res = await refetchUpdateUserInfo(myInfo);
+      if (res?.resultCode === "00") {
+        setOpenConfirmModal(false);
+        setHasChanges(false);
       }
-    },
-    [myInfo, refetchUpdateUserInfo]
-  );
+    } catch (error) {
+      console.error("Update error:", error);
+    }
+  }, [myInfo, refetchUpdateUserInfo]);
 
   const handleRefresh = useCallback(() => {
-    setMyInfo(user as UserDataToUpdate);
+    setMyInfo(initialMyInfo);
     setHasChanges(false);
-  }, [user]);
+  }, [initialMyInfo]);
 
-  const renderButtonSection = () => (
-    <Stack direction="row" justifyContent="flex-end" spacing={1} mt={2}>
-      <Button
-        variant="contained"
-        disabled={!hasChanges}
-        onClick={() => setOpenConfirmModal(true)}
-      >
-        Save Changes
-      </Button>
-      <Button variant="outlined" onClick={handleRefresh}>
-        Refresh
-      </Button>
-    </Stack>
+  const renderButtonSection = useCallback(
+    () => (
+      <Stack direction="row" justifyContent="space-between" mt={0.5}>
+        <Stack direction="row" spacing={1}>
+          <Button
+            variant={mode === "info" ? "contained" : "outlined"}
+            onClick={() => setMode("info")}
+          >
+            Info Mode
+          </Button>
+          <Button
+            variant={mode === "update" ? "contained" : "outlined"}
+            onClick={() => setMode("update")}
+          >
+            Transfer Mode
+          </Button>
+        </Stack>
+        <Stack direction="row" spacing={1}>
+          <Button
+            variant="contained"
+            disabled={!hasChanges}
+            onClick={() => setOpenConfirmModal(true)}
+          >
+            Save Changes
+          </Button>
+          <Button variant="outlined" onClick={handleRefresh}>
+            Refresh
+          </Button>
+        </Stack>
+      </Stack>
+    ),
+    [mode, setMode, handleRefresh, hasChanges]
   );
 
   return (
@@ -131,22 +138,20 @@ const ManageMyInformation = () => {
       sx={{
         display: "flex",
         flexDirection: "column",
-        height: "100%",
-        border: 1,
-        borderColor: "divider",
-        overflowY: "auto",
-        overflowX: "hidden",
-        p: 2,
+        height: "85vh",
       }}
     >
-      <UserInfoSection myInfo={myInfo} onChange={handleChange} />
-
-      {/* <DataAccessPermissionSection /> */}
-
-      <TransferAuthoritySection
-        myInfo={transferToMyInfo}
-        setOpenModal={() => setOpenConfirmModal(true)}
-      />
+      {mode === "info" ? (
+        <>
+          <UserInfoSection myInfo={myInfo} onChange={handleChange} />
+          <DataAccessPermissionSection />
+        </>
+      ) : (
+        <TransferAuthoritySection
+          myInfo={transferToMyInfo}
+          setOpenModal={() => setOpenConfirmModal(true)}
+        />
+      )}
 
       {renderButtonSection()}
 
@@ -154,10 +159,10 @@ const ManageMyInformation = () => {
         cancelLabel="Cancel"
         open={openConfirmModal}
         onClose={() => setOpenConfirmModal(false)}
-        onConfirm={() => handleUpdateMyInfo(user?.id ?? 0)}
-        title="Xác nhận cập nhật"
-        message="Bạn có chắc chắn muốn lưu thay đổi thông tin cá nhân không?"
-        confirmLabel="Lưu"
+        onConfirm={handleUpdateMyInfo}
+        title="Confirm update"
+        message="Are you sure you want to save changes to your personal information?"
+        confirmLabel="Save"
       />
     </Box>
   );

@@ -19,7 +19,9 @@ export const en = {
     tittle1: "Basic Type - Single Selection",
     tittle2: "Status",
     switch_change_currency: "Change Currency",
-
+    data_access_title: "Data Access Permissions",
+    data_access_description:
+      "Services that you (Admin) have permission to review and manage.",
     transferAuthority: "Transfer Authority",
     transferInfo:
       "Only one admin authority is allowed. The transfer process will remain until the recipient confirms.",

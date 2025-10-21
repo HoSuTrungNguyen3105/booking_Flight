@@ -16,22 +16,22 @@ const UserInfoSection = ({ myInfo, onChange }: IUserInfoSectionProps) => {
   return (
     <Box
       sx={{
-        paddingBottom: "8px",
-        height: "500px",
-        overflow: "auto",
+        paddingBottom: "2px",
+        height: "470px",
+        // overflow: "auto",
         border: "1px solid #e0e0e0",
-        borderRadius: "4px",
+        borderRadius: 0.5,
       }}
     >
       <Box
         sx={{
           backgroundColor: "white",
-          padding: "8px 12px",
+          padding: "8px",
           borderBottom: 1,
           borderColor: "grey.200",
-          position: "sticky",
-          top: 0,
-          zIndex: 1,
+          // position: "sticky",
+          // top: 0,
+          // zIndex: 1,
         }}
       >
         <Typography component="p" variant="overline">
@@ -46,6 +46,8 @@ const UserInfoSection = ({ myInfo, onChange }: IUserInfoSectionProps) => {
         sx={{
           margin: 1,
           border: 1,
+          height: "350px",
+          overflow: "auto",
           borderColor: "grey.200",
           backgroundColor: "white",
           padding: "8px 12px",

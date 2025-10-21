@@ -18,7 +18,9 @@ export const ko = {
     toastError: "문제가 발생했습니다. 다시 시도하세요!",
     tittle1: "기본 유형 - 단일 선택",
     tittle2: "상태",
-
+    data_access_title: "데이터 액세스 권한",
+    data_access_description:
+      "관리자(Admin)가 검토 및 관리할 수 있는 서비스입니다.",
     myInfo: "내 정보 관리",
     myInfoDesc:
       "자신의 입력 정보를 확인하고 권한 관련 등록, 주요 서비스 유형, 로그인 시간, 생성 시간등을 확인할 수 있습니다.",

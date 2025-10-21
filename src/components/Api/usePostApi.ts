@@ -45,6 +45,7 @@ import { useSecureFetch } from "../../context/use[custom]/useSecureFetch.ts";
 // } from "../../common/Sample/PayrollManagement.tsx";
 import type { UserWithRelationsData } from "../Sample/type.ts";
 import type { UserFormConfig } from "../../common/Setting/hooks/useDataSection.ts";
+import type { GeneratePayroll } from "../Admin/component/Payroll/PayrollManagement.tsx";
 
 const postMethod = {
   method: MethodType.POST,
@@ -921,6 +922,18 @@ export const useDeletePayroll = () => {
   return {
     refetchDeletePayroll: refetch,
     loadingDeletePayroll: loading,
+  };
+};
+
+export const useGeneratePayroll = () => {
+  const { refetch, loading } = useFetch<ResponseMessage, GeneratePayroll>({
+    url: "/sys/payrolls/generate",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchGeneratePayroll: refetch,
+    loadingGeneratePayroll: loading,
   };
 };
 

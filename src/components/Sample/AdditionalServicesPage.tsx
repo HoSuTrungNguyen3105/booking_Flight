@@ -10,14 +10,14 @@ const getBaggageStatusStyle = (status: string) => {
     case "CHECKED_IN":
       return {
         label: "Đã ký gửi",
-        sx: {
-          background: "linear-gradient(135deg, #43a047, #66bb6a)", // xanh lá
-          color: "#fff",
-          fontWeight: 600,
-          borderRadius: "8px",
-          px: 1.5,
-          py: 0.5,
-        },
+        // sx: {
+        //   background: "linear-gradient(135deg, #43a047, #66bb6a)", // xanh lá
+        //   color: "#fff",
+        //   fontWeight: 600,
+        //   borderRadius: "8px",
+        //   px: 1.5,
+        //   py: 0.5,
+        // },
       };
 
     case "LOADED":

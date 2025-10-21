@@ -45,6 +45,10 @@ export const vi = {
     dropzoneThumbnail: "Chọn hoặc kéo & thả tập tin tại đây (Thumbnail).",
     placeholder: "Tìm kiếm",
     userInformation: "Thông tin người dùng",
+
+    data_access_title: "Quyền truy cập dữ liệu",
+    data_access_description:
+      "Các dịch vụ mà bạn (Admin) có quyền kiểm tra và quản lý.",
     noResults: "Không có kết quả nào",
     myInfo: "Quản lý thông tin của tôi",
     myInfoDesc:
