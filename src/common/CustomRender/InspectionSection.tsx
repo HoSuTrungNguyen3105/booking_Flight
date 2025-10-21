@@ -10,7 +10,7 @@ type ISecurityTabSectionProps = {
   rows: GridRowDef[];
   name?: string;
   loading?: boolean;
-  onSearch?: (query: ISearchQuery) => void; // ✅ đổi type đúng với SearchBar
+  onSearch?: (query: ISearchQuery) => void;
   onRowClick: (rowData: GridRowDef) => void;
 };
 
@@ -18,7 +18,7 @@ const InspectionSection = ({
   columns,
   rows,
   loading,
-  onSearch = () => {},
+  // onSearch = () => {},
   onRowClick,
 }: ISecurityTabSectionProps) => {
   const headerRef = useRef<HTMLDivElement>(null);
@@ -26,14 +26,13 @@ const InspectionSection = ({
   const [filteredRows, setFilteredRows] = useState<GridRowDef[]>(rows);
 
   useEffect(() => {
-    setFilteredRows(rows); // cập nhật khi rows thay đổi từ API
+    setFilteredRows(rows);
   }, [rows]);
 
   useEffect(() => {
     setHeaderHeight(headerRef.current?.getBoundingClientRect().bottom || 0);
   }, []);
 
-  // ✅ Hàm search handler
   const handleSearch = useCallback(
     (query: ISearchQuery) => {
       const { text, startDate, endDate } = query;
@@ -66,7 +65,7 @@ const InspectionSection = ({
       <Box display="flex" flexDirection="column">
         <TableSection
           columns={columns}
-          rows={filteredRows} // ✅ dùng dữ liệu đã lọc
+          rows={filteredRows}
           isLoading={loading as boolean}
           nextRowClick={true}
           setRows={() => {}}
@@ -79,7 +78,7 @@ const InspectionSection = ({
   return (
     <Stack height="100%">
       <Box minHeight={headerHeight}>
-        <SearchBar onSearch={handleSearch} /> {/* ✅ gọi hàm handleSearch */}
+        <SearchBar onSearch={handleSearch} />
       </Box>
       <Box flexGrow={1}>{renderContent()}</Box>
     </Stack>

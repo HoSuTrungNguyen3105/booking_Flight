@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useRef, useState } from "react";
+import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import {
   Box,
   Typography,
@@ -32,6 +32,7 @@ import type { CreateMealDto, Meal } from "../../../../utils/type";
 import { useCreateMultiMeal } from "../../../Api/usePostApi";
 import theme from "../../../../scss/theme";
 import MealForm from "./InfoMealModal";
+import { useToast } from "../../../../context/ToastContext";
 type BulkMealCreatorProps = {
   onSuccess: () => void;
 };
@@ -92,30 +93,46 @@ const BulkMealCreator: React.FC<BulkMealCreatorProps> = ({ onSuccess }) => {
   };
 
   const validMealsCount = meals.filter(isValidMeal).length;
-
-  const handleSubmit = async () => {
-    setIsSubmitting(true);
-
+  const toast = useToast();
+  const handleSubmit = useCallback(async () => {
+    if (isSubmitting) return;
+    if (!meals || meals.length === 0) {
+      toast("Vui lòng thêm ít nhất một bữa ăn trước khi tạo.", "error");
+      return;
+    }
     try {
-      // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      setIsSubmitting(true);
+      await new Promise((resolve) => setTimeout(resolve, 500));
 
-      // Gọi API thật
       const res = await refetchCreateMultiMeal(meals);
-      // console.log("res", res);
+      console.log("Submitted meals:", meals);
+
       if (res?.resultCode === "00") {
-        // setIsSuccess(true);
-        setActiveStep(2);
+        toast(res?.resultMessage || "Tạo bữa ăn thành công!");
         setCreatedMeals(meals);
+        setActiveStep(2);
+        onSuccess();
       } else {
-        console.error("Error creating meals:", res?.resultMessage);
+        toast(
+          res?.resultMessage || "Tạo bữa ăn thất bại, vui lòng thử lại.",
+          "error"
+        );
+        console.error("Meal creation error:", res);
       }
     } catch (error) {
-      console.error("Error creating meals:", error);
+      console.error("Unexpected error creating meals:", error);
+      toast("Đã xảy ra lỗi khi tạo bữa ăn.");
     } finally {
       setIsSubmitting(false);
     }
-  };
+  }, [
+    isSubmitting,
+    meals,
+    refetchCreateMultiMeal,
+    setActiveStep,
+    setCreatedMeals,
+    onSuccess,
+  ]);
 
   const handleReset = () => {
     setMeals([
@@ -161,10 +178,9 @@ const BulkMealCreator: React.FC<BulkMealCreatorProps> = ({ onSuccess }) => {
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                mb: 3,
+                mb: 1,
               }}
             >
-              <Typography variant="h5">Add Your Meals</Typography>
               <Button
                 variant="outlined"
                 startIcon={<PreviewIcon />}

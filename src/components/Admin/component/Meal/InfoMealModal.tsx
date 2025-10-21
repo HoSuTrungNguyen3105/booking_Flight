@@ -116,52 +116,52 @@ const MealForm =
 
           <Grid container spacing={2}>
             <Grid size={6}>
-              <Box sx={{ mb: 2 }}>
-                <Typography
-                  variant="subtitle2"
-                  gutterBottom
-                  color="text.secondary"
-                >
-                  Meal Code *
-                </Typography>
-                <InputTextField
-                  type="text"
-                  value={meal.mealCode}
-                  onChange={(e) => onChange(index, "mealCode", e)}
-                  placeholder="Enter meal code"
-                />
-              </Box>
+              {/* <Box sx={{ mb: 2 }}> */}
+              <Typography
+                variant="subtitle2"
+                gutterBottom
+                color="text.secondary"
+              >
+                Meal Code *
+              </Typography>
+              <InputTextField
+                type="text"
+                value={meal.mealCode}
+                onChange={(e) => onChange(index, "mealCode", e)}
+                placeholder="Enter meal code"
+              />
+              {/* </Box> */}
 
-              <Box sx={{ mb: 2 }}>
-                <Typography
-                  variant="subtitle2"
-                  gutterBottom
-                  color="text.secondary"
-                >
-                  Meal Name *
-                </Typography>
-                <InputTextField
-                  type="text"
-                  value={meal.name}
-                  onChange={(e) => onChange(index, "name", e)}
-                  placeholder="Enter meal name"
-                />
-              </Box>
+              {/* <Box sx={{ mb: 2 }}> */}
+              <Typography
+                variant="subtitle2"
+                gutterBottom
+                color="text.secondary"
+              >
+                Meal Name *
+              </Typography>
+              <InputTextField
+                type="text"
+                value={meal.name}
+                onChange={(e) => onChange(index, "name", e)}
+                placeholder="Enter meal name"
+              />
+              {/* </Box>
 
-              <Box sx={{ mb: 2 }}>
-                <Typography
-                  variant="subtitle2"
-                  gutterBottom
-                  color="text.secondary"
-                >
-                  Meal Type *
-                </Typography>
-                <SelectDropdown
-                  value={meal.mealType}
-                  onChange={(e) => onChange(index, "mealType", e)}
-                  options={mealOptions}
-                />
-              </Box>
+              <Box sx={{ mb: 2 }}> */}
+              <Typography
+                variant="subtitle2"
+                gutterBottom
+                color="text.secondary"
+              >
+                Meal Type *
+              </Typography>
+              <SelectDropdown
+                value={meal.mealType}
+                onChange={(e) => onChange(index, "mealType", e)}
+                options={mealOptions}
+              />
+              {/* </Box> */}
             </Grid>
 
             <Grid size={6}>
@@ -176,6 +176,8 @@ const MealForm =
                 <InputNumber
                   value={meal.price}
                   min={0}
+                  isSeparator
+                  sx={{ width: "20rem" }}
                   size="medium"
                   onChange={(e) => onChange(index, "price", e || 0)}
                   placeholder="0.00"

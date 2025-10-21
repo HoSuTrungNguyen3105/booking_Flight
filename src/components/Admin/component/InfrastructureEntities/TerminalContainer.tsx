@@ -118,6 +118,8 @@ const TerminalContainer: React.FC = () => {
     terminalId,
   } = useTerminalContainer();
 
+  console.log("terminal", terminalId);
+
   const renderDescription = useCallback(() => {
     return (
       <>
@@ -192,6 +194,219 @@ const TerminalContainer: React.FC = () => {
         return <Stack direction="column" spacing={2} sx={{ mt: 1 }}></Stack>;
     }
   };
+
+  const renderGate = useCallback((terminal: Terminal) => {
+    return (
+      <>
+        <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+          <Typography variant="h6">
+            Cổng ({terminal.gates.length} cổng)
+          </Typography>
+          <IconButton
+            size="small"
+            sx={{ ml: 1 }}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleAddNew("gate", terminal.id);
+            }}
+          >
+            <Add />
+          </IconButton>
+        </Box>
+
+        {terminal.gates.length > 0 ? (
+          <Grid container spacing={1}>
+            {terminal.gates.map((gate) => (
+              <Grid size={4} key={gate.id}>
+                <GateBox
+                  status={gate.status as GateStatus}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleGateClick("update", gate);
+                  }}
+                >
+                  <Typography variant="body2" fontWeight="bold">
+                    {gate.code}
+                  </Typography>
+                  <Typography variant="caption" display="block">
+                    {getGateStatusText(gate.status)}
+                  </Typography>
+                </GateBox>
+              </Grid>
+            ))}
+          </Grid>
+        ) : (
+          <Box
+            sx={{
+              p: 2,
+              textAlign: "center",
+              bgcolor: "grey.50",
+              borderRadius: 1,
+            }}
+          >
+            <Typography variant="body2" color="text.secondary">
+              Chưa có cổng nào. Click nút + để thêm cổng mới.
+            </Typography>
+          </Box>
+        )}
+
+        {terminal.gates.length > 0 ? (
+          <Grid container spacing={1}>
+            {terminal.gates.map((gate) => (
+              <Grid size={12} key={gate.id}>
+                <GateBox
+                  status={
+                    gate.assignments.length > 0 ? "OCCUPIED" : "AVAILABLE"
+                  }
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleGateClick("update", gate);
+                  }}
+                >
+                  {gate.assignments.length > 0 ? (
+                    gate.assignments.map((assignment) => (
+                      <Box key={assignment.id} sx={{ mt: 0.5 }}>
+                        <Typography
+                          variant="caption"
+                          display="block"
+                          color="success.main"
+                        >
+                          Flight #{assignment.flightId}
+                        </Typography>
+                        <Typography variant="caption" display="block">
+                          AssignedAt: {assignment.assignedAt}
+                        </Typography>
+                        <Typography variant="caption" display="block">
+                          ReleasedAt: {assignment.releasedAt}
+                        </Typography>
+                      </Box>
+                    ))
+                  ) : (
+                    <Typography
+                      variant="caption"
+                      display="block"
+                      color="text.secondary"
+                    >
+                      Chưa có assignment
+                    </Typography>
+                  )}
+                </GateBox>
+              </Grid>
+            ))}
+          </Grid>
+        ) : (
+          <Box
+            sx={{
+              p: 2,
+              textAlign: "center",
+              bgcolor: "grey.50",
+              borderRadius: 1,
+            }}
+          >
+            <Typography variant="body2" color="text.secondary">
+              Chưa có assignment gate nào. Click nút + để thêm mới.
+            </Typography>
+          </Box>
+        )}
+      </>
+    );
+  }, []);
+
+  const renderFacility = useCallback((terminal: Terminal) => {
+    return (
+      <>
+        <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+          <Typography variant="h6">
+            Tiện nghi ({terminal.facilities.length})
+          </Typography>
+          <IconButton
+            size="small"
+            sx={{ ml: 1 }}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleAddNew("facility", terminal.id);
+              // handleFacilityClick("create", facility);
+            }}
+          >
+            <Add />
+          </IconButton>
+        </Box>
+
+        {terminal.facilities.length > 0 ? (
+          <Box sx={{ mb: 2 }}>
+            {terminal.facilities.map((facility) => {
+              const info = getFacilityStyle(facility.type as FacilityType);
+              const chipBg = alpha(info.color, 0.06);
+              const chipHoverBg = alpha(info.color, 0.1);
+
+              return (
+                <Chip
+                  key={facility.id}
+                  clickable
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleFacilityClick("update", facility, terminal.id);
+                  }}
+                  size="medium"
+                  variant="outlined"
+                  sx={{
+                    m: 0.5,
+                    borderColor: info.color,
+                    color: info.color,
+                    backgroundColor: chipBg,
+                    "&:hover": {
+                      backgroundColor: chipHoverBg,
+                      boxShadow: theme.shadows[1],
+                    },
+                  }}
+                  label={
+                    <Box sx={{ textAlign: "left", lineHeight: 1 }}>
+                      <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                        {facility.name}
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        display="block"
+                        sx={{ color: info.color, opacity: 0.9 }}
+                      >
+                        {info.label}
+                      </Typography>
+                    </Box>
+                  }
+                />
+              );
+            })}
+          </Box>
+        ) : (
+          <Box
+            sx={{
+              p: 2,
+              textAlign: "center",
+              bgcolor: "grey.50",
+              borderRadius: 1,
+            }}
+          >
+            <Typography variant="body2" color="text.secondary">
+              Chưa có tiện nghi nào. Click nút + để thêm tiện nghi mới.
+            </Typography>
+          </Box>
+        )}
+
+        {/* Hiển thị thông tin airport */}
+        <Box sx={{ mt: 2, p: 2, bgcolor: "grey.50", borderRadius: 1 }}>
+          <Typography variant="subtitle2" gutterBottom>
+            Thông tin sân bay:
+          </Typography>
+          <Typography variant="body2">
+            {terminal.airport.name} ({terminal.airport.code})
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {terminal.airport.city}, {terminal.airport.city}
+          </Typography>
+        </Box>
+      </>
+    );
+  }, []);
 
   return (
     <>
@@ -269,220 +484,10 @@ const TerminalContainer: React.FC = () => {
               </Box>
 
               <Grid container spacing={2}>
-                <Grid size={8}>
-                  <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                    <Typography variant="h6">
-                      Cổng ({terminal.gates.length} cổng)
-                    </Typography>
-                    <IconButton
-                      size="small"
-                      sx={{ ml: 1 }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleAddNew("gate", terminal.id);
-                      }}
-                    >
-                      <Add />
-                    </IconButton>
-                  </Box>
+                {/* TO_DO IN THIS render*/}
+                <Grid size={8}>{renderGate(terminal)}</Grid>
 
-                  {terminal.gates.length > 0 ? (
-                    <Grid container spacing={1}>
-                      {terminal.gates.map((gate) => (
-                        <Grid size={4} key={gate.id}>
-                          <GateBox
-                            status={gate.status as GateStatus}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleGateClick("update", gate);
-                            }}
-                          >
-                            <Typography variant="body2" fontWeight="bold">
-                              {gate.code}
-                            </Typography>
-                            <Typography variant="caption" display="block">
-                              {getGateStatusText(gate.status)}
-                            </Typography>
-                          </GateBox>
-                        </Grid>
-                      ))}
-                    </Grid>
-                  ) : (
-                    <Box
-                      sx={{
-                        p: 2,
-                        textAlign: "center",
-                        bgcolor: "grey.50",
-                        borderRadius: 1,
-                      }}
-                    >
-                      <Typography variant="body2" color="text.secondary">
-                        Chưa có cổng nào. Click nút + để thêm cổng mới.
-                      </Typography>
-                    </Box>
-                  )}
-                </Grid>
-
-                {terminal.gates.length > 0 ? (
-                  <Grid container spacing={1}>
-                    {terminal.gates.map((gate) => (
-                      <Grid size={12} key={gate.id}>
-                        <GateBox
-                          status={
-                            gate.assignments.length > 0
-                              ? "OCCUPIED"
-                              : "AVAILABLE"
-                          }
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleGateClick("update", gate);
-                          }}
-                        >
-                          {gate.assignments.length > 0 ? (
-                            gate.assignments.map((assignment) => (
-                              <Box key={assignment.id} sx={{ mt: 0.5 }}>
-                                <Typography
-                                  variant="caption"
-                                  display="block"
-                                  color="success.main"
-                                >
-                                  Flight #{assignment.flightId}
-                                </Typography>
-                                <Typography variant="caption" display="block">
-                                  AssignedAt: {assignment.assignedAt}
-                                </Typography>
-                                <Typography variant="caption" display="block">
-                                  ReleasedAt: {assignment.releasedAt}
-                                </Typography>
-                              </Box>
-                            ))
-                          ) : (
-                            <Typography
-                              variant="caption"
-                              display="block"
-                              color="text.secondary"
-                            >
-                              Chưa có assignment
-                            </Typography>
-                          )}
-                        </GateBox>
-                      </Grid>
-                    ))}
-                  </Grid>
-                ) : (
-                  <Box
-                    sx={{
-                      p: 2,
-                      textAlign: "center",
-                      bgcolor: "grey.50",
-                      borderRadius: 1,
-                    }}
-                  >
-                    <Typography variant="body2" color="text.secondary">
-                      Chưa có assignment gate nào. Click nút + để thêm mới.
-                    </Typography>
-                  </Box>
-                )}
-
-                <Grid size={4}>
-                  <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                    <Typography variant="h6">
-                      Tiện nghi ({terminal.facilities.length})
-                    </Typography>
-                    <IconButton
-                      size="small"
-                      sx={{ ml: 1 }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleAddNew("facility", terminal.id);
-                        // handleFacilityClick("create", facility);
-                      }}
-                    >
-                      <Add />
-                    </IconButton>
-                  </Box>
-
-                  {terminal.facilities.length > 0 ? (
-                    <Box sx={{ mb: 2 }}>
-                      {terminal.facilities.map((facility) => {
-                        const info = getFacilityStyle(
-                          facility.type as FacilityType
-                        );
-                        const chipBg = alpha(info.color, 0.06);
-                        const chipHoverBg = alpha(info.color, 0.1);
-
-                        return (
-                          <Chip
-                            key={facility.id}
-                            clickable
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleFacilityClick("update", facility);
-                            }}
-                            size="medium"
-                            variant="outlined"
-                            sx={{
-                              m: 0.5,
-                              borderColor: info.color,
-                              color: info.color,
-                              backgroundColor: chipBg,
-                              "&:hover": {
-                                backgroundColor: chipHoverBg,
-                                boxShadow: theme.shadows[1],
-                              },
-                            }}
-                            label={
-                              <Box sx={{ textAlign: "left", lineHeight: 1 }}>
-                                <Typography
-                                  variant="body2"
-                                  sx={{ fontWeight: 600 }}
-                                >
-                                  {facility.name}
-                                </Typography>
-                                <Typography
-                                  variant="caption"
-                                  display="block"
-                                  sx={{ color: info.color, opacity: 0.9 }}
-                                >
-                                  {info.label}
-                                </Typography>
-                              </Box>
-                            }
-                          />
-                        );
-                      })}
-                    </Box>
-                  ) : (
-                    <Box
-                      sx={{
-                        p: 2,
-                        textAlign: "center",
-                        bgcolor: "grey.50",
-                        borderRadius: 1,
-                      }}
-                    >
-                      <Typography variant="body2" color="text.secondary">
-                        Chưa có tiện nghi nào. Click nút + để thêm tiện nghi
-                        mới.
-                      </Typography>
-                    </Box>
-                  )}
-
-                  {/* Hiển thị thông tin airport */}
-                  <Box
-                    sx={{ mt: 2, p: 2, bgcolor: "grey.50", borderRadius: 1 }}
-                  >
-                    <Typography variant="subtitle2" gutterBottom>
-                      Thông tin sân bay:
-                    </Typography>
-                    <Typography variant="body2">
-                      {terminal.airport.name} ({terminal.airport.code})
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {terminal.airport.city}, {terminal.airport.city}
-                    </Typography>
-                  </Box>
-                </Grid>
+                <Grid size={4}>{renderFacility(terminal)}</Grid>
               </Grid>
             </PaperContainer>
           ))}

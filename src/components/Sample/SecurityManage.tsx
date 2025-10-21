@@ -3,7 +3,6 @@ import type { TabItem } from "../Layout/SearchLayout";
 import SearchLayout from "../Layout/SearchLayout";
 import InspectionSection from "../../common/CustomRender/InspectionSection";
 import type { GridColDef } from "@mui/x-data-grid";
-import { Typography } from "@mui/material";
 import { DateFormatEnum, formatDate } from "../../hooks/format";
 import type { GridRowDef } from "../../common/DataGrid";
 import { useFindAllPassenger } from "../Api/useGetApi";
@@ -19,25 +18,20 @@ export const columnsPassenger: GridColDef[] = [
     field: "accountLockYn",
     headerName: "Tài khoản khóa",
     flex: 1,
-    renderCell: ({ value }) => (
-      <Typography>{value === "Y" ? "Đã khóa" : "Hoạt động"}</Typography>
-    ),
+    renderCell: ({ value }) => (value === "Y" ? "Đã khóa" : "Hoạt động"),
   },
   {
     field: "isEmailVerified",
     headerName: "Email xác thực",
     flex: 1,
-    renderCell: ({ value }) => (
-      <Typography>{value === "Y" ? "Đã xác thực" : "Chưa xác thực"}</Typography>
-    ),
+    renderCell: ({ value }) =>
+      value === "Y" ? "Đã xác thực" : "Chưa xác thực",
   },
   {
     field: "lastLoginDate",
     headerName: "Lần đăng nhập cuối",
     flex: 1,
-    renderCell: ({ value }) => (
-      <Typography>{formatDate(DateFormatEnum.MMMM_D_YYYY, value)}</Typography>
-    ),
+    renderCell: ({ value }) => formatDate(DateFormatEnum.MMMM_D_YYYY, value),
   },
 ];
 
@@ -53,15 +47,6 @@ const SecurityManage = () => {
     setPassengerId(rowData.id as string);
   };
 
-  const handleSearch = useCallback((query: ISearchQuery) => {
-    rowData.filter(
-      (r) =>
-        r.fullName.toLowerCase().includes(query.text[0].toLowerCase()) ||
-        r.email.toLowerCase().includes(query.text[0].toLowerCase())
-    );
-    // setRows(filtered);
-  }, []);
-
   const rowData = useMemo(
     () =>
       dataAllPassenger?.list?.map((item) => ({
@@ -69,6 +54,22 @@ const SecurityManage = () => {
         id: item.id,
       })) || [],
     [dataAllPassenger]
+  );
+
+  const handleSearch = useCallback(
+    (query: ISearchQuery) => {
+      if (!query.text || query.text.length === 0) {
+        return;
+      }
+      rowData.filter((r) =>
+        query.text.filter(
+          (keyword) =>
+            r.fullName?.toLowerCase().includes(keyword.toLowerCase()) ||
+            r.email?.toLowerCase().includes(keyword.toLowerCase())
+        )
+      );
+    },
+    [rowData]
   );
 
   const handleReturn = useCallback(() => {

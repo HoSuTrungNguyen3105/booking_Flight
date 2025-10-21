@@ -1,4 +1,3 @@
-import { defer } from "lodash";
 import { useCallback, useState } from "react";
 import { useGetTerminalData } from "../../../../Api/usePostApi";
 import type {
@@ -74,39 +73,48 @@ export const useTerminalContainer = () => {
   };
 
   const handleFacilityClick = useCallback(
-    (type: "create" | "update", facility: Facility) => {
+    (type: "create" | "update", facility: Facility, terminalID: string) => {
       setDialogType(type);
       setEditingItem(facility);
+      setTerminalId(terminalID);
       setDialogOpen((prev) => ({ ...prev, facility: true }));
     },
-    []
+    [setDialogType, setEditingItem, setDialogOpen]
   );
 
-  const handleTerminalClick = useCallback((terminal: Terminal) => {
-    setEditingItem(terminal);
-    setDialogOpen((prev) => ({ ...prev, terminal: true }));
-  }, []);
+  const handleTerminalClick = useCallback(
+    (terminal: Terminal) => {
+      setEditingItem(terminal);
+      setTerminalId(terminal.id);
+      setDialogOpen((prev) => ({ ...prev, terminal: true }));
+    },
+    [setEditingItem, setTerminalId, setDialogOpen]
+  );
 
   const handleAddNew = useCallback(
-    (type: "gate" | "facility", terminalId: string) => {
+    (type: "gate" | "facility", terminalID: string) => {
       setDialogType("create");
-      setTerminalId(terminalId);
+      setTerminalId(terminalID);
       setDialogOpen((prev) => ({ ...prev, [type]: true }));
     },
-    []
+    [setDialogType, setTerminalId, setEditingItem, setDialogOpen]
   );
 
   const handleGateClick = useCallback(
-    (type: "create" | "update", gate: Gate) => {
+    (type: "create" | "update", gate?: Gate) => {
       setDialogType(type);
-      setGateForm({
-        code: gate.code,
-        status: gate.status,
-        id: gate.id,
-      });
+      if (type === "update" && gate) {
+        setGateForm({
+          code: gate.code,
+          status: gate.status,
+          id: gate.id,
+        });
+      } else {
+        setGateForm({ code: "", status: "AVAILABLE", id: "" });
+      }
       setDialogOpen((prev) => ({ ...prev, gate: true }));
     },
-    []
+    [setDialogType, setGateForm, setDialogOpen]
   );
 
   return {
