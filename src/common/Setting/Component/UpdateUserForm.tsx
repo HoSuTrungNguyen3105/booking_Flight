@@ -45,13 +45,14 @@ export default function UpdateUserForm({
   const statusOptions = mapStringToDropdown(dataEmployeeStatuses?.data || []);
 
   const toast = useToast();
+
   const { refetchUpdateUserFromAdmin } = useUpdateUserFromAdmin();
 
   const onSubmit = useCallback(
     async (formData: AdminUpdateUserForm) => {
       try {
-        await refetchUpdateUserFromAdmin(formData);
-        toast(`Cập nhật nhân viên #${formData.id} thành công`, "success");
+        const res = await refetchUpdateUserFromAdmin(formData);
+        toast(res?.resultMessage || "Success update !!", "success");
         onSuccess();
       } catch (error) {
         console.error("Error updating user:", error);

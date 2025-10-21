@@ -10,7 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Add, Delete } from "@mui/icons-material";
-import axios from "axios";
+// import axios from "axios";
 import type { FlightFormData } from "./FlightManagementModal";
 import { useCreateMultiFlight } from "../../../Api/usePostApi";
 
@@ -28,10 +28,10 @@ import { useCreateMultiFlight } from "../../../Api/usePostApi";
 //   priceBusiness: number;
 // };
 
-type FlightError = {
-  errorCode: string;
-  errorMessage: string;
-};
+// type FlightError = {
+//   errorCode: string;
+//   errorMessage: string;
+// };
 
 const FlightBatchCreator: React.FC = () => {
   const [flights, setFlights] = useState<FlightFormData[]>([

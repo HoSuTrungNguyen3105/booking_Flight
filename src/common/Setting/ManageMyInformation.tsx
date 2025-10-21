@@ -1,13 +1,12 @@
 import { Box, Button, Stack } from "@mui/material";
 import { useCallback, useState, useEffect } from "react";
-import DataAccessPermissionSection from "./DataAccessPermissionSection";
+// import DataAccessPermissionSection from "./DataAccessPermissionSection";
 import DialogConfirm from "../Modal/DialogConfirm";
 import UserInfoSection from "../../components/User/UserInfoSection";
 import { UserRole, type UserData } from "../../utils/type";
-import TransferAuthoritySection from "./Component/TransferAuthoritySection";
+import TransferAuthoritySection from "./TransferAuthoritySection";
 import { useAuth } from "../../context/AuthContext";
 import { useUpdateUserInfo } from "../../components/Api/usePostApi";
-import type { TFileUploader } from "../FileUploader/type";
 
 export type UserDataToUpdate = Pick<
   UserData,
@@ -49,6 +48,8 @@ const ManageMyInformation = () => {
     baseSalary: user?.baseSalary ?? 0,
   };
 
+  // const { refetchGetMyInfo } = useGetMyInfo();
+
   const transferToMyInfo: UserDataToTransferAdmin = {
     id: user?.id ?? 0,
     name: user?.name ?? "",
@@ -74,32 +75,36 @@ const ManageMyInformation = () => {
     }));
   };
 
-  const handleImageUpload = (files: TFileUploader[]) => {
-    const file = files[0]?.raw;
-    if (!file) return;
+  // const handleImageUpload = (files: TFileUploader[]) => {
+  //   const file = files[0]?.raw;
+  //   if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      setMyInfo((prev) => ({
-        ...prev,
-        pictureUrl: reader.result as string,
-      }));
-    };
-    reader.readAsDataURL(file);
-  };
+  //   const reader = new FileReader();
+  //   reader.onload = () => {
+  //     setMyInfo((prev) => ({
+  //       ...prev,
+  //       pictureUrl: reader.result as string,
+  //     }));
+  //   };
+  //   reader.readAsDataURL(file);
+  // };
 
-  const handleUpdateMyInfo = useCallback(async () => {
-    try {
-      const res = await refetchUpdateUserInfo(myInfo);
-      console.log("res", myInfo);
-      if (res?.resultCode === "00") {
-        setOpenConfirmModal(false);
-        setHasChanges(false);
+  const handleUpdateMyInfo = useCallback(
+    async (id: number) => {
+      if (!id) return;
+      try {
+        const res = await refetchUpdateUserInfo(myInfo);
+        if (res?.resultCode === "00") {
+          setOpenConfirmModal(false);
+          setHasChanges(false);
+          // refetchGetMyInfo(id);
+        }
+      } catch (error) {
+        console.error("Update error:", error);
       }
-    } catch (error) {
-      console.error("Update error:", error);
-    }
-  }, [myInfo, refetchUpdateUserInfo]);
+    },
+    [myInfo, refetchUpdateUserInfo]
+  );
 
   const handleRefresh = useCallback(() => {
     setMyInfo(user as UserDataToUpdate);
@@ -149,7 +154,7 @@ const ManageMyInformation = () => {
         cancelLabel="Cancel"
         open={openConfirmModal}
         onClose={() => setOpenConfirmModal(false)}
-        onConfirm={handleUpdateMyInfo}
+        onConfirm={() => handleUpdateMyInfo(user?.id ?? 0)}
         title="Xác nhận cập nhật"
         message="Bạn có chắc chắn muốn lưu thay đổi thông tin cá nhân không?"
         confirmLabel="Lưu"

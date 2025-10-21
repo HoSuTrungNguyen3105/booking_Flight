@@ -8,6 +8,12 @@ type ResponseMessage = {
   resultMessage?: string;
 };
 
+interface AbortError extends Error {
+  name: "AbortError";
+}
+
+type AppError = Error | AbortError;
+
 type TUseFetch<T, P> = {
   url: string;
   params?: P;
@@ -49,31 +55,22 @@ export const useFetch = <T extends Partial<ResponseMessage>, P>({
         signal: controller?.signal,
       };
       try {
-        // const fetchMethod =
-        //   method === MethodType.POST
-        //     ? post<T, P>(finalUrl, extra ?? currentParams, finalConfig)
-        //     : method === MethodType.PUT || method === MethodType.PATCH
-        //     ? update<T, P>(finalUrl, extra ?? currentParams, finalConfig)
-        //     : method === MethodType.DELETE
-        //     ? del<T>(finalUrl, extra ?? finalConfig)
-        //     : get<T, P>(finalUrl, extra ?? currentParams, finalConfig);
-
         const fetchMethod =
           method === MethodType.POST
-            ? post<T, P>(finalUrl, extra ?? currentParams, finalConfig) // body
+            ? post<T, P>(finalUrl, extra ?? currentParams, finalConfig)
             : method === MethodType.PUT || method === MethodType.PATCH
-            ? update<T, P>(finalUrl, extra ?? currentParams, finalConfig) // body
+            ? update<T, P>(finalUrl, extra ?? currentParams, finalConfig)
             : method === MethodType.DELETE
-            ? del<T>(finalUrl, finalConfig) // thường k cần body
-            : get<T, P>(finalUrl, extra ?? currentParams, finalConfig); // query
+            ? del<T>(finalUrl, finalConfig)
+            : get<T, P>(finalUrl, extra ?? currentParams, finalConfig);
 
         const res = await fetchMethod;
         setData(res);
         setSuccess(true);
         onSuccess?.(res);
         return res;
-      } catch (err: any) {
-        if (err.name === "AbortError") return;
+      } catch (err: AppError | unknown) {
+        if ((err as AbortError).name === "AbortError") return;
         setError(true);
         onError?.();
         return undefined;

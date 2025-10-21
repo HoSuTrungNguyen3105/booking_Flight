@@ -1,16 +1,5 @@
-import React, { useCallback, useMemo, useState } from "react";
-import {
-  Box,
-  Button,
-  Chip,
-  IconButton,
-  Tooltip,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Typography,
-} from "@mui/material";
+import { useCallback, useMemo, useState } from "react";
+import { Box, Chip, IconButton, Tooltip, Typography } from "@mui/material";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { DateFormatEnum, formatDate } from "../../../hooks/format";
 import TableSection from "../../CustomRender/TableSection";
@@ -19,6 +8,7 @@ import { usefindAllTransferRequests } from "../../../components/Api/useGetApi";
 import { CheckCircle, Cancel } from "@mui/icons-material";
 import { useApproveOrRejectTransfer } from "../../../components/Api/usePostApi";
 import { useToast } from "../../../context/ToastContext";
+import DialogConfirm from "../../Modal/DialogConfirm";
 
 const TransferAdminTable = () => {
   const {
@@ -82,26 +72,8 @@ const TransferAdminTable = () => {
   };
   const toast = useToast();
 
-  // const handleConfirm = useCallback(async () => {
-  //   if (actionTransfer === "approve") {
-  //     // refetchApproveTransfer();
-  //     const res = await refetchApproveOrRejectTransfer({
-  //       userId: transferRequestId || 0,
-  //       mode: actionTransfer,
-  //     });
-  //     toast(res?.resultMessage || "Success");
-  //   } else {
-  //     const res = await refetchApproveOrRejectTransfer({
-  //       userId: transferRequestId || 0,
-  //       mode: actionTransfer,
-  //     });
-  //     toast(res?.resultMessage || "Success");
-  //   }
-  //   setOpenDialog(false);
-  // }, []);
-
   const handleConfirm = useCallback(async () => {
-    if (!transferRequestId) return toast("Something went wrong!", "error");
+    if (!transferRequestId) return;
 
     try {
       const res = await refetchApproveOrRejectTransfer({
@@ -212,31 +184,17 @@ const TransferAdminTable = () => {
           setTransferRequestId(params.userId as number);
         }}
       />
-
-      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-        <DialogTitle>Xác nhận thao tác</DialogTitle>
-        <DialogContent>
-          <Typography>
-            Bạn có chắc chắn muốn{" "}
-            <strong
-              style={{ color: actionTransfer === "approve" ? "green" : "red" }}
-            >
-              {actionTransfer === "approve" ? "APPROVE" : "REJECT"}
-            </strong>{" "}
-            yêu cầu này không?
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenDialog(false)}>Hủy</Button>
-          <Button
-            variant="contained"
-            color={actionTransfer === "approve" ? "success" : "error"}
-            onClick={handleConfirm}
-          >
-            Xác nhận
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <DialogConfirm
+        cancelLabel="Cancel"
+        open={openDialog}
+        onClose={() => setOpenDialog(false)}
+        onConfirm={handleConfirm}
+        title={`Are you sure you want to ${
+          actionTransfer === "approve" ? "APPROVE" : "REJECT"
+        } this request?`}
+        message="Are you sure you want to save the changes to your personal information?"
+        confirmLabel={actionTransfer === "approve" ? "APPROVE" : "REJECT"}
+      />
     </Box>
   );
 };

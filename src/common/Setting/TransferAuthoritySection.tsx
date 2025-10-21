@@ -9,10 +9,10 @@ import {
   DialogActions,
 } from "@mui/material";
 import { memo, useCallback, useState } from "react";
-import { UserRole } from "../../../utils/type";
-import theme from "../../../scss/theme";
+import { UserRole } from "../../utils/type";
+import theme from "../../scss/theme";
 import { useTranslation } from "react-i18next";
-import type { UserDataToTransferAdmin } from "../ManageMyInformation";
+import type { UserDataToTransferAdmin } from "./ManageMyInformation";
 
 interface ITransferAuthoritySectionProps {
   myInfo?: UserDataToTransferAdmin;

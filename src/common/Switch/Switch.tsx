@@ -1,5 +1,6 @@
 import { styled, Switch, Typography, Box } from "@mui/material";
 import type { Android12SwitchProps } from "./type";
+import { memo } from "react";
 
 const Android12Switch = ({
   color = "#1976d2",
@@ -82,4 +83,4 @@ const CustomSwitch = styled(Switch, {
   };
 });
 
-export default Android12Switch;
+export default memo(Android12Switch);

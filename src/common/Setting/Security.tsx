@@ -3,16 +3,10 @@ import SearchLayout, {
   type TabItem,
 } from "../../components/Layout/SearchLayout";
 import ManageMyInfo from "../../components/Profile/ManageMyInfo";
-import { Box } from "@mui/material";
 
 const Security = () => {
   const [tabX, setTab] = useState(0);
   const tabs: TabItem[] = [
-    {
-      label: "Security",
-      value: "auto",
-      content: <Box width={"20rem"} />,
-    },
     {
       label: "InspectionSection",
       value: "auto",

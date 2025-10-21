@@ -40,13 +40,7 @@ type TableSelectionKey =
   | "leaveRequests"
   | "unlockRequests";
 
-interface TableSelections {
-  attendance: GridRowDef[];
-  payroll: GridRowDef[];
-  leaveRequests: GridRowDef[];
-  unlockRequests: GridRowDef[];
-  transferAdmin: GridRowDef[];
-}
+type TableSelections = Record<TableSelectionKey, GridRowDef[]>;
 
 const ConfirmDeleteModal = ({
   open,
@@ -83,10 +77,6 @@ const ConfirmDeleteModal = ({
       refetchGetUserWithRelations();
     }
   }, [open, id, refetchGetUserWithRelations]);
-
-  // const [selectDelete, setSelectDelete] = useState<
-  //   keyof TableSelections | null
-  // >(null);
 
   const { refetchDeletePayroll } = useDeletePayroll();
   const { refetchRequestUnlockAccount } = useDeleteRequestUnlockById();

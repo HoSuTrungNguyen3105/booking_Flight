@@ -21,27 +21,27 @@ import {
   type GateStatus,
   type Terminal,
 } from "../../utils/type";
-import CreateFacility from "./modal/CreateFacility";
 import theme from "../../scss/theme";
 import CreateGateModal from "./component/Gate/CreateGateModal";
+import { useTerminalContainer } from "./modal/useTerminalContainer";
+import ManageFacilityModal from "./modal/ManageFacilityModal";
 
 export type UpdateGateProps = Pick<Gate, "id"> &
   Omit<CreateGateProps, "terminalId">;
 
-// Styled components
-const PaperContainer = styled(Paper)(({ theme }) => ({
+const PaperContainer = styled(Paper)(() => ({
   padding: theme.spacing(3),
   marginBottom: theme.spacing(3),
   position: "relative",
   cursor: "pointer",
-  transition: "all 0.3s ease",
-  "&:hover": {
-    boxShadow: theme.shadows[4],
-    transform: "translateY(-2px)",
-  },
+  // transition: "all 0.3s ease",
+  // "&:hover": {
+  //   boxShadow: theme.shadows[4],
+  //   transform: "translateY(-2px)",
+  // },
 }));
 
-const GateBox = styled(Box)<{ status: GateStatus }>(({ theme, status }) => {
+const GateBox = styled(Box)<{ status: GateStatus }>(({ status }) => {
   const statusStyles: Record<
     GateStatus,
     { backgroundColor: string; color: string }
@@ -77,20 +77,20 @@ const GateBox = styled(Box)<{ status: GateStatus }>(({ theme, status }) => {
     backgroundColor,
     color,
     fontWeight: "bold",
-    transition: "all 0.2s ease-in-out",
-    position: "relative",
-    "&:hover": {
-      opacity: 0.8,
-      transform: "scale(1.05)",
-    },
+    // transition: "all 0.2s ease-in-out",
+    // position: "relative",
+    // "&:hover": {
+    //   opacity: 0.8,
+    //   transform: "scale(1.05)",
+    // },
   };
 });
 
-const EditOverlay = styled(Box)(({ theme }) => ({
+const EditOverlay = styled(Box)(() => ({
   position: "absolute",
   top: 8,
   right: 8,
-  backgroundColor: "rgba(255, 255, 255, 0.9)",
+  backgroundColor: theme.palette.primary.main,
   borderRadius: "50%",
   width: 32,
   height: 32,
@@ -98,127 +98,37 @@ const EditOverlay = styled(Box)(({ theme }) => ({
   alignItems: "center",
   justifyContent: "center",
   cursor: "pointer",
-  opacity: 0,
-  transition: "all 0.3s ease",
-  "&:hover": {
-    backgroundColor: theme.palette.primary.main,
-    color: "white",
-  },
+  // opacity: 0,
+  // transition: "all 0.3s ease",
+  // "&:hover": {
+  //   backgroundColor: theme.palette.primary.main,
+  //   color: "white",
+  // },
 }));
 
 const TerminalContainer: React.FC = () => {
-  const [selectedTerminal, setSelectedTerminal] = useState<string>("all");
-  const [activeTab, setActiveTab] = useState(0);
-  const [dialogOpen, setDialogOpen] = useState({
-    terminal: false,
-    gate: false,
-    facility: false,
-    assignments: false,
-  });
-  const { getTerminalData, refetchGetTerminalData } = useGetTerminalData();
-  const [editingItem, setEditingItem] = useState<
-    Terminal | Facility | Gate | null
-  >(null);
-  // const [formData, setFormData] = useState({
-  //   name: "",
-  //   code: "",
-  //   status: "",
-  //   type: "",
-  //   location: "",
-  //   openingHours: "",
-  //   flight: "",
-  // });
-  // const { dataFacilityTypes } = useFindAllFacilityTypes();
-
-  const getFacilityStyle = (type: FacilityType) => {
-    const t = type?.toUpperCase() || "OTHER";
-    switch (t) {
-      case "RESTAURANT":
-        return { label: "Nhà hàng", color: theme.palette.primary.main };
-      case "SHOP":
-        return { label: "Cửa hàng", color: theme.palette.secondary.main };
-      case "LOUNGE":
-        return { label: "Phòng chờ", color: theme.palette.success.main };
-      case "INFORMATION":
-        return { label: "Thông tin", color: theme.palette.info.main };
-      case "SECURITY":
-        return { label: "An ninh", color: theme.palette.error.main };
-      case "TRANSPORTATION":
-        return { label: "Di chuyển", color: theme.palette.warning.main };
-      default:
-        return { label: "Khác", color: theme.palette.grey[700] };
-    }
-  };
-
-  const [dialogType, setDialogType] = useState<"update" | "create">("create");
-  const [gateForm, setGateForm] = useState<UpdateGateProps>({
-    code: "",
-    status: "",
-    id: "",
-  });
-
-  const [terminalId, setTerminalId] = useState("");
-
-  const getTerminalColor = (type: string): string => {
-    const colorMap: { [key: string]: string } = {
-      DOMESTIC: "#1976d2",
-      INTERNATIONAL: "#2e7d32",
-      BUSINESS: "#ed6c02",
-      CARGO: "#757575",
-    };
-    return colorMap[type] || "#9c27b0";
-  };
-
-  const getGateStatusText = (status: string): string => {
-    const statusMap: { [key: string]: string } = {
-      AVAILABLE: "Có sẵn",
-      OCCUPIED: "Đã có chuyến bay",
-      MAINTENANCE: "Đang bảo trì",
-      CLOSED: "Đã đóng",
-    };
-    return statusMap[status] || status;
-  };
-
-  const handleFacilityClick = (
-    type: "create" | "update",
-    facility: Facility
-  ) => {
-    setDialogType(type);
-    setEditingItem(facility);
-    setDialogOpen((prev) => ({ ...prev, facility: true }));
-  };
-
-  const handleTerminalClick = (terminal: Terminal) => {
-    // setDialogType("terminal");
-    // setFormData({
-    //   name: terminal.name,
-    //   code: terminal.id,
-    //   status: "available",
-    //   type: "",
-    //   location: "",
-    //   openingHours: "",
-    //   flight: "",
-    // });
-    setEditingItem(terminal);
-    setDialogOpen((prev) => ({ ...prev, terminal: true }));
-  };
-
-  const handleAddNew = (type: "gate" | "facility", terminalId: string) => {
-    setDialogType("create");
-    setTerminalId(terminalId);
-    setDialogOpen((prev) => ({ ...prev, [type]: true }));
-  };
-
-  const handleGateClick = (type: "create" | "update", gate: Gate) => {
-    setDialogType(type);
-    setGateForm({
-      code: gate.code,
-      status: gate.status,
-      id: gate.id,
-    });
-    console.log("gate, ", gate);
-    setDialogOpen((prev) => ({ ...prev, gate: true }));
-  };
+  const {
+    getFacilityStyle,
+    editingItem,
+    handleAddNew,
+    getTerminalData,
+    handleGateClick,
+    setActiveTab,
+    dialogOpen,
+    selectedTerminal,
+    setSelectedTerminal,
+    activeTab,
+    setDialogOpen,
+    refetchGetTerminalData,
+    dialogType,
+    handleFacilityClick,
+    handleTerminalClick,
+    getTerminalColor,
+    getGateStatusText,
+    gateForm,
+    setGateForm,
+    terminalId,
+  } = useTerminalContainer();
 
   const renderDescription = useCallback(() => {
     return (
@@ -279,19 +189,21 @@ const TerminalContainer: React.FC = () => {
     { label: "Khu C", value: "C", description: renderDescription() },
   ];
 
-  if (dialogOpen.facility) {
-    return (
-      <CreateFacility
-        terminalId={terminalId}
-        mode={dialogType}
-        updateData={editingItem as Facility}
-        onClose={() => {
-          setDialogOpen((prev) => ({ ...prev, facility: false }));
-          refetchGetTerminalData();
-        }}
-      />
-    );
-  }
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 0:
+        return <Stack direction="column" spacing={2} sx={{ mt: 1 }}></Stack>;
+
+      case 1:
+        return <Stack direction="column" spacing={2} sx={{ mt: 1 }}></Stack>;
+
+      case 2:
+        return <Stack direction="column" spacing={2} sx={{ mt: 1 }}></Stack>;
+
+      case 3:
+        return <Stack direction="column" spacing={2} sx={{ mt: 1 }}></Stack>;
+    }
+  };
 
   return (
     <>
@@ -308,7 +220,7 @@ const TerminalContainer: React.FC = () => {
 
       <Box
         sx={{
-          height: "60vh",
+          height: "55vh",
           overflow: "scroll",
           scrollbarWidth: "none",
           "&::-webkit-scrollbar": {
@@ -323,10 +235,10 @@ const TerminalContainer: React.FC = () => {
           .map((terminal) => (
             <PaperContainer
               key={terminal.id}
-              elevation={2}
-              sx={{
-                borderLeft: `4px solid ${getTerminalColor(terminal.type)}`,
-              }}
+              // elevation={2}
+              // sx={{
+              //   borderLeft: `4px solid ${getTerminalColor(terminal.type)}`,
+              // }}
               onClick={() => handleTerminalClick(terminal)}
             >
               <EditOverlay
@@ -591,6 +503,21 @@ const TerminalContainer: React.FC = () => {
             </PaperContainer>
           ))}
       </Box>
+
+      <ManageFacilityModal
+        open={dialogOpen.facility}
+        terminalId={terminalId}
+        mode={dialogType}
+        updateData={editingItem as Facility}
+        onClose={() => {
+          setDialogOpen((prev) => ({ ...prev, facility: false }));
+          // refetchGetTerminalData();
+        }}
+        onSuccess={() => {
+          setDialogOpen((prev) => ({ ...prev, facility: false }));
+          refetchGetTerminalData();
+        }}
+      />
 
       <CreateGateModal
         open={dialogOpen.gate}

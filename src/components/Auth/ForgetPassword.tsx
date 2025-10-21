@@ -41,7 +41,7 @@ const ForgetPassword = ({ onClose }: { onClose: () => void }) => {
   // }
 
   return (
-    <Box sx={{ textAlign: "center", mt: 4 }}>
+    <Box sx={{ textAlign: "center", m: 2, mt: 2 }}>
       <form onSubmit={handleSubmitForm}>
         <Typography variant="h6" sx={{ mb: 2 }}>
           Quên mật khẩu
@@ -52,13 +52,14 @@ const ForgetPassword = ({ onClose }: { onClose: () => void }) => {
           placeholder="Nhập email của bạn"
           value={email}
           onChange={(e) => setEmail(e)}
+          sx={{ width: "20rem" }}
         />
 
         <Button
           type="submit"
           variant="contained"
           disabled={loading || !email}
-          sx={{ mt: 2 }}
+          // sx={{ mt: 1, pl: 2 }}
         >
           {loading ? "Đang xử lý..." : "Xác nhận"}
         </Button>

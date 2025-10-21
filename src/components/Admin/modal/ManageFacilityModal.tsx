@@ -1,15 +1,12 @@
 import React, { useState, useCallback, memo, useEffect } from "react";
 import {
   Box,
-  Paper,
-  Typography,
   Button,
   Grid,
-  Container,
   CircularProgress,
   FormControl,
 } from "@mui/material";
-import { type Facility, type Terminal } from "../../../utils/type";
+import { type Facility } from "../../../utils/type";
 import { OpeningHoursPicker } from "../../../common/DayPicker/date-picker";
 import {
   mapStringToDropdown,
@@ -25,15 +22,26 @@ import {
 } from "../../Api/usePostApi";
 import InputTextArea from "../../../common/Input/InputTextArea";
 import InputTextField from "../../../common/Input/InputTextField";
+import BaseModal from "../../../common/Modal/BaseModal";
+import { ManageAccountsSharp } from "@mui/icons-material";
 
-type Props = {
+type IManageFacilityModalProps = {
+  open: boolean;
   terminalId: string;
   updateData?: Facility;
   mode: "update" | "create";
   onClose: () => void;
+  onSuccess: () => void;
 };
 
-const CreateFacility = ({ onClose, terminalId, updateData, mode }: Props) => {
+const ManageFacilityModal = ({
+  open,
+  mode,
+  onClose,
+  onSuccess,
+  terminalId,
+  updateData,
+}: IManageFacilityModalProps) => {
   const [formData, setFormData] = useState<FacilityFormProps>({
     name: "",
     type: "",
@@ -43,8 +51,9 @@ const CreateFacility = ({ onClose, terminalId, updateData, mode }: Props) => {
     openingHours: "",
   });
 
-  // Nếu update thì set lại formData bằng updateData
   useEffect(() => {
+    if (!open) return;
+
     if (mode === "update" && updateData) {
       setFormData({
         name: updateData.name || "",
@@ -54,8 +63,17 @@ const CreateFacility = ({ onClose, terminalId, updateData, mode }: Props) => {
         openingHours: updateData.openingHours || "",
         terminalId: updateData.terminalId || "",
       });
+    } else if (mode === "create") {
+      setFormData({
+        name: "",
+        type: "",
+        description: "",
+        terminalId: terminalId || "",
+        location: "",
+        openingHours: "",
+      });
     }
-  }, [mode, updateData]);
+  }, [mode, updateData, open, terminalId]);
 
   const { dataTerminalIDStatuses } = useFindTerminalIDStatuses();
 
@@ -68,13 +86,7 @@ const CreateFacility = ({ onClose, terminalId, updateData, mode }: Props) => {
     );
   }, [dataTerminalIDStatuses]);
 
-  const [terminals, setTerminals] = useState<Terminal[]>([]);
-  const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [message, setMessage] = useState<{
-    type: "success" | "error";
-    text: string;
-  } | null>(null);
 
   const handleChange = (field: keyof FacilityFormProps) => (value: string) => {
     setFormData((prev) => ({
@@ -84,13 +96,14 @@ const CreateFacility = ({ onClose, terminalId, updateData, mode }: Props) => {
   };
 
   const { refetchCreateFacilities } = useCreateFacilities();
+
   const { refetchUpdateFacilities } = useUpdateFacilities(terminalId);
+
+  console.log("terminalId", terminalId);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
-    setMessage(null);
-
     try {
       let response;
       if (mode === "create") {
@@ -109,20 +122,23 @@ const CreateFacility = ({ onClose, terminalId, updateData, mode }: Props) => {
             location: "",
             openingHours: "",
           });
+          onClose();
         }
+      } else if (mode === "update") {
+        setFormData({
+          name: "",
+          type: "",
+          description: "",
+          terminalId: "",
+          location: "",
+          openingHours: "",
+        });
         onClose();
       } else {
-        setMessage({
-          type: "error",
-          text:
-            mode === "create"
-              ? "Failed to create facility"
-              : "Failed to update facility",
-        });
+        console.error("Error submitting facility");
       }
     } catch (error) {
       console.error("Error submitting facility:", error);
-      setMessage({ type: "error", text: "Network error occurred" });
     } finally {
       setSubmitting(false);
     }
@@ -134,32 +150,42 @@ const CreateFacility = ({ onClose, terminalId, updateData, mode }: Props) => {
     dataFacilityTypes?.data || []
   );
 
-  return (
-    <>
-      <Typography
-        variant="h4"
-        component="h1"
-        gutterBottom
-        color="primary"
-        fontWeight="bold"
-      >
-        {mode === "create" ? "Create New Facility" : "Update Facility"}
-      </Typography>
+  const renderActions = useCallback(() => {
+    return (
+      <Box display="flex" gap={1} justifyContent="flex-end" alignItems="center">
+        <Button variant="outlined" size="large" onClick={onClose}>
+          Cancel
+        </Button>
+        <Button
+          // type="submit"
+          variant="contained"
+          size="large"
+          onClick={handleSubmit}
+          disabled={submitting || !formData.name || !formData.terminalId}
+          startIcon={submitting ? <CircularProgress size={20} /> : null}
+        >
+          {submitting
+            ? mode === "create"
+              ? "Creating..."
+              : "Updating..."
+            : mode === "create"
+            ? "Create Facility"
+            : "Update Facility"}
+        </Button>
+      </Box>
+    );
+  }, [handleSubmit, onClose, onSuccess, submitting, formData]);
 
-      <Button onClick={onClose} variant="contained">
-        Return
-      </Button>
+  const renderContent = useCallback(() => {
+    const handleSelectChange =
+      (key: keyof typeof formData) => (value: string | number) =>
+        setFormData((prev) => ({ ...prev, [key]: value }));
 
-      <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-        {mode === "create"
-          ? "Add a new facility to the airport management system"
-          : "Update facility information"}
-      </Typography>
-
-      <Box component="form" onSubmit={handleSubmit}>
-        <Grid container spacing={3}>
+    return (
+      <Box sx={{ pt: 1, height: "30rem" }}>
+        <Grid container spacing={2}>
           {/* Facility Name */}
-          <Grid size={6}>
+          <Grid size={12}>
             <InputTextField
               value={formData.name}
               onChange={handleChange("name")}
@@ -168,45 +194,33 @@ const CreateFacility = ({ onClose, terminalId, updateData, mode }: Props) => {
           </Grid>
 
           {/* Facility Type */}
-          <Grid size={6}>
+          <Grid size={12}>
             <FormControl fullWidth required>
               <SelectDropdown
                 options={facilityTypeOptions}
                 value={formData.type}
-                placeholder="Select facility type options"
-                onChange={(value) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    type: value as string,
-                  }))
-                }
+                placeholder="Select facility type"
+                onChange={handleSelectChange("type")}
               />
             </FormControl>
           </Grid>
 
-          {/* Terminal Selection (chỉ hiện khi create) */}
+          {/* Terminal ID (Only in Create Mode) */}
           {mode === "create" && (
-            <Grid size={6}>
+            <Grid size={12}>
               <FormControl fullWidth required>
                 <SelectDropdown
                   value={formData.terminalId}
-                  onChange={(value) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      terminalId: value as string,
-                    }))
-                  }
-                  placeholder="Select terminal ID"
+                  onChange={handleSelectChange("terminalId")}
+                  placeholder="Select terminal"
                   options={dataTerminalIdOptions()}
-                  disabled={loading}
                 />
               </FormControl>
-              {loading && <CircularProgress size={24} sx={{ mt: 1 }} />}
             </Grid>
           )}
 
           {/* Location */}
-          <Grid size={6}>
+          <Grid size={12}>
             <InputTextField
               value={formData.location}
               onChange={handleChange("location")}
@@ -215,7 +229,7 @@ const CreateFacility = ({ onClose, terminalId, updateData, mode }: Props) => {
           </Grid>
 
           {/* Opening Hours */}
-          <Grid size={6}>
+          <Grid size={12}>
             <OpeningHoursPicker
               value={formData.openingHours}
               onChange={(val) =>
@@ -234,37 +248,24 @@ const CreateFacility = ({ onClose, terminalId, updateData, mode }: Props) => {
             />
           </Grid>
         </Grid>
-
-        {/* Action Buttons */}
-        <Box
-          sx={{ mt: 4, display: "flex", gap: 2, justifyContent: "flex-end" }}
-        >
-          <Button
-            variant="outlined"
-            size="large"
-            onClick={() => window.history.back()}
-          >
-            Cancel
-          </Button>
-          <Button
-            type="submit"
-            variant="contained"
-            size="large"
-            disabled={submitting || !formData.name || !formData.terminalId}
-            startIcon={submitting ? <CircularProgress size={20} /> : null}
-          >
-            {submitting
-              ? mode === "create"
-                ? "Creating..."
-                : "Updating..."
-              : mode === "create"
-              ? "Create Facility"
-              : "Update Facility"}
-          </Button>
-        </Box>
       </Box>
-    </>
+    );
+  }, [formData, handleChange, mode]);
+
+  return (
+    <BaseModal
+      open={open}
+      onClose={onClose}
+      title={mode === "create" ? "Create New Facility" : "Update Facility"}
+      subtitle={
+        mode === "create"
+          ? "Add a new facility to the airport management system"
+          : "Update facility information"
+      }
+      Icon={ManageAccountsSharp}
+      slots={{ content: renderContent(), actions: renderActions() }}
+    />
   );
 };
 
-export default memo(CreateFacility);
+export default memo(ManageFacilityModal);

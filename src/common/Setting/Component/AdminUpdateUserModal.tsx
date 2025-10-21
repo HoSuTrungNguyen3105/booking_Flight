@@ -1,4 +1,4 @@
-import { Box, Button, Divider, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import { memo, useCallback, useState } from "react";
 import BaseModal from "../../Modal/BaseModal";
 import AddIcon from "@mui/icons-material/Add";
@@ -32,31 +32,27 @@ const AdminUpdateUserModal = ({
     }
     return (
       <Box display="flex" gap={1} justifyContent="flex-end" alignItems="center">
-        <Button variant="contained" onClick={handleSubmit}>
-          확인
+        <Button variant="contained" sx={{ p: 0.5 }} onClick={handleSubmit}>
+          Submit
         </Button>
       </Box>
     );
   }, [handleSubmit]);
 
   const renderContent = useCallback(() => {
-    const renderRows = () => {
-      return (
-        <Stack spacing={2}>
-          <Typography variant="body1">
-            Nhập ID xác nhận xóa tài khoản. Ex : {String(data?.id)}
-          </Typography>
-          <InputTextField
-            value={inputId}
-            onChange={setInputId}
-            placeholder="Nhập ID tại đây"
-            sx={{ mt: 2 }}
-          />
-        </Stack>
-      );
-    };
-
-    return <>{renderRows()}</>;
+    return (
+      <Stack spacing={2}>
+        <Typography variant="body1">
+          Nhập ID xác nhận xóa tài khoản. Ex : {String(data?.id)}
+        </Typography>
+        <InputTextField
+          value={inputId}
+          onChange={setInputId}
+          placeholder="Nhập ID tại đây"
+          sx={{ mt: 2 }}
+        />
+      </Stack>
+    );
   }, [inputId, data]);
 
   return (

@@ -493,7 +493,7 @@ export const useGetMyInfo = () => {
   });
 
   const refetchGetMyInfo = (id: number) => {
-    return refetch(undefined, `/sys/users/getUserInfo/${id}`);
+    return refetch(null, `/sys/users/getUserInfo/${id}`);
   };
 
   return {

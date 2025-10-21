@@ -164,7 +164,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
         return requests;
       } catch (err) {
-        setIsAuthenticated(false);
+        //setIsAuthenticated(false);
         return undefined;
       }
     },
@@ -192,17 +192,17 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const verifyUser = async () => {
       try {
-        const res = await fetchMyInfo(Number(savedUserId));
-        if (res?.resultCode === "00" && res.data) {
-          setIsAuthenticated(true);
-          setUser(res.data);
-        } else {
-          setIsAuthenticated(false);
-          toast(
-            (res?.resultMessage as string) || "Xác thực người dùng thất bại",
-            "info"
-          );
-        }
+        await fetchMyInfo(Number(savedUserId));
+        // if (res?.resultCode === "00" && res.data) {
+        //   setIsAuthenticated(true);
+        //   setUser(res.data);
+        // } else {
+        //   setIsAuthenticated(false);
+        //   toast
+        //     (res?.resultMessage || "Xác thực người dùng thất bại",
+        //     "info"
+        //   );
+        // }
       } catch (err) {
         logout();
       }

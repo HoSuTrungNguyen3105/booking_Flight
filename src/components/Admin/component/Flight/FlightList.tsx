@@ -34,19 +34,6 @@ export default function FlightList() {
   >(null);
 
   const [selectViewDetail, setSelectViewDetail] = useState<boolean>(false);
-  // const [selectMealRowId, setSelectMealRowId] = useState<number>(0);
-  // const handleMealFlightClickButton = (id: number) => {
-  //   console.log("id", id);
-  //   setSelectMealRowId(id);
-  //   setOpenModalFlightMealRows(true);
-  // };
-
-  // const handleMealRowSelection = (selectedIds: GridRowId[]) => {
-  //   const newSelectedRows = mealRows.filter((row) =>
-  //     selectedIds.includes(row.id)
-  //   );
-  //   setSelectedMealRows(newSelectedRows);
-  // };
 
   const handleFlightRowSelection = (selectedIds: GridRowId[]) => {
     const newSelectedRows = flightRows.filter((row) =>
@@ -54,16 +41,6 @@ export default function FlightList() {
     );
     setSelectedFlightRows(newSelectedRows);
   };
-
-  // const rowsFlightBookingData: GridRowDef[] = useMemo(
-  //   () =>
-  //     flightBookingData?.list?.map((f) => ({
-  //       ...f,
-  //       id: f.id,
-  //       checkYn: false,
-  //     })) ?? [],
-  //   [flightBookingData]
-  // );
 
   const rowsGetFlightData: GridRowDef[] = useMemo(
     () =>
@@ -134,20 +111,6 @@ export default function FlightList() {
         </Button>
       ),
     },
-    // {
-    //   field: "seatOption",
-    //   headerName: "Seat",
-    //   flex: 1,
-    //   renderCell: (params) => (
-    //     <Button
-    //       size="small"
-    //       variant="outlined"
-    //       onClick={() => setSelectedFlightForSeat(params.row.id)}
-    //     >
-    //       Manage Seats
-    //     </Button>
-    //   ),
-    // },
   ];
 
   if (selectViewDetail) {

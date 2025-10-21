@@ -1,5 +1,4 @@
 import { useState } from "react";
-import type { DropdownOptions } from "../../common/Dropdown/type";
 import i18n from "../../i18n";
 import { optionLanguage } from "../../i18n/resource";
 import type { ActionType } from "../../common/Dropdown/SelectDropdown";

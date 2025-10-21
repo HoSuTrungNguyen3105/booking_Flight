@@ -41,9 +41,6 @@ const TableSection = ({
     sortModel,
   } = useClientPagination({ data: rows });
 
-  /**
-   *  Khi người dùng chọn dòng, cập nhật state + emit ra ngoài
-   */
   const handleRowSelect = useCallback(
     (selectedIds: Set<GridRowId>) => {
       const selectedIdsArray = Array.from(selectedIds);
