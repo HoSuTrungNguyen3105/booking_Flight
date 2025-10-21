@@ -13,7 +13,6 @@ import {
   type RegisterResponseMessage,
   type RegisterOTPCodeVerifyResponse,
   type UserUpdateProps,
-  type AdminUpdateUserForm,
   type LeaveRequest,
   type ReqUserIDProps,
   type Seat,

@@ -12,10 +12,10 @@ const ForgetPassword = ({ onClose }: { onClose: () => void }) => {
 
   const handleSubmitForm = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) {
-      toast("Vui lòng nhập email", "info");
-      return;
-    }
+    // if (!email) {
+    //   toast("Vui lòng nhập email", "info");
+    //   return;
+    // }
 
     try {
       setLoading(true);

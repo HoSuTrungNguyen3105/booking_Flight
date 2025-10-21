@@ -8,6 +8,7 @@ import { DateFormatEnum, formatDate } from "../../hooks/format";
 import type { GridRowDef } from "../../common/DataGrid";
 import { useFindAllPassenger } from "../Api/useGetApi";
 import DataSecure from "../../common/Setting/DataSecure";
+import type { ISearchQuery } from "../../common/CustomRender/SearchBar";
 
 export const columnsPassenger: GridColDef[] = [
   { field: "fullName", headerName: "Họ và tên", flex: 1 },
@@ -52,6 +53,15 @@ const SecurityManage = () => {
     setPassengerId(rowData.id as string);
   };
 
+  const handleSearch = useCallback((query: ISearchQuery) => {
+    rowData.filter(
+      (r) =>
+        r.fullName.toLowerCase().includes(query.text[0].toLowerCase()) ||
+        r.email.toLowerCase().includes(query.text[0].toLowerCase())
+    );
+    // setRows(filtered);
+  }, []);
+
   const rowData = useMemo(
     () =>
       dataAllPassenger?.list?.map((item) => ({
@@ -75,7 +85,7 @@ const SecurityManage = () => {
           columns={columnsPassenger}
           rows={rowData}
           loading={false}
-          onSearch={() => {}}
+          onSearch={handleSearch}
         />
       ),
     },

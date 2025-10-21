@@ -1,14 +1,25 @@
-import { Box, Chip, Stack, Typography } from "@mui/material";
+import {
+  Chip,
+  Stack,
+  Tooltip,
+  Typography,
+  IconButton,
+  Button,
+} from "@mui/material";
 import {
   memo,
   useCallback,
   useEffect,
-  useMemo,
   useState,
   type KeyboardEvent,
 } from "react";
+import {
+  Search as SearchIcon,
+  RestartAlt as ResetIcon,
+} from "@mui/icons-material";
 import InputTextField from "../Input/InputTextField";
 import DateTimePickerComponent from "../DayPicker";
+import { useTranslation } from "react-i18next";
 
 export interface ISearchQuery {
   text: string[];
@@ -22,117 +33,121 @@ interface ISearchBarProps {
 }
 
 const SearchBar = ({ disabled = false, onSearch }: ISearchBarProps) => {
-  const [searchText, setSearchText] = useState<string>("");
+  const { t } = useTranslation();
+  const [searchText, setSearchText] = useState("");
   const [searchTerms, setSearchTerms] = useState<string[]>([]);
-  const [startDate, setStartDate] = useState<string>("");
-  const [endDate, setEndDate] = useState<string>("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
-  // Create full query when state changes
-  const currentQuery = useMemo(
-    () => ({
-      text: searchTerms,
-      startDate,
-      endDate,
-    }),
-    [searchTerms, startDate, endDate]
-  );
-
-  // Add search term from input
   const handleAddSearchTerm = useCallback(() => {
-    const trimmedText = searchText.trim();
-    if (trimmedText) {
-      setSearchTerms((prev) => [...prev, trimmedText]);
-      setSearchText("");
-    }
+    const trimmed = searchText.trim();
+    if (!trimmed) return;
+    setSearchTerms((prev) =>
+      prev.includes(trimmed) ? prev : [...prev, trimmed]
+    );
+    setSearchText("");
   }, [searchText]);
 
-  // Handle key press
   const handleKeyDown = useCallback(
-    (event: KeyboardEvent<HTMLInputElement>) => {
-      if (event.key === "Enter") {
-        handleAddSearchTerm();
-      }
+    (e: KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Enter") handleAddSearchTerm();
     },
     [handleAddSearchTerm]
   );
 
-  // Delete chip
-  const handleDeleteSearchTerm = useCallback((indexToDelete: number) => {
-    setSearchTerms((terms) =>
-      terms.filter((_, index) => index !== indexToDelete)
-    );
+  const handleDeleteTerm = useCallback((index: number) => {
+    setSearchTerms((terms) => terms.filter((_, i) => i !== index));
   }, []);
 
-  // Input handlers
-  const handleSearchTextChange = useCallback((value: string) => {
-    setSearchText(value);
-  }, []);
+  const handleReset = useCallback(() => {
+    setSearchText("");
+    setSearchTerms([]);
+    setStartDate("");
+    setEndDate("");
+    onSearch({ text: [], startDate: "", endDate: "" });
+  }, [onSearch]);
 
-  const handleStartDateChange = useCallback((value: string) => {
-    setStartDate(value);
-  }, []);
+  const handleSearch = useCallback(() => {
+    onSearch({ text: searchTerms, startDate, endDate });
+  }, [onSearch, searchTerms, startDate, endDate]);
 
-  const handleEndDateChange = useCallback((value: string) => {
-    setEndDate(value);
-  }, []);
-
-  // Memoized chip rendering
-  const searchTermChips = useMemo(
-    () =>
-      searchTerms.map((term, index) => (
-        <Chip
-          key={`${term}-${index}`}
-          variant="outlined"
-          sx={{
-            borderRadius: "3px",
-            borderColor: "grey.200",
-          }}
-          label={<Typography variant="body2">{term}</Typography>}
-          onDelete={() => handleDeleteSearchTerm(index)}
-        />
-      )),
-    [searchTerms, handleDeleteSearchTerm]
-  );
-
-  // Trigger onSearch on query change
   useEffect(() => {
-    if (searchTerms.length > 0 || startDate || endDate) {
-      onSearch(currentQuery);
-    }
-  }, [searchTerms, startDate, endDate, onSearch, currentQuery]);
+    // Optional: auto-search when both date filters are set
+    if (startDate && endDate) handleSearch();
+  }, [startDate, endDate, handleSearch]);
 
   return (
     <Stack
-      gap={2}
       direction="row"
-      alignItems="flex-start"
+      alignItems="center"
+      spacing={2}
       p={2}
       bgcolor="white"
       border={1}
-      borderColor="grey.100"
+      borderColor="grey.200"
+      borderRadius={2}
     >
-      <Stack gap={1} flexGrow={1}>
-        <Box sx={{ maxHeight: "20rem" }}>
-          <InputTextField
-            value={searchText}
-            disabled={disabled}
-            onChange={handleSearchTextChange}
-            onKeyDown={handleKeyDown}
-            placeholder="검색 단어를 입력해주세요."
-          />
-        </Box>
-
+      {/* Input + Chips */}
+      <Stack flexGrow={1} spacing={1}>
+        <InputTextField
+          value={searchText}
+          disabled={disabled}
+          onChange={setSearchText}
+          onKeyDown={handleKeyDown}
+          placeholder={t("search.placeholder") || "Enter keyword..."}
+        />
         {searchTerms.length > 0 && (
           <Stack direction="row" spacing={1} flexWrap="wrap">
-            {searchTermChips}
+            {searchTerms.map((term, i) => (
+              <Chip
+                key={`${term}-${i}`}
+                label={<Typography variant="body2">{term}</Typography>}
+                onDelete={() => handleDeleteTerm(i)}
+                size="small"
+                color="default"
+                sx={{ borderRadius: "4px" }}
+              />
+            ))}
           </Stack>
         )}
       </Stack>
 
-      <Stack maxHeight={"20rem"} gap={1} direction="row" alignItems="center">
-        <DateTimePickerComponent language="jp" />
-        -
-        <DateTimePickerComponent language="jp" />
+      {/* Date Range */}
+      <Stack direction="row" alignItems="center" spacing={1}>
+        <DateTimePickerComponent
+          language="vn"
+          // value={startDate}
+          // onChange={setStartDate}
+        />
+        <Typography variant="body2">-</Typography>
+        <DateTimePickerComponent
+          language="vn"
+          // value={endDate}
+          // onChange={setEndDate}
+        />
+      </Stack>
+
+      {/* Actions */}
+      <Stack direction="row" spacing={1}>
+        <Tooltip title={t("search.searchBtn") || "Search"}>
+          <span>
+            <Button
+              onClick={handleSearch}
+              variant="contained"
+              color="primary"
+              startIcon={<SearchIcon />}
+              disabled={disabled}
+            >
+              Search
+            </Button>
+          </span>
+        </Tooltip>
+
+        <Tooltip title={t("search.resetBtn") || "Reset"}>
+          <IconButton onClick={handleReset} color="default">
+            <ResetIcon />
+          </IconButton>
+        </Tooltip>
       </Stack>
     </Stack>
   );

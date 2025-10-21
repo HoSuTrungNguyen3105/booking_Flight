@@ -1,7 +1,5 @@
 import { defer } from "lodash";
 import { useCallback, useMemo, useRef, useState } from "react";
-import { useToast } from "../../../context/ToastContext";
-import { useChangePassword } from "../../Api/usePostApi";
 
 interface IUseSettingPasswordProps {
   userId: number;

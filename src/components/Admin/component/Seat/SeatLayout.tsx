@@ -19,7 +19,7 @@ import ButtonSeat from "./ButtonSeat";
 import type { Seat } from "../../../../utils/type";
 import { Chair, LocalAirport, RestartAlt } from "@mui/icons-material";
 import SeatManagementModal from "./SeatManagementModal";
-import CreateSeat from "./CreateSeat";
+import CreateSeat from "./SeatCreatePage";
 import InfoAndUpdateSeatModal from "./InfoAndUpdateSeatModal";
 import { useToast } from "../../../../context/ToastContext";
 

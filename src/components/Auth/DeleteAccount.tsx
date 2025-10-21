@@ -19,10 +19,10 @@ const DeleteAccount: React.FC = () => {
   const [email, setEmail] = useState("");
 
   const handleConfirm = () => {
-    if (!email) {
-      alert("Vui lòng nhập email!");
-      return;
-    }
+    // if (!email) {
+    //   alert("Vui lòng nhập email!");
+    //   return;
+    // }
     // Call API xóa account
     console.log("Delete account for:", email);
   };
@@ -51,8 +51,18 @@ const DeleteAccount: React.FC = () => {
         </Typography>
 
         <Typography variant="body1" sx={{ mb: 2 }}>
-          Enter your registered email address.
+          Enter your registered email address and employee No.
         </Typography>
+
+        <TextField
+          fullWidth
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="email@example.com"
+          variant="outlined"
+          sx={{ mb: 3 }}
+        />
 
         <TextField
           fullWidth
