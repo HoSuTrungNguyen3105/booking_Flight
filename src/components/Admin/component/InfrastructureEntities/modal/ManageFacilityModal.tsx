@@ -6,23 +6,23 @@ import {
   CircularProgress,
   FormControl,
 } from "@mui/material";
-import { type Facility } from "../../../utils/type";
-import { OpeningHoursPicker } from "../../../common/DayPicker/date-picker";
+import { type Facility } from "../../../../../utils/type";
+import { OpeningHoursPicker } from "../../../../../common/DayPicker/date-picker";
 import {
   mapStringToDropdown,
   useFindAllFacilityTypes,
   useFindTerminalIDStatuses,
-} from "../../Api/useGetApi";
-import type { ActionType } from "../../../common/Dropdown/SelectDropdown";
-import SelectDropdown from "../../../common/Dropdown/SelectDropdown";
+} from "../../../../Api/useGetApi";
+import type { ActionType } from "../../../../../common/Dropdown/SelectDropdown";
+import SelectDropdown from "../../../../../common/Dropdown/SelectDropdown";
 import {
   useCreateFacilities,
   useUpdateFacilities,
   type FacilityFormProps,
-} from "../../Api/usePostApi";
-import InputTextArea from "../../../common/Input/InputTextArea";
-import InputTextField from "../../../common/Input/InputTextField";
-import BaseModal from "../../../common/Modal/BaseModal";
+} from "../../../../Api/usePostApi";
+import InputTextArea from "../../../../../common/Input/InputTextArea";
+import InputTextField from "../../../../../common/Input/InputTextField";
+import BaseModal from "../../../../../common/Modal/BaseModal";
 import { ManageAccountsSharp } from "@mui/icons-material";
 
 type IManageFacilityModalProps = {

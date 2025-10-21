@@ -1,8 +1,8 @@
 import { Box, Button, Grid, Typography } from "@mui/material";
 import { memo, useCallback } from "react";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
-import BaseModal from "../../../common/Modal/BaseModal";
-import type { AreaKey } from "../component/Airport/AirportMasterplan";
+import type { AreaKey } from "../../Airport/AirportMasterplan";
+import BaseModal from "../../../../../common/Modal/BaseModal";
 
 interface IRequestLeaveActionModalProps {
   open: boolean;

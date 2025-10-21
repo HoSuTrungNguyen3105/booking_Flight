@@ -1,33 +1,25 @@
 import { useCallback, useState } from "react";
-import {
-  Box,
-  Button,
-  Grid,
-  Divider,
-  Paper,
-  Typography,
-  Stack,
-} from "@mui/material";
+import { Box, Button, Grid, Paper, Typography, Stack } from "@mui/material";
 import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import SelectDropdown, {
   type ActionType,
-} from "../../../../common/Dropdown/SelectDropdown";
-import InputTextField from "../../../../common/Input/InputTextField";
-import theme from "../../../../scss/theme";
+} from "../../../../../common/Dropdown/SelectDropdown";
+import InputTextField from "../../../../../common/Input/InputTextField";
+import theme from "../../../../../scss/theme";
 import {
   useFindAllGateStatuses,
   useFindTerminalIDStatuses,
-} from "../../../Api/useGetApi";
-import BaseModal from "../../../../common/Modal/BaseModal";
-import { Loading } from "../../../../common/Loading/Loading";
+} from "../../../../Api/useGetApi";
+import BaseModal from "../../../../../common/Modal/BaseModal";
+import { Loading } from "../../../../../common/Loading/Loading";
 import {
   useCreateBatchGate,
   useUpdateGate,
   type CreateGateProps,
-} from "../../../Api/usePostApi";
-import type { UpdateGateProps } from "../../TerminalContainer";
-import type { Gate } from "../../../../utils/type";
-import { useToast } from "../../../../context/ToastContext";
+} from "../../../../Api/usePostApi";
+import type { UpdateGateProps } from "../TerminalContainer";
+import type { Gate } from "../../../../../utils/type";
+import { useToast } from "../../../../../context/ToastContext";
 
 type IGateModalProps = {
   terminalId: string;

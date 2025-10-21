@@ -12,18 +12,23 @@ import {
   alpha,
 } from "@mui/material";
 import { Edit, Add } from "@mui/icons-material";
-import TabPanel, { type ITabItem } from "../../common/CustomRender/TabPanel";
-import { useGetTerminalData, type CreateGateProps } from "../Api/usePostApi";
+import TabPanel, {
+  type ITabItem,
+} from "../../../../common/CustomRender/TabPanel";
+import {
+  useGetTerminalData,
+  type CreateGateProps,
+} from "../../../Api/usePostApi";
 import {
   type Facility,
   type FacilityType,
   type Gate,
   type GateStatus,
   type Terminal,
-} from "../../utils/type";
-import theme from "../../scss/theme";
-import CreateGateModal from "./component/Gate/CreateGateModal";
-import { useTerminalContainer } from "./modal/useTerminalContainer";
+} from "../../../../utils/type";
+import theme from "../../../../scss/theme";
+import CreateGateModal from "./modal/CreateGateModal";
+import { useTerminalContainer } from "./hook/useTerminalContainer";
 import ManageFacilityModal from "./modal/ManageFacilityModal";
 
 export type UpdateGateProps = Pick<Gate, "id"> &
@@ -34,11 +39,6 @@ const PaperContainer = styled(Paper)(() => ({
   marginBottom: theme.spacing(3),
   position: "relative",
   cursor: "pointer",
-  // transition: "all 0.3s ease",
-  // "&:hover": {
-  //   boxShadow: theme.shadows[4],
-  //   transform: "translateY(-2px)",
-  // },
 }));
 
 const GateBox = styled(Box)<{ status: GateStatus }>(({ status }) => {
@@ -77,12 +77,6 @@ const GateBox = styled(Box)<{ status: GateStatus }>(({ status }) => {
     backgroundColor,
     color,
     fontWeight: "bold",
-    // transition: "all 0.2s ease-in-out",
-    // position: "relative",
-    // "&:hover": {
-    //   opacity: 0.8,
-    //   transform: "scale(1.05)",
-    // },
   };
 });
 
@@ -98,12 +92,6 @@ const EditOverlay = styled(Box)(() => ({
   alignItems: "center",
   justifyContent: "center",
   cursor: "pointer",
-  // opacity: 0,
-  // transition: "all 0.3s ease",
-  // "&:hover": {
-  //   backgroundColor: theme.palette.primary.main,
-  //   color: "white",
-  // },
 }));
 
 const TerminalContainer: React.FC = () => {
@@ -220,7 +208,7 @@ const TerminalContainer: React.FC = () => {
 
       <Box
         sx={{
-          height: "55vh",
+          height: "58vh",
           overflow: "scroll",
           scrollbarWidth: "none",
           "&::-webkit-scrollbar": {
@@ -235,10 +223,6 @@ const TerminalContainer: React.FC = () => {
           .map((terminal) => (
             <PaperContainer
               key={terminal.id}
-              // elevation={2}
-              // sx={{
-              //   borderLeft: `4px solid ${getTerminalColor(terminal.type)}`,
-              // }}
               onClick={() => handleTerminalClick(terminal)}
             >
               <EditOverlay

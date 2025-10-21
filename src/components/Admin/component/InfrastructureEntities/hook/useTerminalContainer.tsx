@@ -1,13 +1,13 @@
 import { defer } from "lodash";
 import { useCallback, useState } from "react";
-import { useGetTerminalData } from "../../Api/usePostApi";
+import { useGetTerminalData } from "../../../../Api/usePostApi";
 import type {
   Facility,
   FacilityType,
   Gate,
   Terminal,
-} from "../../../utils/type";
-import theme from "../../../scss/theme";
+} from "../../../../../utils/type";
+import theme from "../../../../../scss/theme";
 import type { UpdateGateProps } from "../TerminalContainer";
 
 export const useTerminalContainer = () => {

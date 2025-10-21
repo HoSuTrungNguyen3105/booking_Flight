@@ -145,6 +145,7 @@ const ButtonSeat: React.FC<ButtonSeatProps> = ({
         };
     }
   }, [seat, isSelected]);
+
   const tooltipTitle = (
     <Box sx={{ minWidth: 200 }}>
       <Typography variant="body2" fontWeight="bold" sx={{ mb: 1 }}>

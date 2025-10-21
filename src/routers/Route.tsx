@@ -24,7 +24,7 @@ import AdditionalServicesPage from "../components/Sample/AdditionalServicesPage"
 import ChatContainer from "../components/Chat/ChatContainer";
 import FlightPath from "../components/Admin/component/Flight/FlightPath";
 import ChatApp from "../components/Chat/HeaderChat";
-import AirportDiagram from "../components/Admin/TerminalContainer";
+import AirportDiagram from "../components/Admin/component/InfrastructureEntities/TerminalContainer";
 import RevenueDashboard from "../components/User/RevenueDashboard";
 import TicketSalesDashboard from "../components/User/TicketSalesDashboard";
 import FlightRoutesDashboard from "../components/Admin/component/Flight/FlightRoutesDashboard";

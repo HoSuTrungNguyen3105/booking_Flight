@@ -21,7 +21,7 @@ import { Add, Close, CloudUpload } from "@mui/icons-material";
 import {
   useCreateTerminalBulk,
   type CreateTerminalDto,
-} from "../Api/usePostApi";
+} from "../../../../Api/usePostApi";
 
 interface CreateTerminalDialogProps {
   open: boolean;
@@ -59,7 +59,7 @@ const CreateTerminalDialog: React.FC<CreateTerminalDialogProps> = ({
   } | null>(null);
 
   const steps = ["Chọn phương thức", "Nhập thông tin", "Xác nhận"];
-  const { refetchCreateTerminalBulk } = useCreateTerminalBulk();
+  // const { refetchCreateTerminalBulk } = useCreateTerminalBulk();
   const handleSingleSubmit = async () => {
     setLoading(true);
     setMessage(null);

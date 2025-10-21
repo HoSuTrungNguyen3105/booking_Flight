@@ -9,7 +9,7 @@ import {
   TableContainer,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { memo } from "react";
 import { useForm } from "react-hook-form";
 import { useSearchBooking } from "../Api/usePostApi";
 import { FlightOutlined, RefreshOutlined } from "@mui/icons-material";
@@ -290,7 +290,7 @@ const BookTicket = () => {
                 <RefreshOutlined />
               </Button>
               <Button type="submit" variant="contained">
-                선택
+                Submit
               </Button>
             </Box>
           </Box>
@@ -409,7 +409,7 @@ const BookTicket = () => {
                                 fontSize="medium"
                                 sx={{
                                   color: "#007bff",
-                                  transform: "rotate(90deg)",
+                                  // transform: "rotate(90deg)",
                                 }}
                               />
                             }
@@ -650,4 +650,4 @@ const BookTicket = () => {
   );
 };
 
-export default BookTicket;
+export default memo(BookTicket);
