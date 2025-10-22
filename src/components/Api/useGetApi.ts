@@ -492,8 +492,9 @@ export const useGetMyInfo = () => {
     config: getMethod,
   });
 
-  const refetchGetMyInfo = (id: number) => {
-    return refetch(null, `/sys/users/getUserInfo/${id}`);
+  const refetchGetMyInfo = async (id: number) => {
+    const res = await refetch(null, `/sys/users/getUserInfo/${id}`);
+    return res;
   };
 
   return {

@@ -10,26 +10,22 @@ const getBaggageStatusStyle = (status: string) => {
     case "CHECKED_IN":
       return {
         label: "Đã ký gửi",
-        // sx: {
-        //   background: "linear-gradient(135deg, #43a047, #66bb6a)", // xanh lá
-        //   color: "#fff",
-        //   fontWeight: 600,
-        //   borderRadius: "8px",
-        //   px: 1.5,
-        //   py: 0.5,
-        // },
+        sx: {
+          background: theme.palette.info.dark,
+          color: "#fff",
+          fontWeight: 600,
+          borderRadius: "8px",
+        },
       };
 
     case "LOADED":
       return {
         label: "Đã lên máy bay",
         sx: {
-          background: "linear-gradient(135deg, #2196f3, #42a5f5)", // xanh dương
+          background: theme.palette.common.black,
           color: "#fff",
           fontWeight: 600,
           borderRadius: "8px",
-          px: 1.5,
-          py: 0.5,
         },
       };
 
@@ -37,12 +33,10 @@ const getBaggageStatusStyle = (status: string) => {
       return {
         label: "Đã nhận hành lý",
         sx: {
-          background: "linear-gradient(135deg, #8e24aa, #ab47bc)", // tím
+          background: theme.palette.action.active,
           color: "#fff",
           fontWeight: 600,
           borderRadius: "8px",
-          px: 1.5,
-          py: 0.5,
         },
       };
 
@@ -50,12 +44,10 @@ const getBaggageStatusStyle = (status: string) => {
       return {
         label: "Thất lạc",
         sx: {
-          background: "linear-gradient(135deg, #ef5350, #e53935)", // đỏ
+          background: theme.palette.error.dark,
           color: "#fff",
           fontWeight: 600,
           borderRadius: "8px",
-          px: 1.5,
-          py: 0.5,
         },
       };
 
@@ -63,12 +55,10 @@ const getBaggageStatusStyle = (status: string) => {
       return {
         label: "Không rõ",
         sx: {
-          background: "linear-gradient(135deg, #bdbdbd, #9e9e9e)",
+          background: theme.palette.secondary.dark,
           color: "#fff",
           fontWeight: 600,
           borderRadius: "8px",
-          px: 1.5,
-          py: 0.5,
         },
       };
   }

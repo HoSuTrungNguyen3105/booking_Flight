@@ -1,5 +1,5 @@
 import { Box, Button, Stack } from "@mui/material";
-import { useCallback, useState, useEffect, useMemo } from "react";
+import { useCallback, useState, useEffect, useMemo, memo } from "react";
 import DialogConfirm from "../Modal/DialogConfirm";
 import UserInfoSection from "../../components/User/UserInfoSection";
 import TransferAuthoritySection from "./TransferAuthoritySection";
@@ -8,6 +8,7 @@ import { useUpdateUserInfo } from "../../components/Api/usePostApi";
 import { UserRole, type UserData } from "../../utils/type";
 import DataAccessPermissionSection from "./DataAccessPermissionSection";
 import DeleteAccount from "../../components/Auth/DeleteAccount";
+import ChangePasswordInProfile from "../../components/Profile/ChangePasswordInProfile";
 
 export type UserDataToUpdate = Pick<
   UserData,
@@ -35,7 +36,7 @@ export type UserDataToTransferAdmin = Pick<
 
 const ManageMyInformation = () => {
   const { user } = useAuth();
-  const [mode, setMode] = useState<"info" | "update">("info");
+  const [mode, setMode] = useState<"info" | "action" | "update">("info");
   const [openConfirmModal, setOpenConfirmModal] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
 
@@ -116,6 +117,13 @@ const ManageMyInformation = () => {
           >
             Transfer Mode
           </Button>
+          <Button
+            variant={"contained"}
+            color="error"
+            onClick={() => setMode("action")}
+          >
+            Action Mode
+          </Button>
         </Stack>
         <Stack direction="row" spacing={1}>
           <Button
@@ -142,17 +150,25 @@ const ManageMyInformation = () => {
         height: "85vh",
       }}
     >
-      {mode === "info" ? (
+      {mode === "info" && (
         <>
           <UserInfoSection myInfo={myInfo} onChange={handleChange} />
           <DataAccessPermissionSection />
         </>
-      ) : (
+      )}
+
+      {mode === "action" && (
         <>
           <TransferAuthoritySection
             myInfo={transferToMyInfo}
             setOpenModal={() => setOpenConfirmModal(true)}
           />
+          <ChangePasswordInProfile />
+        </>
+      )}
+
+      {mode === "update" && (
+        <>
           <DeleteAccount />
         </>
       )}
@@ -172,4 +188,4 @@ const ManageMyInformation = () => {
   );
 };
 
-export default ManageMyInformation;
+export default memo(ManageMyInformation);

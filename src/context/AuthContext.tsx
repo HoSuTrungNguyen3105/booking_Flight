@@ -59,6 +59,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const { refetchSetLoginMfa } = useLoginByMfa();
   const { refetchGetMyInfo } = useGetMyInfo();
   const { fetchVerifyPassword } = useVerifyPw({ id: user?.id });
+
   const isAdminLogin = useMemo(
     () => user?.role === UserRole.ADMIN,
     [user, refetchGetMyInfo]
@@ -147,57 +148,28 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const fetchMyInfo = async (id?: number) => {
-    if (!id) return;
-    try {
-      const requests = await refetchGetMyInfo(id);
+  const fetchMyInfo = useCallback(
+    async (id?: number) => {
+      if (!id) return;
+      try {
+        const requests = await refetchGetMyInfo(id);
+        const dataUser = requests?.data;
+        if (requests?.resultCode === "00" && dataUser) {
+          setUser(dataUser);
+          setIsAuthenticated(true);
+          await refetchUpdateUserRank({ userId: id });
+        } else {
+          setIsAuthenticated(false);
+          setUser(null);
+        }
 
-      if (requests?.resultCode === "00" && requests.data) {
-        setUser(requests.data);
-        setIsAuthenticated(true);
-        await refetchUpdateUserRank({ userId: id });
-      } else {
-        setIsAuthenticated(false);
-        setUser(null);
+        return requests;
+      } catch (err) {
+        return undefined;
       }
-
-      return requests;
-    } catch (err) {
-      return undefined;
-    }
-  };
-
-  // useEffect(() => {
-  //   const savedUserId = localStorage.getItem("userId");
-  //   if (savedUserId) {
-  //     const id = Number(savedUserId);
-  //     fetchMyInfo(id);
-  //   }
-  // }, [fetchMyInfo]);
-
-  // const fetchMyInfo = useCallback(
-  //   async (id?: number) => {
-  //     if (!id) return;
-  //     try {
-  //       const requests = await refetchGetMyInfo(id);
-
-  //       if (requests?.resultCode === "00" && requests.data) {
-  //         setUser(requests.data);
-  //         setIsAuthenticated(true);
-  //         await refetchUpdateUserRank({ userId: id });
-  //       } else {
-  //         setIsAuthenticated(false);
-  //         setUser(null);
-  //       }
-
-  //       return requests;
-  //     } catch (err) {
-  //       //setIsAuthenticated(false);
-  //       return undefined;
-  //     }
-  //   },
-  //   [refetchUpdateUserRank, refetchGetMyInfo]
-  // );
+    },
+    [refetchGetMyInfo, refetchUpdateUserRank]
+  );
 
   const logout = () => {
     setIsAuthenticated(false);
@@ -221,16 +193,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const verifyUser = async () => {
       try {
         await fetchMyInfo(Number(savedUserId));
-        // if (res?.resultCode === "00" && res.data) {
-        //   setIsAuthenticated(true);
-        //   setUser(res.data);
-        // } else {
-        //   setIsAuthenticated(false);
-        //   toast
-        //     (res?.resultMessage || "Xác thực người dùng thất bại",
-        //     "info"
-        //   );
-        // }
       } catch (err) {
         logout();
       }

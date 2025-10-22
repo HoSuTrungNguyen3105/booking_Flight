@@ -24,6 +24,7 @@ import InputTextArea from "../../../../../common/Input/InputTextArea";
 import InputTextField from "../../../../../common/Input/InputTextField";
 import BaseModal from "../../../../../common/Modal/BaseModal";
 import { ManageAccountsSharp } from "@mui/icons-material";
+import { useToast } from "../../../../../context/ToastContext";
 
 type IManageFacilityModalProps = {
   open: boolean;
@@ -42,7 +43,9 @@ const ManageFacilityModal = ({
   terminalId,
   updateData,
 }: IManageFacilityModalProps) => {
+  const toast = useToast();
   const [formData, setFormData] = useState<FacilityFormProps>({
+    id: "",
     name: "",
     type: "",
     description: "",
@@ -56,6 +59,7 @@ const ManageFacilityModal = ({
 
     if (mode === "update" && updateData) {
       setFormData({
+        id: updateData.id || "",
         name: updateData.name || "",
         type: updateData.type || "",
         description: updateData.description || "",
@@ -65,6 +69,7 @@ const ManageFacilityModal = ({
       });
     } else if (mode === "create") {
       setFormData({
+        id: "",
         name: "",
         type: "",
         description: "",
@@ -97,51 +102,51 @@ const ManageFacilityModal = ({
 
   const { refetchCreateFacilities } = useCreateFacilities();
 
-  const { refetchUpdateFacilities } = useUpdateFacilities(terminalId);
-
-  console.log("terminalId", terminalId);
+  const { refetchUpdateFacilities } = useUpdateFacilities(formData.id);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
-    try {
-      let response;
-      if (mode === "create") {
-        response = await refetchCreateFacilities(formData);
-      } else if (mode === "update") {
-        response = await refetchUpdateFacilities(formData);
-      }
 
-      if (response?.resultCode === "00") {
-        if (mode === "create") {
-          setFormData({
-            name: "",
-            type: "",
-            description: "",
-            terminalId: "",
-            location: "",
-            openingHours: "",
-          });
-          onClose();
-        }
-      } else if (mode === "update") {
-        setFormData({
-          name: "",
-          type: "",
-          description: "",
-          terminalId: "",
-          location: "",
-          openingHours: "",
-        });
-        onClose();
-      } else {
-        console.error("Error submitting facility");
+    try {
+      const apiMap = {
+        create: refetchCreateFacilities,
+        update: refetchUpdateFacilities,
+      } as const;
+
+      const action = apiMap[mode];
+      if (!action) return;
+
+      const response = await action(formData);
+
+      const isSuccess = response?.resultCode === "00";
+      const message =
+        response?.resultMessage || (isSuccess ? "Thành công" : "Thất bại");
+
+      toast(message, isSuccess ? "success" : "error");
+
+      if (isSuccess) {
+        resetForm();
+        onSuccess();
       }
     } catch (error) {
       console.error("Error submitting facility:", error);
+      toast("Đã xảy ra lỗi khi gửi dữ liệu", "error");
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const resetForm = () => {
+    setFormData({
+      id: "",
+      name: "",
+      type: "",
+      description: "",
+      terminalId: "",
+      location: "",
+      openingHours: "",
+    });
   };
 
   const { dataFacilityTypes } = useFindAllFacilityTypes();

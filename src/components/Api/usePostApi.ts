@@ -848,6 +848,7 @@ export const useDeleteUserById = () => {
 };
 
 export interface FacilityFormProps {
+  id: string;
   name: string;
   type: string;
   description: string;
@@ -1038,10 +1039,11 @@ export const useSendMail = () => {
 };
 
 export const useChangePasswordInProfile = () => {
-  const { data: changePassword, refetch: refetchChangePassword } = useFetch<
-    ResponseMessage,
-    ChangePasswordInProfile
-  >({
+  const {
+    data: changePassword,
+    refetch: refetchChangePassword,
+    error: errorChangePassword,
+  } = useFetch<ResponseMessage, ChangePasswordInProfile>({
     url: "/auth/change-password-in-profile",
     defaultValue: { resultCode: "", resultMessage: "" },
     autoFetch: false,
@@ -1050,6 +1052,7 @@ export const useChangePasswordInProfile = () => {
   return {
     changePassword,
     refetchChangePassword,
+    errorChangePassword,
   };
 };
 

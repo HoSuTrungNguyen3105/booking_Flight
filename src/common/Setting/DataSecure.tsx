@@ -15,33 +15,36 @@ type DataSecureProps = {
 };
 
 const DataSecure = ({ passenger, returnButton }: DataSecureProps) => {
-  const [isLoading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState<Passenger | null>(null);
-
   const { dataPassengerById, refetchPassengerById } = useFindPassengerById();
 
-  const fetchPassenger = async () => {
+  const fetchPassenger = useCallback(async () => {
+    if (!passenger) return;
+
+    setIsLoading(true);
     try {
-      setLoading(true);
       const res = await refetchPassengerById({ id: passenger });
-      if (res?.resultCode === "00") {
+      if (res?.resultCode === "00" && res.data) {
         setData(res.data as Passenger);
       } else {
-        console.error(res?.resultMessage);
+        console.warn(
+          "Không tìm thấy hành khách hoặc mã lỗi:",
+          res?.resultMessage
+        );
+        setData(null);
       }
-    } catch (err) {
-      console.error("Fetch passenger error:", err);
+    } catch (error) {
+      console.error("Lỗi khi tải dữ liệu hành khách:", error);
+      setData(null);
     } finally {
-      setLoading(false);
-    }
-  };
-
-  // const data = dataPassengerById?.data;
-  useEffect(() => {
-    if (passenger) {
-      fetchPassenger();
+      setIsLoading(false);
     }
   }, [passenger, refetchPassengerById]);
+
+  useEffect(() => {
+    fetchPassenger();
+  }, [fetchPassenger]);
 
   const columnBookingList: GridColDef[] = useMemo(
     () => [
@@ -87,7 +90,7 @@ const DataSecure = ({ passenger, returnButton }: DataSecureProps) => {
         flex: 1,
         renderCell: ({ value }) => (
           <Typography variant="body2">
-            {formatDateKR(DateFormatEnum.MMMM_D_YYYY, value)}
+            {formatDate(DateFormatEnum.MMMM_D_YYYY, value)}
           </Typography>
         ),
       },

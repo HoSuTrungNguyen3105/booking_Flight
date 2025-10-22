@@ -6,10 +6,7 @@ import SelectDropdown, {
 } from "../../../../../common/Dropdown/SelectDropdown";
 import InputTextField from "../../../../../common/Input/InputTextField";
 import theme from "../../../../../scss/theme";
-import {
-  useFindAllGateStatuses,
-  useFindTerminalIDStatuses,
-} from "../../../../Api/useGetApi";
+import { useFindAllGateStatuses } from "../../../../Api/useGetApi";
 import BaseModal from "../../../../../common/Modal/BaseModal";
 import { Loading } from "../../../../../common/Loading/Loading";
 import {
@@ -49,17 +46,9 @@ const ManageGateModal = ({
   >({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { dataGateStatuses } = useFindAllGateStatuses();
-  const { dataTerminalIDStatuses } = useFindTerminalIDStatuses();
   const { refetchCreateBatchGate } = useCreateBatchGate();
   const { refetchUpdateGate } = useUpdateGate({ id: data.id });
   const toast = useToast();
-  const terminalOptions: ActionType[] = (
-    dataTerminalIDStatuses?.list ?? []
-  ).map((t) => ({
-    value: t.value,
-    label: t.label,
-    color: "#880e4f",
-  }));
 
   const handleAddGate = () => {
     setFormData((prev) => [...prev, { code: "", terminalId, status: "" }]);
@@ -141,6 +130,7 @@ const ManageGateModal = ({
         if (res?.resultCode === "00") {
           onSuccess();
           onClose();
+          setFormData([]);
         }
       } catch (error) {
         console.error("Batch create error:", error);
@@ -157,6 +147,7 @@ const ManageGateModal = ({
         if (res?.resultCode === "00") {
           onSuccess();
           onClose();
+          setFormData([]);
         } else {
           toast(res?.resultMessage || "Error", "error");
         }

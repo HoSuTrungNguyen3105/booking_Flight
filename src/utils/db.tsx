@@ -34,10 +34,9 @@ export type MenuSection = {
   title: string;
   items: MenuItem[];
 };
-
 export const menuData: MenuSection[] = [
   {
-    title: "Tab 1",
+    title: "Quản trị hệ thống",
     items: [
       {
         id: "/admin",
@@ -50,20 +49,28 @@ export const menuData: MenuSection[] = [
           },
           {
             id: "FlightManagement",
-            label: "FlightManagement",
+            label: "Quản lý chuyến bay",
             icon: <BarChart />,
           },
           { id: "notifications", label: "Thông báo", icon: <Notifications /> },
-          { id: "service", label: "Dịch vụ", icon: <WifiPasswordRounded /> },
+          {
+            id: "service",
+            label: "Dịch vụ & tiện ích",
+            icon: <WifiPasswordRounded />,
+          },
           {
             id: "manage-my-info",
             label: "Thông tin cá nhân",
             icon: <AccountCircle />,
           },
-          { id: "setting", label: "Cài đặt", icon: <OtherHousesTwoTone /> },
+          {
+            id: "setting",
+            label: "Cài đặt hệ thống",
+            icon: <OtherHousesTwoTone />,
+          },
           {
             id: "payroll-management",
-            label: "Quản lý lương",
+            label: "Quản lý bảng lương",
             icon: <BusinessCenter />,
           },
           {
@@ -71,7 +78,7 @@ export const menuData: MenuSection[] = [
             label: "Quản lý Gate",
             icon: <Apartment />,
           },
-          { id: "CreateGateForm", label: "Tạo Gate", icon: <GppBad /> },
+          { id: "CreateGateForm", label: "Tạo mới Gate", icon: <GppBad /> },
           {
             id: "BulkMealCreator",
             label: "Tạo suất ăn hàng loạt",
@@ -82,10 +89,10 @@ export const menuData: MenuSection[] = [
     ],
   },
   {
-    title: "Tab 2",
+    title: "Quản lý sân bay & người dùng",
     items: [
       {
-        id: "/admin",
+        id: "/dashboard",
         label: "Sân bay",
         subItems: [
           {
@@ -98,7 +105,11 @@ export const menuData: MenuSection[] = [
                 label: "Chuyến bay nội địa",
                 icon: <FlightTakeoff />,
               },
-              { id: "bookticket", label: "Đặt vé", icon: <FlightTakeoff /> },
+              {
+                id: "bookticket",
+                label: "Đặt vé máy bay",
+                icon: <FlightTakeoff />,
+              },
               {
                 id: "international",
                 label: "Chuyến bay quốc tế",
@@ -106,21 +117,16 @@ export const menuData: MenuSection[] = [
               },
               {
                 id: "TransferAdminTable",
-                label: "Quảnê lý Terminal",
+                label: "Quản lý Terminal",
               },
               {
                 id: "LeaveRequestTable",
-                label: "Leave Request Table",
+                label: "Yêu cầu nghỉ phép",
                 icon: <TimeToLeave />,
               },
-              // {
-              //   id: "FlightStatisticsPage",
-              //   label: "FlightStatisticsPage",
-              //   icon: <BusinessCenter />,
-              // },
               {
                 id: "FlightBatchCreator",
-                label: "Quản lý FlightBatchCreator",
+                label: "Quản lý chuyến bay hàng loạt",
                 icon: <Apartment />,
               },
               {
@@ -137,6 +143,11 @@ export const menuData: MenuSection[] = [
           },
         ],
       },
+    ],
+  },
+  {
+    title: "Quản lý sân bay & người dùng",
+    items: [
       {
         id: "SendEmailToUsers",
         label: "Người dùng",

@@ -22,7 +22,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { GridMenuIcon } from "@mui/x-data-grid";
 import CustomPopover from "../Button/Popover";
 import { AccountCircle, Login } from "@mui/icons-material";
-import LanguageButton from "../CustomRender/ChangeLanguageSelect";
+import LanguageButton from "../../components/Common/ChangeLanguageSelect";
 
 export const Header = () => {
   const navItems = ["About", "Package", "Contact"];

@@ -18,7 +18,6 @@ const UserInfoSection = ({ myInfo, onChange }: IUserInfoSectionProps) => {
       sx={{
         paddingBottom: "2px",
         height: "470px",
-        // overflow: "auto",
         border: "1px solid #e0e0e0",
         borderRadius: 0.5,
       }}
@@ -29,9 +28,6 @@ const UserInfoSection = ({ myInfo, onChange }: IUserInfoSectionProps) => {
           padding: "8px",
           borderBottom: 1,
           borderColor: "grey.200",
-          // position: "sticky",
-          // top: 0,
-          // zIndex: 1,
         }}
       >
         <Typography component="p" variant="overline">
@@ -54,7 +50,6 @@ const UserInfoSection = ({ myInfo, onChange }: IUserInfoSectionProps) => {
         }}
       >
         <Stack spacing={2} sx={{ width: "384px" }}>
-          {/* Email */}
           <FormControl fullWidth>
             <Typography variant="body2" mb={0.5}>
               {t("email")}
@@ -62,7 +57,6 @@ const UserInfoSection = ({ myInfo, onChange }: IUserInfoSectionProps) => {
             <InputTextField value={myInfo?.email} disabled />
           </FormControl>
 
-          {/* Auth Type */}
           <FormControl fullWidth>
             <Typography variant="body2" mb={0.5}>
               {t("authType")}
@@ -70,7 +64,6 @@ const UserInfoSection = ({ myInfo, onChange }: IUserInfoSectionProps) => {
             <InputTextField value={myInfo?.authType} disabled />
           </FormControl>
 
-          {/* Role */}
           <FormControl fullWidth>
             <Typography variant="body2" mb={0.5}>
               {t("role")}
@@ -78,7 +71,6 @@ const UserInfoSection = ({ myInfo, onChange }: IUserInfoSectionProps) => {
             <InputTextField value={myInfo?.role} disabled />
           </FormControl>
 
-          {/* Hire Date */}
           <FormControl fullWidth>
             <Typography variant="body2" mb={0.5}>
               {t("hireDate")}
@@ -92,7 +84,6 @@ const UserInfoSection = ({ myInfo, onChange }: IUserInfoSectionProps) => {
             />
           </FormControl>
 
-          {/* Rank */}
           <FormControl fullWidth>
             <Typography variant="body2" mb={0.5}>
               {t("rank")}
@@ -100,7 +91,6 @@ const UserInfoSection = ({ myInfo, onChange }: IUserInfoSectionProps) => {
             <InputTextField value={myInfo?.rank} disabled />
           </FormControl>
 
-          {/* Base Salary */}
           <FormControl fullWidth>
             <Typography variant="body2" mb={0.5}>
               {t("baseSalary")}
@@ -108,7 +98,6 @@ const UserInfoSection = ({ myInfo, onChange }: IUserInfoSectionProps) => {
             <InputTextField value={String(myInfo?.baseSalary)} disabled />
           </FormControl>
 
-          {/* Name */}
           <FormControl fullWidth>
             <Typography variant="body2" mb={0.5}>
               {t("name")}
@@ -119,7 +108,6 @@ const UserInfoSection = ({ myInfo, onChange }: IUserInfoSectionProps) => {
             />
           </FormControl>
 
-          {/* Alias */}
           <FormControl fullWidth>
             <Typography variant="body2" mb={0.5}>
               {t("userAlias")}
@@ -130,7 +118,6 @@ const UserInfoSection = ({ myInfo, onChange }: IUserInfoSectionProps) => {
             />
           </FormControl>
 
-          {/* Phone */}
           <FormControl fullWidth>
             <Typography variant="body2" mb={0.5}>
               {t("phone")}

@@ -20,8 +20,8 @@ const Hero: React.FC = () => {
         color: "white",
         position: "relative",
         overflow: "hidden",
-        backgroundImage:
-          "url(https://images.unsplash.com/photo-1490730101735-85e8a7056461?q=80&w=2670&auto=format&fit=crop)",
+        // backgroundImage:
+        //   "url(https://images.unsplash.com/photo-1490730101735-85e8a7056461?q=80&w=2670&auto=format&fit=crop)",
         backgroundSize: "cover",
         backgroundPosition: "center",
         "&::before": {

@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useGetTerminalData } from "../../../../Api/usePostApi";
 import type {
   Facility,
@@ -8,9 +8,18 @@ import type {
 } from "../../../../../utils/type";
 import theme from "../../../../../scss/theme";
 import type { UpdateGateProps } from "../TerminalContainer";
+import { useFindTerminalIDStatuses } from "../../../../Api/useGetApi";
 
 export const useTerminalContainer = () => {
+  const { dataTerminalIDStatuses } = useFindTerminalIDStatuses();
   const [selectedTerminal, setSelectedTerminal] = useState<string>("all");
+
+  useEffect(() => {
+    if (dataTerminalIDStatuses?.list?.length) {
+      setSelectedTerminal(dataTerminalIDStatuses.list[0].value);
+    }
+  }, [dataTerminalIDStatuses]);
+
   const [activeTab, setActiveTab] = useState(0);
   const [dialogOpen, setDialogOpen] = useState({
     terminal: false,
@@ -73,10 +82,9 @@ export const useTerminalContainer = () => {
   };
 
   const handleFacilityClick = useCallback(
-    (type: "create" | "update", facility: Facility, terminalID: string) => {
+    (type: "create" | "update", facility: Facility) => {
       setDialogType(type);
       setEditingItem(facility);
-      setTerminalId(terminalID);
       setDialogOpen((prev) => ({ ...prev, facility: true }));
     },
     [setDialogType, setEditingItem, setDialogOpen]
@@ -136,6 +144,7 @@ export const useTerminalContainer = () => {
     getTerminalColor,
     getGateStatusText,
     gateForm,
+    dataTerminalIDStatuses,
     setGateForm,
     terminalId,
   } as const;
