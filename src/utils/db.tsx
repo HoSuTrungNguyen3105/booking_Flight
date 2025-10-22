@@ -99,7 +99,6 @@ export const menuData: MenuSection[] = [
             id: "AirportManagement",
             label: "Danh sách sân bay",
             subItems: [
-              { id: "meals", label: "Suất ăn", icon: <Restaurant /> },
               {
                 id: "domestic",
                 label: "Chuyến bay nội địa",

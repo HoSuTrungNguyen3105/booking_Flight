@@ -20,7 +20,7 @@ export function useCopyToClipboard(): [CopiedValue, CopyFn] {
         setCopiedText(text);
         return true;
       } catch (error) {
-        toast(error as string);
+        toast(error as string, "error");
         setCopiedText(null);
         return false;
       }

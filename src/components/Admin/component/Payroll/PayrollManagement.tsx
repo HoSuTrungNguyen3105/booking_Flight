@@ -132,11 +132,8 @@ const PayrollManagement = () => {
       field: "period",
       headerName: "Kỳ lương",
       flex: 1,
-      renderCell: (params) => (
-        <Typography>
-          {String(params.row.month).padStart(2, "0")}/{params.row.year}
-        </Typography>
-      ),
+      renderCell: (params) =>
+        `${String(params.row.month).padStart(2, "0")}/${params.row.year}`,
     },
     {
       field: "baseSalary",
@@ -147,46 +144,42 @@ const PayrollManagement = () => {
         return maskValue(params.value, isVisible);
       },
     },
-    {
-      field: "allowances",
-      headerName: "Phụ cấp",
-      flex: 1,
-      renderCell: (params) => {
-        const isVisible = visibleIds.includes(params.row.id);
-        return maskValue(params.value, isVisible);
-      },
-    },
-    {
-      field: "deductions",
-      headerName: "Khấu trừ",
-      flex: 1,
-      renderCell: (params) => {
-        const isVisible = visibleIds.includes(params.row.id);
-        return maskValue(params.value, isVisible);
-      },
-    },
-    {
-      field: "tax",
-      headerName: "Thuế",
-      flex: 1,
-      renderCell: (params) => {
-        const isVisible = visibleIds.includes(params.row.id);
-        return maskValue(params.value, isVisible);
-      },
-    },
-    {
-      field: "netPay",
-      headerName: "Thực lĩnh",
-      flex: 1,
-      renderCell: (params) => {
-        const isVisible = visibleIds.includes(params.row.id);
-        return (
-          <Typography variant="subtitle1" color="primary" fontWeight="bold">
-            {maskValue(params.value, isVisible)}
-          </Typography>
-        );
-      },
-    },
+    // {
+    //   field: "allowances",
+    //   headerName: "Phụ cấp",
+    //   flex: 1,
+    //   renderCell: (params) => {
+    //     const isVisible = visibleIds.includes(params.row.id);
+    //     return maskValue(params.value, isVisible);
+    //   },
+    // },
+    // {
+    //   field: "deductions",
+    //   headerName: "Khấu trừ",
+    //   flex: 1,
+    //   renderCell: (params) => {
+    //     const isVisible = visibleIds.includes(params.row.id);
+    //     return maskValue(params.value, isVisible);
+    //   },
+    // },
+    // {
+    //   field: "tax",
+    //   headerName: "Thuế",
+    //   flex: 1,
+    //   renderCell: (params) => {
+    //     const isVisible = visibleIds.includes(params.row.id);
+    //     return maskValue(params.value, isVisible);
+    //   },
+    // },
+    // {
+    //   field: "netPay",
+    //   headerName: "Thực lĩnh",
+    //   flex: 1,
+    //   renderCell: (params) => {
+    //     const isVisible = visibleIds.includes(params.row.id);
+    //     return maskValue(params.value, isVisible);
+    //   },
+    // },
     {
       field: "status",
       headerName: "Trạng thái",

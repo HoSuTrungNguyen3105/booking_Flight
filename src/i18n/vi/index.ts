@@ -27,6 +27,8 @@ export const vi = {
     focused: "Đang chọn",
     filledFocused: "Đã nhập - Đang chọn",
     filled: "Đã nhập",
+    logout: "Dang xuat",
+    my_infor: "Thong tin cua toi",
     disabled: "Vô hiệu hóa",
     readonly: "Chỉ đọc",
     status_error: "Lỗi",

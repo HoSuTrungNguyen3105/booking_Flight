@@ -49,6 +49,8 @@ export const jp = {
     userInformation: "ユーザー情報",
     noResults: "結果がありません",
     data_access_title: "データアクセス権限",
+    logout: "Dang xuat",
+    my_infor: "Thong tin cua toi",
     data_access_description:
       "管理者（Admin）が確認および管理できるサービスです。",
     myInfo: "マイ情報管理",

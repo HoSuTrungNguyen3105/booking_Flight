@@ -8,11 +8,12 @@ import { ROUTE_PATHS } from "../../routers/RoutePath";
 import theme from "../../scss/theme";
 import LanguageButton from "../Common/ChangeLanguageSelect";
 import SearchUserFromMessage from "../Chat/SearchUserFromMessage";
+import { useTranslation } from "react-i18next";
 
 const Header = () => {
   const { isAdmin, logout, user } = useAuth();
   const navigate = useNavigate();
-
+  const { t } = useTranslation();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const open = useMemo(() => Boolean(anchorEl), [anchorEl]);
 
@@ -89,9 +90,9 @@ const Header = () => {
           open={open}
           onClose={handleClose}
         >
-          <MenuItem onClick={handleClickProfile}>나의 프로필</MenuItem>
+          <MenuItem onClick={handleClickProfile}>{t("my_infor")}</MenuItem>
           <MenuItem onClick={logout} sx={{ color: "red" }}>
-            나가기
+            {t("logout")}
           </MenuItem>
         </Menu>
       </Box>

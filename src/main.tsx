@@ -1,6 +1,7 @@
-import React, { Component, useEffect, useState, type ReactNode } from "react";
+import React, { Component, type ReactNode } from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
+import theme from "./scss/theme";
 
 interface ErrorBoundaryState {
   hasError: boolean;
@@ -27,61 +28,47 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
 
   render() {
     if (this.state.hasError) {
-      throw this.state.error;
+      return (
+        <div
+          style={{
+            background: theme.palette.error.dark,
+            color: "white",
+            padding: "12px",
+          }}
+        >
+          <h1>Đã xảy ra lỗi!</h1>
+          <pre>{this.state.error?.stack}</pre>
+        </div>
+      );
     }
+
     return this.props.children;
   }
 }
 
 function RootWrapper() {
-  // const [isBackendOnline, setIsBackendOnline] = React.useState(true);
-  // async function checkBackendConnection() {
-  //   try {
-  //     const resBackend = await fetch("http://localhost:3000");
-  //     const resFrontend = await fetch("http://localhost:5173");
-  //     if (!resBackend.ok || !resFrontend.ok) throw new Error("Server offline");
-  //     setIsBackendOnline(true);
-  //   } catch {
-  //     setIsBackendOnline(false);
-  //   }
-  // }
+  const [isBackendOnline, setIsBackendOnline] = React.useState(true);
 
-  // useEffect(() => {
-  //   checkBackendConnection();
-  //   const interval = setInterval(checkBackendConnection, 5000);
-  //   return () => clearInterval(interval);
-  // }, []);
+  async function checkBackendConnection() {
+    try {
+      const resBackend = await fetch("http://localhost:3000");
+      const resFrontend = await fetch("http://localhost:5173");
+      if (!resBackend.ok || !resFrontend.ok) throw new Error();
+      setIsBackendOnline(true);
+    } catch {
+      setIsBackendOnline(false);
+    }
+  }
 
-  const [error, setError] = useState<Error | null>(null);
-
-  useEffect(() => {
-    const checkBackendConnection = async () => {
-      try {
-        const resBackend = await fetch("http://localhost:3000");
-        const resFrontend = await fetch("http://localhost:5173");
-
-        if (!resBackend.ok || !resFrontend.ok) {
-          throw new Error("Backend hoặc Frontend offline");
-        }
-      } catch (err) {
-        if (err instanceof Error) setError(err);
-        else setError(new Error("Unknown error"));
-      }
-    };
-
+  React.useEffect(() => {
     checkBackendConnection();
     const interval = setInterval(checkBackendConnection, 5000);
     return () => clearInterval(interval);
   }, []);
 
-  if (error) {
-    // Throw trong render → React hiển thị red screen
-    throw error;
+  if (!isBackendOnline) {
+    throw new Error("Server or client is offline");
   }
-
-  // if (!isBackendOnline) {
-  //   throw new Error("Backend or Frontend offline");
-  // }
 
   return (
     <React.Suspense fallback={<span>Đang tải ứng dụng...</span>}>

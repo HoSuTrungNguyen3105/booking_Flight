@@ -1,6 +1,6 @@
 import { createBrowserRouter, type RouteObject } from "react-router-dom";
 import MainLayout from "../components/Layout/MainLayout";
-import ErrorPage from "../components/Layout/ErrorLayout";
+import ErrorPage from "../components/Layout/Error404Layout";
 import { FileUpload } from "../common/FileUploader";
 import Hero from "../components/Hero/Hero";
 import BookTicket from "../components/User/BookTicket";
@@ -16,9 +16,9 @@ import SecurityManage from "../components/User/SecurityManage";
 import ManageMyInformation from "../common/Setting/ManageMyInformation";
 import ManageMyInfo from "../components/Profile/ManageMyInfo";
 import AircraftPage from "../components/Admin/component/Aircraft/AircraftPage";
-import UnlockRequestTable from "../components/Auth/UnlockRequestTable";
+import UnlockRequestTable from "../components/User/UnlockRequestTable";
 import FlightPage from "../components/Admin/component/Flight/FlightPage";
-import LeaveRequestGrid from "../components/Admin/component/LeaveRequest/LeaveRequestGrid";
+import LeaveRequestTable from "../components/Admin/component/LeaveRequest/LeaveRequestTable";
 import PayrollManagement from "../components/Admin/component/Payroll/PayrollManagement";
 import AdditionalServicesPage from "../components/Sample/AdditionalServicesPage";
 import ChatContainer from "../components/Chat/ChatContainer";
@@ -42,7 +42,7 @@ import AuthGuard from "../components/Layout/AuthGuard";
 // import BulkMealCreator from "../components/Admin/component/Meal/BulkMealCreator";
 import TransferAdminTable from "../common/Setting/Component/TransferAdminTable";
 import MealList from "../components/Admin/component/Meal/MealList";
-import FlightStatus from "../components/Admin/component/Flight/FlightStatus";
+// import FlightStatus from "../components/Admin/component/Flight/FlightStatus";
 import FlightManagement from "../components/Admin/component/Flight/FlightManagement";
 
 const routes = [
@@ -118,7 +118,7 @@ const routes = [
       },
       {
         path: ROUTE_PATHS.LEAVE_REQUEST_TABLE,
-        element: <LeaveRequestGrid />,
+        element: <LeaveRequestTable />,
       },
       {
         path: ROUTE_PATHS.DOMESTIC,

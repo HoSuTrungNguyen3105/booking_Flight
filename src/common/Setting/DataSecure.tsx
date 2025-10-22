@@ -7,7 +7,8 @@ import theme from "../../scss/theme";
 import { useFindPassengerById } from "../../components/Api/usePostApi";
 import type { Passenger } from "../../utils/type";
 import DetailSection, { type IDetailItem } from "../DetailSection";
-import { DateFormatEnum, formatDate, formatDateKR } from "../../hooks/format";
+import { DateFormatEnum, formatDate } from "../../hooks/format";
+import { useToast } from "../../context/ToastContext";
 
 type DataSecureProps = {
   passenger: string;
@@ -18,7 +19,7 @@ const DataSecure = ({ passenger, returnButton }: DataSecureProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState<Passenger | null>(null);
   const { dataPassengerById, refetchPassengerById } = useFindPassengerById();
-
+  const toast = useToast();
   const fetchPassenger = useCallback(async () => {
     if (!passenger) return;
 
@@ -28,10 +29,7 @@ const DataSecure = ({ passenger, returnButton }: DataSecureProps) => {
       if (res?.resultCode === "00" && res.data) {
         setData(res.data as Passenger);
       } else {
-        console.warn(
-          "Không tìm thấy hành khách hoặc mã lỗi:",
-          res?.resultMessage
-        );
+        toast(res?.resultMessage || "Không tìm thấy hành khách hoặc mã lỗi");
         setData(null);
       }
     } catch (error) {
@@ -57,11 +55,8 @@ const DataSecure = ({ passenger, returnButton }: DataSecureProps) => {
         field: "bookingTime",
         headerName: "Booking Time",
         flex: 1,
-        renderCell: ({ value }) => (
-          <Typography variant="body2">
-            {formatDate(DateFormatEnum.MMMM_D_YYYY, value)}
-          </Typography>
-        ),
+        renderCell: ({ value }) =>
+          formatDate(DateFormatEnum.MMMM_D_YYYY, value),
       },
       {
         field: "mealCount",
@@ -88,11 +83,8 @@ const DataSecure = ({ passenger, returnButton }: DataSecureProps) => {
         field: "mealId",
         headerName: "Booking Time",
         flex: 1,
-        renderCell: ({ value }) => (
-          <Typography variant="body2">
-            {formatDate(DateFormatEnum.MMMM_D_YYYY, value)}
-          </Typography>
-        ),
+        renderCell: ({ value }) =>
+          formatDate(DateFormatEnum.MMMM_D_YYYY, value),
       },
       {
         field: "quantity",
@@ -114,7 +106,7 @@ const DataSecure = ({ passenger, returnButton }: DataSecureProps) => {
 
   const rowDataMealOrder = useMemo(
     () =>
-      dataPassengerById?.data?.bookings[0].mealOrders.map((item) => ({
+      dataPassengerById?.data?.bookings[0]?.mealOrders?.map((item) => ({
         ...item,
         id: item.id,
       })) || [],
@@ -124,25 +116,26 @@ const DataSecure = ({ passenger, returnButton }: DataSecureProps) => {
   const detailData: IDetailItem[] = [
     {
       title: "Họ và tên",
-      description: data?.fullName || "None",
+      description: data?.fullName,
     },
     {
       title: "Email",
-      description: data?.email || "None",
+      description: data?.email,
     },
     {
       title: "Số điện thoại",
-      description: data?.phone || "None",
+      description: data?.phone,
     },
     {
       title: "Passport",
-      description: data?.passport || "None",
+      description: data?.passport,
     },
     {
       title: "Lần đăng nhập cuối",
-      description: data?.lastLoginDate
-        ? formatDate(DateFormatEnum.MMMM_D_YYYY, data.lastLoginDate)
-        : "None",
+      description: formatDate(
+        DateFormatEnum.MM_DD_YYYY,
+        Number(data?.lastLoginDate)
+      ),
     },
     {
       title: "Tài khoản khóa",
@@ -150,11 +143,15 @@ const DataSecure = ({ passenger, returnButton }: DataSecureProps) => {
     },
     {
       title: "Flight Booking",
-      description: data?.bookings?.[0]?.flight?.flightNo || "-",
+      description: data?.bookings?.[0]?.flight?.flightNo,
     },
     {
-      title: "Seat Id",
-      description: data?.bookings?.[0]?.seats?.id || "-",
+      title: "Seat No",
+      description:
+        data?.bookings?.[0]?.seats?.seatNumber &&
+        data?.bookings?.[0]?.seats?.seatRow
+          ? `${data.bookings[0].seats.seatNumber} - ${data.bookings[0].seats.seatRow}`
+          : "-",
     },
     {
       title: "Email xác thực",
@@ -203,10 +200,12 @@ const DataSecure = ({ passenger, returnButton }: DataSecureProps) => {
   return (
     <Box minHeight={"50vh"}>
       <Box overflow={"auto"} minHeight={"50vh"}>
-        <DetailSection data={detailData} />
-        <Button onClick={returnButton} variant="contained">
+        <Button sx={{ mb: 1 }} onClick={returnButton} variant="contained">
           Return
         </Button>
+
+        <DetailSection data={detailData} />
+
         <Box borderTop={1} paddingTop={2} borderColor={"grey.200"}>
           {renderDataSection(
             "Booking List",

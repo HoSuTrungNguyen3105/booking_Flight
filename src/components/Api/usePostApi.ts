@@ -156,6 +156,20 @@ export type CreateTerminalDto = {
   airportId: string;
 };
 
+// export const useCreateTerminalSingle = () => {
+//   const { refetch: refetchCreateTerminalSingle } = useFetch<
+//     ResponseMessage,
+//     CreateTerminalDto
+//   >({
+//     url: "/sys/flights/createTerminal",
+//     autoFetch: false,
+//     config: postMethod,
+//   });
+//   return {
+//     refetchCreateTerminalSingle,
+//   };
+// };
+
 export const useCreateTerminalBulk = () => {
   const { refetch: refetchCreateTerminalBulk } = useFetch<
     ResponseMessage,

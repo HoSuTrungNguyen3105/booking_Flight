@@ -18,6 +18,8 @@ export const ko = {
     toastError: "문제가 발생했습니다. 다시 시도하세요!",
     tittle1: "기본 유형 - 단일 선택",
     tittle2: "상태",
+    logout: "Dang xuat",
+    my_infor: "Thong tin cua toi",
     data_access_title: "데이터 액세스 권한",
     data_access_description:
       "관리자(Admin)가 검토 및 관리할 수 있는 서비스입니다.",

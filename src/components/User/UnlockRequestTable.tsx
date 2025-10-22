@@ -1,9 +1,9 @@
 import { Chip, Box, Button, Typography } from "@mui/material";
 import type { GridColDef } from "@mui/x-data-grid";
-import { type GridRowDef } from "../../common/DataGrid/index";
 import { useGetUnlockRequests } from "../Api/useGetApi";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import TableSection from "../../common/CustomRender/TableSection";
+import { DateFormatEnum, formatDate } from "../../hooks/format";
 
 enum TypeColor {
   REJECTED = "REJECTED",
@@ -13,9 +13,7 @@ enum TypeColor {
 
 const UnlockRequestTable = () => {
   const { getUnlockRequests } = useGetUnlockRequests();
-  const [unlockRows, setUnlockRows] = useState<GridRowDef[]>([]);
-
-  console.log("unlockRows", unlockRows);
+  // const [unlockRows, setUnlockRows] = useState<GridRowDef[]>([]);
 
   const rowData = useMemo(
     () =>
@@ -25,6 +23,8 @@ const UnlockRequestTable = () => {
       })) || [],
     [getUnlockRequests]
   );
+
+  console.log("rowData", rowData);
 
   const getStatusColor = useCallback((status: string) => {
     switch (status) {
@@ -38,19 +38,19 @@ const UnlockRequestTable = () => {
         return "default";
     }
   }, []);
+
   const columns: GridColDef[] = [
-    { field: "id", headerName: "ID", width: 70 },
-    { field: "userId", headerName: "User ID", width: 100 },
+    { field: "id", headerName: "ID", flex: 1 },
+    { field: "employeeId", headerName: "Employee ID", flex: 1 },
     {
       field: "reason",
       headerName: "Lý do",
       flex: 1,
-      minWidth: 200,
     },
     {
       field: "status",
       headerName: "Trạng thái",
-      width: 130,
+      flex: 1,
       renderCell: (params) => (
         <Chip
           label={params.value}
@@ -66,21 +66,21 @@ const UnlockRequestTable = () => {
     {
       field: "createdAt",
       headerName: "Ngày tạo",
-      width: 200,
-      valueFormatter: (params) => new Date(Number(params)).toLocaleString(),
+      flex: 1,
+      valueFormatter: (params: number) =>
+        params ? formatDate(DateFormatEnum.DD_MM_YYYY_HH_MM_SS, params) : "-",
     },
     {
       field: "approvedAt",
       headerName: "Ngày duyệt",
-      width: 200,
-      valueFormatter: (params) =>
-        params ? new Date(Number(params)).toLocaleString() : "-",
+      flex: 1,
+      valueFormatter: (params: number) =>
+        params ? formatDate(DateFormatEnum.DD_MM_YYYY_HH_MM_SS, params) : "-",
     },
     {
       field: "actions",
       headerName: "Hành động",
-      width: 180,
-      sortable: false,
+      flex: 1,
       renderCell: (params) => {
         if (params.row.status === "PENDING") {
           return (
@@ -114,7 +114,7 @@ const UnlockRequestTable = () => {
       </Typography>
       <TableSection
         isLoading={false}
-        setRows={setUnlockRows}
+        setRows={() => {}}
         rows={rowData}
         columns={columns}
         largeThan

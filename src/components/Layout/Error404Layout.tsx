@@ -8,13 +8,11 @@ import {
   Chip,
   styled,
   type BoxProps,
-  alpha,
 } from "@mui/material";
 import { Home, Refresh, ArrowBack } from "@mui/icons-material";
 import {
   useRouteError,
   isRouteErrorResponse,
-  // Link,
   useNavigate,
 } from "react-router-dom";
 import { memo, useCallback } from "react";
@@ -142,7 +140,7 @@ const ErrorLayout = () => {
               variant="body1"
               sx={{
                 color: "text.secondary",
-                fontStyle: "italic",
+                fontStyle: "normal",
                 mb: 2,
                 fontSize: "1.1rem",
                 lineHeight: 1.6,

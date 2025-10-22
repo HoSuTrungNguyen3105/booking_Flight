@@ -1,22 +1,23 @@
 import { useState, useCallback, memo } from "react";
-import { Box, Typography, Chip, Button, Stack } from "@mui/material";
+import { Box, Typography, Chip, Button } from "@mui/material";
 import { type GridColDef, type GridRenderCellParams } from "@mui/x-data-grid";
-import TableData from "../../../../common/DataGrid/index";
 import { useGetLeaveRequest } from "../../../Api/usePostApi";
-import {
-  DateFormatEnum,
-  formatDate,
-  formatDateKR,
-} from "../../../../hooks/format";
+import { DateFormatEnum, formatDate } from "../../../../hooks/format";
 import CustomPopover from "../../../../common/Button/Popover";
 import RequestLeaveActionModal from "./RequestLeaveActionModal";
-import { UserRole, type LeaveRequest } from "../../../../utils/type";
+import { type LeaveRequest } from "../../../../utils/type";
 import CreateLeaveRequestForm from "./CreateLeaveRequestForm";
 import { useAuth } from "../../../../context/AuthContext";
+import theme from "../../../../scss/theme";
+import TableSection from "../../../../common/CustomRender/TableSection";
 
-const LeaveRequestGrid = () => {
+const LeaveRequestTable = () => {
   const { user } = useAuth();
-  const { dataGetLeaveRequest, refetchGetLeaveRequest } = useGetLeaveRequest();
+  const {
+    dataGetLeaveRequest,
+    refetchGetLeaveRequest,
+    loadingGetLeaveRequest,
+  } = useGetLeaveRequest();
 
   const rowData = useCallback(() => {
     return (
@@ -28,26 +29,13 @@ const LeaveRequestGrid = () => {
   }, [dataGetLeaveRequest]);
 
   const [open, setOpen] = useState(false);
-  const [modalType, setModalType] = useState<"view" | null>(null);
+  // const [modalType, setModalType] = useState<"view" | null>(null);
   const [selectedRow, setSelectedRow] = useState<LeaveRequest | null>(null);
 
   const handleView = (row: LeaveRequest) => {
     setSelectedRow(row);
-    setModalType("view");
+    // setModalType("view");
     setOpen(true);
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "APPROVED":
-        return "success";
-      case "REJECTED":
-        return "error";
-      case "PENDING":
-        return "warning";
-      default:
-        return "default";
-    }
   };
 
   const statuses = [
@@ -55,7 +43,7 @@ const LeaveRequestGrid = () => {
       key: "PENDING",
       label: "Pending",
       sx: {
-        bgcolor: "warning.light",
+        bgcolor: theme.palette.warning.light,
         color: "warning.dark",
         fontWeight: 500,
       },
@@ -64,7 +52,7 @@ const LeaveRequestGrid = () => {
       key: "APPROVED",
       label: "Approved",
       sx: {
-        bgcolor: "success.light",
+        bgcolor: theme.palette.success.light,
         color: "success.dark",
         fontWeight: 500,
       },
@@ -73,7 +61,7 @@ const LeaveRequestGrid = () => {
       key: "REJECTED",
       label: "Rejected",
       sx: {
-        bgcolor: "error.light",
+        bgcolor: theme.palette.error.light,
         color: "error.dark",
         fontWeight: 500,
       },
@@ -114,12 +102,14 @@ const LeaveRequestGrid = () => {
       headerName: "Lý do",
       flex: 1,
       renderCell: (params: GridRenderCellParams) => (
-        <CustomPopover
-          text="Detail"
-          hideSubmitButton
-          handleAction={() => {}}
-          option={[params.value]}
-        />
+        <Box sx={{ mt: 1 }}>
+          <CustomPopover
+            text="Detail"
+            hideSubmitButton
+            handleAction={() => {}}
+            option={[params.value]}
+          />
+        </Box>
       ),
     },
     {
@@ -161,14 +151,16 @@ const LeaveRequestGrid = () => {
       flex: 1,
       headerName: "Thao tác",
       renderCell: (params: GridRenderCellParams) => (
-        <CustomPopover
-          hideSubmitButton
-          text="Detail"
-          handleAction={(opt) => {
-            if (opt === "View") handleView(params.row);
-          }}
-          option={["View"]}
-        />
+        <Box sx={{ mt: 1 }}>
+          <CustomPopover
+            hideSubmitButton
+            text="Detail"
+            handleAction={(opt) => {
+              if (opt === "View") handleView(params.row);
+            }}
+            option={["View"]}
+          />
+        </Box>
       ),
     },
   ];
@@ -189,12 +181,9 @@ const LeaveRequestGrid = () => {
 
   return (
     <>
-      <Stack>
-        <Typography variant="h5" fontWeight="bold" color="primary.main">
-          Danh sách đơn xin nghỉ phép
-        </Typography>
-      </Stack>
-
+      <Typography variant="h5" fontWeight="bold" color="primary.main">
+        Danh sách đơn xin nghỉ phép
+      </Typography>
       <Button
         size="medium"
         variant="contained"
@@ -227,9 +216,15 @@ const LeaveRequestGrid = () => {
         </Box>
       </Box>
 
-      <Box sx={{ height: "30rem", width: "100%" }}>
-        <TableData rows={rowData()} columns={columns} />
-      </Box>
+      <TableSection
+        rows={rowData()}
+        nextRowClick
+        // largeThan
+        isLoading={loadingGetLeaveRequest}
+        setRows={() => {}}
+        columns={columns}
+      />
+
       {open && selectedRow && (
         <RequestLeaveActionModal
           selectedRows={selectedRow}
@@ -245,4 +240,4 @@ const LeaveRequestGrid = () => {
   );
 };
 
-export default memo(LeaveRequestGrid);
+export default memo(LeaveRequestTable);

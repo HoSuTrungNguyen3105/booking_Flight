@@ -14,6 +14,8 @@ export const en = {
       "Radio Button provides two Color Variations: Primary / Secondary.",
     language: "Change Language",
     toastSuccess: "Action performed successfully!",
+    logout: "Log out",
+    my_infor: "My information",
     toastWarning: "This action cannot be undone!",
     toastError: "Something went wrong. Please try again!",
     tittle1: "Basic Type - Single Selection",

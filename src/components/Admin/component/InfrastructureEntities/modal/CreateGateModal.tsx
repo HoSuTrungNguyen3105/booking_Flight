@@ -41,9 +41,9 @@ const ManageGateModal = ({
     { code: "", terminalId, status: "" },
   ]);
 
-  const [errors, setErrors] = useState<
-    Partial<Record<keyof CreateGateProps, string>>
-  >({});
+  // const [errors, setErrors] = useState<
+  //   Partial<Record<keyof CreateGateProps, string>>
+  // >({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { dataGateStatuses } = useFindAllGateStatuses();
   const { refetchCreateBatchGate } = useCreateBatchGate();
@@ -108,17 +108,6 @@ const ManageGateModal = ({
           };
       }
     }) ?? [];
-
-  const handleSelectChange =
-    (field: keyof CreateGateProps) => (value: string | number) => {
-      setFormData((prev) => ({
-        ...prev,
-        [field]: value,
-      }));
-      if (errors[field]) {
-        setErrors((prev) => ({ ...prev, [field]: "" }));
-      }
-    };
 
   const handleSubmit = useCallback(async () => {
     setIsSubmitting(true);

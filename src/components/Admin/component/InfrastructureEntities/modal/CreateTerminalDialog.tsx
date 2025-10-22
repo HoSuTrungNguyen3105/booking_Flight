@@ -20,6 +20,7 @@ import {
 import { Add, Close, CloudUpload } from "@mui/icons-material";
 import {
   useCreateTerminalBulk,
+  // useCreateTerminalSingle,
   type CreateTerminalDto,
 } from "../../../../Api/usePostApi";
 
@@ -43,14 +44,39 @@ const CreateTerminalDialog: React.FC<CreateTerminalDialogProps> = ({
   onSuccess,
 }) => {
   const [activeStep, setActiveStep] = useState(0);
-  const [mode, setMode] = useState<"single" | "bulk">("single");
-  const [formData, setFormData] = useState<CreateTerminalDto>({
-    code: "",
-    name: "",
-    description: "",
-    type: "DOMESTIC",
-    airportId: "",
-  });
+  const [mode, setMode] = useState<"single" | "multi">("single");
+  const [formData, setFormData] = useState<CreateTerminalDto[]>([
+    {
+      code: "",
+      name: "",
+      description: "",
+      type: "DOMESTIC",
+      airportId: "",
+    },
+  ]);
+
+  const handleAddGate = () => {
+    setFormData((prev) => [
+      ...prev,
+      {
+        code: "",
+        airportId: "",
+        name: "",
+        description: "",
+        type: "DOMESTIC",
+      },
+    ]);
+  };
+
+  const handleChange = (index: number, key: string, value: string) => {
+    setFormData((prev) =>
+      prev.map((item, i) => (i === index ? { ...item, [key]: value } : item))
+    );
+  };
+
+  const handleRemoveGate = (index: number) => {
+    setFormData((prev) => prev.filter((_, i) => i !== index));
+  };
   const [bulkData, setBulkData] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{
@@ -59,53 +85,25 @@ const CreateTerminalDialog: React.FC<CreateTerminalDialogProps> = ({
   } | null>(null);
 
   const steps = ["Chọn phương thức", "Nhập thông tin", "Xác nhận"];
-  // const { refetchCreateTerminalBulk } = useCreateTerminalBulk();
-  const handleSingleSubmit = async () => {
+  const { refetchCreateTerminalBulk } = useCreateTerminalBulk();
+  // const { refetchCreateTerminalSingle }= useCreateTerminalSingle();
+
+  const handleCreateTypeSubmit = async () => {
     setLoading(true);
     setMessage(null);
 
     try {
-      const response = await fetch("http://localhost:3000/terminals", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const result = await response.json();
-
-      if (result.resultCode === "00") {
-        setMessage({ type: "success", text: "Tạo terminal thành công!" });
-        setTimeout(() => {
-          onSuccess();
-          handleClose();
-        }, 1500);
-      } else {
-        setMessage({ type: "error", text: result.resultMessage });
-      }
-    } catch (error) {
-      setMessage({ type: "error", text: "Lỗi kết nối máy chủ" });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleBulkSubmit = async () => {
-    setLoading(true);
-    setMessage(null);
-
-    try {
-      // Parse bulk data
-      const terminals = bulkData
-        .split("\n")
-        .filter((line) => line.trim())
-        .map((line) => {
-          const [code, name, type = "DOMESTIC"] = line
-            .split(",")
-            .map((item) => item.trim());
-          return { code, name, type, airportId: "default-airport-id" };
-        });
+      // // Parse bulk data
+      // const terminals = bulkData
+      //   .split("\n")
+      //   .filter((line) => line.trim())
+      //   .map((line) => {
+      //     const [code, name, type = "DOMESTIC"] = line
+      //       .split(",")
+      //       .map((item) => item.trim());
+      //     return { code, name, type, airportId: "default-airport-id" };
+      //   });
+      const res = await refetchCreateTerminalBulk();
     } catch (error) {
       setMessage({ type: "error", text: "Lỗi kết nối máy chủ" });
     } finally {
@@ -116,13 +114,13 @@ const CreateTerminalDialog: React.FC<CreateTerminalDialogProps> = ({
   const handleClose = () => {
     setActiveStep(0);
     setMode("single");
-    setFormData({
-      code: "",
-      name: "",
-      description: "",
-      type: "DOMESTIC",
-      airportId: "",
-    });
+    // setFormData({
+    //   code: "",
+    //   name: "",
+    //   description: "",
+    //   type: "DOMESTIC",
+    //   airportId: "",
+    // });
     setBulkData("");
     setMessage(null);
     onClose();
@@ -170,19 +168,19 @@ const CreateTerminalDialog: React.FC<CreateTerminalDialogProps> = ({
                 <Box
                   sx={{
                     border:
-                      mode === "bulk" ? "2px solid #1976d2" : "1px solid #ddd",
+                      mode === "multi" ? "2px solid #1976d2" : "1px solid #ddd",
                     borderRadius: 2,
                     p: 3,
                     textAlign: "center",
                     cursor: "pointer",
-                    bgcolor: mode === "bulk" ? "#f0f7ff" : "white",
+                    bgcolor: mode === "multi" ? "#f0f7ff" : "white",
                     transition: "all 0.3s ease",
                     "&:hover": {
                       borderColor: "#1976d2",
                       bgcolor: "#f0f7ff",
                     },
                   }}
-                  onClick={() => setMode("bulk")}
+                  onClick={() => setMode("multi")}
                 >
                   <CloudUpload sx={{ fontSize: 48, color: "#1976d2", mb: 1 }} />
                   <Typography variant="h6" gutterBottom>
@@ -199,83 +197,84 @@ const CreateTerminalDialog: React.FC<CreateTerminalDialogProps> = ({
         );
 
       case 1:
-        if (mode === "single") {
-          return (
-            <Box sx={{ mt: 2 }}>
-              <Typography variant="h6" gutterBottom>
-                Thông tin terminal
-              </Typography>
-              <Grid container spacing={2}>
-                <Grid size={6}>
-                  <TextField
-                    fullWidth
-                    label="Mã terminal *"
-                    value={formData.code}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        code: e.target.value.toUpperCase(),
-                      })
-                    }
-                    placeholder="VD: T1, T2"
-                  />
+        return (
+          <Box sx={{ mt: 2 }}>
+            <Typography variant="h6" gutterBottom>
+              Thông tin terminal
+            </Typography>
+            {formData.map((item, index) => (
+              <Box
+                key={index}
+                sx={{ mb: 3, p: 2, border: "1px solid #ccc", borderRadius: 2 }}
+              >
+                <Grid container spacing={2}>
+                  <Grid size={6}>
+                    <TextField
+                      fullWidth
+                      label="Mã terminal *"
+                      value={item.code}
+                      onChange={(e) =>
+                        handleChange(
+                          index,
+                          "code",
+                          e.target.value.toUpperCase()
+                        )
+                      }
+                      placeholder="VD: T1, T2"
+                    />
+                  </Grid>
+                  <Grid size={6}>
+                    <TextField
+                      fullWidth
+                      label="Tên terminal *"
+                      value={item.name}
+                      onChange={(e) =>
+                        handleChange(index, "name", e.target.value)
+                      }
+                      placeholder="VD: Terminal Quốc tế"
+                    />
+                  </Grid>
+                  <Grid size={12}>
+                    <TextField
+                      fullWidth
+                      label="Mô tả"
+                      multiline
+                      rows={3}
+                      value={item.description}
+                      onChange={(e) =>
+                        handleChange(index, "description", e.target.value)
+                      }
+                      placeholder="Mô tả về terminal..."
+                    />
+                  </Grid>
                 </Grid>
-                <Grid size={6}>
-                  <TextField
-                    fullWidth
-                    label="Tên terminal *"
-                    value={formData.name}
-                    onChange={(e) =>
-                      setFormData({ ...formData, name: e.target.value })
-                    }
-                    placeholder="VD: Terminal Quốc tế"
-                  />
-                </Grid>
-                <Grid size={12}>
-                  <TextField
-                    fullWidth
-                    label="Mô tả"
-                    multiline
-                    rows={3}
-                    value={formData.description}
-                    onChange={(e) =>
-                      setFormData({ ...formData, description: e.target.value })
-                    }
-                    placeholder="Mô tả về terminal..."
-                  />
-                </Grid>
-              </Grid>
-            </Box>
-          );
-        } else {
-          return (
-            <Box sx={{ mt: 2 }}>
-              <Typography variant="h6" gutterBottom>
-                Nhập dữ liệu hàng loạt
-              </Typography>
-              <Alert severity="info" sx={{ mb: 2 }}>
-                Nhập dữ liệu theo định dạng: Mã, Tên, Loại (mỗi dòng một
-                terminal)
-                <br />
-                VD: T1,Terminal Quốc tế,INTERNATIONAL
-              </Alert>
-              <TextField
-                fullWidth
-                multiline
-                rows={8}
-                value={bulkData}
-                onChange={(e) => setBulkData(e.target.value)}
-                placeholder="T1, Terminal Quốc tế, INTERNATIONAL&#10;T2, Terminal Nội địa, DOMESTIC&#10;T3, Terminal Hạng thương gia, BUSINESS"
-              />
-              <Box sx={{ mt: 1 }}>
-                <Typography variant="body2" color="text.secondary">
-                  Số lượng terminal:{" "}
-                  {bulkData.split("\n").filter((line) => line.trim()).length}
-                </Typography>
+
+                {/* Nếu là multi thì có nút xóa từng form */}
+                {mode === "multi" && formData.length > 1 && (
+                  <Button
+                    color="error"
+                    variant="outlined"
+                    sx={{ mt: 1 }}
+                    onClick={() => handleRemoveGate(index)}
+                  >
+                    Xóa form này
+                  </Button>
+                )}
               </Box>
-            </Box>
-          );
-        }
+            ))}
+
+            {/* Nếu là multi thì hiển thị nút Thêm */}
+            {mode === "multi" && (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleAddGate}
+              >
+                + Thêm terminal
+              </Button>
+            )}
+          </Box>
+        );
 
       case 2:
         return (
@@ -284,30 +283,41 @@ const CreateTerminalDialog: React.FC<CreateTerminalDialogProps> = ({
               Xác nhận thông tin
             </Typography>
             {mode === "single" ? (
-              <Box sx={{ p: 2, bgcolor: "#f5f5f5", borderRadius: 1 }}>
-                <Typography>
-                  <strong>Mã:</strong> {formData.code}
-                </Typography>
-                <Typography>
-                  <strong>Tên:</strong> {formData.name}
-                </Typography>
-                <Typography>
-                  <strong>Mô tả:</strong> {formData.description || "Không có"}
-                </Typography>
-              </Box>
+              (() => {
+                const singleData = Array.isArray(formData)
+                  ? formData[0]
+                  : formData;
+                if (!singleData) return null;
+
+                return (
+                  <Box sx={{ p: 2, bgcolor: "#f5f5f5", borderRadius: 1 }}>
+                    <Typography>
+                      <strong>Mã:</strong> {singleData.code}
+                    </Typography>
+                    <Typography>
+                      <strong>Tên:</strong> {singleData.name}
+                    </Typography>
+                    <Typography>
+                      <strong>Mô tả:</strong>{" "}
+                      {singleData.description || "Không có"}
+                    </Typography>
+                  </Box>
+                );
+              })()
             ) : (
               <Box sx={{ maxHeight: 200, overflow: "auto" }}>
-                {bulkData
+                {/* {console.log(" MODE MULTI, bulkData:", bulkData)} */}
+                {(bulkData ?? "")
                   .split("\n")
                   .filter((line) => line.trim())
-                  .map((line, index) => (
-                    <Chip
-                      key={index}
-                      label={line}
-                      sx={{ m: 0.5 }}
-                      size="small"
-                    />
-                  ))}
+                  .map((line, index) => {
+                    console.log("➡️ line:", line);
+                    return (
+                      <Typography key={index} sx={{ m: 0.5 }}>
+                        {line.length}
+                      </Typography>
+                    );
+                  })}
               </Box>
             )}
           </Box>
@@ -363,15 +373,15 @@ const CreateTerminalDialog: React.FC<CreateTerminalDialogProps> = ({
             if (activeStep < steps.length - 1) {
               setActiveStep(activeStep + 1);
             } else {
-              mode === "single" ? handleSingleSubmit() : handleBulkSubmit();
+              // mode === "single" ? handleSingleSubmit() : handleBulkSubmit();
             }
           }}
-          disabled={
-            loading ||
-            (activeStep === 1 &&
-              mode === "single" &&
-              (!formData.code || !formData.name))
-          }
+          // disabled={
+          //   loading ||
+          //   (activeStep === 1 &&
+          //     mode === "single" &&
+          //     (!formData.map.code || !formData.name))
+          // }
           startIcon={loading ? <CircularProgress size={20} /> : null}
         >
           {loading

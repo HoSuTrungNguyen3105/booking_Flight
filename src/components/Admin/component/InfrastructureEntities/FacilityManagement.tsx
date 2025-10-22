@@ -222,11 +222,11 @@ const FacilityManagement: React.FC<FacilityManagementProps> = ({
           </Button>
         </Box>
 
-        {message && (
+        {/* {message && (
           <Alert severity={message.type} sx={{ mb: 2 }}>
             {message.text}
           </Alert>
-        )}
+        )} */}
 
         {!terminalId && (
           <Tabs
