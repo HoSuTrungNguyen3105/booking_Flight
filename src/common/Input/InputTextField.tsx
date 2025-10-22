@@ -63,6 +63,7 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
     const [showPassword, setShowPassword] = useState(false);
     const [hasCopy, setHasCopy] = useState(false);
     const [, copy] = useCopyToClipboard();
+    const [errorInIsEmail, setError] = useState<string | null>(null);
 
     const handleTogglePasswordVisibility = useCallback(() => {
       setShowPassword((prev) => !prev);
@@ -80,11 +81,25 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
       }
     }, [value, copy]);
 
-    // 🔹 Check định dạng email
     const isEmailValid = useCallback((email: string) => {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       return emailRegex.test(email);
     }, []);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newValue = e.target.value;
+      onChange(newValue);
+
+      if (isEmail) {
+        if (newValue === "") {
+          setError(null);
+        } else if (!isEmailValid(newValue)) {
+          setError("Email không hợp lệ");
+        } else {
+          setError(null);
+        }
+      }
+    };
 
     const readonlyStyles: SxProps = {
       caretColor: "transparent",
@@ -121,14 +136,9 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
         type={actualInputType}
         value={value}
         inputRef={ref}
-        onChange={(e) => {
-          const newValue = e.target.value;
-          if (isEmail && !isEmailValid(newValue)) {
-          }
-          onChange(newValue);
-        }}
+        onChange={handleChange}
         onKeyDown={onKeyDown}
-        error={error}
+        error={isEmail ? !!errorInIsEmail || error : error}
         disabled={disabled}
         sx={mergedSx}
         {...restProps}

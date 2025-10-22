@@ -12,7 +12,7 @@ import type { AdminUpdateUserForm } from "../../utils/type";
 import SendEmailToUsers from "../Auth/SendEmailToUsers";
 import TableSection from "../../common/CustomRender/TableSection";
 import type { GridRowId } from "@mui/x-data-grid";
-import BatchUpdateEmployeeNo from "../User/Security/BatchUpdateEmployeeNo";
+import BatchUpdateEmployeeNo from "./BatchUpdateEmployeeNo";
 import type { BatchEmployeeNoReq } from "../Api/usePostApi";
 import ConfirmDeleteModal from "../Common/ConfirmDeleteModal";
 import DeleteUserModal from "../../common/Setting/Component/DeleteUserModal";

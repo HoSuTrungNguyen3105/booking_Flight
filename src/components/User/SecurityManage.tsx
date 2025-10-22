@@ -8,6 +8,7 @@ import type { GridRowDef } from "../../common/DataGrid";
 import { useFindAllPassenger } from "../Api/useGetApi";
 import DataSecure from "../../common/Setting/DataSecure";
 import type { ISearchQuery } from "../../common/CustomRender/SearchBar";
+import ManageMyInfo from "../Profile/ManageMyInfo";
 
 export const columnsPassenger: GridColDef[] = [
   { field: "fullName", headerName: "Họ và tên", flex: 1 },
@@ -90,11 +91,11 @@ const SecurityManage = () => {
         />
       ),
     },
-    // {
-    //   label: "inspectionSection",
-    //   value: "auto",
-    //   content: <Typography></Typography>,
-    // },
+    {
+      label: "manage employee info",
+      value: "employee",
+      content: <ManageMyInfo />,
+    },
   ];
 
   if (getValuePassenger)

@@ -7,6 +7,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useUpdateUserInfo } from "../../components/Api/usePostApi";
 import { UserRole, type UserData } from "../../utils/type";
 import DataAccessPermissionSection from "./DataAccessPermissionSection";
+import DeleteAccount from "../../components/Auth/DeleteAccount";
 
 export type UserDataToUpdate = Pick<
   UserData,
@@ -147,10 +148,13 @@ const ManageMyInformation = () => {
           <DataAccessPermissionSection />
         </>
       ) : (
-        <TransferAuthoritySection
-          myInfo={transferToMyInfo}
-          setOpenModal={() => setOpenConfirmModal(true)}
-        />
+        <>
+          <TransferAuthoritySection
+            myInfo={transferToMyInfo}
+            setOpenModal={() => setOpenConfirmModal(true)}
+          />
+          <DeleteAccount />
+        </>
       )}
 
       {renderButtonSection()}

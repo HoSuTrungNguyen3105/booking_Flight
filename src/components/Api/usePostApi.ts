@@ -947,6 +947,25 @@ export const useDeleteAttendance = () => {
     loadingDeleteAttendance: loading,
   };
 };
+// export const useDeleteMyAccount = ( id: number , token: string) => {
+//  const { refetch, loading, data } = useFetch({
+//     url: `/user/deleteMyAccount/${userId}`,
+//     config: postMethod,
+//     autoFetch: false,
+//   });
+// };
+
+export const useDeleteMyAccount = () => {
+  const { refetch, loading } = useFetch<ResponseMessage, { id: number }>({
+    url: "/sys/users/deleteMyAccount",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchDeleteMyAccount: refetch,
+    loadingDeleteMyAccount: loading,
+  };
+};
 
 export const useChangePassword = () => {
   const { data: changePassword, refetch: refetchChangePassword } = useFetch<

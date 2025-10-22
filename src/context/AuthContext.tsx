@@ -147,29 +147,57 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const fetchMyInfo = useCallback(
-    async (id?: number) => {
-      if (!id) return;
-      try {
-        const requests = await refetchGetMyInfo(id);
+  const fetchMyInfo = async (id?: number) => {
+    if (!id) return;
+    try {
+      const requests = await refetchGetMyInfo(id);
 
-        if (requests?.resultCode === "00" && requests.data) {
-          setUser(requests.data);
-          setIsAuthenticated(true);
-          await refetchUpdateUserRank({ userId: id });
-        } else {
-          setIsAuthenticated(false);
-          setUser(null);
-        }
-
-        return requests;
-      } catch (err) {
-        //setIsAuthenticated(false);
-        return undefined;
+      if (requests?.resultCode === "00" && requests.data) {
+        setUser(requests.data);
+        setIsAuthenticated(true);
+        await refetchUpdateUserRank({ userId: id });
+      } else {
+        setIsAuthenticated(false);
+        setUser(null);
       }
-    },
-    [refetchUpdateUserRank, refetchGetMyInfo]
-  );
+
+      return requests;
+    } catch (err) {
+      return undefined;
+    }
+  };
+
+  // useEffect(() => {
+  //   const savedUserId = localStorage.getItem("userId");
+  //   if (savedUserId) {
+  //     const id = Number(savedUserId);
+  //     fetchMyInfo(id);
+  //   }
+  // }, [fetchMyInfo]);
+
+  // const fetchMyInfo = useCallback(
+  //   async (id?: number) => {
+  //     if (!id) return;
+  //     try {
+  //       const requests = await refetchGetMyInfo(id);
+
+  //       if (requests?.resultCode === "00" && requests.data) {
+  //         setUser(requests.data);
+  //         setIsAuthenticated(true);
+  //         await refetchUpdateUserRank({ userId: id });
+  //       } else {
+  //         setIsAuthenticated(false);
+  //         setUser(null);
+  //       }
+
+  //       return requests;
+  //     } catch (err) {
+  //       //setIsAuthenticated(false);
+  //       return undefined;
+  //     }
+  //   },
+  //   [refetchUpdateUserRank, refetchGetMyInfo]
+  // );
 
   const logout = () => {
     setIsAuthenticated(false);

@@ -472,7 +472,7 @@ const TerminalContainer: React.FC = () => {
                   component="h2"
                   color={getTerminalColor(terminal.type)}
                 >
-                  {terminal.name} ({terminal.code}) - {terminal.airport.name}
+                  {terminal.name} {terminal.code} - {terminal.airport.name}
                 </Typography>
               </Box>
 
