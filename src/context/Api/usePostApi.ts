@@ -21,7 +21,6 @@ import {
   type MealResponse,
   type FlightAircraftResponse,
   type MFAAuthResponse,
-  type TerminalResponse,
   type FlightBookingTicketDetailApiResponse,
   type PassengerResponseMessage,
   type Aircraft,
@@ -31,36 +30,27 @@ import {
   type RequestSendEmailResponse,
   type UpdateAirportReq,
   type CreateMealDto,
+  type CreateTerminalDto,
+  type UserIdResponse,
+  type EmailUserProps,
+  type CreateGateProps,
+  type ChangePasswordInProfile,
+  type ResetPasswordByMfa,
+  type SeatUpdateProps,
+  type CheckMfaProps,
+  type ChangePasswordProps,
 } from "../../utils/type.ts";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
-import { useFetch } from "../../context/use[custom]/useFetch.ts";
-import type { FlightFormData } from "../Admin/component/Flight/FlightManagementModal.tsx";
-import type { SearchFlightDto } from "../Admin/component/Flight/Search_layout.tsx";
-import { useSecureFetch } from "../../context/use[custom]/useSecureFetch.ts";
-// import type { CreateMealDto } from "../Admin/component/BulkMealCreator.tsx";
-// import type {
-//   GeneratePayroll,
-//   Payroll,
-// } from "../../common/Sample/PayrollManagement.tsx";
-import type { UserWithRelationsData } from "../Sample/type.ts";
+import { useFetch } from "../use[custom]/useFetch.ts";
+import type { FlightFormData } from "../../components/Admin/component/Flight/FlightManagementModal.tsx";
+import type { SearchFlightDto } from "../../components/Admin/component/Flight/Search_layout.tsx";
+import { useSecureFetch } from "../use[custom]/useSecureFetch.ts";
 import type { UserFormConfig } from "../../common/Setting/hooks/useDataSection.ts";
-import type { GeneratePayroll } from "../Admin/component/Payroll/PayrollManagement.tsx";
+import type { GeneratePayroll } from "../../components/Admin/component/Payroll/PayrollManagement.tsx";
 
 const postMethod = {
   method: MethodType.POST,
   headers: { "Content-Type": "application/json" },
-};
-const getMethod = {
-  method: MethodType.GET,
-  headers: { "Content-Type": "application/json" },
-};
-const deleteMethod = {
-  method: MethodType.DELETE,
-  headers: { "Content-Type": "application/json" },
-};
-
-type FlightId = {
-  id?: number;
 };
 
 export const mapToDropdown = (
@@ -146,29 +136,6 @@ export const useGetFlightNo = () => {
     refetchGetFlightNoData,
   };
 };
-export type TerminalType = "INTERNATIONAL" | "DOMESTIC" | "BUSINESS";
-
-export type CreateTerminalDto = {
-  code: string;
-  name: string;
-  description?: string;
-  type: TerminalType;
-  airportId: string;
-};
-
-// export const useCreateTerminalSingle = () => {
-//   const { refetch: refetchCreateTerminalSingle } = useFetch<
-//     ResponseMessage,
-//     CreateTerminalDto
-//   >({
-//     url: "/sys/flights/createTerminal",
-//     autoFetch: false,
-//     config: postMethod,
-//   });
-//   return {
-//     refetchCreateTerminalSingle,
-//   };
-// };
 
 export const useCreateTerminalBulk = () => {
   const { refetch: refetchCreateTerminalBulk } = useFetch<
@@ -230,23 +197,6 @@ export const useSearchFlight = () => {
   };
 };
 
-export const useFlightById = ({ id }: FlightId) => {
-  const isValid = !!id;
-  const { data: fetchFlightId, refetch: refetchFlightId } = useFetch<
-    FlightDetailApiResponse,
-    FlightId
-  >({
-    url: isValid ? `/sys/flights/flights/${id}` : "",
-    params: {},
-    autoFetch: false,
-    config: getMethod,
-  });
-  return {
-    fetchFlightId,
-    refetchFlightId,
-  };
-};
-
 export const useFlightUpdate = ({ id }: ReqUserIDProps) => {
   const { data: updateFlightId, refetch: refetchUpdateFlightId } = useFetch<
     FlightDetailApiResponse,
@@ -279,26 +229,6 @@ export const useFlightUpdate = ({ id }: ReqUserIDProps) => {
 //   BUSINESS: "BUSINESS",
 //   ECONOMY: "ECONOMY",
 // };
-export type SeatTypeValue = "ECONOMY" | "BUSINESS" | "FIRST" | "VIP";
-
-export type SeatPosition = "WINDOW" | "MIDDLE" | "AISLE";
-
-export interface SeatUpdateProps {
-  seatIds: number[];
-  data: {
-    type?: SeatTypeValue;
-    price?: number;
-    isBooked?: boolean;
-    isAvailable?: boolean;
-    isExtraLegroom?: boolean;
-    isExitRow?: boolean;
-    isHandicapAccessible?: boolean;
-    isNearLavatory?: boolean;
-    isUpperDeck?: boolean;
-    isWing?: boolean;
-    note?: string;
-  };
-}
 
 export const useSeatUpdateByIds = () => {
   const { refetch: refetchUpdateSeatByIds } = useFetch<
@@ -416,26 +346,27 @@ export const useDeleteRequestUnlockById = () => {
   };
 };
 
-export const useFlightDelete = () => {
-  const { data: deleteFlightId, refetch: refetchDeleteFlight } = useFetch<
-    FlightDetailApiResponse,
-    FlightId
-  >({
-    url: "",
-    params: {},
-    defaultValue: { resultCode: "", resultMessage: "" },
-    autoFetch: false,
-    config: deleteMethod,
-  });
-  const deleteFlightById = async ({ id }: FlightId) => {
-    const res = await refetchDeleteFlight({}, `/sys/flights/flights/${id}`);
-    return res;
-  };
-  return {
-    deleteFlightId,
-    deleteFlightById,
-  };
-};
+// export const useFlightDelete = () => {
+//   const { data: deleteFlightId, refetch: refetchDeleteFlight } = useFetch<
+//     FlightDetailApiResponse,
+//     FlightId
+//   >({
+//     url: "",
+//     params: {},
+//     defaultValue: { resultCode: "", resultMessage: "" },
+//     autoFetch: false,
+//     config: deleteMethod,
+//   });
+//   const deleteFlightById = async ({ id }: FlightId) => {
+//     const res = await refetchDeleteFlight({}, `/sys/flights/flights/${id}`);
+//     return res;
+//   };
+//   return {
+//     deleteFlightId,
+//     deleteFlightById,
+//   };
+// };
+
 export const useAirCraftList = (craftParams: AvailableAircraft) => {
   const { data: aircraftList, refetch: refetchAircraftList } = useFetch<
     AircraftList,
@@ -458,21 +389,23 @@ export const useAirCraftList = (craftParams: AvailableAircraft) => {
     refetchAircraftList,
   };
 };
-export const useFlightList = () => {
-  const { data: flightList, refetch: refetchFlightList } = useFetch<
-    FlightListApiResponse,
-    null
-  >({
-    url: "/sys/flights",
-    defaultValue: { resultCode: "", resultMessage: "" },
-    autoFetch: true,
-    config: getMethod,
-  });
-  return {
-    flightList,
-    refetchFlightList,
-  };
-};
+
+// export const useFlightList = () => {
+//   const { data: flightList, refetch: refetchFlightList } = useFetch<
+//     FlightListApiResponse,
+//     null
+//   >({
+//     url: "/sys/flights",
+//     defaultValue: { resultCode: "", resultMessage: "" },
+//     autoFetch: true,
+//     config: getMethod,
+//   });
+//   return {
+//     flightList,
+//     refetchFlightList,
+//   };
+// };
+
 interface UpdateUserRankProps {
   userId: number;
 }
@@ -525,19 +458,6 @@ export const useSeatCreate = () => {
   return {
     refetchSeatCreate,
     loadingCreateSeat,
-  };
-};
-
-export const useGetSeatByFlightId = ({ id }: ReqUserIDProps) => {
-  const { refetch: refetchGetSeatByFlightId, data: dataGetSeatByFlightId } =
-    useFetch<DetailResponseMessage<Seat>, void>({
-      url: `/sys/seats/getFlightSeat/${id}`,
-      autoFetch: !!id,
-      config: getMethod,
-    });
-  return {
-    dataGetSeatByFlightId,
-    refetchGetSeatByFlightId,
   };
 };
 
@@ -713,47 +633,6 @@ export const useResetPassword = () => {
   };
 };
 
-export type CreateGateProps = {
-  code: string;
-  terminalId: string;
-  status: string;
-};
-
-export const useGetTerminalData = () => {
-  const { data: getTerminalData, refetch: refetchGetTerminalData } = useFetch<
-    TerminalResponse,
-    void
-  >({
-    url: "/sys/flights/terminal",
-    autoFetch: true,
-    config: getMethod,
-  });
-  return {
-    getTerminalData,
-    refetchGetTerminalData,
-  };
-};
-
-interface ChangePassword {
-  userId: number;
-  newPassword: string;
-  confirmPassword: string;
-}
-
-export type ChangePasswordInProfile = Omit<ChangePassword, "currentPassword">;
-
-interface ResetPasswordByMfa {
-  email: string;
-  mfaCode: string;
-}
-
-interface EmailUserProps {
-  email: string;
-}
-interface UserIdResponse {
-  userId: number;
-}
-
 export const getUserIdByEmail = () => {
   const { refetch: refetchUserEmailData } = useFetch<
     DetailResponseMessage<UserIdResponse>,
@@ -825,32 +704,10 @@ export const useApproveOrRejectTransfer = () => {
   };
 };
 
-type GetIDToDeleteData = {
-  id: number | string;
-};
-export const useGetUserWithRelations = ({ id }: GetIDToDeleteData) => {
-  const {
-    refetch: refetchGetUserWithRelations,
-    data: dataGetUserWithRelations,
-  } = useFetch<DetailResponseMessage<UserWithRelationsData>, void>({
-    url: `/auth/getUserWithRelations/${id as string}`,
-    autoFetch: !!id,
-    config: getMethod,
-  });
-  return {
-    dataGetUserWithRelations,
-    refetchGetUserWithRelations,
-  };
-};
-
-type DeleteUserProps = {
-  id: number;
-};
-
 export const useDeleteUserById = () => {
   const { refetch: refetchDeleteUser } = useFetch<
     ResponseMessage,
-    DeleteUserProps
+    ReqUserIDProps
   >({
     url: "/sys/users/deleteUser",
     autoFetch: false,
@@ -962,6 +819,7 @@ export const useDeleteAttendance = () => {
     loadingDeleteAttendance: loading,
   };
 };
+
 // export const useDeleteMyAccount = ( id: number , token: string) => {
 //  const { refetch, loading, data } = useFetch({
 //     url: `/user/deleteMyAccount/${userId}`,
@@ -985,7 +843,7 @@ export const useDeleteMyAccount = () => {
 export const useChangePassword = () => {
   const { data: changePassword, refetch: refetchChangePassword } = useFetch<
     ResponseMessage,
-    ChangePassword
+    ChangePasswordProps
   >({
     url: "/auth/change-password",
     autoFetch: false,
@@ -1082,10 +940,6 @@ export const useResetPasswordByMfa = () => {
   return {
     refetchChangePassword,
   };
-};
-
-type CheckMfaProps = {
-  email: string;
 };
 
 export const useCheckMfaAvailable = () => {
@@ -1314,23 +1168,6 @@ export const useDeleteLeaveRequest = () => {
     dataDeleteLeaveRequest,
     refetchDeleteLeaveRequest,
     loadingDeleteLeaveRequest,
-  };
-};
-
-export const useGetLeaveRequest = () => {
-  const {
-    data: dataGetLeaveRequest,
-    refetch: refetchGetLeaveRequest,
-    loading: loadingGetLeaveRequest,
-  } = useFetch<DetailResponseMessage<LeaveRequest>, UserUpdateProps>({
-    url: "/sys/users/leave-requests/all",
-    autoFetch: true,
-    config: getMethod,
-  });
-  return {
-    dataGetLeaveRequest,
-    loadingGetLeaveRequest,
-    refetchGetLeaveRequest,
   };
 };
 

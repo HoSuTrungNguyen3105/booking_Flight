@@ -42,7 +42,7 @@ const AccountSettings = () => {
         Change Email
       </Typography>
       <Stack direction="row" spacing={2} alignItems="center">
-        <InputTextField value={email} onChange={(e) => setEmail(e)} />
+        <InputTextField isEmail value={email} onChange={(e) => setEmail(e)} />
         <Button
           variant="contained"
           onClick={handleChangeEmail}
@@ -55,7 +55,7 @@ const AccountSettings = () => {
       <Divider sx={{ my: 4 }} />
 
       {/* Change Username */}
-      <Typography variant="h6" fontWeight="bold" gutterBottom>
+      {/* <Typography variant="h6" fontWeight="bold" gutterBottom>
         Change Username
       </Typography>
       <Typography variant="body2" color="text.secondary" mb={1}>
@@ -71,12 +71,12 @@ const AccountSettings = () => {
         >
           Submit
         </Button>
-      </Stack>
+      </Stack> */}
 
       <Divider sx={{ my: 4 }} />
 
       {/* Delete Account */}
-      <Typography variant="h6" fontWeight="bold" color="error" gutterBottom>
+      {/* <Typography variant="h6" fontWeight="bold" color="error" gutterBottom>
         Delete Account
       </Typography>
       <Alert severity="error" sx={{ mb: 2 }}>
@@ -86,7 +86,7 @@ const AccountSettings = () => {
       </Alert>
       <Button variant="contained" color="error" onClick={handleDeleteAccount}>
         Delete Account
-      </Button>
+      </Button> */}
     </Box>
   );
 };

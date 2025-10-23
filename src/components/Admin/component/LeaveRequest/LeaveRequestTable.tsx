@@ -1,7 +1,6 @@
 import { useState, useCallback, memo } from "react";
 import { Box, Typography, Chip, Button } from "@mui/material";
 import { type GridColDef, type GridRenderCellParams } from "@mui/x-data-grid";
-import { useGetLeaveRequest } from "../../../Api/usePostApi";
 import { DateFormatEnum, formatDate } from "../../../../hooks/format";
 import CustomPopover from "../../../../common/Button/Popover";
 import RequestLeaveActionModal from "./RequestLeaveActionModal";
@@ -10,6 +9,7 @@ import CreateLeaveRequestForm from "./CreateLeaveRequestForm";
 import { useAuth } from "../../../../context/AuthContext";
 import theme from "../../../../scss/theme";
 import TableSection from "../../../../common/CustomRender/TableSection";
+import { useGetLeaveRequest } from "../../../../context/Api/useGetApi";
 
 const LeaveRequestTable = () => {
   const { user } = useAuth();

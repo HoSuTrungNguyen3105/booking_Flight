@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { useToast } from "../../context/ToastContext";
 import { Link } from "react-router-dom";
 import InputTextField from "../../common/Input/InputTextField";
-import { useCheckMfaAvailable } from "../Api/usePostApi";
+import { useCheckMfaAvailable } from "../../context/Api/usePostApi";
 
 interface FormDataType {
   email: string;

@@ -4,9 +4,9 @@ import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { DateFormatEnum, formatDate } from "../../../hooks/format";
 import TableSection from "../../CustomRender/TableSection";
 import type { TypeStatus } from "../../../utils/type";
-import { usefindAllTransferRequests } from "../../../components/Api/useGetApi";
+import { usefindAllTransferRequests } from "../../../context/Api/useGetApi";
 import { CheckCircle, Cancel } from "@mui/icons-material";
-import { useApproveOrRejectTransfer } from "../../../components/Api/usePostApi";
+import { useApproveOrRejectTransfer } from "../../../context/Api/usePostApi";
 import { useToast } from "../../../context/ToastContext";
 import DialogConfirm from "../../Modal/DialogConfirm";
 

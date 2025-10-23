@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from "react";
-import { useGetTerminalData } from "../../../../Api/usePostApi";
 import type {
   Facility,
   FacilityType,
@@ -8,7 +7,10 @@ import type {
 } from "../../../../../utils/type";
 import theme from "../../../../../scss/theme";
 import type { UpdateGateProps } from "../TerminalContainer";
-import { useFindTerminalIDStatuses } from "../../../../Api/useGetApi";
+import {
+  useFindTerminalIDStatuses,
+  useGetTerminalData,
+} from "../../../../../context/Api/useGetApi";
 
 export const useTerminalContainer = () => {
   const { dataTerminalIDStatuses } = useFindTerminalIDStatuses();

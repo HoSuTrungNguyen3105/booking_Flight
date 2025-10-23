@@ -1,5 +1,6 @@
 export const jp = {
   translation: {
+    system_name: "航空管理システム",
     welcome: "Reactとreact-i18nextへようこそ",
     title1: "チェックボックスの状態とカラーバリエーション",
     title: "チェックボックスの状態とカラーバリエーション",
@@ -51,6 +52,10 @@ export const jp = {
     data_access_title: "データアクセス権限",
     logout: "Dang xuat",
     my_infor: "Thong tin cua toi",
+    title_mfa: "多要素認証 (MFA)",
+    not_auth_mfa:
+      "あなたのアカウントはMFAで保護されていません。セキュリティを強化するために有効にしてください。",
+    has_auth_mfa: "あなたのアカウントはすでにMFAで保護されています。",
     data_access_description:
       "管理者（Admin）が確認および管理できるサービスです。",
     myInfo: "マイ情報管理",

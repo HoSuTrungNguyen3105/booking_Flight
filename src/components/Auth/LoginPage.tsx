@@ -13,7 +13,7 @@ import AccountYn from "./AccountYn";
 import Registration from "./Registration";
 import ForgetPassword from "./ForgetPassword";
 import { useToast } from "../../context/ToastContext";
-import { useCheckMfaAvailable } from "../Api/usePostApi";
+import { useCheckMfaAvailable } from "../../context/Api/usePostApi";
 
 interface ILoginForm {
   email: string;

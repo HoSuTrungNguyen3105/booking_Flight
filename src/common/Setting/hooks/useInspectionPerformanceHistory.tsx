@@ -4,7 +4,7 @@ import type { GridRowDef } from "../../DataGrid";
 import { UserRole, type UserData } from "../../../utils/type";
 import { useAuth } from "../../../context/AuthContext";
 import theme from "../../../scss/theme";
-import { useGetUserList } from "../../../components/Api/useGetApi";
+import { useGetUserList } from "../../../context/Api/useGetApi";
 import { DateFormatEnum, formatDate } from "../../../hooks/format";
 import SelectDropdown from "../../Dropdown/SelectDropdown";
 import { Box, Typography } from "@mui/material";

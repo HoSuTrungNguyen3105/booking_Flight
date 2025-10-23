@@ -28,7 +28,7 @@ import SelectDropdown, {
   type ActionType,
 } from "../../../../common/Dropdown/SelectDropdown";
 import InputTextField from "../../../../common/Input/InputTextField";
-import { useFindAllMealTypes } from "../../../Api/useGetApi";
+import { useFindAllMealTypes } from "../../../../context/Api/useGetApi";
 import InputNumber from "../../../../common/Input/InputNumber";
 
 interface MealFormProps {

@@ -1,4 +1,4 @@
-import * as React from "react";
+// import * as React from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -23,26 +23,42 @@ import { GridMenuIcon } from "@mui/x-data-grid";
 import CustomPopover from "../Button/Popover";
 import { AccountCircle, Login } from "@mui/icons-material";
 import LanguageButton from "../../components/Common/ChangeLanguageSelect";
+import { useTranslation } from "react-i18next";
+import { useCallback, useEffect, useState } from "react";
 
 export const Header = () => {
-  const navItems = ["About", "Package", "Contact"];
-  const { isAuthenticated } = useAuth();
+  const [time, setTime] = useState(new Date());
+  const { isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
+  const now = time.toLocaleTimeString();
+  const today = time.toLocaleDateString("vi-VN", {
+    weekday: "long",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-  const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const handleDrawerToggle = () => {
     setDrawerOpen(!drawerOpen);
   };
 
-  const drawer = React.useCallback(
+  const [username, setUsername] = useState<string | null>(null);
+  useEffect(() => {
+    setUsername(user?.name ?? null);
+  }, []);
+
+  const drawer = useCallback(
     () => (
       <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
         <Typography variant="h6" sx={{ my: 2 }}>
           HSTN
         </Typography>
-        <List>
+        {/* <List>
           {navItems.map((item) => (
             <ListItem key={item} disablePadding>
               <ListItemButton sx={{ textAlign: "center" }}>
@@ -50,7 +66,7 @@ export const Header = () => {
               </ListItemButton>
             </ListItem>
           ))}
-        </List>
+        </List> */}
       </Box>
     ),
     []
@@ -104,7 +120,7 @@ export const Header = () => {
                 variant="caption"
                 noWrap
               >
-                한글시스템명
+                {t("system_name")}
               </Typography>
             </Box>
             <Box

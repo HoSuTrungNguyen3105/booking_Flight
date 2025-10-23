@@ -5,7 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 import ChipInput from "../../common/ChipInput";
 import InputTextField from "../../common/Input/InputTextField";
 import InputTextArea from "../../common/Input/InputTextArea";
-import { useSendMail } from "../Api/usePostApi";
+import { useSendMail } from "../../context/Api/usePostApi";
 import { useToast } from "../../context/ToastContext";
 import { EmailAttachmentUploader } from "../../common/FileUploader/FileUploadButton";
 

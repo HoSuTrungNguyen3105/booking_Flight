@@ -7,8 +7,8 @@ import { useToast } from "../../../../context/ToastContext";
 import {
   useCreateAircraftBatchFlight,
   useDeleteAircraftFlight,
-} from "../../../Api/usePostApi";
-import { useGetAircraftCode } from "../../../Api/useGetApi";
+} from "../../../../context/Api/usePostApi";
+import { useGetAircraftCode } from "../../../../context/Api/useGetApi";
 import InputTextField from "../../../../common/Input/InputTextField";
 import DialogConfirm from "../../../../common/Modal/DialogConfirm";
 

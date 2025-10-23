@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import type { UserData } from "../../../utils/type";
 import { useToast } from "../../../context/ToastContext";
-import { useAccountLock } from "../../../components/Api/usePostApi";
+import { useAccountLock } from "../../../context/Api/usePostApi";
 import { useTranslation } from "react-i18next";
 
 interface ILockAccountModalProps {

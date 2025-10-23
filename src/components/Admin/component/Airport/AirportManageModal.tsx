@@ -4,7 +4,7 @@ import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
 import BaseModal from "../../../../common/Modal/BaseModal";
 import type { Airport, CreateAirportReq } from "../../../../utils/type";
 import InputTextField from "../../../../common/Input/InputTextField";
-import { useCreateAirport } from "../../../Api/usePostApi";
+import { useCreateAirport } from "../../../../context/Api/usePostApi";
 import { useToast } from "../../../../context/ToastContext";
 
 interface IRequestLeaveActionModalProps {

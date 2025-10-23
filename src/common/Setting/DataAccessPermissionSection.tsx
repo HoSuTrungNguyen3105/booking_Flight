@@ -12,11 +12,14 @@ import { useTranslation } from "react-i18next";
 
 const DataAccessPermissionSection = () => {
   const { t } = useTranslation();
-
   const serviceTypes = [
-    { label: "Dữ liệu chuyến bay", color: "#0D47A1" },
-    { label: "Dữ liệu sân bay", color: "#D32F2F" },
-    { label: "Dữ liệu máy bay", color: "#2E7D32" },
+    { label: "Passenger Data", color: "#6A1B9A" },
+    { label: "Flight Data", color: "#0D47A1" },
+    { label: "Airport Data", color: "#D32F2F" },
+    { label: "Aircraft Data", color: "#2E7D32" },
+    { label: "Ticket Data", color: "#00838F" },
+    // { label: "Maintenance Data", color: "#5D4037" },
+    { label: "Schedule Data", color: "#9E9D24" },
   ];
 
   return (

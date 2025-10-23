@@ -1,5 +1,6 @@
 export const vi = {
   translation: {
+    system_name: "Hệ thống Quản lý Hàng không",
     welcome: "Chào mừng đến với React và react-i18next",
     title1: "Trạng thái & Biến thể màu của Checkbox",
     description1:
@@ -28,6 +29,10 @@ export const vi = {
     filledFocused: "Đã nhập - Đang chọn",
     filled: "Đã nhập",
     logout: "Dang xuat",
+    title_mfa: "Xác thực đa yếu tố (MFA)",
+    not_auth_mfa:
+      "Tài khoản của bạn chưa bật MFA. Hãy kích hoạt để tăng cường bảo mật.",
+    has_auth_mfa: "Tài khoản của bạn đã được bảo vệ bằng MFA.",
     my_infor: "Thong tin cua toi",
     disabled: "Vô hiệu hóa",
     readonly: "Chỉ đọc",

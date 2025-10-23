@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { UserRole, type UserCreateProps } from "../../../utils/type";
-import { useRandomPassword } from "../../../components/Api/useGetApi";
+import { useRandomPassword } from "../../../context/Api/useGetApi";
 import { useDataSection, type UserFormConfig } from "./useDataSection";
-import { useCreateUserByAdmin } from "../../../components/Api/usePostApi";
+import { useCreateUserByAdmin } from "../../../context/Api/usePostApi";
 import { useToast } from "../../../context/ToastContext";
 
 interface IUseUpdateUserProps {

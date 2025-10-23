@@ -11,7 +11,7 @@ import {
   Stack,
 } from "@mui/material";
 import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
-import { useGetAllInfoFlightByIDData } from "../../../Api/useGetApi";
+import { useGetAllInfoFlightByIDData } from "../../../../context/Api/useGetApi";
 import DetailSection, {
   type IDetailItem,
 } from "../../../../common/DetailSection";

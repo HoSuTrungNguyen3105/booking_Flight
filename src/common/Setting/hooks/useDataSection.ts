@@ -7,7 +7,7 @@ import {
   useFindAllEmployeeStatuses,
   useFindAllPositions,
   useFindAllRoles,
-} from "../../../components/Api/useGetApi";
+} from "../../../context/Api/useGetApi";
 
 export type UserFormConfig = {
   id?: number;

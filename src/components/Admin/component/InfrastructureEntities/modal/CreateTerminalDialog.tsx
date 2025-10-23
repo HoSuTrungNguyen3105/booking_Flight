@@ -22,7 +22,7 @@ import {
   useCreateTerminalBulk,
   // useCreateTerminalSingle,
   type CreateTerminalDto,
-} from "../../../../Api/usePostApi";
+} from "../../../../../context/Api/usePostApi";
 
 interface CreateTerminalDialogProps {
   open: boolean;

@@ -2,7 +2,7 @@ import { memo, useState } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import { useToast } from "../../context/ToastContext";
 import InputTextField from "../../common/Input/InputTextField";
-import { useForgotPassword } from "../Api/usePostApi";
+import { useForgotPassword } from "../../context/Api/usePostApi";
 
 const ForgetPassword = ({ onClose }: { onClose: () => void }) => {
   const toast = useToast();

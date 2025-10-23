@@ -12,8 +12,8 @@ import { Add as AddIcon } from "@mui/icons-material";
 import {
   useGetPayrollsById,
   useGetUserIdAndNameToDropdownGeneratePayroll,
-} from "../../../../Api/useGetApi";
-import { useGeneratePayroll } from "../../../../Api/usePostApi";
+} from "../../../../../context/Api/useGetApi";
+import { useGeneratePayroll } from "../../../../../context/Api/usePostApi";
 import SelectDropdown from "../../../../../common/Dropdown/SelectDropdown";
 import FormRow from "../../../../../common/CustomRender/FormRow";
 import LocalAtmIcon from "@mui/icons-material/LocalAtm";

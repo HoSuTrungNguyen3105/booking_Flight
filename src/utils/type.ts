@@ -1,5 +1,5 @@
 import type { GridRowDef } from "../common/DataGrid";
-import type { SeatTypeValue } from "../components/Api/usePostApi";
+// import type { SeatTypeValue } from "../context/Api/usePostApi";
 
 export enum MethodType {
   DELETE = "DELETE",
@@ -12,6 +12,38 @@ export enum MethodType {
 export interface ReqUserIDProps {
   id?: number;
 }
+
+export type GetIDToDeleteData = {
+  id: number | string;
+};
+
+export type CheckMfaProps = {
+  email: string;
+};
+
+export type SeatTypeValue = "ECONOMY" | "BUSINESS" | "FIRST" | "VIP";
+
+export type SeatPosition = "WINDOW" | "MIDDLE" | "AISLE";
+
+export interface SeatUpdateProps {
+  seatIds: number[];
+  data: {
+    type?: SeatTypeValue;
+    price?: number;
+    isBooked?: boolean;
+    isAvailable?: boolean;
+    isExtraLegroom?: boolean;
+    isExitRow?: boolean;
+    isHandicapAccessible?: boolean;
+    isNearLavatory?: boolean;
+    isUpperDeck?: boolean;
+    isWing?: boolean;
+    note?: string;
+  };
+}
+// export type DeleteUserProps = {
+//   id: number;
+// };
 
 export type CodeItem = {
   code: string;
@@ -695,6 +727,51 @@ export interface Passenger {
   isEmailVerified: "Y" | "N";
   lastLoginDate?: number;
   bookings: Booking[];
+}
+
+export type TerminalType = "INTERNATIONAL" | "DOMESTIC" | "BUSINESS";
+
+export type CreateTerminalDto = {
+  code: string;
+  name: string;
+  description?: string;
+  type: TerminalType;
+  airportId: string;
+};
+
+export type CreateGateProps = {
+  code: string;
+  terminalId: string;
+  status: string;
+};
+
+export interface ChangePasswordProps {
+  userId: number;
+  newPassword: string;
+  confirmPassword: string;
+}
+
+// interface ChangePassword {
+//   userId: number;
+//   newPassword: string;
+//   confirmPassword: string;
+// }
+
+export type ChangePasswordInProfile = Omit<
+  ChangePasswordProps,
+  "currentPassword"
+>;
+
+export interface ResetPasswordByMfa {
+  email: string;
+  mfaCode: string;
+}
+
+export interface EmailUserProps {
+  email: string;
+}
+export interface UserIdResponse {
+  userId: number;
 }
 
 export type Language = "en" | "ko" | "jp";

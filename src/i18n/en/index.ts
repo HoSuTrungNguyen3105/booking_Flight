@@ -1,5 +1,6 @@
 export const en = {
   translation: {
+    system_name: "Airline Management System",
     welcome: "sample to React and react-i18next",
     title1: "Checkbox Status & Color Variation",
     title: "Checkbox Status & Color Variation",
@@ -12,6 +13,10 @@ export const en = {
       "• Only a single option can be selected, and for user convenience, one can be selected by default.",
     description4:
       "Radio Button provides two Color Variations: Primary / Secondary.",
+    title_mfa: "Multi-Factor Authentication (MFA)",
+    not_auth_mfa:
+      "Your account is not protected by MFA. Please enable MFA to enhance security.",
+    has_auth_mfa: "Your account is already protected by MFA.",
     language: "Change Language",
     toastSuccess: "Action performed successfully!",
     logout: "Log out",

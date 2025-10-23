@@ -8,7 +8,7 @@ import {
   useApproveLeaveRequest,
   useRejectLeaveRequest,
   type SendRequestProps,
-} from "../../../Api/usePostApi";
+} from "../../../../context/Api/usePostApi";
 import type { LeaveRequest } from "../../../../utils/type";
 import { Note, Person } from "@mui/icons-material";
 import InputTextArea from "../../../../common/Input/InputTextArea";

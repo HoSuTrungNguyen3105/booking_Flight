@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { type GridColDef, type GridRowId } from "@mui/x-data-grid";
-import { useGetMeal } from "../../../Api/useGetApi";
+import { useGetMeal } from "../../../../context/Api/useGetApi";
 import { Box, Button, Typography } from "@mui/material";
 import { type GridRowDef } from "../../../../common/DataGrid/index";
 import TableSection from "../../../../common/CustomRender/TableSection";

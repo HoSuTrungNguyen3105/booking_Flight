@@ -4,7 +4,7 @@ import { Box, Button, Typography } from "@mui/material";
 import TableSection from "../CustomRender/TableSection";
 import type { GridColDef } from "@mui/x-data-grid";
 import theme from "../../scss/theme";
-import { useFindPassengerById } from "../../components/Api/usePostApi";
+import { useFindPassengerById } from "../../context/Api/usePostApi";
 import type { Passenger } from "../../utils/type";
 import DetailSection, { type IDetailItem } from "../DetailSection";
 import { DateFormatEnum, formatDate } from "../../hooks/format";

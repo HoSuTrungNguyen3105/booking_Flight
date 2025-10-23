@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { Box, Typography, Chip } from "@mui/material";
-import { useGetBaggageData } from "../Api/useGetApi";
+import { useGetBaggageData } from "../../context/Api/useGetApi";
 import theme from "../../scss/theme";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import TableSection from "../../common/CustomRender/TableSection";

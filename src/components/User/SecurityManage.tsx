@@ -5,7 +5,7 @@ import InspectionSection from "../../common/CustomRender/InspectionSection";
 import type { GridColDef } from "@mui/x-data-grid";
 import { DateFormatEnum, formatDate } from "../../hooks/format";
 import type { GridRowDef } from "../../common/DataGrid";
-import { useFindAllPassenger } from "../Api/useGetApi";
+import { useFindAllPassenger } from "../../context/Api/useGetApi";
 import DataSecure from "../../common/Setting/DataSecure";
 import type { ISearchQuery } from "../../common/CustomRender/SearchBar";
 import ManageMyInfo from "../Profile/ManageMyInfo";

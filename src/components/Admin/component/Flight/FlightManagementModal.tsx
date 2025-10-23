@@ -33,8 +33,11 @@ import {
   mapStringToDropdown,
   useGetAllCode,
   useGetFlightByIDData,
-} from "../../../Api/useGetApi";
-import { useCreateFlight, useFlightUpdate } from "../../../Api/usePostApi";
+} from "../../../../context/Api/useGetApi";
+import {
+  useCreateFlight,
+  useFlightUpdate,
+} from "../../../../context/Api/usePostApi";
 import type { DataFlight } from "../../../../utils/type";
 import { useToast } from "../../../../context/ToastContext";
 import FormRow from "../../../../common/CustomRender/FormRow";

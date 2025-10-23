@@ -1,6 +1,9 @@
 import { useMemo, useState, useEffect } from "react";
 import { type GridColDef, type GridRowId } from "@mui/x-data-grid";
-import { useExportFlightExcel, useGetFlightData } from "../../../Api/useGetApi";
+import {
+  useExportFlightExcel,
+  useGetFlightData,
+} from "../../../../context/Api/useGetApi";
 import { Box, Button, Typography } from "@mui/material";
 import { type GridRowDef } from "../../../../common/DataGrid/index";
 import { DateFormatEnum, formatDateKR } from "../../../../hooks/format";

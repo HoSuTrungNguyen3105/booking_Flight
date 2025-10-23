@@ -1,4 +1,4 @@
-import type { UnlockRequest } from "../Api/useGetApi";
+import type { UnlockRequest } from "../../context/Api/useGetApi";
 import type {
   Attendance,
   LeaveRequest,

@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { Box, Button, Typography, Stack } from "@mui/material";
 import { useToast } from "../../../context/ToastContext";
-import { useRequestChangeRole } from "../../../components/Api/usePostApi";
+import { useRequestChangeRole } from "../../../context/Api/usePostApi";
 import BaseModal from "../../Modal/BaseModal";
 import { AddAlert } from "@mui/icons-material";
 import type { UserData } from "../../../utils/type";

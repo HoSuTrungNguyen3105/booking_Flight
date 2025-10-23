@@ -1,5 +1,6 @@
 export const ko = {
   translation: {
+    system_name: "항공 관리 시스템",
     title1: "체크박스 상태 및 색상 변형",
     description1:
       "• 여러 옵션을 선택할 수 있으며, 상황에 따라 기본적으로 모든 옵션을 선택하거나 선택하지 않을 수 있습니다.",
@@ -20,6 +21,10 @@ export const ko = {
     tittle2: "상태",
     logout: "Dang xuat",
     my_infor: "Thong tin cua toi",
+    title_mfa: "다중 인증 (MFA)",
+    not_auth_mfa:
+      "계정이 MFA로 보호되어 있지 않습니다. 보안을 강화하려면 MFA를 활성화하세요.",
+    has_auth_mfa: "계정이 이미 MFA로 보호되고 있습니다.",
     data_access_title: "데이터 액세스 권한",
     data_access_description:
       "관리자(Admin)가 검토 및 관리할 수 있는 서비스입니다.",

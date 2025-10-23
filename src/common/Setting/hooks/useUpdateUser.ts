@@ -6,7 +6,7 @@ import {
   type UserRoleType,
 } from "../../../utils/type";
 import { useDataSection, type UserFormConfig } from "./useDataSection";
-import { useUpdateUserFromAdmin } from "../../../components/Api/usePostApi";
+import { useUpdateUserFromAdmin } from "../../../context/Api/usePostApi";
 import { useToast } from "../../../context/ToastContext";
 
 interface IUseUpdateUserProps {

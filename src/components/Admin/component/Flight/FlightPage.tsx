@@ -1,16 +1,8 @@
-import {
-  Box,
-  Card,
-  CardContent,
-  Typography,
-  Grid,
-  CardMedia,
-} from "@mui/material";
+import { Box, Card, CardContent, Typography, Grid } from "@mui/material";
 import { useState } from "react";
-import { useFlightList } from "../../../Api/usePostApi";
-// import ImageFlight from "../../../../svgs/wallpaper.jpg";
 import type { DataFlight } from "../../../../utils/type";
 import { DateFormatEnum, formatDate } from "../../../../hooks/format";
+import { useFlightList } from "../../../../context/Api/useGetApi";
 const FlightPage = () => {
   const { flightList } = useFlightList();
   const [selectedFlight, setSelectedFlight] = useState<DataFlight | null>(null);

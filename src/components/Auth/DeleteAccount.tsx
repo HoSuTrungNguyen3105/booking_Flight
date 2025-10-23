@@ -18,7 +18,10 @@ import {
 } from "@mui/icons-material";
 import InputTextField from "../../common/Input/InputTextField";
 import theme from "../../scss/theme";
-import { getUserIdByEmail, useDeleteMyAccount } from "../Api/usePostApi";
+import {
+  getUserIdByEmail,
+  useDeleteMyAccount,
+} from "../../context/Api/usePostApi";
 import { useToast } from "../../context/ToastContext";
 import { useAuth } from "../../context/AuthContext";
 

@@ -5,7 +5,7 @@ import InputTextField from "../../common/Input/InputTextField";
 import {
   getUserIdByEmail,
   useSendEmailToVerification,
-} from "../Api/usePostApi";
+} from "../../context/Api/usePostApi";
 import { useToast } from "../../context/ToastContext";
 import ChangePassword from "./ChangePassword";
 import VerifyOpt from "./VerifyOpt";

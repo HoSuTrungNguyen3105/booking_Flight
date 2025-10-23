@@ -13,14 +13,14 @@ import {
   Delete as DeleteIcon,
   LocationOn as LocationIcon,
 } from "@mui/icons-material";
-import { useGetAllAirportInfo } from "../../../Api/useGetApi";
+import { useGetAllAirportInfo } from "../../../../context/Api/useGetApi";
 import type { Airport } from "../../../../utils/type";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import TableSection from "../../../../common/CustomRender/TableSection";
 import AirportManageModal from "./AirportManageModal";
 import AirportBatchCreator from "./AirportBatchCreator";
 import DialogConfirm from "../../../../common/Modal/DialogConfirm";
-import { useDeleteAirportById } from "../../../Api/usePostApi";
+import { useDeleteAirportById } from "../../../../context/Api/usePostApi";
 
 const AirportManagement: React.FC = () => {
   const { getAirportInfo, refetchGetAirportInfo } = useGetAllAirportInfo();

@@ -4,7 +4,7 @@ import BaseModal from "../../Modal/BaseModal";
 import AddIcon from "@mui/icons-material/Add";
 import type { UserData } from "../../../utils/type";
 import InputTextField from "../../Input/InputTextField";
-import { usePermissionChangeRole } from "../../../components/Api/usePostApi";
+import { usePermissionChangeRole } from "../../../context/Api/usePostApi";
 import { useToast } from "../../../context/ToastContext";
 
 interface IModalStatisticalDataLearningProps {

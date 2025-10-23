@@ -6,14 +6,14 @@ import SelectDropdown, {
 } from "../../../../../common/Dropdown/SelectDropdown";
 import InputTextField from "../../../../../common/Input/InputTextField";
 import theme from "../../../../../scss/theme";
-import { useFindAllGateStatuses } from "../../../../Api/useGetApi";
+import { useFindAllGateStatuses } from "../../../../../context/Api/useGetApi";
 import BaseModal from "../../../../../common/Modal/BaseModal";
 import { Loading } from "../../../../../common/Loading/Loading";
 import {
   useCreateBatchGate,
   useUpdateGate,
   type CreateGateProps,
-} from "../../../../Api/usePostApi";
+} from "../../../../../context/Api/usePostApi";
 import type { UpdateGateProps } from "../TerminalContainer";
 import type { Gate } from "../../../../../utils/type";
 import { useToast } from "../../../../../context/ToastContext";

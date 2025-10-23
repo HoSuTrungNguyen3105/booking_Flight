@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { Edit, Add } from "@mui/icons-material";
 import TabPanel from "../../../../common/CustomRender/TabPanel";
-import { type CreateGateProps } from "../../../Api/usePostApi";
+import { type CreateGateProps } from "../../../../context/Api/usePostApi";
 import {
   type Facility,
   type FacilityType,

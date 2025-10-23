@@ -7,7 +7,7 @@ import type { Seat } from "../../../../utils/type";
 import {
   useSeatUpdateByIds,
   type SeatTypeValue,
-} from "../../../Api/usePostApi";
+} from "../../../../context/Api/usePostApi";
 import Android12Switch from "../../../../common/Switch/Switch";
 
 interface ISeatModalProps {

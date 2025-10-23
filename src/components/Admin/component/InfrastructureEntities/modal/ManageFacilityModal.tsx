@@ -12,14 +12,14 @@ import {
   mapStringToDropdown,
   useFindAllFacilityTypes,
   useFindTerminalIDStatuses,
-} from "../../../../Api/useGetApi";
+} from "../../../../../context/Api/useGetApi";
 import type { ActionType } from "../../../../../common/Dropdown/SelectDropdown";
 import SelectDropdown from "../../../../../common/Dropdown/SelectDropdown";
 import {
   useCreateFacilities,
   useUpdateFacilities,
   type FacilityFormProps,
-} from "../../../../Api/usePostApi";
+} from "../../../../../context/Api/usePostApi";
 import InputTextArea from "../../../../../common/Input/InputTextArea";
 import InputTextField from "../../../../../common/Input/InputTextField";
 import BaseModal from "../../../../../common/Modal/BaseModal";

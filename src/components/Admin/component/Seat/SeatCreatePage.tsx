@@ -1,7 +1,10 @@
 import { Add } from "@mui/icons-material";
 import { Box, Button, Typography } from "@mui/material";
 import { memo, useState } from "react";
-import { useSeatCreate, type CreateSeatDto } from "../../../Api/usePostApi";
+import {
+  useSeatCreate,
+  type CreateSeatDto,
+} from "../../../../context/Api/usePostApi";
 import CreateSeatModal from "./CreateSeatModal";
 
 type CreateSeatProps = {

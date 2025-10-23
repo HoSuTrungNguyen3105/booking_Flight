@@ -2,7 +2,7 @@ import { memo, useCallback, useState } from "react";
 import OTPInput from "../../common/Input/OTPInput";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import type { EmailProps } from "../../utils/type";
-import { useVerifyOTPCode } from "../Api/usePostApi";
+import { useVerifyOTPCode } from "../../context/Api/usePostApi";
 import MfaSetup from "./MfaSetup";
 import { useToast } from "../../context/ToastContext";
 

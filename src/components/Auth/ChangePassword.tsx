@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import InputTextField from "../../common/Input/InputTextField";
-import { useChangePassword } from "../Api/usePostApi";
+import { useChangePassword } from "../../context/Api/usePostApi";
 import { memo, useState } from "react";
 import VerifyOpt from "./VerifyOpt";
 

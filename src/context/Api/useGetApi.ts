@@ -1,4 +1,5 @@
 import {
+  MethodType,
   type FlightDetailApiResponse,
   type UserListManageResponse,
   type UserData,
@@ -11,7 +12,6 @@ import {
   type AircraftResponseMessage,
   type FlightSeatByAircraftResponseMessage,
   type ReqUserIDProps,
-  MethodType,
   type AirportResponseMessage,
   type GetAllCodeResponseMessage,
   type Passenger,
@@ -20,11 +20,17 @@ import {
   type TicketResponseMessage,
   type TransferAdmin,
   type StatusResponseMessage,
+  type Seat,
+  type TerminalResponse,
+  type GetIDToDeleteData,
+  type LeaveRequest,
+  type UserUpdateProps,
 } from "../../utils/type.ts";
-import { useFetch } from "../../context/use[custom]/useFetch.ts";
-import type { Payroll } from "../Admin/component/Payroll/PayrollManagement.tsx";
+import { useFetch } from "../use[custom]/useFetch.ts";
+import type { Payroll } from "../../components/Admin/component/Payroll/PayrollManagement.tsx";
 import type { ActionType } from "../../common/Dropdown/SelectDropdown.tsx";
 import { useEffect } from "react";
+import type { UserWithRelationsData } from "../../components/Sample/type.ts";
 
 const getMethod = {
   method: MethodType.GET,
@@ -78,6 +84,22 @@ export const usefindAllTransferRequests = () => {
     dataFindAllTransferRequests,
     refetchFindAllTransferRequests,
     loadingFindAllTransferRequests,
+  };
+};
+
+export const useFlightList = () => {
+  const { data: flightList, refetch: refetchFlightList } = useFetch<
+    FlightListApiResponse,
+    null
+  >({
+    url: "/sys/flights",
+    defaultValue: { resultCode: "", resultMessage: "" },
+    autoFetch: true,
+    config: getMethod,
+  });
+  return {
+    flightList,
+    refetchFlightList,
   };
 };
 
@@ -503,18 +525,61 @@ export const useGetMyInfo = () => {
   };
 };
 
-export const useFlightList = () => {
-  const { data: fetchFlightList, refetch: refetchFlightList } = useFetch<
-    FlightListApiResponse,
-    FlightListApiResponse
+// export const useFlightList = () => {
+//   const { data: fetchFlightList, refetch: refetchFlightList } = useFetch<
+//     FlightListApiResponse,
+//     FlightListApiResponse
+//   >({
+//     url: `/sys/flights`,
+//     autoFetch: true,
+//     config: getMethod,
+//   });
+//   return {
+//     fetchFlightList,
+//     refetchFlightList,
+//   };
+// };
+
+export const useGetSeatByFlightId = ({ id }: ReqUserIDProps) => {
+  const { refetch: refetchGetSeatByFlightId, data: dataGetSeatByFlightId } =
+    useFetch<DetailResponseMessage<Seat>, void>({
+      url: `/sys/seats/getFlightSeat/${id}`,
+      autoFetch: !!id,
+      config: getMethod,
+    });
+  return {
+    dataGetSeatByFlightId,
+    refetchGetSeatByFlightId,
+  };
+};
+
+export const useGetTerminalData = () => {
+  const { data: getTerminalData, refetch: refetchGetTerminalData } = useFetch<
+    TerminalResponse,
+    void
   >({
-    url: `/sys/flights`,
+    url: "/sys/flights/terminal",
     autoFetch: true,
     config: getMethod,
   });
   return {
-    fetchFlightList,
-    refetchFlightList,
+    getTerminalData,
+    refetchGetTerminalData,
+  };
+};
+
+export const useGetUserWithRelations = ({ id }: GetIDToDeleteData) => {
+  const {
+    refetch: refetchGetUserWithRelations,
+    data: dataGetUserWithRelations,
+  } = useFetch<DetailResponseMessage<UserWithRelationsData>, void>({
+    url: `/auth/getUserWithRelations/${id as string}`,
+    autoFetch: !!id,
+    config: getMethod,
+  });
+  return {
+    dataGetUserWithRelations,
+    refetchGetUserWithRelations,
   };
 };
 
@@ -532,6 +597,24 @@ export const useGetUserList = () => {
     loadingUser: loading,
   };
 };
+
+export const useGetLeaveRequest = () => {
+  const {
+    data: dataGetLeaveRequest,
+    refetch: refetchGetLeaveRequest,
+    loading: loadingGetLeaveRequest,
+  } = useFetch<DetailResponseMessage<LeaveRequest>, UserUpdateProps>({
+    url: "/sys/users/leave-requests/all",
+    autoFetch: true,
+    config: getMethod,
+  });
+  return {
+    dataGetLeaveRequest,
+    loadingGetLeaveRequest,
+    refetchGetLeaveRequest,
+  };
+};
+
 export const useGetUserById = (id: number) => {
   const { data: fetchUserById, refetch: refetchUserById } = useFetch<
     UserListManageResponse,

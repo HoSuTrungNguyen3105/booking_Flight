@@ -18,10 +18,10 @@ import {
   Edit as EditIcon,
   Delete,
 } from "@mui/icons-material";
-import { useGetAircraftCode } from "../../../Api/useGetApi";
+import { useGetAircraftCode } from "../../../../context/Api/useGetApi";
 import { memo, useCallback, useState } from "react";
 import AircarftDetail from "./AircraftDetail";
-import { useDeleteAircraftFlight } from "../../../Api/usePostApi";
+import { useDeleteAircraftFlight } from "../../../../context/Api/usePostApi";
 import DialogConfirm from "../../../../common/Modal/DialogConfirm";
 import DeleteIcon from "../../../../svgs/delete-2-svgrepo.svg";
 import type { Aircraft } from "../../../../utils/type";

@@ -17,6 +17,7 @@ import React, {
   type HTMLInputTypeAttribute,
 } from "react";
 import { useCopyToClipboard } from "../../context/use[custom]/useCopyToClipboard";
+import { GridCheckCircleIcon } from "@mui/x-data-grid";
 
 interface IInputTextFieldProps {
   type?: HTMLInputTypeAttribute;
@@ -168,7 +169,9 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
                     />
                   </IconButton>
                 )}
-
+              {isEmail && isEmailValid(value) && (
+                <GridCheckCircleIcon color="success" />
+              )}
               {type === "password" && showEyeIcon && (
                 <IconButton
                   onClick={handleTogglePasswordVisibility}
@@ -179,7 +182,6 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
                   {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
                 </IconButton>
               )}
-
               {endIcon && type !== "password" && (
                 <IconButton
                   disabled={disabled}
@@ -189,7 +191,6 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
                   {endIcon}
                 </IconButton>
               )}
-
               {canCopy && (
                 <Tooltip title={hasCopy ? "Copied" : "Copy"}>
                   <IconButton

@@ -30,7 +30,10 @@ import {
   Area,
 } from "recharts";
 import type { DataFlight } from "../../../../utils/type";
-import { useGetAllFlightIds, useGetFlightData } from "../../../Api/useGetApi";
+import {
+  useGetAllFlightIds,
+  useGetFlightData,
+} from "../../../../context/Api/useGetApi";
 import {
   FlightTakeoff,
   Schedule,

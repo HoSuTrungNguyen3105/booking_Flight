@@ -15,7 +15,7 @@ import {
   ArrowBack,
   VerifiedUser,
 } from "@mui/icons-material";
-import { useSetUpMfa, useVerifyMfa } from "../Api/usePostApi";
+import { useSetUpMfa, useVerifyMfa } from "../../context/Api/usePostApi";
 import { useToast } from "../../context/ToastContext";
 import InputTextField from "../../common/Input/InputTextField";
 import { useAuth } from "../../context/AuthContext";

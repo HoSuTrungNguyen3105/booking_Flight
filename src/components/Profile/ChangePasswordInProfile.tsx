@@ -9,11 +9,12 @@ import {
 import Grid from "@mui/material/Grid";
 import { memo, useCallback, useState } from "react";
 import { KeyOutlined, LockOpenOutlined } from "@mui/icons-material";
-import { useChangePasswordInProfile } from "../Api/usePostApi";
+import { useChangePasswordInProfile } from "../../context/Api/usePostApi";
 import InputTextField from "../../common/Input/InputTextField";
 import { useAuth } from "../../context/AuthContext";
 import theme from "../../scss/theme";
 import { useToast } from "../../context/ToastContext";
+import { useTranslation } from "react-i18next";
 
 interface FormDataType {
   userId?: number;
@@ -25,6 +26,8 @@ interface FormDataType {
 const ChangePasswordInProfile = () => {
   const { refetchChangePassword, errorChangePassword } =
     useChangePasswordInProfile();
+
+  const { t } = useTranslation();
 
   // const [verifyOTPcode, setVerifyOTPcode] = useState(false);
   const { user } = useAuth();
@@ -73,9 +76,7 @@ const ChangePasswordInProfile = () => {
   // }
 
   return (
-    <Box>
-      {/* component="form" onSubmit={handleSubmit(onSubmit)} */}
-      {/* Change password */}
+    <>
       <Box
         sx={{
           backgroundColor: theme.palette.background.paper,
@@ -90,7 +91,7 @@ const ChangePasswordInProfile = () => {
 
         <Grid container spacing={1}>
           <Grid size={6}>
-            <Typography sx={{ mb: 1 }}>Mật khẩu hiện tại</Typography>
+            <Typography sx={{ mb: 1 }}>{t("currentPassword")}</Typography>
             <FormControl fullWidth>
               <InputTextField
                 type="password"
@@ -104,7 +105,7 @@ const ChangePasswordInProfile = () => {
 
           {/* New Password */}
           <Grid size={6}>
-            <Typography sx={{ mb: 1 }}>Mật khẩu mới</Typography>
+            <Typography sx={{ mb: 1 }}>{t("newPassword")}</Typography>
             <FormControl fullWidth>
               <InputTextField
                 type="password"
@@ -118,7 +119,7 @@ const ChangePasswordInProfile = () => {
           </Grid>
 
           <Grid size={6}>
-            <Typography sx={{ mb: 1 }}>Nhập lại mật khẩu mới</Typography>
+            <Typography sx={{ mb: 1 }}>{t("confirmPassword")}</Typography>
             <FormControl fullWidth>
               <InputTextField
                 type="password"
@@ -139,7 +140,7 @@ const ChangePasswordInProfile = () => {
               sx={{ mt: 2 }}
               onClick={onSubmit}
             >
-              Xác nhận
+              {t("submit")}
             </Button>
           </Grid>
         </Grid>
@@ -194,7 +195,7 @@ const ChangePasswordInProfile = () => {
           {user?.mfaEnabledYn === "N" ? (
             <>
               <Typography variant="subtitle1" fontWeight={600} gutterBottom>
-                Bạn chưa bật xác thực hai lớp
+                {t("title_mfa")}
               </Typography>
               <Typography
                 variant="body2"
@@ -202,13 +203,12 @@ const ChangePasswordInProfile = () => {
                 maxWidth={400}
                 mx="auto"
               >
-                Tăng cường bảo mật bằng cách bật xác thực hai lớp. Khi đăng
-                nhập, bạn cần nhập thêm mã OTP ngoài mật khẩu.{" "}
+                {t("not_auth_mfa")}
               </Typography>
             </>
           ) : (
             <Typography variant="subtitle1" fontWeight={600}>
-              Bạn đã bật xác thực hai lớp
+              {t("has_auth_mfa")}
             </Typography>
           )}
         </Box>
@@ -223,14 +223,14 @@ const ChangePasswordInProfile = () => {
           }}
         >
           <Button variant="contained" type="submit">
-            Save
+            {t("submit")}
           </Button>
           <Button type="reset" variant="outlined">
-            Reset
+            {t("reset")}
           </Button>
         </Box>
       </Box>
-    </Box>
+    </>
   );
 };
 

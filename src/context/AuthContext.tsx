@@ -12,7 +12,7 @@ import {
   useUpdateUserRank,
   useVerifyPw,
   type LoginReqProps,
-} from "../components/Api/usePostApi";
+} from "./Api/usePostApi";
 import { useToast } from "./ToastContext";
 import {
   UserRole,
@@ -20,7 +20,7 @@ import {
   type UserData,
   type UserListResponse,
 } from "../utils/type";
-import { useGetMyInfo } from "../components/Api/useGetApi";
+import { useGetMyInfo } from "./Api/useGetApi";
 
 export type UserWithMFA = {
   email: string;

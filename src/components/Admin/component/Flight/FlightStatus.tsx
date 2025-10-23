@@ -11,11 +11,11 @@ import {
   type ChipProps,
 } from "@mui/material";
 import { Save as SaveIcon } from "@mui/icons-material";
-import { useGetAllFlightIds } from "../../../Api/useGetApi";
+import { useGetAllFlightIds } from "../../../../context/Api/useGetApi";
 import SelectDropdown, {
   type ActionType,
 } from "../../../../common/Dropdown/SelectDropdown";
-import { useUpdateFlightStatus } from "../../../Api/usePostApi";
+import { useUpdateFlightStatus } from "../../../../context/Api/usePostApi";
 
 type ValidChipColor = ChipProps["color"];
 
