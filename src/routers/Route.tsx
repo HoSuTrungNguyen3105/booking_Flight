@@ -44,6 +44,7 @@ import TransferAdminTable from "../common/Setting/Component/TransferAdminTable";
 import MealList from "../components/Admin/component/Meal/MealList";
 // import FlightStatus from "../components/Admin/component/Flight/FlightStatus";
 import FlightManagement from "../components/Admin/component/Flight/FlightManagement";
+import AttendanceCalendar from "../components/Sample/AttendanceCalendar";
 
 const routes = [
   {
@@ -195,6 +196,10 @@ const routes = [
       {
         path: ROUTE_PATHS.CHAT_APP,
         element: <ChatApp />,
+      },
+      {
+        path: ROUTE_PATHS.CALENDER_ATTENDANCE,
+        element: <AttendanceCalendar />,
       },
       {
         path: ROUTE_PATHS.FLIGHT_BATCH_CREATOR,

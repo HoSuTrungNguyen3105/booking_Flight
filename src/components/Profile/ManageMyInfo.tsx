@@ -172,11 +172,6 @@ const ManageMyInfo = () => {
           open={openModal.transferAdminPermission}
           userId={selectedRow}
           fromUserId={user?.id!}
-          // onSuccess={() => {
-          //   handleRefetchUserList();
-          //   closeModal("transferAdminPermission");
-          //   setIsValidate(true);
-          // }}
           onClose={() => closeModal("transferAdminPermission")}
         />
       )}
@@ -188,7 +183,6 @@ const ManageMyInfo = () => {
           onSuccess={() => {
             handleRefetchUserList();
             closeModal("permissionChangeRole");
-            // setIsValidate(true);
           }}
           onClose={() => closeModal("permissionChangeRole")}
         />
@@ -197,7 +191,6 @@ const ManageMyInfo = () => {
       {openModal.relationData && selectedRow && (
         <ConfirmDeleteModal
           open={openModal.relationData}
-          // id={selectedRow.id}
           id={selectedRow.id}
           onSuccess={() => {
             handleRefetchUserList();
@@ -210,7 +203,6 @@ const ManageMyInfo = () => {
       {openModal.deleteUser && selectedRow && (
         <DeleteUserModal
           open={openModal.deleteUser}
-          // id={selectedRow.id}
           user={selectedRow}
           onSuccess={() => {
             handleRefetchUserList();

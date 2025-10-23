@@ -25,6 +25,7 @@ import {
   type GetIDToDeleteData,
   type LeaveRequest,
   type UserUpdateProps,
+  type AttendanceResponseMessage,
 } from "../../utils/type.ts";
 import { useFetch } from "../use[custom]/useFetch.ts";
 import type { Payroll } from "../../components/Admin/component/Payroll/PayrollManagement.tsx";
@@ -612,6 +613,19 @@ export const useGetLeaveRequest = () => {
     dataGetLeaveRequest,
     loadingGetLeaveRequest,
     refetchGetLeaveRequest,
+  };
+};
+
+export const useGetAllAttendance = () => {
+  const { refetch, loading, data } = useFetch<AttendanceResponseMessage, void>({
+    url: "/sys/users/attendance/all",
+    autoFetch: true,
+    config: getMethod,
+  });
+  return {
+    dataAllAttendance: data,
+    refetchAllAttendance: refetch,
+    loadingAllAttendance: loading,
   };
 };
 

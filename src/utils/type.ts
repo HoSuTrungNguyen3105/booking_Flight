@@ -307,22 +307,6 @@ export type FlightInStatus = {
   status: string;
 };
 
-export type StatusResponseMessage = DetailResponseMessage<FlightInStatus>;
-
-export type AircraftResponseMessage = DetailResponseMessage<Aircraft>;
-
-export type AirportCreateResponseMessage =
-  DetailResponseMessage<TypeWithErrorResponse>;
-
-export type AirportResponseMessage = DetailResponseMessage<Airport>;
-
-export type TicketResponseMessage = DetailResponseMessage<Ticket>;
-
-export type GetAllCodeResponseMessage =
-  DetailResponseMessage<AllFlightCodeProps>;
-
-export type SeatResponseMessage = DetailResponseMessage<Seat>;
-
 export enum UserRole {
   ADMIN = "ADMIN",
   USER = "USER",
@@ -550,12 +534,11 @@ export interface Ticket {
 export interface BoardingPass {
   id: number;
   ticketId: number;
-  issuedAt: string; // ISO datetime
+  issuedAt: string;
   gate: string;
-  boardingTime: string; // ISO datetime
+  boardingTime: string;
   flightId: number;
 
-  // Quan hệ
   ticket?: Ticket;
   flight?: DataFlight;
 }
@@ -564,8 +547,8 @@ export interface Baggage {
   id: number;
   flightId: number;
   weight: number;
-  status: string; // Enum kiểu an toàn : "CHECKED_IN" | "LOADED" | "CLAIMED" | "LOST";
-  checkedAt: string; // nếu trả về ISO date-time từ backend
+  status: string;
+  checkedAt: string;
   ticketId: number;
 
   flight?: DataFlight;
@@ -599,6 +582,24 @@ export type UserListManageResponse = DetailResponseMessage<UserData>;
 export type FlightListApiResponse = DetailResponseMessage<DataFlight>;
 export type FlightAircraftResponse =
   DetailResponseMessage<AircraftCodeBatchProps>;
+
+export type StatusResponseMessage = DetailResponseMessage<FlightInStatus>;
+
+export type AttendanceResponseMessage = DetailResponseMessage<Attendance>;
+
+export type AircraftResponseMessage = DetailResponseMessage<Aircraft>;
+
+export type AirportCreateResponseMessage =
+  DetailResponseMessage<TypeWithErrorResponse>;
+
+export type AirportResponseMessage = DetailResponseMessage<Airport>;
+
+export type TicketResponseMessage = DetailResponseMessage<Ticket>;
+
+export type GetAllCodeResponseMessage =
+  DetailResponseMessage<AllFlightCodeProps>;
+
+export type SeatResponseMessage = DetailResponseMessage<Seat>;
 
 export type EmailProps = {
   email?: string;
@@ -666,7 +667,7 @@ export type Gate = {
 export type Facility = {
   id: string;
   name: string;
-  type: string; // enum FacilityType nếu có
+  type: string;
   description?: string;
   terminalId: string;
   location?: string;
@@ -750,12 +751,6 @@ export interface ChangePasswordProps {
   newPassword: string;
   confirmPassword: string;
 }
-
-// interface ChangePassword {
-//   userId: number;
-//   newPassword: string;
-//   confirmPassword: string;
-// }
 
 export type ChangePasswordInProfile = Omit<
   ChangePasswordProps,

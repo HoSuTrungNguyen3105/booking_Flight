@@ -47,6 +47,7 @@ export const ROUTE_PATHS = {
   TERMINAL_GATE_CONTAINER: "TerminalGateContainer",
   FLIGHT_PATH: "FlightPath",
   SETTING: "setting",
+  CALENDER_ATTENDANCE: "calender_attendance",
   FLIGHT_BOOK: "flight-book",
   MANAGE_MY_INFO: "manage-my-info",
   PAYROLL_MANAGEMENT: "payroll-management",

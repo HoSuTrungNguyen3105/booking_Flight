@@ -156,8 +156,8 @@ export const menuData: MenuSection[] = [
             label: "Quản lý tài khoản",
             subItems: [
               {
-                id: "support",
-                label: "Khách hàng",
+                id: "calender_attendance",
+                label: " calender attendance",
                 icon: <AccountCircle />,
               },
               {

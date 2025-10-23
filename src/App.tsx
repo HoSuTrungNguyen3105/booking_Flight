@@ -17,6 +17,7 @@ function App() {
           <ApiProvider>
             <AuthProvider>
               <CssBaseline />
+              {/* <ScrollToTop /> */}
               <RouterProvider router={router} />
             </AuthProvider>
           </ApiProvider>

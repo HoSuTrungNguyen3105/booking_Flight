@@ -218,14 +218,6 @@ const FlightStatisticsPage: React.FC = () => {
               color: "white",
               position: "relative",
               overflow: "hidden",
-              "&:before": {
-                content: '""',
-                position: "absolute",
-                width: "100%",
-                height: "100%",
-                background: "rgba(255,255,255,0.1)",
-                clipPath: "circle(20% at 90% 20%)",
-              },
             }}
           >
             <CardContent sx={{ position: "relative", zIndex: 1 }}>
@@ -256,14 +248,6 @@ const FlightStatisticsPage: React.FC = () => {
               color: "white",
               position: "relative",
               overflow: "hidden",
-              "&:before": {
-                content: '""',
-                position: "absolute",
-                width: "100%",
-                height: "100%",
-                background: "rgba(255,255,255,0.1)",
-                clipPath: "circle(20% at 90% 20%)",
-              },
             }}
           >
             <CardContent sx={{ position: "relative", zIndex: 1 }}>
@@ -296,14 +280,6 @@ const FlightStatisticsPage: React.FC = () => {
               color: "white",
               position: "relative",
               overflow: "hidden",
-              "&:before": {
-                content: '""',
-                position: "absolute",
-                width: "100%",
-                height: "100%",
-                background: "rgba(255,255,255,0.1)",
-                clipPath: "circle(20% at 90% 20%)",
-              },
             }}
           >
             <CardContent sx={{ position: "relative", zIndex: 1 }}>
@@ -339,14 +315,6 @@ const FlightStatisticsPage: React.FC = () => {
               color: "white",
               position: "relative",
               overflow: "hidden",
-              "&:before": {
-                content: '""',
-                position: "absolute",
-                width: "100%",
-                height: "100%",
-                background: "rgba(255,255,255,0.1)",
-                clipPath: "circle(20% at 90% 20%)",
-              },
             }}
           >
             <CardContent sx={{ position: "relative", zIndex: 1 }}>
@@ -414,7 +382,7 @@ const FlightStatisticsPage: React.FC = () => {
                     ))}
                   </Pie>
                   <Tooltip
-                    formatter={(value, name, props) => [
+                    formatter={(value, name) => [
                       value,
                       `${name}: ${(
                         (Number(value) / stats.totalFlights) *
@@ -425,7 +393,7 @@ const FlightStatisticsPage: React.FC = () => {
                   <Legend
                     verticalAlign="bottom"
                     height={36}
-                    formatter={(value, entry, index) => (
+                    formatter={(value) => (
                       <Box
                         component="span"
                         sx={{

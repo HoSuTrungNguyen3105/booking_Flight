@@ -84,7 +84,7 @@ export const useDataSection = (
             id: "email",
             options: [],
             readOnly: commonDisabled,
-            type: FieldType.INPUT_WITH_TYPE_TEXT,
+            type: FieldType.INPUT_WITH_TYPE_EMAIL,
             placeholder: "Nhập email...",
             value: data.email ?? "",
             disabled: commonDisabled,

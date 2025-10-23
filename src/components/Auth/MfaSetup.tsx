@@ -8,13 +8,7 @@ import {
   Paper,
   Divider,
 } from "@mui/material";
-import {
-  QrCode2,
-  Security,
-  Login,
-  ArrowBack,
-  VerifiedUser,
-} from "@mui/icons-material";
+import { QrCode2, Security, Login, ArrowBack } from "@mui/icons-material";
 import { useSetUpMfa, useVerifyMfa } from "../../context/Api/usePostApi";
 import { useToast } from "../../context/ToastContext";
 import InputTextField from "../../common/Input/InputTextField";

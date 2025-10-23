@@ -13,6 +13,7 @@ export enum FieldType {
   DROPDOWN = "dropdown",
   INPUT_WITH_TYPE_PASSWORD = "input_pw",
   INPUT_WITH_TYPE_TEXT = "input_text",
+  INPUT_WITH_TYPE_EMAIL = "input_email",
   TEXTAREA = "textarea",
   DATE = "date",
   INPUT_WITH_NUMBER = "input_number",
@@ -101,6 +102,20 @@ const FieldRenderer = ({
           value={value as string}
           onChange={onChange}
           placeholder={placeholder}
+        />
+      );
+
+    case FieldType.INPUT_WITH_TYPE_EMAIL:
+      return (
+        <InputTextField
+          {...sx}
+          error={error as boolean}
+          clearable
+          readOnly={readOnly}
+          value={value as string}
+          onChange={onChange}
+          placeholder={placeholder}
+          isEmail
         />
       );
     case FieldType.INPUT_WITH_NUMBER:
