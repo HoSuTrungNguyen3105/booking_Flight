@@ -12,6 +12,7 @@ import BaseModal from "../../../../common/Modal/BaseModal";
 import InputTextField from "../../../../common/Input/InputTextField";
 import SelectDropdown from "../../../../common/Dropdown/SelectDropdown";
 import Android12Switch from "../../../../common/Switch/Switch";
+import type { SeatTypeValue } from "../../../../utils/type";
 
 interface IModalStatisticalDataLearningProps {
   open: boolean;
@@ -25,7 +26,7 @@ const SeatManagementModal = ({
   onClose,
   selectedSeats,
 }: IModalStatisticalDataLearningProps) => {
-  const [type, setType] = useState("ECONOMY");
+  const [type, setType] = useState<SeatTypeValue>("ECONOMY");
   const [position, setPosition] = useState("WINDOW");
   const [seatRow, setSeatRow] = useState("");
   const [seatNumber, setSeatNumber] = useState(1);
@@ -42,6 +43,7 @@ const SeatManagementModal = ({
       { value: "ECONOMY", label: "Economy" },
       { value: "BUSINESS", label: "Business" },
       { value: "FIRST", label: "First" },
+      { value: "VIP", label: "Vip" },
     ],
     []
   );
@@ -98,7 +100,7 @@ const SeatManagementModal = ({
           <SelectDropdown
             options={seatTypeOptions()}
             value={type}
-            onChange={(val) => setType(val as string)}
+            onChange={(val) => setType(val as SeatTypeValue)}
           />
         </FormControl>
 

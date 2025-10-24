@@ -13,8 +13,8 @@ import {
 } from "@mui/material";
 import { Edit, Add } from "@mui/icons-material";
 import TabPanel from "../../../../common/CustomRender/TabPanel";
-import { type CreateGateProps } from "../../../../context/Api/usePostApi";
 import {
+  type CreateGateProps,
   type Facility,
   type FacilityType,
   type Gate,

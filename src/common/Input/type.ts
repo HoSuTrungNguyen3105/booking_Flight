@@ -1,35 +1,11 @@
 import type { SxProps } from "@mui/material";
-import type { CSSProperties, HTMLInputTypeAttribute, ReactNode } from "react";
+import type { HTMLInputTypeAttribute, ReactNode } from "react";
 
 export type InputFieldStatus = "error" | "warning" | "confirmed" | "default";
+
 export type TInputField = "text" | "number" | "number-multi" | "alpha-numeric";
+
 export type TInputSize = "small" | "medium" | "large";
-export type InputFieldProps = {
-  label?: string;
-  size?: TInputSize;
-  className?: string;
-  sx?: SxProps;
-  fullWidth?: boolean;
-  textAlign?: "left" | "right";
-  status?: InputFieldStatus;
-  disabled?: boolean;
-  readOnly?: boolean;
-  focused?: boolean;
-  placeholder?: string;
-  value?: string;
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onKeyDown?: React.KeyboardEventHandler<HTMLDivElement>;
-  onBlur?: (
-    e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>
-  ) => void;
-  isPassword?: boolean;
-  startAdorment?: ReactNode;
-  endAdorment?: ReactNode;
-  type?: TInputField;
-  error?: boolean;
-  helperText?: string;
-  allowHypen?: boolean;
-};
 
 export interface IInputTextFieldProps {
   type?: HTMLInputTypeAttribute;
@@ -50,7 +26,6 @@ export interface IInputTextFieldProps {
 export type InputNumberProps = {
   placeholder?: string;
   value?: number;
-  style?: CSSProperties;
   defaultValue?: number;
   min?: number;
   status?: InputFieldStatus;

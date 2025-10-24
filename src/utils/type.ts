@@ -77,6 +77,7 @@ export type DataFlight = {
   arrivalAirportRel?: Airport;
   meals?: Meal[];
   seats?: Seat[];
+  _count?: { seats: number; meals: number };
 };
 
 export type FlightTimeFields = Pick<
@@ -224,21 +225,15 @@ export type AttendanceStatus =
 export interface Attendance {
   id: number;
   employeeId: number;
-
-  // Decimal thường trả ra string từ Prisma Client => em để string
-  date: string; // Decimal(20,3) -> "20251004.000"
-  checkIn: string; // Decimal(20,3) -> "083000.000"
-  checkOut: string; // Decimal(20,3) -> "173000.000"
-
+  date: number;
+  checkIn: number;
+  checkOut: number;
   status: AttendanceStatus;
-
-  workedHours?: number | null; // nullable
+  workedHours?: number | null;
   note?: string | null;
+  createdAt: number;
 
-  createdAt: string; // Decimal(20,3)
-
-  // Quan hệ với User
-  employee?: UserData; // cần import User interface nếu muốn include
+  employee?: UserData;
 }
 
 export type FlightSeat = {

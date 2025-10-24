@@ -244,6 +244,20 @@ export const useSeatUpdateByIds = () => {
   };
 };
 
+export const useDeleteSeatInFlightByIds = () => {
+  const { refetch: refetchDeleteSeatInFlightByIds } = useFetch<
+    ResponseMessage,
+    { flightId: number }
+  >({
+    url: "/sys/seats/flight/seats/delete",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchDeleteSeatInFlightByIds,
+  };
+};
+
 export const useSearchBooking = () => {
   const { refetch: refetchSearchBooking } = useFetch<
     FlightBookingTicketDetailApiResponse,
@@ -489,9 +503,18 @@ export const useCreateBatchAirport = () => {
   };
 };
 
+export interface CreateManyFlightResultItem {
+  code?: string;
+  error?: boolean;
+  resultCode?: string;
+  resultMessage?: string;
+  errorCode?: string;
+  errorMessage?: string;
+}
+
 export const useCreateMultiFlight = () => {
   const { refetch: refetchCreateMultiFlight } = useFetch<
-    ResponseMessage,
+    DetailResponseMessage<CreateManyFlightResultItem>,
     FlightFormData[]
   >({
     url: "/sys/flights/bulk-create",

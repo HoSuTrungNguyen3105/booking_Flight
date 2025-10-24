@@ -85,7 +85,6 @@ const BookTicket = () => {
 
     const res = await refetchSearchBooking(payload);
     if (res?.resultCode === "00") {
-      // Lưu toàn bộ thông tin booking thay vì chỉ flight
       setOutboundBookings(res.data?.outbound || []);
       setInboundBookings(res.data?.inbound || []);
     }
@@ -95,7 +94,6 @@ const BookTicket = () => {
     resetSearch();
   };
 
-  // Hàm định dạng thời gian booking
   const formatBookingTime = (bookingTime: string | number) => {
     if (typeof bookingTime === "number") {
       return new Date(bookingTime).toLocaleString();

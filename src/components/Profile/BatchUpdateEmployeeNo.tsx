@@ -8,9 +8,10 @@ import {
 } from "../../context/Api/usePostApi";
 import { useToast } from "../../context/ToastContext";
 import InputTextField from "../../common/Input/InputTextField";
+import type { ReqUpdateEmployeeNo } from "./ManageMyInfo";
 
 type UpdateEmployeeIDProps = {
-  updateItem: BatchEmployeeNoReq[];
+  updateItem: ReqUpdateEmployeeNo[];
   onSuccess: () => void;
   onClose: () => void;
 };
@@ -20,7 +21,7 @@ const BatchUpdateEmployeeNo: React.FC<UpdateEmployeeIDProps> = ({
   onSuccess,
   onClose,
 }) => {
-  const [updates, setUpdates] = useState<BatchEmployeeNoReq[]>(updateItem);
+  const [updates, setUpdates] = useState<ReqUpdateEmployeeNo[]>(updateItem);
   const handleChange = (
     index: number,
     field: keyof BatchEmployeeNoReq,
@@ -32,7 +33,7 @@ const BatchUpdateEmployeeNo: React.FC<UpdateEmployeeIDProps> = ({
   };
 
   const handleAddRow = () => {
-    setUpdates([...updates, { userId: 0, employeeNo: "" }]);
+    setUpdates([...updates, { userId: 0, name: "", employeeNo: "" }]);
   };
 
   const handleRemoveRow = (index: number) => {
@@ -82,6 +83,13 @@ const BatchUpdateEmployeeNo: React.FC<UpdateEmployeeIDProps> = ({
               value={String(row.userId)}
               onChange={(e) => handleChange(index, "userId", Number(e))}
               sx={{ flex: 1 }}
+            />
+            <InputTextField
+              value={row.name}
+              placeholder="Employee name"
+              readOnly
+              // onChange={(e) => handleChange(index, "employeeNo", e)}
+              sx={{ flex: 2 }}
             />
             <InputTextField
               value={row.employeeNo}

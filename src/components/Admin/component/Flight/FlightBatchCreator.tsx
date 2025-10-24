@@ -4,29 +4,25 @@ import {
   Button,
   Card,
   CardContent,
+  FormControl,
   Grid,
   IconButton,
-  TextField,
+  Stack,
   Typography,
 } from "@mui/material";
 import { Add, Delete } from "@mui/icons-material";
-// import axios from "axios";
 import type { FlightFormData } from "./FlightManagementModal";
-import { useCreateMultiFlight } from "../../../../context/Api/usePostApi";
-
-// type CreateFlightDto = {
-//   flightNo: string;
-//   flightType: string;
-//   departureAirport: string;
-//   arrivalAirport: string;
-//   status: string;
-//   aircraftCode: string;
-//   terminal: string;
-//   scheduledDeparture: string;
-//   scheduledArrival: string;
-//   priceEconomy: number;
-//   priceBusiness: number;
-// };
+import {
+  useCreateMultiFlight,
+  type CreateManyFlightResultItem,
+} from "../../../../context/Api/usePostApi";
+import InputTextField from "../../../../common/Input/InputTextField";
+import SingleDateRangePickerComponent from "../../../../common/DayPicker/date-range-field";
+import { useGetAllCode } from "../../../../context/Api/useGetApi";
+import SelectDropdown from "../../../../common/Dropdown/SelectDropdown";
+import { useNavigate } from "react-router-dom";
+import InputNumber from "../../../../common/Input/InputNumber";
+import theme from "../../../../scss/theme";
 
 // type FlightError = {
 //   errorCode: string;
@@ -50,6 +46,20 @@ const FlightBatchCreator: React.FC = () => {
     },
   ]);
 
+  const { getAllCode } = useGetAllCode();
+
+  const optionAirportCode =
+    getAllCode?.data?.airport?.map((e) => ({
+      label: ` ${e.value}`,
+      value: e.code,
+    })) ?? [];
+
+  const optionAircraftCode =
+    getAllCode?.data?.aircraft?.map((e) => ({
+      label: ` ${e.value}`,
+      value: e.code,
+    })) ?? [];
+
   const [errors, setErrors] = useState<Record<number, string>>({});
 
   const handleChange = (
@@ -60,6 +70,14 @@ const FlightBatchCreator: React.FC = () => {
     const newFlights = [...flights];
     (newFlights[index][field] as any) = value;
     setFlights(newFlights);
+
+    setErrors((prevErrors) => {
+      const newErrors = { ...prevErrors };
+      if (newErrors[index]) {
+        delete newErrors[index];
+      }
+      return newErrors;
+    });
   };
 
   const handleAddFlight = () => {
@@ -88,150 +106,131 @@ const FlightBatchCreator: React.FC = () => {
 
   const { refetchCreateMultiFlight } = useCreateMultiFlight();
 
+  const navigate = useNavigate();
+
   const handleSubmit = async () => {
     try {
       const result = await refetchCreateMultiFlight(flights);
-      console.log("res", result);
+
       if (result?.resultCode === "00") {
         const errorMap: Record<number, string> = {};
-        // result.?.forEach((item: FlightError, idx: number) => {
-        //   if (item.errorCode !== "00") {
-        //     errorMap[idx] = item.errorMessage;
-        //   }
-        // });
+
+        setErrors([]);
+
+        const newFlights = flights.map((f, idx) =>
+          errorMap[idx] ? f : { ...f, flightNo: "", aircraftCode: "" }
+        );
+        setFlights(newFlights);
+
+        if (Object.keys(errorMap).length === 0) {
+          navigate("/admin/FlightManagement");
+        }
+      } else {
+        const errorMap: Record<number, string> = {};
+
+        result?.list?.forEach(
+          (item: CreateManyFlightResultItem, idx: number) => {
+            if (item.errorCode && item.errorCode !== "00") {
+              errorMap[idx] = item.errorMessage || "Unknown error";
+            }
+          }
+        );
+
         setErrors(errorMap);
 
         const newFlights = flights.map((f, idx) =>
           errorMap[idx] ? f : { ...f, flightNo: "", aircraftCode: "" }
         );
         setFlights(newFlights);
-      } else {
-        console.error(result?.resultMessage);
       }
     } catch (err) {
-      console.error(err);
-      alert("API error!");
+      console.error("error", err);
     }
   };
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box sx={{ padding: 1 }}>
       <Typography variant="h5" fontWeight="bold" mb={2}>
-        Tạo nhiều chuyến bay
+        Create Bulk Flight
       </Typography>
 
       {flights.map((flight, index) => (
         <Card
           key={index}
           sx={{
-            mb: 2,
             p: 2,
             border: "1px solid",
-            borderColor: errors[index] ? "error.main" : "grey.300",
-            borderRadius: 2,
-            boxShadow: 1,
+            borderRadius: 1,
+            borderColor: errors[index]
+              ? theme.palette.error.dark
+              : theme.palette.grey[300],
+            mb: 2,
+            padding: 1,
           }}
         >
           <CardContent>
             <Grid container spacing={2}>
               <Grid size={3}>
-                <TextField
-                  size="small"
-                  label="Flight No"
+                <InputTextField
+                  placeholder="Flight No"
                   value={flight.flightNo}
                   onChange={(e) =>
-                    handleChange(
-                      index,
-                      "flightNo",
-                      e.target.value.toUpperCase()
-                    )
+                    handleChange(index, "flightNo", e.toUpperCase())
                   }
-                  fullWidth
                 />
               </Grid>
+
               <Grid size={3}>
-                <TextField
-                  size="small"
-                  label="Aircraft Code"
-                  value={flight.aircraftCode}
-                  onChange={(e) =>
-                    handleChange(
-                      index,
-                      "aircraftCode",
-                      e.target.value.toUpperCase()
-                    )
-                  }
-                  fullWidth
-                />
-              </Grid>
-              <Grid size={3}>
-                <TextField
-                  size="small"
-                  label="Terminal"
-                  value={flight.terminal}
-                  onChange={(e) =>
-                    handleChange(index, "terminal", e.target.value)
-                  }
-                  fullWidth
-                />
-              </Grid>
-              <Grid size={3}>
-                <TextField
-                  size="small"
-                  label="Status"
+                <InputTextField
+                  placeholder="Status"
                   value={flight.status}
-                  onChange={(e) =>
-                    handleChange(index, "status", e.target.value)
-                  }
-                  fullWidth
+                  onChange={(e) => handleChange(index, "status", e)}
                 />
               </Grid>
 
               <Grid size={3}>
-                <TextField
-                  size="small"
-                  label="Departure Airport"
+                <SelectDropdown
+                  options={optionAirportCode}
+                  placeholder="Departure Airport"
                   value={flight.departureAirport}
-                  onChange={(e) =>
-                    handleChange(
-                      index,
-                      "departureAirport",
-                      e.target.value.toUpperCase()
-                    )
-                  }
-                  fullWidth
-                />
-              </Grid>
-              <Grid size={3}>
-                <TextField
-                  size="small"
-                  label="Arrival Airport"
-                  value={flight.arrivalAirport}
-                  onChange={(e) =>
-                    handleChange(
-                      index,
-                      "arrivalAirport",
-                      e.target.value.toUpperCase()
-                    )
-                  }
-                  fullWidth
+                  onChange={(e) => handleChange(index, "departureAirport", e)}
                 />
               </Grid>
 
               <Grid size={3}>
-                <TextField
-                  size="small"
-                  type="datetime-local"
-                  label="Scheduled Departure"
-                  InputLabelProps={{ shrink: true }}
-                  value={flight.scheduledDeparture}
-                  onChange={(e) =>
-                    handleChange(index, "scheduledDeparture", e.target.value)
-                  }
-                  fullWidth
+                <SelectDropdown
+                  options={optionAirportCode}
+                  placeholder="Arrival Airport"
+                  value={flight.arrivalAirport}
+                  onChange={(e) => handleChange(index, "arrivalAirport", e)}
                 />
               </Grid>
+
               <Grid size={3}>
+                <SelectDropdown
+                  options={optionAircraftCode}
+                  placeholder="Aircraft Code"
+                  value={flight.aircraftCode}
+                  onChange={(e) => handleChange(index, "aircraftCode", e)}
+                />
+              </Grid>
+
+              <Grid size={6}>
+                {/* <Box sx={{ maxHeight: "2vh" }}> */}
+                <SingleDateRangePickerComponent
+                  sx={{ maxHeight: "5vh" }}
+                  // placeHolder="Scheduled Departure"
+                  value={[flight.scheduledDeparture, flight.scheduledArrival]}
+                  language="en"
+                  // sx={{ maxHeight: "20vh" }}
+                  onChange={([departure, arrival]) => {
+                    handleChange(index, "scheduledDeparture", departure);
+                    handleChange(index, "scheduledArrival", arrival);
+                  }}
+                />
+                {/* </Box> */}
+              </Grid>
+              {/* <Grid size={3}>
                 <TextField
                   size="small"
                   type="datetime-local"
@@ -243,36 +242,44 @@ const FlightBatchCreator: React.FC = () => {
                   }
                   fullWidth
                 />
+              </Grid> */}
+
+              <Grid size={3}>
+                <InputTextField
+                  placeholder="Terminal"
+                  value={flight.terminal}
+                  onChange={(e) => handleChange(index, "terminal", e)}
+                />
               </Grid>
 
               <Grid size={3}>
-                <TextField
-                  size="small"
-                  type="number"
-                  label="Price Economy"
-                  value={flight.priceEconomy}
-                  onChange={(e) =>
-                    handleChange(index, "priceEconomy", Number(e.target.value))
-                  }
-                  fullWidth
-                />
+                <FormControl fullWidth>
+                  <InputNumber
+                    size="small"
+                    placeholder="Price Economy"
+                    value={flight.priceEconomy}
+                    onChange={(e) =>
+                      handleChange(index, "priceEconomy", Number(e))
+                    }
+                  />
+                </FormControl>
               </Grid>
               <Grid size={3}>
-                <TextField
-                  size="small"
-                  type="number"
-                  label="Price Business"
-                  value={flight.priceBusiness}
-                  onChange={(e) =>
-                    handleChange(index, "priceBusiness", Number(e.target.value))
-                  }
-                  fullWidth
-                />
+                <FormControl fullWidth>
+                  <InputNumber
+                    size="small"
+                    placeholder="Price Business"
+                    value={flight.priceBusiness}
+                    onChange={(e) =>
+                      handleChange(index, "priceBusiness", Number(e))
+                    }
+                  />
+                </FormControl>
               </Grid>
 
               <Grid size={1}>
                 <IconButton
-                  color="error"
+                  sx={{ color: theme.palette.error.dark }}
                   onClick={() => handleRemoveFlight(index)}
                   disabled={flights.length === 1}
                 >

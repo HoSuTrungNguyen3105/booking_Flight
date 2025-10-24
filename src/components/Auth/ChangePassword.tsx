@@ -1,22 +1,10 @@
-import {
-  Box,
-  Typography,
-  Stack,
-  Link as MuiLink,
-  FormControl,
-  Button,
-} from "@mui/material";
+import { Box, Typography, Stack, FormControl, Button } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import InputTextField from "../../common/Input/InputTextField";
 import { useChangePassword } from "../../context/Api/usePostApi";
 import { memo, useState } from "react";
 import VerifyOpt from "./VerifyOpt";
-
-interface FormDataType {
-  userId: number;
-  newPassword: string;
-  confirmPassword: string;
-}
+import type { ChangePasswordProps } from "../../utils/type";
 
 interface IUserIdNumber {
   onClose: () => void;
@@ -26,10 +14,9 @@ interface IUserIdNumber {
 
 const ChangePassword = ({ userId, email, onClose }: IUserIdNumber) => {
   const { refetchChangePassword } = useChangePassword();
-  // const [userId, setUserId] = useState<number | undefined>(undefined);
   const [verifyOTPcode, setVerifyOTPcode] = useState(false);
 
-  const { control, handleSubmit } = useForm<FormDataType>({
+  const { control, handleSubmit } = useForm<ChangePasswordProps>({
     defaultValues: {
       userId: userId,
       newPassword: "",
@@ -37,7 +24,7 @@ const ChangePassword = ({ userId, email, onClose }: IUserIdNumber) => {
     },
   });
 
-  const onSubmit = async (data: FormDataType) => {
+  const onSubmit = async (data: ChangePasswordProps) => {
     try {
       const response = await refetchChangePassword(data);
       if (response?.resultCode === "00") {
@@ -70,7 +57,7 @@ const ChangePassword = ({ userId, email, onClose }: IUserIdNumber) => {
       >
         <Stack component="form" spacing={3} onSubmit={handleSubmit(onSubmit)}>
           <Typography variant="subtitle2" component="h6" align="center">
-            비밀번호 설정
+            Set New Password
           </Typography>
 
           <Typography
@@ -79,14 +66,15 @@ const ChangePassword = ({ userId, email, onClose }: IUserIdNumber) => {
             color="grey.500"
             align="center"
           >
-            임시 패스워드 상태거나 비밀번호 유효기간이 만료되어 <br />
-            신규 비밀번호를 생성합니다.
+            You are currently using a temporary password or your password has{" "}
+            <br />
+            expired. Please create a new one.
           </Typography>
 
-          {/* Nhập mật khẩu */}
+          {/* New password */}
           <FormControl fullWidth>
             <Typography variant="body1" mb={0.5}>
-              비밀번호
+              New Password
             </Typography>
             <Controller
               control={control}
@@ -96,16 +84,16 @@ const ChangePassword = ({ userId, email, onClose }: IUserIdNumber) => {
                   {...field}
                   showEyeIcon
                   type="password"
-                  placeholder="Mật khẩu mới"
+                  placeholder="Enter new password"
                 />
               )}
             />
           </FormControl>
 
-          {/* Nhập lại mật khẩu */}
+          {/* Confirm password */}
           <FormControl fullWidth>
             <Typography variant="body1" mb={0.5}>
-              비밀번호 확인
+              Confirm Password
             </Typography>
             <Controller
               control={control}
@@ -115,21 +103,19 @@ const ChangePassword = ({ userId, email, onClose }: IUserIdNumber) => {
                   {...field}
                   showEyeIcon
                   type="password"
-                  placeholder="Xác nhận mật khẩu"
+                  placeholder="Re-enter password"
                 />
               )}
             />
             <Box display="flex" alignItems="flex-start" gap={1} mt={1}>
-              {/* <img src="/assets/icons/error.svg" alt="error" /> */}
               <Typography variant="subtitle2" color="error">
-                Password must include a combination of uppercase/lowercase{" "}
+                Password must contain a mix of uppercase and lowercase letters,
                 <br />
-                letters, numbers, and special characters, and be between 8 to 20{" "}
-                <br />
-                characters long.
+                numbers, and special characters, and be 8–20 characters long.
               </Typography>
             </Box>
           </FormControl>
+
           <Box
             sx={{
               display: "flex",
@@ -137,21 +123,9 @@ const ChangePassword = ({ userId, email, onClose }: IUserIdNumber) => {
             }}
           >
             <Button variant="contained" type="submit">
-              설정
+              Set Password
             </Button>
           </Box>
-
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            textAlign="center"
-            mt={3}
-          >
-            Đã có tài khoản?{" "}
-            <MuiLink href="/login" underline="hover" color="primary">
-              Đăng nhập tại đây
-            </MuiLink>
-          </Typography>
         </Stack>
       </Box>
     </Box>

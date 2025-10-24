@@ -7,16 +7,17 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import type { Seat, SeatTypeValue } from "../../../../utils/type";
 
-export type SeatType = "ECONOMY" | "BUSINESS" | "FIRST";
+// export type SeatType = "ECONOMY" | "BUSINESS" | "FIRST";
 
-interface Seat {
-  id: number;
-  seatNumber: number;
-  seatRow: string;
-  isBooked: boolean;
-  type: SeatType;
-}
+// interface Seat {
+//   id: number;
+//   seatNumber: number;
+//   seatRow: string;
+//   isBooked: boolean;
+//   type: SeatTypeValue;
+// }
 
 interface Flight {
   id: number;
@@ -30,7 +31,7 @@ interface SeatManagerProps {
     flightId: number,
     seatRow: string,
     seatNumber: number,
-    type: SeatType
+    type: SeatTypeValue
   ) => Promise<void>;
 }
 
@@ -43,7 +44,7 @@ export default function SeatManager({
   const [seats, setSeats] = useState<Seat[]>([]);
   const [newSeatRow, setNewSeatRow] = useState("");
   const [newSeatNumber, setNewSeatNumber] = useState<number>(1);
-  const [newSeatType, setNewSeatType] = useState<SeatType>("ECONOMY");
+  const [newSeatType, setNewSeatType] = useState<SeatTypeValue>("ECONOMY");
 
   useEffect(() => {
     if (selectedFlight !== null) {
@@ -99,7 +100,7 @@ export default function SeatManager({
               select
               label="Loại ghế"
               value={newSeatType}
-              onChange={(e) => setNewSeatType(e.target.value as SeatType)}
+              onChange={(e) => setNewSeatType(e.target.value as SeatTypeValue)}
               sx={{ mr: 1, width: 150 }}
             >
               <MenuItem value="ECONOMY">Economy</MenuItem>

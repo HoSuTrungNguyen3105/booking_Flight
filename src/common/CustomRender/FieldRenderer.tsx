@@ -127,8 +127,9 @@ const FieldRenderer = ({
           placeholder={placeholder}
           isSeparator
           min={0}
+          sx={{ width: "100%" }}
           size="small"
-          textAlign="right"
+          textAlign="left"
         />
       );
     case FieldType.TEXTAREA:

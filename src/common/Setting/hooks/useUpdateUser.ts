@@ -27,6 +27,7 @@ export const useUpdateUser = ({
     role: data?.role as UserRoleType,
     email: data?.email || "",
     password: data?.password,
+    employeeNo: data?.employeeNo,
     name: data?.name,
     department: data?.department ?? "",
     position: data?.position ?? "",
@@ -50,6 +51,7 @@ export const useUpdateUser = ({
       position: data?.position ?? "",
       status: data?.status ?? EmployeeStatus.ACTIVE,
       baseSalary: data?.baseSalary ?? 0,
+      employeeNo: data?.employeeNo,
       // userAlias: data.userAlias ?? "",
       // pictureUrl: (data as any)?.pictureUrl ?? "",
     });
@@ -75,10 +77,15 @@ export const useUpdateUser = ({
         role: formData.role,
       };
       const res = await refetchUpdateUserFromAdmin(payload);
-      console.log("payload", payload);
-      toast(res?.resultMessage || "Success", "success");
-      onSuccess();
-      onClose();
+      if (res?.resultCode === "00") {
+        console.log("payload", payload);
+        toast(res?.resultMessage || "Success", "success");
+        onSuccess();
+        onClose();
+      } else {
+        console.log("payload", payload);
+        toast(res?.resultMessage || "Success", "error");
+      }
     } catch (error) {
       console.error("Error updating user:", error);
       toast("Cập nhật thất bại", "error");

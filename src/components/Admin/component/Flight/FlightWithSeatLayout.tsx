@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 import {
   Box,
   Typography,
@@ -15,13 +15,16 @@ import { useGetAllInfoFlightByIDData } from "../../../../context/Api/useGetApi";
 import DetailSection, {
   type IDetailItem,
 } from "../../../../common/DetailSection";
-import ButtonSeat from "./ButtonSeat";
+import ButtonSeat from "../Seat/ButtonSeat";
 import type { Seat } from "../../../../utils/type";
 import { Chair, LocalAirport, RestartAlt } from "@mui/icons-material";
-import SeatManagementModal from "./SeatManagementModal";
-import CreateSeat from "./SeatCreatePage";
-import InfoAndUpdateSeatModal from "./InfoAndUpdateSeatModal";
+import SeatManagementModal from "../Seat/SeatManagementModal";
+import CreateSeat from "../Seat/SeatCreatePage";
+import InfoAndUpdateSeatModal from "../Seat/InfoAndUpdateSeatModal";
 import { useToast } from "../../../../context/ToastContext";
+import { useDeleteSeatInFlightByIds } from "../../../../context/Api/usePostApi";
+import _ from "lodash";
+import LegendItem from "../Seat/LegendItem";
 
 type FlightIdProps = {
   id: number;
@@ -30,9 +33,10 @@ type FlightIdProps = {
 
 type AircraftSeatTypeProps = "ALL" | "VIP" | "ECONOMY" | "FIRST" | "BUSINESS";
 
-const SeatLayout: React.FC<FlightIdProps> = ({ id, onReturn }) => {
+const FlightWithSeatLayout: React.FC<FlightIdProps> = ({ id, onReturn }) => {
   const { getAllInfoFlightByIdData, refetchGetAllInfoFlightData } =
     useGetAllInfoFlightByIDData({ id });
+  const { refetchDeleteSeatInFlightByIds } = useDeleteSeatInFlightByIds();
   const [selectedSeats, setSelectedSeats] = useState<Seat[]>([]);
   const [maxSelectSeats, setMaxSelectSeats] = useState<number>(1);
   const detail: IDetailItem[] = [
@@ -116,6 +120,11 @@ const SeatLayout: React.FC<FlightIdProps> = ({ id, onReturn }) => {
     setIsUpdateModalOpen(false);
   };
 
+  const handleDeleteSeatInFlight = (flightId: number) => {
+    refetchDeleteSeatInFlightByIds({ flightId });
+    refetchGetAllInfoFlightData();
+  };
+
   const handleResetSelections = () => {
     // setSelectedSeats([]);
     // setUpdateSeat({
@@ -123,6 +132,8 @@ const SeatLayout: React.FC<FlightIdProps> = ({ id, onReturn }) => {
     //   type: "ECONOMY",
     // });
   };
+
+  // const filteredSeats = flightInfo?.seats || [];
 
   const filteredSeats = useMemo(() => {
     if (filter === "ALL") return getAllInfoFlightByIdData?.data?.seats;
@@ -146,6 +157,13 @@ const SeatLayout: React.FC<FlightIdProps> = ({ id, onReturn }) => {
       (s) => s.type === filter
     );
   }, [getAllInfoFlightByIdData, filter]);
+
+  const seatNumberCountUnique = _.uniqBy(
+    getAllInfoFlightByIdData?.data?.seats || [],
+    "seatNumber"
+  );
+
+  const seatCount = seatNumberCountUnique.length;
 
   const handleSelectSeat = (seat: Seat) => {
     setSelectedSeats((prev) => {
@@ -184,18 +202,15 @@ const SeatLayout: React.FC<FlightIdProps> = ({ id, onReturn }) => {
 
   return (
     <Box sx={{ maxWidth: "100%" }}>
-      <Box sx={{ borderRadius: 2, p: 1 }}>
+      <Box sx={{ p: 1 }}>
         <Box
           sx={{
             display: "flex",
             justifyContent: "space-between",
             alignItems: "flex-start",
-            mb: 3,
+            mb: 1,
           }}
         >
-          <Typography variant="h4" fontWeight="bold">
-            Scale
-          </Typography>
           <Button onClick={onReturn} variant="contained">
             {" "}
             Return
@@ -212,7 +227,7 @@ const SeatLayout: React.FC<FlightIdProps> = ({ id, onReturn }) => {
               { key: "ALL", label: "All Seats" },
               { key: "VIP", label: "VIP" },
               { key: "ECONOMY", label: "Economy" },
-              { key: "WINDOW", label: "Window" },
+              { key: "FIRST", label: "First" },
               { key: "BUSINESS", label: "BUSINESS" },
             ].map((item) => (
               <Chip
@@ -233,19 +248,12 @@ const SeatLayout: React.FC<FlightIdProps> = ({ id, onReturn }) => {
           </Box>
         </Box>
 
-        <Grid container spacing={4}>
-          {/* Info + Options */}
+        <Grid container spacing={2}>
           <Grid size={6}>
             <Typography>Select one seat</Typography>
             <Button variant="contained" onClick={() => setCreateSeat(true)}>
               Create Seat
             </Button>
-            {/* {(!getAllInfoFlightByIdData?.data?.seats ||
-              getAllInfoFlightByIdData.data.seats.length === 0) && (
-              <Button variant="contained" onClick={() => setCreateSeat(true)}>
-                Create Seat
-              </Button>
-            )} */}
 
             <Button
               variant={maxSelectSeats === 1 ? "contained" : "outlined"}
@@ -253,7 +261,9 @@ const SeatLayout: React.FC<FlightIdProps> = ({ id, onReturn }) => {
             >
               Single
             </Button>
+
             <Typography>Select Multi seat</Typography>
+
             <Button
               variant={maxSelectSeats > 1 ? "contained" : "outlined"}
               onClick={() => setMaxSelectSeats(50)}
@@ -406,11 +416,17 @@ const SeatLayout: React.FC<FlightIdProps> = ({ id, onReturn }) => {
             )}
           </Grid>
 
-          {/* Seat Map */}
           <Grid size={6}>
-            <Typography variant="h6" gutterBottom>
+            <Box>
               {getAllInfoFlightByIdData?.data?.aircraft?.model} Seat Map
-            </Typography>
+              <Button
+                variant="contained"
+                onClick={() => handleDeleteSeatInFlight(id)}
+              >
+                Delete all seat
+              </Button>
+              <LegendItem />
+            </Box>
             <Box
               sx={{
                 display: "flex",
@@ -420,12 +436,12 @@ const SeatLayout: React.FC<FlightIdProps> = ({ id, onReturn }) => {
                 p: 2,
                 bgcolor: "#f5f5f5",
                 borderRadius: 1,
-                height: "30rem", // hoặc "100%", hoặc "calc(100vh - 200px)" tuỳ layout
-                overflowY: "auto", // 👈 Cho phép cuộn dọc
+                height: "30rem",
+                overflowY: "auto",
                 scrollbarWidth: "thin",
               }}
             >
-              {Array.from({ length: 40 }, (_, rowIndex) => {
+              {Array.from({ length: seatCount }, (_, rowIndex) => {
                 const row = rowIndex + 1;
 
                 return (
@@ -433,7 +449,6 @@ const SeatLayout: React.FC<FlightIdProps> = ({ id, onReturn }) => {
                     key={row}
                     sx={{ display: "flex", justifyContent: "center", mb: 1 }}
                   >
-                    {/* 3 ghế bên trái */}
                     {["A", "B", "C"].map((col) => {
                       const seat = filteredSeats?.find(
                         (s) => s.seatNumber === row && s.seatRow === col
@@ -453,10 +468,8 @@ const SeatLayout: React.FC<FlightIdProps> = ({ id, onReturn }) => {
                       );
                     })}
 
-                    {/* Lối đi */}
                     <Box sx={{ width: 40 }} />
 
-                    {/* 3 ghế bên phải */}
                     {["D", "E", "F"].map((col) => {
                       const seat = filteredSeats?.find(
                         (s) => s.seatNumber === row && s.seatRow === col
@@ -481,11 +494,9 @@ const SeatLayout: React.FC<FlightIdProps> = ({ id, onReturn }) => {
             </Box>
           </Grid>
         </Grid>
-
-        <Divider sx={{ my: 3 }} />
       </Box>
     </Box>
   );
 };
 
-export default SeatLayout;
+export default memo(FlightWithSeatLayout);

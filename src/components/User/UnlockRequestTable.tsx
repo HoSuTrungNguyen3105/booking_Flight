@@ -4,6 +4,7 @@ import { useGetUnlockRequests } from "../../context/Api/useGetApi";
 import { useCallback, useMemo } from "react";
 import TableSection from "../../common/CustomRender/TableSection";
 import { DateFormatEnum, formatDate } from "../../hooks/format";
+import theme from "../../scss/theme";
 
 enum TypeColor {
   REJECTED = "REJECTED",
@@ -24,18 +25,16 @@ const UnlockRequestTable = () => {
     [getUnlockRequests]
   );
 
-  console.log("rowData", rowData);
-
   const getStatusColor = useCallback((status: string) => {
     switch (status) {
       case TypeColor.APPROVED:
-        return "#567B7A";
+        return theme.palette.background.default;
       case TypeColor.REJECTED:
-        return "#B46674";
+        return theme.palette.primary.light;
       case TypeColor.PENDING:
-        return "#FFF4CC";
+        return theme.palette.grey[700];
       default:
-        return "default";
+        return theme.palette.error.dark;
     }
   }, []);
 
@@ -55,8 +54,9 @@ const UnlockRequestTable = () => {
         <Chip
           label={params.value}
           size="small"
-          variant="outlined"
+          variant="filled"
           sx={{
+            mb: 0.5,
             border: "none",
             color: getStatusColor(params.value),
           }}
@@ -109,7 +109,7 @@ const UnlockRequestTable = () => {
 
   return (
     <Box sx={{ height: 400, width: "100%" }}>
-      <Typography variant="h5" fontWeight="bold" gutterBottom>
+      <Typography sx={{ ml: 1 }} variant="h5" fontWeight="bold" gutterBottom>
         Unlock Request Management
       </Typography>
       <TableSection

@@ -27,6 +27,9 @@ const UpdateUserModal = ({
       data,
     });
 
+  console.log("formData", formData);
+  console.log("formDetailConfig", formDetailConfig);
+
   const renderActions = useCallback(
     () => (
       <Box display="flex" gap={1} justifyContent="flex-end" alignItems="center">
@@ -45,7 +48,7 @@ const UpdateUserModal = ({
 
   const renderContent = useCallback(
     () => (
-      <Stack sx={{ maxHeight: "50vh", overflowY: "auto" }}>
+      <Stack sx={{ maxHeight: "55vh", overflowY: "auto" }}>
         {formDetailConfig?.map(
           (section, index) =>
             !section.visible && (

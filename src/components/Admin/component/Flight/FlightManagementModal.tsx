@@ -196,7 +196,6 @@ const FlightManagementModal = ({
           priceFirst: formData.priceFirst,
           terminal: formData.terminal,
         };
-        console.log("res", createData);
 
         const response = await refetchCreateFlightData(createData);
 
@@ -290,7 +289,7 @@ const FlightManagementModal = ({
         <Grid size={12}>
           <InputTextField
             value={formData.flightNo}
-            placeholder="flightNo"
+            placeholder="Flight No"
             onChange={(e) => handleInputChange("flightNo", e)}
             startIcon={<AirplaneTicket color="primary" />}
           />
@@ -300,7 +299,7 @@ const FlightManagementModal = ({
           <FormControl fullWidth>
             <SelectDropdown
               options={optionWay}
-              placeholder="flightType"
+              placeholder="Flight Type"
               value={formData.flightType || ""}
               onChange={(e) => handleInputChange("flightType", e as string)}
             />
@@ -310,7 +309,7 @@ const FlightManagementModal = ({
         <Grid size={12}>
           <SelectDropdown
             options={optionAirportCode}
-            placeholder="departureAirport"
+            placeholder="Departure Airport"
             value={formData.departureAirport}
             onChange={(e) => handleInputChange("departureAirport", e as string)}
             //startIcon={<FlightTakeoff color="primary" />}
@@ -320,7 +319,7 @@ const FlightManagementModal = ({
         <Grid size={12}>
           <SelectDropdown
             options={optionAirportCode}
-            placeholder="arrivalAirport"
+            placeholder="Arrival Airport"
             value={formData.arrivalAirport}
             onChange={(e) => handleInputChange("arrivalAirport", e as string)}
             // startIcon={<FlightLand color="primary" />}
@@ -331,7 +330,7 @@ const FlightManagementModal = ({
           <FormRow label="aircraftCode">
             <SelectDropdown
               options={optionAircraftCode}
-              placeholder="aircraftCode"
+              placeholder="Aircraft Code"
               value={formData.aircraftCode}
               onChange={(e) => handleInputChange("aircraftCode", e as string)}
             />
@@ -342,7 +341,7 @@ const FlightManagementModal = ({
         <Grid size={12}>
           <InputTextField
             value={formData.terminal}
-            placeholder="terminal"
+            placeholder="Terminal"
             onChange={(e) => handleInputChange("terminal", e as string)}
           />
         </Grid>
@@ -401,6 +400,7 @@ const FlightManagementModal = ({
           <Typography>Giá vé Phổ thông</Typography>
           <InputTextField
             type="number"
+            placeholder="Price Economy"
             value={String(formData.priceEconomy)}
             onChange={(e) => handleInputChange("priceEconomy", parseInt(e))}
             startIcon={<AttachMoney />}
@@ -411,7 +411,7 @@ const FlightManagementModal = ({
         <Grid size={12}>
           <InputTextField
             type="number"
-            name="Giá vé Thương gia"
+            placeholder="Price Business"
             value={String(formData.priceBusiness)}
             onChange={(e) => handleInputChange("priceBusiness", parseInt(e))}
             startIcon={<AttachMoney />}
@@ -422,7 +422,7 @@ const FlightManagementModal = ({
         <Grid size={12}>
           <InputTextField
             type="number"
-            name="Giá vé Thương gia"
+            placeholder="Price First"
             value={String(formData.priceFirst)}
             onChange={(e) => handleInputChange("priceFirst", parseInt(e))}
             startIcon={<AttachMoney />}
@@ -439,7 +439,6 @@ const FlightManagementModal = ({
       <Grid container spacing={3}>
         <Grid size={12}>
           <InputTextField
-            name="Cổng"
             value={formData.gateId}
             onChange={(e) => handleInputChange("gateId", e)}
             placeholder="Ví dụ: A12"
@@ -448,7 +447,6 @@ const FlightManagementModal = ({
 
         <Grid size={12}>
           <InputTextField
-            name="Nhà ga"
             value={formData.terminal}
             onChange={(e) => handleInputChange("terminal", e)}
           />

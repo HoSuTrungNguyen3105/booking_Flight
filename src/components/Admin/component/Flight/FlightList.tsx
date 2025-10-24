@@ -6,12 +6,13 @@ import {
 } from "../../../../context/Api/useGetApi";
 import { Box, Button, Typography } from "@mui/material";
 import { type GridRowDef } from "../../../../common/DataGrid/index";
-import { DateFormatEnum, formatDateKR } from "../../../../hooks/format";
+import { DateFormatEnum, formatDate } from "../../../../hooks/format";
 import FlightModalTriggerManagement from "./FlightModalTriggerManagement";
 import TableSection from "../../../../common/CustomRender/TableSection";
-// import SeatBooking from "./SeatBooking";
-import SeatLayout from "../Seat/SeatLayout";
 import { Download } from "@mui/icons-material";
+// import FlightStatus from "./FlightStatus";
+import FlightWithSeatLayout from "./FlightWithSeatLayout";
+import type { GridRenderCellParams } from "@mui/x-data-grid";
 import FlightStatus from "./FlightStatus";
 
 export default function FlightList() {
@@ -37,6 +38,8 @@ export default function FlightList() {
   >(null);
 
   const [selectViewDetail, setSelectViewDetail] = useState<boolean>(false);
+  const [selectUpdateFlightStatus, setSelectUpdateFlightStatus] =
+    useState<boolean>(false);
 
   const handleFlightRowSelection = (selectedIds: GridRowId[]) => {
     const newSelectedRows = flightRows.filter((row) =>
@@ -68,65 +71,56 @@ export default function FlightList() {
     {
       field: "scheduledDeparture",
       headerName: "Departure",
-      flex: 2,
+      flex: 1,
       valueFormatter: (params: number) =>
-        params
-          ? formatDateKR(DateFormatEnum.MMMM_D_YYYY_HH_MM_SS, params)
-          : "-",
+        params ? formatDate(DateFormatEnum.MMMM_D_YYYY_HH_MM_SS, params) : "-",
     },
     {
       field: "scheduledArrival",
       headerName: "Arrival",
-      flex: 2,
+      flex: 1,
       valueFormatter: (params: number) =>
-        params
-          ? formatDateKR(DateFormatEnum.MMMM_D_YYYY_HH_MM_SS, params)
-          : "-",
+        params ? formatDate(DateFormatEnum.MMMM_D_YYYY_HH_MM_SS, params) : "-",
     },
-    { field: "departureAirport", headerName: "From", flex: 1 },
-    { field: "arrivalAirport", headerName: "To", flex: 1 },
-    { field: "status", headerName: "Status", flex: 1 },
+    { field: "departureAirport", headerName: "From", flex: 0.5 },
+    { field: "arrivalAirport", headerName: "To", flex: 0.5 },
+    { field: "status", headerName: "Status", flex: 0.5 },
     {
       field: "update",
       headerName: "Update",
       flex: 1,
-      renderCell: (params) => (
-        <FlightModalTriggerManagement
-          onSuccess={() => refetchGetFlightData()}
-          id={params.row.id}
-        />
-      ),
-    },
-    {
-      field: "info",
-      headerName: "Detail",
-      flex: 1,
-      renderCell: (params) => (
-        <Button
-          size="small"
-          variant="outlined"
-          onClick={() => {
-            setSelectViewDetail(true);
-            setSelectedFlightToViewInfo(params.row.id);
-          }}
-        >
-          Detail
-        </Button>
+      renderCell: (params: GridRenderCellParams) => (
+        <Box mt={1} display={"flex"} justifyContent={"space-around"} gap={1}>
+          <FlightModalTriggerManagement
+            onSuccess={() => refetchGetFlightData()}
+            id={params.row.id}
+          />
+          <Button
+            size="large"
+            variant="outlined"
+            onClick={() => {
+              setSelectViewDetail(true);
+              setSelectedFlightToViewInfo(params.row.id);
+            }}
+          >
+            Detail
+          </Button>
+        </Box>
       ),
     },
   ];
 
   if (selectViewDetail) {
     return (
-      <SeatLayout
+      <FlightWithSeatLayout
         id={selectedFlightToViewInfo as number}
         onReturn={() => setSelectViewDetail(false)}
       />
     );
   }
 
-  if (selectViewDetail) {
-    return <FlightStatus onReturn={() => setSelectViewDetail(false)} />;
+  if (selectUpdateFlightStatus) {
+    return <FlightStatus onReturn={() => setSelectUpdateFlightStatus(false)} />;
   }
 
   return (
@@ -143,6 +137,15 @@ export default function FlightList() {
           startIcon={<Download />}
         >
           Export Excel
+        </Button>
+
+        <Button
+          variant="contained"
+          onClick={() => setSelectUpdateFlightStatus(true)}
+          disabled={loading}
+          startIcon={<Download />}
+        >
+          Update FlightStatus
         </Button>
 
         <FlightModalTriggerManagement

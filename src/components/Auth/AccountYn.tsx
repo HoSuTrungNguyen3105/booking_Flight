@@ -1,6 +1,6 @@
 import { Box, Button, FormControl, Paper, Typography } from "@mui/material";
 import { Controller, useForm, useWatch } from "react-hook-form";
-import { useCallback, useState } from "react";
+import { memo, useCallback, useState } from "react";
 import InputTextField from "../../common/Input/InputTextField";
 import {
   getUserIdByEmail,
@@ -80,7 +80,6 @@ const AccountModePage = ({ mode, onClose }: AccountModePageProps) => {
     );
   }
 
-  // --- Form nhập email ---
   return (
     <Box
       component="form"
@@ -130,4 +129,4 @@ const AccountModePage = ({ mode, onClose }: AccountModePageProps) => {
   );
 };
 
-export default AccountModePage;
+export default memo(AccountModePage);

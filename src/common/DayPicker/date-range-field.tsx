@@ -1,23 +1,33 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
-import { Box, TextField, InputAdornment, type SxProps } from "@mui/material";
+import { Box, InputAdornment, type SxProps } from "@mui/material";
 import CalendarIcon from "@mui/icons-material/Event";
 import moment, { type Moment } from "moment";
-import { koKR, enUS } from "@mui/x-date-pickers/locales";
+import { koKR, enUS, jaJP, viVN } from "@mui/x-date-pickers/locales";
+import type { DatePickerSize } from "./type";
 
 interface Props {
   language: "vn" | "en" | "ko" | "jp";
   status?: "default" | "error" | "warning" | "confirmed";
   sx?: SxProps;
-  inputClassName?: string;
   placeHolder?: string;
   disabled?: boolean;
   readOnly?: boolean;
   value?: [number, number];
   onChange?: (value: [number, number]) => void;
   disabledOpenPicker?: boolean;
+  size?: DatePickerSize;
 }
+
+const parseDecimalToMoment = (decimalValue?: number): Moment | null => {
+  if (!decimalValue || decimalValue <= 0) return null;
+  const m = moment(decimalValue * 1000);
+  return m.isValid() ? m : null;
+};
+
+const convertMomentToDecimal = (m?: Moment | null): number =>
+  m && m.isValid() ? Number((m.valueOf() / 1000).toFixed(3)) : 0;
 
 const SingleDateRangePickerComponent: React.FC<Props> = ({
   language,
@@ -28,155 +38,86 @@ const SingleDateRangePickerComponent: React.FC<Props> = ({
   readOnly = false,
   value,
   onChange,
+  size = "small",
   disabledOpenPicker = false,
 }) => {
-  const parseDecimalToMoment = (
-    decimalValue: number | undefined
-  ): Moment | null => {
-    if (
-      decimalValue === undefined ||
-      decimalValue === null ||
-      decimalValue <= 0
-    ) {
-      return null;
-    }
+  const [dateRange, setDateRange] = useState<[Moment | null, Moment | null]>([
+    parseDecimalToMoment(value?.[0]),
+    parseDecimalToMoment(value?.[1]),
+  ]);
 
-    try {
-      const momentDate = moment(decimalValue * 1000);
-      return momentDate.isValid() ? momentDate : null;
-    } catch (error) {
-      console.error("Error parsing decimal value to date:", error);
-      return null;
-    }
-  };
-
-  const convertMomentToDecimal = (momentDate: Moment | null): number => {
-    if (!momentDate || !momentDate.isValid()) {
-      return 0;
-    }
-
-    try {
-      const timestampMs = momentDate.valueOf();
-      return parseFloat((timestampMs / 1000).toFixed(3));
-    } catch (error) {
-      console.error("Error converting moment to decimal:", error);
-      return 0;
-    }
-  };
-
-  const [dateRange, setDateRange] = useState<[Moment | null, Moment | null]>(
-    () => {
-      if (value && Array.isArray(value) && value.length === 2) {
-        return [parseDecimalToMoment(value[0]), parseDecimalToMoment(value[1])];
-      }
-      return [null, null];
-    }
-  );
-
-  const [isInitialized, setIsInitialized] = useState(false);
-
+  // Đặt ngôn ngữ cho moment
   useEffect(() => {
-    moment.locale(language);
+    moment.locale(language === "vn" ? "vi" : language);
   }, [language]);
 
+  // Đồng bộ state khi prop `value` thay đổi
   useEffect(() => {
-    if (value && Array.isArray(value) && value.length === 2) {
-      const newStart = parseDecimalToMoment(value[0]);
-      const newEnd = parseDecimalToMoment(value[1]);
-
-      setDateRange([newStart, newEnd]);
-      setIsInitialized(true);
-    } else if (!isInitialized) {
-      setDateRange([null, null]);
-      setIsInitialized(true);
+    if (value?.length === 2) {
+      setDateRange([
+        parseDecimalToMoment(value[0]),
+        parseDecimalToMoment(value[1]),
+      ]);
     }
-  }, [value, isInitialized]);
+  }, [value]);
 
   const handleDateChange = (index: 0 | 1, newValue: Moment | null) => {
-    const newDateRange: [Moment | null, Moment | null] = [...dateRange];
-    newDateRange[index] = newValue;
+    const newRange = [...dateRange] as [Moment | null, Moment | null];
+    newRange[index] = newValue;
+    setDateRange(newRange);
 
-    setDateRange(newDateRange);
-
-    if (onChange) {
-      const decimalValue: [number, number] = [
-        convertMomentToDecimal(newDateRange[0]),
-        convertMomentToDecimal(newDateRange[1]),
-      ];
-      onChange(decimalValue);
-    }
+    onChange?.([
+      convertMomentToDecimal(newRange[0]),
+      convertMomentToDecimal(newRange[1]),
+    ]);
   };
 
-  const getLocaleConfig = () => {
+  // Config locale text của DatePicker
+  const localeText = useMemo(() => {
     switch (language) {
       case "ko":
         return koKR.components.MuiLocalizationProvider.defaultProps.localeText;
+      case "jp":
+        return jaJP.components.MuiLocalizationProvider.defaultProps.localeText;
+      case "vn":
+        return viVN.components.MuiLocalizationProvider.defaultProps.localeText;
       default:
         return enUS.components.MuiLocalizationProvider.defaultProps.localeText;
     }
-  };
+  }, [language]);
 
-  if (!isInitialized) {
-    return (
-      <Box sx={{ display: "flex", gap: 1 }}>
-        <TextField label="Loading..." disabled fullWidth />
-        <TextField label="Loading..." disabled fullWidth />
-      </Box>
-    );
-  }
+  // Render component DatePicker
+  const renderDatePicker = (index: 0 | 1) => (
+    <DatePicker
+      value={dateRange[index]}
+      onChange={(val) => handleDateChange(index, val as Moment)}
+      disabled={disabled}
+      readOnly={readOnly}
+      disableOpenPicker={disabledOpenPicker}
+      slotProps={{
+        textField: {
+          InputProps: {
+            startAdornment: (
+              <InputAdornment position="start">
+                <CalendarIcon />
+              </InputAdornment>
+            ),
+          },
+          size: (size === "large" ? "medium" : size) as "small" | "medium",
+          placeholder: placeHolder,
+          fullWidth: true,
+          error: status === "error",
+          //helperText: status === "error" ? "Invalid date" : "",
+        },
+      }}
+    />
+  );
 
   return (
-    <LocalizationProvider
-      dateAdapter={AdapterMoment}
-      localeText={getLocaleConfig()}
-    >
+    <LocalizationProvider dateAdapter={AdapterMoment} localeText={localeText}>
       <Box sx={{ display: "flex", gap: 1, ...sx }}>
-        <DatePicker
-          value={dateRange[0]}
-          onChange={(newValue) => handleDateChange(0, newValue as Moment)}
-          disabled={disabled}
-          readOnly={readOnly}
-          enableAccessibleFieldDOMStructure={false}
-          slotProps={{
-            textField: {
-              InputProps: {
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <CalendarIcon />
-                  </InputAdornment>
-                ),
-              },
-              placeholder: placeHolder,
-              fullWidth: true,
-              error: status === "error",
-              helperText: status === "error" ? "Invalid date" : "",
-            },
-          }}
-        />
-
-        <DatePicker
-          value={dateRange[1]}
-          onChange={(newValue) => handleDateChange(1, newValue as Moment)}
-          disabled={disabled}
-          readOnly={readOnly}
-          enableAccessibleFieldDOMStructure={false}
-          disableOpenPicker={disabledOpenPicker}
-          slotProps={{
-            textField: {
-              InputProps: {
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <CalendarIcon />
-                  </InputAdornment>
-                ),
-              },
-              placeholder: placeHolder,
-              fullWidth: true,
-              error: status === "error",
-              helperText: status === "error" ? "Invalid date" : "",
-            },
-          }}
-        />
+        {renderDatePicker(0)}
+        {renderDatePicker(1)}
       </Box>
     </LocalizationProvider>
   );

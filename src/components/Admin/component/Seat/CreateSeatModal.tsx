@@ -30,7 +30,7 @@ const CreateSeatModal = ({
 
   const handleSave = useCallback(() => {
     if (!newSeat.seatRow || !newSeat.seatNumber) {
-      alert("Please enter seat row and seat number");
+      // alert("Please enter seat row and seat number");
       return;
     }
     onChange(newSeat);

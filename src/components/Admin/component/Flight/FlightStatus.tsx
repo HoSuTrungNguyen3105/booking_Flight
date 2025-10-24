@@ -1,7 +1,6 @@
-import React, { useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   Typography,
-  Paper,
   Grid,
   Button,
   Stack,

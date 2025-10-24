@@ -3,12 +3,11 @@ import { memo, useCallback } from "react";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
 import BaseModal from "../../../../common/Modal/BaseModal";
 import InputTextField from "../../../../common/Input/InputTextField";
-import type { Seat } from "../../../../utils/type";
-import {
-  useSeatUpdateByIds,
-  type SeatTypeValue,
-} from "../../../../context/Api/usePostApi";
+import type { Seat, SeatTypeValue } from "../../../../utils/type";
+import { useSeatUpdateByIds } from "../../../../context/Api/usePostApi";
 import Android12Switch from "../../../../common/Switch/Switch";
+import InputNumber from "../../../../common/Input/InputNumber";
+import SelectDropdown from "../../../../common/Dropdown/SelectDropdown";
 
 interface ISeatModalProps {
   open: boolean;
@@ -16,7 +15,6 @@ interface ISeatModalProps {
   onSuccess: () => void;
   formData: Seat;
   setFormData: React.Dispatch<React.SetStateAction<Seat | null>>;
-  //editingMode: "update" | "info";
 }
 
 const InfoAndUpdateSeatModal = ({
@@ -27,6 +25,25 @@ const InfoAndUpdateSeatModal = ({
   onSuccess,
 }: ISeatModalProps) => {
   const { refetchUpdateSeatByIds } = useSeatUpdateByIds();
+
+  const seatTypeOptions = useCallback(
+    () => [
+      { value: "ECONOMY", label: "Economy" },
+      { value: "BUSINESS", label: "Business" },
+      { value: "FIRST", label: "First" },
+      { value: "VIP", label: "Vip" },
+    ],
+    []
+  );
+
+  // const handleSelectAction = useCallback(
+  //   (row: SeatTypeValue, action: ActionType) => {
+  //     setSelectedRow(row);
+  //     toggleOpenModal(action);
+  //   },
+  //   [toggleOpenModal]
+  // );
+
   const handleUpdate = async () => {
     const seatId = formData?.id;
     const seatIds = seatId ? [seatId] : [];
@@ -40,17 +57,20 @@ const InfoAndUpdateSeatModal = ({
         isAvailable: formData.isAvailable,
         isExitRow: formData.isExitRow,
         isExtraLegroom: formData.isExtraLegroom,
+        isHandicapAccessible: formData.isHandicapAccessible,
+        isNearLavatory: formData.isNearLavatory,
+        isUpperDeck: formData.isUpperDeck,
+        isWing: formData.isWing,
         note: formData.note,
       },
     });
-    console.log("res", res);
-    console.log("formData", formData);
 
     if (res?.resultCode === "00") {
       onSuccess();
       onClose();
     }
   };
+
   const handleCheckbox =
     (key: keyof Seat) => (e: React.ChangeEvent<HTMLInputElement>) => {
       setFormData({
@@ -80,11 +100,13 @@ const InfoAndUpdateSeatModal = ({
     return (
       <Box sx={{ pt: 2 }}>
         <Grid container spacing={2}>
-          <InputTextField
-            placeholder="ID Số ghế"
-            disabled
-            value={formData.id.toString()}
-          />
+          <Grid size={12}>
+            <InputTextField
+              placeholder="ID Số ghế"
+              disabled
+              value={formData.id.toString()}
+            />
+          </Grid>
           <Grid size={6}>
             <InputTextField
               placeholder="Số ghế"
@@ -102,19 +124,27 @@ const InfoAndUpdateSeatModal = ({
             />
           </Grid>
           <Grid size={6}>
-            <InputTextField
+            {/* <InputTextField
               placeholder="Loại ghế"
               value={formData.type}
               onChange={(e) =>
                 setFormData({ ...formData, type: e as SeatTypeValue })
               }
+            /> */}
+            <SelectDropdown
+              value={formData.type}
+              onChange={(e) =>
+                setFormData({ ...formData, type: e as SeatTypeValue })
+              }
+              options={seatTypeOptions()}
             />
           </Grid>
           <Grid size={6}>
-            <InputTextField
+            <InputNumber
               placeholder="Giá"
-              type="number"
-              value={formData.price != null ? formData.price.toString() : ""}
+              isSeparator
+              sx={{ width: "100%" }}
+              value={formData.price}
               onChange={(e) => setFormData({ ...formData, price: Number(e) })}
             />
           </Grid>

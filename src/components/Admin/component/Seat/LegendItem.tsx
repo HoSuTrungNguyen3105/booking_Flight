@@ -10,10 +10,10 @@ type LegendItemProps = {
 };
 
 const BookingCard = styled(Card)(() => ({
-  height: "5rem",
+  height: "3rem",
   marginBottom: theme.spacing(2),
   paddingTop: "8px",
-  borderRadius: "12px",
+  borderRadius: 2,
 }));
 
 const LegendItemSection = () => {
@@ -91,7 +91,7 @@ const LegendItemSection = () => {
         sx={{
           display: "flex",
           flexWrap: "wrap",
-          gap: "12px",
+          gap: 1,
           justifyContent: "center",
         }}
       >

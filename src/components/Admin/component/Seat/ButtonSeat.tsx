@@ -32,7 +32,7 @@ const seatColors = {
   wing: "#ff9800",
   handicap: "#9c27b0",
   lavatory: "#00bcd4",
-  extraLegroom: "#7c99b0",
+  extraLegroom: "#f44336",
 };
 
 const ButtonSeat: React.FC<ButtonSeatProps> = ({
@@ -292,21 +292,21 @@ const ButtonSeat: React.FC<ButtonSeatProps> = ({
           color: textColor,
           border: `1px solid ${borderColor}`,
           cursor: "pointer",
-          transition: "all 0.2s ease",
-          "&:hover": {
-            backgroundColor: isSelected
-              ? theme.palette.primary.dark
-              : theme.palette.primary.light,
-            color: isSelected
-              ? theme.palette.primary.contrastText
-              : theme.palette.primary.main,
-            transform: "scale(1.05)",
-            borderColor: theme.palette.primary.main,
-            boxShadow: `0 0 8px ${theme.palette.primary.main}40`,
-          },
-          "&:active": {
-            transform: "scale(0.95)",
-          },
+          // transition: "all 0.2s ease",
+          // "&:hover": {
+          //   backgroundColor: isSelected
+          //     ? theme.palette.primary.dark
+          //     : theme.palette.primary.light,
+          //   color: isSelected
+          //     ? theme.palette.primary.contrastText
+          //     : theme.palette.primary.main,
+          //   transform: "scale(1.05)",
+          //   borderColor: theme.palette.primary.main,
+          //   boxShadow: `0 0 8px ${theme.palette.primary.main}40`,
+          // },
+          // "&:active": {
+          //   transform: "scale(0.95)",
+          // },
         }}
       >
         <Stack alignItems="center" spacing={0.2} sx={{ position: "relative" }}>

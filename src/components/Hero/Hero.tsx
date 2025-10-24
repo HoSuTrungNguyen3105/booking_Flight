@@ -1,84 +1,97 @@
 import React from "react";
-import { Typography, Box, useMediaQuery } from "@mui/material";
-import { useTranslation } from "react-i18next";
+import { Typography, Box, useMediaQuery, Stack, Button } from "@mui/material";
+import plane from "../../svgs/plane.png";
 import theme from "../../scss/theme";
 
 const Hero: React.FC = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
 
   return (
     <Box
       sx={{
-        height: "560px",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        px: 6,
-        textAlign: "center",
-        color: "white",
         position: "relative",
-        overflow: "hidden",
-        // backgroundImage:
-        //   "url(https://images.unsplash.com/photo-1490730101735-85e8a7056461?q=80&w=2670&auto=format&fit=crop)",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        "&::before": {
-          content: '""',
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
-        },
+        bgcolor: theme.palette.primary.light,
+        width: "100%",
+        height: "73vh",
+        display: "grid",
+        placeItems: "center",
+        zIndex: 1,
       }}
     >
-      <Box sx={{ position: "relative", zIndex: 2 }}>
-        <Typography
-          variant="h2"
-          fontWeight="bold"
-          sx={{
-            color: "white",
-            textShadow: "2px 2px 4px rgba(0,0,0,0.7)",
-            fontSize: isMobile ? "2rem" : "3rem",
-          }}
-        >
-          {t("tittle1")}
-        </Typography>
-
-        <Typography
-          variant="h5"
-          sx={{
-            mt: 2,
-            color: theme.palette.grey[300],
-            fontSize: isMobile ? "1.1rem" : "1.5rem",
-          }}
-        >
-          {t("tittle2")}
-        </Typography>
-
-        <Box
-          sx={{
-            mt: 5,
-            width: "100%",
-            maxWidth: "800px",
-            mx: "auto",
-          }}
-        >
+      <Stack
+        direction={isMobile ? "column" : "row"}
+        alignItems="center"
+        justifyContent="space-between"
+        spacing={isMobile ? 8 : 0}
+        sx={{
+          width: "100%",
+          px: { xs: 2, md: 25 },
+        }}
+      >
+        {/* Left Content */}
+        <Stack spacing={2} sx={{ width: "100%" }}>
           <Typography
             variant="h6"
-            sx={{
-              color: "white",
-              fontStyle: "italic",
-              fontWeight: 400,
-            }}
+            sx={{ color: "primary.main", fontWeight: 500 }}
           >
-            {t("description2")}
+            Welcome To Our Website!
           </Typography>
-        </Box>
-      </Box>
+
+          <Typography
+            variant={isMobile ? "h3" : "h2"}
+            sx={{ color: "white", fontWeight: 600, lineHeight: 1.2 }}
+          >
+            Luxury Experience <br /> With Our Services.
+          </Typography>
+
+          <Stack direction="row" spacing={3} sx={{ mt: 3 }}>
+            <Button
+              variant="contained"
+              sx={{
+                //bgcolor: "primary.main",
+                color: "#141b2b",
+                // fontWeight: 600,
+                borderRadius: 10,
+                // px: 4,
+                // py: 1.5,
+                // "&:hover": { bgcolor: "#2d9cdb" },
+              }}
+            >
+              Book Flight
+            </Button>
+
+            <Button
+              variant="outlined"
+              sx={{
+                color: "white",
+                borderColor: "primary.main",
+                // fontWeight: 600,
+                borderRadius: 10,
+                // px: 4,
+                // py: 1.5,
+                // "&:hover": {
+                //   bgcolor: "rgba(45,156,219,0.1)",
+                //   borderColor: "primary.main",
+                // },
+              }}
+            >
+              Contact Us
+            </Button>
+          </Stack>
+        </Stack>
+
+        {/* Right Image */}
+        <Box
+          component="img"
+          src={plane}
+          alt="plane"
+          sx={{
+            width: { xs: "100%", md: "53%" },
+            animation: "fadeInRight 1s ease-in-out",
+          }}
+        />
+      </Stack>
     </Box>
   );
 };

@@ -21,6 +21,10 @@ import { useAuth } from "../../context/AuthContext";
 import PermissionRoleModal from "../../common/Setting/Component/PermissionRoleModal";
 import ResetPasswordModal from "../../common/Setting/Component/ResetPasswordModal";
 
+export type ReqUpdateEmployeeNo = BatchEmployeeNoReq & {
+  name: string;
+};
+
 const ManageMyInfo = () => {
   const { user } = useAuth();
   const {
@@ -38,7 +42,7 @@ const ManageMyInfo = () => {
   const [selectedRowChange, setSelectedRowChange] = useState<GridRowDef[]>([]);
   const [navigateEmailSend, setNavigateEmailSend] = useState<boolean>(false);
   const [selectedUpdateItem, setSelectedUpdateItem] = useState<
-    BatchEmployeeNoReq[]
+    ReqUpdateEmployeeNo[]
   >([]);
   const [navigateUpdateEmployeeID, setNavigateUpdateEmployeeID] =
     useState<boolean>(false);
@@ -56,9 +60,10 @@ const ManageMyInfo = () => {
   const [isValidate, setIsValidate] = useState(false);
 
   const handleNavigateSelectedUpdateItem = useCallback(() => {
-    const updates: BatchEmployeeNoReq[] = selectedRowChange.map((row) => ({
+    const updates: ReqUpdateEmployeeNo[] = selectedRowChange.map((row) => ({
       userId: Number(row.id as number),
       employeeNo: String(row.employeeNo),
+      name: row.name,
     }));
 
     setSelectedUpdateItem(updates);
@@ -93,7 +98,6 @@ const ManageMyInfo = () => {
           setNavigateUpdateEmployeeID(false);
         }}
         onSuccess={() => {
-          setNavigateUpdateEmployeeID(false);
           handleRefetchUserList();
         }}
         updateItem={selectedUpdateItem}

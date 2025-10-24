@@ -32,17 +32,28 @@ export const useDataSection = (
   const { dataDepartments } = useFindAllDepartments();
   const { dataPositions } = useFindAllPositions();
 
-  const departmentOptions = mapStringToDropdown(dataDepartments?.data || []);
-
-  const positionOptions = mapStringToDropdown(dataPositions?.data || []);
-
-  const statusOptions = mapStringToDropdown(dataEmployeeStatuses?.data || []);
-  const roleOptions = useMemo(
-    () => mapStringToDropdown(dataRoles?.data || []),
-    [dataRoles]
+  /** ✅ Memoize dropdown options */
+  const departmentOptions = useMemo(
+    () => mapStringToDropdown(dataDepartments?.data ?? []),
+    [dataDepartments?.data]
   );
 
-  return useMemo(() => {
+  const positionOptions = useMemo(
+    () => mapStringToDropdown(dataPositions?.data ?? []),
+    [dataPositions?.data]
+  );
+
+  const statusOptions = useMemo(
+    () => mapStringToDropdown(dataEmployeeStatuses?.data ?? []),
+    [dataEmployeeStatuses?.data]
+  );
+
+  const roleOptions = useMemo(
+    () => mapStringToDropdown(dataRoles?.data ?? []),
+    [dataRoles?.data]
+  );
+
+  return useMemo<IFormField[]>(() => {
     const isUpdate = formType === "update";
 
     const commonDisabled = isUpdate;
@@ -92,6 +103,7 @@ export const useDataSection = (
         ],
       },
       {
+        visible: isUpdate,
         label: "Role",
         fields: [
           {
@@ -100,6 +112,7 @@ export const useDataSection = (
             placeholder: "Chọn vai trò...",
             options: roleOptions,
             value: data.role ?? UserRole.USER,
+            // disabled: commonDisabled,
           },
         ],
       },
@@ -173,5 +186,12 @@ export const useDataSection = (
     ];
 
     return fields;
-  }, [data, formType, roleOptions]);
+  }, [
+    formType,
+    data,
+    departmentOptions,
+    positionOptions,
+    statusOptions,
+    roleOptions,
+  ]);
 };

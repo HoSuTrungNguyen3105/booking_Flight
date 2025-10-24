@@ -55,7 +55,7 @@ const getBaggageStatusStyle = (status: string) => {
       return {
         label: "Không rõ",
         sx: {
-          background: theme.palette.secondary.dark,
+          background: theme.palette.warning.dark,
           color: "#fff",
           fontWeight: 600,
           borderRadius: "8px",
