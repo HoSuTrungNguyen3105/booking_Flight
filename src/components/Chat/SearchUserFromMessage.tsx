@@ -9,7 +9,6 @@ import type { DropdownOptions } from "../../common/Dropdown/type";
 import { SearchInputWithList } from "../../common/Dropdown/SearchInputWithList";
 
 type SearchUserFromMessageProps = {
-  value: { employeeId: number };
   onChange: (searchResult: SearchEmailFromSidebarMessageRes[]) => void;
 };
 
@@ -25,6 +24,7 @@ const SearchUserFromMessage: React.FC<SearchUserFromMessageProps> = ({
   const { user } = useAuth();
   const userId = user?.id;
 
+  // Gọi API khi user nhập text
   const handleInputChange = useCallback(
     async (searchText: string): Promise<SearchEmployeeId[]> => {
       if (!searchText.trim() || !userId) {
@@ -40,7 +40,7 @@ const SearchUserFromMessage: React.FC<SearchUserFromMessageProps> = ({
 
         if (res?.resultCode === "00" && res.list) {
           const mappedOptions = res.list.map(
-            (e: SearchEmailFromSidebarMessageRes) => ({
+            (e: SearchEmailFromSidebarMessageRes): SearchEmployeeId => ({
               value: e.userId,
               label: e.name || e.email,
               data: e,
@@ -66,8 +66,8 @@ const SearchUserFromMessage: React.FC<SearchUserFromMessageProps> = ({
   const handleOptionSelect = useCallback(
     (selectedOption: SearchEmployeeId | null) => {
       if (selectedOption) {
-        console.log(" Selected user:", selectedOption.data);
-        onChange([selectedOption.data]); // Trả data ra cha
+        console.log("Selected user:", selectedOption.data);
+        onChange([selectedOption.data]);
       } else {
         onChange([]);
       }
@@ -76,15 +76,28 @@ const SearchUserFromMessage: React.FC<SearchUserFromMessageProps> = ({
   );
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box
+      sx={{
+        p: 2.5,
+        borderRadius: 2,
+        bgcolor: "background.paper",
+        boxShadow: 1,
+        transition: "all 0.3s ease",
+        "&:hover": {
+          boxShadow: 3,
+        },
+      }}
+    >
       <SearchInputWithList
-        value={null} // Không phải list option, chỉ giữ option được chọn
+        value={null}
         options={options}
-        label="Search Users"
-        placeholder="Type to search..."
+        label=" Search users"
+        placeholder="Type name or email..."
         apiCall={handleInputChange}
-        onChange={handleOptionSelect} // không cần ép kiểu
-        debounceDelay={500}
+        onChange={(option) =>
+          handleOptionSelect(option as SearchEmployeeId | null)
+        }
+        debounceDelay={400}
         status="confirmed"
       />
     </Box>

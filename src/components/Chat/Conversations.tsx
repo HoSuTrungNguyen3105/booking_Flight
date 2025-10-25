@@ -12,11 +12,9 @@ import {
   Badge,
   List,
   Button,
-  Stack,
 } from "@mui/material";
 import theme from "../../scss/theme";
 import { DateFormatEnum, formatDate } from "../../hooks/format";
-import InputTextField from "../../common/Input/InputTextField";
 import { Search } from "@mui/icons-material";
 import useDebounce from "../../context/use[custom]/useDebounce";
 import SearchUserFromMessage from "./SearchUserFromMessage";
@@ -54,9 +52,9 @@ const Conversations = ({
     SearchEmailFromSidebarMessageRes[]
   >([]);
 
-  const [search, setSearch] = useState("");
+  // const [search, setSearch] = useState("");
   const [filteredUsers, setFilteredUsers] = useState<Conversation[]>([]);
-  const debouncedQuery = useDebounce(search, 500);
+  const debouncedQuery = useDebounce(filteredUsers, 500);
 
   useEffect(() => {
     if (data?.list) {
@@ -80,19 +78,31 @@ const Conversations = ({
   useEffect(() => {
     if (!data?.list) return;
 
-    if (debouncedQuery.trim() === "") {
+    if (debouncedQuery.map((e) => e.name.trim().length === 0)) {
       setFilteredUsers(data.list);
-      console.log("filteredUsers", filteredUsers);
     } else {
-      const q = debouncedQuery.toLowerCase();
-      const filtered = data.list.filter(
-        (conv) =>
-          conv.name?.toLowerCase().includes(q) ||
-          conv.lastMessage?.toLowerCase().includes(q)
-      );
-      setFilteredUsers(filtered);
+      // const q = debouncedQuery.toLowerCase();
+      // const filtered = data.list.filter((conv) => conv.name?.toLowerCase());
+      // setFilteredUsers(filtered);
     }
   }, [debouncedQuery, data]);
+
+  //   useEffect(() => {
+  //   if (!data?.list) return;
+
+  //   const query = debouncedQuery.map.trim().toLowerCase();
+
+  //   if (query.length === 0) {
+  //     setFilteredUsers(data.list);
+  //   } else {
+  //     const filtered = data.list.filter(
+  //       (conv) =>
+  //         conv.name?.toLowerCase().includes(query) ||
+  //         conv.lastMessage?.toLowerCase().includes(query)
+  //     );
+  //     setFilteredUsers(filtered);
+  //   }
+  // }, [debouncedQuery, data]);
 
   return (
     <Box height={"90vh"} minWidth={0}>
@@ -111,19 +121,18 @@ const Conversations = ({
           onChange={(e) => setSearch(e)}
           clearable
         /> */}
-        <Box sx={{ minWidth: "20px", pt: 2, pb: 2 }}>
+        <Box sx={{ maxWidth: "20px" }}>
           <SearchUserFromMessage
-            value={{ employeeId: 1 }}
+            // value={{ employeeId: 1 }}
             onChange={(result) => {
-              console.log("res", debouncedQuery);
               setSearchResult(result);
             }}
           />
         </Box>
-        <Button
+        {/* <Button
           variant="contained"
           color="primary"
-          onClick={() => setSearch(search)} // trigger filter ngay
+          // onClick={() => setSearch(search)} // trigger filter ngay
           sx={{
             minWidth: "auto",
             px: 2,
@@ -131,7 +140,7 @@ const Conversations = ({
           }}
         >
           <Search />
-        </Button>
+        </Button> */}
       </Box>
       {/* {loading && <SidebarSkeleton />} */}
       {data?.resultCode === "00" && (
@@ -147,8 +156,6 @@ const Conversations = ({
             >
               <ListItemButton
                 onClick={() => {
-                  console.log("conv", conv.userId);
-                  console.log("index", index);
                   handleUserSelect?.(conv.userId);
                 }}
                 selected={selectedUser === conv.userId}

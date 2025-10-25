@@ -5,7 +5,7 @@ import {
   Marker,
   Popup,
 } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
+// import "leaflet/dist/leaflet.css";
 import type { LatLngTuple } from "leaflet";
 
 type LatLngTupleProps = {

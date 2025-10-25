@@ -23,7 +23,6 @@ import type {
 import Conversations from "./Conversations";
 import { Filter, Group } from "@mui/icons-material";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
-// import SearchUser from "./SearchUser";
 
 const ChatContainer: React.FC = () => {
   const { user } = useAuth();
@@ -37,6 +36,7 @@ const ChatContainer: React.FC = () => {
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
+
   const { emit: findMessages } = useSocket<MessageBetweenUserLoginResponse>({
     event: "findMessagesBetweenUsers",
     autoListen: true,
@@ -48,14 +48,14 @@ const ChatContainer: React.FC = () => {
       }
     },
   });
+
   const toggleSearchPanel = () => {
     setIsSearchPanelOpen(!isSearchPanelOpen);
   };
+
   const handleUserSelect = (user: number) => {
     setSelectedUser(user);
     setReceiverId(user);
-    console.log("userid", user);
-    // setIsSearchPanelOpen(false);
 
     if (userId && user) {
       findMessages({ userId, user2Id: user }); // emit socket
@@ -105,14 +105,10 @@ const ChatContainer: React.FC = () => {
     }
   }, [incomingMessage]);
 
-  console.log("receiverId", receiverId);
-  console.log("selectedUser", selectedUser);
-  console.log("user", user?.id);
-
   return (
     <Box
       display="flex"
-      height="90vh"
+      height="88vh"
       sx={{ bgcolor: "background.default", overflow: "hidden" }}
     >
       {/* Sidebar */}
@@ -223,7 +219,6 @@ const ChatContainer: React.FC = () => {
           </Button>
         </Box>
 
-        {/* Conversations */}
         <Conversations
           selectedUser={selectedUser || 0}
           handleUserSelect={handleUserSelect}

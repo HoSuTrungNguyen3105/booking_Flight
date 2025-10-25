@@ -8,7 +8,6 @@ import {
   CardContent,
   Chip,
   Divider,
-  useTheme,
   styled,
   alpha,
 } from "@mui/material";
