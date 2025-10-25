@@ -3,6 +3,7 @@ import { useState } from "react";
 import type { DataFlight } from "../../../../utils/type";
 import { DateFormatEnum, formatDate } from "../../../../hooks/format";
 import { useFlightList } from "../../../../context/Api/useGetApi";
+import SeatManager from "../Seat/SeatManager";
 const FlightPage = () => {
   const { flightList } = useFlightList();
   const [selectedFlight, setSelectedFlight] = useState<DataFlight | null>(null);
@@ -18,6 +19,8 @@ const FlightPage = () => {
       <Typography variant="h4" fontWeight="bold" mb={3}>
         Available Flights {selectedFlight?.flightNo}
       </Typography>
+
+      <SeatManager flightList={flightList?.list as DataFlight[]} />
 
       <Grid container spacing={2}>
         {flightList?.list?.map((flight) => (

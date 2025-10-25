@@ -4,7 +4,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { useGetAllAttendance } from "../../context/Api/useGetApi";
 import FindAttendanceByDayModal from "./FindAttendanceByDayModal";
-import { DateFormatEnum, formatDate } from "../../hooks/format";
+// import { DateFormatEnum, formatDate } from "../../hooks/format";
 
 const AttendanceCalendar = () => {
   const { dataAllAttendance } = useGetAllAttendance();
@@ -35,30 +35,53 @@ const AttendanceCalendar = () => {
   //   }));
   // }, [dataAllAttendance]);
 
+  // const events = useMemo(() => {
+  //   if (!dataAllAttendance?.list) return [];
+
+  //   return dataAllAttendance.list
+  //     .map((a: any) => {
+  //       const start = formatDate(DateFormatEnum.DD_MM_YYYY_HH_MM_SS, a.checkIn);
+  //       const end = formatDate(a.checkOut);
+  //       if (!start) return null;
+  //       if (!end) return null;
+
+  //       return {
+  //         title: `${a.employee?.name || "Unknown"} (${a.status})`,
+  //         start,
+  //         end,
+  //         color:
+  //           a.status === "PRESENT"
+  //             ? "#4caf50"
+  //             : a.status === "LATE"
+  //             ? "#ff9800"
+  //             : "#f44336",
+  //         extendedProps: { ...a },
+  //       };
+  //     })
+  //     .filter(Boolean);
+  // }, [dataAllAttendance]);
+
+  const formatDate = (timestamp: string | number) => {
+    if (!timestamp || timestamp === "0") return null;
+    const date = new Date(Number(timestamp));
+    return date.toISOString();
+  };
+
   const events = useMemo(() => {
     if (!dataAllAttendance?.list) return [];
 
-    return dataAllAttendance.list
-      .map((a: any) => {
-        const start = formatDate(DateFormatEnum.DD_MM_YYYY_HH_MM_SS, a.checkIn);
-        const end = formatDate(a.checkOut);
-        if (!start) return null;
-        if (!end) return null;
-
-        return {
-          title: `${a.employee?.name || "Unknown"} (${a.status})`,
-          start,
-          end,
-          color:
-            a.status === "PRESENT"
-              ? "#4caf50"
-              : a.status === "LATE"
-              ? "#ff9800"
-              : "#f44336",
-          extendedProps: { ...a },
-        };
-      })
-      .filter(Boolean);
+    return dataAllAttendance.list.map((a: any) => ({
+      title: `${a.employee?.name || "Unknown"} (${a.status})`,
+      start: formatDate(a.checkIn || a.date),
+      end: formatDate(a.checkOut),
+      color:
+        a.status === "PRESENT"
+          ? "#4caf50"
+          : a.status === "LATE"
+          ? "#ff9800"
+          : "#f44336",
+      extendedProps: { ...a },
+    }));
   }, [dataAllAttendance]);
 
   const handleDateClick = useCallback((info: any) => {

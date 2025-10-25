@@ -12,12 +12,16 @@ import {
   Badge,
   List,
   Button,
+  Stack,
 } from "@mui/material";
 import theme from "../../scss/theme";
 import { DateFormatEnum, formatDate } from "../../hooks/format";
 import InputTextField from "../../common/Input/InputTextField";
 import { Search } from "@mui/icons-material";
 import useDebounce from "../../context/use[custom]/useDebounce";
+import SearchUserFromMessage from "./SearchUserFromMessage";
+import type { SearchEmailFromSidebarMessageRes } from "../../context/Api/usePostApi";
+
 const Conversations = ({
   userId,
   handleUserSelect,
@@ -46,23 +50,39 @@ const Conversations = ({
     }
   }, [isConnected, userId]);
 
+  const [searchResult, setSearchResult] = useState<
+    SearchEmailFromSidebarMessageRes[]
+  >([]);
+
   const [search, setSearch] = useState("");
   const [filteredUsers, setFilteredUsers] = useState<Conversation[]>([]);
   const debouncedQuery = useDebounce(search, 500);
 
-  // Cập nhật danh sách khi có data mới
-  // useEffect(() => {
-  //   if (data?.resultCode === "00" && Array.isArray(data.list)) {
-  //     setFilteredUsers(data.list);
-  //   }
-  // }, [data]);
+  useEffect(() => {
+    if (data?.list) {
+      setFilteredUsers(data.list);
+    }
+  }, [data]);
 
-  // Search với debounce
+  useEffect(() => {
+    if (searchResult.length > 0) {
+      const mappedResult: Conversation[] = searchResult.map((user) => ({
+        userId: user.userId,
+        name: user.name,
+        lastMessage: "",
+        timestamp: 0,
+        email: user.email,
+      }));
+      setFilteredUsers(mappedResult);
+    }
+  }, [searchResult]);
+
   useEffect(() => {
     if (!data?.list) return;
 
     if (debouncedQuery.trim() === "") {
       setFilteredUsers(data.list);
+      console.log("filteredUsers", filteredUsers);
     } else {
       const q = debouncedQuery.toLowerCase();
       const filtered = data.list.filter(
@@ -85,12 +105,21 @@ const Conversations = ({
         borderBottom={1}
         borderColor="divider"
       >
-        <InputTextField
+        {/* <InputTextField
           placeholder="Search users..."
           value={search}
           onChange={(e) => setSearch(e)}
           clearable
-        />
+        /> */}
+        <Box sx={{ minWidth: "20px", pt: 2, pb: 2 }}>
+          <SearchUserFromMessage
+            value={{ employeeId: 1 }}
+            onChange={(result) => {
+              console.log("res", debouncedQuery);
+              setSearchResult(result);
+            }}
+          />
+        </Box>
         <Button
           variant="contained"
           color="primary"
@@ -117,7 +146,11 @@ const Conversations = ({
               }}
             >
               <ListItemButton
-                onClick={() => handleUserSelect?.(conv.userId)}
+                onClick={() => {
+                  console.log("conv", conv.userId);
+                  console.log("index", index);
+                  handleUserSelect?.(conv.userId);
+                }}
                 selected={selectedUser === conv.userId}
                 sx={{
                   py: 2,
@@ -128,14 +161,14 @@ const Conversations = ({
                     backgroundColor: "primary.light",
                     borderRight: 3,
                     borderColor: "primary.main",
-                    "&:hover": {
-                      backgroundColor: "primary.light",
-                    },
+                    // "&:hover": {
+                    //   backgroundColor: "primary.light",
+                    // },
                   },
-                  "&:hover": {
-                    backgroundColor: "action.hover",
-                    transform: "translateX(2px)",
-                  },
+                  // "&:hover": {
+                  //   backgroundColor: "action.hover",
+                  //   transform: "translateX(2px)",
+                  // },
                 }}
               >
                 {/* Avatar with Status */}
@@ -192,7 +225,7 @@ const Conversations = ({
                             : "text.primary",
                       }}
                     >
-                      {conv.name}
+                      {conv.name} -{conv.userId}
                     </Typography>
                     {conv.timestamp && (
                       <Typography

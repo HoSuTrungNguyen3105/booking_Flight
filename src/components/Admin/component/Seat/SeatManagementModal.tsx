@@ -136,46 +136,9 @@ const SeatManagementModal = ({
           sx={{ mb: 2 }}
         />
 
-        {/* Switches */}
-        <FormControlLabel
-          control={
-            <Switch
-              checked={isBooked}
-              onChange={(e) => setIsBooked(e.target.checked)}
-            />
-          }
-          label="Booked"
-        />
-        <FormControlLabel
-          control={
-            <Switch
-              checked={isAvailable}
-              onChange={(e) => setIsAvailable(e.target.checked)}
-            />
-          }
-          label="Available"
-        />
-
         <Android12Switch
           checked={isExitRow}
           onChange={(e) => setIsExitRow(e.target.checked)}
-        />
-
-        <FormControlLabel
-          control={
-            <Switch
-              checked={isExtraLegroom}
-              onChange={(e) => setIsExtraLegroom(e.target.checked)}
-            />
-          }
-          label="Extra Legroom"
-        />
-
-        {/* Note */}
-        <InputTextField
-          value={note}
-          onChange={(val) => setNote(val as string)}
-          sx={{ mb: 2 }}
         />
       </Box>
     );

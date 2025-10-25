@@ -45,6 +45,7 @@ import MealList from "../components/Admin/component/Meal/MealList";
 // import FlightStatus from "../components/Admin/component/Flight/FlightStatus";
 import FlightManagement from "../components/Admin/component/Flight/FlightManagement";
 import AttendanceCalendar from "../components/Sample/AttendanceCalendar";
+import ForgetPassword from "../components/Auth/ForgetPassword";
 
 const routes = [
   {
@@ -59,6 +60,10 @@ const routes = [
             <LoginPage />
           </GuestGuard>
         ),
+      },
+      {
+        path: "change_password",
+        element: <ForgetPassword />,
       },
       // {
       //   path: "registerPage",

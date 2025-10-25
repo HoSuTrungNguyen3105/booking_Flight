@@ -23,76 +23,36 @@ const statusOptions: ActionType[] = [
     value: "SCHEDULED",
     label: "Scheduled",
     color: "info",
-    icon: (
-      <Box
-        sx={{
-          width: 8,
-          height: 8,
-          borderRadius: "50%",
-          bgcolor: "info.main",
-        }}
-      />
-    ),
+    // icon: (
+    //   <Box
+    //     sx={{
+    //       width: 8,
+    //       height: 8,
+    //       borderRadius: "50%",
+    //       bgcolor: "info.main",
+    //     }}
+    //   />
+    // ),
   },
   {
     value: "BOARDING",
     label: "Boarding",
     color: "primary",
-    icon: (
-      <Box
-        sx={{
-          width: 8,
-          height: 8,
-          borderRadius: "50%",
-          bgcolor: "primary.main",
-        }}
-      />
-    ),
   },
   {
     value: "DELAYED",
     label: "Delayed",
     color: "warning",
-    icon: (
-      <Box
-        sx={{
-          width: 8,
-          height: 8,
-          borderRadius: "50%",
-          bgcolor: "warning.main",
-        }}
-      />
-    ),
   },
   {
     value: "CANCELLED",
     label: "Cancelled",
     color: "error",
-    icon: (
-      <Box
-        sx={{
-          width: 8,
-          height: 8,
-          borderRadius: "50%",
-          bgcolor: "error.main",
-        }}
-      />
-    ),
   },
   {
     value: "LANDED",
     label: "Landed",
     color: "success",
-    icon: (
-      <Box
-        sx={{
-          width: 8,
-          height: 8,
-          borderRadius: "50%",
-          bgcolor: "success.main",
-        }}
-      />
-    ),
   },
 ];
 
@@ -100,24 +60,25 @@ const FlightStatus = ({ onReturn }: { onReturn: () => void }) => {
   const { getAllFlightIds, refetchGetAllFlightIds } = useGetAllFlightIds();
   const [edited, setEdited] = useState<Record<number, string>>({});
 
-  // const [flightId, setFlightId] = useState<number | null>(null);
-
   const handleChange = (flightId: number, newStatus: string) => {
     setEdited((prev) => ({ ...prev, [flightId]: newStatus }));
   };
 
   const { refetchUpdateFlightStatus } = useUpdateFlightStatus();
 
-  const onUpdateStatus = useCallback(async (id: number, status: string) => {
-    // setFlightId(id);
-    const res = await refetchUpdateFlightStatus({
-      id,
-      status,
-    });
-    if (res?.resultCode === "00") {
-      refetchGetAllFlightIds();
-    }
-  }, []);
+  const onUpdateStatus = useCallback(
+    async (id: number, status: string) => {
+      // setFlightId(id);
+      const res = await refetchUpdateFlightStatus({
+        id,
+        status,
+      });
+      if (res?.resultCode === "00") {
+        refetchGetAllFlightIds();
+      }
+    },
+    [refetchUpdateFlightStatus]
+  );
 
   const handleSave = (flightId: number) => {
     const newStatus = edited[flightId];
@@ -163,8 +124,6 @@ const FlightStatus = ({ onReturn }: { onReturn: () => void }) => {
     <Stack
       sx={{
         p: 1,
-        // borderRadius: 3,
-        // boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
       }}
     >
       <Stack spacing={3}>
@@ -192,17 +151,12 @@ const FlightStatus = ({ onReturn }: { onReturn: () => void }) => {
         <Grid container spacing={3}>
           {getAllFlightIds?.list?.map((flight) => (
             <Grid key={flight.flightId} size={12}>
-              <Card
-                variant="outlined"
+              <Stack
                 sx={{
                   p: 2,
                   borderRadius: 2,
                   border: "1px solid",
                   borderColor: "divider",
-                  // "&:hover": {
-                  //   boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                  //   borderColor: "primary.light",
-                  // },
                 }}
               >
                 <Stack spacing={2}>
@@ -295,7 +249,7 @@ const FlightStatus = ({ onReturn }: { onReturn: () => void }) => {
                     />
                   </Box>
                 </Stack>
-              </Card>
+              </Stack>
             </Grid>
           ))}
         </Grid>

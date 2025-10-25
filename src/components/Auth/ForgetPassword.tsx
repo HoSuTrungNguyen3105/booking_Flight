@@ -1,31 +1,29 @@
-import { memo, useState } from "react";
+import { memo, useCallback, useState } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import { useToast } from "../../context/ToastContext";
 import InputTextField from "../../common/Input/InputTextField";
 import { useForgotPassword } from "../../context/Api/usePostApi";
+import { useNavigate } from "react-router-dom";
 
-const ForgetPassword = ({ onClose }: { onClose: () => void }) => {
+const ForgetPassword = () => {
   const toast = useToast();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const { refetchForgotPassword } = useForgotPassword();
   const [email, setEmail] = useState<string>("");
 
+  const returnPage = useCallback(() => {
+    navigate("/init/loginPage");
+  }, [navigate]);
+
   const handleSubmitForm = async (e: React.FormEvent) => {
     e.preventDefault();
-    // if (!email) {
-    //   toast("Vui lòng nhập email", "info");
-    //   return;
-    // }
-
     try {
       setLoading(true);
       const res = await refetchForgotPassword({ email });
-      console.log("res forget", res);
       if (res?.resultCode === "00") {
-        // setUserId(res.data?.userId ?? null);
-        // setNavigateOTP(true);
         toast(res.resultMessage, "info");
-        onClose();
+        returnPage();
       } else {
         toast(res?.resultMessage || "Không thể đặt lại mật khẩu", "error");
       }
@@ -41,29 +39,53 @@ const ForgetPassword = ({ onClose }: { onClose: () => void }) => {
   // }
 
   return (
-    <Box sx={{ textAlign: "center", m: 2, mt: 2 }}>
-      <form onSubmit={handleSubmitForm}>
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "80vh",
+      }}
+    >
+      <Box component="form" onSubmit={handleSubmitForm}>
         <Typography variant="h6" sx={{ mb: 2 }}>
           Quên mật khẩu
         </Typography>
 
-        <InputTextField
-          name="email"
-          placeholder="Nhập email của bạn"
-          value={email}
-          onChange={(e) => setEmail(e)}
-          sx={{ width: "20rem" }}
-        />
-
-        <Button
-          type="submit"
-          variant="contained"
-          disabled={loading || !email}
-          // sx={{ mt: 1, pl: 2 }}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-around",
+            gap: 1,
+            mt: 1,
+            mb: 1,
+          }}
         >
-          {loading ? "Đang xử lý..." : "Xác nhận"}
+          <InputTextField
+            name="email"
+            placeholder="Nhập email của bạn"
+            isEmail
+            value={email}
+            onChange={(e) => setEmail(e)}
+          />
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={loading || !email}
+            sx={{
+              px: 3,
+              py: 1,
+              width: "10rem",
+              height: "5vh",
+            }}
+          >
+            {loading ? "Đang xử lý..." : "Xác nhận"}
+          </Button>
+        </Box>
+        <Button variant="contained" size="large" onClick={returnPage}>
+          Return
         </Button>
-      </form>
+      </Box>
     </Box>
   );
 };

@@ -14,6 +14,7 @@ import Registration from "./Registration";
 import ForgetPassword from "./ForgetPassword";
 import { useToast } from "../../context/ToastContext";
 import { useCheckMfaAvailable } from "../../context/Api/usePostApi";
+import { useNavigate } from "react-router-dom";
 
 interface ILoginForm {
   email: string;
@@ -27,7 +28,7 @@ type ViewMode =
   | "mfa"
   | "verify"
   | "changePw"
-  | "forgotPw"
+  // | "forgotPw"
   | "unlock";
 
 export const LoginPage: React.FC = () => {
@@ -36,7 +37,7 @@ export const LoginPage: React.FC = () => {
     { label: "MFA", value: "MFA" },
     { label: "DEV", value: "DEV" },
   ];
-
+  const navigate = useNavigate();
   const [authType, setAuthType] = useState<AuthType>("ID,PW");
   const [tabValue, setTabValue] = useState(0);
   const [viewMode, setViewMode] = useState<ViewMode>("login");
@@ -72,7 +73,7 @@ export const LoginPage: React.FC = () => {
         const res = await refetchMfaCheck({ email });
 
         if (res?.resultCode !== "00") {
-          toast(res?.resultMessage || "Error");
+          toast(res?.resultMessage || "Error in login !!!");
           return;
         }
 
@@ -85,8 +86,6 @@ export const LoginPage: React.FC = () => {
         password: data.password,
         authType,
       });
-
-      console.log("ed", loginRes);
 
       if (loginRes.requireUnlock) {
         setViewMode("unlock");
@@ -160,7 +159,10 @@ export const LoginPage: React.FC = () => {
               </FormControl>
             )}
 
-            <Button variant="outlined" onClick={() => setViewMode("forgotPw")}>
+            <Button
+              variant="outlined"
+              onClick={() => navigate("/init/change_password")}
+            >
               Forget password ?
             </Button>
 
@@ -204,8 +206,8 @@ export const LoginPage: React.FC = () => {
       return <AccountYn mode="verify" onClose={() => setViewMode("login")} />;
     case "changePw":
       return <AccountYn mode="change" onClose={() => setViewMode("login")} />;
-    case "forgotPw":
-      return <ForgetPassword onClose={() => setViewMode("forgotPw")} />;
+    // case "forgotPw":
+    //   return <ForgetPassword onClose={() => setViewMode("forgotPw")} />;
     case "unlock":
       return (
         <RequestUnlock userId={userId} onClose={() => setViewMode("login")} />
@@ -214,7 +216,6 @@ export const LoginPage: React.FC = () => {
       break;
   }
 
-  // 🚀 Default: Login/Register
   return (
     <Box
       component="form"

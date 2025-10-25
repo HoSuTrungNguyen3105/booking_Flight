@@ -180,6 +180,10 @@ export default function MfaSetup({ email, onClose, authType }: EmailProps) {
         p: 3,
       }}
     >
+      <Button variant="contained" onClick={onClose}>
+        {" "}
+        Return
+      </Button>
       {/* Header */}
       <Box sx={{ textAlign: "center", mb: 2 }}>
         <Security sx={{ fontSize: 48, color: "primary.main", mb: 1 }} />

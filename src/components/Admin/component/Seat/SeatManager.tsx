@@ -7,7 +7,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import type { Seat, SeatTypeValue } from "../../../../utils/type";
+import type { DataFlight, Seat, SeatTypeValue } from "../../../../utils/type";
 
 // export type SeatType = "ECONOMY" | "BUSINESS" | "FIRST";
 
@@ -25,9 +25,9 @@ interface Flight {
 }
 
 interface SeatManagerProps {
-  flightList: Flight[];
-  fetchSeats: (flightId: number) => Promise<Seat[]>;
-  addSeat: (
+  flightList: DataFlight[];
+  fetchSeats?: (flightId: number) => Promise<Seat[]>;
+  addSeat?: (
     flightId: number,
     seatRow: string,
     seatNumber: number,
@@ -48,15 +48,15 @@ export default function SeatManager({
 
   useEffect(() => {
     if (selectedFlight !== null) {
-      fetchSeats(selectedFlight).then(setSeats);
+      fetchSeats?.(selectedFlight).then(setSeats);
     }
   }, [selectedFlight, fetchSeats]);
 
   const handleAddSeat = async () => {
     if (!selectedFlight) return;
-    await addSeat(selectedFlight, newSeatRow, newSeatNumber, newSeatType);
-    const updatedSeats = await fetchSeats(selectedFlight);
-    setSeats(updatedSeats);
+    await addSeat?.(selectedFlight, newSeatRow, newSeatNumber, newSeatType);
+    const updatedSeats = await fetchSeats?.(selectedFlight);
+    setSeats(updatedSeats as Seat[]);
   };
 
   return (
@@ -72,70 +72,70 @@ export default function SeatManager({
         onChange={(e) => setSelectedFlight(Number(e.target.value))}
         sx={{ mb: 2, width: 200 }}
       >
-        {flightList.map((f) => (
-          <MenuItem key={f.id} value={f.id}>
+        {flightList?.map((f) => (
+          <MenuItem key={f.flightId} value={f.flightId}>
             {f.flightNo}
           </MenuItem>
         ))}
       </TextField>
 
-      {selectedFlight && (
-        <>
-          <Box mb={2}>
-            <Typography variant="subtitle1">Thêm ghế mới</Typography>
-            <TextField
-              label="Hàng"
-              value={newSeatRow}
-              onChange={(e) => setNewSeatRow(e.target.value)}
-              sx={{ mr: 1, width: 80 }}
-            />
-            <TextField
-              label="Số ghế"
-              type="number"
-              value={newSeatNumber}
-              onChange={(e) => setNewSeatNumber(Number(e.target.value))}
-              sx={{ mr: 1, width: 100 }}
-            />
-            <TextField
-              select
-              label="Loại ghế"
-              value={newSeatType}
-              onChange={(e) => setNewSeatType(e.target.value as SeatTypeValue)}
-              sx={{ mr: 1, width: 150 }}
-            >
-              <MenuItem value="ECONOMY">Economy</MenuItem>
-              <MenuItem value="BUSINESS">Business</MenuItem>
-              <MenuItem value="FIRST">First</MenuItem>
-            </TextField>
-            <Button variant="contained" onClick={handleAddSeat}>
-              Thêm ghế
-            </Button>
-          </Box>
+      {/* {selectedFlight && ( */}
+      <>
+        <Box mb={2}>
+          <Typography variant="subtitle1">Thêm ghế mới</Typography>
+          <TextField
+            label="Hàng"
+            value={newSeatRow}
+            onChange={(e) => setNewSeatRow(e.target.value)}
+            sx={{ mr: 1, width: 80 }}
+          />
+          <TextField
+            label="Số ghế"
+            type="number"
+            value={newSeatNumber}
+            onChange={(e) => setNewSeatNumber(Number(e.target.value))}
+            sx={{ mr: 1, width: 100 }}
+          />
+          <TextField
+            select
+            label="Loại ghế"
+            value={newSeatType}
+            onChange={(e) => setNewSeatType(e.target.value as SeatTypeValue)}
+            sx={{ mr: 1, width: 150 }}
+          >
+            <MenuItem value="ECONOMY">Economy</MenuItem>
+            <MenuItem value="BUSINESS">Business</MenuItem>
+            <MenuItem value="FIRST">First</MenuItem>
+          </TextField>
+          <Button variant="contained" onClick={handleAddSeat}>
+            Thêm ghế
+          </Button>
+        </Box>
 
-          <Grid container spacing={1}>
-            {seats.map((seat) => (
-              <Grid key={seat.id}>
-                <Box
-                  sx={{
-                    width: 50,
-                    height: 50,
-                    bgcolor: seat.isBooked ? "red" : "green",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    borderRadius: 1,
-                    color: "white",
-                    cursor: "pointer",
-                  }}
-                >
-                  {seat.seatRow}
-                  {seat.seatNumber}
-                </Box>
-              </Grid>
-            ))}
-          </Grid>
-        </>
-      )}
+        <Grid container spacing={1}>
+          {seats.map((seat) => (
+            <Grid key={seat.id}>
+              <Box
+                sx={{
+                  width: 50,
+                  height: 50,
+                  bgcolor: seat.isBooked ? "red" : "green",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderRadius: 1,
+                  color: "white",
+                  cursor: "pointer",
+                }}
+              >
+                {seat.seatRow}
+                {seat.seatNumber}
+              </Box>
+            </Grid>
+          ))}
+        </Grid>
+      </>
+      {/* )} */}
     </Box>
   );
 }

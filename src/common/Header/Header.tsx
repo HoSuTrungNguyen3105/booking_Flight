@@ -5,39 +5,28 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import LocalAirportSharpIcon from "@mui/icons-material/LocalAirportSharp";
-import {
-  Button,
-  Drawer,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
-  Stack,
-  useMediaQuery,
-  useTheme,
-} from "@mui/material";
+import { Button, Drawer, Stack, useMediaQuery, useTheme } from "@mui/material";
 import { useAuth } from "../../context/AuthContext";
 import SignOut from "../../components/Auth/SignOut";
 import { Link, useNavigate } from "react-router-dom";
 import { GridMenuIcon } from "@mui/x-data-grid";
-import CustomPopover from "../Button/Popover";
-import { AccountCircle, Login } from "@mui/icons-material";
+import { Login } from "@mui/icons-material";
 import LanguageButton from "../../components/Common/ChangeLanguageSelect";
 import { useTranslation } from "react-i18next";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 export const Header = () => {
-  const [time, setTime] = useState(new Date());
-  const { isAuthenticated, user } = useAuth();
+  // const [time, setTime] = useState(new Date());
+  const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const now = time.toLocaleTimeString();
-  const today = time.toLocaleDateString("vi-VN", {
-    weekday: "long",
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
+  // const now = time.toLocaleTimeString();
+  // const today = time.toLocaleDateString("vi-VN", {
+  //   weekday: "long",
+  //   day: "2-digit",
+  //   month: "2-digit",
+  //   year: "numeric",
+  // });
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
@@ -47,10 +36,10 @@ export const Header = () => {
     setDrawerOpen(!drawerOpen);
   };
 
-  const [username, setUsername] = useState<string | null>(null);
-  useEffect(() => {
-    setUsername(user?.name ?? null);
-  }, []);
+  // const [username, setUsername] = useState<string | null>(null);
+  // useEffect(() => {
+  //   setUsername(user?.name ?? null);
+  // }, []);
 
   const drawer = useCallback(
     () => (
@@ -133,7 +122,7 @@ export const Header = () => {
           </Stack>
 
           <Stack direction="row" alignItems="center" spacing={2}>
-            {isMobile ? (
+            {isMobile && (
               <IconButton
                 color="primary"
                 aria-label="open drawer"
@@ -142,32 +131,38 @@ export const Header = () => {
               >
                 <GridMenuIcon />
               </IconButton>
-            ) : null}
+            )}
 
             <Stack
               direction="row"
               alignItems="center"
               spacing={{ xs: 1, sm: 2 }}
-              sx={{ p: { xs: "2px 4px", sm: "4px 8px" } }}
+              sx={{
+                p: { xs: "2px 4px", sm: "4px 8px" },
+                justifyContent: "center",
+                flexWrap: "wrap",
+              }}
             >
               {isAuthenticated ? (
-                <Stack direction="row" alignItems="center" spacing={1}>
-                  <CustomPopover
-                    icon={<AccountCircle sx={{ fontSize: 20 }} />}
-                    text="Profile"
-                    option={["Dashboard"]}
-                    handleAction={handleOpenProfile}
-                    hideSubmitButton
-                  />
-
-                  {/* <ImageThumbnail
-                    url={ImageThumbnailIcon}
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  spacing={1}
+                  sx={{ cursor: "pointer" }}
+                >
+                  <Typography
+                    onClick={handleOpenProfile}
+                    fontWeight="bold"
+                    color={theme.palette.primary.dark}
+                    variant="caption"
                     sx={{
-                      width: { xs: 28, sm: 32 },
-                      height: { xs: 28, sm: 32 },
-                      borderRadius: "50%",
+                      "&:hover": {
+                        textDecoration: "underline",
+                      },
                     }}
-                  /> */}
+                  >
+                    Dashboard
+                  </Typography>
 
                   <SignOut />
                 </Stack>

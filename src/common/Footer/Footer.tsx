@@ -11,6 +11,7 @@ export const Footer = () => {
     ],
     []
   );
+
   const renderFooterCard = useMemo(() => {
     return dataFooter.map((item, index) => (
       <Box key={index} sx={{ mb: 2 }}>

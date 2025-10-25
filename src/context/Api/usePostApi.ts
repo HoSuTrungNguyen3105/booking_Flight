@@ -289,9 +289,9 @@ export type SearchEmailFromSidebarMessageReq = {
 };
 
 export type SearchEmailFromSidebarMessageRes = {
-  email: string;
-  id: number;
+  userId: number;
   name: string;
+  email: string;
   employeeNo: string;
   role: string;
 };

@@ -36,6 +36,15 @@ export type MenuSection = {
 };
 export const menuData: MenuSection[] = [
   {
+    title: "Home",
+    items: [
+      {
+        id: "/",
+        label: "Người dùng",
+      },
+    ],
+  },
+  {
     title: "Quản trị hệ thống",
     items: [
       {

@@ -54,6 +54,7 @@ const ChatContainer: React.FC = () => {
   const handleUserSelect = (user: number) => {
     setSelectedUser(user);
     setReceiverId(user);
+    console.log("userid", user);
     // setIsSearchPanelOpen(false);
 
     if (userId && user) {
@@ -103,6 +104,10 @@ const ChatContainer: React.FC = () => {
       setMessages((prev) => [...prev, incomingMessage]);
     }
   }, [incomingMessage]);
+
+  console.log("receiverId", receiverId);
+  console.log("selectedUser", selectedUser);
+  console.log("user", user?.id);
 
   return (
     <Box

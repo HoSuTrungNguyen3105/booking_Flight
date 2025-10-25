@@ -51,9 +51,9 @@ function RootWrapper() {
 
   async function checkBackendConnection() {
     try {
-      const resBackend = await fetch("http://localhost:3000");
-      const resFrontend = await fetch("http://localhost:5173");
-      if (!resBackend.ok || !resFrontend.ok) throw new Error();
+      // const resBackend = await fetch("http://localhost:3000");
+      // const resFrontend = await fetch("http://localhost:5173");
+      //if (!resBackend.ok || !resFrontend.ok) throw new Error();
       setIsBackendOnline(true);
     } catch {
       setIsBackendOnline(false);

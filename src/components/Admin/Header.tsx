@@ -55,9 +55,9 @@ const Header = () => {
         <Stack direction="column" spacing={3} sx={{ pt: 2, pb: 2 }}>
           <LanguageButton />
         </Stack>
-        <Stack direction="column" spacing={3} sx={{ pt: 2, pb: 2 }}>
+        {/* <Stack direction="column" spacing={3} sx={{ pt: 2, pb: 2 }}>
           <SearchUserFromMessage />
-        </Stack>
+        </Stack> */}
         <Box
           display="flex"
           justifyContent="center"

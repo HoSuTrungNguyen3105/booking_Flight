@@ -1,34 +1,14 @@
-import {
-  memo,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-  type SetStateAction,
-} from "react";
+import { memo, useCallback, useMemo } from "react";
 import BaseModal from "../../common/Modal/BaseModal";
 import { Add as AddIcon } from "@mui/icons-material";
-import { Box, Typography, Divider, Button, Stack } from "@mui/material";
-
-import type { UserWithRelationsData } from "./type";
-import {
-  useDeleteAttendance,
-  useDeleteLeaveRequest,
-  useDeletePayroll,
-  useDeleteRequestUnlockById,
-} from "../../context/Api/usePostApi";
+import { Box, Typography, Button, Stack } from "@mui/material";
 import {
   DateFormatEnum,
   formatDate,
   formatOffsetDateTime,
 } from "../../hooks/format";
 import type { GridColDef } from "@mui/x-data-grid";
-import TableSection from "../../common/CustomRender/TableSection";
-import type { GridRowDef } from "../../common/DataGrid";
-import type { IDetailItem } from "../../common/DetailSection";
-import DetailSection from "../../common/DetailSection";
-import type { Attendance, UserRoleType } from "../../utils/type";
-import { useGetUserWithRelations } from "../../context/Api/useGetApi";
+import type { Attendance } from "../../utils/type";
 
 interface IModalGeneratePayrollProps {
   open: boolean;
@@ -43,35 +23,6 @@ const FindAttendanceByDayModal = ({
   onSuccess,
   selectedAttendances,
 }: IModalGeneratePayrollProps) => {
-  /** Attendance columns */
-  const columnAttendanceList: GridColDef[] = useMemo(
-    () => [
-      { field: "id", headerName: "Attendance ID", flex: 1 },
-      {
-        field: "date",
-        headerName: "Date",
-        flex: 1,
-        renderCell: ({ value }) => (
-          <Typography variant="body2">
-            {formatDate(DateFormatEnum.MMMM_D_YYYY, value)}
-          </Typography>
-        ),
-      },
-      { field: "checkIn", headerName: "Check In", flex: 1 },
-      { field: "checkOut", headerName: "Check Out", flex: 1 },
-    ],
-    []
-  );
-
-  const rowDataPayrolls = useMemo(
-    () =>
-      selectedAttendances?.map((item) => ({
-        ...item,
-        id: item.id,
-      })) || [],
-    [selectedAttendances]
-  );
-
   const renderActions = useCallback(() => {
     return (
       <Box display="flex" gap={1} justifyContent="flex-end" alignItems="center">
@@ -106,7 +57,7 @@ const FindAttendanceByDayModal = ({
                 }}
               >
                 <Typography fontWeight={600}>
-                  👤 {item.employee?.name || "Unknown"}
+                  {item.employee?.name || "Unknown"}
                 </Typography>
                 <Typography>Status: {item.status}</Typography>
                 <Typography>
@@ -126,7 +77,7 @@ const FindAttendanceByDayModal = ({
         )}
       </Box>
     );
-  }, [rowDataPayrolls]);
+  }, [selectedAttendances]);
 
   return (
     <BaseModal

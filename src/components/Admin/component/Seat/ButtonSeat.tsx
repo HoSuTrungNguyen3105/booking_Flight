@@ -57,15 +57,20 @@ const ButtonSeat: React.FC<ButtonSeatProps> = ({
         backgroundColor: "#fff",
         textColor: seatColors.exitRow,
         borderColor: seatColors.exitRow,
-        icon: null,
+        icon: (
+          <AirlineSeatLegroomExtra
+            sx={{ fontSize: 16, color: seatColors.exitRow }}
+          />
+        ),
       };
     }
+
     if (seat.isUpperDeck) {
       return {
         backgroundColor: "#fff",
         textColor: seatColors.upperDeck,
         borderColor: seatColors.upperDeck,
-        icon: null,
+        icon: <Chair sx={{ fontSize: 14, color: seatColors.upperDeck }} />,
       };
     }
     if (seat.isWing) {
@@ -73,15 +78,24 @@ const ButtonSeat: React.FC<ButtonSeatProps> = ({
         backgroundColor: "#fff",
         textColor: seatColors.wing,
         borderColor: seatColors.wing,
-        icon: null,
+        icon: (
+          <AirlineSeatLegroomExtra
+            sx={{ fontSize: 14, color: seatColors.wing }}
+          />
+        ),
       };
     }
+
     if (seat.isExtraLegroom) {
       return {
         backgroundColor: "#fff",
         textColor: seatColors.extraLegroom,
         borderColor: seatColors.extraLegroom,
-        icon: null,
+        icon: (
+          <AirlineSeatLegroomExtra
+            sx={{ fontSize: 14, color: seatColors.extraLegroom }}
+          />
+        ),
       };
     }
     if (seat.isAvailable) {
@@ -281,32 +295,17 @@ const ButtonSeat: React.FC<ButtonSeatProps> = ({
       <Button
         onClick={() => handleSelectSeat(seat)}
         sx={{
-          width: 32,
-          height: 32,
+          height: 50,
+          width: 50,
+          m: "4px",
           minWidth: "unset",
           borderRadius: 1,
-          m: "4px",
-          fontSize: "7px",
-          fontWeight: 600,
+          fontSize: "200px",
+          fontWeight: 700,
           backgroundColor,
           color: textColor,
           border: `1px solid ${borderColor}`,
           cursor: "pointer",
-          // transition: "all 0.2s ease",
-          // "&:hover": {
-          //   backgroundColor: isSelected
-          //     ? theme.palette.primary.dark
-          //     : theme.palette.primary.light,
-          //   color: isSelected
-          //     ? theme.palette.primary.contrastText
-          //     : theme.palette.primary.main,
-          //   transform: "scale(1.05)",
-          //   borderColor: theme.palette.primary.main,
-          //   boxShadow: `0 0 8px ${theme.palette.primary.main}40`,
-          // },
-          // "&:active": {
-          //   transform: "scale(0.95)",
-          // },
         }}
       >
         <Stack alignItems="center" spacing={0.2} sx={{ position: "relative" }}>

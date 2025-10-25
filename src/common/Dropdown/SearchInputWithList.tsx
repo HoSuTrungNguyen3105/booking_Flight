@@ -35,7 +35,6 @@ export const SearchInputWithList = ({
   sx,
   onChange,
   placeholder = "",
-  status,
   onInputChange,
   disabled,
   customOutPut,
@@ -86,15 +85,6 @@ export const SearchInputWithList = ({
     return options;
   }, [options, apiOptions, apiCall]);
 
-  const borderColor = useMemo(() => {
-    const colorMap: Record<string, string> = {
-      error: "red",
-      warning: "orange",
-      confirmed: "green",
-    };
-    return status && colorMap[status] ? colorMap[status] : undefined;
-  }, [status]);
-
   const handleInputChange = (value: string) => {
     setInputText(value);
     onInputChange?.(value);
@@ -107,12 +97,6 @@ export const SearchInputWithList = ({
       setShowList(false);
     }
   };
-
-  // const handleOptionSelect = (option: DropdownOptions) => {
-  //   setInputText(typeof option.label === "string" ? option.label : "");
-  //   setShowList(false);
-  //   onChange?.(null as any, option);
-  // };
 
   const handleOptionSelect = (option: DropdownOptions) => {
     setInputText(typeof option.label === "string" ? option.label : "");
@@ -143,20 +127,13 @@ export const SearchInputWithList = ({
     <ClickAwayListener onClickAway={handleClickAway}>
       <Box
         ref={containerRef}
-        sx={{ position: "relative", minWidth: 600, ...sx }}
+        sx={{ position: "relative", minWidth: 300, ...sx }}
       >
         <InputTextField
           placeholder={placeholder}
           value={inputText}
           onChange={handleInputChange}
           disabled={disabled}
-          sx={{
-            "& .MuiOutlinedInput-root": {
-              "& fieldset": { borderColor },
-              "&:hover fieldset": { borderColor },
-              "&.Mui-focused fieldset": { borderColor },
-            },
-          }}
         />
 
         {/* Results List */}

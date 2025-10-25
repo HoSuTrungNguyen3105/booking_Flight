@@ -1,5 +1,5 @@
 import { useState, useCallback, memo } from "react";
-import { Box, Typography, Chip, Button } from "@mui/material";
+import { Box, Typography, Chip, Button, Tooltip } from "@mui/material";
 import { type GridColDef, type GridRenderCellParams } from "@mui/x-data-grid";
 import { DateFormatEnum, formatDate } from "../../../../hooks/format";
 import CustomPopover from "../../../../common/Button/Popover";
@@ -94,7 +94,12 @@ const LeaveRequestTable = () => {
       headerName: "Số ngày",
       flex: 1,
       renderCell: (params: GridRenderCellParams) => (
-        <Chip label={`${params.value} ngày`} color="secondary" size="small" />
+        <Chip
+          sx={{ mb: 0.5 }}
+          label={`${params.value} ngày`}
+          color="secondary"
+          size="small"
+        />
       ),
     },
     {
@@ -102,13 +107,21 @@ const LeaveRequestTable = () => {
       headerName: "Lý do",
       flex: 1,
       renderCell: (params: GridRenderCellParams) => (
-        <Box sx={{ mt: 1 }}>
-          <CustomPopover
-            text="Detail"
-            hideSubmitButton
-            handleAction={() => {}}
-            option={[params.value]}
-          />
+        <Box sx={{ mt: 1.5 }}>
+          <Tooltip title={params.value || ""}>
+            {/* params.value  */}
+            <Typography
+              variant="body2"
+              sx={{
+                color: "primary.main",
+                cursor: "pointer",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+              }}
+            >
+              Detail
+            </Typography>
+          </Tooltip>
         </Box>
       ),
     },
