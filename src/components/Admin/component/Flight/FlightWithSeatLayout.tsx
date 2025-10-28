@@ -77,7 +77,7 @@ const FlightWithSeatLayout: React.FC<FlightIdProps> = ({ id, onReturn }) => {
     },
     {
       title: "Status",
-      description: getAllInfoFlightByIdData?.data?.status,
+      description: getAllInfoFlightByIdData?.data?.flightStatuses?.[0].status,
       size: 12,
     },
     {
@@ -126,14 +126,11 @@ const FlightWithSeatLayout: React.FC<FlightIdProps> = ({ id, onReturn }) => {
   };
 
   const handleResetSelections = () => {
-    // setSelectedSeats([]);
-    // setUpdateSeat({
-    //   seatIds: [],
-    //   type: "ECONOMY",
-    // });
+    setSelectedSeats([]);
+    setUpdateSeat({
+      seatIds: [],
+    });
   };
-
-  // const filteredSeats = flightInfo?.seats || [];
 
   const filteredSeats = useMemo(() => {
     if (filter === "ALL") return getAllInfoFlightByIdData?.data?.seats;

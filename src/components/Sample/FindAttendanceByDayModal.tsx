@@ -1,13 +1,8 @@
-import { memo, useCallback, useMemo } from "react";
+import { memo, useCallback } from "react";
 import BaseModal from "../../common/Modal/BaseModal";
 import { Add as AddIcon } from "@mui/icons-material";
 import { Box, Typography, Button, Stack } from "@mui/material";
-import {
-  DateFormatEnum,
-  formatDate,
-  formatOffsetDateTime,
-} from "../../hooks/format";
-import type { GridColDef } from "@mui/x-data-grid";
+import { formatOffsetDateTime } from "../../hooks/format";
 import type { Attendance } from "../../utils/type";
 
 interface IModalGeneratePayrollProps {

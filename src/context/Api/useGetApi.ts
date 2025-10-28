@@ -26,6 +26,7 @@ import {
   type LeaveRequest,
   type UserUpdateProps,
   type AttendanceResponseMessage,
+  type FacilyByTerminalIdResponseMessage,
 } from "../../utils/type.ts";
 import { useFetch } from "../use[custom]/useFetch.ts";
 import type { Payroll } from "../../components/Admin/component/Payroll/PayrollManagement.tsx";
@@ -312,7 +313,7 @@ export const useGetAllAircraftInfo = () => {
 export const useGetAllFlightIds = () => {
   const { data: getAllFlightIds, refetch: refetchGetAllFlightIds } = useFetch<
     StatusResponseMessage,
-    null
+    void
   >({
     url: "/sys/flights/flightIds",
     autoFetch: true,
@@ -657,6 +658,18 @@ export const useFindTerminalIDStatuses = () => {
   };
 };
 
+export const useGetFaclilityByTerminalID = (terminalId: string) => {
+  const { data, loading } = useFetch<FacilyByTerminalIdResponseMessage, void>({
+    url: `/sys/gates/by-terminal/${terminalId}`,
+    autoFetch: !!terminalId,
+    config: getMethod,
+  });
+  return {
+    dataGetFaclilityByTerminalID: data,
+    loadingGetFaclilityByTerminalID: loading,
+  };
+};
+
 // Role
 export const useFindAllRoles = () => {
   const { data, refetch, loading } = useFetch<
@@ -677,6 +690,22 @@ export const useFindAllLeaveStatuses = () => {
     null
   >({
     url: "/sys/enums/leave-statuses",
+    autoFetch: true,
+    config: getMethod,
+  });
+  return {
+    dataLeaveStatuses: data,
+    refetchLeaveStatuses: refetch,
+    loadingLeaveStatuses: loading,
+  };
+};
+
+export const useFindAllFlightStatuses = () => {
+  const { data, refetch, loading } = useFetch<
+    DetailResponseMessage<string[]>,
+    null
+  >({
+    url: "/sys/enums/flight-statuses",
     autoFetch: true,
     config: getMethod,
   });

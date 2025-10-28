@@ -51,13 +51,21 @@ export type CodeItem = {
   acodeName?: string;
 };
 
+export type FlightStatus = {
+  id: number;
+  flightId?: number;
+  status: string;
+  description: string;
+  updatedAt: number;
+};
+
 export type DataFlight = {
   flightId?: number;
   flightNo?: string;
   flightType?: string;
   departureAirport: string;
   arrivalAirport: string;
-  status: string;
+  // status: string;
   aircraftCode: string;
   priceEconomy?: number;
   priceBusiness?: number;
@@ -77,7 +85,14 @@ export type DataFlight = {
   arrivalAirportRel?: Airport;
   meals?: Meal[];
   seats?: Seat[];
-  _count?: { seats: number; meals: number };
+  flightStatuses?: FlightStatus[];
+  _count?: {
+    seats: number;
+    meals: number;
+    bookings: number;
+    gateAssignments: number;
+    flightStatuses: number;
+  };
 };
 
 export type FlightTimeFields = Pick<
@@ -94,7 +109,7 @@ export type FlightBasicFields = Pick<DataFlight, "flightNo" | "aircraftCode">;
 
 export type SearchType = FlightTimeFields &
   FlightLocationFields &
-  Pick<DataFlight, "status" | "aircraftCode">;
+  Pick<DataFlight, "aircraftCode">;
 
 export type FareConditions = "Business" | "Economy" | "Comfort";
 
@@ -298,8 +313,10 @@ interface AllFlightCodeProps {
 
 export type FlightInStatus = {
   flightId: number;
-  flightNo: string;
   status: string;
+  flight: {
+    flightNo: string;
+  };
 };
 
 export enum UserRole {
@@ -667,9 +684,15 @@ export type Facility = {
   terminalId: string;
   location?: string;
   openingHours?: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: number;
+  updatedAt: number;
+  terminal: Terminal;
+  //  {
+  //   id: string;
+  //   name: string;
+  // };
 };
+export type FacilyByTerminalIdResponseMessage = DetailResponseMessage<Facility>;
 
 export type RegisterResponseMessage = DetailResponseMessage<EmailProps>;
 export type PassengerResponseMessage = DetailResponseMessage<Passenger>;

@@ -10,7 +10,11 @@ import {
   type ChipProps,
 } from "@mui/material";
 import { Save as SaveIcon } from "@mui/icons-material";
-import { useGetAllFlightIds } from "../../../../context/Api/useGetApi";
+import {
+  mapStringToDropdown,
+  useFindAllFlightStatuses,
+  useGetAllFlightIds,
+} from "../../../../context/Api/useGetApi";
 import SelectDropdown, {
   type ActionType,
 } from "../../../../common/Dropdown/SelectDropdown";
@@ -18,45 +22,47 @@ import { useUpdateFlightStatus } from "../../../../context/Api/usePostApi";
 
 type ValidChipColor = ChipProps["color"];
 
-const statusOptions: ActionType[] = [
-  {
-    value: "SCHEDULED",
-    label: "Scheduled",
-    color: "info",
-    // icon: (
-    //   <Box
-    //     sx={{
-    //       width: 8,
-    //       height: 8,
-    //       borderRadius: "50%",
-    //       bgcolor: "info.main",
-    //     }}
-    //   />
-    // ),
-  },
-  {
-    value: "BOARDING",
-    label: "Boarding",
-    color: "primary",
-  },
-  {
-    value: "DELAYED",
-    label: "Delayed",
-    color: "warning",
-  },
-  {
-    value: "CANCELLED",
-    label: "Cancelled",
-    color: "error",
-  },
-  {
-    value: "LANDED",
-    label: "Landed",
-    color: "success",
-  },
-];
+// const statusOptions: ActionType[] = [
+//   {
+//     value: "SCHEDULED",
+//     label: "Scheduled",
+//     color: "info",
+//     // icon: (
+//     //   <Box
+//     //     sx={{
+//     //       width: 8,
+//     //       height: 8,
+//     //       borderRadius: "50%",
+//     //       bgcolor: "info.main",
+//     //     }}
+//     //   />
+//     // ),
+//   },
+//   {
+//     value: "BOARDING",
+//     label: "Boarding",
+//     color: "primary",
+//   },
+//   {
+//     value: "DELAYED",
+//     label: "Delayed",
+//     color: "warning",
+//   },
+//   {
+//     value: "CANCELLED",
+//     label: "Cancelled",
+//     color: "error",
+//   },
+//   {
+//     value: "LANDED",
+//     label: "Landed",
+//     color: "success",
+//   },
+// ];
 
 const FlightStatus = ({ onReturn }: { onReturn: () => void }) => {
+  const { dataLeaveStatuses } = useFindAllFlightStatuses();
+  // const statusOptions = mapStringToDropdown(dataLeaveStatuses?.data || [])
   const { getAllFlightIds, refetchGetAllFlightIds } = useGetAllFlightIds();
   const [edited, setEdited] = useState<Record<number, string>>({});
 
@@ -92,33 +98,55 @@ const FlightStatus = ({ onReturn }: { onReturn: () => void }) => {
     }
   };
 
-  const getChipColor = (status: string): ValidChipColor => {
-    const option = statusOptions.find(
-      (opt) => opt.value?.toString().toLowerCase() === status.toLowerCase()
-    );
+  // const getChipColor = (status: string): ValidChipColor => {
+  //   const option = statusOptions.find(
+  //     (opt) => opt.value?.toString().toLowerCase() === status.toLowerCase()
+  //   );
 
-    const validColors: ValidChipColor[] = [
-      "default",
-      "primary",
-      "secondary",
-      "error",
-      "warning",
-      "info",
-      "success",
-    ];
+  //   const validColors: ValidChipColor[] = [
+  //     "default",
+  //     "primary",
+  //     "secondary",
+  //     "error",
+  //     "warning",
+  //     "info",
+  //     "success",
+  //   ];
 
-    const color = option?.color as ValidChipColor;
-    return validColors.includes(color) ? color : "default";
+  //   const color = option?.color as ValidChipColor;
+  //   return validColors.includes(color) ? color : "default";
+  // };
+
+  const getStatusColor = (status: string): string => {
+    switch (status.toUpperCase()) {
+      case "APPROVED":
+        return "success";
+      case "PENDING":
+        return "warning";
+      case "REJECTED":
+        return "error";
+      case "CANCELLED":
+        return "default";
+      default:
+        return "info";
+    }
   };
 
-  const getProgressBarColor = (status: string) => {
-    const color = getChipColor(status);
-    return color === "default" ? "grey.500" : `${color}.main`;
-  };
+  // const getProgressBarColor = (status: string) => {
+  //   const color = getChipColor(status);
+  //   return color === "default" ? "grey.500" : `${color}.main`;
+  // };
 
   const isFlightEdited = (flightId: number) => {
     return edited[flightId] !== undefined;
   };
+
+  const statusOptions = mapStringToDropdown(dataLeaveStatuses?.data || []).map(
+    (item) => ({
+      ...item,
+      color: getStatusColor(item.value),
+    })
+  );
 
   return (
     <Stack
@@ -168,11 +196,11 @@ const FlightStatus = ({ onReturn }: { onReturn: () => void }) => {
                   >
                     <Stack direction="row" spacing={2} alignItems="center">
                       <Typography variant="h6" fontWeight="bold">
-                        {flight.flightNo}
+                        {flight.flight.flightNo}
                       </Typography>
                       <Chip
                         label={flight.status}
-                        sx={{ color: getChipColor(flight.status) }}
+                        sx={{ color: getStatusColor(flight.status) }}
                         variant="filled"
                         size="small"
                       />
@@ -243,7 +271,7 @@ const FlightStatus = ({ onReturn }: { onReturn: () => void }) => {
                       sx={{
                         width: "33%",
                         height: "100%",
-                        bgcolor: getProgressBarColor(flight.status),
+                        bgcolor: getStatusColor(flight.status),
                         borderRadius: 2,
                       }}
                     />

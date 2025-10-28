@@ -26,6 +26,7 @@ import CreateGateModal from "./modal/CreateGateModal";
 import { useTerminalContainer } from "./hook/useTerminalContainer";
 import ManageFacilityModal from "./modal/ManageFacilityModal";
 import { DateFormatEnum, formatDate } from "../../../../hooks/format";
+import { useNavigate } from "react-router-dom";
 
 export type UpdateGateProps = Pick<Gate, "id"> &
   Omit<CreateGateProps, "terminalId">;
@@ -375,6 +376,14 @@ const TerminalContainer: React.FC = () => {
     [handleAddNew, handleFacilityClick]
   );
 
+  const navigate = useNavigate();
+
+  const handleViewDetail = (terminalId: string) => {
+    navigate("/admin/terminal/facility", {
+      state: { terminalId: terminalId },
+    });
+  };
+
   return (
     <>
       <Stack sx={{ mb: 1 }}>
@@ -411,7 +420,9 @@ const TerminalContainer: React.FC = () => {
                 sx={{ opacity: 1 }}
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleTerminalClick(terminal);
+                  // handleTerminalClick(terminal);
+                  handleViewDetail(terminal.id);
+                  // handleTerminalClick(terminal);
                 }}
               >
                 <Edit fontSize="small" />

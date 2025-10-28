@@ -25,26 +25,18 @@ import InputTextField from "../../../../common/Input/InputTextField";
 import SelectDropdown from "../../../../common/Dropdown/SelectDropdown";
 import DateTimePickerComponent from "../../../../common/DayPicker";
 import Android12Switch from "../../../../common/Switch/Switch";
-import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import BaseModal from "../../../../common/Modal/BaseModal";
 import { DateFormatEnum, formatDate } from "../../../../hooks/format";
-import {
-  mapStringToDropdown,
-  useGetAllCode,
-  useGetFlightByIDData,
-} from "../../../../context/Api/useGetApi";
-import {
-  useCreateFlight,
-  useFlightUpdate,
-} from "../../../../context/Api/usePostApi";
 import type { DataFlight } from "../../../../utils/type";
-import { useToast } from "../../../../context/ToastContext";
 import FormRow from "../../../../common/CustomRender/FormRow";
+import { useFlightCreateAndUpdate } from "./hooks/useFlightCreateAndUpdate";
+import InputNumber from "../../../../common/Input/InputNumber";
 
 export type FlightFormData = Omit<DataFlight, "meals">;
 
-type FlightFormMode = "create" | "update";
+export type FlightFormMode = "create" | "update";
 
 interface IModalFlightManageProps {
   open: boolean;
@@ -63,225 +55,26 @@ const FlightManagementModal = ({
   onClose,
   onSuccess,
 }: IModalFlightManageProps) => {
-  const [activeStep, setActiveStep] = useState(0);
-
-  const { getFlightByIdData, refetchGetFlightData } = useGetFlightByIDData({
-    id: mode === "update" && flightId ? flightId : undefined,
-  });
-
-  const toast = useToast();
-
-  const stepTopRef = useRef<HTMLDivElement | null>(null);
-
-  const { refetchCreateFlightData } = useCreateFlight();
-
-  const { refetchUpdateFlightId } = useFlightUpdate({ id: flightId });
-
-  const { getAllCode } = useGetAllCode();
-
-  const createDefaultFormData = (): FlightFormData => ({
-    flightNo: "",
-    flightType: "",
-    departureAirport: "",
-    arrivalAirport: "",
-    status: "SCHEDULED",
-    aircraftCode: "",
-    scheduledDeparture: 0,
-    scheduledArrival: 0,
-    priceEconomy: 0,
-    priceBusiness: 0,
-    priceFirst: 0,
-    gateId: "",
-    terminal: "",
-  });
-
-  const mapFlightToFormData = (
-    data?: Partial<FlightFormData>
-  ): FlightFormData => {
-    if (!data) return createDefaultFormData();
-
-    return {
-      flightNo: data.flightNo || "",
-      flightType: data.flightType || "",
-      departureAirport: data.departureAirport || "",
-      arrivalAirport: data.arrivalAirport || "",
-      status: data.status || "scheduled",
-      aircraftCode: data.aircraftCode || "",
-      scheduledDeparture: data.scheduledDeparture
-        ? Number(data.scheduledDeparture)
-        : 0,
-      scheduledArrival: data.scheduledArrival
-        ? Number(data.scheduledArrival)
-        : 0,
-      priceEconomy: data.priceEconomy || 0,
-      priceBusiness: data.priceBusiness || 0,
-      priceFirst: data.priceFirst || 0,
-      gateId: data.gateId || "",
-      terminal: data.terminal || "",
-      isCancelled: data.isCancelled || false,
-      delayMinutes: data.delayMinutes || 0,
-      seats: data.seats || [],
-    };
-  };
-
-  useEffect(() => {
-    if (mode === "update" && getFlightByIdData?.data) {
-      setFormData(mapFlightToFormData(getFlightByIdData.data));
-    }
-  }, [getFlightByIdData?.data, mode]);
-
-  const handleRefetchAllData = useCallback(async () => {
-    try {
-      if (mode === "update" && flightId) {
-        await refetchGetFlightData();
-      }
-    } catch (error) {
-      console.error("Error refetching data:", error);
-    }
-  }, [mode, flightId, refetchGetFlightData]);
-
-  const [formData, setFormData] = useState<FlightFormData>(
-    mode === "update"
-      ? mapFlightToFormData(getFlightByIdData?.data)
-      : createDefaultFormData()
-  );
-
-  const handleSave = useCallback(async () => {
-    try {
-      if (mode === "update" && flightId) {
-        const updateData = {
-          flightNo: formData.flightNo,
-          flightType: formData.flightType,
-          departureAirport: formData.departureAirport,
-          arrivalAirport: formData.arrivalAirport,
-          status: formData.status,
-          aircraftCode: formData.aircraftCode,
-          actualDeparture: formData.actualDeparture,
-          actualArrival: formData.actualArrival,
-          priceEconomy: formData.priceEconomy,
-          priceBusiness: formData.priceBusiness,
-          priceFirst: formData.priceFirst,
-          gateId: formData.gateId,
-          terminal: formData.terminal,
-          isCancelled: formData.isCancelled,
-          delayMinutes: formData.delayMinutes,
-          ...(formData.isCancelled && {
-            cancellationReason: formData.cancellationReason,
-          }),
-          ...(formData.delayMinutes && {
-            delayReason: formData.delayReason,
-          }),
-        };
-
-        const response = await refetchUpdateFlightId(updateData);
-
-        if (response?.resultCode === "00") {
-          onSuccess();
-          onClose();
-        } else {
-          toast(response?.resultMessage || "Update flight failed", "error");
-        }
-      } else if (mode === "create") {
-        const createData = {
-          flightNo: formData.flightNo,
-          flightType: formData.flightType,
-          departureAirport: formData.departureAirport,
-          arrivalAirport: formData.arrivalAirport,
-          status: formData.status,
-          aircraftCode: formData.aircraftCode,
-          scheduledDeparture: formData.scheduledDeparture,
-          scheduledArrival: formData.scheduledArrival,
-          priceEconomy: formData.priceEconomy,
-          priceBusiness: formData.priceBusiness,
-          priceFirst: formData.priceFirst,
-          terminal: formData.terminal,
-        };
-
-        const response = await refetchCreateFlightData(createData);
-
-        if (response?.resultCode === "00") {
-          toast(response?.resultMessage || "Success create", "success");
-          onSuccess();
-          onClose();
-        } else {
-          toast(response?.resultMessage || "Error create", "error");
-        }
-      }
-    } catch (error) {
-      console.error("Error saving flight:", error);
-    }
-  }, [
+  const {
     formData,
+    handleSubmit,
+    optionAirportCode,
+    optionAircraftCode,
+    handleRefetchAllData,
+    handleInputChange,
+    optionWay,
+    stepTopRef,
+    activeStep,
+    setActiveStep,
+    steps,
+  } = useFlightCreateAndUpdate({
     mode,
-    flightId,
-    refetchUpdateFlightId,
-    refetchCreateFlightData,
+    onClose,
     onSuccess,
-  ]);
+    flightId,
+  });
 
-  useEffect(() => {
-    if (mode === "update" && getFlightByIdData?.data) {
-      setFormData(mapFlightToFormData(getFlightByIdData.data));
-    }
-  }, [getFlightByIdData?.data, mode]);
-
-  useEffect(() => {
-    if (!open) {
-      setFormData(
-        mode === "update"
-          ? mapFlightToFormData(getFlightByIdData?.data)
-          : createDefaultFormData()
-      );
-      setActiveStep(0);
-    }
-  }, [open, mode, getFlightByIdData]);
-
-  const optionAirportCode =
-    getAllCode?.data?.airport?.map((e) => ({
-      label: ` ${e.value}`,
-      value: e.code,
-    })) ?? [];
-
-  const optionAircraftCode =
-    getAllCode?.data?.aircraft?.map((e) => ({
-      label: ` ${e.value}`,
-      value: e.code,
-    })) ?? [];
-
-  const optionWay = [
-    {
-      value: "oneway",
-      label: "Một chiều",
-    },
-    { value: "roundtrip", label: "Khứ hồi" },
-  ];
-
-  const steps = [
-    "Thông tin cơ bản",
-    "Thời gian bay",
-    "Giá vé & Dung lượng",
-    "Cổng & Trạng thái",
-  ];
-
-  const handleInputChange = <K extends keyof FlightFormData>(
-    field: K,
-    value: FlightFormData[K]
-  ) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
-
-  const handleSubmit = () => {
-    handleSave();
-  };
-
-  useEffect(() => {
-    if (stepTopRef.current) {
-      stepTopRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  }, [activeStep]);
+  const [hasTerminal, setHasTerminal] = useState(false);
 
   const renderBasicInfo = useCallback(
     () => (
@@ -307,23 +100,29 @@ const FlightManagementModal = ({
         </Grid>
 
         <Grid size={12}>
-          <SelectDropdown
-            options={optionAirportCode}
-            placeholder="Departure Airport"
-            value={formData.departureAirport}
-            onChange={(e) => handleInputChange("departureAirport", e as string)}
-            //startIcon={<FlightTakeoff color="primary" />}
-          />
+          <FormRow label="Departure Airport">
+            <SelectDropdown
+              options={optionAirportCode}
+              placeholder="Departure Airport"
+              value={formData.departureAirport}
+              onChange={(e) =>
+                handleInputChange("departureAirport", e as string)
+              }
+              //startIcon={<FlightTakeoff color="primary" />}
+            />
+          </FormRow>
         </Grid>
 
         <Grid size={12}>
-          <SelectDropdown
-            options={optionAirportCode}
-            placeholder="Arrival Airport"
-            value={formData.arrivalAirport}
-            onChange={(e) => handleInputChange("arrivalAirport", e as string)}
-            // startIcon={<FlightLand color="primary" />}
-          />
+          <FormRow label="Arrival Airport">
+            <SelectDropdown
+              options={optionAirportCode}
+              placeholder="Arrival Airport"
+              value={formData.arrivalAirport}
+              onChange={(e) => handleInputChange("arrivalAirport", e as string)}
+              // startIcon={<FlightLand color="primary" />}
+            />
+          </FormRow>
         </Grid>
 
         <Grid size={12}>
@@ -337,17 +136,23 @@ const FlightManagementModal = ({
           </FormRow>
         </Grid>
 
+        <Button variant="contained" onClick={() => setHasTerminal(true)}>
+          Has Terminal
+        </Button>
+
         {/* TO_DO */}
-        <Grid size={12}>
-          <InputTextField
-            value={formData.terminal}
-            placeholder="Terminal"
-            onChange={(e) => handleInputChange("terminal", e as string)}
-          />
-        </Grid>
+        {hasTerminal && (
+          <Grid size={12}>
+            <InputTextField
+              value={formData.terminal}
+              placeholder="Terminal"
+              onChange={(e) => handleInputChange("terminal", e as string)}
+            />
+          </Grid>
+        )}
       </Grid>
     ),
-    [formData, handleInputChange]
+    [formData, hasTerminal, handleInputChange]
   );
 
   const renderTimeInfo = useCallback(
@@ -398,33 +203,30 @@ const FlightManagementModal = ({
       <Grid container spacing={3}>
         <Grid size={12}>
           <Typography>Giá vé Phổ thông</Typography>
-          <InputTextField
-            type="number"
+          <InputNumber
             placeholder="Price Economy"
-            value={String(formData.priceEconomy)}
-            onChange={(e) => handleInputChange("priceEconomy", parseInt(e))}
+            value={formData.priceEconomy}
+            onChange={(e) => handleInputChange("priceEconomy", Number(e))}
             startIcon={<AttachMoney />}
             endIcon={<InputAdornment position="end">USD</InputAdornment>}
           />
         </Grid>
 
         <Grid size={12}>
-          <InputTextField
-            type="number"
+          <InputNumber
             placeholder="Price Business"
-            value={String(formData.priceBusiness)}
-            onChange={(e) => handleInputChange("priceBusiness", parseInt(e))}
+            value={formData.priceBusiness}
+            onChange={(e) => handleInputChange("priceBusiness", Number(e))}
             startIcon={<AttachMoney />}
             endIcon={<InputAdornment position="end">USD</InputAdornment>}
           />
         </Grid>
 
         <Grid size={12}>
-          <InputTextField
-            type="number"
+          <InputNumber
             placeholder="Price First"
-            value={String(formData.priceFirst)}
-            onChange={(e) => handleInputChange("priceFirst", parseInt(e))}
+            value={formData.priceFirst}
+            onChange={(e) => handleInputChange("priceFirst", Number(e))}
             startIcon={<AttachMoney />}
             endIcon={<Typography>USD</Typography>}
           />

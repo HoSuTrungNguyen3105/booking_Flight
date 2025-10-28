@@ -3,12 +3,26 @@ import i18n from "../../i18n";
 import { optionLanguage } from "../../i18n/resource";
 import type { ActionType } from "../../common/Dropdown/SelectDropdown";
 
-const currencyOptions: ActionType[] = [
-  { label: "USD ($)", value: "usd" },
-  { label: "KRW (₩)", value: "krw" },
-  { label: "JPY (¥)", value: "jpy" },
-  { label: "VND (₫)", value: "vnd" },
-];
+export interface CurrencyInfo {
+  title: string;
+  locale: string;
+}
+
+export type CurrencyMap = Record<string, CurrencyInfo>;
+
+export const CURRENCIES: CurrencyMap = {
+  USD: { title: "U.S. Dollar", locale: "en-US" },
+  KRW: { title: "Korean Won", locale: "ko-KR" },
+  JPY: { title: "Japanese Yen", locale: "ja-JP" },
+  VND: { title: "Vietnamese Dong", locale: "vi-VN" },
+};
+
+export const currencyOptions: ActionType[] = Object.keys(CURRENCIES).map(
+  (key) => ({
+    label: CURRENCIES[key].title,
+    value: key as keyof typeof CURRENCIES,
+  })
+);
 
 export const useChangeLanguage = () => {
   const [selectedLang, setSelectedLang] = useState<ActionType | null>(

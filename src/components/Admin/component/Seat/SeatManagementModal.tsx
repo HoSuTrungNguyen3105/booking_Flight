@@ -1,17 +1,9 @@
-import {
-  Box,
-  Button,
-  Typography,
-  FormControl,
-  Switch,
-  FormControlLabel,
-} from "@mui/material";
-import { memo, useCallback, useState } from "react";
+import { Box, Button, Typography, FormControl } from "@mui/material";
+import { memo, useCallback, useMemo, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import BaseModal from "../../../../common/Modal/BaseModal";
-import InputTextField from "../../../../common/Input/InputTextField";
 import SelectDropdown from "../../../../common/Dropdown/SelectDropdown";
-import Android12Switch from "../../../../common/Switch/Switch";
+// import Android12Switch from "../../../../common/Switch/Switch";
 import type { SeatTypeValue } from "../../../../utils/type";
 
 interface IModalStatisticalDataLearningProps {
@@ -21,24 +13,28 @@ interface IModalStatisticalDataLearningProps {
   selectedSeats?: { seatIds: number[] };
 }
 
+interface SeatFeatureOption {
+  value: keyof SeatFeatures;
+  label: string;
+}
+
+interface SeatFeatures {
+  isBooked: boolean;
+  isAvailable: boolean;
+  isExitRow: boolean;
+  isExtraLegroom: boolean;
+  isHandicapAccessible: boolean;
+  isNearLavatory: boolean;
+  isUpperDeck: boolean;
+  isWing: boolean;
+}
+
 const SeatManagementModal = ({
   open,
   onClose,
   selectedSeats,
 }: IModalStatisticalDataLearningProps) => {
-  const [type, setType] = useState<SeatTypeValue>("ECONOMY");
-  const [position, setPosition] = useState("WINDOW");
-  const [seatRow, setSeatRow] = useState("");
-  const [seatNumber, setSeatNumber] = useState(1);
-  const [price, setPrice] = useState<number | undefined>();
-  const [isBooked, setIsBooked] = useState(false);
-  const [isAvailable, setIsAvailable] = useState(true);
-  const [isExitRow, setIsExitRow] = useState(false);
-  const [isExtraLegroom, setIsExtraLegroom] = useState(false);
-  const [note, setNote] = useState("");
-  // const { refetchUpdateSeatByIds } = useSeatUpdateByIds();
-  // dropdown options
-  const seatTypeOptions = useCallback(
+  const seatTypeOptions = useMemo(
     () => [
       { value: "ECONOMY", label: "Economy" },
       { value: "BUSINESS", label: "Business" },
@@ -48,14 +44,22 @@ const SeatManagementModal = ({
     []
   );
 
-  const seatPositionOptions = useCallback(
+  const seatFeatureOptions: SeatFeatureOption[] = useMemo(
     () => [
-      { value: "WINDOW", label: "Window" },
-      { value: "MIDDLE", label: "Middle" },
-      { value: "AISLE", label: "Aisle" },
+      { value: "isBooked", label: "Booked" },
+      { value: "isAvailable", label: "Available" },
+      { value: "isExitRow", label: "Exit Row" },
+      { value: "isExtraLegroom", label: "Extra Legroom" },
+      { value: "isHandicapAccessible", label: "Handicap Accessible" },
+      { value: "isNearLavatory", label: "Near Lavatory" },
+      { value: "isUpperDeck", label: "Upper Deck" },
+      { value: "isWing", label: "Wing Area" },
     ],
     []
   );
+
+  const [type, setType] = useState<SeatTypeValue>("ECONOMY");
+  const [position, setPosition] = useState("WINDOW");
 
   const handleUpdate = async () => {
     // const res = await refetchUpdateSeatByIds({
@@ -95,68 +99,24 @@ const SeatManagementModal = ({
           Updating seats: {selectedSeats?.seatIds?.join(", ")}
         </Typography>
 
-        {/* Type */}
         <FormControl fullWidth sx={{ mb: 2 }}>
           <SelectDropdown
-            options={seatTypeOptions()}
+            options={seatTypeOptions}
             value={type}
             onChange={(val) => setType(val as SeatTypeValue)}
           />
         </FormControl>
 
-        {/* Position */}
         <FormControl fullWidth sx={{ mb: 2 }}>
           <SelectDropdown
-            options={seatPositionOptions()}
+            options={seatFeatureOptions}
             value={position}
             onChange={(val) => setPosition(val as string)}
           />
         </FormControl>
-
-        {/* Row */}
-        <InputTextField
-          value={seatRow}
-          onChange={(val) => setSeatRow(val as string)}
-          sx={{ mb: 2 }}
-        />
-
-        {/* Number */}
-        <InputTextField
-          type="number"
-          value={String(seatNumber)}
-          onChange={(val) => setSeatNumber(Number(val) || 1)}
-          sx={{ mb: 2 }}
-        />
-
-        {/* Price */}
-        <InputTextField
-          type="number"
-          value={price !== undefined ? String(price) : ""}
-          onChange={(val) => setPrice(Number(val) || undefined)}
-          sx={{ mb: 2 }}
-        />
-
-        <Android12Switch
-          checked={isExitRow}
-          onChange={(e) => setIsExitRow(e.target.checked)}
-        />
       </Box>
     );
-  }, [
-    selectedSeats,
-    type,
-    position,
-    seatRow,
-    seatNumber,
-    price,
-    isBooked,
-    isAvailable,
-    isExitRow,
-    isExtraLegroom,
-    note,
-    seatTypeOptions,
-    seatPositionOptions,
-  ]);
+  }, [selectedSeats, type, position, seatTypeOptions, seatFeatureOptions]);
 
   return (
     <BaseModal

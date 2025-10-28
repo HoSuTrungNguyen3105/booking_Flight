@@ -24,7 +24,7 @@ const CreateSeatModal = ({
   const [newSeat, setNewSeat] = useState<CreateSeatDto>({
     seatNumber: 0,
     seatRow: "",
-    flightId: flightId,
+    flightId,
     isBooked: false,
   });
 

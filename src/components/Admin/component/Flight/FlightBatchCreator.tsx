@@ -7,146 +7,27 @@ import {
   FormControl,
   Grid,
   IconButton,
-  Stack,
   Typography,
 } from "@mui/material";
 import { Add, Delete } from "@mui/icons-material";
-import type { FlightFormData } from "./FlightManagementModal";
-import {
-  useCreateMultiFlight,
-  type CreateManyFlightResultItem,
-} from "../../../../context/Api/usePostApi";
 import InputTextField from "../../../../common/Input/InputTextField";
 import SingleDateRangePickerComponent from "../../../../common/DayPicker/date-range-field";
-import { useGetAllCode } from "../../../../context/Api/useGetApi";
 import SelectDropdown from "../../../../common/Dropdown/SelectDropdown";
-import { useNavigate } from "react-router-dom";
 import InputNumber from "../../../../common/Input/InputNumber";
 import theme from "../../../../scss/theme";
-
-// type FlightError = {
-//   errorCode: string;
-//   errorMessage: string;
-// };
+import { useFlightCreateAndUpdate } from "./hooks/useFlightCreateAndUpdate";
 
 const FlightBatchCreator: React.FC = () => {
-  const [flights, setFlights] = useState<FlightFormData[]>([
-    {
-      flightNo: "",
-      flightType: "",
-      departureAirport: "",
-      arrivalAirport: "",
-      status: "SCHEDULED",
-      aircraftCode: "",
-      terminal: "",
-      scheduledDeparture: 0,
-      scheduledArrival: 0,
-      priceEconomy: 0,
-      priceBusiness: 0,
-    },
-  ]);
-
-  const { getAllCode } = useGetAllCode();
-
-  const optionAirportCode =
-    getAllCode?.data?.airport?.map((e) => ({
-      label: ` ${e.value}`,
-      value: e.code,
-    })) ?? [];
-
-  const optionAircraftCode =
-    getAllCode?.data?.aircraft?.map((e) => ({
-      label: ` ${e.value}`,
-      value: e.code,
-    })) ?? [];
-
-  const [errors, setErrors] = useState<Record<number, string>>({});
-
-  const handleChange = (
-    index: number,
-    field: keyof FlightFormData,
-    value: string | number
-  ) => {
-    const newFlights = [...flights];
-    (newFlights[index][field] as any) = value;
-    setFlights(newFlights);
-
-    setErrors((prevErrors) => {
-      const newErrors = { ...prevErrors };
-      if (newErrors[index]) {
-        delete newErrors[index];
-      }
-      return newErrors;
-    });
-  };
-
-  const handleAddFlight = () => {
-    setFlights([
-      ...flights,
-      {
-        flightNo: "",
-        flightType: "",
-        departureAirport: "",
-        arrivalAirport: "",
-        status: "SCHEDULED",
-        aircraftCode: "",
-        terminal: "",
-        scheduledDeparture: 0,
-        scheduledArrival: 0,
-        priceEconomy: 0,
-        priceBusiness: 0,
-      },
-    ]);
-  };
-
-  const handleRemoveFlight = (index: number) => {
-    if (flights.length === 1) return;
-    setFlights(flights.filter((_, i) => i !== index));
-  };
-
-  const { refetchCreateMultiFlight } = useCreateMultiFlight();
-
-  const navigate = useNavigate();
-
-  const handleSubmit = async () => {
-    try {
-      const result = await refetchCreateMultiFlight(flights);
-
-      if (result?.resultCode === "00") {
-        const errorMap: Record<number, string> = {};
-
-        setErrors([]);
-
-        const newFlights = flights.map((f, idx) =>
-          errorMap[idx] ? f : { ...f, flightNo: "", aircraftCode: "" }
-        );
-        setFlights(newFlights);
-
-        if (Object.keys(errorMap).length === 0) {
-          navigate("/admin/FlightManagement");
-        }
-      } else {
-        const errorMap: Record<number, string> = {};
-
-        result?.list?.forEach(
-          (item: CreateManyFlightResultItem, idx: number) => {
-            if (item.errorCode && item.errorCode !== "00") {
-              errorMap[idx] = item.errorMessage || "Unknown error";
-            }
-          }
-        );
-
-        setErrors(errorMap);
-
-        const newFlights = flights.map((f, idx) =>
-          errorMap[idx] ? f : { ...f, flightNo: "", aircraftCode: "" }
-        );
-        setFlights(newFlights);
-      }
-    } catch (err) {
-      console.error("error", err);
-    }
-  };
+  const {
+    handleSubmitMultiFlight,
+    handleAddFlight,
+    handleRemoveFlight,
+    errors,
+    handleChange,
+    flights,
+    optionAircraftCode,
+    optionAirportCode,
+  } = useFlightCreateAndUpdate({});
 
   return (
     <Box sx={{ padding: 1 }}>
@@ -177,14 +58,6 @@ const FlightBatchCreator: React.FC = () => {
                   onChange={(e) =>
                     handleChange(index, "flightNo", e.toUpperCase())
                   }
-                />
-              </Grid>
-
-              <Grid size={3}>
-                <InputTextField
-                  placeholder="Status"
-                  value={flight.status}
-                  onChange={(e) => handleChange(index, "status", e)}
                 />
               </Grid>
 
@@ -230,19 +103,6 @@ const FlightBatchCreator: React.FC = () => {
                 />
                 {/* </Box> */}
               </Grid>
-              {/* <Grid size={3}>
-                <TextField
-                  size="small"
-                  type="datetime-local"
-                  label="Scheduled Arrival"
-                  InputLabelProps={{ shrink: true }}
-                  value={flight.scheduledArrival}
-                  onChange={(e) =>
-                    handleChange(index, "scheduledArrival", e.target.value)
-                  }
-                  fullWidth
-                />
-              </Grid> */}
 
               <Grid size={3}>
                 <InputTextField
@@ -305,7 +165,11 @@ const FlightBatchCreator: React.FC = () => {
         >
           Thêm flight
         </Button>
-        <Button variant="contained" color="primary" onClick={handleSubmit}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleSubmitMultiFlight}
+        >
           Submit batch
         </Button>
       </Box>

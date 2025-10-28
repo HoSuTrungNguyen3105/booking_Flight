@@ -52,7 +52,7 @@ const Conversations = ({
     SearchEmailFromSidebarMessageRes[]
   >([]);
 
-  // const [search, setSearch] = useState("");
+  const [search, setSearch] = useState("");
   const [filteredUsers, setFilteredUsers] = useState<Conversation[]>([]);
   const debouncedQuery = useDebounce(filteredUsers, 500);
 
@@ -78,19 +78,23 @@ const Conversations = ({
   useEffect(() => {
     if (!data?.list) return;
 
-    if (debouncedQuery.map((e) => e.name.trim().length === 0)) {
+    if (search === "") {
+      //debouncedQuery.map((e) => e.name.trim().length === 0)
       setFilteredUsers(data.list);
     } else {
+      // if (debouncedQuery.map((e) => e.name.trim().length === 0)) {
+      //   setFilteredUsers(data.list);
+      // } else {
       // const q = debouncedQuery.toLowerCase();
-      // const filtered = data.list.filter((conv) => conv.name?.toLowerCase());
-      // setFilteredUsers(filtered);
+      const filtered = data.list.filter((conv) => conv.name?.toLowerCase());
+      setFilteredUsers(filtered);
     }
   }, [debouncedQuery, data]);
 
   //   useEffect(() => {
   //   if (!data?.list) return;
 
-  //   const query = debouncedQuery.map.trim().toLowerCase();
+  //   const query = debouncedQuery.map.toLowerCase();
 
   //   if (query.length === 0) {
   //     setFilteredUsers(data.list);
@@ -123,8 +127,10 @@ const Conversations = ({
         /> */}
         <Box sx={{ maxWidth: "20px" }}>
           <SearchUserFromMessage
+            searchText={search}
             // value={{ employeeId: 1 }}
             onChange={(result) => {
+              console.log("result", result);
               setSearchResult(result);
             }}
           />

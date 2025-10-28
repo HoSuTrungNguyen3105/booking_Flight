@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   Paper,
@@ -18,41 +18,18 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Alert,
-  Tabs,
-  Tab,
 } from "@mui/material";
 import { Add, Edit, Delete, LocationOn, Schedule } from "@mui/icons-material";
+import { useLocation } from "react-router-dom";
+import { useGetFaclilityByTerminalID } from "../../../../context/Api/useGetApi";
+import type { Facility } from "../../../../utils/type";
 
-interface Facility {
-  id: string;
-  name: string;
-  type: string;
-  description?: string;
-  location?: string;
-  openingHours?: string;
-  terminal: {
-    id: string;
-    name: string;
-  };
-}
-
-interface FacilityManagementProps {
-  terminalId?: string;
-}
-
-const FacilityManagement: React.FC<FacilityManagementProps> = ({
-  terminalId,
-}) => {
-  const [facilities, setFacilities] = useState<Facility[]>([]);
+const FacilityManagement = () => {
+  const location = useLocation();
+  const { terminalId } = location.state as { terminalId: string };
+  // const [facilities, setFacilities] = useState<Facility[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingFacility, setEditingFacility] = useState<Facility | null>(null);
-  const [tabValue, setTabValue] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<{
-    type: "success" | "error";
-    text: string;
-  } | null>(null);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -63,109 +40,12 @@ const FacilityManagement: React.FC<FacilityManagementProps> = ({
     terminalId: terminalId || "",
   });
 
-  useEffect(() => {
-    fetchFacilities();
-  }, [terminalId, tabValue]);
-
-  useEffect(() => {
-    // 🚀 Thay vì fetch từ API, dùng mock data
-    const mockFacilities: Facility[] = [
-      {
-        id: "1",
-        name: "Highlands Coffee",
-        type: "RESTAURANT",
-        description: "Quán cà phê nổi tiếng tại sân bay",
-        location: "Tầng 2, gần cổng số 5",
-        openingHours: "06:00-22:00",
-        terminal: { id: "T1", name: "Terminal 1" },
-      },
-      {
-        id: "2",
-        name: "Duty Free Shop",
-        type: "SHOP",
-        description: "Cửa hàng miễn thuế với nhiều sản phẩm",
-        location: "Tầng 1, khu A",
-        openingHours: "08:00-21:00",
-        terminal: { id: "T2", name: "Terminal 2" },
-      },
-      {
-        id: "3",
-        name: "Lotus Lounge",
-        type: "LOUNGE",
-        description: "Phòng chờ hạng thương gia",
-        location: "Tầng 3, gần gate 12",
-        openingHours: "05:00-23:59",
-        terminal: { id: "T1", name: "Terminal 1" },
-      },
-      {
-        id: "4",
-        name: "Vietcombank ATM",
-        type: "ATM",
-        location: "Sảnh đến quốc tế",
-        terminal: { id: "T2", name: "Terminal 2" },
-      },
-      {
-        id: "5",
-        name: "Free Airport Wi-Fi",
-        type: "WIFI",
-        description: "Dịch vụ Wi-Fi miễn phí toàn sân bay",
-        terminal: { id: "T1", name: "Terminal 1" },
-      },
-    ];
-
-    setFacilities(mockFacilities);
-  }, [terminalId, tabValue]);
-
-  const fetchFacilities = async () => {
-    setLoading(true);
-    // try {
-    //   let url = "http://localhost:3000/facilities";
-    //   if (terminalId) {
-    //     url += `/terminal/${terminalId}`;
-    //   } else if (tabValue > 0) {
-    //     const types = ["RESTAURANT", "SHOP", "LOUNGE", "ATM", "WIFI"];
-    //     url += `/type/${types[tabValue - 1]}`;
-    //   }
-
-    //   const response = await fetch(url);
-    //   if (response.ok) {
-    //     const data = await response.json();
-    //     setFacilities(data);
-    //   }
-    // } catch (error) {
-    //   console.error("Error fetching facilities:", error);
-    // } finally {
-    //   setLoading(false);
-    // }
-  };
+  const { dataGetFaclilityByTerminalID } =
+    useGetFaclilityByTerminalID(terminalId);
 
   const handleSubmit = async () => {
     try {
-      const url = editingFacility
-        ? `http://localhost:3000/facilities/${editingFacility.id}`
-        : "http://localhost:3000/facilities";
-
-      const method = editingFacility ? "PUT" : "POST";
-
-      const response = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        setMessage({
-          type: "success",
-          text: `Facility ${
-            editingFacility ? "updated" : "created"
-          } successfully!`,
-        });
-        setDialogOpen(false);
-        fetchFacilities();
-      }
-    } catch (error) {
-      setMessage({ type: "error", text: "Error saving facility" });
-    }
+    } catch (error) {}
   };
 
   const handleDelete = async (id: string) => {
@@ -174,11 +54,7 @@ const FacilityManagement: React.FC<FacilityManagementProps> = ({
         await fetch(`http://localhost:3000/facilities/${id}`, {
           method: "DELETE",
         });
-        setMessage({ type: "success", text: "Facility deleted successfully!" });
-        fetchFacilities();
-      } catch (error) {
-        setMessage({ type: "error", text: "Error deleting facility" });
-      }
+      } catch (error) {}
     }
   };
 
@@ -191,7 +67,7 @@ const FacilityManagement: React.FC<FacilityManagementProps> = ({
   };
 
   return (
-    <Box>
+    <>
       <Paper elevation={2} sx={{ p: 3 }}>
         <Box
           display="flex"
@@ -222,28 +98,8 @@ const FacilityManagement: React.FC<FacilityManagementProps> = ({
           </Button>
         </Box>
 
-        {/* {message && (
-          <Alert severity={message.type} sx={{ mb: 2 }}>
-            {message.text}
-          </Alert>
-        )} */}
-
-        {!terminalId && (
-          <Tabs
-            value={tabValue}
-            onChange={(e, newValue) => setTabValue(newValue)}
-          >
-            <Tab label="Tất cả" />
-            <Tab label="Nhà hàng" />
-            <Tab label="Cửa hàng" />
-            <Tab label="Phòng chờ" />
-            <Tab label="ATM" />
-            <Tab label="Wi-Fi" />
-          </Tabs>
-        )}
-
         <Grid container spacing={2} sx={{ mt: 1 }}>
-          {facilities.map((facility) => (
+          {dataGetFaclilityByTerminalID?.list?.map((facility) => (
             <Grid size={6} key={facility.id}>
               <Card>
                 <CardContent>
@@ -422,7 +278,7 @@ const FacilityManagement: React.FC<FacilityManagementProps> = ({
           </Button>
         </DialogActions>
       </Dialog>
-    </Box>
+    </>
   );
 };
 

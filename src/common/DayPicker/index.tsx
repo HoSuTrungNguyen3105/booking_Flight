@@ -68,6 +68,7 @@ const DateTimePickerComponent: React.FC<Props> = ({
             textField: (params) => (
               <TextField
                 {...params}
+                key={Number(params)}
                 fullWidth
                 error={hasError}
                 helperText={hasError ? "Invalid date" : ""}

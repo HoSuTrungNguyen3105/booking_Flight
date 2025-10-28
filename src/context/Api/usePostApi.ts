@@ -15,7 +15,6 @@ import {
   type UserUpdateProps,
   type LeaveRequest,
   type ReqUserIDProps,
-  type Seat,
   type SearchFlightResponse,
   MethodType,
   type MealResponse,

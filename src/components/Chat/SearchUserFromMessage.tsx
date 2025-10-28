@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useState } from "react";
+import React, { memo, useCallback, useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import {
   useFindUserFromMessage,
@@ -9,6 +9,7 @@ import type { DropdownOptions } from "../../common/Dropdown/type";
 import { SearchInputWithList } from "../../common/Dropdown/SearchInputWithList";
 
 type SearchUserFromMessageProps = {
+  searchText: string;
   onChange: (searchResult: SearchEmailFromSidebarMessageRes[]) => void;
 };
 
@@ -17,6 +18,7 @@ type SearchEmployeeId = DropdownOptions & {
 };
 
 const SearchUserFromMessage: React.FC<SearchUserFromMessageProps> = ({
+  searchText,
   onChange,
 }) => {
   const [options, setOptions] = useState<SearchEmployeeId[]>([]);
@@ -24,45 +26,49 @@ const SearchUserFromMessage: React.FC<SearchUserFromMessageProps> = ({
   const { user } = useAuth();
   const userId = user?.id;
 
+  console.log("searchText", searchText);
+
   // Gọi API khi user nhập text
-  const handleInputChange = useCallback(
-    async (searchText: string): Promise<SearchEmployeeId[]> => {
-      if (!searchText.trim() || !userId) {
-        setOptions([]);
-        return [];
+  const handleInputChange = useCallback(async (): Promise<
+    SearchEmployeeId[]
+  > => {
+    if (!searchText.trim() || !userId) {
+      setOptions([]);
+      return [];
+    }
+
+    try {
+      const res = await refetchUserFromMessage({
+        id: userId,
+        email: searchText,
+      });
+
+      if (res?.resultCode === "00" && res.list) {
+        const mappedOptions = res.list.map(
+          (e: SearchEmailFromSidebarMessageRes): SearchEmployeeId => ({
+            value: e.userId,
+            label: e.name || e.email,
+            data: e,
+          })
+        );
+
+        setOptions(mappedOptions);
+        return mappedOptions;
       }
 
-      try {
-        const res = await refetchUserFromMessage({
-          id: userId,
-          email: searchText,
-        });
+      setOptions([]);
+      return [];
+    } catch (error) {
+      console.error("Search error:", error);
+      setOptions([]);
+      return [];
+    }
+  }, [userId, searchText, refetchUserFromMessage]);
 
-        if (res?.resultCode === "00" && res.list) {
-          const mappedOptions = res.list.map(
-            (e: SearchEmailFromSidebarMessageRes): SearchEmployeeId => ({
-              value: e.userId,
-              label: e.name || e.email,
-              data: e,
-            })
-          );
+  useEffect(() => {
+    handleInputChange();
+  }, [handleInputChange]);
 
-          setOptions(mappedOptions);
-          return mappedOptions;
-        }
-
-        setOptions([]);
-        return [];
-      } catch (error) {
-        console.error("Search error:", error);
-        setOptions([]);
-        return [];
-      }
-    },
-    [userId, refetchUserFromMessage]
-  );
-
-  // Khi user chọn 1 option
   const handleOptionSelect = useCallback(
     (selectedOption: SearchEmployeeId | null) => {
       if (selectedOption) {
@@ -93,7 +99,7 @@ const SearchUserFromMessage: React.FC<SearchUserFromMessageProps> = ({
         options={options}
         label=" Search users"
         placeholder="Type name or email..."
-        apiCall={handleInputChange}
+        apiCall={() => handleInputChange()}
         onChange={(option) =>
           handleOptionSelect(option as SearchEmployeeId | null)
         }

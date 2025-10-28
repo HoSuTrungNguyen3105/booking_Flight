@@ -9,21 +9,6 @@ import {
 } from "@mui/material";
 import type { DataFlight, Seat, SeatTypeValue } from "../../../../utils/type";
 
-// export type SeatType = "ECONOMY" | "BUSINESS" | "FIRST";
-
-// interface Seat {
-//   id: number;
-//   seatNumber: number;
-//   seatRow: string;
-//   isBooked: boolean;
-//   type: SeatTypeValue;
-// }
-
-interface Flight {
-  id: number;
-  flightNo: string;
-}
-
 interface SeatManagerProps {
   flightList: DataFlight[];
   fetchSeats?: (flightId: number) => Promise<Seat[]>;

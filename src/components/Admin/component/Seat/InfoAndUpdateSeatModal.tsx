@@ -8,6 +8,10 @@ import { useSeatUpdateByIds } from "../../../../context/Api/usePostApi";
 import Android12Switch from "../../../../common/Switch/Switch";
 import InputNumber from "../../../../common/Input/InputNumber";
 import SelectDropdown from "../../../../common/Dropdown/SelectDropdown";
+import {
+  mapStringToDropdown,
+  useFindAllSeatTypes,
+} from "../../../../context/Api/useGetApi";
 
 interface ISeatModalProps {
   open: boolean;
@@ -26,23 +30,9 @@ const InfoAndUpdateSeatModal = ({
 }: ISeatModalProps) => {
   const { refetchUpdateSeatByIds } = useSeatUpdateByIds();
 
-  const seatTypeOptions = useCallback(
-    () => [
-      { value: "ECONOMY", label: "Economy" },
-      { value: "BUSINESS", label: "Business" },
-      { value: "FIRST", label: "First" },
-      { value: "VIP", label: "Vip" },
-    ],
-    []
-  );
+  const { dataSeatTypes } = useFindAllSeatTypes();
 
-  // const handleSelectAction = useCallback(
-  //   (row: SeatTypeValue, action: ActionType) => {
-  //     setSelectedRow(row);
-  //     toggleOpenModal(action);
-  //   },
-  //   [toggleOpenModal]
-  // );
+  const seatTypeOptions = mapStringToDropdown(dataSeatTypes?.data || []);
 
   const handleUpdate = async () => {
     const seatId = formData?.id;
@@ -136,7 +126,7 @@ const InfoAndUpdateSeatModal = ({
               onChange={(e) =>
                 setFormData({ ...formData, type: e as SeatTypeValue })
               }
-              options={seatTypeOptions()}
+              options={seatTypeOptions}
             />
           </Grid>
           <Grid size={6}>

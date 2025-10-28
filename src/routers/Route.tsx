@@ -46,6 +46,7 @@ import MealList from "../components/Admin/component/Meal/MealList";
 import FlightManagement from "../components/Admin/component/Flight/FlightManagement";
 import AttendanceCalendar from "../components/Sample/AttendanceCalendar";
 import ForgetPassword from "../components/Auth/ForgetPassword";
+import FacilityManagement from "../components/Admin/component/InfrastructureEntities/FacilityManagement";
 
 const routes = [
   {
@@ -217,6 +218,10 @@ const routes = [
       {
         path: ROUTE_PATHS.TERMINAL_GATE_CONTAINER,
         element: <TerminalGateContainer />,
+      },
+      {
+        path: "terminal/facility",
+        element: <FacilityManagement />,
       },
       {
         path: ROUTE_PATHS.FLIGHT_PATH,
