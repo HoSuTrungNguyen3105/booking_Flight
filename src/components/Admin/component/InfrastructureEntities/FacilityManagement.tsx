@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Box,
   Paper,
@@ -9,20 +9,12 @@ import {
   CardContent,
   Chip,
   IconButton,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
 } from "@mui/material";
 import { Add, Edit, Delete, LocationOn, Schedule } from "@mui/icons-material";
 import { useLocation } from "react-router-dom";
 import { useGetFaclilityByTerminalID } from "../../../../context/Api/useGetApi";
 import type { Facility } from "../../../../utils/type";
+import ManageFacilityModal from "./modal/ManageFacilityModal";
 
 const FacilityManagement = () => {
   const location = useLocation();
@@ -30,23 +22,18 @@ const FacilityManagement = () => {
   // const [facilities, setFacilities] = useState<Facility[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingFacility, setEditingFacility] = useState<Facility | null>(null);
+  const [dialogType, setDialogType] = useState<"update" | "create">("create");
+  // const [formData, setFormData] = useState({
+  //   name: "",
+  //   type: "RESTAURANT",
+  //   description: "",
+  //   location: "",
+  //   openingHours: "",
+  //   terminalId: terminalId || "",
+  // });
 
-  const [formData, setFormData] = useState({
-    name: "",
-    type: "RESTAURANT",
-    description: "",
-    location: "",
-    openingHours: "",
-    terminalId: terminalId || "",
-  });
-
-  const { dataGetFaclilityByTerminalID } =
+  const { dataGetFaclilityByTerminalID, refetchGetFaclilityByTerminalID } =
     useGetFaclilityByTerminalID(terminalId);
-
-  const handleSubmit = async () => {
-    try {
-    } catch (error) {}
-  };
 
   const handleDelete = async (id: string) => {
     if (window.confirm("Are you sure you want to delete this facility?")) {
@@ -83,14 +70,15 @@ const FacilityManagement = () => {
             startIcon={<Add />}
             onClick={() => {
               setEditingFacility(null);
-              setFormData({
-                name: "",
-                type: "RESTAURANT",
-                description: "",
-                location: "",
-                openingHours: "",
-                terminalId: terminalId || "",
-              });
+              setDialogType("create");
+              // setFormData({
+              //   name: "",
+              //   type: "RESTAURANT",
+              //   description: "",
+              //   location: "",
+              //   openingHours: "",
+              //   terminalId: terminalId || "",
+              // });
               setDialogOpen(true);
             }}
           >
@@ -169,14 +157,7 @@ const FacilityManagement = () => {
                       size="small"
                       onClick={() => {
                         setEditingFacility(facility);
-                        setFormData({
-                          name: facility.name,
-                          type: facility.type,
-                          description: facility.description || "",
-                          location: facility.location || "",
-                          openingHours: facility.openingHours || "",
-                          terminalId: facility.terminal.id,
-                        });
+                        setDialogType("update");
                         setDialogOpen(true);
                       }}
                     >
@@ -196,88 +177,21 @@ const FacilityManagement = () => {
         </Grid>
       </Paper>
 
-      {/* Create/Edit Dialog */}
-      <Dialog
-        open={dialogOpen}
-        onClose={() => setDialogOpen(false)}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle>
-          {editingFacility ? "Chỉnh sửa tiện nghi" : "Thêm tiện nghi mới"}
-        </DialogTitle>
-        <DialogContent>
-          <Grid container spacing={2} sx={{ mt: 1 }}>
-            <Grid size={12}>
-              <TextField
-                fullWidth
-                label="Tên tiện nghi"
-                value={formData.name}
-                onChange={(e) =>
-                  setFormData({ ...formData, name: e.target.value })
-                }
-              />
-            </Grid>
-            <Grid size={12}>
-              <FormControl fullWidth>
-                <InputLabel>Loại tiện nghi</InputLabel>
-                <Select
-                  value={formData.type}
-                  onChange={(e) =>
-                    setFormData({ ...formData, type: e.target.value })
-                  }
-                  label="Loại tiện nghi"
-                >
-                  {Object.entries(facilityTypes).map(([value, { label }]) => (
-                    <MenuItem key={value} value={value}>
-                      {label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid size={12}>
-              <TextField
-                fullWidth
-                label="Mô tả"
-                multiline
-                rows={3}
-                value={formData.description}
-                onChange={(e) =>
-                  setFormData({ ...formData, description: e.target.value })
-                }
-              />
-            </Grid>
-            <Grid size={6}>
-              <TextField
-                fullWidth
-                label="Vị trí"
-                value={formData.location}
-                onChange={(e) =>
-                  setFormData({ ...formData, location: e.target.value })
-                }
-              />
-            </Grid>
-            <Grid size={6}>
-              <TextField
-                fullWidth
-                label="Giờ mở cửa"
-                value={formData.openingHours}
-                onChange={(e) =>
-                  setFormData({ ...formData, openingHours: e.target.value })
-                }
-                placeholder="VD: 06:00-22:00"
-              />
-            </Grid>
-          </Grid>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setDialogOpen(false)}>Hủy</Button>
-          <Button onClick={handleSubmit} variant="contained">
-            {editingFacility ? "Cập nhật" : "Tạo mới"}
-          </Button>
-        </DialogActions>
-      </Dialog>
+      {dialogOpen && (
+        <ManageFacilityModal
+          open={dialogOpen}
+          terminalId={terminalId}
+          mode={dialogType}
+          updateData={editingFacility as Facility}
+          onClose={() => {
+            setDialogOpen(false);
+          }}
+          onSuccess={() => {
+            setDialogOpen(false);
+            refetchGetFaclilityByTerminalID();
+          }}
+        />
+      )}
     </>
   );
 };

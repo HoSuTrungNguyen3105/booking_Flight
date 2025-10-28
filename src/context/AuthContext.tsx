@@ -181,6 +181,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
+    let isMounted = true; // kiểm soát khi unmount hoặc Strict Mode
+
     const savedToken = localStorage.getItem("token");
     const savedUserId = localStorage.getItem("userId");
 
@@ -188,17 +190,22 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       logout();
       return;
     }
+
     setToken(savedToken);
 
     const verifyUser = async () => {
       try {
         await fetchMyInfo(Number(savedUserId));
       } catch (err) {
-        logout();
+        if (isMounted) logout();
       }
     };
 
     verifyUser();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return (

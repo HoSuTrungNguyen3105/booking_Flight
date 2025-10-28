@@ -309,6 +309,32 @@ export const useFindUserFromMessage = () => {
   return { dataUserFromMessage, refetchUserFromMessage };
 };
 
+export const useApproveUnlock = () => {
+  const { data: dataApproveUnlock, refetch: refetchApproveUnlock } = useFetch<
+    ResponseMessage,
+    { id: number }
+  >({
+    url: "sys/users/approve-unlock",
+    autoFetch: false, // chỉ gọi khi cần
+    config: postMethod,
+  });
+
+  return { dataApproveUnlock, refetchApproveUnlock };
+};
+
+export const useRejectUnlock = () => {
+  const { data: dataRejectUnlock, refetch: refetchRejectUnlock } = useFetch<
+    ResponseMessage,
+    { id: number }
+  >({
+    url: "sys/users/reject-unlock",
+    autoFetch: false, // chỉ gọi khi cần
+    config: postMethod,
+  });
+
+  return { dataRejectUnlock, refetchRejectUnlock };
+};
+
 export type LoginReqProps = {
   email: string;
   password: string;

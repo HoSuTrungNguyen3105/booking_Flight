@@ -11,11 +11,9 @@ import {
   Avatar,
   Badge,
   List,
-  Button,
 } from "@mui/material";
 import theme from "../../scss/theme";
 import { DateFormatEnum, formatDate } from "../../hooks/format";
-import { Search } from "@mui/icons-material";
 import useDebounce from "../../context/use[custom]/useDebounce";
 import SearchUserFromMessage from "./SearchUserFromMessage";
 import type { SearchEmailFromSidebarMessageRes } from "../../context/Api/usePostApi";
@@ -52,7 +50,6 @@ const Conversations = ({
     SearchEmailFromSidebarMessageRes[]
   >([]);
 
-  const [search, setSearch] = useState("");
   const [filteredUsers, setFilteredUsers] = useState<Conversation[]>([]);
   const debouncedQuery = useDebounce(filteredUsers, 500);
 
@@ -78,9 +75,9 @@ const Conversations = ({
   useEffect(() => {
     if (!data?.list) return;
 
-    if (search === "") {
+    if (debouncedQuery.map((e) => e.name.trim().length === 0)) {
       //debouncedQuery.map((e) => e.name.trim().length === 0)
-      setFilteredUsers(data.list);
+      //setFilteredUsers(data.list);
     } else {
       // if (debouncedQuery.map((e) => e.name.trim().length === 0)) {
       //   setFilteredUsers(data.list);
@@ -119,36 +116,15 @@ const Conversations = ({
         borderBottom={1}
         borderColor="divider"
       >
-        {/* <InputTextField
-          placeholder="Search users..."
-          value={search}
-          onChange={(e) => setSearch(e)}
-          clearable
-        /> */}
         <Box sx={{ maxWidth: "20px" }}>
           <SearchUserFromMessage
-            searchText={search}
-            // value={{ employeeId: 1 }}
             onChange={(result) => {
               console.log("result", result);
               setSearchResult(result);
             }}
           />
         </Box>
-        {/* <Button
-          variant="contained"
-          color="primary"
-          // onClick={() => setSearch(search)} // trigger filter ngay
-          sx={{
-            minWidth: "auto",
-            px: 2,
-            borderRadius: 1,
-          }}
-        >
-          <Search />
-        </Button> */}
       </Box>
-      {/* {loading && <SidebarSkeleton />} */}
       {data?.resultCode === "00" && (
         <List sx={{ py: 0, height: "100%", overflow: "auto" }}>
           {filteredUsers?.map((conv, index) => (
@@ -174,14 +150,7 @@ const Conversations = ({
                     backgroundColor: "primary.light",
                     borderRight: 3,
                     borderColor: "primary.main",
-                    // "&:hover": {
-                    //   backgroundColor: "primary.light",
-                    // },
                   },
-                  // "&:hover": {
-                  //   backgroundColor: "action.hover",
-                  //   transform: "translateX(2px)",
-                  // },
                 }}
               >
                 {/* Avatar with Status */}

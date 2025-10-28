@@ -46,7 +46,6 @@ const MessageList: React.FC<MessageListProps> = ({
   const userId = currentUser.id;
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
-  // socket gửi tin nhắn
   const { emit: sendMessage } = useSocket<any>({
     event: "send_message",
     autoListen: false,
@@ -79,7 +78,6 @@ const MessageList: React.FC<MessageListProps> = ({
     }
   };
 
-  // lấy lịch sử tin nhắn khi chọn user
   useSocket<MessageBetweenUserLoginResponse>({
     event: "findMessagesBetweenUsers",
     autoListen: true,
@@ -92,7 +90,6 @@ const MessageList: React.FC<MessageListProps> = ({
     },
   });
 
-  // lắng nghe tin nhắn mới từ server
   const { isConnected } = useSocket<Message>({
     event: "new_message",
     autoListen: true,

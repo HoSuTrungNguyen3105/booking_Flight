@@ -1,10 +1,15 @@
 import { Chip, Box, Button, Typography } from "@mui/material";
 import type { GridColDef } from "@mui/x-data-grid";
 import { useGetUnlockRequests } from "../../context/Api/useGetApi";
-import { useCallback, useMemo } from "react";
+import { memo, useCallback, useMemo } from "react";
 import TableSection from "../../common/CustomRender/TableSection";
 import { DateFormatEnum, formatDate } from "../../hooks/format";
 import theme from "../../scss/theme";
+import {
+  useApproveUnlock,
+  useRejectUnlock,
+} from "../../context/Api/usePostApi";
+import { useToast } from "../../context/ToastContext";
 
 enum TypeColor {
   REJECTED = "REJECTED",
@@ -14,8 +19,6 @@ enum TypeColor {
 
 const UnlockRequestTable = () => {
   const { getUnlockRequests } = useGetUnlockRequests();
-  // const [unlockRows, setUnlockRows] = useState<GridRowDef[]>([]);
-
   const rowData = useMemo(
     () =>
       getUnlockRequests?.list?.map((item) => ({
@@ -37,6 +40,29 @@ const UnlockRequestTable = () => {
         return theme.palette.error.dark;
     }
   }, []);
+
+  const { refetchApproveUnlock } = useApproveUnlock();
+  const { refetchRejectUnlock } = useRejectUnlock();
+  const toast = useToast();
+
+  const handleActionUnlock = async (
+    id: number,
+    state: "REJECTED" | "APPROVED"
+  ) => {
+    let res;
+
+    if (state === "APPROVED") {
+      res = await refetchApproveUnlock({ id });
+    } else {
+      res = await refetchRejectUnlock({ id });
+    }
+
+    if (res?.resultCode === "00") {
+      toast(res.resultMessage || "");
+    } else {
+      toast(res?.resultMessage || "", "error");
+    }
+  };
 
   const columns: GridColDef[] = [
     { field: "id", headerName: "ID", flex: 1 },
@@ -88,14 +114,14 @@ const UnlockRequestTable = () => {
               <Button
                 size="small"
                 variant="contained"
-                onClick={() => console.log("Duyệt", params.row.id)}
+                onClick={() => handleActionUnlock(params.row.id, "APPROVED")}
               >
                 Duyệt
               </Button>
               <Button
                 size="small"
                 variant="outlined"
-                onClick={() => console.log("Từ chối", params.row.id)}
+                onClick={() => handleActionUnlock(params.row.id, "REJECTED")}
               >
                 Từ chối
               </Button>
@@ -124,4 +150,4 @@ const UnlockRequestTable = () => {
   );
 };
 
-export default UnlockRequestTable;
+export default memo(UnlockRequestTable);

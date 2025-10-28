@@ -27,6 +27,7 @@ import {
   type UserUpdateProps,
   type AttendanceResponseMessage,
   type FacilyByTerminalIdResponseMessage,
+  type ResponseMessage,
 } from "../../utils/type.ts";
 import { useFetch } from "../use[custom]/useFetch.ts";
 import type { Payroll } from "../../components/Admin/component/Payroll/PayrollManagement.tsx";
@@ -659,14 +660,34 @@ export const useFindTerminalIDStatuses = () => {
 };
 
 export const useGetFaclilityByTerminalID = (terminalId: string) => {
-  const { data, loading } = useFetch<FacilyByTerminalIdResponseMessage, void>({
+  const { data, refetch } = useFetch<FacilyByTerminalIdResponseMessage, void>({
     url: `/sys/gates/by-terminal/${terminalId}`,
     autoFetch: !!terminalId,
     config: getMethod,
   });
   return {
     dataGetFaclilityByTerminalID: data,
-    loadingGetFaclilityByTerminalID: loading,
+    refetchGetFaclilityByTerminalID: refetch,
+  };
+};
+export type MyRequestUnlockProps = {
+  id: number;
+  status: string;
+  createdAt: string;
+  reason: string;
+};
+
+export const useGetMyRequestUnlock = (id?: number) => {
+  const { data: dataGetMyRequestUnlock, refetch: refetchGetMyRequestUnlock } =
+    useFetch<DetailResponseMessage<MyRequestUnlockProps>, void>({
+      url: `/sys/users/my_request-unlock/${id}`,
+      autoFetch: !!id,
+      config: getMethod,
+    });
+
+  return {
+    dataGetMyRequestUnlock,
+    refetchGetMyRequestUnlock,
   };
 };
 
