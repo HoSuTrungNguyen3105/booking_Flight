@@ -1,7 +1,7 @@
 import { memo, useEffect, useState } from "react";
 import { useSocket } from "../../context/use[custom]/useSocket";
 import type { Conversation, ResConversationsResponse } from "../../utils/type";
-import { socket } from "../../context/use[custom]/socket";
+import { socket } from "../../hooks/socket";
 import {
   Box,
   Typography,

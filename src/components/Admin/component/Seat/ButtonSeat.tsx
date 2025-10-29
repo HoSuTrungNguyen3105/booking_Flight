@@ -31,13 +31,12 @@ const ButtonSeat: React.FC<ButtonSeatProps> = ({
       <Button
         onClick={() => handleSelectSeat(seat)}
         sx={{
-          height: 50,
-          width: 50,
-          m: "4px",
+          height: 48,
+          width: 48,
+          m: 0.5,
           minWidth: "unset",
-          borderRadius: 1,
-          fontSize: "200px",
-          fontWeight: 700,
+          borderRadius: 1.5,
+          fontWeight: 600,
           backgroundColor,
           color: textColor,
           border: `1px solid ${borderColor}`,
@@ -45,8 +44,8 @@ const ButtonSeat: React.FC<ButtonSeatProps> = ({
         }}
       >
         <Stack alignItems="center" spacing={0.2} sx={{ position: "relative" }}>
-          {icon}
-          <Box sx={{ fontSize: "7px", fontWeight: 600, lineHeight: 1 }}>
+          {icon && <Box sx={{ fontSize: 16 }}>{icon}</Box>}
+          <Box sx={{ fontSize: 11, fontWeight: 600, lineHeight: 1 }}>
             {seat.seatRow}
             {seat.seatNumber}
           </Box>
@@ -54,8 +53,8 @@ const ButtonSeat: React.FC<ButtonSeatProps> = ({
             <Box
               sx={{
                 position: "absolute",
-                top: -4,
-                right: -4,
+                top: 4,
+                right: 4,
                 width: 8,
                 height: 8,
                 borderRadius: "50%",

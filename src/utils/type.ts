@@ -312,6 +312,7 @@ interface AllFlightCodeProps {
 }
 
 export type FlightInStatus = {
+  id: number;
   flightId: number;
   status: string;
   flight: {

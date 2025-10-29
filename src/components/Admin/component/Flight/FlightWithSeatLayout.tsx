@@ -77,7 +77,7 @@ const FlightWithSeatLayout: React.FC<FlightIdProps> = ({ id, onReturn }) => {
     },
     {
       title: "Status",
-      description: getAllInfoFlightByIdData?.data?.flightStatuses?.[0].status,
+      description: getAllInfoFlightByIdData?.data?.flightStatuses?.[0]?.status,
       size: 12,
     },
     {
@@ -165,13 +165,42 @@ const FlightWithSeatLayout: React.FC<FlightIdProps> = ({ id, onReturn }) => {
   const handleSelectSeat = (seat: Seat) => {
     setSelectedSeats((prev) => {
       const exists = prev.some((s) => s.id === seat.id);
+
       if (exists) {
         return prev.filter((s) => s.id !== seat.id);
       }
-      if (maxSelectSeats === 1) return [seat];
-      if (prev.length < maxSelectSeats) return [...prev, seat];
+
+      if (maxSelectSeats === 1) {
+        return [seat];
+      }
+
+      if (prev.length < maxSelectSeats) {
+        return [...prev, seat];
+      }
+
       return prev;
     });
+  };
+
+  useEffect(() => {
+    if (selectedSeats.length > 0) {
+      setSelectedSeat(selectedSeats[selectedSeats.length - 1]);
+      setOpenSeatModal(true);
+    } else {
+      setSelectedSeat(null);
+      setOpenSeatModal(false);
+    }
+  }, [selectedSeats]);
+
+  const getTypeColor = (type: string) => {
+    switch (type) {
+      case "FIRST":
+        return "#ff9800";
+      case "BUSINESS":
+        return "#2196f3";
+      default:
+        return "#4caf50";
+    }
   };
 
   useEffect(() => {
@@ -268,22 +297,6 @@ const FlightWithSeatLayout: React.FC<FlightIdProps> = ({ id, onReturn }) => {
               Multiple
             </Button>
 
-            {selectedSeat && (
-              <InfoAndUpdateSeatModal
-                open={openSeatModal}
-                onClose={() => setOpenSeatModal(false)}
-                formData={selectedSeat}
-                setFormData={(s) => {
-                  setSelectedSeat(s as Seat);
-                }}
-                onSuccess={() => {
-                  setOpenSeatModal(false);
-                  refetchGetAllInfoFlightData();
-                  setSelectedSeat(null);
-                }}
-              />
-            )}
-
             <DetailSection mode="row" data={detail} />
 
             {selectedSeats.length > 0 && (
@@ -305,17 +318,6 @@ const FlightWithSeatLayout: React.FC<FlightIdProps> = ({ id, onReturn }) => {
                       <Box>
                         <Stack spacing={1} sx={{ mb: 2 }}>
                           {selectedSeats.map((seat) => {
-                            const getTypeColor = (type: string) => {
-                              switch (type) {
-                                case "FIRST":
-                                  return "#ff9800";
-                                case "BUSINESS":
-                                  return "#2196f3";
-                                default:
-                                  return "#4caf50";
-                              }
-                            };
-
                             const typeColor = getTypeColor(
                               seat.type || "ECONOMY"
                             );
@@ -391,13 +393,8 @@ const FlightWithSeatLayout: React.FC<FlightIdProps> = ({ id, onReturn }) => {
                         >
                           Update
                         </Button>
-                        <SeatManagementModal
-                          open={isUpdateModalOpen}
-                          selectedSeats={updateSeat}
-                          onSuccess={handleCloseModal}
-                          onClose={handleCloseModal}
-                        />
-                        {updateSeat.seatIds}
+                        {/*                         
+                        {updateSeat.seatIds} */}
                       </Box>
                     ) : (
                       <Box sx={{ textAlign: "center", py: 3 }}>
@@ -492,6 +489,30 @@ const FlightWithSeatLayout: React.FC<FlightIdProps> = ({ id, onReturn }) => {
           </Grid>
         </Grid>
       </Box>
+      {isUpdateModalOpen && (
+        <SeatManagementModal
+          open={isUpdateModalOpen}
+          selectedSeats={updateSeat}
+          onSuccess={handleCloseModal}
+          onClose={handleCloseModal}
+        />
+      )}
+
+      {selectedSeat && (
+        <InfoAndUpdateSeatModal
+          open={openSeatModal}
+          onClose={() => setOpenSeatModal(false)}
+          formData={selectedSeat}
+          setFormData={(s) => {
+            setSelectedSeat(s as Seat);
+          }}
+          onSuccess={() => {
+            setOpenSeatModal(false);
+            refetchGetAllInfoFlightData();
+            setSelectedSeat(null);
+          }}
+        />
+      )}
     </Box>
   );
 };

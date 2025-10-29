@@ -8,22 +8,22 @@ import {
 } from "@mui/material";
 import { FlightTakeoff, FlightLand, AccessTime } from "@mui/icons-material";
 
-interface BookingData {
-  id: string;
-  airline: string;
-  departure: {
-    city: string;
-    airport: string;
-    time: string;
-  };
-  arrival: {
-    city: string;
-    airport: string;
-    time: string;
-  };
-  date: string;
-  duration: string;
-}
+// interface BookingData {
+//   id: string;
+//   airline: string;
+//   departure: {
+//     city: string;
+//     airport: string;
+//     time: string;
+//   };
+//   arrival: {
+//     city: string;
+//     airport: string;
+//     time: string;
+//   };
+//   date: string;
+//   duration: string;
+// }
 
 interface RevenueData {
   month: string;
@@ -41,32 +41,32 @@ const revenueData: RevenueData[] = [
   { month: "Jul", income: 30000, expense: 18000 },
 ];
 
-const bookingData: BookingData[] = [
-  {
-    id: "1",
-    airline: "SkyHigh Airlines",
-    departure: { city: "New York", airport: "JFK", time: "10:00 AM" },
-    arrival: { city: "Los Angeles", airport: "LAX", time: "1:00 PM" },
-    date: "July 15, 2024",
-    duration: "3 hours",
-  },
-  {
-    id: "2",
-    airline: "FlyFast Airways",
-    departure: { city: "London", airport: "LHR", time: "8:00 AM" },
-    arrival: { city: "New York", airport: "JFK", time: "11:00 AM" },
-    date: "July 16, 2024",
-    duration: "5 hours",
-  },
-  {
-    id: "3",
-    airline: "AeroJet",
-    departure: { city: "Tokyo", airport: "HND", time: "2:00 PM" },
-    arrival: { city: "San Francisco", airport: "SFO", time: "8:00 AM" },
-    date: "July 17, 2024",
-    duration: "6 hours",
-  },
-];
+// const bookingData: BookingData[] = [
+//   {
+//     id: "1",
+//     airline: "SkyHigh Airlines",
+//     departure: { city: "New York", airport: "JFK", time: "10:00 AM" },
+//     arrival: { city: "Los Angeles", airport: "LAX", time: "1:00 PM" },
+//     date: "July 15, 2024",
+//     duration: "3 hours",
+//   },
+//   {
+//     id: "2",
+//     airline: "FlyFast Airways",
+//     departure: { city: "London", airport: "LHR", time: "8:00 AM" },
+//     arrival: { city: "New York", airport: "JFK", time: "11:00 AM" },
+//     date: "July 16, 2024",
+//     duration: "5 hours",
+//   },
+//   {
+//     id: "3",
+//     airline: "AeroJet",
+//     departure: { city: "Tokyo", airport: "HND", time: "2:00 PM" },
+//     arrival: { city: "San Francisco", airport: "SFO", time: "8:00 AM" },
+//     date: "July 17, 2024",
+//     duration: "6 hours",
+//   },
+// ];
 
 const RevenueDashboard: React.FC = () => {
   const totalIncome = revenueData.reduce((sum, data) => sum + data.income, 0);
@@ -184,7 +184,7 @@ const RevenueDashboard: React.FC = () => {
             All Bookings
           </Typography>
 
-          {bookingData.map((booking) => (
+          {/* {bookingData.map((booking) => (
             // <BookingCard key={booking.id}>
             <CardContent key={booking.id}>
               <Grid container spacing={2} alignItems="center">
@@ -278,7 +278,7 @@ const RevenueDashboard: React.FC = () => {
               </Grid>
             </CardContent>
             // </BookingCard>
-          ))}
+          ))} */}
         </Grid>
 
         {/* Flights Schedule Header */}

@@ -59,25 +59,7 @@ const AirportManagement: React.FC = () => {
     name: "",
     city: "",
     country: "",
-    // createdAt: 0,
-    // updatedAt: 0,
   });
-
-  //   const handleCreate = (type: keyof typeof toggleOpenModal) => {
-  //     setEditingAirport("create");
-  //     setFormData({ code: "", name: "", city: "", country: "" });
-  //     setToggleOpenModal((prev) => ({
-  //     ...prev,
-  //     [type]: true,
-  //   }));
-  //   };
-
-  //   const handleClose = (type: keyof typeof toggleOpenModal) => {
-  //   setToggleOpenModal((prev) => ({
-  //     ...prev,
-  //     [type]: false,
-  //   }));
-  // };
 
   const handleOpen = (type: keyof typeof toggleOpenModal) => {
     setToggleOpenModal((prev) => ({ ...prev, [type]: true }));
@@ -98,22 +80,6 @@ const AirportManagement: React.FC = () => {
     setFormData(airport);
     handleOpen("update");
   };
-
-  // const handleEdit = (airport: Airport , type: keyof typeof toggleOpenModal) => {
-  //   setEditingAirport("update");
-  //   setFormData({
-  //     code: airport.code,
-  //     name: airport.name,
-  //     city: airport.city,
-  //     country: airport.country,
-  //     createdAt: airport.createdAt,
-  //     updatedAt: airport.updatedAt,
-  //   });
-  //   setToggleOpenModal((prev) => ({
-  //   ...prev,
-  //   [type]: true,
-  // }));
-  // };
 
   const handleOpenDeleteClick = (code: string) => {
     console.log("row", code);
@@ -141,14 +107,7 @@ const AirportManagement: React.FC = () => {
       field: "country",
       headerName: "Quốc gia",
       flex: 1,
-      renderCell: (params: GridRenderCellParams) => (
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          {/* <Typography variant="body2">
-            {getCountryFlag(params.value)}
-          </Typography> */}
-          <Typography variant="body1">{params.value}</Typography>
-        </Box>
-      ),
+      renderCell: (params: GridRenderCellParams) => params.value,
     },
     {
       field: "actions",
@@ -178,11 +137,6 @@ const AirportManagement: React.FC = () => {
       ),
     },
   ];
-
-  // const handleDelete = useCallback( async(code: string) => {
-  //   // setAirports((prev) => prev.filter((a) => a.code !== code));
-  //   const res = await refetchDeleteAirport
-  // },[])
 
   const handleConfirmDelete = async () => {
     if (selectedCode) {
@@ -254,7 +208,6 @@ const AirportManagement: React.FC = () => {
         }}
         editingAirport={editingAirport}
         formEditData={formData}
-        // setFormData={setFormData}
       />
 
       <DialogConfirm

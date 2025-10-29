@@ -52,8 +52,10 @@ const AircraftPage = () => {
     if (!selectedCode) return;
 
     try {
-      await refetchDeleteAircraftFlight();
-      await refetchGetAircraftCodeData();
+      const res = await refetchDeleteAircraftFlight();
+      if (res?.resultCode === "00") {
+        await refetchGetAircraftCodeData();
+      }
     } catch (error) {
       console.error("Lỗi khi xóa máy bay:", error);
     }
@@ -78,10 +80,10 @@ const AircraftPage = () => {
   };
 
   const getAircraftType = (model: string) => {
-    if (model.toLowerCase().includes("boeing")) return "Boeing";
-    if (model.toLowerCase().includes("airbus")) return "Airbus";
-    return "Other";
+    const parts = model.trim().split(" ");
+    return parts[0] || "Other";
   };
+
   if (createBatchMode) {
     return <AircraftBatchCreator onSuccess={() => setCreateBatchMode(false)} />;
   }

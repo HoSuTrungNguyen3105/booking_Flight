@@ -316,7 +316,7 @@ export const useGetAllFlightIds = () => {
     StatusResponseMessage,
     void
   >({
-    url: "/sys/flights/flightIds",
+    url: "/sys/flights/flightIds/status",
     autoFetch: true,
     config: getMethod,
   });

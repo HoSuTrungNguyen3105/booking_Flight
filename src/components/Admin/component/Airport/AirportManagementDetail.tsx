@@ -1,9 +1,8 @@
-import React, { useState } from "react";
-import FacilityManagement from "../InfrastructureEntities/FacilityManagement";
+import { useState } from "react";
 import { Box, Button } from "@mui/material";
 import CreateTerminalDialog from "../InfrastructureEntities/modal/CreateTerminalDialog";
 
-const AirportManagementDetail: React.FC = () => {
+const AirportManagementDetail = () => {
   const [createTerminalDialogOpen, setCreateTerminalDialogOpen] =
     useState(false);
 
@@ -17,13 +16,12 @@ const AirportManagementDetail: React.FC = () => {
         Tạo Terminal Mới
       </Button>
 
-      <FacilityManagement />
+      {/* <FacilityManagement /> */}
 
       <CreateTerminalDialog
         open={createTerminalDialogOpen}
         onClose={() => setCreateTerminalDialogOpen(false)}
         onSuccess={() => {
-          // Refresh data or show success message
           console.log("Terminal created successfully");
         }}
       />

@@ -11,7 +11,6 @@ import theme from "../../scss/theme";
 import { Loading } from "../../common/Loading/Loading";
 import AccountYn from "./AccountYn";
 import Registration from "./Registration";
-import ForgetPassword from "./ForgetPassword";
 import { useToast } from "../../context/ToastContext";
 import { useCheckMfaAvailable } from "../../context/Api/usePostApi";
 import { useNavigate } from "react-router-dom";
@@ -203,14 +202,16 @@ export const LoginPage: React.FC = () => {
         />
       );
     case "verify":
-      return <AccountYn mode="verify" onClose={() => setViewMode("login")} />;
+      return <AccountYn mode="verify" onClose={() => setViewMode("verify")} />;
     case "changePw":
-      return <AccountYn mode="change" onClose={() => setViewMode("login")} />;
+      return (
+        <AccountYn mode="change" onClose={() => setViewMode("changePw")} />
+      );
     // case "forgotPw":
     //   return <ForgetPassword onClose={() => setViewMode("forgotPw")} />;
     case "unlock":
       return (
-        <RequestUnlock userId={userId} onClose={() => setViewMode("login")} />
+        <RequestUnlock userId={userId} onClose={() => setViewMode("unlock")} />
       );
     default:
       break;

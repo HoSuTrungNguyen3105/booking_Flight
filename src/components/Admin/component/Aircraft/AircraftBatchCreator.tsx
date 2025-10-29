@@ -1,16 +1,11 @@
-import { memo, useCallback, useState } from "react";
+import { memo, useState } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import { Add, Delete } from "@mui/icons-material";
-import DeleteIcon from "../../../../svgs/delete-2-svgrepo.svg";
 import type { Aircraft } from "../../../../utils/type";
 import { useToast } from "../../../../context/ToastContext";
-import {
-  useCreateAircraftBatchFlight,
-  useDeleteAircraftFlight,
-} from "../../../../context/Api/usePostApi";
+import { useCreateAircraftBatchFlight } from "../../../../context/Api/usePostApi";
 import { useGetAircraftCode } from "../../../../context/Api/useGetApi";
 import InputTextField from "../../../../common/Input/InputTextField";
-import DialogConfirm from "../../../../common/Modal/DialogConfirm";
 
 type AircraftError = {
   code: string;
@@ -38,30 +33,6 @@ const AircraftBatchCreator = ({ onSuccess }: ReturnProps) => {
   };
 
   const { refetchGetAircraftCodeData } = useGetAircraftCode();
-  // const [aircraftCodeState, setAircraftCodeState] = useState<string>("");
-  // const [pageDetail, setPageDetail] = useState(false);
-  const [toggleOpenModal, setToggleOpenModal] = useState(false);
-  const [selectedCode, setSelectedCode] = useState<string>("");
-
-  const { refetchDeleteAircraftFlight, loadingDeleteAircraftFlight } =
-    useDeleteAircraftFlight(selectedCode);
-
-  // const handleViewSeats = (code: string) => {
-  //   setAircraftCodeState(code);
-  //   setPageDetail(true);
-  // };
-
-  const handleDeleteAircraft = useCallback(async () => {
-    setToggleOpenModal(false);
-    if (!selectedCode) return;
-
-    try {
-      await refetchDeleteAircraftFlight();
-      await refetchGetAircraftCodeData();
-    } catch (error) {
-      console.error("Lỗi khi xóa máy bay:", error);
-    }
-  }, [refetchDeleteAircraftFlight, selectedCode]);
 
   const removeAircraft = (index: number) => {
     if (aircrafts.length > 1) {
@@ -189,18 +160,6 @@ const AircraftBatchCreator = ({ onSuccess }: ReturnProps) => {
           {loading ? "Creating..." : "Create Batch Aircraft"}
         </Button>
       </Box>
-      <DialogConfirm
-        icon={DeleteIcon}
-        cancelLabel="Hủy"
-        open={toggleOpenModal}
-        onClose={() => setToggleOpenModal(false)}
-        onConfirm={handleDeleteAircraft}
-        title="Xác nhận xóa"
-        message={`Bạn có chắc chắn muốn xóa máy bay ${selectedCode} không? Hành động này không thể hoàn tác.`}
-        confirmLabel={
-          loadingDeleteAircraftFlight ? "Đang xóa..." : "Xác nhận xóa"
-        }
-      />
     </Box>
   );
 };

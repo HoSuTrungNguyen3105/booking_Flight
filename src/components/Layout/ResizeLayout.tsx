@@ -1,5 +1,5 @@
-import React, { memo, useEffect, useRef } from "react";
-import { Outlet, useNavigate, useLocation } from "react-router-dom";
+import React, { memo } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
 import AsideContainer from "./SidebarAdmin";
 import {
   Box,
@@ -15,6 +15,7 @@ import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { menuData, type MenuItem } from "./../../utils/db";
 import Header from "../Admin/Header";
 import theme from "../../scss/theme";
+import ScrollToTop from "../../context/use[custom]/useScrollToTop";
 
 const ResizeLayout = () => {
   const navigate = useNavigate();
@@ -139,14 +140,14 @@ const ResizeLayout = () => {
 };
 
 const ManageLayout = () => {
-  const location = useLocation();
-  const contentRef = useRef<HTMLDivElement>(null);
+  // const location = useLocation();
+  // const contentRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (contentRef.current) {
-      contentRef.current.scrollTo({ top: 0, behavior: "smooth" });
-    }
-  }, [location.pathname]);
+  // useEffect(() => {
+  //   if (contentRef.current) {
+  //     contentRef.current.scrollTo({ top: 0, behavior: "smooth" });
+  //   }
+  // }, [location.pathname]);
 
   return (
     <Stack
@@ -170,7 +171,7 @@ const ManageLayout = () => {
         <Box display="flex" height="100%">
           <ResizeLayout />
           <Box
-            ref={contentRef}
+            // ref={contentRef}
             component="article"
             flexGrow={1}
             p={2}
@@ -191,6 +192,7 @@ const ManageLayout = () => {
               borderRadius: 1,
             }}
           >
+            <ScrollToTop />
             <Outlet />
           </Box>
         </Box>

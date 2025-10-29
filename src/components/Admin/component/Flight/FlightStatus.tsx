@@ -19,6 +19,7 @@ import SelectDropdown, {
   type ActionType,
 } from "../../../../common/Dropdown/SelectDropdown";
 import { useUpdateFlightStatus } from "../../../../context/Api/usePostApi";
+import { useToast } from "../../../../context/ToastContext";
 
 type ValidChipColor = ChipProps["color"];
 
@@ -65,7 +66,7 @@ const FlightStatus = ({ onReturn }: { onReturn: () => void }) => {
   // const statusOptions = mapStringToDropdown(dataLeaveStatuses?.data || [])
   const { getAllFlightIds, refetchGetAllFlightIds } = useGetAllFlightIds();
   const [edited, setEdited] = useState<Record<number, string>>({});
-
+  const toast = useToast();
   const handleChange = (flightId: number, newStatus: string) => {
     setEdited((prev) => ({ ...prev, [flightId]: newStatus }));
   };
@@ -80,19 +81,22 @@ const FlightStatus = ({ onReturn }: { onReturn: () => void }) => {
         status,
       });
       if (res?.resultCode === "00") {
+        toast(res.resultMessage);
         refetchGetAllFlightIds();
+      } else {
+        toast(res?.resultMessage || "", "error");
       }
     },
     [refetchUpdateFlightStatus]
   );
 
-  const handleSave = (flightId: number) => {
-    const newStatus = edited[flightId];
+  const handleSave = (id: number) => {
+    const newStatus = edited[id];
     if (newStatus) {
-      onUpdateStatus(flightId, newStatus);
+      onUpdateStatus(id, newStatus);
       setEdited((prev) => {
         const newState = { ...prev };
-        delete newState[flightId];
+        delete newState[id];
         return newState;
       });
     }
@@ -149,159 +153,148 @@ const FlightStatus = ({ onReturn }: { onReturn: () => void }) => {
   );
 
   return (
-    <Stack
-      sx={{
-        p: 1,
-      }}
-    >
-      <Stack spacing={3}>
-        {/* Header */}
-        <Box>
-          <Typography
-            variant="h4"
-            fontWeight="bold"
-            gutterBottom
-            color="primary"
-          >
-            Flight Management
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Manage flight status and updates in real-time
-          </Typography>
-        </Box>
+    <Stack spacing={3}>
+      {/* Header */}
+      <Box>
+        <Typography variant="h4" fontWeight="bold" gutterBottom color="primary">
+          Flight Management
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          Manage flight status and updates in real-time
+        </Typography>
+      </Box>
 
-        <Button onClick={onReturn} variant="contained">
-          {" "}
-          Return
-        </Button>
+      <Button onClick={onReturn} variant="contained">
+        {" "}
+        Return
+      </Button>
 
-        {/* Flight List */}
-        <Grid container spacing={3}>
-          {getAllFlightIds?.list?.map((flight) => (
-            <Grid key={flight.flightId} size={12}>
-              <Stack
-                sx={{
-                  p: 2,
-                  borderRadius: 2,
-                  border: "1px solid",
-                  borderColor: "divider",
-                }}
-              >
-                <Stack spacing={2}>
-                  {/* Flight Header */}
-                  <Stack
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                  >
-                    <Stack direction="row" spacing={2} alignItems="center">
-                      <Typography variant="h6" fontWeight="bold">
-                        {flight.flight.flightNo}
-                      </Typography>
+      {/* Flight List */}
+      <Grid container spacing={3}>
+        {getAllFlightIds?.list?.map((flight) => (
+          <Grid key={flight.flightId} size={12}>
+            <Stack
+              sx={{
+                p: 2,
+                borderRadius: 2,
+                border: "1px solid",
+                borderColor: "divider",
+              }}
+            >
+              <Stack spacing={2}>
+                {/* Flight Header */}
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
+                  <Stack direction="row" spacing={2} alignItems="center">
+                    <Typography variant="h6" fontWeight="bold">
+                      {flight.flight.flightNo}
+                    </Typography>
+                    <Chip
+                      label={flight.status}
+                      sx={{ color: getStatusColor(flight.status) }}
+                      variant="filled"
+                      size="small"
+                    />
+                    {isFlightEdited(flight.id) && (
                       <Chip
-                        label={flight.status}
-                        sx={{ color: getStatusColor(flight.status) }}
-                        variant="filled"
+                        label="Unsaved Changes"
+                        color="warning"
+                        variant="outlined"
                         size="small"
                       />
-                      {isFlightEdited(flight.flightId) && (
-                        <Chip
-                          label="Unsaved Changes"
-                          color="warning"
-                          variant="outlined"
-                          size="small"
-                        />
-                      )}
-                    </Stack>
-
-                    <Typography variant="caption" color="text.secondary">
-                      ID: {flight.flightId}
-                    </Typography>
+                    )}
                   </Stack>
 
-                  {/* Status Update Section */}
-                  <Box
-                    sx={{
-                      p: 2,
-                      bgcolor: "grey.50",
-                      borderRadius: 2,
-                      border: "1px solid",
-                      borderColor: "divider",
-                    }}
-                  >
-                    <Stack
-                      direction={{ xs: "column", sm: "row" }}
-                      spacing={2}
-                      alignItems={{ xs: "stretch", sm: "center" }}
-                    >
-                      <SelectDropdown
-                        onChange={(value) =>
-                          handleChange(flight.flightId, value as string)
-                        }
-                        value={edited[flight.flightId] ?? flight.status}
-                        options={statusOptions}
-                        placeholder="Flight Status"
-                      />
-
-                      <Button
-                        variant="contained"
-                        startIcon={<SaveIcon />}
-                        onClick={() => handleSave(flight.flightId)}
-                        disabled={!isFlightEdited(flight.flightId)}
-                        sx={{
-                          minWidth: 120,
-                          px: 3,
-                        }}
-                      >
-                        Update
-                      </Button>
-                    </Stack>
-                  </Box>
-
-                  {/* Visual status indicator */}
-                  <Box
-                    sx={{
-                      width: "100%",
-                      height: 4,
-                      bgcolor: "grey.200",
-                      borderRadius: 2,
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        width: "33%",
-                        height: "100%",
-                        bgcolor: getStatusColor(flight.status),
-                        borderRadius: 2,
-                      }}
-                    />
-                  </Box>
+                  <Typography variant="caption" color="text.secondary">
+                    ID: {flight.flightId}
+                  </Typography>
                 </Stack>
-              </Stack>
-            </Grid>
-          ))}
-        </Grid>
 
-        {/* Empty State */}
-        {(!getAllFlightIds?.list || getAllFlightIds.list.length === 0) && (
-          <Box
-            sx={{
-              textAlign: "center",
-              py: 8,
-              border: "2px dashed",
-              borderColor: "divider",
-              borderRadius: 2,
-            }}
-          >
-            <Typography variant="h6" color="text.secondary" gutterBottom>
-              No Flights Available
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              There are currently no flights to manage.
-            </Typography>
-          </Box>
-        )}
-      </Stack>
+                {/* Status Update Section */}
+                <Box
+                  sx={{
+                    p: 2,
+                    bgcolor: "grey.50",
+                    borderRadius: 2,
+                    border: "1px solid",
+                    borderColor: "divider",
+                  }}
+                >
+                  <Stack
+                    direction={{ xs: "column", sm: "row" }}
+                    spacing={2}
+                    alignItems={{ xs: "stretch", sm: "center" }}
+                  >
+                    <SelectDropdown
+                      onChange={(value) =>
+                        handleChange(flight.id, value as string)
+                      }
+                      value={edited[flight.id] ?? flight.status}
+                      options={statusOptions}
+                      placeholder="Flight Status"
+                    />
+
+                    <Button
+                      variant="contained"
+                      startIcon={<SaveIcon />}
+                      onClick={() => handleSave(flight.id)}
+                      disabled={!isFlightEdited(flight.id)}
+                      sx={{
+                        minWidth: 120,
+                        px: 3,
+                      }}
+                    >
+                      Update
+                    </Button>
+                  </Stack>
+                </Box>
+
+                {/* Visual status indicator */}
+                <Box
+                  sx={{
+                    width: "100%",
+                    height: 4,
+                    bgcolor: "grey.200",
+                    borderRadius: 2,
+                  }}
+                >
+                  <Box
+                    sx={{
+                      width: "33%",
+                      height: "100%",
+                      bgcolor: getStatusColor(flight.status),
+                      borderRadius: 2,
+                    }}
+                  />
+                </Box>
+              </Stack>
+            </Stack>
+          </Grid>
+        ))}
+      </Grid>
+
+      {/* Empty State */}
+      {(!getAllFlightIds?.list || getAllFlightIds.list.length === 0) && (
+        <Box
+          sx={{
+            textAlign: "center",
+            py: 8,
+            border: "2px dashed",
+            borderColor: "divider",
+            borderRadius: 2,
+          }}
+        >
+          <Typography variant="h6" color="text.secondary" gutterBottom>
+            No Flights Available
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            There are currently no flights to manage.
+          </Typography>
+        </Box>
+      )}
     </Stack>
   );
 };

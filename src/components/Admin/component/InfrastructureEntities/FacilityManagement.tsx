@@ -71,14 +71,6 @@ const FacilityManagement = () => {
             onClick={() => {
               setEditingFacility(null);
               setDialogType("create");
-              // setFormData({
-              //   name: "",
-              //   type: "RESTAURANT",
-              //   description: "",
-              //   location: "",
-              //   openingHours: "",
-              //   terminalId: terminalId || "",
-              // });
               setDialogOpen(true);
             }}
           >

@@ -12,10 +12,9 @@ import { Loading } from "../../../../../common/Loading/Loading";
 import {
   useCreateBatchGate,
   useUpdateGate,
-  type CreateGateProps,
 } from "../../../../../context/Api/usePostApi";
 import type { UpdateGateProps } from "../TerminalContainer";
-import type { Gate } from "../../../../../utils/type";
+import type { CreateGateProps, Gate } from "../../../../../utils/type";
 import { useToast } from "../../../../../context/ToastContext";
 
 type IGateModalProps = {

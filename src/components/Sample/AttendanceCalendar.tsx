@@ -11,8 +11,8 @@ const AttendanceCalendar = () => {
   const [openDetail, setOpenDetail] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
-  const formatDate = (timestamp: string | number) => {
-    if (!timestamp || timestamp === "0") return null;
+  const formatDate = (timestamp: string | number | null | undefined) => {
+    if (!timestamp || timestamp === "0") return undefined;
     const date = new Date(Number(timestamp));
     return date.toISOString();
   };
@@ -68,7 +68,7 @@ const AttendanceCalendar = () => {
       />
 
       <FindAttendanceByDayModal
-        onSuccess={() => {}}
+        onSuccess={() => setOpenDetail(false)}
         selectedAttendances={selectedAttendances}
         open={openDetail}
         onClose={() => setOpenDetail(false)}

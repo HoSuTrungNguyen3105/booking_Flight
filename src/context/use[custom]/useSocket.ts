@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { socket } from "./socket";
+import { socket } from "../../hooks/socket";
 
 type TUseSocket<T> = {
   event: string;

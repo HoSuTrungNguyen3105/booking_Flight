@@ -23,7 +23,7 @@ import PayrollManagement from "../components/Admin/component/Payroll/PayrollMana
 import AdditionalServicesPage from "../components/Sample/AdditionalServicesPage";
 import ChatContainer from "../components/Chat/ChatContainer";
 import FlightPath from "../components/Admin/component/Flight/FlightPath";
-import ChatApp from "../components/Chat/HeaderChat";
+// import ChatApp from "../components/Chat/HeaderChat";
 import AirportDiagram from "../components/Admin/component/InfrastructureEntities/TerminalContainer";
 import RevenueDashboard from "../components/User/RevenueDashboard";
 import TicketSalesDashboard from "../components/User/TicketSalesDashboard";
@@ -198,10 +198,6 @@ const routes = [
       {
         path: ROUTE_PATHS.AIRPORT_MANAGEMENT_DETAIL,
         element: <AirportManagementDetail />,
-      },
-      {
-        path: ROUTE_PATHS.CHAT_APP,
-        element: <ChatApp />,
       },
       {
         path: ROUTE_PATHS.CALENDER_ATTENDANCE,

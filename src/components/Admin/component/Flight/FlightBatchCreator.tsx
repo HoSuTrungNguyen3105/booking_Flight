@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Box,
   Button,
@@ -17,7 +17,13 @@ import InputNumber from "../../../../common/Input/InputNumber";
 import theme from "../../../../scss/theme";
 import { useFlightCreateAndUpdate } from "./hooks/useFlightCreateAndUpdate";
 
-const FlightBatchCreator: React.FC = () => {
+type FlightBatchCreatorProps = {
+  onReturn: () => void;
+};
+
+const FlightBatchCreator: React.FC<FlightBatchCreatorProps> = ({
+  onReturn,
+}) => {
   const {
     handleSubmitMultiFlight,
     handleAddFlight,
@@ -34,6 +40,11 @@ const FlightBatchCreator: React.FC = () => {
       <Typography variant="h5" fontWeight="bold" mb={2}>
         Create Bulk Flight
       </Typography>
+
+      <Button variant="contained" onClick={onReturn}>
+        {" "}
+        Return
+      </Button>
 
       {flights.map((flight, index) => (
         <Card

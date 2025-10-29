@@ -18,7 +18,8 @@ enum TypeColor {
 }
 
 const UnlockRequestTable = () => {
-  const { getUnlockRequests } = useGetUnlockRequests();
+  const { getUnlockRequests, refetchGetUnlockRequests } =
+    useGetUnlockRequests();
   const rowData = useMemo(
     () =>
       getUnlockRequests?.list?.map((item) => ({
@@ -59,6 +60,7 @@ const UnlockRequestTable = () => {
 
     if (res?.resultCode === "00") {
       toast(res.resultMessage || "");
+      refetchGetUnlockRequests();
     } else {
       toast(res?.resultMessage || "", "error");
     }

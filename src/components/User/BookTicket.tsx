@@ -5,7 +5,6 @@ import {
   CardContent,
   FormControl,
   Grid,
-  Switch,
   TableContainer,
   Typography,
 } from "@mui/material";
@@ -25,23 +24,38 @@ import type {
   CabinClassType,
   SearchFlightDto,
 } from "../Admin/component/Flight/Search_layout";
-import { DateFormatEnum, formatDateKR } from "../../hooks/format";
+import { DateFormatEnum, formatDate, formatDateKR } from "../../hooks/format";
+import Android12Switch from "./../../common/Switch/Switch";
 
+const flightParams: SearchFlightDto = {
+  from: "",
+  to: "",
+  status: "",
+  cabinClass: "ECONOMY",
+  aircraftCode: "",
+  minPrice: 0,
+  maxPrice: 0,
+  gate: "",
+  terminal: "",
+  minDelayMinutes: 0,
+  maxDelayMinutes: 0,
+  includeCancelled: false,
+};
 const BookTicket = () => {
-  const [flightParams, _] = React.useState<SearchFlightDto>({
-    from: "",
-    to: "",
-    status: "",
-    cabinClass: "ECONOMY",
-    aircraftCode: "",
-    minPrice: 0,
-    maxPrice: 0,
-    gate: "",
-    terminal: "",
-    minDelayMinutes: 0,
-    maxDelayMinutes: 0,
-    includeCancelled: false,
-  });
+  // const [flightParams, _] = React.useState<SearchFlightDto>({
+  //   from: "",
+  //   to: "",
+  //   status: "",
+  //   cabinClass: "ECONOMY",
+  //   aircraftCode: "",
+  //   minPrice: 0,
+  //   maxPrice: 0,
+  //   gate: "",
+  //   terminal: "",
+  //   minDelayMinutes: 0,
+  //   maxDelayMinutes: 0,
+  //   includeCancelled: false,
+  // });
 
   const { getAllCode } = useGetAllCode();
 
@@ -52,6 +66,7 @@ const BookTicket = () => {
     watch,
   } = useForm<SearchFlightDto>({
     defaultValues: flightParams,
+    mode: "onChange",
   });
 
   const [outboundBookings, setOutboundBookings] = React.useState<
@@ -81,9 +96,8 @@ const BookTicket = () => {
       {} as Partial<SearchFlightDto>
     );
 
-    console.log("payload sent to API:", payload);
-
     const res = await refetchSearchBooking(payload);
+
     if (res?.resultCode === "00") {
       setOutboundBookings(res.data?.outbound || []);
       setInboundBookings(res.data?.inbound || []);
@@ -265,7 +279,7 @@ const BookTicket = () => {
     {
       title: "Include Cancelled",
       description: (
-        <Switch
+        <Android12Switch
           checked={watch("includeCancelled")}
           onChange={(e) => setValue("includeCancelled", e.target.checked)}
         />
@@ -444,7 +458,7 @@ const BookTicket = () => {
 
                         <Box sx={{ alignContent: "center" }}>
                           <Typography variant="body1" color="black">
-                            Status: {booking.flight.status}
+                            Status: {booking.flight.flightStatuses?.[0].status}
                           </Typography>
                         </Box>
 
@@ -593,7 +607,7 @@ const BookTicket = () => {
                             }}
                           >
                             <Typography variant="h6">
-                              {formatDateKR(
+                              {formatDate(
                                 DateFormatEnum.DD_MM_YYYY_HH_MM_SS,
                                 booking.flight.scheduledArrival
                               )}
@@ -616,7 +630,7 @@ const BookTicket = () => {
 
                         <Box sx={{ alignContent: "center" }}>
                           <Typography variant="body1" color="black">
-                            Status: {booking.flight.status}
+                            Status: {booking.flight.flightStatuses?.[0].status}
                           </Typography>
                         </Box>
 

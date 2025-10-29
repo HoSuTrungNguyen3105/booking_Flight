@@ -12,10 +12,7 @@ import { useAuth } from "../../context/AuthContext";
 import MessageList from "./MessageList";
 import theme from "../../scss/theme";
 import { useSocket } from "../../context/use[custom]/useSocket";
-import {
-  connectSocket,
-  disconnectSocket,
-} from "../../context/use[custom]/socket";
+import { connectSocket, disconnectSocket } from "../../hooks/socket";
 import type {
   Message,
   MessageBetweenUserLoginResponse,

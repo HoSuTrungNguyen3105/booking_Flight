@@ -28,8 +28,8 @@ export default function MfaSetup({ email, onClose, authType }: EmailProps) {
   const { loginWithGGAuthenticator } = useAuth();
   const { refetchSetUpMfa } = useSetUpMfa();
   const toast = useToast();
-  const [isSetMfa, setIsSetMfa] = useState(false);
-  const [canLoginMfa, setCanLoginMfa] = useState(false);
+  // const [isSetMfa, setIsSetMfa] = useState(false);
+  // const [canLoginMfa, setCanLoginMfa] = useState(false);
 
   const resetState = () => {
     setCode("");
@@ -80,13 +80,13 @@ export default function MfaSetup({ email, onClose, authType }: EmailProps) {
       const data = await refetchSetUpMfa({ email });
       if (data?.data?.hasVerified === "Y") {
         setCurrentState("login");
-        setCanLoginMfa(true);
-        setIsSetMfa(true);
+        // setCanLoginMfa(true);
+        // setIsSetMfa(true);
         setQrCode(null);
       } else if (data?.data?.hasVerified === "N" && data?.data?.qrCodeDataURL) {
         setQrCode(data.data.qrCodeDataURL);
-        setCanLoginMfa(false);
-        setIsSetMfa(false);
+        // setCanLoginMfa(false);
+        // setIsSetMfa(false);
       } else if (data?.resultCode === "09") {
         toast(data?.resultMessage);
       }
@@ -113,7 +113,7 @@ export default function MfaSetup({ email, onClose, authType }: EmailProps) {
       if (res?.resultCode === "00") {
         // setCurrentState("success");
         setQrCode(null);
-        setCanLoginMfa(true);
+        // setCanLoginMfa(true);
         setCode("");
       } else {
         setError(res?.resultMessage || "Mã xác thực không đúng");
@@ -149,7 +149,7 @@ export default function MfaSetup({ email, onClose, authType }: EmailProps) {
         // You might want to call onClose here or redirect
         toast("Đăng nhập thành công");
         setQrCode(null);
-        setCanLoginMfa(true);
+        // setCanLoginMfa(true);
       } else {
         setError(res?.resultMessage || "Mã xác thực không đúng");
         setCode("");

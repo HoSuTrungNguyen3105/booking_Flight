@@ -18,25 +18,17 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { Add, Close, CloudUpload } from "@mui/icons-material";
-import {
-  useCreateTerminalBulk,
-  // useCreateTerminalSingle,
-  type CreateTerminalDto,
-} from "../../../../../context/Api/usePostApi";
+import { useCreateTerminalBulk } from "../../../../../context/Api/usePostApi";
+import type { CreateTerminalDto } from "../../../../../utils/type";
+import InputTextField from "../../../../../common/Input/InputTextField";
+import { useToast } from "../../../../../context/ToastContext";
+import { useNavigate } from "react-router-dom";
 
 interface CreateTerminalDialogProps {
   open: boolean;
   onClose: () => void;
   onSuccess: () => void;
 }
-
-// interface TerminalFormData {
-//   code: string;
-//   name: string;
-//   description: string;
-//   type: string;
-//   airportId: string;
-// }
 
 const CreateTerminalDialog: React.FC<CreateTerminalDialogProps> = ({
   open,
@@ -77,6 +69,10 @@ const CreateTerminalDialog: React.FC<CreateTerminalDialogProps> = ({
   const handleRemoveGate = (index: number) => {
     setFormData((prev) => prev.filter((_, i) => i !== index));
   };
+  const navigate = useNavigate();
+  const gotoGateForm = () => {
+    navigate("/admin/TerminalContainer");
+  };
   const [bulkData, setBulkData] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{
@@ -87,23 +83,19 @@ const CreateTerminalDialog: React.FC<CreateTerminalDialogProps> = ({
   const steps = ["Chọn phương thức", "Nhập thông tin", "Xác nhận"];
   const { refetchCreateTerminalBulk } = useCreateTerminalBulk();
   // const { refetchCreateTerminalSingle }= useCreateTerminalSingle();
-
+  const toast = useToast();
   const handleCreateTypeSubmit = async () => {
     setLoading(true);
     setMessage(null);
 
     try {
-      // // Parse bulk data
-      // const terminals = bulkData
-      //   .split("\n")
-      //   .filter((line) => line.trim())
-      //   .map((line) => {
-      //     const [code, name, type = "DOMESTIC"] = line
-      //       .split(",")
-      //       .map((item) => item.trim());
-      //     return { code, name, type, airportId: "default-airport-id" };
-      //   });
-      const res = await refetchCreateTerminalBulk();
+      const res = await refetchCreateTerminalBulk(formData);
+      if (res?.resultCode === "00") {
+        toast(res.resultMessage);
+        gotoGateForm();
+      } else {
+        toast(res?.resultMessage || "", "error");
+      }
     } catch (error) {
       setMessage({ type: "error", text: "Lỗi kết nối máy chủ" });
     } finally {
@@ -113,16 +105,9 @@ const CreateTerminalDialog: React.FC<CreateTerminalDialogProps> = ({
 
   const handleClose = () => {
     setActiveStep(0);
-    setMode("single");
-    // setFormData({
-    //   code: "",
-    //   name: "",
-    //   description: "",
-    //   type: "DOMESTIC",
-    //   airportId: "",
-    // });
-    setBulkData("");
-    setMessage(null);
+    // setMode("single");
+    // setBulkData("");
+    // setMessage(null);
     onClose();
   };
 
@@ -187,8 +172,7 @@ const CreateTerminalDialog: React.FC<CreateTerminalDialogProps> = ({
                     Tạo hàng loạt
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    Tạo nhiều terminal cùng lúc bằng cách nhập dữ liệu theo định
-                    dạng
+                    Tạo nhiều terminal cùng lúc, nhập dữ liệu theo định dạng
                   </Typography>
                 </Box>
               </Grid>
@@ -205,45 +189,29 @@ const CreateTerminalDialog: React.FC<CreateTerminalDialogProps> = ({
             {formData.map((item, index) => (
               <Box
                 key={index}
-                sx={{ mb: 3, p: 2, border: "1px solid #ccc", borderRadius: 2 }}
+                sx={{ mb: 3, p: 2, border: "1px solid #ccc", borderRadius: 1 }}
               >
                 <Grid container spacing={2}>
                   <Grid size={6}>
-                    <TextField
-                      fullWidth
-                      label="Mã terminal *"
+                    <InputTextField
                       value={item.code}
                       onChange={(e) =>
-                        handleChange(
-                          index,
-                          "code",
-                          e.target.value.toUpperCase()
-                        )
+                        handleChange(index, "code", e.toUpperCase())
                       }
                       placeholder="VD: T1, T2"
                     />
                   </Grid>
                   <Grid size={6}>
-                    <TextField
-                      fullWidth
-                      label="Tên terminal *"
+                    <InputTextField
                       value={item.name}
-                      onChange={(e) =>
-                        handleChange(index, "name", e.target.value)
-                      }
+                      onChange={(e) => handleChange(index, "name", e)}
                       placeholder="VD: Terminal Quốc tế"
                     />
                   </Grid>
                   <Grid size={12}>
-                    <TextField
-                      fullWidth
-                      label="Mô tả"
-                      multiline
-                      rows={3}
+                    <InputTextField
                       value={item.description}
-                      onChange={(e) =>
-                        handleChange(index, "description", e.target.value)
-                      }
+                      onChange={(e) => handleChange(index, "description", e)}
                       placeholder="Mô tả về terminal..."
                     />
                   </Grid>
@@ -287,7 +255,13 @@ const CreateTerminalDialog: React.FC<CreateTerminalDialogProps> = ({
                 const singleData = Array.isArray(formData)
                   ? formData[0]
                   : formData;
-                if (!singleData) return null;
+
+                if (!singleData)
+                  return (
+                    <Typography color="text.secondary">
+                      Không có dữ liệu
+                    </Typography>
+                  );
 
                 return (
                   <Box sx={{ p: 2, bgcolor: "#f5f5f5", borderRadius: 1 }}>
@@ -304,22 +278,28 @@ const CreateTerminalDialog: React.FC<CreateTerminalDialogProps> = ({
                   </Box>
                 );
               })()
-            ) : (
-              <Box sx={{ maxHeight: 200, overflow: "auto" }}>
-                {/* {console.log(" MODE MULTI, bulkData:", bulkData)} */}
-                {(bulkData ?? "")
-                  .split("\n")
-                  .filter((line) => line.trim())
-                  .map((line, index) => {
-                    console.log("➡️ line:", line);
-                    return (
-                      <Typography key={index} sx={{ m: 0.5 }}>
-                        {line.length}
-                      </Typography>
-                    );
-                  })}
-              </Box>
-            )}
+            ) : mode === "multi" ? (
+              formData && formData.length > 0 ? (
+                formData.map((item, index) => (
+                  <Box
+                    key={index}
+                    sx={{ p: 1, bgcolor: "#f5f5f5", borderRadius: 1, mb: 1 }}
+                  >
+                    <Typography>
+                      <strong>Mã:</strong> {item.code}
+                    </Typography>
+                    <Typography>
+                      <strong>Tên:</strong> {item.name}
+                    </Typography>
+                    <Typography>
+                      <strong>Mô tả:</strong> {item.description || "Không có"}
+                    </Typography>
+                  </Box>
+                ))
+              ) : (
+                <Typography color="text.secondary">Không có dữ liệu</Typography>
+              )
+            ) : null}
           </Box>
         );
 
@@ -373,7 +353,7 @@ const CreateTerminalDialog: React.FC<CreateTerminalDialogProps> = ({
             if (activeStep < steps.length - 1) {
               setActiveStep(activeStep + 1);
             } else {
-              // mode === "single" ? handleSingleSubmit() : handleBulkSubmit();
+              handleCreateTypeSubmit();
             }
           }}
           // disabled={
