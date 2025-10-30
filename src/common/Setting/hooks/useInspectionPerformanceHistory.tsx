@@ -26,7 +26,7 @@ export const useInspectionPerformanceHistory = () => {
   type ActionType =
     | "addUser"
     | "editUser"
-    | "deleteMfaSettings"
+    | "disableMfaSettings"
     | "lock_unlockAccount"
     | "resetPassword"
     | "relationData"
@@ -37,7 +37,7 @@ export const useInspectionPerformanceHistory = () => {
   const [openModal, setOpenModal] = useState<{ [key in ActionType]: boolean }>({
     addUser: false,
     editUser: false,
-    deleteMfaSettings: false,
+    disableMfaSettings: false,
     lock_unlockAccount: false,
     resetPassword: false,
     relationData: false,

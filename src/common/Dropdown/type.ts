@@ -1,4 +1,8 @@
-import type { AutocompleteCloseReason, SxProps } from "@mui/material";
+import type {
+  AutocompleteCloseReason,
+  ChipProps,
+  SxProps,
+} from "@mui/material";
 import type { ReactNode } from "react";
 
 export type DropdownOptions = {
@@ -6,8 +10,8 @@ export type DropdownOptions = {
   value: string | number;
 };
 
-export type DropdownStatus = "error" | "confirmed" | "warning" | "default";
-
+export type DropdownStatus = ChipProps["color"];
+// "error" | "confirmed" | "warning" | "default";
 export type DropdownOptionType = {
   selectedOption?: DropdownOptionTypes;
   onChange?: (
@@ -31,7 +35,7 @@ export type DropdownType = {
   options?: DropdownOptions[];
   value: DropdownOptions[] | DropdownOptions | null;
   sx?: SxProps;
-  onInputChange?: (value: string) => void; // 👈 thêm callback riêng
+  onInputChange?: (value: string) => void; // thêm callback riêng
   label?: string;
   customInput?: React.ReactNode;
   onOpen?: (event: React.SyntheticEvent) => void;
@@ -48,10 +52,6 @@ export type DropdownType = {
   openOnFocus?: boolean;
   disableCloseOnSelect?: boolean;
   onChange?: (option: DropdownOptions | null) => void;
-  // onChange: (
-  //   event: React.SyntheticEvent<Element, Event>,
-  //   newValue: DropdownOptions[] | null | DropdownOptions
-  // ) => void;
 };
 
 export type DropdownOptionTypes = {
@@ -70,10 +70,10 @@ export type ChildContent = {
 export type ContentBlock = {
   descContent?: ChildContent;
   content: ChildContent;
-  gridSize?: number; // 👉 Kích thước lưới, mặc định là 3
-  contentLabels?: string[]; // 👉 Mỗi label ứng với content1 -> content4
-  extraContent?: []; // 👉 Thêm nội dung phụ nếu cần
-  bigContent?: boolean; // 👉 Thêm prop này để xác định có hiển thị content lớn hay khôn
+  gridSize?: number; // Kích thước lưới, mặc định là 3
+  contentLabels?: string[]; // Mỗi label ứng với content1 -> content4
+  extraContent?: []; // Thêm nội dung phụ nếu cần
+  bigContent?: boolean; // Thêm prop này để xác định có hiển thị content lớn hay khôn
   getContentStyle?: (content: ChildContent) => React.CSSProperties;
   getDescContentStyle?: (descContent: ChildContent) => React.CSSProperties;
   hasLine?: boolean;

@@ -1,12 +1,4 @@
-import {
-  Box,
-  Button,
-  Chip,
-  IconButton,
-  Stack,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Box, Button, IconButton, Stack, Tooltip } from "@mui/material";
 import {
   memo,
   useCallback,
@@ -21,6 +13,7 @@ import {
   Search as SearchIcon,
   RestartAlt as ResetIcon,
 } from "@mui/icons-material";
+import ChipInput from "../ChipInput";
 
 export interface ISearchQuery {
   text: string[];
@@ -78,15 +71,21 @@ const SearchBar = ({ disabled = false, onSearch }: ISearchBarProps) => {
   const searchTermChips = useMemo(
     () =>
       searchTerms.map((term, index) => (
-        <Chip
+        // <Chip
+        //   key={`${term}-${index}`}
+        //   variant="outlined"
+        //   sx={{
+        //     borderRadius: "3px",
+        //     borderColor: "grey.200",
+        //   }}
+        //   label={<Typography variant="body2">{term}</Typography>}
+        //   onDelete={() => handleDeleteTerm(index)}
+        // />
+        <ChipInput
+          name={term}
+          onChange={() => handleDeleteTerm(index)}
+          label={term}
           key={`${term}-${index}`}
-          variant="outlined"
-          sx={{
-            borderRadius: "3px",
-            borderColor: "grey.200",
-          }}
-          label={<Typography variant="body2">{term}</Typography>}
-          onDelete={() => handleDeleteTerm(index)}
         />
       )),
     [searchTerms, handleDeleteTerm]

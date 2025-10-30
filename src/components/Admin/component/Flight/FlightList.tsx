@@ -10,10 +10,11 @@ import { DateFormatEnum, formatDate } from "../../../../hooks/format";
 import FlightModalTriggerManagement from "./FlightModalTriggerManagement";
 import TableSection from "../../../../common/CustomRender/TableSection";
 import { Download } from "@mui/icons-material";
-// import FlightStatus from "./FlightStatus";
-import FlightWithSeatLayout from "./FlightWithSeatLayout";
+import FlightWithSeatLayout from "./components/FlightWithSeatLayout";
 import type { GridRenderCellParams } from "@mui/x-data-grid";
 import FlightStatus from "./FlightStatus";
+import { useDeleteManyFlightIds } from "../../../../context/Api/usePostApi";
+import { useToast } from "../../../../context/ToastContext";
 
 export default function FlightList() {
   const { getFlightData, refetchGetFlightData, loadingFlightData } =
@@ -25,13 +26,20 @@ export default function FlightList() {
   const [selectedFlightToViewInfo, setSelectedFlightToViewInfo] = useState<
     number | null
   >(null);
-
+  const toast = useToast();
   const [selectViewDetail, setSelectViewDetail] = useState<boolean>(false);
   const [selectUpdateFlightStatus, setSelectUpdateFlightStatus] =
     useState<boolean>(false);
+  const { refetchDeleteManyFlightIds } = useDeleteManyFlightIds();
+  const [selectedFlightIds, setSelectedFlightIds] = useState<number[]>([]);
 
   const handleFlightRowSelection = (selectedIds: GridRowId[]) => {
-    flightRows.filter((row) => selectedIds.includes(row.id));
+    const selectedRows = flightRows.filter((row) =>
+      selectedIds.includes(row.id)
+    );
+    const ids = selectedRows.map((row) => row.flightId); // hoặc row.id
+    setSelectedFlightIds(ids);
+    console.log("Selected flight IDs:", ids);
   };
 
   const rowsGetFlightData: GridRowDef[] = useMemo(
@@ -44,9 +52,39 @@ export default function FlightList() {
     [getFlightData]
   );
 
-  // useEffect(() => {
-  //   setMealRows(rowsFlightBookingData);
-  // }, [rowsFlightBookingData]);
+  // const handleDeleteIds = async (flightIds: GridRowId[]) => {
+  //   const res = await refetchDeleteManyFlightIds({
+  //     ids: flightIds as number[],
+  //   });
+  //   if (res?.resultCode === "00") {
+  //     toast(res.resultMessage);
+  //   } else {
+  //     toast(res?.resultMessage || "", "info");
+  //   }
+  // };
+
+  const handleDeleteIds = async (selectedIds: GridRowId[]) => {
+    if (!selectedIds || selectedIds.length === 0) {
+      toast("Chưa chọn chuyến bay nào", "info");
+      return;
+    }
+
+    // đảm bảo tất cả là number
+    const ids = selectedIds.map((id) => Number(id)).filter((id) => !isNaN(id));
+
+    if (ids.length === 0) {
+      toast("Không có chuyến bay hợp lệ", "info");
+      return;
+    }
+
+    const res = await refetchDeleteManyFlightIds(ids);
+
+    if (res?.resultCode === "00") {
+      toast(res.resultMessage);
+    } else {
+      toast(res?.resultMessage || "", "info");
+    }
+  };
 
   useEffect(() => {
     setFlightRows(rowsGetFlightData);
@@ -133,6 +171,17 @@ export default function FlightList() {
         >
           Update FlightStatus
         </Button>
+
+        {selectedFlightIds.length > 0 && (
+          <Button
+            variant="contained"
+            onClick={() => handleDeleteIds(selectedFlightIds)}
+            disabled={loading}
+            startIcon={<Download />}
+          >
+            Delete Flights
+          </Button>
+        )}
 
         <FlightModalTriggerManagement
           onSuccess={() => refetchGetFlightData()}

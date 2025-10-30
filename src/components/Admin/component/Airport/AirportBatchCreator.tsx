@@ -12,9 +12,11 @@ import { Add, Delete } from "@mui/icons-material";
 import type { CreateAirportReq } from "../../../../utils/type";
 import InputTextField from "../../../../common/Input/InputTextField";
 import { useCreateBatchAirport } from "../../../../context/Api/usePostApi";
+
 type ReturnProps = {
   onClose: () => void;
 };
+
 const AirportBatchCreator: React.FC<ReturnProps> = ({ onClose }) => {
   const { refetchCreateBatchAirport } = useCreateBatchAirport();
 
@@ -139,11 +141,6 @@ const AirportBatchCreator: React.FC<ReturnProps> = ({ onClose }) => {
                 </Typography>
               )}
             </Grid>
-            {/* {errors[index] && (
-              <Typography color="error" variant="caption">
-                {errors[index]}
-              </Typography>
-            )} */}
           </CardContent>
         </Card>
       ))}

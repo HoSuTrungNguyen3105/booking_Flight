@@ -15,6 +15,7 @@ import { useAuth } from "../../context/AuthContext";
 import theme from "../../scss/theme";
 import { useToast } from "../../context/ToastContext";
 import { useTranslation } from "react-i18next";
+import { ResponseCode } from "../../utils/response";
 
 interface FormDataType {
   userId?: number;
@@ -26,14 +27,10 @@ interface FormDataType {
 const ChangePasswordInProfile = () => {
   const { refetchChangePassword, errorChangePassword } =
     useChangePasswordInProfile();
-
   const { t } = useTranslation();
-
-  // const [verifyOTPcode, setVerifyOTPcode] = useState(false);
   const { user } = useAuth();
   const toast = useToast();
   const userId = user?.id;
-  // const email = user?.email;
 
   const [value, setValue] = useState<FormDataType>({
     userId,
@@ -60,8 +57,7 @@ const ChangePasswordInProfile = () => {
 
     try {
       const response = await refetchChangePassword({ ...value, userId });
-      if (response?.resultCode === "00") {
-        // setVerifyOTPcode(true);
+      if (response?.resultCode === ResponseCode.SUCCESS) {
         toast(response?.resultMessage || "Đổi mật khẩu thanh cong");
       } else {
         toast(response?.resultMessage || "Đổi mật khẩu thất bại", "error");
@@ -70,10 +66,6 @@ const ChangePasswordInProfile = () => {
       console.error("Error:", err);
     }
   }, [value, userId, refetchChangePassword]);
-
-  // if (verifyOTPcode) {
-  //   return <VerifyOpt userId={userId} email={email} />;
-  // }
 
   return (
     <>
@@ -132,14 +124,8 @@ const ChangePasswordInProfile = () => {
             </FormControl>
           </Grid>
 
-          {/* Submit Button */}
           <Grid size={12}>
-            <Button
-              variant="contained"
-              // fullWidth
-              sx={{ mt: 2 }}
-              onClick={onSubmit}
-            >
+            <Button variant="contained" sx={{ mt: 2 }} onClick={onSubmit}>
               {t("submit")}
             </Button>
           </Grid>

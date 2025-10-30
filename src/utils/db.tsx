@@ -143,7 +143,7 @@ export const menuData: MenuSection[] = [
                 icon: <Apartment />,
               },
               {
-                id: "AirportManagement",
+                id: "AirportMap",
                 label: "Quản lý sân bay",
                 icon: <Apartment />,
               },

@@ -7,7 +7,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useUpdateUserInfo } from "../../context/Api/usePostApi";
 import { UserRole, type UserData } from "../../utils/type";
 import DataAccessPermissionSection from "./DataAccessPermissionSection";
-import DeleteAccount from "../../components/Auth/DeleteAccount";
+import DeleteAccount from "../../components/Profile/DeleteAccount";
 import ChangePasswordInProfile from "../../components/Profile/ChangePasswordInProfile";
 import AccountSettings from "../../components/Auth/AccountSettings";
 

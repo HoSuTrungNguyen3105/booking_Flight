@@ -1,29 +1,5 @@
 import React from "react";
-import {
-  Box,
-  Typography,
-  Grid,
-  CardContent,
-  LinearProgress,
-} from "@mui/material";
-import { FlightTakeoff, FlightLand, AccessTime } from "@mui/icons-material";
-
-// interface BookingData {
-//   id: string;
-//   airline: string;
-//   departure: {
-//     city: string;
-//     airport: string;
-//     time: string;
-//   };
-//   arrival: {
-//     city: string;
-//     airport: string;
-//     time: string;
-//   };
-//   date: string;
-//   duration: string;
-// }
+import { Box, Typography, Grid } from "@mui/material";
 
 interface RevenueData {
   month: string;
@@ -41,33 +17,6 @@ const revenueData: RevenueData[] = [
   { month: "Jul", income: 30000, expense: 18000 },
 ];
 
-// const bookingData: BookingData[] = [
-//   {
-//     id: "1",
-//     airline: "SkyHigh Airlines",
-//     departure: { city: "New York", airport: "JFK", time: "10:00 AM" },
-//     arrival: { city: "Los Angeles", airport: "LAX", time: "1:00 PM" },
-//     date: "July 15, 2024",
-//     duration: "3 hours",
-//   },
-//   {
-//     id: "2",
-//     airline: "FlyFast Airways",
-//     departure: { city: "London", airport: "LHR", time: "8:00 AM" },
-//     arrival: { city: "New York", airport: "JFK", time: "11:00 AM" },
-//     date: "July 16, 2024",
-//     duration: "5 hours",
-//   },
-//   {
-//     id: "3",
-//     airline: "AeroJet",
-//     departure: { city: "Tokyo", airport: "HND", time: "2:00 PM" },
-//     arrival: { city: "San Francisco", airport: "SFO", time: "8:00 AM" },
-//     date: "July 17, 2024",
-//     duration: "6 hours",
-//   },
-// ];
-
 const RevenueDashboard: React.FC = () => {
   const totalIncome = revenueData.reduce((sum, data) => sum + data.income, 0);
   const maxValue = Math.max(...revenueData.map((d) => d.income));
@@ -75,9 +24,7 @@ const RevenueDashboard: React.FC = () => {
   return (
     <Box sx={{ p: 3 }}>
       <Grid container spacing={3}>
-        {/* Revenue Section */}
         <Grid size={12} sx={{ md: 8 }}>
-          {/* <RevenueCard elevation={3}> */}
           <Typography variant="h5" gutterBottom fontWeight="bold">
             Revenue Growth
           </Typography>

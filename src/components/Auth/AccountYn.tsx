@@ -9,6 +9,7 @@ import {
 import { useToast } from "../../context/ToastContext";
 import ChangePassword from "./ChangePassword";
 import VerifyOpt from "./VerifyOpt";
+import { ResponseCode } from "../../utils/response";
 
 type AccountModePageProps = {
   mode: "verify" | "change";
@@ -36,7 +37,7 @@ const AccountModePage = ({ mode, onClose }: AccountModePageProps) => {
     const res = await refetchUserEmailData({ email });
 
     if (mode === "verify") {
-      if (res?.resultCode === "00") {
+      if (res?.resultCode === ResponseCode.SUCCESS) {
         const id = res?.data?.userId;
         if (!id) {
           toast("Không tìm thấy tài khoản, vui lòng thử lại!", "error");
@@ -51,7 +52,7 @@ const AccountModePage = ({ mode, onClose }: AccountModePageProps) => {
     }
 
     if (mode === "change") {
-      if (res?.resultCode === "00") {
+      if (res?.resultCode === ResponseCode.SUCCESS) {
         setUserId(res?.data?.userId);
         setHasValidate(true);
       } else {
@@ -59,12 +60,6 @@ const AccountModePage = ({ mode, onClose }: AccountModePageProps) => {
       }
     }
   }, [email, refetchUserEmailData, mode, toast]);
-
-  // if (registerUser) {
-  //   return (
-  //     <Registration email={email} onClose={() => setRegisterUser(false)} />
-  //   );
-  // }
 
   if (verifyOTPcode) {
     return <VerifyOpt authType="" userId={userId} email={email} />;

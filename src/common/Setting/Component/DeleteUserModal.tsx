@@ -5,6 +5,7 @@ import type { UserData } from "../../../utils/type";
 import BaseModal from "../../Modal/BaseModal";
 import { useDeleteUserById } from "../../../context/Api/usePostApi";
 import theme from "../../../scss/theme";
+import { ResponseCode } from "../../../utils/response";
 
 interface IDeleteAccountModalProps {
   open: boolean;
@@ -26,7 +27,7 @@ const DeleteAccountModal = ({
     if (String(user?.id) === inputId) {
       const res = await refetchDeleteUser({ id: Number(inputId) });
       console.log("res", res);
-      if (res?.resultCode === "00") {
+      if (res?.resultCode === ResponseCode.SUCCESS) {
         onSuccess();
         onClose();
       }

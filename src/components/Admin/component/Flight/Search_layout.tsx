@@ -29,8 +29,8 @@ import FlightDetail from "./FlightDetail.tsx";
 import TableSection from "../../../../common/CustomRender/TableSection.tsx";
 import ConfirmPasswordToCallApi from "../../../Common/ConfirmPasswordToCallApi.tsx";
 import { useToast } from "../../../../context/ToastContext.tsx";
-import type { IDetailItem } from "../../../../common/DetailSection/index.tsx";
-import DetailSection from "../../../../common/DetailSection/index.tsx";
+import type { IDetailItem } from "../../../../common/CustomRender/DetailSection.tsx";
+import DetailSection from "../../../../common/CustomRender/DetailSection.tsx";
 
 type FlightId = {
   id: number;

@@ -78,6 +78,20 @@ export const useCreateFlight = () => {
   };
 };
 
+export const useDisabledMFALogin = () => {
+  const { refetch: refetchDisabledMFALogin } = useFetch<
+    ResponseMessage,
+    { userId: number }
+  >({
+    url: "/auth/disabledmfa",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchDisabledMFALogin,
+  };
+};
+
 export const useSendEmailToVerification = () => {
   const { refetch: refetchSendEmailToVerification } = useFetch<
     RequestSendEmailResponse,
@@ -147,6 +161,20 @@ export const useCreateTerminalBulk = () => {
   });
   return {
     refetchCreateTerminalBulk,
+  };
+};
+
+export const useDeleteManyFlightIds = () => {
+  const { refetch: refetchDeleteManyFlightIds } = useFetch<
+    ResponseMessage,
+    number[]
+  >({
+    url: "/sys/flights/flightIds/delete",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchDeleteManyFlightIds,
   };
 };
 
@@ -551,12 +579,30 @@ export const useCreateMultiFlight = () => {
   };
 };
 
+export const useCreateFlightStatus = () => {
+  const {
+    refetch: refetchCreateFlightStatus,
+    loading: loadingCreateFlightStatus,
+  } = useFetch<
+    ResponseMessage,
+    { flightId: number; status: string; description?: string }
+  >({
+    url: "/sys/flights/flight-status/add",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchCreateFlightStatus,
+    loadingCreateFlightStatus,
+  };
+};
+
 export const useUpdateFlightStatus = () => {
   const {
     refetch: refetchUpdateFlightStatus,
     loading: loadingUpdateFlightStatus,
   } = useFetch<ResponseMessage, { id: number; status: string }>({
-    url: "/sys/flights/updateFlightStatus",
+    url: "/sys/flights/flight-status/update",
     autoFetch: false,
     config: postMethod,
   });

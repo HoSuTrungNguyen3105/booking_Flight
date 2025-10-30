@@ -40,7 +40,7 @@ const VerifyOpt = ({ email, userId }: EmailProps) => {
   return (
     <Box
       component="form"
-      height="100vh"
+      height="30vh"
       display="flex"
       justifyContent="center"
       alignItems="center"

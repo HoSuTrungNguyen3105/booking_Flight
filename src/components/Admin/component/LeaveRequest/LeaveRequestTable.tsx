@@ -2,7 +2,7 @@ import { useState, useCallback, memo } from "react";
 import { Box, Typography, Chip, Button, Tooltip } from "@mui/material";
 import { type GridColDef, type GridRenderCellParams } from "@mui/x-data-grid";
 import { DateFormatEnum, formatDate } from "../../../../hooks/format";
-import CustomPopover from "../../../../common/Button/Popover";
+import CustomPopover from "../../../../common/Dropdown/Popover";
 import RequestLeaveActionModal from "./RequestLeaveActionModal";
 import { type LeaveRequest } from "../../../../utils/type";
 import CreateLeaveRequestForm from "./CreateLeaveRequestForm";

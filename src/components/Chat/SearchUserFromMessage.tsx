@@ -65,7 +65,6 @@ const SearchUserFromMessage: React.FC<SearchUserFromMessageProps> = ({
   const handleOptionSelect = useCallback(
     (selectedOption: SearchEmployeeId | null) => {
       if (selectedOption) {
-        console.log("Selected user:", selectedOption.data);
         onChange([selectedOption.data]);
       } else {
         onChange([]);
@@ -75,29 +74,17 @@ const SearchUserFromMessage: React.FC<SearchUserFromMessageProps> = ({
   );
 
   return (
-    <Box
-      sx={{
-        p: 2.5,
-        borderRadius: 2,
-        bgcolor: "background.paper",
-        boxShadow: 1,
-        transition: "all 0.3s ease",
-        "&:hover": {
-          boxShadow: 3,
-        },
-      }}
-    >
+    <Box sx={{ p: 1, bgcolor: "background.paper" }}>
       <SearchInputWithList
         value={null}
         options={options}
-        label=" Search users"
+        label="Search users"
         placeholder="Type name or email..."
         apiCall={handleInputChange}
         onChange={(option) =>
           handleOptionSelect(option as SearchEmployeeId | null)
         }
         debounceDelay={400}
-        status="confirmed"
       />
     </Box>
   );

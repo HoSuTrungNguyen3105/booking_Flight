@@ -6,9 +6,10 @@ import type { GridColDef } from "@mui/x-data-grid";
 import theme from "../../scss/theme";
 import { useFindPassengerById } from "../../context/Api/usePostApi";
 import type { Passenger } from "../../utils/type";
-import DetailSection, { type IDetailItem } from "../DetailSection";
+import DetailSection, { type IDetailItem } from "../CustomRender/DetailSection";
 import { DateFormatEnum, formatDate } from "../../hooks/format";
 import { useToast } from "../../context/ToastContext";
+import { ResponseCode } from "../../utils/response";
 
 type DataSecureProps = {
   passenger: string;
@@ -26,7 +27,7 @@ const DataSecure = ({ passenger, returnButton }: DataSecureProps) => {
     setIsLoading(true);
     try {
       const res = await refetchPassengerById({ id: passenger });
-      if (res?.resultCode === "00" && res.data) {
+      if (res?.resultCode === ResponseCode.SUCCESS && res.data) {
         setData(res.data as Passenger);
       } else {
         toast(res?.resultMessage || "Không tìm thấy hành khách hoặc mã lỗi");

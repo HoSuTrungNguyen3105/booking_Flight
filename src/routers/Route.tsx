@@ -11,7 +11,6 @@ import GuestGuard from "../components/Layout/GuardLayout";
 import { LoginPage } from "../components/Auth/LoginPage";
 import Security from "../common/Setting/Security";
 import FullLayout from "../components/Layout/FullLayout";
-// import FlightList from "../components/Admin/component/Flight/FlightList";
 import SecurityManage from "../components/User/SecurityManage";
 import ManageMyInformation from "../common/Setting/ManageMyInformation";
 import ManageMyInfo from "../components/Profile/ManageMyInfo";
@@ -23,7 +22,6 @@ import PayrollManagement from "../components/Admin/component/Payroll/PayrollMana
 import AdditionalServicesPage from "../components/Sample/AdditionalServicesPage";
 import ChatContainer from "../components/Chat/ChatContainer";
 import FlightPath from "../components/Admin/component/Flight/FlightPath";
-// import ChatApp from "../components/Chat/HeaderChat";
 import AirportDiagram from "../components/Admin/component/InfrastructureEntities/TerminalContainer";
 import RevenueDashboard from "../components/User/RevenueDashboard";
 import TicketSalesDashboard from "../components/User/TicketSalesDashboard";
@@ -31,18 +29,12 @@ import FlightRoutesDashboard from "../components/Admin/component/Flight/FlightRo
 import TerminalGateContainer from "../components/Admin/component/Airport/AirportMasterplan";
 import AirportManagement from "../components/Admin/component/Airport/AirportManagement";
 import SendEmailToUsers from "../components/Auth/SendEmailToUsers";
-import MealForm from "../components/Admin/component/Meal/MealForm";
 import FlightStatisticsPage from "../components/Admin/component/Flight/FlightStatisticsPage";
-import AirportMap from "../components/Admin/component/Flight/AirportMap";
 import AirportManagementDetail from "../components/Admin/component/Airport/AirportManagementDetail";
 import ChangePasswordInProfile from "../components/Profile/ChangePasswordInProfile";
-import FlightBatchCreator from "../components/Admin/component/Flight/FlightBatchCreator";
 import AuthGuard from "../components/Layout/AuthGuard";
-// import TicketTable from "../components/Sample/TicketList";
-// import BulkMealCreator from "../components/Admin/component/Meal/BulkMealCreator";
 import TransferAdminTable from "../common/Setting/Component/TransferAdminTable";
 import MealList from "../components/Admin/component/Meal/MealList";
-// import FlightStatus from "../components/Admin/component/Flight/FlightStatus";
 import FlightManagement from "../components/Admin/component/Flight/FlightManagement";
 import AttendanceCalendar from "../components/Sample/AttendanceCalendar";
 import ForgetPassword from "../components/Auth/ForgetPassword";
@@ -135,10 +127,7 @@ const routes = [
         path: ROUTE_PATHS.BULK_MEAL_CREATOR,
         // element: <BulkMealCreator />,
       },
-      {
-        path: ROUTE_PATHS.AIRPORT_MAP,
-        element: <AirportMap airportCode="SGN" height={540} />,
-      },
+
       {
         path: ROUTE_PATHS.FLIGHT_STATISTICS,
         element: <FlightStatisticsPage />,
@@ -149,7 +138,6 @@ const routes = [
       },
       {
         path: ROUTE_PATHS.MEAL_FORM,
-        element: <MealForm onSubmit={() => {}} />,
       },
       {
         path: ROUTE_PATHS.UNLOCK_REQUEST,
@@ -203,10 +191,10 @@ const routes = [
         path: ROUTE_PATHS.CALENDER_ATTENDANCE,
         element: <AttendanceCalendar />,
       },
-      {
-        path: ROUTE_PATHS.FLIGHT_BATCH_CREATOR,
-        element: <FlightBatchCreator />,
-      },
+      // {
+      //   path: ROUTE_PATHS.FLIGHT_BATCH_CREATOR,
+      //   element: <FlightBatchCreator />,
+      // },
       {
         path: ROUTE_PATHS.AIRPORT_MANAGEMENT,
         element: <AirportManagement />,

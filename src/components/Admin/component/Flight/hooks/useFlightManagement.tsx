@@ -1,11 +1,7 @@
 import { useCallback } from "react";
 import type { FlightDetailPageProps } from "../FlightDetail";
 import { useNavigate } from "react-router-dom";
-import type { BreadcrumbItem } from "../../../../../common/BreadCrumb";
-import { Home, SaveAltSharp } from "@mui/icons-material";
-import FlightIcon from "../../../../../common/IconComponent/FlightIcon";
-import BreadCrumb from "../../../../../common/BreadCrumb";
-import type { IDetailItem } from "../../../../../common/DetailSection";
+import type { IDetailItem } from "../../../../../common/CustomRender/DetailSection";
 import { DateFormatEnum, formatDate } from "../../../../../hooks/format";
 
 export const useFlightManagement = ({
@@ -27,26 +23,6 @@ export const useFlightManagement = ({
   if (!flight) {
     return "No item";
   }
-
-  const renderBreadcrumbs = useCallback(() => {
-    const breadcrumbItems: BreadcrumbItem[] = [
-      {
-        label: "Home",
-        href: "/",
-        icon: <Home sx={{ fontSize: 16 }} />,
-      },
-      {
-        label: "Admin",
-        href: "/admin",
-        icon: <FlightIcon size={10} />,
-      },
-      {
-        label: `Flight ${flight.flightId}`,
-      },
-    ];
-
-    return <BreadCrumb items={breadcrumbItems} separator={<SaveAltSharp />} />;
-  }, [flight.flightId]);
 
   const scheduleData: IDetailItem[] = [
     {
@@ -166,7 +142,6 @@ export const useFlightManagement = ({
     cancellationData,
     handleBookFlight,
     handleGoBack,
-    renderBreadcrumbs,
     scheduleData,
     airportData,
   } as const;

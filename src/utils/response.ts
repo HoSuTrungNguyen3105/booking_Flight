@@ -14,7 +14,6 @@ export const formatMessage = (
   responseMessage: string,
   ...values: (string | number)[]
 ): string => {
-  // Replace placeholders {0}, {1}, {2}... with values
   values.forEach((value, index) => {
     const placeholder = `{${index}}`;
     responseMessage = responseMessage.replace(

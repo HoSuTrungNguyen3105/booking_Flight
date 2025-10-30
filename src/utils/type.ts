@@ -312,12 +312,9 @@ interface AllFlightCodeProps {
 }
 
 export type FlightInStatus = {
-  id: number;
+  flightNo: string;
   flightId: number;
-  status: string;
-  flight: {
-    flightNo: string;
-  };
+  flightStatuses: FlightStatus[];
 };
 
 export enum UserRole {

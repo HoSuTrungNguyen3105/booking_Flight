@@ -6,6 +6,7 @@ import { useToast } from "../../../../context/ToastContext";
 import { useCreateAircraftBatchFlight } from "../../../../context/Api/usePostApi";
 import { useGetAircraftCode } from "../../../../context/Api/useGetApi";
 import InputTextField from "../../../../common/Input/InputTextField";
+import { ResponseCode } from "../../../../utils/response";
 
 type AircraftError = {
   code: string;
@@ -17,8 +18,10 @@ type ReturnProps = {
   onSuccess: () => void;
 };
 
+type AircraftProps = Omit<Aircraft, "flights">;
+
 const AircraftBatchCreator = ({ onSuccess }: ReturnProps) => {
-  const [aircrafts, setAircrafts] = useState<Aircraft[]>([
+  const [aircrafts, setAircrafts] = useState<AircraftProps[]>([
     { code: "", model: "", range: 0 },
   ]);
   const toast = useToast();
@@ -45,7 +48,7 @@ const AircraftBatchCreator = ({ onSuccess }: ReturnProps) => {
 
   const updateAircraft = (
     index: number,
-    field: "code" | "range" | "model",
+    field: keyof AircraftProps,
     value: string | number
   ) => {
     const updated = [...aircrafts];
@@ -63,13 +66,13 @@ const AircraftBatchCreator = ({ onSuccess }: ReturnProps) => {
     setLoading(true);
     try {
       const response = await refetchCreateAircraftBatchFlightData(aircrafts);
-      if (response?.resultCode === "00") {
+      if (response?.resultCode === ResponseCode.SUCCESS) {
         toast(response?.resultMessage);
         // setAircrafts([{ code: "", model: "", range: 0 }]);
         refetchGetAircraftCodeData();
         const errorMap: Record<number, string> = {};
         response.list?.forEach((res: AircraftError, idx: number) => {
-          if (res.errorCode !== "00") {
+          if (res.errorCode !== ResponseCode.SUCCESS) {
             errorMap[idx] = res.errorMessage;
           }
         });

@@ -2,9 +2,9 @@ import InputTextArea from "../Input/InputTextArea";
 import Android12Switch from "../Switch/Switch";
 import InputTextField from "../Input/InputTextField";
 import type { SxProps } from "@mui/system";
-// import JobTypeSelector from "../Setting/JobTypeSelector";
 import SelectDropdown, { type ActionType } from "../Dropdown/SelectDropdown";
 import InputNumber from "../Input/InputNumber";
+import { memo } from "react";
 
 type FieldValue = boolean | string | number | null;
 
@@ -30,7 +30,6 @@ type FormField = {
   readOnly?: boolean;
   disabled?: boolean;
   onChange?: (value: FieldValue) => void;
-  // customProps?: Record<string, any>;
 };
 
 export type IFormField = {
@@ -143,4 +142,4 @@ const FieldRenderer = ({
       );
   }
 };
-export default FieldRenderer;
+export default memo(FieldRenderer);

@@ -69,62 +69,25 @@ const Conversations = ({
         email: user.email,
       }));
       setFilteredUsers(mappedResult);
+    } else if (searchResult.length === 0 && data?.list) {
+      // nếu tìm không thấy -> quay lại danh sách gốc
+      setFilteredUsers(data.list);
     }
-  }, [searchResult]);
+  }, [searchResult, data]);
 
   useEffect(() => {
     if (!data?.list) return;
 
     if (debouncedQuery.map((e) => e.name.trim().length === 0)) {
-      //debouncedQuery.map((e) => e.name.trim().length === 0)
-      //setFilteredUsers(data.list);
     } else {
-      // if (debouncedQuery.map((e) => e.name.trim().length === 0)) {
-      //   setFilteredUsers(data.list);
-      // } else {
-      // const q = debouncedQuery.toLowerCase();
       const filtered = data.list.filter((conv) => conv.name?.toLowerCase());
       setFilteredUsers(filtered);
     }
   }, [debouncedQuery, data]);
 
-  //   useEffect(() => {
-  //   if (!data?.list) return;
-
-  //   const query = debouncedQuery.map.toLowerCase();
-
-  //   if (query.length === 0) {
-  //     setFilteredUsers(data.list);
-  //   } else {
-  //     const filtered = data.list.filter(
-  //       (conv) =>
-  //         conv.name?.toLowerCase().includes(query) ||
-  //         conv.lastMessage?.toLowerCase().includes(query)
-  //     );
-  //     setFilteredUsers(filtered);
-  //   }
-  // }, [debouncedQuery, data]);
-
   return (
     <Box height={"90vh"} minWidth={0}>
-      <Box
-        display="flex"
-        gap={1}
-        alignItems="center"
-        mb={2}
-        p={2}
-        borderBottom={1}
-        borderColor="divider"
-      >
-        <Box sx={{ maxWidth: "20px" }}>
-          <SearchUserFromMessage
-            onChange={(result) => {
-              console.log("result", result);
-              setSearchResult(result);
-            }}
-          />
-        </Box>
-      </Box>
+      <SearchUserFromMessage onChange={(result) => setSearchResult(result)} />
       {data?.resultCode === "00" && (
         <List sx={{ py: 0, height: "100%", overflow: "auto" }}>
           {filteredUsers?.map((conv, index) => (

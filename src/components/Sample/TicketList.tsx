@@ -1,14 +1,15 @@
-import React, { useMemo } from "react";
-import { Box, Chip, Typography, Stack } from "@mui/material";
+import React, { useMemo, useState } from "react";
+import { Box, Chip, Typography, Stack, Button } from "@mui/material";
 import type { GridColDef } from "@mui/x-data-grid";
 import TableSection from "../../common/CustomRender/TableSection";
-import type { Baggage } from "../../utils/type";
+import type { Baggage, TicketResponseMessage } from "../../utils/type";
 import { useGetAllTicketInfo } from "../../context/Api/useGetApi";
 import { DateFormatEnum, formatDate } from "../../hooks/format";
+import TicketListManagement from "./TicketCard";
 
 const TicketList: React.FC = () => {
   const { getTicketInfo, loadingGetTicketInfo } = useGetAllTicketInfo();
-
+  const [allInfoTicket, setAllInfoTicket] = useState(false);
   const rowData = useMemo(
     () =>
       getTicketInfo?.list?.map((item) => ({
@@ -68,9 +69,17 @@ const TicketList: React.FC = () => {
   };
 
   const columns: GridColDef[] = [
-    { field: "ticketNo", headerName: "Mã vé", flex: 1 },
-    { field: "passengerId", headerName: "Hành khách", flex: 1 },
-    { field: "flightId", headerName: "Mã Bay", flex: 1 },
+    {
+      field: "ticketNo",
+      headerName: "Mã vé",
+      flex: 1,
+    },
+    {
+      field: "passenger",
+      headerName: "Hành khách",
+      flex: 1,
+      renderCell: (params) => params.value.fullName,
+    },
     {
       field: "seatClass",
       headerName: "Hạng ghế",
@@ -83,24 +92,24 @@ const TicketList: React.FC = () => {
         />
       ),
     },
-    { field: "seatNo", headerName: "Số ghế", flex: 1 },
     {
       field: "bookedAt",
       headerName: "Ngày đặt",
       flex: 1,
-      renderCell: (params) => {
-        const timestamp = Number(params.value);
-        const date = new Date(timestamp);
-        return date.toLocaleString("vi-VN");
-      },
+      renderCell: (params) =>
+        formatDate(DateFormatEnum.DD_MM_YYYY_HH_MM_SS, params.value),
     },
     {
       field: "boardingPass",
       headerName: "Thẻ lên máy bay",
       flex: 1,
+      // valueGetter: (params) => {
+      //   const bp = params.row.boardingPass;
+      //   return bp ? Number(bp.boardingTime) || 0 : 0;
+      // },
       renderCell: (params) =>
         params.value ? (
-          <Stack spacing={0.5}>
+          <Stack spacing={0.2}>
             <Typography variant="body2">
               Cổng: <b>{params.value.gate}</b>
             </Typography>
@@ -120,10 +129,15 @@ const TicketList: React.FC = () => {
       field: "baggage",
       headerName: "Hành lý",
       flex: 1,
+      valueGetter: (_, row) =>
+        row.baggage?.reduce(
+          (sum: number, b: Baggage) => sum + (b.weight || 0),
+          0
+        ) || 0,
       renderCell: (params) =>
-        params.value && params.value.length > 0 ? (
-          <Box>
-            {params.value.map((b: Baggage) => {
+        params.row?.baggage?.length > 0 ? (
+          <>
+            {params.row.baggage.map((b: Baggage) => {
               const { label, sx } = getBaggageStatusColor(b.status);
               return (
                 <Chip
@@ -137,18 +151,33 @@ const TicketList: React.FC = () => {
                 />
               );
             })}
-          </Box>
+          </>
         ) : (
           <Typography color="text.secondary">Không có</Typography>
         ),
     },
   ];
 
+  if (allInfoTicket) {
+    return (
+      <TicketListManagement data={getTicketInfo as TicketResponseMessage} />
+    );
+  }
+
   return (
-    <Box sx={{ height: 500, width: "100%" }}>
-      <Typography variant="h6" gutterBottom>
-        Ticket List
-      </Typography>
+    <>
+      <Box display={"flex"} gap={1} justifyContent={"space-around"}>
+        <Typography variant="h6" gutterBottom>
+          Ticket List
+        </Typography>
+        <Button
+          variant="contained"
+          size="small"
+          onClick={() => setAllInfoTicket(true)}
+        >
+          Management
+        </Button>
+      </Box>
       <TableSection
         rows={rowData}
         columns={columns}
@@ -157,7 +186,7 @@ const TicketList: React.FC = () => {
         nextRowClick
         largeThan
       />
-    </Box>
+    </>
   );
 };
 

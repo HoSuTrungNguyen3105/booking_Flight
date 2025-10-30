@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { memo, useCallback, useState } from "react";
 import { Box, Button, Typography, Stack } from "@mui/material";
 import { useToast } from "../../../context/ToastContext";
 import { useRequestChangeRole } from "../../../context/Api/usePostApi";
@@ -70,19 +70,7 @@ const TransferAdminModal: React.FC<TransferAdminModalProps> = ({
   );
 
   const renderContent = () => (
-    <Box
-      sx={{
-        // position: "absolute" as const,
-        // top: "50%",
-        // left: "50%",
-        // transform: "translate(-50%, -50%)",
-        // width: 400,
-        //   bgcolor: "background.paper",
-        p: 4,
-        //borderRadius: 2,
-        //   boxShadow: 24,
-      }}
-    >
+    <Box sx={{ p: 3 }}>
       <Typography variant="h6" mb={2}>
         Chuyển quyền Admin
       </Typography>
@@ -108,4 +96,4 @@ const TransferAdminModal: React.FC<TransferAdminModalProps> = ({
   );
 };
 
-export default TransferAdminModal;
+export default memo(TransferAdminModal);

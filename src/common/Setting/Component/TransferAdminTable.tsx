@@ -100,20 +100,20 @@ const TransferAdminTable = () => {
 
   const columns: GridColDef[] = useMemo(
     () => [
-      { field: "id", headerName: "ID", width: 80 },
-      { field: "userId", headerName: "User ID", width: 120 },
-      { field: "fromUserId", headerName: "From User ID", width: 150 },
-      { field: "toUserId", headerName: "To User ID", width: 150 },
+      { field: "id", headerName: "ID", flex: 1 },
+      { field: "userId", headerName: "User ID", flex: 1 },
+      { field: "fromUserId", headerName: "From User ID", flex: 1 },
+      { field: "toUserId", headerName: "To User ID", flex: 1 },
       {
         field: "status",
         headerName: "Status",
-        width: 150,
+        flex: 1,
         renderCell: (params) => renderStatus(params.value as TypeStatus),
       },
       {
         field: "requestedAt",
         headerName: "Requested At",
-        width: 180,
+        flex: 1,
         valueFormatter: (params) =>
           formatDate(
             DateFormatEnum.DD_MM_YYYY_HH_MM_SS,

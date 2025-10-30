@@ -26,14 +26,11 @@ const FlightManagement = () => {
     },
   ];
 
-  //   if (getValuePassenger)
-  //     return <DataSecure returnButton={handleReturn} passenger={passengerId} />;
-
   return (
     <SearchLayout
       onChangeTab={setTab}
       activeTab={tabX}
-      title="Security Manage"
+      title="Flight Management State"
       tabs={tabs}
     />
   );

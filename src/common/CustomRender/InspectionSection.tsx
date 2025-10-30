@@ -18,7 +18,6 @@ const InspectionSection = ({
   columns,
   rows,
   loading,
-  // onSearch = () => {},
   onRowClick,
 }: ISecurityTabSectionProps) => {
   const headerRef = useRef<HTMLDivElement>(null);

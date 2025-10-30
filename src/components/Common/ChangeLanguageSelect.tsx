@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import { memo, useCallback } from "react";
-import CustomPopover from "../../common/Button/Popover";
+import CustomPopover from "../../common/Dropdown/Popover";
 import { useChangeLanguage } from "../../context/use[custom]/useChangeLng";
 import SelectDropdown from "../../common/Dropdown/SelectDropdown";
 import { useTranslation } from "react-i18next";

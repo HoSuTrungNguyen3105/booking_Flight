@@ -20,6 +20,7 @@ import TransferAdminModal from "../../common/Setting/Component/TransferAdminModa
 import { useAuth } from "../../context/AuthContext";
 import PermissionRoleModal from "../../common/Setting/Component/PermissionRoleModal";
 import ResetPasswordModal from "../../common/Setting/Component/ResetPasswordModal";
+import DisableMFALoginModal from "../../common/Setting/Component/DisableMFALoginModal";
 
 export type ReqUpdateEmployeeNo = BatchEmployeeNoReq & {
   name: string;
@@ -206,6 +207,18 @@ const ManageMyInfo = () => {
 
       {openModal.deleteUser && selectedRow && (
         <DeleteUserModal
+          open={openModal.deleteUser}
+          user={selectedRow}
+          onSuccess={() => {
+            handleRefetchUserList();
+            closeModal("deleteUser");
+          }}
+          onClose={() => closeModal("deleteUser")}
+        />
+      )}
+
+      {openModal.disableMfaSettings && selectedRow && (
+        <DisableMFALoginModal
           open={openModal.deleteUser}
           user={selectedRow}
           onSuccess={() => {

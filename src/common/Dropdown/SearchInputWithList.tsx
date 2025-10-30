@@ -14,6 +14,8 @@ import {
   ListItemText,
   Paper,
   ClickAwayListener,
+  Tooltip,
+  Stack,
 } from "@mui/material";
 import type { DropdownOptions, DropdownType } from "./type";
 import useDebounce from "../../context/use[custom]/useDebounce";
@@ -111,14 +113,33 @@ export const SearchInputWithList = ({
   // Render the content for each list item
   const renderListItemContent = (option: DropdownOptions) => {
     if (customOutPut) {
-      // If customOutPut is provided as a function, call it with the option
       return customOutPut();
     } else {
-      // Default rendering - show the label
       return (
-        <ListItemText
-          primary={typeof option.label === "string" ? option.label : "Option"}
-        />
+        <Tooltip
+          title={
+            <>
+              <Typography variant="body2">
+                {option.value || "No description"}
+              </Typography>
+            </>
+          }
+          arrow
+          placement="right"
+        >
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+            width="100%"
+          >
+            <Box>
+              <Typography variant="body2" fontWeight={600}>
+                {option.label}
+              </Typography>
+            </Box>
+          </Stack>
+        </Tooltip>
       );
     }
   };
@@ -171,6 +192,25 @@ export const SearchInputWithList = ({
         )}
 
         {/* No results message */}
+        {isLoading && (
+          <Paper
+            sx={{
+              position: "absolute",
+              top: "100%",
+              left: 0,
+              right: 0,
+              zIndex: 1300,
+              mt: 0.5,
+              p: 2,
+              textAlign: "center",
+            }}
+          >
+            <Typography variant="body2" color="text.secondary">
+              Loading...
+            </Typography>
+          </Paper>
+        )}
+
         {showList &&
           !isLoading &&
           combinedOptions.length === 0 &&
