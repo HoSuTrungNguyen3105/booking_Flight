@@ -209,7 +209,7 @@ const ChangePasswordInProfile = () => {
           }}
         >
           <Button variant="contained" type="submit">
-            {t("submit")}
+            {t("disabled")}
           </Button>
           <Button type="reset" variant="outlined">
             {t("reset")}

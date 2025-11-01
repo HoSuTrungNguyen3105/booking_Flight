@@ -43,7 +43,7 @@ const AdminUpdateUserModal = ({
     return (
       <Stack spacing={2}>
         <Typography variant="body1">
-          Nhập ID xác nhận xóa tài khoản. Ex : {String(data?.id)}
+          Nhập ID xác nhận tài khoản. Ex : {String(data?.id)}
         </Typography>
         <InputTextField
           value={inputId}

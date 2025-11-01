@@ -61,18 +61,6 @@ const AircraftPage = () => {
     }
   }, [refetchDeleteAircraftFlight, selectedCode]);
 
-  if (pageDetail) {
-    return <AircarftDetail aircraft={aircraftCodeState} />;
-  }
-
-  if (loadingDeleteAircraftFlight) {
-    return (
-      <Box p={3}>
-        <LinearProgress />
-      </Box>
-    );
-  }
-
   const getRangeColor = (range: number) => {
     if (range >= 10000) return "success";
     if (range >= 5000) return "warning";
@@ -86,6 +74,18 @@ const AircraftPage = () => {
 
   if (createBatchMode) {
     return <AircraftBatchCreator onSuccess={() => setCreateBatchMode(false)} />;
+  }
+
+  if (pageDetail) {
+    return <AircarftDetail aircraft={aircraftCodeState} />;
+  }
+
+  if (loadingDeleteAircraftFlight) {
+    return (
+      <Box p={3}>
+        <LinearProgress />
+      </Box>
+    );
   }
 
   return (
@@ -113,12 +113,6 @@ const AircraftPage = () => {
               <Card
                 sx={{
                   borderRadius: 3,
-                  // boxShadow: 2,
-                  // "&:hover": {
-                  //   boxShadow: 6,
-                  //   transform: "translateY(-4px)",
-                  //   transition: "all 0.3s ease-in-out",
-                  // },
                   height: "100%",
                   display: "flex",
                   flexDirection: "column",

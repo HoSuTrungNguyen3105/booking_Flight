@@ -10,12 +10,13 @@ import {
   Typography,
 } from "@mui/material";
 import { Add, Delete } from "@mui/icons-material";
-import InputTextField from "../../../../common/Input/InputTextField";
-import SingleDateRangePickerComponent from "../../../../common/DayPicker/date-range-field";
-import SelectDropdown from "../../../../common/Dropdown/SelectDropdown";
-import InputNumber from "../../../../common/Input/InputNumber";
-import theme from "../../../../scss/theme";
-import { useFlightCreateAndUpdate } from "./hooks/useFlightCreateAndUpdate";
+import InputTextField from "../../../../../common/Input/InputTextField";
+import SingleDateRangePickerComponent from "../../../../../common/DayPicker/date-range-field";
+import SelectDropdown from "../../../../../common/Dropdown/SelectDropdown";
+import InputNumber from "../../../../../common/Input/InputNumber";
+import theme from "../../../../../scss/theme";
+import { useFlightCreateAndUpdate } from "../hooks/useFlightCreateAndUpdate";
+import Switch from "../../../../../common/Switch/Switch";
 
 type FlightBatchCreatorProps = {
   onReturn: () => void;
@@ -116,10 +117,12 @@ const FlightBatchCreator: React.FC<FlightBatchCreatorProps> = ({
               </Grid>
 
               <Grid size={3}>
-                <InputTextField
-                  placeholder="Terminal"
-                  value={flight.terminal}
-                  onChange={(e) => handleChange(index, "terminal", e)}
+                <Switch
+                  label="Is Domestic"
+                  checked={flight.isDomestic}
+                  onChange={(e) =>
+                    handleChange(index, "isDomestic", e.target.checked)
+                  }
                 />
               </Grid>
 

@@ -23,7 +23,7 @@ import type { SearchBookingFlightProps } from "../../utils/type";
 import type {
   CabinClassType,
   SearchFlightDto,
-} from "../Admin/component/Flight/Search_layout";
+} from "./../Admin/component/Flight/Search_layout";
 import { DateFormatEnum, formatDate, formatDateKR } from "../../hooks/format";
 import Android12Switch from "./../../common/Switch/Switch";
 

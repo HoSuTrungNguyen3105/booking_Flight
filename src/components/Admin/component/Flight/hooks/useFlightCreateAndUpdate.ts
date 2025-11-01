@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { FlightFormData, FlightFormMode } from "../FlightManagementModal";
 import {
   useGetAllCode,
+  useGetAllGateCode,
   useGetFlightByIDData,
 } from "../../../../../context/Api/useGetApi";
 import {
@@ -12,6 +13,7 @@ import {
 } from "../../../../../context/Api/usePostApi";
 import { useToast } from "../../../../../context/ToastContext";
 import { useNavigate } from "react-router-dom";
+import { ResponseCode } from "../../../../../utils/response";
 
 interface IFlightCreateAndUpdateProps {
   onClose?: () => void;
@@ -34,15 +36,17 @@ export const useFlightCreateAndUpdate = ({
     flightType: "",
     departureAirport: "",
     arrivalAirport: "",
-    // status: "SCHEDULED",
     aircraftCode: "",
     scheduledDeparture: 0,
     scheduledArrival: 0,
     priceEconomy: 0,
     priceBusiness: 0,
     priceFirst: 0,
-    // gateId: "",
-    terminal: "",
+    gateId: "",
+    isDomestic: false,
+    isCancelled: false,
+    delayMinutes: 0,
+    seats: [],
   });
 
   const [flights, setFlights] = useState<FlightFormData[]>([
@@ -51,76 +55,65 @@ export const useFlightCreateAndUpdate = ({
 
   const [errors, setErrors] = useState<Record<number, string>>({});
 
-  const handleChange = (
-    index: number,
-    field: keyof FlightFormData,
-    value: string | number
-  ) => {
-    const newFlights = [...flights];
-    (newFlights[index][field] as any) = value;
-    setFlights(newFlights);
+  const handleChange = useCallback(
+    (
+      index: number,
+      field: keyof FlightFormData,
+      value: string | number | boolean
+    ) => {
+      setFlights((prev) => {
+        const updated = [...prev];
+        updated[index] = { ...updated[index], [field]: value };
+        return updated;
+      });
 
-    setErrors((prevErrors) => {
-      const newErrors = { ...prevErrors };
-      if (newErrors[index]) {
-        delete newErrors[index];
-      }
-      return newErrors;
-    });
-  };
+      setErrors((prev) => {
+        if (!prev[index]) return prev;
+        const { [index]: _, ...rest } = prev;
+        return rest;
+      });
+    },
+    []
+  );
+  const handleAddFlight = useCallback(() => {
+    setFlights((prev) => [...prev, createDefaultFormData()]);
+  }, []);
 
-  const handleAddFlight = () => {
-    setFlights([...flights, createDefaultFormData()]);
-  };
-
-  const handleRemoveFlight = (index: number) => {
-    if (flights.length === 1) return;
-    setFlights(flights.filter((_, i) => i !== index));
-  };
+  const handleRemoveFlight = useCallback((index: number) => {
+    setFlights((prev) =>
+      prev.length === 1 ? prev : prev.filter((_, i) => i !== index)
+    );
+  }, []);
 
   const { refetchCreateMultiFlight } = useCreateMultiFlight();
 
   const navigate = useNavigate();
 
-  const handleSubmitMultiFlight = async () => {
+  const handleSubmitMultiFlight = useCallback(async () => {
     try {
       const result = await refetchCreateMultiFlight(flights);
+      const errorMap: Record<number, string> = {};
 
-      if (result?.resultCode === "00") {
-        const errorMap: Record<number, string> = {};
-
-        setErrors([]);
-
-        const newFlights = flights.map((f, idx) =>
-          errorMap[idx] ? f : { ...f, flightNo: "", aircraftCode: "" }
-        );
-        setFlights(newFlights);
-
-        if (Object.keys(errorMap).length === 0) {
-          navigate("/admin/FlightManagement");
+      result?.list?.forEach((item: CreateManyFlightResultItem, idx: number) => {
+        if (item.errorCode && item.errorCode !== ResponseCode.SUCCESS) {
+          errorMap[idx] = item.errorMessage || "Unknown error";
         }
-      } else {
-        const errorMap: Record<number, string> = {};
+      });
 
-        result?.list?.forEach(
-          (item: CreateManyFlightResultItem, idx: number) => {
-            if (item.errorCode && item.errorCode !== "00") {
-              errorMap[idx] = item.errorMessage || "Unknown error";
-            }
-          }
-        );
+      setErrors(errorMap);
 
-        setErrors(errorMap);
+      const newFlights = flights.map((f, idx) =>
+        errorMap[idx] ? f : { ...f, flightNo: "", aircraftCode: "" }
+      );
+      setFlights(newFlights);
 
-        const newFlights = flights.map((f, idx) =>
-          errorMap[idx] ? f : { ...f, flightNo: "", aircraftCode: "" }
-        );
-        setFlights(newFlights);
+      if (Object.keys(errorMap).length === 0) {
+        navigate("/admin/FlightManagement");
       }
     } catch (err) {
-      console.error("error", err);
+      console.error("Error submitting flights:", err);
     }
-  };
+  }, [flights, refetchCreateMultiFlight, navigate]);
 
   const [activeStep, setActiveStep] = useState(0);
 
@@ -136,40 +129,21 @@ export const useFlightCreateAndUpdate = ({
 
   const { getAllCode } = useGetAllCode();
 
-  const mapFlightToFormData = (
-    data?: Partial<FlightFormData>
-  ): FlightFormData => {
-    if (!data) return createDefaultFormData();
-
-    return {
-      flightNo: data.flightNo || "",
-      flightType: data.flightType || "",
-      departureAirport: data.departureAirport || "",
-      arrivalAirport: data.arrivalAirport || "",
-      // status: data.status || "SCHEDULED",
-      aircraftCode: data.aircraftCode || "",
-      scheduledDeparture: data.scheduledDeparture
-        ? Number(data.scheduledDeparture)
-        : 0,
-      scheduledArrival: data.scheduledArrival
-        ? Number(data.scheduledArrival)
-        : 0,
-      priceEconomy: data.priceEconomy || 0,
-      priceBusiness: data.priceBusiness || 0,
-      priceFirst: data.priceFirst || 0,
-      gateId: data.gateId || "",
-      terminal: data.terminal || "",
-      isCancelled: data.isCancelled || false,
-      delayMinutes: data.delayMinutes || 0,
-      seats: data.seats || [],
-    };
-  };
+  const mapFlightToFormData = useCallback(
+    (data?: Partial<FlightFormData>): FlightFormData => ({
+      ...createDefaultFormData(),
+      ...data,
+      scheduledDeparture: Number(data?.scheduledDeparture ?? 0),
+      scheduledArrival: Number(data?.scheduledArrival ?? 0),
+    }),
+    []
+  );
 
   useEffect(() => {
     if (mode === "update" && getFlightByIdData?.data) {
       setFormData(mapFlightToFormData(getFlightByIdData.data));
     }
-  }, [getFlightByIdData?.data, mode]);
+  }, [mode, getFlightByIdData?.data, mapFlightToFormData]);
 
   const handleRefetchAllData = useCallback(async () => {
     try {
@@ -189,80 +163,50 @@ export const useFlightCreateAndUpdate = ({
 
   const handleSave = useCallback(async () => {
     try {
-      if (mode === "update" && flightId) {
-        const updateData = {
-          flightNo: formData.flightNo,
-          flightType: formData.flightType,
-          departureAirport: formData.departureAirport,
-          arrivalAirport: formData.arrivalAirport,
-          aircraftCode: formData.aircraftCode,
-          actualDeparture: formData.actualDeparture,
-          actualArrival: formData.actualArrival,
-          priceEconomy: formData.priceEconomy,
-          priceBusiness: formData.priceBusiness,
-          priceFirst: formData.priceFirst,
-          gateId: formData.gateId,
-          terminal: formData.terminal,
-          isCancelled: formData.isCancelled,
-          delayMinutes: formData.delayMinutes,
-          ...(formData.isCancelled && {
-            cancellationReason: formData.cancellationReason,
-          }),
-          ...(formData.delayMinutes && {
-            delayReason: formData.delayReason,
-          }),
-        };
+      const payload = {
+        flightNo: formData.flightNo,
+        flightType: formData.flightType,
+        departureAirport: formData.departureAirport,
+        arrivalAirport: formData.arrivalAirport,
+        aircraftCode: formData.aircraftCode,
+        scheduledDeparture: formData.scheduledDeparture,
+        scheduledArrival: formData.scheduledArrival,
+        priceEconomy: formData.priceEconomy,
+        priceBusiness: formData.priceBusiness,
+        priceFirst: formData.priceFirst,
+        isDomestic: formData.isDomestic,
+        gateId: formData.gateId,
+        isCancelled: formData.isCancelled,
+        delayMinutes: formData.delayMinutes,
+        cancellationReason: formData.isCancelled
+          ? formData.cancellationReason
+          : undefined,
+        delayReason: formData.delayMinutes ? formData.delayReason : undefined,
+      };
 
-        const response = await refetchUpdateFlightId(updateData);
+      const response =
+        mode === "update"
+          ? await refetchUpdateFlightId(payload)
+          : await refetchCreateFlightData(payload);
 
-        if (response?.resultCode === "00") {
-          onSuccess();
-          onClose();
-        } else {
-          toast(response?.resultMessage || "Update flight failed", "error");
-        }
-      } else if (mode === "create") {
-        const createData = {
-          flightNo: formData.flightNo,
-          flightType: formData.flightType,
-          departureAirport: formData.departureAirport,
-          arrivalAirport: formData.arrivalAirport,
-          aircraftCode: formData.aircraftCode,
-          scheduledDeparture: formData.scheduledDeparture,
-          scheduledArrival: formData.scheduledArrival,
-          priceEconomy: formData.priceEconomy,
-          priceBusiness: formData.priceBusiness,
-          priceFirst: formData.priceFirst,
-          terminal: formData.terminal,
-        };
-
-        const response = await refetchCreateFlightData(createData);
-
-        if (response?.resultCode === "00") {
-          toast(response?.resultMessage || "Success create", "success");
-          onSuccess();
-          onClose();
-        } else {
-          toast(response?.resultMessage || "Error create", "error");
-        }
+      if (response?.resultCode === ResponseCode.SUCCESS) {
+        toast(response?.resultMessage || "Success", "success");
+        onSuccess?.();
+        onClose?.();
+      } else {
+        toast(response?.resultMessage || "Error", "error");
       }
-    } catch (error) {
-      console.error("Error saving flight:", error);
+    } catch (err) {
+      console.error("Error saving flight:", err);
     }
   }, [
     formData,
     mode,
-    flightId,
     refetchUpdateFlightId,
     refetchCreateFlightData,
     onSuccess,
+    onClose,
   ]);
-
-  useEffect(() => {
-    if (mode === "update" && getFlightByIdData?.data) {
-      setFormData(mapFlightToFormData(getFlightByIdData.data));
-    }
-  }, [getFlightByIdData?.data, mode]);
 
   useEffect(() => {
     if (!open) {
@@ -273,7 +217,15 @@ export const useFlightCreateAndUpdate = ({
       );
       setActiveStep(0);
     }
-  }, [open, mode, getFlightByIdData]);
+  }, [open, mode, getFlightByIdData, mapFlightToFormData]);
+
+  const { dataAllGateCode } = useGetAllGateCode();
+
+  const optionAllGateCode =
+    dataAllGateCode?.list?.map((e) => ({
+      label: ` ${e.code}`,
+      value: e.id,
+    })) ?? [];
 
   const optionAirportCode =
     getAllCode?.data?.airport?.map((e) => ({
@@ -334,6 +286,7 @@ export const useFlightCreateAndUpdate = ({
     setActiveStep,
     activeStep,
     steps,
+    optionAllGateCode,
 
     handleSubmitMultiFlight,
     handleAddFlight,

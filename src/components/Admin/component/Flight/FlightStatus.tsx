@@ -187,7 +187,7 @@ const FlightStatus = ({ onReturn }: { onReturn: () => void }) => {
                       <Button
                         variant="contained"
                         startIcon={<SaveIcon />}
-                        onClick={() => handleSave("add", flight.flightId)} // statusObjId không cần
+                        onClick={() => handleSave("add", flight.flightId)}
                         disabled={!isFlightEdited(flight.flightId)}
                         sx={{ minWidth: 120, px: 3 }}
                       >

@@ -21,10 +21,12 @@ import AirportManageModal from "./AirportManageModal";
 import AirportBatchCreator from "./AirportBatchCreator";
 import DialogConfirm from "../../../../common/Modal/DialogConfirm";
 import { useDeleteAirportById } from "../../../../context/Api/usePostApi";
+import { useToast } from "../../../../context/ToastContext";
 
 const AirportManagement: React.FC = () => {
   const { getAirportInfo, refetchGetAirportInfo } = useGetAllAirportInfo();
   // const [airports, setAirports] = useState<Airport[]>([]);
+  const toast = useToast();
   const rowAirportsGrid = useMemo(
     () =>
       getAirportInfo?.list?.map((item) => ({
@@ -82,7 +84,6 @@ const AirportManagement: React.FC = () => {
   };
 
   const handleOpenDeleteClick = (code: string) => {
-    console.log("row", code);
     setSelectedCode(code);
     setOpenConfirm(true);
   };
@@ -141,7 +142,7 @@ const AirportManagement: React.FC = () => {
   const handleConfirmDelete = async () => {
     if (selectedCode) {
       const res = await refetchDeleteAirport({ code: selectedCode });
-      console.log("Deleting airport:", res);
+      toast(res?.resultMessage || "Deleting airport", "success");
       setOpenConfirm(false);
       refetchGetAirportInfo();
     }

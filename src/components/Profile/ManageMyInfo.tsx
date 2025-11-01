@@ -6,9 +6,6 @@ import { Loading } from "../../common/Loading/Loading";
 import UpdateUserModal from "../../common/Setting/Component/UpdateUserModal";
 import AccountLock from "../../common/Setting/Component/AccountLockModal";
 import { memo, useCallback, useState } from "react";
-// import AdminUpdateUserModal from "../../common/Setting/Component/AdminUpdateUserModal";
-import UpdateUserForm from "../../common/Setting/Component/UpdateUserForm";
-import type { AdminUpdateUserForm } from "../../utils/type";
 import SendEmailToUsers from "../Auth/SendEmailToUsers";
 import TableSection from "../../common/CustomRender/TableSection";
 import type { GridRowId } from "@mui/x-data-grid";
@@ -58,7 +55,6 @@ const ManageMyInfo = () => {
   const handleNavigateEmailSend = useCallback(() => {
     setNavigateEmailSend(true);
   }, [setNavigateEmailSend]);
-  const [isValidate, setIsValidate] = useState(false);
 
   const handleNavigateSelectedUpdateItem = useCallback(() => {
     const updates: ReqUpdateEmployeeNo[] = selectedRowChange.map((row) => ({
@@ -73,18 +69,6 @@ const ManageMyInfo = () => {
 
   if (loading) {
     return <Loading />;
-  }
-
-  if (isValidate) {
-    return (
-      <UpdateUserForm
-        data={selectedRow as AdminUpdateUserForm}
-        onSuccess={() => {
-          setIsValidate(false);
-          handleRefetchUserList();
-        }}
-      />
-    );
   }
 
   if (navigateEmailSend) {
@@ -219,13 +203,13 @@ const ManageMyInfo = () => {
 
       {openModal.disableMfaSettings && selectedRow && (
         <DisableMFALoginModal
-          open={openModal.deleteUser}
+          open={openModal.disableMfaSettings}
           user={selectedRow}
           onSuccess={() => {
             handleRefetchUserList();
-            closeModal("deleteUser");
+            closeModal("disableMfaSettings");
           }}
-          onClose={() => closeModal("deleteUser")}
+          onClose={() => closeModal("disableMfaSettings")}
         />
       )}
 

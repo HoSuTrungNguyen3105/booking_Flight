@@ -29,41 +29,6 @@ import { DateFormatEnum, formatDate } from "../../../../hooks/format";
 import FormRow from "../../../../common/CustomRender/FormRow";
 import ManagementPayrollModal from "./modal/ManagementPayrollModal";
 
-export type EmployeeType = {
-  id: number;
-  email: string;
-  name: string;
-  position: string;
-  department: string;
-  payrolls: Payroll[];
-  hireDate: string | null;
-};
-
-export interface Payroll {
-  id: number;
-  employeeId: number;
-  month: number;
-  year: number;
-  baseSalary: number;
-  allowances: number;
-  deductions: number;
-  tax: number;
-  netPay: number;
-  status: string; //"DRAFT" | "FINALIZED"
-  generatedAt: string;
-  employee: EmployeeType;
-}
-
-export interface GeneratePayroll {
-  employeeId: number;
-  month: number;
-  year: number;
-  baseSalary: number;
-  allowances: number;
-  deductions: number;
-  tax: number;
-}
-
 const PayrollManagement = () => {
   const [month, setMonth] = useState<number | undefined>(
     new Date().getMonth() + 1 || undefined

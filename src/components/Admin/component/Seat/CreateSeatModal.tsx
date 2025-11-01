@@ -1,5 +1,11 @@
 import { Box, Button, Stack, Typography, FormControl } from "@mui/material";
-import { memo, useCallback, useState } from "react";
+import {
+  memo,
+  useCallback,
+  useState,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 import AddIcon from "@mui/icons-material/Add";
 import type { CreateSeatDto } from "../../../../context/Api/usePostApi";
 import InputTextField from "../../../../common/Input/InputTextField";
@@ -11,31 +17,26 @@ interface IModalStatisticalDataLearningProps {
   onSuccess: () => void;
   onChange: (data: CreateSeatDto) => void;
   flightId: number;
-  loading: boolean;
+  createState: CreateSeatDto;
+  setCreateState: Dispatch<SetStateAction<CreateSeatDto>>;
 }
 
 const CreateSeatModal = ({
   open,
   onClose,
-  flightId,
   onSuccess,
+  flightId,
+  createState,
+  setCreateState,
   onChange,
 }: IModalStatisticalDataLearningProps) => {
-  const [newSeat, setNewSeat] = useState<CreateSeatDto>({
-    seatNumber: 0,
-    seatRow: "",
-    flightId,
-    isBooked: false,
-  });
-
   const handleSave = useCallback(() => {
-    if (!newSeat.seatRow || !newSeat.seatNumber) {
-      // alert("Please enter seat row and seat number");
+    if (!createState.seatRow || !createState.seatNumber) {
       return;
     }
-    onChange(newSeat);
+    onChange(createState);
     onSuccess();
-  }, [newSeat, onChange, onSuccess]);
+  }, [createState, onChange, onSuccess]);
 
   const renderActions = useCallback(() => {
     return (
@@ -73,10 +74,10 @@ const CreateSeatModal = ({
               Seat Row (A-F)
             </Typography>
             <InputTextField
-              value={newSeat.seatRow}
+              value={createState.seatRow}
               // onChange={(e) => setNewSeat({ ...newSeat, seatRow: e as string })}
               onChange={(e) =>
-                setNewSeat({ ...newSeat, seatRow: e.toUpperCase() })
+                setCreateState({ ...createState, seatRow: e.toUpperCase() })
               }
               placeholder="Enter seat row, e.g., A"
             />
@@ -89,10 +90,10 @@ const CreateSeatModal = ({
             </Typography>
             <InputTextField
               type="number"
-              value={String(newSeat.seatNumber)}
+              value={String(createState.seatNumber)}
               onChange={(e) =>
-                setNewSeat({
-                  ...newSeat,
+                setCreateState({
+                  ...createState,
                   seatNumber: parseInt(e) || 1,
                 })
               }
@@ -102,7 +103,7 @@ const CreateSeatModal = ({
         </Stack>
       </Box>
     );
-  }, [newSeat, flightId]);
+  }, [createState, setCreateState, flightId]);
 
   return (
     <BaseModal

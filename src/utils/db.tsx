@@ -35,15 +35,15 @@ export type MenuSection = {
   items: MenuItem[];
 };
 export const menuData: MenuSection[] = [
-  {
-    title: "Home",
-    items: [
-      {
-        id: "/",
-        label: "Người dùng",
-      },
-    ],
-  },
+  // {
+  //   title: "Home",
+  //   items: [
+  //     {
+  //       id: "/",
+  //       label: "Người dùng",
+  //     },
+  //   ],
+  // },
   {
     title: "Quản trị hệ thống",
     items: [
@@ -118,11 +118,11 @@ export const menuData: MenuSection[] = [
                 label: "Đặt vé máy bay",
                 icon: <FlightTakeoff />,
               },
-              {
-                id: "international",
-                label: "Chuyến bay quốc tế",
-                icon: <FlightTakeoff />,
-              },
+              // {
+              //   id: "international",
+              //   label: "Chuyến bay quốc tế",
+              //   icon: <FlightTakeoff />,
+              // },
               {
                 id: "TransferAdminTable",
                 label: "Quản lý Terminal",
@@ -133,20 +133,20 @@ export const menuData: MenuSection[] = [
                 icon: <TimeToLeave />,
               },
               {
-                id: "FlightBatchCreator",
+                id: "FlightStatisticsPage",
                 label: "Quản lý chuyến bay hàng loạt",
                 icon: <Apartment />,
               },
-              {
-                id: "AirportManagementDetail",
-                label: "Chi tiết sân bay",
-                icon: <Apartment />,
-              },
-              {
-                id: "AirportMap",
-                label: "Quản lý sân bay",
-                icon: <Apartment />,
-              },
+              // {
+              //   id: "AirportManagementDetail",
+              //   label: "Chi tiết sân bay",
+              //   icon: <Apartment />,
+              // },
+              // {
+              //   id: "sampleFormDemo",
+              //   label: "Quản lý sân bay",
+              //   icon: <Apartment />,
+              // },
             ],
           },
         ],

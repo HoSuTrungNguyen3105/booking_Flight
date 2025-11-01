@@ -76,7 +76,6 @@ const ChatContainer: React.FC = () => {
     },
   });
 
-  // Kết nối socket khi có user
   useEffect(() => {
     if (!user?.id) return;
     const token = localStorage.getItem("token") || "";
@@ -105,21 +104,26 @@ const ChatContainer: React.FC = () => {
   return (
     <Box
       display="flex"
-      height="88vh"
-      sx={{ bgcolor: "background.default", overflow: "hidden" }}
+      height="calc(100vh - 64px)"
+      sx={{
+        bgcolor: "background.default",
+        overflow: "hidden",
+        transition: "all 0.3s ease",
+      }}
     >
       {/* Sidebar */}
       <Paper
         elevation={3}
         sx={{
           width: isSidebarOpen ? 320 : 0,
-          transition: "width 0.3s ease-in-out",
+          minWidth: isSidebarOpen ? 320 : 0,
+          transition: "all 0.35s ease-in-out",
           overflow: "hidden",
           display: "flex",
           flexDirection: "column",
-          borderRadius: 0,
           borderRight: 1,
           borderColor: "divider",
+          bgcolor: "background.paper",
           zIndex: 10,
         }}
       >
@@ -127,12 +131,12 @@ const ChatContainer: React.FC = () => {
         <Box
           sx={{
             p: 2.5,
-            background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
+            background: `linear-gradient(145deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
             color: "white",
-            boxShadow: "0px 2px 6px rgba(0,0,0,0.2)",
+            boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
           }}
         >
-          {/* Title + Status */}
+          {/* Header content */}
           <Box
             display="flex"
             alignItems="center"
@@ -140,29 +144,49 @@ const ChatContainer: React.FC = () => {
             mb={2}
           >
             <Box>
-              <Typography variant="h6" fontWeight="700" fontSize="1.2rem">
+              <Typography
+                variant="h6"
+                fontWeight={700}
+                fontSize="1.1rem"
+                lineHeight={1.4}
+              >
                 Enterprise Chat
               </Typography>
-              <Box display="flex" alignItems="center" mt={0.5}>
-                <Typography variant="caption" fontWeight="500">
-                  {isConnected ? "Connected" : "Disconnected"}
-                </Typography>
-              </Box>
+              <Typography
+                variant="caption"
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 0.5,
+                  mt: 0.3,
+                  opacity: 0.9,
+                }}
+              >
+                <Box
+                  component="span"
+                  sx={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: "50%",
+                    bgcolor: isConnected ? "success.main" : "error.main",
+                  }}
+                />
+                {isConnected ? "Connected" : "Disconnected"}
+              </Typography>
             </Box>
 
-            {/* Actions */}
+            {/* Sidebar Actions */}
             <Box display="flex" gap={1}>
               <Tooltip title="Filter conversations">
                 <IconButton
-                  color="inherit"
                   size="small"
                   sx={{
-                    bgcolor: "rgba(255,255,255,0.1)",
-                    "&:hover": { bgcolor: "rgba(255,255,255,0.2)" },
+                    bgcolor: "rgba(255,255,255,0.15)",
+                    "&:hover": { bgcolor: "rgba(255,255,255,0.25)" },
                   }}
                 >
                   <Badge color="error" variant="dot">
-                    <Filter fontSize="small" />
+                    <Filter fontSize="small" htmlColor="#fff" />
                   </Badge>
                 </IconButton>
               </Tooltip>
@@ -171,18 +195,17 @@ const ChatContainer: React.FC = () => {
                 title={isSidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
               >
                 <IconButton
-                  color="inherit"
                   size="small"
                   onClick={toggleSidebar}
                   sx={{
-                    bgcolor: "rgba(255,255,255,0.1)",
-                    "&:hover": { bgcolor: "rgba(255,255,255,0.2)" },
+                    bgcolor: "rgba(255,255,255,0.15)",
+                    "&:hover": { bgcolor: "rgba(255,255,255,0.25)" },
                   }}
                 >
                   {isSidebarOpen ? (
-                    <FaArrowLeft size={14} />
+                    <FaArrowLeft size={14} color="#fff" />
                   ) : (
-                    <FaArrowRight size={14} />
+                    <FaArrowRight size={14} color="#fff" />
                   )}
                 </IconButton>
               </Tooltip>
@@ -196,15 +219,14 @@ const ChatContainer: React.FC = () => {
             startIcon={<Group />}
             onClick={toggleSearchPanel}
             sx={{
-              mt: 1,
               bgcolor: "white",
               color: "primary.main",
               fontWeight: 600,
               borderRadius: 2,
-              py: 1.2,
+              py: 1.1,
               textTransform: "none",
               fontSize: "0.9rem",
-              transition: "all 0.2s ease",
+              transition: "all 0.25s ease",
               "&:hover": {
                 bgcolor: "grey.50",
                 transform: "translateY(-2px)",
@@ -216,15 +238,26 @@ const ChatContainer: React.FC = () => {
           </Button>
         </Box>
 
-        <Conversations
-          selectedUser={selectedUser || 0}
-          handleUserSelect={handleUserSelect}
-          userId={user?.id || 0}
-        />
+        {/* Chat List */}
+        <Box sx={{ flex: 1, overflowY: "auto", scrollbarWidth: "thin" }}>
+          <Conversations
+            selectedUser={selectedUser || 0}
+            handleUserSelect={handleUserSelect}
+            userId={user?.id || 0}
+          />
+        </Box>
       </Paper>
 
       {/* Main Chat Area */}
-      <Box flexGrow={1} display="flex" flexDirection="column">
+      <Box
+        flexGrow={1}
+        display="flex"
+        flexDirection="column"
+        sx={{
+          transition: "all 0.3s ease",
+          bgcolor: "background.paper",
+        }}
+      >
         <MessageList
           selectedUser={receiverId as number}
           messages={messages}

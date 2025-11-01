@@ -27,10 +27,9 @@ import {
   type UserUpdateProps,
   type AttendanceResponseMessage,
   type FacilyByTerminalIdResponseMessage,
-  type ResponseMessage,
+  type Payroll,
 } from "../../utils/type.ts";
 import { useFetch } from "../use[custom]/useFetch.ts";
-import type { Payroll } from "../../components/Admin/component/Payroll/PayrollManagement.tsx";
 import type { ActionType } from "../../common/Dropdown/SelectDropdown.tsx";
 import { useEffect } from "react";
 import type { UserWithRelationsData } from "../../components/Sample/type.ts";
@@ -90,21 +89,21 @@ export const usefindAllTransferRequests = () => {
   };
 };
 
-export const useFlightList = () => {
-  const { data: flightList, refetch: refetchFlightList } = useFetch<
-    FlightListApiResponse,
-    null
-  >({
-    url: "/sys/flights",
-    defaultValue: { resultCode: "", resultMessage: "" },
-    autoFetch: true,
-    config: getMethod,
-  });
-  return {
-    flightList,
-    refetchFlightList,
-  };
-};
+// export const useFlightList = () => {
+//   const { data: flightList, refetch: refetchFlightList } = useFetch<
+//     FlightListApiResponse,
+//     null
+//   >({
+//     url: "/sys/flights",
+//     defaultValue: { resultCode: "", resultMessage: "" },
+//     autoFetch: true,
+//     config: getMethod,
+//   });
+//   return {
+//     flightList,
+//     refetchFlightList,
+//   };
+// };
 
 export interface Booking {
   id: number;
@@ -598,6 +597,27 @@ export const useGetUserList = () => {
     fetchUserList: data,
     refetchUser: refetch,
     loadingUser: loading,
+  };
+};
+
+type GateCodeRes = {
+  id: string;
+  code: string;
+};
+
+export const useGetAllGateCode = () => {
+  const { data, refetch, loading } = useFetch<
+    DetailResponseMessage<GateCodeRes>,
+    void
+  >({
+    url: "/sys/gates/findAllGateCode",
+    autoFetch: true,
+    config: getMethod,
+  });
+  return {
+    dataAllGateCode: data,
+    refetchGetAllGateCode: refetch,
+    loadingAllGateCode: loading,
   };
 };
 

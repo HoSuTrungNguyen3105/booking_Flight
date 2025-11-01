@@ -3,8 +3,6 @@ import {
   Typography,
   Button,
   Grid,
-  FormControl,
-  FormControlLabel,
   Chip,
   Card,
   CardContent,
@@ -25,7 +23,7 @@ import InputTextField from "../../../../common/Input/InputTextField";
 import SelectDropdown from "../../../../common/Dropdown/SelectDropdown";
 import DateTimePickerComponent from "../../../../common/DayPicker";
 import Android12Switch from "../../../../common/Switch/Switch";
-import { memo, useCallback, useState } from "react";
+import { memo, useCallback } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import BaseModal from "../../../../common/Modal/BaseModal";
 import { DateFormatEnum, formatDate } from "../../../../hooks/format";
@@ -43,7 +41,6 @@ interface IModalFlightManageProps {
   onClose: () => void;
   onSuccess: () => void;
   flightId?: number;
-  onUpdate: () => void;
   onCancel: () => void;
   mode: FlightFormMode;
 }
@@ -56,6 +53,7 @@ const FlightManagementModal = ({
   onSuccess,
 }: IModalFlightManageProps) => {
   const {
+    steps,
     formData,
     handleSubmit,
     optionAirportCode,
@@ -65,8 +63,8 @@ const FlightManagementModal = ({
     optionWay,
     stepTopRef,
     activeStep,
+    optionAllGateCode,
     setActiveStep,
-    steps,
   } = useFlightCreateAndUpdate({
     mode,
     onClose,
@@ -74,264 +72,294 @@ const FlightManagementModal = ({
     flightId,
   });
 
-  const [hasTerminal, setHasTerminal] = useState(false);
+  // const [hasTerminal, setHasTerminal] = useState(false);
 
-  const renderBasicInfo = useCallback(
-    () => (
-      <Grid container spacing={3}>
+  const renderBasicInfo = useCallback(() => {
+    const fieldSpacing = 2;
+
+    return (
+      <Grid container spacing={fieldSpacing}>
+        {/* Flight Number */}
         <Grid size={12}>
-          <InputTextField
-            value={formData.flightNo}
-            placeholder="Flight No"
-            onChange={(e) => handleInputChange("flightNo", e)}
-            startIcon={<AirplaneTicket color="primary" />}
-          />
+          <FormRow label="Flight No">
+            <InputTextField
+              value={formData.flightNo}
+              placeholder="Nhập mã chuyến bay"
+              onChange={(e) => handleInputChange("flightNo", e)}
+              startIcon={<AirplaneTicket color="primary" />}
+            />
+          </FormRow>
         </Grid>
 
+        {/* Flight Type */}
         <Grid size={12}>
-          <FormControl fullWidth>
+          <FormRow label="Flight Type">
             <SelectDropdown
               options={optionWay}
-              placeholder="Flight Type"
+              placeholder="Chọn loại chuyến bay"
               value={formData.flightType || ""}
               onChange={(e) => handleInputChange("flightType", e as string)}
             />
-          </FormControl>
+          </FormRow>
         </Grid>
 
+        {/* Departure Airport */}
         <Grid size={12}>
           <FormRow label="Departure Airport">
             <SelectDropdown
               options={optionAirportCode}
-              placeholder="Departure Airport"
+              placeholder="Sân bay khởi hành"
               value={formData.departureAirport}
               onChange={(e) =>
                 handleInputChange("departureAirport", e as string)
               }
-              //startIcon={<FlightTakeoff color="primary" />}
             />
           </FormRow>
         </Grid>
 
+        {/* Arrival Airport */}
         <Grid size={12}>
           <FormRow label="Arrival Airport">
             <SelectDropdown
               options={optionAirportCode}
-              placeholder="Arrival Airport"
+              placeholder="Sân bay đến"
               value={formData.arrivalAirport}
               onChange={(e) => handleInputChange("arrivalAirport", e as string)}
-              // startIcon={<FlightLand color="primary" />}
             />
           </FormRow>
         </Grid>
 
+        {/* Aircraft Code */}
         <Grid size={12}>
-          <FormRow label="aircraftCode">
+          <FormRow label="Aircraft Code">
             <SelectDropdown
               options={optionAircraftCode}
-              placeholder="Aircraft Code"
+              placeholder="Chọn máy bay"
               value={formData.aircraftCode}
               onChange={(e) => handleInputChange("aircraftCode", e as string)}
             />
           </FormRow>
         </Grid>
 
-        <Button variant="contained" onClick={() => setHasTerminal(true)}>
-          Has Terminal
-        </Button>
+        <Grid size={6}>
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+            sx={{
+              px: 2,
+              py: 1.5,
+              borderRadius: 2,
+              bgcolor: formData.isDomestic ? "error.light" : "success.light",
+            }}
+          >
+            <Box
+              display="flex"
+              sx={{ width: "30rem" }}
+              alignItems="center"
+              gap={1}
+            >
+              {formData.isDomestic ? (
+                <>
+                  <Cancel color="error" />
+                  <Typography color="error.main" fontWeight="500">
+                    Chuyến bay đã bị hủy
+                  </Typography>
+                </>
+              ) : (
+                <>
+                  <CheckCircle color="success" />
+                  <Typography color="success.main" fontWeight="500">
+                    Chuyến bay đang hoạt động
+                  </Typography>
+                </>
+              )}
+            </Box>
 
-        {/* TO_DO */}
-        {hasTerminal && (
-          <Grid size={12}>
-            <InputTextField
-              value={formData.terminal}
-              placeholder="Terminal"
-              onChange={(e) => handleInputChange("terminal", e as string)}
+            <Android12Switch
+              checked={formData.isDomestic}
+              onChange={(e) =>
+                handleInputChange("isDomestic", e.target.checked)
+              }
+            />
+          </Box>
+        </Grid>
+      </Grid>
+    );
+  }, [formData, handleInputChange]);
+
+  const renderTimeInfo = useCallback(() => {
+    const timeFields: { key: keyof FlightFormData; label: string }[] = [
+      { key: "scheduledDeparture", label: "Giờ khởi hành dự kiến" },
+      { key: "scheduledArrival", label: "Giờ đến dự kiến" },
+      ...(mode === "update"
+        ? ([
+            { key: "actualDeparture", label: "Giờ khởi hành thực tế" },
+            { key: "actualArrival", label: "Giờ đến thực tế" },
+          ] as Array<{ key: keyof FlightFormData; label: string }>)
+        : []),
+    ];
+
+    return (
+      <Grid container spacing={3}>
+        {timeFields.map(({ key, label }) => (
+          <Grid size={12} key={key}>
+            <Typography sx={{ mb: 1, fontWeight: 500 }}>{label}</Typography>
+            <DateTimePickerComponent
+              value={formData[key] as number}
+              onChange={(value) => handleInputChange(key, value)}
+              language="en"
             />
           </Grid>
-        )}
+        ))}
       </Grid>
-    ),
-    [formData, hasTerminal, handleInputChange]
-  );
+    );
+  }, [formData, handleInputChange, mode]);
 
-  const renderTimeInfo = useCallback(
-    () => (
+  const renderPriceCapacity = useCallback(() => {
+    const priceFields: { key: keyof FlightFormData; label: string }[] = [
+      { key: "priceEconomy", label: "Giá vé Phổ thông" },
+      { key: "priceBusiness", label: "Giá vé Thương gia" },
+      { key: "priceFirst", label: "Giá vé Hạng nhất" },
+    ];
+
+    return (
       <Grid container spacing={3}>
-        <Grid size={12}>
-          <DateTimePickerComponent
-            value={formData.scheduledDeparture as number}
-            onChange={(e) => handleInputChange("scheduledDeparture", e)}
-            language="en"
-          />
-        </Grid>
-
-        <Grid size={12}>
-          <DateTimePickerComponent
-            value={formData.scheduledArrival as number}
-            onChange={(e) => handleInputChange("scheduledArrival", e)}
-            language="en"
-          />
-        </Grid>
-
-        {mode === "update" && (
-          <>
-            <Grid size={12}>
-              <DateTimePickerComponent
-                value={formData.actualDeparture as number}
-                onChange={(e) => handleInputChange("actualDeparture", e)}
-                language="en"
-              />
-            </Grid>
-
-            <Grid size={12}>
-              <DateTimePickerComponent
-                value={formData.actualArrival as number}
-                onChange={(e) => handleInputChange("actualArrival", e)}
-                language="en"
-              />
-            </Grid>
-          </>
-        )}
+        {priceFields.map(({ key, label }) => (
+          <Grid size={12} key={key}>
+            <Typography sx={{ mb: 1, fontWeight: 500 }}>{label}</Typography>
+            <InputNumber
+              placeholder={label}
+              value={formData[key] as number}
+              onChange={(e) => handleInputChange(key, Number(e))}
+              startIcon={<AttachMoney />}
+              endIcon={<InputAdornment position="end">USD</InputAdornment>}
+            />
+          </Grid>
+        ))}
       </Grid>
-    ),
-    [formData, handleInputChange]
-  );
-
-  const renderPriceCapacity = useCallback(
-    () => (
-      <Grid container spacing={3}>
-        <Grid size={12}>
-          <Typography>Giá vé Phổ thông</Typography>
-          <InputNumber
-            placeholder="Price Economy"
-            value={formData.priceEconomy}
-            onChange={(e) => handleInputChange("priceEconomy", Number(e))}
-            startIcon={<AttachMoney />}
-            endIcon={<InputAdornment position="end">USD</InputAdornment>}
-          />
-        </Grid>
-
-        <Grid size={12}>
-          <InputNumber
-            placeholder="Price Business"
-            value={formData.priceBusiness}
-            onChange={(e) => handleInputChange("priceBusiness", Number(e))}
-            startIcon={<AttachMoney />}
-            endIcon={<InputAdornment position="end">USD</InputAdornment>}
-          />
-        </Grid>
-
-        <Grid size={12}>
-          <InputNumber
-            placeholder="Price First"
-            value={formData.priceFirst}
-            onChange={(e) => handleInputChange("priceFirst", Number(e))}
-            startIcon={<AttachMoney />}
-            endIcon={<Typography>USD</Typography>}
-          />
-        </Grid>
-      </Grid>
-    ),
-    [formData, handleInputChange]
-  );
+    );
+  }, [formData, handleInputChange]);
 
   const renderGateStatus = useCallback(
     () => (
-      <Grid container spacing={3}>
-        <Grid size={12}>
-          <InputTextField
-            value={formData.gateId}
-            onChange={(e) => handleInputChange("gateId", e)}
-            placeholder="Ví dụ: A12"
-          />
-        </Grid>
-
-        <Grid size={12}>
-          <InputTextField
-            value={formData.terminal}
-            onChange={(e) => handleInputChange("terminal", e)}
-          />
-        </Grid>
-
-        {mode === "update" && (
-          <Grid size={12}>
-            <FormControlLabel
-              control={
-                <Android12Switch
-                  label="Enable Feature"
-                  checked={formData.isCancelled}
-                  onChange={(e) =>
-                    handleInputChange("isCancelled", e.target.checked)
-                  }
-                />
-              }
-              label={
-                <Box display="flex" alignItems="center">
-                  {formData.isCancelled ? (
-                    <>
-                      <Cancel color="error" sx={{ mr: 1 }} />
-                      <Typography color="error">
-                        Chuyến bay đã bị hủy
-                      </Typography>
-                    </>
-                  ) : (
-                    <>
-                      <CheckCircle color="success" sx={{ mr: 1 }} />
-                      <Typography color="success.main">
-                        Chuyến bay đang hoạt động
-                      </Typography>
-                    </>
-                  )}
-                  <Grid size={12}>
-                    <InputTextField
-                      type="number"
-                      value={String(formData.delayMinutes)}
-                      onChange={(e) =>
-                        handleInputChange("delayMinutes", parseInt(e))
-                      }
-                    />
-                  </Grid>
-                  {formData.isCancelled === true && (
-                    <>
-                      <Cancel color="error" sx={{ mr: 1 }} />
-                      <InputTextField
-                        value={formData.cancellationReason}
-                        placeholder="Chuyến bay đã bị hủy"
-                      />
-                    </>
-                  )}
-                  {formData?.delayMinutes !== undefined &&
-                    formData.delayMinutes !== null &&
-                    formData.delayMinutes > 0 && (
-                      <>
-                        <Cancel color="error" sx={{ mr: 1 }} />
-                        <InputTextField
-                          value={formData?.delayReason || ""}
-                          placeholder="Chuyến bay bị delay"
-                        />
-                      </>
-                    )}
-                </Box>
-              }
+      <Box sx={{ width: "42rem", mx: "auto" }}>
+        <Grid container spacing={3}>
+          {/* Gate selection */}
+          <Grid size={6}>
+            <Typography sx={{ mb: 1, fontWeight: 500 }}>
+              Cổng khởi hành
+            </Typography>
+            <SelectDropdown
+              options={optionAllGateCode}
+              placeholder="Chọn Gate Code"
+              value={formData.gateId}
+              onChange={(e) => handleInputChange("gateId", e as string)}
             />
           </Grid>
-        )}
-      </Grid>
-    ),
-    [handleInputChange]
-  );
 
-  // const renderSeatBooking = useCallback(() => {
-  //   return (
-  //     <SeatBooking
-  //       flightId={flightId as number}
-  //       onSuccess={handleRefetchAllData}
-  //       seats={(formData.seats as Seat[]) ?? []}
-  //       loadingFlightData={loadingFlightData}
-  //     />
-  //   );
-  // }, [formData.seats]);
+          {mode === "update" && (
+            <>
+              {/* Trạng thái chuyến bay */}
+              <Grid size={6}>
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="space-between"
+                  sx={{
+                    px: 2,
+                    py: 1.5,
+                    borderRadius: 2,
+                    bgcolor: formData.isCancelled
+                      ? "error.light"
+                      : "success.light",
+                  }}
+                >
+                  <Box
+                    display="flex"
+                    sx={{ width: "30rem" }}
+                    alignItems="center"
+                    gap={1}
+                  >
+                    {formData.isCancelled ? (
+                      <>
+                        <Cancel color="error" />
+                        <Typography color="error.main" fontWeight="500">
+                          Chuyến bay đã bị hủy
+                        </Typography>
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle color="success" />
+                        <Typography color="success.main" fontWeight="500">
+                          Chuyến bay đang hoạt động
+                        </Typography>
+                      </>
+                    )}
+                  </Box>
+
+                  <Android12Switch
+                    checked={formData.isCancelled}
+                    onChange={(e) =>
+                      handleInputChange("isCancelled", e.target.checked)
+                    }
+                  />
+                </Box>
+              </Grid>
+
+              {/* Delay input */}
+              <Grid size={6}>
+                <Typography sx={{ mb: 1, fontWeight: 500 }}>
+                  Thời gian trễ (phút)
+                </Typography>
+                <InputTextField
+                  type="number"
+                  value={String(formData.delayMinutes ?? 0)}
+                  onChange={(e) =>
+                    handleInputChange("delayMinutes", parseInt(e))
+                  }
+                  placeholder="Nhập số phút delay (nếu có)"
+                />
+              </Grid>
+
+              {/* Lý do hủy chuyến */}
+              {formData.isCancelled && (
+                <Grid size={6}>
+                  <Typography sx={{ mb: 1, fontWeight: 500 }}>
+                    Lý do hủy chuyến
+                  </Typography>
+                  <InputTextField
+                    value={formData.cancellationReason}
+                    onChange={(e) =>
+                      handleInputChange("cancellationReason", e as string)
+                    }
+                    placeholder="Nhập lý do hủy chuyến"
+                  />
+                </Grid>
+              )}
+
+              {/* Lý do delay */}
+              {formData.delayMinutes && formData.delayMinutes > 0 && (
+                <Grid size={12}>
+                  <Typography sx={{ mb: 1, fontWeight: 500 }}>
+                    Lý do delay
+                  </Typography>
+                  <InputTextField
+                    value={formData.delayReason || ""}
+                    onChange={(e) =>
+                      handleInputChange("delayReason", e as string)
+                    }
+                    placeholder="Nhập lý do delay"
+                  />
+                </Grid>
+              )}
+            </>
+          )}
+        </Grid>
+      </Box>
+    ),
+    [formData, handleInputChange, mode, optionAllGateCode]
+  );
 
   const renderActions = useCallback(() => {
     return (
@@ -393,16 +421,28 @@ const FlightManagementModal = ({
           </Stepper>
 
           <Box sx={{ minHeight: "400px" }}>
-            {activeStep === 0 && renderBasicInfo()}
-            {activeStep === 1 && renderTimeInfo()}
+            {(() => {
+              switch (activeStep) {
+                case 0:
+                  return renderBasicInfo();
 
-            {/* {mode === "update" && activeStep === 2 && renderSeatBooking()} */}
-            {mode === "create" && activeStep === 2 && renderPriceCapacity()}
+                case 1:
+                  return renderTimeInfo();
 
-            {mode === "update" && activeStep === 3 && renderPriceCapacity()}
-            {mode === "create" && activeStep === 3 && renderGateStatus()}
+                case 2:
+                  if (mode === "create") return renderPriceCapacity();
 
-            {mode === "update" && activeStep === 4 && renderGateStatus()}
+                  if (mode === "update") return renderGateStatus();
+                  return null;
+                case 3:
+                  if (mode === "update") return renderPriceCapacity();
+
+                  if (mode === "create") return renderGateStatus();
+                  return null;
+                default:
+                  return null;
+              }
+            })()}
           </Box>
 
           {formData && (

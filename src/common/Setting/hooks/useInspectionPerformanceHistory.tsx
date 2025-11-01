@@ -87,7 +87,7 @@ export const useInspectionPerformanceHistory = () => {
           onChange={(value) => handleSelectAction(row, value as ActionType)}
           options={[
             { label: "Edit", value: "editUser" },
-            { label: "Delete MFA Settings", value: "deleteMfaSettings" },
+            { label: "Delete MFA Settings", value: "disableMfaSettings" },
             { label: "Lock/Unlock", value: "lock_unlockAccount" },
             { label: "Reset Password", value: "resetPassword" },
             {

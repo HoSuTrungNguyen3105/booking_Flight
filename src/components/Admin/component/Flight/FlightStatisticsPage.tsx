@@ -1,4 +1,10 @@
-import { useEffect, useState, useMemo } from "react";
+import {
+  useEffect,
+  useState,
+  useMemo,
+  useCallback,
+  type ReactNode,
+} from "react";
 import {
   Box,
   Typography,
@@ -40,14 +46,14 @@ import {
   Cancel,
   AirlineSeatReclineNormal,
 } from "@mui/icons-material";
+import theme from "../../../../scss/theme";
 
-const STATUS_COLORS: { [key: string]: string } = {
-  Scheduled: "#14b8a6",
-  Boarding: "#2563eb",
-  Departed: "#f59e42",
-  Landed: "#10b981",
-  Delayed: "#ef4444",
-  Cancelled: "#64748b",
+type StatCardProps = {
+  icon: ReactNode;
+  title: string;
+  value: number | string;
+  subtitle?: string;
+  color: "primary" | "success" | "warning" | "error";
 };
 
 const AIRLINE_COLORS: { [key: string]: string } = {
@@ -58,7 +64,6 @@ const AIRLINE_COLORS: { [key: string]: string } = {
 };
 
 const FlightStatisticsPage: React.FC = () => {
-  const theme = useTheme();
   const { getFlightData, loadingFlightData } = useGetFlightData();
   const [flights, setFlights] = useState<DataFlight[]>([]);
 
@@ -73,18 +78,21 @@ const FlightStatisticsPage: React.FC = () => {
   // Thống kê tổng quan
   const stats = useMemo(() => {
     const totalFlights = flights.length;
-    const delayedFlights = flights.filter((f) => f.status === "Delayed").length;
+    const delayedFlights = flights.filter(
+      (f) => f.flightStatuses?.[0]?.status === "DELAYED"
+    ).length;
     const cancelledFlights = flights.filter(
-      (f) => f.status === "Cancelled"
+      (f) => f.flightStatuses?.[0]?.status === "CANCELLED"
     ).length;
     const onTimeFlights = flights.filter(
       (f) =>
-        f.status === "Scheduled" ||
-        f.status === "Departed" ||
-        f.status === "Landed"
+        f.flightStatuses?.[0]?.status === "SCHEDULED" ||
+        f.flightStatuses?.[0]?.status === "DEPARTED" ||
+        f.flightStatuses?.[0]?.status === "LANDED" ||
+        f.flightStatuses?.[0]?.status === "ARRIVED"
     ).length;
     const boardingFlights = flights.filter(
-      (f) => f.status === "Boarding"
+      (f) => f.flightStatuses?.[0]?.status === "BOARDING"
     ).length;
 
     return {
@@ -98,14 +106,6 @@ const FlightStatisticsPage: React.FC = () => {
     };
   }, [flights]);
 
-  // const statusCounts = Object.keys(STATUS_COLORS)
-  //   .map((status) => ({
-  //     name: status,
-  //     value: flights.filter((f) => f.status === status).length || 0,
-  //     color: STATUS_COLORS[status],
-  //   }))
-  //   .filter((item) => item.value > 0);
-
   const airlines = [
     ...new Set(flights.map((f) => f.arrivalAirportRel?.name as string)),
   ];
@@ -114,6 +114,45 @@ const FlightStatisticsPage: React.FC = () => {
     value: flights.filter((f) => f.arrivalAirportRel?.name === airline).length,
     color: AIRLINE_COLORS[airline.substring(0, 2)] || AIRLINE_COLORS["default"],
   }));
+
+  const cards = [
+    {
+      title: "TOTAL FLIGHTS",
+      value: stats.totalFlights,
+      subtitle: "Today's scheduled flights",
+      color: "primary" as const,
+      icon: <FlightTakeoff sx={{ fontSize: "1.2rem" }} />,
+    },
+    {
+      title: "ON TIME",
+      value: stats.onTimeFlights,
+      subtitle: `${stats.onTimePercentage.toFixed(1)}% on-time rate`,
+      color: "success" as const,
+      icon: <Schedule sx={{ fontSize: "1.2rem" }} />,
+    },
+    {
+      title: "DELAYED",
+      value: stats.delayedFlights,
+      subtitle: `${
+        stats.totalFlights > 0
+          ? ((stats.delayedFlights / stats.totalFlights) * 100).toFixed(1)
+          : 0
+      }% of flights`,
+      color: "warning" as const,
+      icon: <AirlineSeatReclineNormal sx={{ fontSize: "1.2rem" }} />,
+    },
+    {
+      title: "CANCELLED",
+      value: stats.cancelledFlights,
+      subtitle: `${
+        stats.totalFlights > 0
+          ? ((stats.cancelledFlights / stats.totalFlights) * 100).toFixed(1)
+          : 0
+      }% of flights`,
+      color: "error" as const,
+      icon: <Cancel sx={{ fontSize: "1.2rem" }} />,
+    },
+  ];
 
   const delayScatterData = flights
     .filter((f) => f.actualDeparture && f.scheduledDeparture)
@@ -125,7 +164,7 @@ const FlightStatisticsPage: React.FC = () => {
         delay: delayMinutes,
         airport: f.departureAirport,
         flightNo: f.flightNo,
-        status: f.status,
+        status: f.flightStatuses?.[0]?.status,
         size: 8 + Math.abs(delayMinutes) / 10,
       };
     })
@@ -147,9 +186,10 @@ const FlightStatisticsPage: React.FC = () => {
 
       const onTime = hourFlights.filter(
         (f) =>
-          f.status === "Scheduled" ||
-          f.status === "Departed" ||
-          f.status === "Landed"
+          f.flightStatuses?.[0]?.status === "SCHEDULED" ||
+          f.flightStatuses?.[0]?.status === "DEPARTED" ||
+          f.flightStatuses?.[0]?.status === "LANDED" ||
+          f.flightStatuses?.[0]?.status === "ARRIVED"
       ).length;
 
       return {
@@ -162,6 +202,42 @@ const FlightStatisticsPage: React.FC = () => {
     });
   }, [flights]);
 
+  const renderInfo = useCallback(
+    ({ icon, title, value, subtitle, color }: StatCardProps) => {
+      return (
+        <Card
+          sx={{
+            borderRadius: 2,
+            boxShadow: theme.shadows[2],
+            background: `linear-gradient(135deg, ${
+              theme.palette[color].main
+            } 0%, ${alpha(theme.palette[color].main, 0.8)} 100%)`,
+            color: "white",
+            position: "relative",
+            overflow: "hidden",
+          }}
+        >
+          <CardContent sx={{ position: "relative", zIndex: 1 }}>
+            <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+              <Box sx={{ mr: 1 }}>{icon}</Box>
+              <Typography variant="body2" fontWeight="500">
+                {title}
+              </Typography>
+            </Box>
+            <Typography variant="h4" sx={{ fontWeight: "600" }}>
+              {value}
+            </Typography>
+            {subtitle && (
+              <Typography variant="caption" sx={{ opacity: 0.9 }}>
+                {subtitle}
+              </Typography>
+            )}
+          </CardContent>
+        </Card>
+      );
+    },
+    [theme]
+  );
   if (loadingFlightData) {
     return (
       <Box
@@ -205,140 +281,12 @@ const FlightStatisticsPage: React.FC = () => {
         </Typography>
       </Box>
 
-      {/* Thống kê tổng quan */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid size={6}>
-          <Card
-            sx={{
-              borderRadius: 2,
-              boxShadow: theme.shadows[2],
-              background: `linear-gradient(135deg, ${
-                theme.palette.primary.main
-              } 0%, ${alpha(theme.palette.primary.main, 0.8)} 100%)`,
-              color: "white",
-              position: "relative",
-              overflow: "hidden",
-            }}
-          >
-            <CardContent sx={{ position: "relative", zIndex: 1 }}>
-              <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                <FlightTakeoff sx={{ mr: 1, fontSize: "1.2rem" }} />
-                <Typography variant="body2" fontWeight="500">
-                  TOTAL FLIGHTS
-                </Typography>
-              </Box>
-              <Typography variant="h4" sx={{ fontWeight: "600" }}>
-                {stats.totalFlights}
-              </Typography>
-              <Typography variant="caption" sx={{ opacity: 0.9 }}>
-                Today's scheduled flights
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        <Grid size={6}>
-          <Card
-            sx={{
-              borderRadius: 2,
-              boxShadow: theme.shadows[2],
-              background: `linear-gradient(135deg, ${
-                theme.palette.success.main
-              } 0%, ${alpha(theme.palette.success.main, 0.8)} 100%)`,
-              color: "white",
-              position: "relative",
-              overflow: "hidden",
-            }}
-          >
-            <CardContent sx={{ position: "relative", zIndex: 1 }}>
-              <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                <Schedule sx={{ mr: 1, fontSize: "1.2rem" }} />
-                <Typography variant="body2" fontWeight="500">
-                  ON TIME
-                </Typography>
-              </Box>
-              <Typography variant="h4" sx={{ fontWeight: "600" }}>
-                {stats.onTimeFlights}
-              </Typography>
-              <Box sx={{ display: "flex", alignItems: "center", mt: 0.5 }}>
-                <Typography variant="caption" sx={{ opacity: 0.9, mr: 1 }}>
-                  {stats.onTimePercentage.toFixed(1)}% on-time rate
-                </Typography>
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        <Grid size={6}>
-          <Card
-            sx={{
-              borderRadius: 2,
-              boxShadow: theme.shadows[2],
-              background: `linear-gradient(135deg, ${
-                theme.palette.warning.main
-              } 0%, ${alpha(theme.palette.warning.main, 0.8)} 100%)`,
-              color: "white",
-              position: "relative",
-              overflow: "hidden",
-            }}
-          >
-            <CardContent sx={{ position: "relative", zIndex: 1 }}>
-              <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                <AirlineSeatReclineNormal sx={{ mr: 1, fontSize: "1.2rem" }} />
-                <Typography variant="body2" fontWeight="500">
-                  DELAYED
-                </Typography>
-              </Box>
-              <Typography variant="h4" sx={{ fontWeight: "600" }}>
-                {stats.delayedFlights}
-              </Typography>
-              <Typography variant="caption" sx={{ opacity: 0.9 }}>
-                {stats.totalFlights > 0
-                  ? ((stats.delayedFlights / stats.totalFlights) * 100).toFixed(
-                      1
-                    )
-                  : 0}
-                % of flights
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        <Grid size={6}>
-          <Card
-            sx={{
-              borderRadius: 2,
-              boxShadow: theme.shadows[2],
-              background: `linear-gradient(135deg, ${
-                theme.palette.error.main
-              } 0%, ${alpha(theme.palette.error.main, 0.8)} 100%)`,
-              color: "white",
-              position: "relative",
-              overflow: "hidden",
-            }}
-          >
-            <CardContent sx={{ position: "relative", zIndex: 1 }}>
-              <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                <Cancel sx={{ mr: 1, fontSize: "1.2rem" }} />
-                <Typography variant="body2" fontWeight="500">
-                  CANCELLED
-                </Typography>
-              </Box>
-              <Typography variant="h4" sx={{ fontWeight: "600" }}>
-                {stats.cancelledFlights}
-              </Typography>
-              <Typography variant="caption" sx={{ opacity: 0.9 }}>
-                {stats.totalFlights > 0
-                  ? (
-                      (stats.cancelledFlights / stats.totalFlights) *
-                      100
-                    ).toFixed(1)
-                  : 0}
-                % of flights
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
+        {cards.map((item, index) => (
+          <Grid key={index} size={6}>
+            {renderInfo(item)}
+          </Grid>
+        ))}
       </Grid>
 
       <Grid container spacing={3}>

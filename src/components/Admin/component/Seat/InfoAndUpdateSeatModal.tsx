@@ -114,13 +114,6 @@ const InfoAndUpdateSeatModal = ({
             />
           </Grid>
           <Grid size={6}>
-            {/* <InputTextField
-              placeholder="Loại ghế"
-              value={formData.type}
-              onChange={(e) =>
-                setFormData({ ...formData, type: e as SeatTypeValue })
-              }
-            /> */}
             <SelectDropdown
               value={formData.type}
               onChange={(e) =>

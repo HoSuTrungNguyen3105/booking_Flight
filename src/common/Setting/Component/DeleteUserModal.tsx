@@ -26,7 +26,6 @@ const DeleteAccountModal = ({
   const onDeleteOnChange = useCallback(async () => {
     if (String(user?.id) === inputId) {
       const res = await refetchDeleteUser({ id: Number(inputId) });
-      console.log("res", res);
       if (res?.resultCode === ResponseCode.SUCCESS) {
         onSuccess();
         onClose();

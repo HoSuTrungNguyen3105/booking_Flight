@@ -28,9 +28,9 @@ const SendEmailToUsers = ({ selectedUser, onSubmit }: SendEmailProps) => {
   const [bcc, setBcc] = useState<string[]>([]);
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
-  const [broadcast, setBroadcast] = useState(true);
-  const [files, setFiles] = useState<File[]>([]);
-  const [sending, setSending] = useState(false);
+  // const [broadcast, setBroadcast] = useState(true);
+  // const [files, setFiles] = useState<File[]>([]);
+  // const [sending, setSending] = useState(false);
 
   const { sendCcBcc } = useSendMail();
 

@@ -6,6 +6,8 @@ import {
   type CreateSeatDto,
 } from "../../../../context/Api/usePostApi";
 import CreateSeatModal from "./CreateSeatModal";
+import { getMessage, ResponseCode } from "../../../../utils/response";
+import { useToast } from "../../../../context/ToastContext";
 
 type CreateSeatProps = {
   flightId: number;
@@ -15,16 +17,22 @@ type CreateSeatProps = {
 
 const CreateSeat = ({ flightId, loading, onSuccess }: CreateSeatProps) => {
   const [createFormOpen, setCreateFormOpen] = useState(false);
-  const [createState] = useState<CreateSeatDto>();
+  const [createState, setCreateState] = useState<CreateSeatDto>({
+    seatNumber: 0,
+    seatRow: "",
+    isBooked: false,
+    size: 40,
+    flightId,
+  });
   const [createMode, setCreateMode] = useState<"multi" | "one" | null>(null);
-
+  const toast = useToast();
   const { refetchSeatCreate } = useSeatCreate();
 
   const handleCreateSeat = async () => {
     try {
       const payload = {
         flightId,
-        ...(createMode === "multi" && {
+        ...(createMode !== "multi" && {
           isBooked: false,
           seatRow: createState?.seatRow,
           seatNumber: createState?.seatNumber,
@@ -32,7 +40,8 @@ const CreateSeat = ({ flightId, loading, onSuccess }: CreateSeatProps) => {
       };
 
       const res = await refetchSeatCreate(payload);
-      if (res?.resultCode === "00") {
+      if (res?.resultCode === ResponseCode.SUCCESS) {
+        toast(res.resultMessage || getMessage(res.resultCode), "info");
         onSuccess();
       }
     } catch (err) {
@@ -86,11 +95,12 @@ const CreateSeat = ({ flightId, loading, onSuccess }: CreateSeatProps) => {
 
       <CreateSeatModal
         flightId={flightId}
+        setCreateState={setCreateState}
+        createState={createState}
         onChange={handleCreateSeat}
         open={createFormOpen}
         onClose={() => setCreateFormOpen(false)}
         onSuccess={() => setCreateFormOpen(false)}
-        loading={loading}
       />
     </Box>
   );

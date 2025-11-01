@@ -23,7 +23,7 @@ export type CheckMfaProps = {
 
 export type SeatTypeValue = "ECONOMY" | "BUSINESS" | "FIRST" | "VIP";
 
-export type SeatPosition = "WINDOW" | "MIDDLE" | "AISLE";
+// export type SeatPosition = "WINDOW" | "MIDDLE" | "AISLE";
 
 export interface SeatUpdateProps {
   seatIds: number[];
@@ -41,6 +41,7 @@ export interface SeatUpdateProps {
     note?: string;
   };
 }
+
 // export type DeleteUserProps = {
 //   id: number;
 // };
@@ -75,7 +76,8 @@ export type DataFlight = {
   actualDeparture?: number | null;
   actualArrival?: number | null;
   gateId?: string;
-  terminal?: string;
+  // terminal?: string;
+  isDomestic?: boolean;
   isCancelled?: boolean;
   delayMinutes?: number | null;
   cancellationReason?: string;
@@ -397,6 +399,41 @@ export type AdminUpdateUserForm = {
   name?: string;
   role?: UserRole;
 };
+
+export type EmployeeType = {
+  id: number;
+  email: string;
+  name: string;
+  position: string;
+  department: string;
+  payrolls: Payroll[];
+  hireDate: string | null;
+};
+
+export interface Payroll {
+  id: number;
+  employeeId: number;
+  month: number;
+  year: number;
+  baseSalary: number;
+  allowances: number;
+  deductions: number;
+  tax: number;
+  netPay: number;
+  status: string; //"DRAFT" | "FINALIZED"
+  generatedAt: string;
+  employee: EmployeeType;
+}
+
+export interface GeneratePayroll {
+  employeeId: number;
+  month: number;
+  year: number;
+  baseSalary: number;
+  allowances: number;
+  deductions: number;
+  tax: number;
+}
 
 export interface CreateMealDto extends Omit<Meal, "id" | "flightMeals"> {}
 

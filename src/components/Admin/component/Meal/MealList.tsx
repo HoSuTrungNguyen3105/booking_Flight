@@ -1,25 +1,22 @@
 import { useMemo, useState } from "react";
 import { type GridColDef, type GridRowId } from "@mui/x-data-grid";
 import { useGetMeal } from "../../../../context/Api/useGetApi";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { type GridRowDef } from "../../../../common/DataGrid/index";
 import TableSection from "../../../../common/CustomRender/TableSection";
-import { Download } from "@mui/icons-material";
+import { AddBoxOutlined} from "@mui/icons-material";
 import { useAuth } from "../../../../context/AuthContext";
 import { UserRole } from "../../../../utils/type";
 import BulkMealCreator from "./BulkMealCreator";
 
 export default function MealList() {
   const { refetchMealData, mealData, loadingMealData } = useGetMeal();
-
   const { user } = useAuth();
 
   const [selectedFlightRows, setSelectedFlightRows] = useState<GridRowDef[]>(
     []
   );
-
   const [flightRows, setFlightRows] = useState<GridRowDef[]>([]);
-
   const [createBulkMeal, setCreateBulkMeal] = useState<boolean>(false);
 
   const handleFlightRowSelection = (selectedIds: GridRowId[]) => {
@@ -50,6 +47,9 @@ export default function MealList() {
   if (createBulkMeal) {
     return (
       <BulkMealCreator
+        onClose={() => {
+          setCreateBulkMeal(false);
+        }}
         onSuccess={() => {
           setCreateBulkMeal(false);
           refetchMealData();
@@ -59,21 +59,38 @@ export default function MealList() {
   }
 
   return (
-    <Box sx={{ height: 500, width: "100%" }}>
-      <Typography variant="h6" gutterBottom>
-        Meal List
-      </Typography>
+    <Box
+      sx={{
+        height: 500,
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        gap: 2,
+      }}
+    >
+      {/* <Stack direction="row" alignItems="center" spacing={1}>
+        <Fastfood color="primary" />
+        <Typography variant="h6" fontWeight={600}>
+          Meal List
+        </Typography>
+      </Stack> */}
 
-      <Box sx={{ display: "flex", justifyContent: "start", gap: 1 }}>
-        <Button
-          variant="contained"
-          onClick={() => setCreateBulkMeal(true)}
-          disabled={user?.role === UserRole.USER}
-          startIcon={<Download />}
-        >
-          Create Multi meal
-        </Button>
-      </Box>
+      <Button
+        variant="contained"
+        startIcon={<AddBoxOutlined />}
+        onClick={() => setCreateBulkMeal(true)}
+        disabled={user?.role === UserRole.USER}
+        sx={{
+          // borderRadius: 2,
+          width: "15rem",
+          textTransform: "none",
+          px: 2.5,
+          py: 1,
+          mt: 2,
+        }}
+      >
+        Create Multi Meal
+      </Button>
 
       <TableSection
         columns={columnFlightMealData}
@@ -84,24 +101,6 @@ export default function MealList() {
         nextRowClick
         largeThan
       />
-
-      {selectedFlightRows.length > 0 && (
-        <Box sx={{ my: 2, p: 2, bgcolor: "grey.100" }}>
-          <Typography>Selected Flights: {selectedFlightRows.length}</Typography>
-          <ul>
-            {selectedFlightRows.map((row) => (
-              <li key={row.id}>{row.flightNo || row.id}</li>
-            ))}
-          </ul>
-          <Button
-            variant="outlined"
-            onClick={() => setSelectedFlightRows([])}
-            sx={{ mt: 1 }}
-          >
-            Clear Flight Selection
-          </Button>
-        </Box>
-      )}
     </Box>
   );
 }

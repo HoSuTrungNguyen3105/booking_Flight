@@ -6,6 +6,7 @@ import type { Airport, CreateAirportReq } from "../../../../utils/type";
 import InputTextField from "../../../../common/Input/InputTextField";
 import { useCreateAirport } from "../../../../context/Api/usePostApi";
 import { useToast } from "../../../../context/ToastContext";
+import { ResponseCode } from "../../../../utils/response";
 
 interface IRequestLeaveActionModalProps {
   open: boolean;
@@ -54,8 +55,7 @@ const AirportManageModal = ({
 
   const handleSubmit = useCallback(async () => {
     const res = await refetchUpdateAirport(formData);
-    console.log("formData", formData);
-    if (res?.resultCode === "00") {
+    if (res?.resultCode === ResponseCode.SUCCESS) {
       onSuccess();
     } else {
       toast(res?.resultMessage || "Error while create ", "error");

@@ -86,8 +86,8 @@ export const useFlightManagement = ({
       size: 2,
     },
     {
-      title: "Terminal",
-      description: flight.terminal || "-",
+      title: "Is Domestic",
+      description: flight.isDomestic || "-",
       size: 2,
     },
     {

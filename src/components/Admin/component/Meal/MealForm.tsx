@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { memo, useCallback } from "react";
 import {
   Box,
   Typography,
@@ -101,6 +101,7 @@ const MealForm = ({ meal, index, onChange, onRemove }: MealFormProps) => {
           </Typography>
           <IconButton
             onClick={() => onRemove(index)}
+            disabled={index !== 1}
             color="error"
             sx={{
               transition: "all 0.2s ease",
@@ -145,6 +146,7 @@ const MealForm = ({ meal, index, onChange, onRemove }: MealFormProps) => {
               value={meal.mealType}
               onChange={(e) => onChange(index, "mealType", e)}
               options={mealOptions}
+              placeholder="Enter meal type"
             />
             {/* </Box> */}
           </Grid>
@@ -156,13 +158,13 @@ const MealForm = ({ meal, index, onChange, onRemove }: MealFormProps) => {
                 gutterBottom
                 color="text.secondary"
               >
-                Price ($) *
+                Price *
               </Typography>
               <InputNumber
                 value={meal.price}
                 min={0}
                 isSeparator
-                sx={{ width: "20rem" }}
+                sx={{ width: "35rem" }}
                 size="medium"
                 onChange={(e) => onChange(index, "price", e || 0)}
                 placeholder="0.00"
@@ -186,4 +188,4 @@ const MealForm = ({ meal, index, onChange, onRemove }: MealFormProps) => {
   );
 };
 
-export default MealForm;
+export default memo(MealForm);

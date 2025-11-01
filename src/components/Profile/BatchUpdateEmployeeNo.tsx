@@ -9,6 +9,7 @@ import {
 import { useToast } from "../../context/ToastContext";
 import InputTextField from "../../common/Input/InputTextField";
 import type { ReqUpdateEmployeeNo } from "./ManageMyInfo";
+import { ResponseCode } from "../../utils/response";
 
 type UpdateEmployeeIDProps = {
   updateItem: ReqUpdateEmployeeNo[];
@@ -47,8 +48,8 @@ const BatchUpdateEmployeeNo: React.FC<UpdateEmployeeIDProps> = ({
     try {
       const payload: BatchUpdateEmployeesDto = { updates };
       const res = await refetchUpdateBatchEmployeeNo(payload);
-      if (res?.resultCode === "00") {
-        toast("Batch update thành công!");
+      if (res?.resultCode === ResponseCode.SUCCESS) {
+        toast(res.resultMessage, "success");
         onSuccess();
       }
     } catch (error) {
@@ -62,7 +63,11 @@ const BatchUpdateEmployeeNo: React.FC<UpdateEmployeeIDProps> = ({
       <Typography variant="h5" sx={{ mb: 2, fontWeight: "bold" }}>
         Batch Update Employee No
       </Typography>
-      <Button onClick={onClose} variant="outlined">
+      <Button
+        sx={{ width: "20rem", justifyContent: "flex-start" }}
+        onClick={onClose}
+        variant="outlined"
+      >
         Return
       </Button>
 
@@ -79,7 +84,7 @@ const BatchUpdateEmployeeNo: React.FC<UpdateEmployeeIDProps> = ({
           >
             <InputTextField
               type="number"
-              placeholder="User ID"
+              placeholder="User ID "
               value={String(row.userId)}
               onChange={(e) => handleChange(index, "userId", Number(e))}
               sx={{ flex: 1 }}

@@ -3,6 +3,7 @@ import { Box, Button, Tooltip, Stack } from "@mui/material";
 import type { Seat } from "../../../../utils/type";
 import theme from "../../../../scss/theme";
 import { useSeatManagement } from "./useSeatManagement";
+import { useSeatColor } from "./useSeatColor";
 
 interface ButtonSeatProps {
   seat: Seat;
@@ -14,17 +15,12 @@ const ButtonSeat: React.FC<ButtonSeatProps> = ({
   selectedSeats,
   handleSelectSeat,
 }) => {
-  const {
-    backgroundColor,
-    textColor,
-    borderColor,
-    icon,
-    isSelected,
-    tooltipTitle,
-  } = useSeatManagement({
+  const { isSelected, tooltipTitle } = useSeatManagement({
     seat,
     selectedSeats,
   });
+
+  const { backgroundColor, textColor, borderColor, icon } = useSeatColor();
 
   return (
     <Tooltip title={tooltipTitle} arrow>

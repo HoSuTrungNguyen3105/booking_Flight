@@ -1,14 +1,15 @@
 import { useCallback, useMemo, useState } from "react";
 import { Box, Chip, IconButton, Tooltip, Typography } from "@mui/material";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
-import { DateFormatEnum, formatDate } from "../../../hooks/format";
-import TableSection from "../../CustomRender/TableSection";
-import type { TypeStatus } from "../../../utils/type";
-import { usefindAllTransferRequests } from "../../../context/Api/useGetApi";
+import { DateFormatEnum, formatDate } from "../../hooks/format";
+import TableSection from "../CustomRender/TableSection";
+import type { TypeStatus } from "../../utils/type";
+import { usefindAllTransferRequests } from "../../context/Api/useGetApi";
 import { CheckCircle, Cancel } from "@mui/icons-material";
-import { useApproveOrRejectTransfer } from "../../../context/Api/usePostApi";
-import { useToast } from "../../../context/ToastContext";
-import DialogConfirm from "../../Modal/DialogConfirm";
+import { useApproveOrRejectTransfer } from "../../context/Api/usePostApi";
+import { useToast } from "../../context/ToastContext";
+import DialogConfirm from "../Modal/DialogConfirm";
+import { ResponseCode } from "../../utils/response";
 
 const TransferAdminTable = () => {
   const {
@@ -23,10 +24,6 @@ const TransferAdminTable = () => {
     "approve"
   );
   const [openDialog, setOpenDialog] = useState(false);
-
-  // const { refetchApproveTransfer } = useApproveTransfer({
-  //   id: transferRequestId as number,
-  // });
 
   const { refetchApproveOrRejectTransfer } = useApproveOrRejectTransfer();
   // Status UI
@@ -81,7 +78,7 @@ const TransferAdminTable = () => {
         mode: actionTransfer,
       });
 
-      if (res?.resultCode === "00") {
+      if (res?.resultCode === ResponseCode.SUCCESS) {
         toast(res?.resultMessage || "Success");
         refetchFindAllTransferRequests();
       }

@@ -6,6 +6,7 @@ import type { UserData } from "../../../utils/type";
 import InputTextField from "../../Input/InputTextField";
 import { usePermissionChangeRole } from "../../../context/Api/usePostApi";
 import { useToast } from "../../../context/ToastContext";
+import { ResponseCode } from "../../../utils/response";
 
 interface IModalStatisticalDataLearningProps {
   open: boolean;
@@ -28,7 +29,7 @@ const PermissionRoleModal = ({
       id: data?.id || 0,
       employeeNo,
     });
-    if (res?.resultCode === "00") {
+    if (res?.resultCode === ResponseCode.SUCCESS) {
       toast(res?.resultMessage);
       onSuccess();
     } else {
@@ -50,23 +51,19 @@ const PermissionRoleModal = ({
   }, [handleSubmit, employeeNo, data?.employeeNo]);
 
   const renderContent = useCallback(() => {
-    const renderRows = () => {
-      return (
-        <Stack spacing={2}>
-          <Typography variant="body1">
-            Nhập ID xác nhận permission tài khoản. Ex : {String(data?.id)}
-          </Typography>
-          <InputTextField
-            value={employeeNo}
-            onChange={setEmployeeNo}
-            placeholder="Nhập ID tại đây"
-            sx={{ mt: 2 }}
-          />
-        </Stack>
-      );
-    };
-
-    return <>{renderRows()}</>;
+    return (
+      <Stack spacing={2}>
+        <Typography variant="body1">
+          Nhập ID xác nhận permission tài khoản. Ex : {String(data?.employeeNo)}
+        </Typography>
+        <InputTextField
+          value={employeeNo}
+          onChange={setEmployeeNo}
+          placeholder="Nhập ID tại đây"
+          sx={{ mt: 2 }}
+        />
+      </Stack>
+    );
   }, [data, employeeNo]);
 
   return (

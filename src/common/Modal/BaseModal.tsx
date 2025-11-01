@@ -19,7 +19,7 @@ interface IBaseModalProps {
   title?: string;
   sx?: SxProps;
   subtitle?: string;
-  Icon: React.ElementType;
+  Icon?: React.ElementType;
   maxWidth?: "xs" | "sm" | "md" | "lg" | "xl" | false;
   fullWidth?: boolean;
   slots?: {
@@ -46,7 +46,7 @@ const BaseModal = ({
     () => (
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Box display="flex" alignItems="center" gap={1}>
-          <Icon />
+          {Icon && <Icon />}
           <Typography variant="subtitle2">{title}</Typography>
         </Box>
         <IconButton aria-label="close" onClick={onClose}>

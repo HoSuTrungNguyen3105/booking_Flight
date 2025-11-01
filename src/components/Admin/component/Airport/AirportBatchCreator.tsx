@@ -12,6 +12,7 @@ import { Add, Delete } from "@mui/icons-material";
 import type { CreateAirportReq } from "../../../../utils/type";
 import InputTextField from "../../../../common/Input/InputTextField";
 import { useCreateBatchAirport } from "../../../../context/Api/usePostApi";
+import { ResponseCode } from "../../../../utils/response";
 
 type ReturnProps = {
   onClose: () => void;
@@ -54,7 +55,7 @@ const AirportBatchCreator: React.FC<ReturnProps> = ({ onClose }) => {
         const newAirports = [...airports];
 
         res?.list?.forEach((item, idx) => {
-          if (item.errorCode !== "00") {
+          if (item.errorCode !== ResponseCode.SUCCESS) {
             errorMap[idx] = item.errorMessage;
           } else {
             newAirports[idx] = { code: "", name: "", city: "", country: "" };
@@ -70,7 +71,6 @@ const AirportBatchCreator: React.FC<ReturnProps> = ({ onClose }) => {
       }
     } catch (error) {
       console.error(error);
-      alert("Có lỗi khi tạo sân bay!");
     }
   };
 
@@ -86,11 +86,10 @@ const AirportBatchCreator: React.FC<ReturnProps> = ({ onClose }) => {
 
       {airports.map((airport, index) => (
         <Card
-          key={airport.code || airport.name}
+          key={`${airport.code} - ${airport.name}`}
           sx={{
             mb: 2,
             mt: 2,
-            p: 2,
             gap: 2,
             border: "1px solid #ddd",
             borderRadius: 1,

@@ -20,7 +20,6 @@ const FlightDetailPage = ({ flight, onBookFlight }: FlightDetailPageProps) => {
     cancellationData,
     handleBookFlight,
     handleGoBack,
-    renderBreadcrumbs,
     scheduleData,
     airportData,
   } = management;
@@ -57,8 +56,6 @@ const FlightDetailPage = ({ flight, onBookFlight }: FlightDetailPageProps) => {
             itemPerRow={3}
             data={scheduleData}
           />
-
-          <Box sx={{ my: 3 }} />
 
           <DetailSection
             title="Airport Information"
@@ -107,7 +104,6 @@ const FlightDetailPage = ({ flight, onBookFlight }: FlightDetailPageProps) => {
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
-      {renderBreadcrumbs()}
       {renderContent()}
     </Container>
   );

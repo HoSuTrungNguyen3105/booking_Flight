@@ -9,7 +9,8 @@ import { UserRole, type UserData } from "../../utils/type";
 import DataAccessPermissionSection from "./DataAccessPermissionSection";
 import DeleteAccount from "../../components/Profile/DeleteAccount";
 import ChangePasswordInProfile from "../../components/Profile/ChangePasswordInProfile";
-import AccountSettings from "../../components/Auth/AccountSettings";
+import AccountSettings from "../../components/Auth/AccountModel/AccountSettings";
+import { useGetMyInfo } from "../../context/Api/useGetApi";
 
 export type UserDataToUpdate = Pick<
   UserData,
@@ -37,11 +38,13 @@ export type UserDataToTransferAdmin = Pick<
 
 const ManageMyInformation = () => {
   const { user } = useAuth();
+  const { refetchGetMyInfo } = useGetMyInfo();
   const [mode, setMode] = useState<"info" | "action" | "update">("info");
   const [openConfirmModal, setOpenConfirmModal] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
 
   const userId = user?.id ?? 0;
+  // const user = getMyInfo?.data;
   const { refetchUpdateUserInfo } = useUpdateUserInfo(userId);
 
   const initialMyInfo = useMemo<UserDataToUpdate>(
@@ -57,7 +60,7 @@ const ManageMyInformation = () => {
       hireDate: user?.hireDate ?? 0,
       baseSalary: user?.baseSalary ?? 0,
     }),
-    [user, userId]
+    [userId]
   );
 
   const transferToMyInfo = useMemo<UserDataToTransferAdmin>(
@@ -91,6 +94,7 @@ const ManageMyInformation = () => {
       if (res?.resultCode === "00") {
         setOpenConfirmModal(false);
         setHasChanges(false);
+        refetchGetMyInfo(userId);
       }
     } catch (error) {
       console.error("Update error:", error);

@@ -7,7 +7,7 @@ import IconButton from "@mui/material/IconButton";
 import LocalAirportSharpIcon from "@mui/icons-material/LocalAirportSharp";
 import { Button, Drawer, Stack, useMediaQuery, useTheme } from "@mui/material";
 import { useAuth } from "../../context/AuthContext";
-import SignOut from "../../components/Auth/SignOut";
+import SignOut from "../../components/Common/SignOut";
 import { Link, useNavigate } from "react-router-dom";
 import { GridMenuIcon } from "@mui/x-data-grid";
 import { Login } from "@mui/icons-material";
@@ -16,18 +16,9 @@ import { useTranslation } from "react-i18next";
 import { useCallback, useState } from "react";
 
 export const Header = () => {
-  // const [time, setTime] = useState(new Date());
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
-  // const now = time.toLocaleTimeString();
-  // const today = time.toLocaleDateString("vi-VN", {
-  //   weekday: "long",
-  //   day: "2-digit",
-  //   month: "2-digit",
-  //   year: "numeric",
-  // });
-
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -35,11 +26,6 @@ export const Header = () => {
   const handleDrawerToggle = () => {
     setDrawerOpen(!drawerOpen);
   };
-
-  // const [username, setUsername] = useState<string | null>(null);
-  // useEffect(() => {
-  //   setUsername(user?.name ?? null);
-  // }, []);
 
   const drawer = useCallback(
     () => (
@@ -96,18 +82,20 @@ export const Header = () => {
             </Typography>
             <Box
               sx={{
-                display: { xs: "none", md: "block" },
-                px: 1.5,
+                display: { xs: "none", md: "inline-flex" },
+                alignItems: "center",
+                px: 2,
                 py: 0.5,
-                borderRadius: "8px",
+                borderRadius: 1.5,
                 bgcolor: theme.palette.primary.light,
               }}
             >
               <Typography
-                fontWeight="bold"
-                color={theme.palette.primary.dark}
+                fontWeight={600}
+                color="#fff"
                 variant="caption"
                 noWrap
+                letterSpacing={0.5}
               >
                 {t("system_name")}
               </Typography>

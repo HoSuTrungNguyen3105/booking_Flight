@@ -16,6 +16,7 @@ import {
 import type { UpdateGateProps } from "../TerminalContainer";
 import type { CreateGateProps, Gate } from "../../../../../utils/type";
 import { useToast } from "../../../../../context/ToastContext";
+import { ResponseCode } from "../../../../../utils/response";
 
 type IGateModalProps = {
   terminalId: string;
@@ -115,7 +116,7 @@ const ManageGateModal = ({
         const cleaned = formData.filter((g) => g.code.trim() !== "");
         const res = await refetchCreateBatchGate(cleaned);
 
-        if (res?.resultCode === "00") {
+        if (res?.resultCode === ResponseCode.SUCCESS) {
           onSuccess();
           onClose();
           setFormData([]);

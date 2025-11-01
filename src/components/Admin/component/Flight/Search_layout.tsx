@@ -31,6 +31,7 @@ import ConfirmPasswordToCallApi from "../../../Common/ConfirmPasswordToCallApi.t
 import { useToast } from "../../../../context/ToastContext.tsx";
 import type { IDetailItem } from "../../../../common/CustomRender/DetailSection.tsx";
 import DetailSection from "../../../../common/CustomRender/DetailSection.tsx";
+import { DateFormatEnum, formatDate } from "../../../../hooks/format.ts";
 
 type FlightId = {
   id: number;
@@ -124,7 +125,7 @@ const Search_layout: React.FC = () => {
       setSelectedFlightData(rowData);
       setDetailModalOpen(true);
     } else {
-      console.error("❌ No flightId found in row data");
+      console.error("No flightId found in row data");
     }
   };
 
@@ -176,7 +177,7 @@ const Search_layout: React.FC = () => {
           setRowData([]);
         }
       } catch (error) {
-        console.error("❌ Search error:", error);
+        console.error("Search error:", error);
         toast("Đã xảy ra lỗi khi tìm kiếm", "error");
         setRowData([]);
       } finally {
@@ -198,13 +199,6 @@ const Search_layout: React.FC = () => {
     }
   };
 
-  // const handleInputChange = (name: keyof SearchFlightDto, value: string) => {
-  //   setFlightParams((prev) => ({
-  //     ...prev,
-  //     [name]: value,
-  //   }));
-  // };
-
   const handleInputChange = <K extends keyof SearchFlightDto>(
     field: K,
     value: SearchFlightDto[K]
@@ -216,7 +210,7 @@ const Search_layout: React.FC = () => {
   };
 
   const handleValidPassword = () => {
-    console.log("✅ Xác thực thành công, data sẽ được cập nhật");
+    console.log(" Xác thực thành công, data sẽ được cập nhật");
   };
 
   const handleOpen = (data: DataFlight): void => {
@@ -248,11 +242,11 @@ const Search_layout: React.FC = () => {
     }
   };
 
-  const formatDate = (dateValue: string | undefined) => {
-    if (!dateValue) return null;
-    const date = new Date(dateValue);
-    return date.toLocaleString("en-EN");
-  };
+  // const formatDate = (dateValue: string | undefined) => {
+  //   if (!dateValue) return null;
+  //   const date = new Date(dateValue);
+  //   return date.toLocaleString("en-EN");
+  // };
 
   const onResetForm = (): void => {
     if (isReset) return;
@@ -298,13 +292,21 @@ const Search_layout: React.FC = () => {
       field: "scheduledDeparture",
       headerName: "Giờ khởi hành dự kiến",
       flex: 1,
-      renderCell: (params) => formatDate(params.row.scheduledDeparture),
+      renderCell: (params) =>
+        formatDate(
+          DateFormatEnum.DD_MM_YYYY_HH_MM_SS,
+          params.row.scheduledDeparture
+        ),
     },
     {
       field: "scheduledArrival",
       headerName: "Giờ đến dự kiến",
       flex: 1,
-      renderCell: (params) => formatDate(params.row.scheduledArrival),
+      renderCell: (params) =>
+        formatDate(
+          DateFormatEnum.DD_MM_YYYY_HH_MM_SS,
+          params.row.scheduledArrival
+        ),
     },
     {
       field: "departureAirport",

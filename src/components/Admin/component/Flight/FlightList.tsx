@@ -39,7 +39,6 @@ export default function FlightList() {
     );
     const ids = selectedRows.map((row) => row.flightId); // hoặc row.id
     setSelectedFlightIds(ids);
-    console.log("Selected flight IDs:", ids);
   };
 
   const rowsGetFlightData: GridRowDef[] = useMemo(
@@ -52,24 +51,12 @@ export default function FlightList() {
     [getFlightData]
   );
 
-  // const handleDeleteIds = async (flightIds: GridRowId[]) => {
-  //   const res = await refetchDeleteManyFlightIds({
-  //     ids: flightIds as number[],
-  //   });
-  //   if (res?.resultCode === "00") {
-  //     toast(res.resultMessage);
-  //   } else {
-  //     toast(res?.resultMessage || "", "info");
-  //   }
-  // };
-
   const handleDeleteIds = async (selectedIds: GridRowId[]) => {
     if (!selectedIds || selectedIds.length === 0) {
       toast("Chưa chọn chuyến bay nào", "info");
       return;
     }
 
-    // đảm bảo tất cả là number
     const ids = selectedIds.map((id) => Number(id)).filter((id) => !isNaN(id));
 
     if (ids.length === 0) {
@@ -108,7 +95,7 @@ export default function FlightList() {
     },
     { field: "departureAirport", headerName: "From", flex: 0.5 },
     { field: "arrivalAirport", headerName: "To", flex: 0.5 },
-    { field: "status", headerName: "Status", flex: 0.5 },
+    { field: "flightType", headerName: "Type", flex: 0.5 },
     {
       field: "update",
       headerName: "Update",

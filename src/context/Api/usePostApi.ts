@@ -38,14 +38,14 @@ import {
   type SeatUpdateProps,
   type CheckMfaProps,
   type ChangePasswordProps,
+  type GeneratePayroll,
 } from "../../utils/type.ts";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
 import { useFetch } from "../use[custom]/useFetch.ts";
 import type { FlightFormData } from "../../components/Admin/component/Flight/FlightManagementModal.tsx";
-import type { SearchFlightDto } from "../../components/Admin/component/Flight/Search_layout.tsx";
+import type { SearchFlightDto } from "./../../components/Admin/component/Flight/Search_layout.tsx";
 import { useSecureFetch } from "../use[custom]/useSecureFetch.ts";
 import type { UserFormConfig } from "../../common/Setting/hooks/useDataSection.ts";
-import type { GeneratePayroll } from "../../components/Admin/component/Payroll/PayrollManagement.tsx";
 
 const postMethod = {
   method: MethodType.POST,
@@ -512,6 +512,7 @@ export interface CreateSeatDto {
   seatRow?: string;
   seatNumber?: number;
   isBooked?: boolean;
+  size?: number;
 }
 export const useSeatCreate = () => {
   const { refetch: refetchSeatCreate, loading: loadingCreateSeat } = useFetch<

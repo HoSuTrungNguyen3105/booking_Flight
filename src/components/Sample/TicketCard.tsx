@@ -97,7 +97,7 @@ const TicketCard: React.FC<{ ticket: Ticket }> = ({ ticket }) => {
 
             <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
               Aircraft: {ticket?.flight?.aircraftCode} • Terminal:{" "}
-              {ticket?.flight?.terminal}
+              {ticket?.flight?.flightNo}
             </Typography>
 
             <Box sx={{ display: "grid", gap: 0.5 }}>

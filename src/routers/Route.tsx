@@ -2,13 +2,11 @@ import { createBrowserRouter, type RouteObject } from "react-router-dom";
 import MainLayout from "../components/Layout/MainLayout";
 import ErrorPage from "../components/Layout/Error404Layout";
 import { FileUpload } from "../common/FileUploader";
-import Hero from "../components/Hero/Hero";
 import BookTicket from "../components/User/BookTicket";
 import { ROUTE_PATHS } from "./RoutePath";
 import ManageLayout from "../components/Layout/ResizeLayout";
-import Search_layout from "../components/Admin/component/Flight/Search_layout";
-import GuestGuard from "../components/Layout/GuardLayout";
-import { LoginPage } from "../components/Auth/LoginPage";
+import Search_layout from "./../components/Admin/component/Flight/Search_layout";
+import { LoginPage } from "../components/Auth/Login";
 import Security from "../common/Setting/Security";
 import FullLayout from "../components/Layout/FullLayout";
 import SecurityManage from "../components/User/SecurityManage";
@@ -16,7 +14,6 @@ import ManageMyInformation from "../common/Setting/ManageMyInformation";
 import ManageMyInfo from "../components/Profile/ManageMyInfo";
 import AircraftPage from "../components/Admin/component/Aircraft/AircraftPage";
 import UnlockRequestTable from "../components/User/UnlockRequestTable";
-import FlightPage from "../components/Admin/component/Flight/FlightPage";
 import LeaveRequestTable from "../components/Admin/component/LeaveRequest/LeaveRequestTable";
 import PayrollManagement from "../components/Admin/component/Payroll/PayrollManagement";
 import AdditionalServicesPage from "../components/Sample/AdditionalServicesPage";
@@ -30,15 +27,16 @@ import TerminalGateContainer from "../components/Admin/component/Airport/Airport
 import AirportManagement from "../components/Admin/component/Airport/AirportManagement";
 import SendEmailToUsers from "../components/Auth/SendEmailToUsers";
 import FlightStatisticsPage from "../components/Admin/component/Flight/FlightStatisticsPage";
-import AirportManagementDetail from "../components/Admin/component/Airport/AirportManagementDetail";
+// import AirportManagementDetail from "../components/Admin/component/Airport/AirportManagementDetail";
 import ChangePasswordInProfile from "../components/Profile/ChangePasswordInProfile";
-import AuthGuard from "../components/Layout/AuthGuard";
-import TransferAdminTable from "../common/Setting/Component/TransferAdminTable";
+import AuthGuard from "../guard/AuthGuard";
+import TransferAdminTable from "../common/Setting/TransferAdminTable";
 import MealList from "../components/Admin/component/Meal/MealList";
 import FlightManagement from "../components/Admin/component/Flight/FlightManagement";
 import AttendanceCalendar from "../components/Sample/AttendanceCalendar";
-import ForgetPassword from "../components/Auth/ForgetPassword";
+import ForgetPassword from "../components/Auth/ForgetPassword/index";
 import FacilityManagement from "../components/Admin/component/InfrastructureEntities/FacilityManagement";
+import GuestGuard from "../guard/GuardLayout";
 
 const routes = [
   {
@@ -75,20 +73,14 @@ const routes = [
     children: [
       {
         path: ROUTE_PATHS.LANDING, // = "/"
-        element: (
-          <AuthGuard>
-            <Hero />
-          </AuthGuard>
-        ),
+        // element: (
+
+        // ),
       },
-      {
-        path: "FlightPage",
-        element: <FlightPage />,
-      },
-      {
-        path: "/sampleFormData",
-        element: <Search_layout />,
-      },
+      // {
+      //   path: "/sampleFormData",
+      //   element: <Search_layout />,
+      // },
       {
         path: ROUTE_PATHS.FILE_UPLOAD.replace("/", ""),
         element: <FileUpload name="fileUploader" />,
@@ -127,7 +119,10 @@ const routes = [
         path: ROUTE_PATHS.BULK_MEAL_CREATOR,
         // element: <BulkMealCreator />,
       },
-
+      {
+        path: ROUTE_PATHS.SAMPLE_FORM,
+        // element: <FlightPage />,
+      },
       {
         path: ROUTE_PATHS.FLIGHT_STATISTICS,
         element: <FlightStatisticsPage />,
@@ -185,7 +180,7 @@ const routes = [
       },
       {
         path: ROUTE_PATHS.AIRPORT_MANAGEMENT_DETAIL,
-        element: <AirportManagementDetail />,
+        // element: <AirportManagementDetail />,
       },
       {
         path: ROUTE_PATHS.CALENDER_ATTENDANCE,

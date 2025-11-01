@@ -11,7 +11,6 @@ import {
   Typography,
   List,
   ListItem,
-  ListItemText,
   Paper,
   ClickAwayListener,
   Tooltip,
@@ -29,7 +28,7 @@ interface DropdownProps extends DropdownType {
   size?: "small" | "medium";
   apiCall?: ApiCallFunction;
   debounceDelay?: number;
-  customOutPut?: () => ReactNode; // Changed to function that returns ReactNode
+  customOutPut?: () => ReactNode;
 }
 
 export const SearchInputWithList = ({

@@ -2,12 +2,15 @@ import { memo, useState } from "react";
 import FlightManagementModal from "./FlightManagementModal";
 import { Box, Button } from "@mui/material";
 
-type FlightIdProps = {
+type FlightModalTriggerManagementProps = {
   id?: number;
   onSuccess: () => void;
 };
 
-const FlightModalTriggerManagement = ({ id, onSuccess }: FlightIdProps) => {
+const FlightModalTriggerManagement = ({
+  id,
+  onSuccess,
+}: FlightModalTriggerManagementProps) => {
   const [open, setOpen] = useState(false);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -31,7 +34,6 @@ const FlightModalTriggerManagement = ({ id, onSuccess }: FlightIdProps) => {
           onSuccess={onSuccess}
           flightId={id}
           onCancel={() => setOpen(false)}
-          onUpdate={() => {}}
         />
       )}
     </>

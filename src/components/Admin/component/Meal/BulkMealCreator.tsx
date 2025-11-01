@@ -17,26 +17,27 @@ import {
   LinearProgress,
   Fade,
   Zoom,
-  Stack,
-  Divider,
 } from "@mui/material";
 import {
   Add as AddIcon,
-  Restaurant as RestaurantIcon,
   CheckCircle as CheckCircleIcon,
   PlaylistAdd as PlaylistAddIcon,
   CloudUpload as CloudUploadIcon,
-  Preview as PreviewIcon,
+  ArrowBack,
 } from "@mui/icons-material";
 import type { CreateMealDto, Meal } from "../../../../utils/type";
 import { useCreateMultiMeal } from "../../../../context/Api/usePostApi";
 import theme from "../../../../scss/theme";
-import MealForm from "./InfoMealModal";
+import MealForm from "./MealForm";
 import { useToast } from "../../../../context/ToastContext";
 type BulkMealCreatorProps = {
+  onClose: () => void;
   onSuccess: () => void;
 };
-const BulkMealCreator: React.FC<BulkMealCreatorProps> = ({ onSuccess }) => {
+const BulkMealCreator: React.FC<BulkMealCreatorProps> = ({
+  onClose,
+  onSuccess,
+}) => {
   const lastMealRef = useRef<HTMLDivElement>(null);
   const [meals, setMeals] = useState<CreateMealDto[]>([
     {
@@ -172,8 +173,8 @@ const BulkMealCreator: React.FC<BulkMealCreatorProps> = ({ onSuccess }) => {
       {/* Step 1: Add Meals */}
       {activeStep === 0 && (
         <Fade in={true}>
-          <Box>
-            <Box
+          <Box sx={{ mb: 1 }}>
+            {/* <Box
               sx={{
                 display: "flex",
                 justifyContent: "space-between",
@@ -189,7 +190,7 @@ const BulkMealCreator: React.FC<BulkMealCreatorProps> = ({ onSuccess }) => {
               >
                 Preview ({validMealsCount})
               </Button>
-            </Box>
+            </Box> */}
             {meals.map((meal, index) => (
               <Box
                 key={index}
@@ -205,14 +206,23 @@ const BulkMealCreator: React.FC<BulkMealCreatorProps> = ({ onSuccess }) => {
               </Box>
             ))}
 
-            <Button
-              variant="contained"
-              startIcon={<AddIcon />}
-              onClick={addMeal}
-              sx={{ mb: 3 }}
-            >
-              Add Another Meal
-            </Button>
+            <Box gap={1} display={"flex"}>
+              <Button
+                variant="contained"
+                startIcon={<AddIcon />}
+                onClick={addMeal}
+              >
+                Add Another Meal
+              </Button>
+
+              <Button
+                variant="outlined"
+                startIcon={<ArrowBack />}
+                onClick={onClose}
+              >
+                Return
+              </Button>
+            </Box>
 
             <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end" }}>
               <Button

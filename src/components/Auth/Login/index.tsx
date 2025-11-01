@@ -1,18 +1,18 @@
 import { Box, Button, FormControl, Stack, Typography } from "@mui/material";
 import { useState } from "react";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../../context/AuthContext";
 import { Controller, useForm } from "react-hook-form";
-import InputTextField from "../../common/Input/InputTextField";
-import MfaSetup from "./MfaSetup";
-import SelectDropdown from "../../common/Dropdown/SelectDropdown";
-import RequestUnlock from "./RequestUnlock";
-import TabPanel, { type ITabItem } from "../../common/CustomRender/TabPanel";
-import theme from "../../scss/theme";
-import { Loading } from "../../common/Loading/Loading";
-import AccountYn from "./AccountYn";
-import Registration from "./Registration";
-import { useToast } from "../../context/ToastContext";
-import { useCheckMfaAvailable } from "../../context/Api/usePostApi";
+import InputTextField from "../../../common/Input/InputTextField";
+import MfaSetup from "../MFA";
+import SelectDropdown from "../../../common/Dropdown/SelectDropdown";
+import RequestUnlock from "../RequestUnlock";
+import TabPanel, { type ITabItem } from "../../../common/CustomRender/TabPanel";
+import theme from "../../../scss/theme";
+import { Loading } from "../../../common/Loading/Loading";
+import AccountYn from "../AccountModel/AccountYn";
+import Registration from "../Registration";
+import { useToast } from "../../../context/ToastContext";
+import { useCheckMfaAvailable } from "../../../context/Api/usePostApi";
 import { useNavigate } from "react-router-dom";
 
 interface ILoginForm {
@@ -202,16 +202,14 @@ export const LoginPage: React.FC = () => {
         />
       );
     case "verify":
-      return <AccountYn mode="verify" onClose={() => setViewMode("verify")} />;
+      return <AccountYn mode="verify" onClose={() => setViewMode("login")} />;
     case "changePw":
-      return (
-        <AccountYn mode="change" onClose={() => setViewMode("changePw")} />
-      );
+      return <AccountYn mode="change" onClose={() => setViewMode("login")} />;
     // case "forgotPw":
     //   return <ForgetPassword onClose={() => setViewMode("forgotPw")} />;
     case "unlock":
       return (
-        <RequestUnlock userId={userId} onClose={() => setViewMode("unlock")} />
+        <RequestUnlock userId={userId} onClose={() => setViewMode("login")} />
       );
     default:
       break;

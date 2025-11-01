@@ -70,7 +70,7 @@ const TransferAdminModal: React.FC<TransferAdminModalProps> = ({
   );
 
   const renderContent = () => (
-    <Box sx={{ p: 3 }}>
+    <Box sx={{ p: 1 }}>
       <Typography variant="h6" mb={2}>
         Chuyển quyền Admin
       </Typography>

@@ -21,13 +21,14 @@ const FormRow: React.FC<FormRowProps> = ({
           display: "flex",
           flexDirection: direction,
           alignItems: direction === "row" ? "center" : "flex-start",
+          justifyContent: "space-around",
           gap: 2,
         }}
       >
         <Typography
           variant="body2"
           sx={{
-            minWidth: direction === "row" ? 80 : "auto",
+            minWidth: direction === "row" ? 50 : "auto",
             fontWeight: 500,
           }}
         >

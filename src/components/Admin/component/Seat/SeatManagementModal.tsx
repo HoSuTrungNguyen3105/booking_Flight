@@ -4,7 +4,7 @@ import AddIcon from "@mui/icons-material/Add";
 import BaseModal from "../../../../common/Modal/BaseModal";
 import SelectDropdown from "../../../../common/Dropdown/SelectDropdown";
 // import Android12Switch from "../../../../common/Switch/Switch";
-import type { SeatTypeValue } from "../../../../utils/type";
+import type { Seat, SeatTypeValue } from "../../../../utils/type";
 
 interface IModalStatisticalDataLearningProps {
   open: boolean;
@@ -18,16 +18,18 @@ interface SeatFeatureOption {
   label: string;
 }
 
-interface SeatFeatures {
-  isBooked: boolean;
-  isAvailable: boolean;
-  isExitRow: boolean;
-  isExtraLegroom: boolean;
-  isHandicapAccessible: boolean;
-  isNearLavatory: boolean;
-  isUpperDeck: boolean;
-  isWing: boolean;
-}
+export type SeatFeatures = Pick<
+  Seat,
+  | "isBooked"
+  | "isWing"
+  | "isAvailable"
+  | "isExitRow"
+  | "isNearLavatory"
+  | "isHandicapAccessible"
+  | "isUpperDeck"
+  | "isExtraLegroom"
+  | "type"
+>;
 
 const SeatManagementModal = ({
   open,

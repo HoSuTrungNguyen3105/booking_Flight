@@ -1,15 +1,15 @@
 import { Box, Button, FormControl, Paper, Typography } from "@mui/material";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { memo, useCallback, useState } from "react";
-import InputTextField from "../../common/Input/InputTextField";
+import InputTextField from "../../../common/Input/InputTextField";
 import {
   getUserIdByEmail,
   useSendEmailToVerification,
-} from "../../context/Api/usePostApi";
-import { useToast } from "../../context/ToastContext";
-import ChangePassword from "./ChangePassword";
-import VerifyOpt from "./VerifyOpt";
-import { ResponseCode } from "../../utils/response";
+} from "../../../context/Api/usePostApi";
+import { useToast } from "../../../context/ToastContext";
+import ChangePassword from "../ChangePassword";
+import VerifyOpt from "../MFA/VerifyOTP";
+import { ResponseCode } from "../../../utils/response";
 
 type AccountModePageProps = {
   mode: "verify" | "change";

@@ -1,88 +1,36 @@
-import { Chair, StarHalfSharp, Wc, Window } from "@mui/icons-material";
 import { Box, Card, styled, Typography, useMediaQuery } from "@mui/material";
-import React, { memo, useCallback } from "react";
+import { memo, useMemo } from "react";
 import theme from "../../../../scss/theme";
+import { useSeatColor } from "./useSeatColor";
+import type { SeatFeatures } from "./SeatManagementModal";
 
-type LegendItemProps = {
-  color: string;
+export interface SeatFeatureOption {
+  value: keyof SeatFeatures;
   label: string;
-  icon?: React.ReactNode;
-};
+}
 
 const BookingCard = styled(Card)(() => ({
-  height: "3rem",
+  height: "auto",
   marginBottom: theme.spacing(2),
-  paddingTop: "8px",
-  borderRadius: 2,
+  padding: "12px",
+  borderRadius: 8,
 }));
 
 const LegendItemSection = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const renderColorForLegendItem = useCallback(() => {
-    return [
-      { color: "#f5f5f5", label: "Available" },
-      { color: "#d3d3d3", label: "Booked" },
-      {
-        color: "#f9a825",
-        label: "VIP",
-        icon: (
-          <StarHalfSharp
-            sx={{ color: theme.palette.primary.main, fontSize: 16 }}
-          />
-        ),
-      },
-      {
-        color: "#d3d3d3",
-        label: "Economy",
-        icon: (
-          <Chair sx={{ color: theme.palette.primary.main, fontSize: 16 }} />
-        ),
-      },
-      {
-        color: "#e3f2fd",
-        label: "Window",
-        icon: (
-          <Window sx={{ color: theme.palette.primary.main, fontSize: 16 }} />
-        ),
-      },
-      {
-        color: "#fff3e0",
-        label: "Restroom",
-        icon: <Wc sx={{ color: theme.palette.primary.main, fontSize: 16 }} />,
-      },
-    ];
-  }, [theme.palette.primary.main]);
-
-  const renderLegendItem = useCallback(
-    ({ color, label, icon }: LegendItemProps) => (
-      <Box sx={{ display: "flex", alignItems: "center", gap: "8px" }}>
-        <Box
-          sx={{
-            width: "20px",
-            height: "20px",
-            backgroundColor: color,
-            borderRadius: "4px",
-            border: "1px solid #ccc",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          {icon}
-        </Box>
-        <Typography
-          variant="body2"
-          sx={{
-            color: theme.palette.primary.main,
-            fontSize: isMobile ? "0.75rem" : "0.875rem",
-          }}
-        >
-          {label}
-        </Typography>
-      </Box>
-    ),
-    [theme.palette.primary.main, isMobile]
+  const seatFeatureOptions: SeatFeatureOption[] = useMemo(
+    () => [
+      { value: "isBooked", label: "Booked" },
+      { value: "isAvailable", label: "Available" },
+      { value: "isExitRow", label: "Exit Row" },
+      { value: "isExtraLegroom", label: "Extra Legroom" },
+      { value: "isHandicapAccessible", label: "Handicap Accessible" },
+      { value: "isNearLavatory", label: "Near Lavatory" },
+      { value: "isUpperDeck", label: "Upper Deck" },
+      { value: "isWing", label: "Wing Area" },
+    ],
+    []
   );
 
   return (
@@ -91,13 +39,50 @@ const LegendItemSection = () => {
         sx={{
           display: "flex",
           flexWrap: "wrap",
-          gap: 1,
+          gap: 2,
           justifyContent: "center",
         }}
       >
-        {renderColorForLegendItem().map((item, index) => (
-          <React.Fragment key={index}>{renderLegendItem(item)}</React.Fragment>
-        ))}
+        {seatFeatureOptions.map((option) => {
+          const { backgroundColor, borderColor, textColor, icon } =
+            useSeatColor(); // ✅ gọi hook cho từng loại ghế
+
+          return (
+            <Box
+              key={option.value}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                minWidth: "120px",
+              }}
+            >
+              <Box
+                sx={{
+                  width: 20,
+                  height: 20,
+                  backgroundColor,
+                  color: textColor,
+                  border: `1px solid ${borderColor}`,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                {icon}
+              </Box>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: theme.palette.text.primary,
+                  fontSize: isMobile ? "0.75rem" : "0.875rem",
+                }}
+              >
+                {option.label}
+              </Typography>
+            </Box>
+          );
+        })}
       </Box>
     </BookingCard>
   );

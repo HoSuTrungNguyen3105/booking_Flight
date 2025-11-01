@@ -166,7 +166,7 @@ const TicketList: React.FC = () => {
 
   return (
     <>
-      <Box display={"flex"} gap={1} justifyContent={"space-around"}>
+      <Box display="flex" gap={1} justifyContent="flex-start" mt={1} mb={1}>
         <Typography variant="h6" gutterBottom>
           Ticket List
         </Typography>

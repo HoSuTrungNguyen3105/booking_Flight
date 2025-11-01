@@ -168,7 +168,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         return undefined;
       }
     },
-    [refetchGetMyInfo, refetchUpdateUserRank]
+    [refetchUpdateUserRank]
   );
 
   const logout = () => {
@@ -181,7 +181,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
-    let isMounted = true; // kiểm soát khi unmount hoặc Strict Mode
+    let isMounted = true;
 
     const savedToken = localStorage.getItem("token");
     const savedUserId = localStorage.getItem("userId");

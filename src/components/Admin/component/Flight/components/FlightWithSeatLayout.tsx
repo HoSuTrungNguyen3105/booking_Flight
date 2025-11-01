@@ -105,7 +105,7 @@ const FlightWithSeatLayout: React.FC<FlightWithSeatLayoutProps> = ({
               { key: "VIP", label: "VIP" },
               { key: "ECONOMY", label: "Economy" },
               { key: "FIRST", label: "First" },
-              { key: "BUSINESS", label: "BUSINESS" },
+              { key: "BUSINESS", label: "Business" },
             ].map((item) => (
               <Chip
                 key={item.key}
@@ -243,8 +243,6 @@ const FlightWithSeatLayout: React.FC<FlightWithSeatLayoutProps> = ({
                       >
                         Update
                       </Button>
-                      {/*                         
-                        {updateSeat.seatIds} */}
                     </Box>
                   ) : (
                     <Box sx={{ textAlign: "center", py: 3 }}>
@@ -270,7 +268,7 @@ const FlightWithSeatLayout: React.FC<FlightWithSeatLayoutProps> = ({
             >
               <Typography variant="h6" fontWeight={700}>
                 {getAllInfoFlightByIdData?.data?.aircraft?.model ||
-                  "Unknown Model"}{" "}
+                  " Unknown Model"}{" "}
                 — Seat Map
               </Typography>
 
