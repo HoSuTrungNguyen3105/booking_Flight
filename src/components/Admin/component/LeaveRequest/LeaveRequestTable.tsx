@@ -167,7 +167,7 @@ const LeaveRequestTable = () => {
         <Box sx={{ mt: 1 }}>
           <CustomPopover
             hideSubmitButton
-            text="Detail"
+            text="View"
             handleAction={(opt) => {
               if (opt === "View") handleView(params.row);
             }}

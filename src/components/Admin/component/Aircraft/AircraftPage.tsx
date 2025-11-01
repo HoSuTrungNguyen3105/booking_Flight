@@ -248,7 +248,7 @@ const AircraftPage = () => {
         onClose={() => setToggleOpenModal(false)}
         onConfirm={handleDeleteAircraft}
         title="Xác nhận xóa"
-        message={`Bạn có chắc chắn muốn xóa máy bay ${selectedCode} không? Hành động này không thể hoàn tác.`}
+        message={`Bạn có chắc chắn muốn xóa máy bay ${selectedCode} không?`}
         confirmLabel={
           loadingDeleteAircraftFlight ? "Đang xóa..." : "Xác nhận xóa"
         }

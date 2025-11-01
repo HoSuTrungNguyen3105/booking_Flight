@@ -137,6 +137,7 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
         type={actualInputType}
         value={value}
         inputRef={ref}
+        autoComplete="off"
         onChange={handleChange}
         onKeyDown={onKeyDown}
         error={isEmail ? !!errorInIsEmail || error : error}

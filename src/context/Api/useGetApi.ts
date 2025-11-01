@@ -28,6 +28,7 @@ import {
   type AttendanceResponseMessage,
   type FacilyByTerminalIdResponseMessage,
   type Payroll,
+  type BookingResponseMessage,
 } from "../../utils/type.ts";
 import { useFetch } from "../use[custom]/useFetch.ts";
 import type { ActionType } from "../../common/Dropdown/SelectDropdown.tsx";
@@ -105,12 +106,12 @@ export const usefindAllTransferRequests = () => {
 //   };
 // };
 
-export interface Booking {
-  id: number;
-  passengerId: string;
-  flightId: number;
-  bookingTime: string;
-}
+// export interface Booking {
+//   id: number;
+//   passengerId: string;
+//   flightId: number;
+//   bookingTime: string;
+// }
 
 export const useFindAllPassenger = () => {
   const {
@@ -600,6 +601,19 @@ export const useGetUserList = () => {
   };
 };
 
+export const useGetBookingList = () => {
+  const { data, refetch, loading } = useFetch<BookingResponseMessage, void>({
+    url: "/sys/bookings/findAllBooking",
+    autoFetch: true,
+    config: getMethod,
+  });
+  return {
+    dataBookingList: data,
+    refetchGetBookingList: refetch,
+    loadingGetBookingList: loading,
+  };
+};
+
 type GateCodeRes = {
   id: string;
   code: string;
@@ -751,9 +765,9 @@ export const useFindAllFlightStatuses = () => {
     config: getMethod,
   });
   return {
-    dataLeaveStatuses: data,
-    refetchLeaveStatuses: refetch,
-    loadingLeaveStatuses: loading,
+    dataFlightStatuses: data,
+    refetchFlightStatuses: refetch,
+    loadingFlightStatuses: loading,
   };
 };
 
@@ -953,6 +967,22 @@ export const useFindAllSeatTypes = () => {
     dataSeatTypes: data,
     refetchSeatTypes: refetch,
     loadingSeatTypes: loading,
+  };
+};
+
+export const useFindAllFlightTypes = () => {
+  const { data, refetch, loading } = useFetch<
+    DetailResponseMessage<string[]>,
+    null
+  >({
+    url: "/sys/enums/flight-types",
+    autoFetch: true,
+    config: getMethod,
+  });
+  return {
+    dataFlightTypes: data,
+    refetchFlightTypes: refetch,
+    loadingFlightTypes: loading,
   };
 };
 

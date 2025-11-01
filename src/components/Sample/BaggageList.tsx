@@ -1,9 +1,10 @@
-import React, { useMemo } from "react";
+import React, { memo, useMemo } from "react";
 import { Box, Typography, Chip } from "@mui/material";
 import { useGetBaggageData } from "../../context/Api/useGetApi";
 import theme from "../../scss/theme";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import TableSection from "../../common/CustomRender/TableSection";
+import { Loading } from "../../common/Loading/Loading";
 
 const getBaggageStatusStyle = (status: string) => {
   switch (status) {
@@ -64,7 +65,7 @@ const getBaggageStatusStyle = (status: string) => {
   }
 };
 
-const AdditionalServicesPage: React.FC = () => {
+const BaggageList: React.FC = () => {
   const { dataBaggage } = useGetBaggageData();
 
   const rowData = useMemo(
@@ -82,14 +83,14 @@ const AdditionalServicesPage: React.FC = () => {
       headerName: "Chuyến bay",
       flex: 0.5,
       renderCell: (params: GridRenderCellParams) =>
-        params.row?.flight?.flightNo ?? "---",
+        params.row?.flight?.flightNo ?? "-",
     },
     {
       field: "flightTerminal",
       headerName: "Terminal",
       flex: 0.5,
       renderCell: (params: GridRenderCellParams) =>
-        params.row?.flight?.terminal ?? "---",
+        params.row?.flight?.terminal ?? "-",
     },
     {
       field: "ticket",
@@ -129,7 +130,7 @@ const AdditionalServicesPage: React.FC = () => {
   ];
 
   if (!dataBaggage) {
-    return <Typography>No value</Typography>;
+    return <Loading />;
   }
 
   return (
@@ -144,18 +145,17 @@ const AdditionalServicesPage: React.FC = () => {
       >
         Baggage Management
       </Typography>
-      <Box sx={{ width: "100%" }}>
-        <TableSection
-          rows={rowData}
-          columns={columns}
-          isLoading={false}
-          setRows={() => {}}
-          nextRowClick
-          largeThan
-        />
-      </Box>
+
+      <TableSection
+        rows={rowData}
+        columns={columns}
+        isLoading={false}
+        setRows={() => {}}
+        nextRowClick
+        largeThan
+      />
     </Box>
   );
 };
 
-export default AdditionalServicesPage;
+export default memo(BaggageList);

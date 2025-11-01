@@ -68,43 +68,58 @@ const EmptyRowsOverlay = memo(
   )
 );
 
-// Styled DataGrid
-const StyledDataGrid = styled(DataGrid)<{
-  hideColumnHeaderCheckbox: boolean;
-}>(({ theme, hideColumnHeaderCheckbox }) => ({
-  borderRadius: 0,
-  "& .MuiDataGrid-columnSeparator": { display: "none" },
-  "& .MuiDataGrid-checkboxInput .MuiSvgIcon-root": {
-    width: "24px",
-    height: "24px",
-  },
-  "& .MuiDataGrid-columnHeader": theme.typography.body2,
-  "& .MuiDataGrid-cell": {
-    ...theme.typography.body2,
-    lineHeight: "none",
-    "&:focus-within": { outline: "none" },
-  },
-
-  "& .MuiDataGrid-virtualScroller": {
-    overflow: "auto",
-    "&::-webkit-scrollbar": {
-      width: 0,
-      height: 0,
-      background: "transparent",
+const StyledDataGrid = styled(DataGrid)<{ hideColumnHeaderCheckbox: boolean }>(
+  ({ theme, hideColumnHeaderCheckbox }) => ({
+    borderRadius: 0,
+    "& .MuiDataGrid-columnSeparator": { display: "none" },
+    "& .MuiDataGrid-checkboxInput .MuiSvgIcon-root": {
+      width: "24px",
+      height: "24px",
     },
-    scrollbarWidth: "none",
-  },
-
-  "& .MuiDataGrid-main": {
-    "&::-webkit-scrollbar": {
-      display: "none",
+    "& .MuiDataGrid-columnHeader": theme.typography.body2,
+    "& .MuiDataGrid-cell": {
+      ...theme.typography.body2,
+      lineHeight: "none",
+      "&:focus-within": { outline: "none" },
     },
-  },
 
-  ...(hideColumnHeaderCheckbox && {
-    "& .MuiDataGrid-columnHeaderCheckbox": { display: "none" },
-  }),
-}));
+    // Ẩn thanh cuộn triệt để nhưng vẫn cho phép scroll
+    "& .MuiDataGrid-virtualScroller": {
+      overflow: "overlay !important",
+    },
+    "& .MuiDataGrid-virtualScroller::-webkit-scrollbar": {
+      display: "none !important",
+      width: "0px !important",
+      height: "0px !important",
+      background: "transparent !important",
+    },
+    "& .MuiDataGrid-virtualScrollerContent": {
+      scrollbarWidth: "none !important", // Firefox
+      msOverflowStyle: "none !important", // IE, Edge cũ
+    },
+    "& .MuiDataGrid-virtualScrollerContent::-webkit-scrollbar": {
+      display: "none !important",
+      width: "0px !important",
+      height: "0px !important",
+      background: "transparent !important",
+    },
+
+    "& .MuiDataGrid-main": {
+      overflow: "hidden !important",
+    },
+
+    "& .MuiDataGrid-window": {
+      scrollbarWidth: "none !important",
+      "&::-webkit-scrollbar": {
+        display: "none !important",
+      },
+    },
+
+    ...(hideColumnHeaderCheckbox && {
+      "& .MuiDataGrid-columnHeaderCheckbox": { display: "none" },
+    }),
+  })
+);
 
 const DataTable = ({
   hideColumnHeaderCheckbox = false,

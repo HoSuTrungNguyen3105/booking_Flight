@@ -37,7 +37,7 @@ type FlightId = {
   id: number;
 };
 
-export type CabinClassType = "ECONOMY" | "BUSINESS" | "VIP";
+// export type CabinClassType = "ECONOMY" | "BUSINESS" | "VIP";
 
 export type SearchFlightDto = {
   from: string; // departureAirport
@@ -46,7 +46,7 @@ export type SearchFlightDto = {
   returnDate?: number;
   passengers?: number;
   flightType?: string;
-  cabinClass?: CabinClassType;
+  cabinClass?: string;
   aircraftCode?: string;
   status?: string;
   minPrice?: number;

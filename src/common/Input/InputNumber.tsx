@@ -53,6 +53,7 @@ const InputNumber = ({
     <TextField
       value={valueText}
       onChange={handleChange}
+      autoComplete="off"
       disabled={disabled}
       onBlur={(e) => {
         onBlur?.(e);

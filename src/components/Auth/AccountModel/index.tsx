@@ -54,7 +54,9 @@ const AccountModePage = ({ mode, onClose }: AccountModePageProps) => {
     if (mode === "change") {
       if (res?.resultCode === ResponseCode.SUCCESS) {
         setUserId(res?.data?.userId);
+        await new Promise((resolve) => setTimeout(resolve, 0));
         setHasValidate(true);
+        // setHasValidate(true);
       } else {
         toast("Không tìm thấy tài khoản!", "error");
       }

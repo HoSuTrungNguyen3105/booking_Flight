@@ -17,15 +17,19 @@ import type { IDetailItem } from "../../common/CustomRender/DetailSection";
 import DetailSection from "../../common/CustomRender/DetailSection";
 import InputTextField from "../../common/Input/InputTextField";
 import SelectDropdown from "../../common/Dropdown/SelectDropdown";
-import { useGetAllCode } from "../../context/Api/useGetApi";
+import {
+  mapStringToDropdown,
+  useFindAllFlightStatuses,
+  useFindAllFlightTypes,
+  useFindAllSeatTypes,
+  useGetAllCode,
+} from "../../context/Api/useGetApi";
 import DateTimePickerComponent from "../../common/DayPicker";
 import type { SearchBookingFlightProps } from "../../utils/type";
-import type {
-  CabinClassType,
-  SearchFlightDto,
-} from "./../Admin/component/Flight/Search_layout";
+import type { SearchFlightDto } from "./../Admin/component/Flight/Search_layout";
 import { DateFormatEnum, formatDate, formatDateKR } from "../../hooks/format";
 import Android12Switch from "./../../common/Switch/Switch";
+import { ResponseCode } from "../../utils/response";
 
 const flightParams: SearchFlightDto = {
   from: "",
@@ -41,23 +45,17 @@ const flightParams: SearchFlightDto = {
   maxDelayMinutes: 0,
   includeCancelled: false,
 };
-const BookTicket = () => {
-  // const [flightParams, _] = React.useState<SearchFlightDto>({
-  //   from: "",
-  //   to: "",
-  //   status: "",
-  //   cabinClass: "ECONOMY",
-  //   aircraftCode: "",
-  //   minPrice: 0,
-  //   maxPrice: 0,
-  //   gate: "",
-  //   terminal: "",
-  //   minDelayMinutes: 0,
-  //   maxDelayMinutes: 0,
-  //   includeCancelled: false,
-  // });
 
+const BookTicket = () => {
   const { getAllCode } = useGetAllCode();
+  const { dataFlightTypes } = useFindAllFlightTypes();
+  const { dataSeatTypes } = useFindAllSeatTypes();
+  const { dataFlightStatuses } = useFindAllFlightStatuses();
+  const flightTypeOption = mapStringToDropdown(dataFlightTypes?.data || []);
+  const seatTypeOption = mapStringToDropdown(dataSeatTypes?.data || []);
+  const flightStatusesOption = mapStringToDropdown(
+    dataFlightStatuses?.data || []
+  );
 
   const {
     reset: resetSearch,
@@ -81,24 +79,22 @@ const BookTicket = () => {
   const onSubmitValue = async (values: SearchFlightDto) => {
     if (!values) return;
 
-    const payload: Partial<SearchFlightDto> = Object.entries(values).reduce(
-      (acc, [key, val]) => {
-        if (
-          val !== undefined &&
-          (typeof val === "string" ? val.trim() !== "" : true) &&
-          (typeof val === "number" ? !isNaN(val) && val !== 0 : true) &&
-          (typeof val === "boolean" ? true : true)
-        ) {
-          acc[key as keyof SearchFlightDto] = val as any;
-        }
-        return acc;
-      },
-      {} as Partial<SearchFlightDto>
-    );
+    const payload = Object.entries(values).reduce((acc, [key, val]) => {
+      if (
+        val !== undefined &&
+        (typeof val === "string" ? val.trim() !== "" : true) &&
+        (typeof val === "number" ? !isNaN(val) && val !== 0 : true)
+      ) {
+        (acc as Record<string, unknown>)[key] = val;
+      }
+      return acc;
+    }, {} as Partial<SearchFlightDto>);
+
+    console.log("payload", payload);
 
     const res = await refetchSearchBooking(payload);
 
-    if (res?.resultCode === "00") {
+    if (res?.resultCode === ResponseCode.SUCCESS) {
       setOutboundBookings(res.data?.outbound || []);
       setInboundBookings(res.data?.inbound || []);
     }
@@ -162,15 +158,10 @@ const BookTicket = () => {
       title: "Flight Type",
       description: (
         <SelectDropdown
-          options={[
-            { label: "Oneway", value: "oneway" },
-            { label: "Roundtrip", value: "roundtrip" },
-          ]}
+          options={flightTypeOption}
           placeholder="Select type"
           value={watch("flightType")}
-          onChange={(val) =>
-            setValue("flightType", val as "oneway" | "roundtrip")
-          }
+          onChange={(val) => setValue("flightType", val as string)}
         />
       ),
     },
@@ -178,14 +169,10 @@ const BookTicket = () => {
       title: "Cabin Class",
       description: (
         <SelectDropdown
-          options={[
-            { label: "Economy", value: "ECONOMY" },
-            { label: "Business", value: "BUSINESS" },
-            { label: "VIP", value: "VIP" },
-          ]}
+          options={seatTypeOption}
           placeholder="Select cabin"
           value={watch("cabinClass")}
-          onChange={(val) => setValue("cabinClass", val as CabinClassType)}
+          onChange={(val) => setValue("cabinClass", val as string)}
         />
       ),
     },
@@ -193,14 +180,7 @@ const BookTicket = () => {
       title: "Status",
       description: (
         <SelectDropdown
-          options={[
-            { label: "Scheduled", value: "scheduled" },
-            { label: "Boarding", value: "boarding" },
-            { label: "Departed", value: "departed" },
-            { label: "Arrived", value: "arrived" },
-            { label: "Delayed", value: "delayed" },
-            { label: "Cancelled", value: "cancelled" },
-          ]}
+          options={flightStatusesOption}
           placeholder="Select status"
           value={watch("status")}
           onChange={(val) => setValue("status", String(val))}

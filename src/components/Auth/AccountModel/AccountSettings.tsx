@@ -6,6 +6,7 @@ import { useApproveUnlock } from "../../../context/Api/usePostApi";
 import { useGetMyRequestUnlock } from "../../../context/Api/useGetApi";
 import { useAuth } from "../../../context/AuthContext";
 import { useToast } from "../../../context/ToastContext";
+import { ResponseCode } from "../../../utils/response";
 
 const AccountSettings = () => {
   const { user } = useAuth();
@@ -17,7 +18,7 @@ const AccountSettings = () => {
     const res = await refetchApproveUnlock({
       id: dataGetMyRequestUnlock?.data?.id || 0,
     });
-    if (res?.resultCode === "00") {
+    if (res?.resultCode === ResponseCode.SUCCESS) {
       toast(res.resultMessage || "");
     } else {
       toast(res?.resultMessage || "", "error");

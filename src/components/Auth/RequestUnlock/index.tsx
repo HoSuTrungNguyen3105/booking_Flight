@@ -1,7 +1,8 @@
 import { memo, useState } from "react";
 import { Box, Button, Typography } from "@mui/material";
-import { useRequestUnlockAccount } from "../../context/Api/usePostApi";
-import InputTextArea from "../../common/Input/InputTextArea";
+import { useRequestUnlockAccount } from "../../../context/Api/usePostApi";
+import InputTextArea from "../../../common/Input/InputTextArea";
+import { ResponseCode } from "../../../utils/response";
 
 const RequestUnlock = ({
   userId,
@@ -21,7 +22,7 @@ const RequestUnlock = ({
     setMessage(null);
     try {
       const res = await refetchRequestUnlockAccount({ userId, reason });
-      if (res?.resultCode === "00") {
+      if (res?.resultCode === ResponseCode.SUCCESS) {
         setMessage(res?.resultMessage || null);
         // setError(null);
         onClose();

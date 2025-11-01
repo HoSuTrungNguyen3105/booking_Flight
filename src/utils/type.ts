@@ -497,13 +497,13 @@ export type MealType =
   | "BREAKFAST";
 
 export type MealRequestDto = Omit<Meal, "id" | "flightMeals">;
-// Kiểu cho mỗi booking, bao gồm thông tin hành khách, flightId, thời gian đặt vé và chi tiết chuyến bay
+
 export type SearchBookingFlightProps = {
   id: number;
   passengerId: string;
   flightId: number;
-  bookingTime: number; // nếu server trả timestamp dạng số, dùng number; nếu string thì để string
-  flight: DataFlight; // DataFlight là kiểu dữ liệu chuyến bay
+  bookingTime: number;
+  flight: DataFlight;
 };
 
 export type Conversation = {
@@ -762,7 +762,13 @@ export interface Booking {
   mealOrders: MealOrder[];
   flight: DataFlight;
   seats: Seat;
+
+  passengerId: string;
+  flightId: number;
+  passenger: Passenger;
 }
+
+export type BookingResponseMessage = DetailResponseMessage<Booking>;
 
 export interface MealOrder {
   id: number;
@@ -777,8 +783,8 @@ export interface Passenger {
   email: string;
   phone: string;
   passport: string;
-  accountLockYn: "Y" | "N";
-  isEmailVerified: "Y" | "N";
+  accountLockYn: string;
+  isEmailVerified: string;
   lastLoginDate?: number;
   bookings: Booking[];
 }

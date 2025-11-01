@@ -9,11 +9,12 @@ import RequestUnlock from "../RequestUnlock";
 import TabPanel, { type ITabItem } from "../../../common/CustomRender/TabPanel";
 import theme from "../../../scss/theme";
 import { Loading } from "../../../common/Loading/Loading";
-import AccountYn from "../AccountModel/AccountYn";
+import AccountYn from "../AccountModel";
 import Registration from "../Registration";
 import { useToast } from "../../../context/ToastContext";
 import { useCheckMfaAvailable } from "../../../context/Api/usePostApi";
 import { useNavigate } from "react-router-dom";
+import { ResponseCode } from "../../../utils/response";
 
 interface ILoginForm {
   email: string;
@@ -48,7 +49,7 @@ export const LoginPage: React.FC = () => {
   const { refetchMfaCheck } = useCheckMfaAvailable();
   const { login } = useAuth();
 
-  const { handleSubmit, watch, control } = useForm<ILoginForm>({
+  const { handleSubmit, watch, control, reset } = useForm<ILoginForm>({
     defaultValues: { email: "", password: "" },
   });
 
@@ -64,47 +65,62 @@ export const LoginPage: React.FC = () => {
 
   const onSubmit = async (data: ILoginForm) => {
     setLoading(true);
-    const email = watch("email");
+
+    const email = watch("email")?.trim();
+    if (!email) {
+      toast("Please enter your email!");
+      setLoading(false);
+      return;
+    }
 
     try {
+      // ✅ CASE 1: MFA (Multi-factor Authentication)
       if (authType === "MFA") {
         setMfaEmailValue(email);
-        const res = await refetchMfaCheck({ email });
 
-        if (res?.resultCode !== "00") {
-          toast(res?.resultMessage || "Error in login !!!");
-          return;
+        const res = await refetchMfaCheck({ email });
+        if (res?.resultCode !== ResponseCode.SUCCESS) {
+          toast(res?.resultMessage || "Error during MFA check!", "error");
+        } else {
+          setViewMode("mfa");
         }
 
-        setViewMode("mfa");
+        reset();
         return;
       }
 
+      // ✅ CASE 2: Normal Login
       const loginRes = await login({
         email,
         password: data.password,
         authType,
       });
 
+      if (!loginRes) {
+        toast("Login failed — no response from server!", "error");
+        reset();
+        return;
+      }
+
+      // ✅ handle various login states
       if (loginRes.requireUnlock) {
         setViewMode("unlock");
         setUserId(loginRes.userId);
-        return;
-      }
-
-      if (loginRes.requireVerified) {
+      } else if (loginRes.requireVerified) {
         setViewMode("verify");
-        return;
-      }
-
-      if (loginRes.requireChangePassword && loginRes.userId) {
+      } else if (loginRes.requireChangePassword && loginRes.userId) {
         setViewMode("changePw");
         setUserId(loginRes.userId);
-        return;
+      } else {
+        // ✅ login successful — redirect or set token here
+        toast("Login successful!", "success");
+        // e.g. setToken(loginRes.token);
       }
+
+      reset();
     } catch (error) {
       console.error("Login error:", error);
-      // toast("Unexpected error occurred", "error");
+      toast("Unexpected error occurred during login!", "error");
     } finally {
       setLoading(false);
     }

@@ -4,7 +4,8 @@ import SearchLayout from "../../../Layout/SearchLayout";
 import FlightList from "./FlightList";
 import MealList from "../Meal/MealList";
 import TicketList from "../../../Sample/TicketList";
-import TerminalContainer from "../InfrastructureEntities/TerminalContainer";
+import BaggageList from "../../../Sample/BaggageList";
+import BookingList from "../../../Sample/BookingList";
 
 const FlightManagement = () => {
   const [tabX, setTab] = useState(0);
@@ -26,14 +27,14 @@ const FlightManagement = () => {
       content: <TicketList />,
     },
     {
-      label: "TicketList",
-      value: "TicketList",
-      content: <TerminalContainer />,
+      label: "BaggageList",
+      value: "BaggageList",
+      content: <BaggageList />,
     },
     {
-      label: "TicketList",
-      value: "TicketList",
-      content: <TicketList />,
+      label: "BookingList",
+      value: "BookingList",
+      content: <BookingList />,
     },
   ];
 

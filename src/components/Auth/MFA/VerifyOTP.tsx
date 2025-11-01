@@ -5,6 +5,7 @@ import type { EmailProps } from "../../../utils/type";
 import { useVerifyOTPCode } from "../../../context/Api/usePostApi";
 import MfaSetup from ".";
 import { useToast } from "../../../context/ToastContext";
+import { ResponseCode } from "../../../utils/response";
 
 const VerifyOpt = ({ email, userId }: EmailProps) => {
   const [otpText, setOtpText] = useState<string>("");
@@ -22,8 +23,7 @@ const VerifyOpt = ({ email, userId }: EmailProps) => {
         otp: otpText,
         userId: userId,
       });
-      console.log("res", res);
-      if (res?.resultCode == "00") {
+      if (res?.resultCode == ResponseCode.SUCCESS) {
         sethasValidate(true);
       } else {
         toast("Error", "error");

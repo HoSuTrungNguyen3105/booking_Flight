@@ -4,6 +4,7 @@ import { useToast } from "../../../context/ToastContext";
 import InputTextField from "../../../common/Input/InputTextField";
 import { useForgotPassword } from "../../../context/Api/usePostApi";
 import { useNavigate } from "react-router-dom";
+import { ResponseCode } from "../../../utils/response";
 
 const ForgetPassword = () => {
   const toast = useToast();
@@ -21,7 +22,7 @@ const ForgetPassword = () => {
     try {
       setLoading(true);
       const res = await refetchForgotPassword({ email });
-      if (res?.resultCode === "00") {
+      if (res?.resultCode === ResponseCode.SUCCESS) {
         toast(res.resultMessage, "info");
         returnPage();
       } else {

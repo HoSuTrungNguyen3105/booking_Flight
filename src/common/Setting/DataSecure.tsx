@@ -72,7 +72,7 @@ const DataSecure = ({ passenger, returnButton }: DataSecureProps) => {
     () => [
       {
         field: "id",
-        headerName: "Booking ID",
+        headerName: " ID",
         flex: 1,
       },
       {

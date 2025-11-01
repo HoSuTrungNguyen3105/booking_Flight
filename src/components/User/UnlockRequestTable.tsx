@@ -10,6 +10,7 @@ import {
   useRejectUnlock,
 } from "../../context/Api/usePostApi";
 import { useToast } from "../../context/ToastContext";
+import { ResponseCode } from "../../utils/response";
 
 enum TypeColor {
   REJECTED = "REJECTED",
@@ -58,7 +59,7 @@ const UnlockRequestTable = () => {
       res = await refetchRejectUnlock({ id });
     }
 
-    if (res?.resultCode === "00") {
+    if (res?.resultCode === ResponseCode.SUCCESS) {
       toast(res.resultMessage || "");
       refetchGetUnlockRequests();
     } else {
@@ -86,7 +87,7 @@ const UnlockRequestTable = () => {
           sx={{
             mb: 0.5,
             border: "none",
-            color: getStatusColor(params.value),
+            bgcolor: getStatusColor(params.value),
           }}
         />
       ),
@@ -130,7 +131,7 @@ const UnlockRequestTable = () => {
             </Box>
           );
         }
-        return null;
+        return <Typography variant="inherit">Has completed</Typography>;
       },
     },
   ];

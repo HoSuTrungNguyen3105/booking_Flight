@@ -118,11 +118,11 @@ export const menuData: MenuSection[] = [
                 label: "Đặt vé máy bay",
                 icon: <FlightTakeoff />,
               },
-              // {
-              //   id: "international",
-              //   label: "Chuyến bay quốc tế",
-              //   icon: <FlightTakeoff />,
-              // },
+              {
+                id: "notifications",
+                label: "Chuyến bay notifications",
+                icon: <FlightTakeoff />,
+              },
               {
                 id: "TransferAdminTable",
                 label: "Quản lý Terminal",

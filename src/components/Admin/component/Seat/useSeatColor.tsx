@@ -11,7 +11,7 @@ import theme from "../../../../scss/theme";
 import type { SeatFeatures } from "./SeatManagementModal";
 import { useFindAllSeatTypes } from "../../../../context/Api/useGetApi";
 
-// 🎨 Hook xác định màu sắc/icon cho từng loại ghế
+// Hook xác định màu sắc/icon cho từng loại ghế
 export const useSeatColor = () => {
   const [seat] = useState<SeatFeatures | null>(null);
   const { dataSeatTypes } = useFindAllSeatTypes();
@@ -28,7 +28,7 @@ export const useSeatColor = () => {
     extraLegroom: "#f44336",
   };
 
-  // ✅ Nếu chưa có seat hay dữ liệu, vẫn return default màu sắc
+  // Nếu chưa có seat hay dữ liệu, vẫn return default màu sắc
   const { backgroundColor, textColor, borderColor, icon } = useMemo(() => {
     if (!seat) {
       return {
@@ -39,7 +39,7 @@ export const useSeatColor = () => {
       };
     }
 
-    // ✅ Ưu tiên kiểm tra các flag
+    // Ưu tiên kiểm tra các flag
     if (seat.isExitRow) {
       return {
         backgroundColor: "#fff",
@@ -117,7 +117,6 @@ export const useSeatColor = () => {
       };
     }
 
-    // ✅ Cuối cùng là loại ghế theo seat type
     const seatTypeString = dataSeatTypes?.data?.join(",") || "";
 
     switch (seatTypeString) {
