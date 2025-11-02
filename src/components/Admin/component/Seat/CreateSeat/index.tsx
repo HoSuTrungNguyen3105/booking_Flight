@@ -11,11 +11,10 @@ import { useToast } from "../../../../../context/ToastContext";
 
 type CreateSeatProps = {
   flightId: number;
-  loading: boolean;
   onSuccess: () => void;
 };
 
-const CreateSeat = ({ flightId, loading, onSuccess }: CreateSeatProps) => {
+const CreateSeat = ({ flightId, onSuccess }: CreateSeatProps) => {
   const [createFormOpen, setCreateFormOpen] = useState(false);
   const [createState, setCreateState] = useState<CreateSeatDto>({
     seatNumber: 0,
@@ -41,7 +40,7 @@ const CreateSeat = ({ flightId, loading, onSuccess }: CreateSeatProps) => {
 
       const res = await refetchSeatCreate(payload);
       if (res?.resultCode === ResponseCode.SUCCESS) {
-        toast(res.resultMessage || getMessage(res.resultCode), "info");
+        toast(res.resultMessage || getMessage(res.resultCode));
         onSuccess();
       }
     } catch (err) {

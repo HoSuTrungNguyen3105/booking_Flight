@@ -12,6 +12,7 @@ import {
   mapStringToDropdown,
   useFindAllSeatTypes,
 } from "../../../../../context/Api/useGetApi";
+import { ResponseCode } from "../../../../../utils/response";
 
 interface ISeatModalProps {
   open: boolean;
@@ -55,7 +56,7 @@ const InfoAndUpdateSeatModal = ({
       },
     });
 
-    if (res?.resultCode === "00") {
+    if (res?.resultCode === ResponseCode.SUCCESS) {
       onSuccess();
       onClose();
     }

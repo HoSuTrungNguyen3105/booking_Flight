@@ -10,6 +10,7 @@ import {
   WindowOutlined,
 } from "@mui/icons-material";
 import { Box, Stack, Typography } from "@mui/material";
+import theme from "../../../../../scss/theme";
 
 interface SeatManagementProps {
   seat: Seat;
@@ -111,7 +112,7 @@ export const useSeatManagement = ({
                 display: "flex",
                 alignItems: "center",
                 gap: 1,
-                color: "success.main",
+                color: theme.palette.success.main,
               }}
             >
               <Box
@@ -119,7 +120,7 @@ export const useSeatManagement = ({
                   width: 8,
                   height: 8,
                   borderRadius: "50%",
-                  bgcolor: "success.main",
+                  bgcolor: theme.palette.success.main,
                 }}
               />
               <Typography variant="caption" fontWeight="bold">
@@ -133,7 +134,7 @@ export const useSeatManagement = ({
                 display: "flex",
                 alignItems: "center",
                 gap: 1,
-                color: "primary.main",
+                color: theme.palette.success.main,
               }}
             >
               <Box
@@ -141,7 +142,7 @@ export const useSeatManagement = ({
                   width: 8,
                   height: 8,
                   borderRadius: "50%",
-                  bgcolor: "primary.main",
+                  bgcolor: theme.palette.success.main,
                 }}
               />
               <Typography variant="caption">Click to select</Typography>

@@ -45,11 +45,7 @@ const LegendItemSection = () => {
       >
         {seatFeatureOptions.map((option) => {
           const { backgroundColor, borderColor, textColor, icon } =
-            useSeatColor({
-              seatFeature: option.value,
-              seat: undefined,
-              selectedSeats: [],
-            });
+            useSeatColor({ seatFeature: option.value });
 
           return (
             <Box

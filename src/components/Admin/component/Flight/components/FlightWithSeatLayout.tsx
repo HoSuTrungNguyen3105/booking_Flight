@@ -10,7 +10,6 @@ import {
   Card,
   Stack,
 } from "@mui/material";
-import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import DetailSection from "../../../../../common/CustomRender/DetailSection";
 import ButtonSeat from "../../Seat/ButtonSeat";
 import type { Seat } from "../../../../../utils/type";
@@ -24,6 +23,7 @@ import {
   useSeatInFlightDetail,
   type AircraftSeatTypeProps,
 } from "../hooks/useSeatInFlightDetail";
+import theme from "../../../../../scss/theme";
 
 type FlightWithSeatLayoutProps = {
   id: number;
@@ -72,7 +72,6 @@ const FlightWithSeatLayout: React.FC<FlightWithSeatLayoutProps> = ({
           setCreateSeat(false);
           refetchGetAllInfoFlightData();
         }}
-        loading={false}
       />
     );
   }
@@ -92,12 +91,6 @@ const FlightWithSeatLayout: React.FC<FlightWithSeatLayoutProps> = ({
             {" "}
             Return
           </Button>
-          <Chip
-            icon={<FlightTakeoffIcon />}
-            label={getAllInfoFlightByIdData?.data?.aircraft?.model ?? "Unknown"}
-            color="primary"
-            variant="outlined"
-          />
           <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
             <LocalAirport sx={{ fontSize: 28 }} />
             {[
@@ -178,30 +171,73 @@ const FlightWithSeatLayout: React.FC<FlightWithSeatLayoutProps> = ({
                               sx={{
                                 display: "flex",
                                 alignItems: "center",
-                                gap: 1,
-                                padding: "4px 8px",
-                                borderRadius: "4px",
-                                backgroundColor: `${typeColor}10`,
+                                justifyContent: "space-between",
+                                gap: 1.5,
+                                p: "6px 10px",
+                                borderRadius: 2,
+                                backgroundColor: seat.isBooked
+                                  ? `${theme.palette.error.light}22`
+                                  : `${typeColor}10`,
+                                border: `1px solid ${
+                                  seat.isBooked
+                                    ? theme.palette.error.light
+                                    : `${typeColor}40`
+                                }`,
+                                transition: "all 0.2s ease-in-out",
+                                "&:hover": {
+                                  backgroundColor: seat.isBooked
+                                    ? `${theme.palette.error.light}33`
+                                    : `${typeColor}22`,
+                                  transform: "translateY(-1px)",
+                                },
                               }}
                             >
                               <Box
                                 sx={{
-                                  width: 8,
-                                  height: 8,
-                                  borderRadius: "50%",
-                                  backgroundColor: typeColor,
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: 1,
                                 }}
-                              />
-                              <Typography variant="body2">
-                                {seat.seatRow}
-                                {seat.seatNumber} - {seat.type}
-                              </Typography>
+                              >
+                                <Box
+                                  sx={{
+                                    width: 10,
+                                    height: 10,
+                                    borderRadius: "50%",
+                                    backgroundColor: seat.isBooked
+                                      ? theme.palette.error.main
+                                      : typeColor,
+                                  }}
+                                />
+                                <Typography
+                                  variant="body2"
+                                  sx={{
+                                    fontWeight: seat.isBooked ? 600 : 500,
+                                    color: seat.isBooked
+                                      ? theme.palette.error.dark
+                                      : theme.palette.text.primary,
+                                  }}
+                                >
+                                  {seat.seatRow}
+                                  {seat.seatNumber} — {seat.type}
+                                </Typography>
+                              </Box>
+
+                              {/* Status chip */}
                               {seat.isBooked && (
                                 <Chip
                                   label="Booked"
                                   size="small"
-                                  color="error"
-                                  sx={{ height: 20, fontSize: "0.7rem" }}
+                                  sx={{
+                                    height: 22,
+                                    fontSize: "0.7rem",
+                                    fontWeight: 600,
+                                    color: theme.palette.error.dark,
+                                    bgcolor: `${theme.palette.error.light}99`,
+                                    "& .MuiChip-label": {
+                                      px: 1,
+                                    },
+                                  }}
                                 />
                               )}
                             </Box>
@@ -295,11 +331,11 @@ const FlightWithSeatLayout: React.FC<FlightWithSeatLayoutProps> = ({
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                gap: 1,
-                mt: 1,
+                // gap: 1,
+                // mt: 1,
                 bgcolor: "#fafafa",
                 borderRadius: 2,
-                height: "27rem",
+                height: "53vh",
                 overflowY: "auto",
                 position: "relative",
                 "&::-webkit-scrollbar": {
@@ -317,12 +353,12 @@ const FlightWithSeatLayout: React.FC<FlightWithSeatLayoutProps> = ({
               {/* phần đầu máy bay */}
               <Box
                 sx={{
-                  width: "80%",
-                  height: "20px",
+                  width: "60%",
+                  height: "20%",
                   borderTopLeftRadius: "50%",
                   borderTopRightRadius: "50%",
                   bgcolor: "#e0e0e0",
-                  mb: 1,
+                  mb: 0.5,
                 }}
               />
 
@@ -336,7 +372,7 @@ const FlightWithSeatLayout: React.FC<FlightWithSeatLayoutProps> = ({
                       display: "flex",
                       justifyContent: "center",
                       alignItems: "center",
-                      mb: 0.8,
+                      mb: 0.5,
                     }}
                   >
                     {/* Cột trái */}

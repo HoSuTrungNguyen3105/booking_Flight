@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import type { Seat } from "../../../../../utils/type";
+import { useCallback, useMemo, useState } from "react";
+import type { Seat, SeatTypeValue } from "../../../../../utils/type";
 import { useGetAllInfoFlightByIDData } from "../../../../../context/Api/useGetApi";
 import { useDeleteSeatInFlightByIds } from "../../../../../context/Api/usePostApi";
 import type { IDetailItem } from "../../../../../common/CustomRender/DetailSection";
@@ -144,6 +144,26 @@ export const useSeatInFlightDetail = ({ id }: FlightWithSeatLayoutProps) => {
 
   const seatCount = seatNumberCountUnique.length;
 
+  // const handleSelectSeat = (seat: Seat) => {
+  //   setSelectedSeats((prev) => {
+  //     const exists = prev.some((s) => s.id === seat.id);
+
+  //     if (exists) {
+  //       return prev.filter((s) => s.id !== seat.id);
+  //     }
+
+  //     if (maxSelectSeats === 1) {
+  //       return [seat];
+  //     }
+
+  //     if (prev.length < maxSelectSeats) {
+  //       return [...prev, seat];
+  //     }
+
+  //     return prev;
+  //   });
+  // };
+
   const handleSelectSeat = (seat: Seat) => {
     setSelectedSeats((prev) => {
       const exists = prev.some((s) => s.id === seat.id);
@@ -153,6 +173,9 @@ export const useSeatInFlightDetail = ({ id }: FlightWithSeatLayoutProps) => {
       }
 
       if (maxSelectSeats === 1) {
+        // setOpenSeatModal(true);
+        setSelectedSeat(selectedSeats[selectedSeats.length - 1]);
+        setOpenSeatModal(true);
         return [seat];
       }
 
@@ -164,26 +187,37 @@ export const useSeatInFlightDetail = ({ id }: FlightWithSeatLayoutProps) => {
     });
   };
 
-  useEffect(() => {
-    if (selectedSeats.length > 0) {
-      setSelectedSeat(selectedSeats[selectedSeats.length - 1]);
-      setOpenSeatModal(true);
-    } else {
-      setSelectedSeat(null);
-      setOpenSeatModal(false);
-    }
-  }, [selectedSeats]);
-
   const getTypeColor = (type: string) => {
-    switch (type) {
-      case "FIRST":
+    switch (type as SeatTypeValue) {
+      // case "FIRST":
+      //   return "#ff9800";
+      // case "BUSINESS":
+      //   return "#2196f3";
+      // default:
+      //   return "#4caf50";
+      // switch (seat?.type) {
+      case "ECONOMY":
         return "#ff9800";
       case "BUSINESS":
         return "#2196f3";
+      case "VIP":
+        return "#fff3e0";
+      case "FIRST":
+        return "#d3d3d3";
       default:
         return "#4caf50";
     }
   };
+
+  // useEffect(() => {
+  //   if (selectedSeats.length > 0) {
+  //     setSelectedSeat(selectedSeats[selectedSeats.length - 1]);
+  //     setOpenSeatModal(true);
+  //   } else {
+  //     setSelectedSeat(null);
+  //     setOpenSeatModal(false);
+  //   }
+  // }, [selectedSeats]);
 
   return {
     detail,

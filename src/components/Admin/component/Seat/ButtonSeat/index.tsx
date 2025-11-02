@@ -7,6 +7,7 @@ import { useSeatColor } from "../hook/useSeatColor";
 import { type SeatFeatures } from "../modal/SeatManagementModal";
 
 interface ButtonSeatProps {
+  // mode : 'type' | 'hasValueSeat',
   seat: Seat;
   selectedSeats: Seat[];
   handleSelectSeat: (seat: Seat) => void;
@@ -16,28 +17,21 @@ const ButtonSeat: React.FC<ButtonSeatProps> = ({
   selectedSeats,
   handleSelectSeat,
 }) => {
+  const featureKey = (seat: SeatFeatures): keyof SeatFeatures | undefined => {
+    // Lấy ra key đầu tiên có giá trị true
+    return (Object.keys(seat) as (keyof SeatFeatures)[]).find(
+      (key) => seat[key] === true
+    );
+  };
+
   const { isSelected, tooltipTitle } = useSeatManagement({
     seat,
     selectedSeats,
   });
-  const seatWithFeatures = seat as SeatFeatures;
 
-  const featureKeys: (keyof SeatFeatures)[] = [
-    "isBooked",
-    "isWing",
-    "isAvailable",
-    "isExitRow",
-    "isNearLavatory",
-    "isHandicapAccessible",
-    "isUpperDeck",
-    "isExtraLegroom",
-  ];
-  const key = featureKeys.find((k) => seatWithFeatures[k] === true);
-
-  // else if (seatWithFeatures.isExitRow) key = "isExitRow";
-
+  const activeFeature = featureKey(seat);
   const { backgroundColor, textColor, borderColor, icon } = useSeatColor({
-    seatFeature: key,
+    seatFeature: activeFeature,
     seat,
     selectedSeats,
   });

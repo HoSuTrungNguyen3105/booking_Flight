@@ -5,6 +5,9 @@ import BaseModal from "../../../../../common/Modal/BaseModal";
 import SelectDropdown from "../../../../../common/Dropdown/SelectDropdown";
 // import Android12Switch from "../../../../common/Switch/Switch";
 import type { Seat, SeatTypeValue } from "../../../../../utils/type";
+import { useSeatUpdateByIds } from "../../../../../context/Api/usePostApi";
+import { getMessage, ResponseCode } from "../../../../../utils/response";
+import { useToast } from "../../../../../context/ToastContext";
 
 interface IModalStatisticalDataLearningProps {
   open: boolean;
@@ -34,6 +37,7 @@ export type SeatFeatures = Pick<
 const SeatManagementModal = ({
   open,
   onClose,
+  onSuccess,
   selectedSeats,
 }: IModalStatisticalDataLearningProps) => {
   const seatTypeOptions = useMemo(
@@ -62,23 +66,37 @@ const SeatManagementModal = ({
 
   const [type, setType] = useState<SeatTypeValue>("ECONOMY");
   const [position, setPosition] = useState("WINDOW");
+  const toast = useToast();
+  const { refetchUpdateSeatByIds } = useSeatUpdateByIds();
 
   const handleUpdate = async () => {
-    // const res = await refetchUpdateSeatByIds({
-    //   // seatIds: selectedSeats?.seatIds || [],
-    //   // type: type as SeatTypeValue,
-    //   // price,
-    //   // isBooked,
-    //   // isAvailable,
-    //   // isExitRow,
-    //   // isExtraLegroom,
-    //   // note,
-    // });
-    // console.log("res", res);
-    // if (res?.resultCode === "00") {
-    //   onSuccess();
-    //   onClose();
-    // }
+    const updateData: Partial<SeatFeatures> = {
+      type,
+      [position]: true, // gán động key (ví dụ: isWing: true)
+    };
+    const res = await refetchUpdateSeatByIds({
+      seatIds: selectedSeats?.seatIds || [],
+      data:
+        // type: type as SeatTypeValue,
+        updateData,
+      // ...seatFeatureOptions,
+      // price,
+      // isBooked,
+      // isAvailable,
+      // isExitRow,
+      // isExtraLegroom,
+      // note,
+    });
+    if (res?.resultCode === ResponseCode.SUCCESS) {
+      toast(res.resultMessage, "success");
+      onSuccess();
+      onClose();
+    } else {
+      toast(
+        res?.resultMessage || getMessage(res?.resultCode as string),
+        "error"
+      );
+    }
   };
 
   const renderActions = useCallback(() => {
