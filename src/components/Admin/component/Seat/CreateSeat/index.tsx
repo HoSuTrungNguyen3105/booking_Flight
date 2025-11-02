@@ -4,10 +4,10 @@ import { memo, useState } from "react";
 import {
   useSeatCreate,
   type CreateSeatDto,
-} from "../../../../context/Api/usePostApi";
-import CreateSeatModal from "./modal/CreateSeatModal";
-import { getMessage, ResponseCode } from "../../../../utils/response";
-import { useToast } from "../../../../context/ToastContext";
+} from "../../../../../context/Api/usePostApi";
+import CreateSeatModal from "../modal/CreateSeatModal";
+import { getMessage, ResponseCode } from "../../../../../utils/response";
+import { useToast } from "../../../../../context/ToastContext";
 
 type CreateSeatProps = {
   flightId: number;

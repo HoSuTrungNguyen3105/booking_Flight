@@ -16,7 +16,7 @@ import ButtonSeat from "../../Seat/ButtonSeat";
 import type { Seat } from "../../../../../utils/type";
 import { Chair, LocalAirport, RestartAlt } from "@mui/icons-material";
 import SeatManagementModal from "../../Seat/modal/SeatManagementModal";
-import CreateSeat from "../../Seat/SeatCreatePage";
+import CreateSeat from "../../Seat/CreateSeat";
 import InfoAndUpdateSeatModal from "../../Seat/modal/InfoAndUpdateSeatModal";
 import _ from "lodash";
 import LegendItem from "../../Seat/ButtonSeat/LegendItem";

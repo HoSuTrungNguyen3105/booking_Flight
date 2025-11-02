@@ -38,7 +38,8 @@ const ButtonSeat: React.FC<ButtonSeatProps> = ({
 
   const { backgroundColor, textColor, borderColor, icon } = useSeatColor({
     seatFeature: key,
-    selectedSeats: selectedSeats,
+    seat,
+    selectedSeats,
   });
 
   return (

@@ -11,15 +11,18 @@ import theme from "../../../../../scss/theme";
 import type { SeatFeatures } from "../modal/SeatManagementModal";
 import { useFindAllSeatTypes } from "../../../../../context/Api/useGetApi";
 import type { Seat } from "../../../../../utils/type";
-type SeatOptionColorProps = {
+type SeatColorOptionProps = {
   seatFeature?: keyof SeatFeatures;
-  selectedSeats: Seat[];
+  seat?: Seat;
+  selectedSeats?: Seat[];
 };
 export const useSeatColor = ({
   selectedSeats,
+  seat,
   seatFeature,
-}: SeatOptionColorProps) => {
+}: SeatColorOptionProps) => {
   const { dataSeatTypes } = useFindAllSeatTypes();
+  const isSelected = selectedSeats?.some((s) => s.id === seat?.id);
 
   const seatColors = {
     available: "#4caf50",
@@ -35,7 +38,7 @@ export const useSeatColor = ({
 
   const { backgroundColor, textColor, borderColor, icon } = useMemo(() => {
     // Xử lý trực tiếp dựa trên seatFeature, không cần mock seat
-    if (!selectedSeats) {
+    if (!isSelected) {
       return {
         backgroundColor: "#fff",
         textColor: theme.palette.text.primary,

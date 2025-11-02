@@ -1,19 +1,13 @@
-import { useMemo } from "react";
 import type { Seat } from "../../../../../utils/type";
-import theme from "../../../../../scss/theme";
 import {
   Accessibility,
   AirlineSeatLegroomExtra,
-  Chair,
   FamilyRestroom,
   MeetingRoom,
   Notes,
   Paid,
   Stairs,
-  StarBorder,
-  Wc,
   WindowOutlined,
-  WorkOutline,
 } from "@mui/icons-material";
 import { Box, Stack, Typography } from "@mui/material";
 

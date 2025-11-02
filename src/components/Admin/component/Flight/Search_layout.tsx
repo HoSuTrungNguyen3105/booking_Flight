@@ -32,6 +32,7 @@ import { useToast } from "../../../../context/ToastContext.tsx";
 import type { IDetailItem } from "../../../../common/CustomRender/DetailSection.tsx";
 import DetailSection from "../../../../common/CustomRender/DetailSection.tsx";
 import { DateFormatEnum, formatDate } from "../../../../hooks/format.ts";
+import { ResponseCode } from "../../../../utils/response.ts";
 
 type FlightId = {
   id: number;
@@ -59,7 +60,7 @@ export type SearchFlightDto = {
 };
 
 const Search_layout: React.FC = () => {
-  const [flightData, setFlightData] = React.useState<DataFlight[]>([]);
+  // const [flightData, setFlightData] = React.useState<DataFlight[]>([]);
   const [flightId, setFlightId] = React.useState<FlightId | null>(null);
   const [selectId, setSelectId] = React.useState<number[]>([]);
   const [mode, setMode] = React.useState<"advance" | "simple">("simple");
@@ -71,7 +72,7 @@ const Search_layout: React.FC = () => {
   const [flightParams, setFlightParams] = React.useState<SearchFlightDto>({
     from: "",
     to: "",
-    departDate: 0,
+    departDate: undefined,
     returnDate: undefined,
     passengers: undefined,
     flightType: undefined,
@@ -100,10 +101,10 @@ const Search_layout: React.FC = () => {
   } = useSearchFlight();
 
   const {
-    control: controlSearch,
+    control,
     handleSubmit: handleSearchSubmit,
     getValues: getValues,
-    register: registerSearch,
+    register,
     reset: resetSearch,
   } = useForm<SearchFlightDto>({
     defaultValues: flightParams,
@@ -137,29 +138,8 @@ const Search_layout: React.FC = () => {
     }
   }, [mode]);
 
-  const resetForm = () => {
-    setFlightParams({
-      from: "",
-      to: "",
-      departDate: 0,
-      returnDate: undefined,
-      passengers: undefined,
-      flightType: undefined,
-      gate: "",
-      cabinClass: "ECONOMY",
-      aircraftCode: "",
-      status: undefined,
-      minPrice: undefined,
-      maxPrice: undefined,
-      terminal: "",
-      minDelayMinutes: undefined,
-      maxDelayMinutes: undefined,
-      includeCancelled: false,
-    });
-  };
-
   const { reset: resetUpdate } = useForm<DataFlight[]>({
-    defaultValues: flightData,
+    defaultValues: rowData,
   });
 
   const onSubmitValue = React.useCallback(
@@ -167,7 +147,7 @@ const Search_layout: React.FC = () => {
       try {
         setIsSearch(true);
         const res = await refetchSearchFlightList(values);
-        if (res?.resultCode === "00") {
+        if (res?.resultCode === ResponseCode.SUCCESS) {
           const allFlights = [
             ...(res.data?.outbound || []),
             ...(res.data?.inbound || []),
@@ -222,16 +202,6 @@ const Search_layout: React.FC = () => {
     }
   };
 
-  const handleClose = (): void => {
-    // setUpdateFlight(false);
-    setFlightId(null);
-    setSelectId([]);
-  };
-
-  const resetUpdateField = async () => {
-    await resetUpdate(flightData);
-  };
-
   const handleDeleteClick = (): void => {
     if (isUpdate) return;
     if (selectId.length === 0) {
@@ -256,12 +226,8 @@ const Search_layout: React.FC = () => {
 
   const [flightRows, setFlightRows] = React.useState<GridRowDef[]>([]);
 
-  const [selectedMealRows, setSelectedMealRows] = React.useState<GridRowDef[]>(
-    []
-  );
-
   const handleFlightRowSelection = (selectedIds: any[]) => {
-    setSelectedMealRows((prev) => {
+    setFlightRows((prev) => {
       const newSelectedRows = flightRows.filter((row) =>
         selectedIds.includes(row.id)
       );
@@ -383,11 +349,7 @@ const Search_layout: React.FC = () => {
       },
     ];
 
-    return (
-      <Box sx={{ height: "auto", width: "100%" }}>
-        <DetailSection data={detailInfoProfile} />
-      </Box>
-    );
+    return <DetailSection data={detailInfoProfile} />;
   }, [flightParams]);
 
   // Hàm xử lý thay đổi cho number fields
