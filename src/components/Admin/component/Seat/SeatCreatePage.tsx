@@ -5,7 +5,7 @@ import {
   useSeatCreate,
   type CreateSeatDto,
 } from "../../../../context/Api/usePostApi";
-import CreateSeatModal from "./CreateSeatModal";
+import CreateSeatModal from "./modal/CreateSeatModal";
 import { getMessage, ResponseCode } from "../../../../utils/response";
 import { useToast } from "../../../../context/ToastContext";
 

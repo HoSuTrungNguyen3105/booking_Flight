@@ -7,9 +7,9 @@ import {
   type SetStateAction,
 } from "react";
 import AddIcon from "@mui/icons-material/Add";
-import type { CreateSeatDto } from "../../../../context/Api/usePostApi";
-import InputTextField from "../../../../common/Input/InputTextField";
-import BaseModal from "../../../../common/Modal/BaseModal";
+import type { CreateSeatDto } from "../../../../../context/Api/usePostApi";
+import InputTextField from "../../../../../common/Input/InputTextField";
+import BaseModal from "../../../../../common/Modal/BaseModal";
 
 interface IModalStatisticalDataLearningProps {
   open: boolean;

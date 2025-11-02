@@ -1,10 +1,10 @@
 import { Box, Button, Typography, FormControl } from "@mui/material";
 import { memo, useCallback, useMemo, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
-import BaseModal from "../../../../common/Modal/BaseModal";
-import SelectDropdown from "../../../../common/Dropdown/SelectDropdown";
+import BaseModal from "../../../../../common/Modal/BaseModal";
+import SelectDropdown from "../../../../../common/Dropdown/SelectDropdown";
 // import Android12Switch from "../../../../common/Switch/Switch";
-import type { Seat, SeatTypeValue } from "../../../../utils/type";
+import type { Seat, SeatTypeValue } from "../../../../../utils/type";
 
 interface IModalStatisticalDataLearningProps {
   open: boolean;
@@ -13,10 +13,10 @@ interface IModalStatisticalDataLearningProps {
   selectedSeats?: { seatIds: number[] };
 }
 
-interface SeatFeatureOption {
+type SeatFeatureOption = {
   value: keyof SeatFeatures;
   label: string;
-}
+};
 
 export type SeatFeatures = Pick<
   Seat,

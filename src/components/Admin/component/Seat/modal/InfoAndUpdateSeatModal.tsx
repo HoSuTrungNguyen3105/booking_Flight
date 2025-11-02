@@ -1,17 +1,17 @@
 import { Box, Button, Grid } from "@mui/material";
 import { memo, useCallback } from "react";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
-import BaseModal from "../../../../common/Modal/BaseModal";
-import InputTextField from "../../../../common/Input/InputTextField";
-import type { Seat, SeatTypeValue } from "../../../../utils/type";
-import { useSeatUpdateByIds } from "../../../../context/Api/usePostApi";
-import Android12Switch from "../../../../common/Switch/Switch";
-import InputNumber from "../../../../common/Input/InputNumber";
-import SelectDropdown from "../../../../common/Dropdown/SelectDropdown";
+import BaseModal from "../../../../../common/Modal/BaseModal";
+import InputTextField from "../../../../../common/Input/InputTextField";
+import type { Seat, SeatTypeValue } from "../../../../../utils/type";
+import { useSeatUpdateByIds } from "../../../../../context/Api/usePostApi";
+import Android12Switch from "../../../../../common/Switch/Switch";
+import InputNumber from "../../../../../common/Input/InputNumber";
+import SelectDropdown from "../../../../../common/Dropdown/SelectDropdown";
 import {
   mapStringToDropdown,
   useFindAllSeatTypes,
-} from "../../../../context/Api/useGetApi";
+} from "../../../../../context/Api/useGetApi";
 
 interface ISeatModalProps {
   open: boolean;

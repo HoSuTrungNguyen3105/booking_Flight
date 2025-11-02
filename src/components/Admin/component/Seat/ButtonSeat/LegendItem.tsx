@@ -1,8 +1,8 @@
 import { Box, Card, styled, Typography, useMediaQuery } from "@mui/material";
 import { memo, useMemo } from "react";
-import theme from "../../../../scss/theme";
-import { useSeatColor } from "./useSeatColor";
-import type { SeatFeatures } from "./SeatManagementModal";
+import theme from "../../../../../scss/theme";
+import { useSeatColor } from "../hook/useSeatColor";
+import type { SeatFeatures } from "../modal/SeatManagementModal";
 
 export interface SeatFeatureOption {
   value: keyof SeatFeatures;
@@ -45,7 +45,7 @@ const LegendItemSection = () => {
       >
         {seatFeatureOptions.map((option) => {
           const { backgroundColor, borderColor, textColor, icon } =
-            useSeatColor(); // ✅ gọi hook cho từng loại ghế
+            useSeatColor(option.value);
 
           return (
             <Box

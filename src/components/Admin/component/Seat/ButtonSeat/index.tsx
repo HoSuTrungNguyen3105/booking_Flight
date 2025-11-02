@@ -1,9 +1,10 @@
 import React, { memo } from "react";
 import { Box, Button, Tooltip, Stack } from "@mui/material";
-import type { Seat } from "../../../../utils/type";
-import theme from "../../../../scss/theme";
-import { useSeatManagement } from "./useSeatManagement";
-import { useSeatColor } from "./useSeatColor";
+import type { Seat } from "../../../../../utils/type";
+import theme from "../../../../../scss/theme";
+import { useSeatManagement } from "../hook/useSeatManagement";
+import { useSeatColor } from "../hook/useSeatColor";
+import { type SeatFeatures } from "../modal/SeatManagementModal";
 
 interface ButtonSeatProps {
   seat: Seat;
@@ -19,8 +20,26 @@ const ButtonSeat: React.FC<ButtonSeatProps> = ({
     seat,
     selectedSeats,
   });
+  const seatWithFeatures = seat as SeatFeatures;
 
-  const { backgroundColor, textColor, borderColor, icon } = useSeatColor();
+  const featureKeys: (keyof SeatFeatures)[] = [
+    "isBooked",
+    "isWing",
+    "isAvailable",
+    "isExitRow",
+    "isNearLavatory",
+    "isHandicapAccessible",
+    "isUpperDeck",
+    "isExtraLegroom",
+  ];
+  const key = featureKeys.find((k) => seatWithFeatures[k] === true);
+
+  // else if (seatWithFeatures.isExitRow) key = "isExitRow";
+
+  const { backgroundColor, textColor, borderColor, icon } = useSeatColor({
+    seatFeature: key,
+    selectedSeats: selectedSeats,
+  });
 
   return (
     <Tooltip title={tooltipTitle} arrow>

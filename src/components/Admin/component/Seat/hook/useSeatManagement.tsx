@@ -1,6 +1,6 @@
 import { useMemo } from "react";
-import type { Seat } from "../../../../utils/type";
-import theme from "../../../../scss/theme";
+import type { Seat } from "../../../../../utils/type";
+import theme from "../../../../../scss/theme";
 import {
   Accessibility,
   AirlineSeatLegroomExtra,
