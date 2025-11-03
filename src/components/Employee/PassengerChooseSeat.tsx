@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import { memo } from "react";
 import {
   Box,
   Typography,
@@ -19,22 +19,22 @@ import { useChooseSeatToBooking } from "./useChooseSeatToBooking";
 import LegendItem from "../Admin/component/Seat/ButtonSeat/LegendItem";
 import ButtonSeat from "../Admin/component/Seat/ButtonSeat";
 import ChooseSeatModal from "./ChooseSeatModal";
+import { useLocation, useNavigate } from "react-router-dom";
 
-type FlightWithSeatLayoutProps = {
-  id: number;
-  onReturn: () => void;
-};
+// type FlightWithSeatLayoutProps = {
+//   id: number;
+// };
 
-const PassengerChooseSeat: React.FC<FlightWithSeatLayoutProps> = ({
-  id,
-  onReturn,
-}) => {
+const PassengerChooseSeat = () => {
+  const location = useLocation();
+  const { id } = location.state || {};
+  const navigate = useNavigate();
   const {
     detail,
     setMaxSelectSeats,
     getTypeColor,
     handleSelectSeat,
-    setSelectedSeats,
+    // setSelectedSeats,
     seatCount,
     filteredSeats,
     handleResetSelections,
@@ -45,14 +45,14 @@ const PassengerChooseSeat: React.FC<FlightWithSeatLayoutProps> = ({
     setCreateSeat,
     updateSeat,
     handleOpenUpdateModal,
-    selectedSeat,
-    refetchGetAllInfoFlightData,
+    // selectedSeat,
+    // refetchGetAllInfoFlightData,
     getAllInfoFlightByIdData,
     selectedSeats,
     maxSelectSeats,
     filter,
-    setOpenSeatModal,
-    setSelectedSeat,
+    // setOpenSeatModal,
+    // setSelectedSeat,
   } = useChooseSeatToBooking({
     id,
   });
@@ -68,7 +68,7 @@ const PassengerChooseSeat: React.FC<FlightWithSeatLayoutProps> = ({
             mb: 1,
           }}
         >
-          <Button onClick={onReturn} variant="contained">
+          <Button onClick={() => navigate(-1)} variant="contained">
             {" "}
             Return
           </Button>
@@ -111,15 +111,6 @@ const PassengerChooseSeat: React.FC<FlightWithSeatLayoutProps> = ({
               onClick={() => setMaxSelectSeats(1)}
             >
               Single
-            </Button>
-
-            <Typography>Select Multi seat</Typography>
-
-            <Button
-              variant={maxSelectSeats > 1 ? "contained" : "outlined"}
-              onClick={() => setMaxSelectSeats(50)}
-            >
-              Multiple
             </Button>
 
             <DetailSection mode="row" data={detail} />

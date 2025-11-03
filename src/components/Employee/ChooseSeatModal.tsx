@@ -127,7 +127,7 @@ const ChooseSeatModal = ({
     <BaseModal
       open={open}
       onClose={onClose}
-      title="Update Seats"
+      title="Choose Seats"
       Icon={AddIcon}
       maxWidth="xl"
       slots={{ content: renderContent(), actions: renderActions() }}

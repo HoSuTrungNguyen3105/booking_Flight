@@ -1,22 +1,140 @@
-import React from "react";
+import React, { memo, useMemo, useState } from "react";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Grid,
+  TextField,
+  Typography,
+  Stack,
+} from "@mui/material";
+import { FlightOutlined, Search } from "@mui/icons-material";
+import { useForm } from "react-hook-form";
 import { useGetAllFlightMainInfo } from "../../context/Api/useGetApi";
-import { formatDate } from "../../hooks/format";
-import { Card, Grid } from "@mui/material";
+import { DateFormatEnum, formatDate } from "../../hooks/format";
+import Zigzag from "../../common/IconComponent/Zigzag";
+import { useNavigate } from "react-router-dom";
 
-const FlightInfoPage = () => {
+interface SearchFormData {
+  departureAirport: string;
+  arrivalAirport: string;
+  flightNo: string;
+}
+
+const FlightInfoPage: React.FC = () => {
   const { getAllFlightInfoInfo } = useGetAllFlightMainInfo();
   const res = getAllFlightInfoInfo?.list || [];
+
+  const { register, handleSubmit, reset } = useForm<SearchFormData>();
+  const [filtered, setFiltered] = useState(res);
+  const navigate = useNavigate();
+  /** Lọc chuyến bay theo input */
+  const onSearch = (data: SearchFormData) => {
+    const filteredFlights = res.filter((f: any) => {
+      const matchDeparture = data.departureAirport
+        ? f.departureAirport
+            ?.toLowerCase()
+            .includes(data.departureAirport.toLowerCase())
+        : true;
+      const matchArrival = data.arrivalAirport
+        ? f.arrivalAirport
+            ?.toLowerCase()
+            .includes(data.arrivalAirport.toLowerCase())
+        : true;
+      const matchFlightNo = data.flightNo
+        ? f.flightNo?.toLowerCase().includes(data.flightNo.toLowerCase())
+        : true;
+
+      return matchDeparture && matchArrival && matchFlightNo;
+    });
+
+    setFiltered(filteredFlights);
+  };
+
+  /** Reset filter */
+  const onReset = () => {
+    reset();
+    setFiltered(res);
+  };
+
+  const handleNavigate = (id: number) => {
+    navigate("/booking-detail", { state: { id } });
+  };
+
+  /** Render danh sách */
+  const displayFlights = useMemo(() => filtered, [filtered]);
+
   return (
-    <div>
+    <Box sx={{ p: 3 }}>
+      <Card
+        sx={{
+          maxWidth: "100%",
+          borderRadius: 3,
+          boxShadow: 3,
+          p: 3,
+          mb: 3,
+          backgroundColor: "#fafafa",
+        }}
+      >
+        <Typography variant="h6" fontWeight="bold" mb={2}>
+          🔍 Search Flights
+        </Typography>
+        <form onSubmit={handleSubmit(onSearch)}>
+          <Grid container spacing={2}>
+            <Grid size={4}>
+              <TextField
+                fullWidth
+                label="Departure Airport"
+                variant="outlined"
+                {...register("departureAirport")}
+              />
+            </Grid>
+            <Grid size={4}>
+              <TextField
+                fullWidth
+                label="Arrival Airport"
+                variant="outlined"
+                {...register("arrivalAirport")}
+              />
+            </Grid>
+            <Grid size={4}>
+              <TextField
+                fullWidth
+                label="Flight Number"
+                variant="outlined"
+                {...register("flightNo")}
+              />
+            </Grid>
+          </Grid>
+
+          <Stack direction="row" justifyContent="flex-end" spacing={2} mt={2}>
+            <Button onClick={onReset} variant="outlined" color="inherit">
+              Reset
+            </Button>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              startIcon={<Search />}
+            >
+              Search
+            </Button>
+          </Stack>
+        </form>
+      </Card>
+
       <Grid container spacing={2} mt={1}>
-        {res.length > 0 ? (
-          res.map((booking) => (
-            <Grid size={12} key={booking.flightId}>
+        {displayFlights.length > 0 ? (
+          displayFlights.map((flight: any) => (
+            <Grid size={12} key={flight.flightId}>
               <Card
                 sx={{
-                  borderRadius: 2,
+                  borderRadius: 3,
                   padding: 2,
-                  boxShadow: 3,
+                  //boxShadow: 2,
+                  //   transition: "all 0.3s",
+                  //   "&:hover": { boxShadow: 5, transform: "scale(1.01)" },
                   maxWidth: "95%",
                   margin: "0 auto",
                 }}
@@ -28,7 +146,7 @@ const FlightInfoPage = () => {
                     gap: 2,
                   }}
                 >
-                  {/* Thông tin Booking */}
+                  {/* Flight Header */}
                   <Box
                     sx={{
                       display: "flex",
@@ -40,126 +158,90 @@ const FlightInfoPage = () => {
                     }}
                   >
                     <Typography variant="subtitle1" fontWeight="bold">
-                      Booking ID: {booking.flightId}
+                      Flight ID: {flight.flightId}
                     </Typography>
                     <Typography variant="body2">
-                      aircraftCode ID: {booking.aircraftCode}
+                      Aircraft: {flight.aircraftCode}
                     </Typography>
                     <Typography variant="body2">
-                      Booking Time:{" "}
+                      Departure:{" "}
                       {formatDate(
                         DateFormatEnum.DD_MM_YYYY_HH_MM_SS,
-                        booking.bookingTime
+                        flight.scheduledDeparture
                       )}
                     </Typography>
                   </Box>
 
-                  {/* Thông tin Flight */}
+                  {/* Flight Body */}
                   <Box
                     sx={{
                       display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
                       flexWrap: "wrap",
-                      gap: 3,
+                      justifyContent: "space-between",
+                      gap: 2,
+                      alignItems: "center",
                     }}
                   >
-                    <Box sx={{ alignContent: "center" }}>
-                      <FlightOutlined
-                        sx={{ fontSize: 60, transform: "rotate(50deg)" }}
-                      />
-                      <Typography variant="body1" color="black">
-                        Flight Number: {booking.flight.flightNo}
-                      </Typography>
-                    </Box>
-
-                    <Box sx={{ alignContent: "center", minWidth: 160 }}>
-                      <Typography variant="h6" color="text.secondary">
-                        {booking.flight.aircraftCode}
-                      </Typography>
-                    </Box>
-
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                      <Box
-                        sx={{
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "center",
-                        }}
-                      >
-                        <Typography variant="h6">
-                          {formatDateKR(
-                            DateFormatEnum.DD_MM_YYYY_HH_MM_SS,
-                            booking.flight.scheduledDeparture
-                          )}
-                        </Typography>
-                        <Box
-                          sx={{
-                            px: 2,
-                            py: 0.5,
-                            border: "solid 1px black",
-                            borderRadius: "20px",
-                            fontWeight: "bold",
-                            backgroundColor: "#e3f2fd",
-                            color: "#0d47a1",
-                          }}
-                        >
-                          {booking.flight.departureAirport}
-                        </Box>
-                      </Box>
-
-                      <Zigzag
-                        items={
-                          <FlightOutlined
-                            fontSize="medium"
-                            sx={{
-                              color: "#007bff",
-                              // transform: "rotate(90deg)",
-                            }}
-                          />
-                        }
+                      <FlightOutlined
+                        sx={{ fontSize: 48, color: "primary.main" }}
                       />
-
-                      <Box
-                        sx={{
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "center",
-                        }}
-                      >
-                        <Typography variant="h6">
-                          {formatDateKR(
-                            DateFormatEnum.DD_MM_YYYY_HH_MM_SS,
-                            booking.flight.scheduledArrival
-                          )}
-                        </Typography>
-                        <Box
-                          sx={{
-                            px: 2,
-                            py: 0.5,
-                            border: "solid 1px black",
-                            borderRadius: "20px",
-                            fontWeight: "bold",
-                            backgroundColor: "#fce4ec",
-                            color: "#880e4f",
-                          }}
-                        >
-                          {booking.flight.arrivalAirport}
-                        </Box>
-                      </Box>
-                    </Box>
-
-                    <Box sx={{ alignContent: "center" }}>
-                      <Typography variant="body1" color="black">
-                        Status: {booking.flight.flightStatuses?.[0].status}
+                      <Typography variant="body1">
+                        Flight No: {flight.flightNo}
                       </Typography>
                     </Box>
 
-                    <Box sx={{ alignContent: "center" }}>
-                      <Button type="button" variant="contained">
-                        INFO BOOKING
-                      </Button>
+                    <Box sx={{ textAlign: "center" }}>
+                      <Typography variant="body2" color="text.secondary">
+                        Departure
+                      </Typography>
+                      <Typography variant="h6" color="primary">
+                        {flight.departureAirport}
+                      </Typography>
                     </Box>
+
+                    <Zigzag
+                      items={
+                        <FlightOutlined
+                          fontSize="medium"
+                          sx={{
+                            color: "#007bff",
+                          }}
+                        />
+                      }
+                    />
+
+                    <Box sx={{ textAlign: "center" }}>
+                      <Typography variant="body2" color="text.secondary">
+                        Arrival
+                      </Typography>
+                      <Typography variant="h6" color="error">
+                        {flight.arrivalAirport}
+                      </Typography>
+                    </Box>
+
+                    <Typography variant="body1" fontWeight={600}>
+                      Status:{" "}
+                      <Box
+                        component="span"
+                        sx={{
+                          color:
+                            flight.flightStatuses?.[0]?.status === "CANCELLED"
+                              ? "error.main"
+                              : "success.main",
+                        }}
+                      >
+                        {flight.flightStatuses?.[0]?.status ?? "UNKNOWN"}
+                      </Box>
+                    </Typography>
+
+                    <Button
+                      onClick={() => handleNavigate(flight.flightId)}
+                      variant="contained"
+                      color="primary"
+                    >
+                      View Details
+                    </Button>
                   </Box>
                 </CardContent>
               </Card>
@@ -172,13 +254,13 @@ const FlightInfoPage = () => {
               textAlign="center"
               color="text.secondary"
             >
-              Không có dữ liệu chuyến đi
+              No flights found. Please adjust your search.
             </Typography>
           </Grid>
         )}
       </Grid>
-    </div>
+    </Box>
   );
 };
 
-export default FlightInfoPage;
+export default memo(FlightInfoPage);

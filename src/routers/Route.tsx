@@ -43,6 +43,7 @@ import ContactPage from "../components/Contact";
 import PassengerProfile from "../components/Employee/PassengerProfile";
 import PaymentForm from "../components/Employee/PaymentForm";
 import PassengerChooseSeat from "../components/Employee/PassengerChooseSeat";
+import FlightInfoPage from "../components/Employee/FlightInfoPage";
 
 const routes = [
   {
@@ -85,13 +86,17 @@ const routes = [
         path: "/profile",
         element: <PassengerProfile />,
       },
-      // {
-      //   path: "/profile",
-      //   element: <PassengerChooseSeat />,
-      // },
+      {
+        path: "/flight/info-page",
+        element: <FlightInfoPage />,
+      },
       {
         path: "/payment",
         element: <PaymentForm onPay={() => {}} passengers={[]} />,
+      },
+      {
+        path: "/booking-detail",
+        element: <PassengerChooseSeat />,
       },
       {
         path: ROUTE_PATHS.FILE_UPLOAD.replace("/", ""),

@@ -30,6 +30,7 @@ export const Header = () => {
     { value: "/contact", label: "Contact us" },
     { value: "/profile", label: "Profile" },
     { value: "/payment", label: "News" },
+    { value: "/flight/info-page", label: "flpage" },
   ];
 
   const handleNavigate = useCallback((value: string) => {
