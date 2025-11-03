@@ -27,7 +27,7 @@ import {
 import DateTimePickerComponent from "../../common/DayPicker";
 import type { SearchBookingFlightProps } from "../../utils/type";
 import type { SearchFlightDto } from "./../Admin/component/Flight/Search_layout";
-import { DateFormatEnum, formatDate, formatDateKR } from "../../hooks/format";
+import { DateFormatEnum, formatDate } from "../../hooks/format";
 import Android12Switch from "./../../common/Switch/Switch";
 import { ResponseCode } from "../../utils/response";
 
@@ -89,8 +89,6 @@ const BookTicket = () => {
       }
       return acc;
     }, {} as Partial<SearchFlightDto>);
-
-    console.log("payload", payload);
 
     const res = await refetchSearchBooking(payload);
 
@@ -332,7 +330,7 @@ const BookTicket = () => {
                         </Typography>
                         <Typography variant="body2">
                           Booking Time:{" "}
-                          {formatDateKR(
+                          {formatDate(
                             DateFormatEnum.DD_MM_YYYY_HH_MM_SS,
                             booking.bookingTime
                           )}
@@ -375,7 +373,7 @@ const BookTicket = () => {
                             }}
                           >
                             <Typography variant="h6">
-                              {formatDateKR(
+                              {formatDate(
                                 DateFormatEnum.DD_MM_YYYY_HH_MM_SS,
                                 booking.flight.scheduledDeparture
                               )}
@@ -415,7 +413,7 @@ const BookTicket = () => {
                             }}
                           >
                             <Typography variant="h6">
-                              {formatDateKR(
+                              {formatDate(
                                 DateFormatEnum.DD_MM_YYYY_HH_MM_SS,
                                 booking.flight.scheduledArrival
                               )}
@@ -547,7 +545,7 @@ const BookTicket = () => {
                             }}
                           >
                             <Typography variant="h6">
-                              {formatDateKR(
+                              {formatDate(
                                 DateFormatEnum.DD_MM_YYYY_HH_MM_SS,
                                 booking.flight.scheduledDeparture
                               )}

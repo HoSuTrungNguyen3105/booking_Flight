@@ -15,7 +15,7 @@ import { useToast } from "../../../../context/ToastContext";
 import InputTextField from "../../../../common/Input/InputTextField";
 
 const FlightStatus = ({ onReturn }: { onReturn: () => void }) => {
-  const { dataLeaveStatuses } = useFindAllFlightStatuses();
+  const { dataFlightStatuses } = useFindAllFlightStatuses();
   const { getAllFlightIds, refetchGetAllFlightIds } = useGetAllFlightIds();
   const [description, setDescription] = useState<Record<number, string>>({});
   const [edited, setEdited] = useState<Record<number, string>>({});
@@ -108,7 +108,7 @@ const FlightStatus = ({ onReturn }: { onReturn: () => void }) => {
     return edited[flightId] !== undefined;
   };
 
-  const statusOptions = mapStringToDropdown(dataLeaveStatuses?.data || []).map(
+  const statusOptions = mapStringToDropdown(dataFlightStatuses?.data || []).map(
     (item) => ({
       ...item,
       color: getStatusColor(item.value),

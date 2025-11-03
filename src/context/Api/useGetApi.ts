@@ -311,6 +311,19 @@ export const useGetAllAircraftInfo = () => {
   };
 };
 
+export const useGetAllFlightMainInfo = () => {
+  const { data: getAllFlightInfoInfo, refetch: refetchGetAllFlightInfoInfo } =
+    useFetch<FlightDetailApiResponse, null>({
+      url: "/sys/flights/flight-info/main",
+      autoFetch: true,
+      config: getMethod,
+    });
+  return {
+    getAllFlightInfoInfo,
+    refetchGetAllFlightInfoInfo,
+  };
+};
+
 export const useGetAllFlightIds = () => {
   const { data: getAllFlightIds, refetch: refetchGetAllFlightIds } = useFetch<
     StatusResponseMessage,

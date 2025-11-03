@@ -42,6 +42,7 @@ import {
   type ResponseGGAuthenticate,
   type LoginDataResponse,
   type UserData,
+  type Ticket,
 } from "../../utils/type.ts";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
 import { useFetch } from "../use[custom]/useFetch.ts";
@@ -403,6 +404,19 @@ export const useRequestUnlockAccount = () => {
   return {
     requestUnlockAccount,
     refetchRequestUnlockAccount,
+  };
+};
+
+export const useFindPassengerTicket = () => {
+  const { data: dataFindPassengerTicket, refetch: refetchFindPassengerTicket } =
+    useFetch<DetailResponseMessage<Ticket>, { id: string }>({
+      url: "/sys/flights/find-passenger-ticket",
+      autoFetch: true,
+      config: postMethod,
+    });
+  return {
+    dataFindPassengerTicket,
+    refetchFindPassengerTicket,
   };
 };
 

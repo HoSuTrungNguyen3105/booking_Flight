@@ -29,7 +29,7 @@ export const Header = () => {
   const valueTrans = [
     { value: "/contact", label: "Contact us" },
     { value: "/profile", label: "Profile" },
-    { value: "/news", label: "News" },
+    { value: "/payment", label: "News" },
   ];
 
   const handleNavigate = useCallback((value: string) => {
@@ -121,13 +121,6 @@ export const Header = () => {
                 {t("system_name")}
               </Typography>
             </Box>
-            <Box
-              sx={{
-                padding: { xs: "4px", sm: "6px" },
-              }}
-            >
-              <LanguageButton />
-            </Box>
           </Stack>
 
           {/* <Stack direction="row" alignItems="center" spacing={2}> */}
@@ -199,6 +192,13 @@ export const Header = () => {
                 cursor: "pointer",
               }}
             >
+              <Box
+                sx={{
+                  padding: { xs: "4px", sm: "6px" },
+                }}
+              >
+                <LanguageButton />
+              </Box>
               <SignOut />
             </Stack>
           ) : (

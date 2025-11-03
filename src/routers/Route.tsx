@@ -41,6 +41,8 @@ import Hero from "../components/Sample/Hero";
 import TicketPage from "../components/Employee";
 import ContactPage from "../components/Contact";
 import PassengerProfile from "../components/Employee/PassengerProfile";
+import PaymentForm from "../components/Employee/PaymentForm";
+import PassengerChooseSeat from "../components/Employee/PassengerChooseSeat";
 
 const routes = [
   {
@@ -82,6 +84,14 @@ const routes = [
       {
         path: "/profile",
         element: <PassengerProfile />,
+      },
+      // {
+      //   path: "/profile",
+      //   element: <PassengerChooseSeat />,
+      // },
+      {
+        path: "/payment",
+        element: <PaymentForm onPay={() => {}} passengers={[]} />,
       },
       {
         path: ROUTE_PATHS.FILE_UPLOAD.replace("/", ""),

@@ -2,9 +2,6 @@ import React, { memo, useState } from "react";
 import {
   Box,
   Button,
-  ButtonGroup,
-  ButtonGroupButtonContext,
-  ButtonGroupContext,
   Stack,
   ToggleButton,
   ToggleButtonGroup,
@@ -14,6 +11,7 @@ import type { Passenger } from "../../utils/type";
 import { useAuth } from "../../context/AuthContext";
 import { Link } from "react-router-dom";
 import InputTextField from "../../common/Input/InputTextField";
+import TicketPage from ".";
 
 type ProfilePassenger = Pick<
   Passenger,
@@ -22,7 +20,7 @@ type ProfilePassenger = Pick<
 
 const PassengerProfile = () => {
   const { passenger } = useAuth();
-  const [value, setValue] = useState("n");
+  const [value, setValue] = useState("account");
 
   const handleChangeToggle = (
     event: React.MouseEvent<HTMLElement>,
@@ -63,16 +61,15 @@ const PassengerProfile = () => {
       onSubmit={handleSubmit}
       sx={{
         maxWidth: "80%",
-        margin: "30px auto",
+        margin: "25px auto 10px ",
         display: "flex",
         flexDirection: "column",
         gap: 3,
       }}
     >
-      {/* <Heading type={1} color='gray' text='My account' /> */}
-      <p className="gray form-information">
+      <Typography variant="h6" color="text.secondary">
         You can update your profile photo and your account details here.
-      </p>
+      </Typography>
       {/* <div className={{  padding: 30px 0;}}> */}
       <ToggleButtonGroup
         value={value}
@@ -80,75 +77,89 @@ const PassengerProfile = () => {
         onChange={handleChangeToggle}
         color="primary"
       >
-        <ToggleButton value="ticket">Ticket</ToggleButton>
         <ToggleButton value="account">Account</ToggleButton>
+        <ToggleButton value="ticket">Ticket</ToggleButton>
       </ToggleButtonGroup>
-      {/* </div> */}
-      {/* Name */}
-      <InputTextField
-        name="name"
-        value={formValues.fullName}
-        onChange={handleChange}
-        placeholder="Enter your name"
-      />
 
-      {/* Last Name */}
-      <InputTextField
-        name="lastname"
-        value={formValues.email}
-        onChange={handleChange}
-        placeholder="Enter your last name"
-      />
+      {value === "account" ? (
+        <>
+          <InputTextField
+            name="name"
+            value={formValues.fullName}
+            onChange={handleChange}
+            placeholder="Enter your name"
+          />
 
-      {/* Email */}
-      <Box display="flex" flexDirection="column" gap={1}>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography>Email address</Typography>
-          <Link to="/members/email" style={{ color: "#1976d2" }}>
-            Change e-mail
-          </Link>
-        </Box>
-        <InputTextField
-          type="email"
-          name="email"
-          value={formValues.email}
-          onChange={() => {}}
-          placeholder="Enter your e-mail address"
-          disabled
-        />
-      </Box>
+          <InputTextField
+            name="lastname"
+            value={formValues.email}
+            onChange={handleChange}
+            placeholder="Enter your last name"
+          />
 
-      {/* Password */}
-      <Box display="flex" flexDirection="column" gap={1}>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography>Password</Typography>
-          <Link to="/members/password" style={{ color: "#1976d2" }}>
-            Change password
-          </Link>
-        </Box>
-        <InputTextField
-          type="password"
-          name="password"
-          value="dummypassword"
-          placeholder="Enter your password"
-          disabled
-        />
-      </Box>
+          {/* Email */}
+          <Box display="flex" flexDirection="column" gap={1}>
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Typography>Email address</Typography>
+              <Link to="/members/email" style={{ color: "#1976d2" }}>
+                Change e-mail
+              </Link>
+            </Box>
+            <InputTextField
+              type="email"
+              name="email"
+              value={formValues.email}
+              onChange={() => {}}
+              placeholder="Enter your e-mail address"
+              disabled
+            />
+          </Box>
 
-      {/* Buttons */}
-      <Stack direction="row" spacing={2}>
-        <Button
-          variant="outlined"
-          color="inherit"
-          component={Link}
-          to="/members/signout"
-        >
-          Sign out
-        </Button>
-        <Button type="submit" variant="contained" color="primary">
-          Update profile
-        </Button>
-      </Stack>
+          {/* Password */}
+          <Box display="flex" flexDirection="column" gap={1}>
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Typography>Password</Typography>
+              <Link to="/members/password" style={{ color: "#1976d2" }}>
+                Change password
+              </Link>
+            </Box>
+            <InputTextField
+              type="password"
+              name="password"
+              value="dummypassword"
+              placeholder="Enter your password"
+              disabled
+            />
+          </Box>
+
+          {/* Buttons */}
+          <Stack direction="row" spacing={2}>
+            <Button
+              variant="outlined"
+              color="inherit"
+              component={Link}
+              to="/members/signout"
+            >
+              Sign out
+            </Button>
+            <Button type="submit" variant="contained" color="primary">
+              Update profile
+            </Button>
+          </Stack>
+        </>
+      ) : (
+        <>
+          <TicketPage />
+        </>
+      )}
     </Box>
   );
 };

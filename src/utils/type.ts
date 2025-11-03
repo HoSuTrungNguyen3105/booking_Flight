@@ -566,8 +566,9 @@ export interface Ticket {
   id: number;
   ticketNo: string;
   passengerId: string;
+  qrCodeImage?: string;
   flightId: number;
-  seatClass: "ECONOMY" | "BUSINESS";
+  seatClass: string;
   seatNo: string;
   bookedAt: string; // ISO datetime hoặc number nếu backend trả về timestamp
 
