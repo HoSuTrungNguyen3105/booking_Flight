@@ -1,13 +1,21 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Box, Typography, Button, Stack, IconButton } from "@mui/material";
+import React, { useEffect, useRef, useState, useCallback } from "react";
+import {
+  Box,
+  Typography,
+  Button,
+  Stack,
+  IconButton,
+  Fade,
+  useTheme,
+} from "@mui/material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 
 interface IProps {
   url: string;
   title: string;
-  color: string;
-  background: string;
+  color?: string;
+  background?: string;
   touch?: boolean;
   margin?: number;
   children: React.ReactNode;
@@ -16,191 +24,74 @@ interface IProps {
 const CardGroup: React.FC<IProps> = ({
   url,
   title,
-  color,
-  background,
-  margin,
-  touch,
+  color = "primary",
+  background = "transparent",
+  margin = 0,
+  //   touch = true,
   children,
 }) => {
-  const scrollRef = React.useRef<HTMLDivElement | null>(null);
+  const theme = useTheme();
+  const navRef = useRef<HTMLDivElement>(null);
 
-  //   const scroll = (direction: "left" | "right") => {
-  //     if (!scrollRef.current) return;
-  //     const { scrollLeft, clientWidth } = scrollRef.current;
-  //     const scrollTo =
-  //       direction === "left"
-  //         ? scrollLeft - clientWidth
-  //         : scrollLeft + clientWidth;
-  //     scrollRef.current.scrollTo({ left: scrollTo, behavior: "smooth" });
-  //   };
+  const [scrollState, setScrollState] = useState({
+    leftDisabled: true,
+    rightDisabled: false,
+  });
 
-  const startX = useRef<number>(0);
-  const isDown = useRef<boolean>(false);
-  const itemWidth = useRef<number>(0);
-  const scrollLeftX = useRef<number>(0);
-  const preventClick = useRef<boolean>(false);
-  const movedDistance = useRef<number>(0);
-  const navReferenceDiv = useRef<HTMLDivElement | null>(null);
+  // Cập nhật trạng thái nút
+  const updateArrows = useCallback(() => {
+    const el = navRef.current;
+    if (!el) return;
 
-  const [leftArrowDisabled, setLeftArrowDisabled] = useState<boolean>(true);
-  const [rightArrowDisabled, setRightArrowDisabled] = useState<boolean>(false);
+    const { scrollLeft, scrollWidth, offsetWidth } = el;
+    setScrollState({
+      leftDisabled: scrollLeft <= 0,
+      rightDisabled: scrollLeft + offsetWidth >= scrollWidth - 1,
+    });
+  }, []);
 
-  /**
-   * Sets up the scroll functionality and event listeners on the navigation element.
-   */
+  // Theo dõi scroll, resize, thay đổi children
   useEffect(() => {
-    const currentNav = navReferenceDiv.current!;
+    const el = navRef.current;
+    if (!el) return;
 
-    /**
-     * Updates the disabled state of the left and right arrow buttons based on the current scroll position.
-     */
-    const updateButtons = () => {
-      const { offsetWidth, scrollWidth, scrollLeft } = navReferenceDiv.current!;
+    // Cập nhật ngay sau khi render
+    const timeout = setTimeout(updateArrows, 100);
 
-      setLeftArrowDisabled(scrollLeft <= 0);
-
-      setRightArrowDisabled(
-        scrollWidth - Math.round(scrollLeft) <= offsetWidth + 1
-      );
-    };
-
-    /**
-     * Handles mouse movement during a drag interaction.
-     *
-     * @param e - The `MouseEvent` representing the mouse move event.
-     */
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!isDown.current) return;
-
-      const x = e.pageX - navReferenceDiv.current!.offsetLeft;
-
-      const walk = x - startX.current;
-
-      navReferenceDiv.current!.scrollLeft = scrollLeftX.current - walk;
-
-      movedDistance.current = Math.abs(walk);
-
-      preventClick.current = movedDistance.current > 5;
-
-      updateButtons();
-    };
-
-    /**
-     * Initiates a drag interaction when the mouse button is pressed down on the navigation element.
-     *
-     * @param e - The `MouseEvent` representing the mouse down event.
-     */
-    const handleMouseDown = (e: MouseEvent) => {
-      e.preventDefault();
-
-      isDown.current = true;
-
-      startX.current = e.pageX - navReferenceDiv.current!.offsetLeft;
-
-      scrollLeftX.current = navReferenceDiv.current!.scrollLeft;
-
-      preventClick.current = false;
-
-      movedDistance.current = 0;
-
-      updateButtons();
-    };
-
-    /**
-     * Ends the drag interaction when the mouse button is released.
-     */
-    const handleMouseUp = () => {
-      isDown.current = false;
-    };
-
-    /**
-     * Ends the drag interaction when the mouse leaves the navigation area.
-     */
-    const handleMouseLeave = () => {
-      isDown.current = false;
-      preventClick.current = false;
-    };
-
-    /**
-     * Updates the arrow button state during scrolling.
-     */
-    const handleScroll = () => {
-      updateButtons();
-    };
-
-    /**
-     * Prevents the default click action if the mouse has been dragged to avoid accidental clicks on child elements during scrolling.
-     *
-     * @param e - The `MouseEvent` representing the click event.
-     */
-    const handleClick = (e: MouseEvent) => {
-      if (preventClick.current) {
-        e.preventDefault();
-      }
-    };
-
-    if (currentNav.children.length > 0) {
-      const firstChild = currentNav.children[0] as HTMLElement;
-
-      itemWidth.current = firstChild.offsetWidth + (margin ?? 0);
-    }
-
-    updateButtons();
-
-    window.addEventListener("resize", updateButtons);
-    currentNav.addEventListener("click", handleClick);
-    currentNav.addEventListener("scroll", handleScroll);
-
-    if (touch) {
-      currentNav.addEventListener("mouseup", handleMouseUp);
-      currentNav.addEventListener("mousedown", handleMouseDown);
-      currentNav.addEventListener("mousemove", handleMouseMove);
-      currentNav.addEventListener("mouseleave", handleMouseLeave);
-    }
+    el.addEventListener("scroll", updateArrows);
+    const resizeObserver = new ResizeObserver(updateArrows);
+    resizeObserver.observe(el);
 
     return () => {
-      window.removeEventListener("resize", updateButtons);
-      currentNav.removeEventListener("click", handleClick);
-      currentNav.removeEventListener("scroll", handleScroll);
-
-      if (touch) {
-        currentNav.removeEventListener("mouseup", handleMouseUp);
-        currentNav.removeEventListener("mousedown", handleMouseDown);
-        currentNav.removeEventListener("mousemove", handleMouseMove);
-        currentNav.removeEventListener("mouseleave", handleMouseLeave);
-      }
+      clearTimeout(timeout);
+      el.removeEventListener("scroll", updateArrows);
+      resizeObserver.disconnect();
     };
-  }, [touch, margin]);
+  }, [updateArrows, children]);
 
-  /**
-   * Scrolls the navigation container horizontally by one item width.
-   *
-   * @param direction - A string indicating the direction to scroll, either 'left' or 'right'.
-   */
-  const handleHorizontalScroll = (direction: "left" | "right") => {
-    const scrollAmount =
-      direction === "left" ? -itemWidth.current : itemWidth.current;
+  // Scroll sang trái/phải
+  const handleScroll = (direction: "left" | "right") => {
+    const el = navRef.current;
+    if (!el) return;
+    const firstChild = el.children[0] as HTMLElement | undefined;
+    const scrollAmount = (firstChild?.offsetWidth || 300) + margin;
 
-    navReferenceDiv.current!.scrollBy({
-      left: scrollAmount,
+    el.scrollBy({
+      left: direction === "left" ? -scrollAmount : scrollAmount,
       behavior: "smooth",
     });
 
-    const { offsetWidth, scrollWidth, scrollLeft } = navReferenceDiv.current!;
-
-    setLeftArrowDisabled(scrollLeft <= 0);
-
-    setRightArrowDisabled(
-      scrollWidth - Math.round(scrollLeft) <= offsetWidth + 1
-    );
+    // Delay để chờ animation rồi cập nhật nút
+    setTimeout(updateArrows, 300);
   };
 
   return (
     <Box
       sx={{
-        py: 6,
-        px: 3,
-        backgroundColor: background || "transparent",
+        py: 1,
+        px: 2,
+        backgroundColor: background,
+        position: "relative",
       }}
     >
       {/* Header */}
@@ -212,21 +103,20 @@ const CardGroup: React.FC<IProps> = ({
       >
         <Typography
           variant="h5"
-          fontWeight={600}
-          color={color || "primary"}
+          fontWeight={700}
+          color={color}
           sx={{ textTransform: "capitalize" }}
         >
           {title}
         </Typography>
         <Button
           variant="contained"
-          color="primary"
           endIcon={<ArrowForwardIcon />}
           href={url}
           sx={{
             textTransform: "none",
             borderRadius: 3,
-            px: 2,
+            px: 2.5,
             py: 1,
           }}
         >
@@ -234,33 +124,47 @@ const CardGroup: React.FC<IProps> = ({
         </Button>
       </Stack>
 
-      {/* Slider / Scrollable container */}
-      <Box sx={{ position: "relative" }}>
-        {/* Left scroll button */}
-        {/* <IconButton
-          onClick={() => scroll("left")}
-          sx={{
-            position: "absolute",
-            left: 0,
-            top: "50%",
-            transform: "translateY(-50%)",
-            zIndex: 2,
-            bgcolor: "white",
-            boxShadow: 2,
-            "&:hover": { bgcolor: "grey.100" },
-          }}
-        >
-          <ArrowBackIosNewIcon fontSize="small" />
-        </IconButton> */}
+      {/* Scrollable container */}
+      <Box
+        sx={{
+          overflow: "hidden",
+          position: "relative",
+          margin: "20px auto 0 auto",
+          //   maxWidth: "1700px",
+          //   position: "relative",
+          //   margin: "20px auto 0 auto",
+        }}
+      >
+        {/* overflow: "hidden", position: "relative" */}
+        {/* Left arrow */}
+        <Fade in={!scrollState.leftDisabled}>
+          <IconButton
+            onClick={() => handleScroll("left")}
+            disabled={scrollState.leftDisabled}
+            sx={{
+              position: "absolute",
+              left: 8,
+              top: "50%",
+              transform: "translateY(-50%)",
+              zIndex: 2,
+              bgcolor: "white",
+              opacity: scrollState.leftDisabled ? 0.4 : 1,
+              boxShadow: 3,
+              "&:hover": { bgcolor: theme.palette.grey[100] },
+            }}
+          >
+            <ArrowBackIosNewIcon fontSize="small" />
+          </IconButton>
+        </Fade>
 
-        {/* Scrollable content */}
+        {/* Cards */}
         <Box
-          ref={scrollRef}
+          ref={navRef}
           sx={{
             display: "flex",
             overflowX: "auto",
-            scrollBehavior: "smooth",
             gap: 2,
+            scrollBehavior: "smooth",
             px: 6,
             "&::-webkit-scrollbar": { display: "none" },
           }}
@@ -268,67 +172,26 @@ const CardGroup: React.FC<IProps> = ({
           {children}
         </Box>
 
-        {/* Right scroll button */}
-        {/* <IconButton
-          onClick={() => scroll("right")}
-          sx={{
-            position: "absolute",
-            right: 0,
-            top: "50%",
-            transform: "translateY(-50%)",
-            zIndex: 2,
-            bgcolor: "white",
-            boxShadow: 2,
-            "&:hover": { bgcolor: "grey.100" },
-          }}
-        >
-          <ArrowForwardIcon fontSize="small" />
-        </IconButton> */}
-
-        {!leftArrowDisabled && (
-          <div className="left-arrow">
-            <button
-              type="button"
-              disabled={leftArrowDisabled}
-              onClick={() => handleHorizontalScroll("left")}
-              className={`button-circle ${
-                leftArrowDisabled ? "button-gray" : "button-default"
-              }`}
-            >
-              <span className="material-symbols-outlined">chevron_left</span>
-            </button>
-          </div>
-        )}
-        {/* <div className='scrollable' ref={navReferenceDiv}>
-        {children}
-      </div> */}
-        <Box
-          ref={navReferenceDiv}
-          sx={{
-            display: "flex",
-            overflowX: "auto",
-            scrollBehavior: "smooth",
-            gap: 2,
-            px: 6,
-            "&::-webkit-scrollbar": { display: "none" },
-          }}
-        >
-          {children}
-        </Box>
-        {!rightArrowDisabled && (
-          <div className="right-arrow">
-            <button
-              type="button"
-              disabled={rightArrowDisabled}
-              onClick={() => handleHorizontalScroll("right")}
-              className={`button-circle ${
-                rightArrowDisabled ? "button-gray" : "button-default"
-              }`}
-            >
-              <span className="material-symbols-outlined">chevron_right</span>
-            </button>
-          </div>
-        )}
+        {/* Right arrow */}
+        <Fade in={!scrollState.rightDisabled}>
+          <IconButton
+            onClick={() => handleScroll("right")}
+            disabled={scrollState.rightDisabled}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: "50%",
+              transform: "translateY(-50%)",
+              zIndex: 2,
+              bgcolor: "white",
+              opacity: scrollState.rightDisabled ? 0.4 : 1,
+              boxShadow: 3,
+              "&:hover": { bgcolor: theme.palette.grey[100] },
+            }}
+          >
+            <ArrowForwardIcon fontSize="small" />
+          </IconButton>
+        </Fade>
       </Box>
     </Box>
   );

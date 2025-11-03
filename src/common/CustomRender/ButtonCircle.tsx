@@ -47,11 +47,11 @@ const ButtonCircle: React.FC<ButtonCircleProps> = ({ url, icon, text }) => {
             width: 80,
             height: 80,
             borderRadius: "50%",
-            backgroundColor: theme.palette.primary.main,
+            backgroundColor: theme.palette.grey[200],
             color: "#fff",
             transition: "all 0.2s ease-in-out",
             "&:hover": {
-              backgroundColor: theme.palette.primary.dark,
+              backgroundColor: theme.palette.grey[100],
             },
           }}
         >

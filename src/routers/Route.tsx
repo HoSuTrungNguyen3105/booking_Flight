@@ -39,6 +39,8 @@ import FacilityManagement from "../components/Admin/component/InfrastructureEnti
 import GuestGuard from "../guard/GuardLayout";
 import Hero from "../components/Sample/Hero";
 import TicketPage from "../components/Employee";
+import ContactPage from "../components/Contact";
+import PassengerProfile from "../components/Employee/PassengerProfile";
 
 const routes = [
   {
@@ -72,6 +74,14 @@ const routes = [
       {
         path: "/TicketPage",
         element: <TicketPage />,
+      },
+      {
+        path: "/contact",
+        element: <ContactPage />,
+      },
+      {
+        path: "/profile",
+        element: <PassengerProfile />,
       },
       {
         path: ROUTE_PATHS.FILE_UPLOAD.replace("/", ""),
