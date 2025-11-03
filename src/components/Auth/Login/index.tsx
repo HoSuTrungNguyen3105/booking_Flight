@@ -21,7 +21,7 @@ interface ILoginForm {
   password: string;
 }
 
-type AuthType = "ID,PW" | "DEV" | "MFA";
+type AuthType = "ID,PW" | "DEV" | "MFA" | "ADMIN" | "MONITER";
 type ViewMode =
   | "login"
   | "register"
@@ -36,6 +36,8 @@ export const LoginPage: React.FC = () => {
     { label: "ID,PW", value: "ID,PW" },
     { label: "MFA", value: "MFA" },
     { label: "DEV", value: "DEV" },
+    { label: "ADMIN", value: "ADMIN" },
+    { label: "MONITER", value: "MONITER" },
   ];
   const navigate = useNavigate();
   const [authType, setAuthType] = useState<AuthType>("ID,PW");
@@ -74,7 +76,7 @@ export const LoginPage: React.FC = () => {
     }
 
     try {
-      // ✅ CASE 1: MFA (Multi-factor Authentication)
+      // CASE 1: MFA (Multi-factor Authentication)
       if (authType === "MFA") {
         setMfaEmailValue(email);
 
@@ -89,32 +91,48 @@ export const LoginPage: React.FC = () => {
         return;
       }
 
-      // ✅ CASE 2: Normal Login
-      const loginRes = await login({
-        email,
-        password: data.password,
-        authType,
-      });
+      if (authType === "ADMIN") {
+        // setMfaEmailValue(email);
 
-      if (!loginRes) {
-        toast("Login failed — no response from server!", "error");
-        reset();
-        return;
-      }
+        // const res = await refetchMfaCheck({ email });
+        // if (res?.resultCode !== ResponseCode.SUCCESS) {
+        //   toast(res?.resultMessage || "Error during MFA check!", "error");
+        // } else {
+        //   setViewMode("mfa");
+        // }
 
-      // ✅ handle various login states
-      if (loginRes.requireUnlock) {
-        setViewMode("unlock");
-        setUserId(loginRes.userId);
-      } else if (loginRes.requireVerified) {
-        setViewMode("verify");
-      } else if (loginRes.requireChangePassword && loginRes.userId) {
-        setViewMode("changePw");
-        setUserId(loginRes.userId);
-      } else {
-        // ✅ login successful — redirect or set token here
-        toast("Login successful!", "success");
-        // e.g. setToken(loginRes.token);
+        // reset();
+        // return;
+
+        // CASE 2: Normal Login
+        const loginRes = await login({
+          email,
+          password: data.password,
+          authType,
+        });
+
+        console.log("ss", loginRes);
+
+        if (!loginRes) {
+          toast("Login failed — no response from server!", "error");
+          reset();
+          return;
+        }
+
+        // handle various login states
+        if (loginRes.requireUnlock) {
+          setViewMode("unlock");
+          setUserId(loginRes.userId);
+        } else if (loginRes.requireVerified) {
+          setViewMode("verify");
+        } else if (loginRes.requireChangePassword && loginRes.userId) {
+          setViewMode("changePw");
+          setUserId(loginRes.userId);
+        } else {
+          // login successful — redirect or set token here
+          //toast("Login successful!", "success");
+          // e.g. setToken(loginRes.token);
+        }
       }
 
       reset();

@@ -16,11 +16,13 @@ import {
 import { useToast } from "./ToastContext";
 import {
   UserRole,
-  type DataResponseId,
+  type LoginDataResponse,
+  type Passenger,
+  type ResponseGGAuthenticate,
   type UserData,
-  type UserListResponse,
 } from "../utils/type";
 import { useGetMyInfo } from "./Api/useGetApi";
+import { ResponseCode } from "../utils/response";
 
 export type UserWithMFA = {
   email: string;
@@ -28,20 +30,23 @@ export type UserWithMFA = {
   authType: string;
 };
 
-export type AuthType = "MFA" | "IDPW";
+// export type AuthType = "MFA" | "IDPW";
 
 interface AuthContextType {
   isAuthenticated: boolean;
   user: UserData | null;
+  passenger: Passenger | null;
   token: string | null;
   isAdmin: boolean;
-  authType: AuthType;
+  // authType: AuthType;
   isValid: boolean;
   verifyPassword: (password: string) => Promise<boolean>;
   setValid: (valid: boolean) => void;
   resetValidation: () => void;
-  login: (userData: LoginReqProps) => Promise<UserListResponse>;
-  loginWithGGAuthenticator: (userData: UserWithMFA) => Promise<DataResponseId>;
+  login: (userData: LoginReqProps) => Promise<LoginDataResponse<UserData>>;
+  loginWithGGAuthenticator: (
+    userData: UserWithMFA
+  ) => Promise<ResponseGGAuthenticate>;
   logout: () => void;
 }
 
@@ -49,6 +54,8 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [passenger, _] = useState<Passenger | null>(null);
+
   const [user, setUser] = useState<UserData | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const { refetchUpdateUserRank } = useUpdateUserRank();
@@ -69,7 +76,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     async (password: string): Promise<boolean> => {
       try {
         const response = await fetchVerifyPassword({ password });
-        const isValidResult = response?.resultCode === "00";
+        const isValidResult = response?.resultCode === ResponseCode.SUCCESS;
 
         setIsValid(isValidResult);
 
@@ -100,16 +107,18 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const updateLocalStorage = (
     isAuthenticated: boolean,
     token: string | null,
-    userId?: number
+    userId?: number | string
   ) => {
     localStorage.setItem("isAuthenticated", String(isAuthenticated));
     localStorage.setItem("token", token || "");
     if (userId) localStorage.setItem("userId", String(userId));
   };
 
-  const login = async (userData: LoginReqProps): Promise<UserListResponse> => {
+  const login = async (
+    userData: LoginReqProps
+  ): Promise<LoginDataResponse<UserData>> => {
     const res = await refetchLogin(userData);
-    if (res?.resultCode === "00" && res.data) {
+    if (res?.resultCode === ResponseCode.SUCCESS && res.data) {
       const accessToken = res.accessToken;
       const id = res.data.id;
       setIsAuthenticated(true);
@@ -118,23 +127,20 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       await fetchMyInfo(id);
       return res;
     } else {
-      toast(
-        (res?.resultMessage as string) || "Unexpected error occurred",
-        "error"
-      );
-      return res as UserListResponse;
+      toast(res?.resultMessage || "Unexpected error occurred", "error");
+      return res as LoginDataResponse<UserData>;
     }
   };
 
   const loginWithGGAuthenticator = async (
     userData: UserWithMFA
-  ): Promise<DataResponseId> => {
+  ): Promise<ResponseGGAuthenticate> => {
     const res = await refetchSetLoginMfa({
       email: userData.email,
       code: userData.code,
       authType: userData.authType,
     });
-    if (res?.resultCode === "00" && res.data) {
+    if (res?.resultCode === ResponseCode.SUCCESS && res.data) {
       const accessToken = res.accessToken;
       const id = res.data.id;
       setIsAuthenticated(true);
@@ -143,8 +149,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       await fetchMyInfo(id);
       return res;
     } else {
-      toast((res?.resultMessage as string) || "Đăng nhập thất bại", "error");
-      return res as UserListResponse;
+      toast(res?.resultMessage || "Đăng nhập thất bại", "error");
+      return res as ResponseGGAuthenticate;
     }
   };
 
@@ -154,7 +160,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       try {
         const requests = await refetchGetMyInfo(id);
         const dataUser = requests?.data;
-        if (requests?.resultCode === "00" && dataUser) {
+        if (requests?.resultCode === ResponseCode.SUCCESS && dataUser) {
           setUser(dataUser);
           setIsAuthenticated(true);
           await refetchUpdateUserRank({ userId: id });
@@ -180,39 +186,51 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     localStorage.removeItem("userId");
   };
 
-  useEffect(() => {
-    let isMounted = true;
+  // useEffect(() => {
+  //   let isMounted = true;
 
+  //   const savedToken = localStorage.getItem("token");
+  //   const savedUserId = localStorage.getItem("userId");
+
+  //   if (!savedToken || !savedUserId) {
+  //     logout();
+  //     return;
+  //   }
+
+  //   setToken(savedToken);
+
+  //   const verifyUser = async () => {
+  //     try {
+  //       await fetchMyInfo(Number(savedUserId));
+  //     } catch (err) {
+  //       if (isMounted) logout();
+  //     }
+  //   };
+
+  //   verifyUser();
+
+  //   return () => {
+  //     isMounted = false;
+  //   };
+  // }, []);
+
+  useEffect(() => {
     const savedToken = localStorage.getItem("token");
     const savedUserId = localStorage.getItem("userId");
 
-    if (!savedToken || !savedUserId) {
-      logout();
-      return;
-    }
+    if (!savedToken || !savedUserId) return;
 
     setToken(savedToken);
-
-    const verifyUser = async () => {
-      try {
-        await fetchMyInfo(Number(savedUserId));
-      } catch (err) {
-        if (isMounted) logout();
-      }
-    };
-
-    verifyUser();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+    setIsAuthenticated(true);
+    fetchMyInfo(Number(savedUserId));
+  }, [fetchMyInfo]);
 
   return (
     <AuthContext.Provider
       value={{
         isAuthenticated,
         user,
+        passenger,
         token,
         login,
         loginWithGGAuthenticator,
@@ -222,7 +240,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setValid,
         resetValidation,
         isAdmin: isAdminLogin,
-        authType: "IDPW",
+        // authType: "IDPW",
       }}
     >
       {children}

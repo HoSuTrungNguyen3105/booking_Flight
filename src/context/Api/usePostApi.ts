@@ -5,11 +5,11 @@ import {
   type AircraftList,
   type AvailableAircraft,
   type ResponseMessage,
-  type UserListResponse,
+  // type UserListResponse,
   type UserCreateResponse,
   type DetailResponseMessage,
   type UserCreateProps,
-  type DataResponseId,
+  // type DataResponseId,
   type RegisterResponseMessage,
   type RegisterOTPCodeVerifyResponse,
   type UserUpdateProps,
@@ -39,6 +39,9 @@ import {
   type CheckMfaProps,
   type ChangePasswordProps,
   type GeneratePayroll,
+  type ResponseGGAuthenticate,
+  type LoginDataResponse,
+  type UserData,
 } from "../../utils/type.ts";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
 import { useFetch } from "../use[custom]/useFetch.ts";
@@ -368,9 +371,10 @@ export type LoginReqProps = {
   password: string;
   authType: string;
 };
+
 export const useLoginUser = () => {
   const { data: loginUserData, refetch: refetchLogin } = useFetch<
-    UserListResponse,
+    LoginDataResponse<UserData>,
     LoginReqProps
   >({
     url: "/auth/login",
@@ -382,10 +386,12 @@ export const useLoginUser = () => {
     refetchLogin,
   };
 };
+
 interface RequestUnlock {
   userId: number;
   reason: string;
 }
+
 export const useRequestUnlockAccount = () => {
   const { data: requestUnlockAccount, refetch: refetchRequestUnlockAccount } =
     useFetch<ResponseMessage, RequestUnlock>({
@@ -1120,7 +1126,7 @@ export const useVerifyMfa = () => {
 
 export const useLoginByMfa = () => {
   const { data: setLoginMfa, refetch: refetchSetLoginMfa } = useFetch<
-    DataResponseId,
+    ResponseGGAuthenticate,
     MfaRequestLogin
   >({
     url: "/auth/loginmfa",

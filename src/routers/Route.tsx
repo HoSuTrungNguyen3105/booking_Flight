@@ -37,6 +37,8 @@ import AttendanceCalendar from "../components/Sample/AttendanceCalendar";
 import ForgetPassword from "../components/Auth/ForgetPassword/index";
 import FacilityManagement from "../components/Admin/component/InfrastructureEntities/FacilityManagement";
 import GuestGuard from "../guard/GuardLayout";
+import Hero from "../components/Sample/Hero";
+import TicketPage from "../components/Employee";
 
 const routes = [
   {
@@ -56,14 +58,6 @@ const routes = [
         path: "change_password",
         element: <ForgetPassword />,
       },
-      // {
-      //   path: "registerPage",
-      //   element: (
-      //     <GuestGuard>
-      //       <Registration email="fghdjs" onClose={() => {}} />
-      //     </GuestGuard>
-      //   ),
-      // },
     ],
   },
   {
@@ -72,15 +66,13 @@ const routes = [
     errorElement: <ErrorPage />,
     children: [
       {
-        path: ROUTE_PATHS.LANDING, // = "/"
-        // element: (
-
-        // ),
+        path: ROUTE_PATHS.LANDING,
+        element: <Hero />,
       },
-      // {
-      //   path: "/sampleFormData",
-      //   element: <Search_layout />,
-      // },
+      {
+        path: "/TicketPage",
+        element: <TicketPage />,
+      },
       {
         path: ROUTE_PATHS.FILE_UPLOAD.replace("/", ""),
         element: <FileUpload name="fileUploader" />,

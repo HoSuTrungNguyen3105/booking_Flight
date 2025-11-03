@@ -173,7 +173,7 @@ export type FlightListResponse<T> = {
   accessToken?: string | null;
 };
 
-export type UserDataResponse<T> = {
+export type LoginDataResponse<T> = {
   resultCode: string;
   resultMessage: string;
   data?: T;
@@ -198,7 +198,7 @@ export type RegisterOTPCodeVerifyResponse = {
   userId: number;
 };
 
-export type DataResponseId = {
+export type ResponseGGAuthenticate = {
   resultCode: string;
   resultMessage: string;
   data?: { id: number };
@@ -610,7 +610,7 @@ export type FlightBaggageDetailApiResponse = DetailResponseMessage<Baggage>;
 export type TerminalLabelListResponse =
   DetailResponseMessage<TerminalLabelValue>;
 
-export type UserListResponse = UserDataResponse<UserData>;
+// export type UserListResponse = LoginDataResponse<UserData>;
 export type UserCreateResponse = DetailResponseMessage<UserDataNoGrid>;
 
 export type MealResponse = DetailResponseMessage<Meal>;

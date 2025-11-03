@@ -10,7 +10,7 @@ const AuthGuard = ({ children, allowedRoles }: ProtectedRouteProps) => {
   const { isAuthenticated, user } = useAuth();
 
   if (!isAuthenticated) {
-    return <Navigate to="/init/loginPage" />;
+    return <Navigate to="/init/loginPage" replace />;
   }
 
   if (allowedRoles && !allowedRoles.includes(user?.role || "")) {

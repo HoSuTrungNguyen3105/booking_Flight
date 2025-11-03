@@ -82,9 +82,11 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
       }
     }, [value, copy]);
 
-    const isEmailValid = useCallback((email: string) => {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      return emailRegex.test(email);
+    const isEmailValid = useCallback((value: string) => {
+      const pattern =
+        /^([a-zA-Z0-9_\\-\\.+]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,5}|[0-9]{1,3})(\\]?)$/;
+
+      return pattern.test(value);
     }, []);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
