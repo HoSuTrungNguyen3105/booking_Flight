@@ -11,8 +11,20 @@ import {
   Sports,
 } from "@mui/icons-material";
 import EventCard from "../../common/CustomRender/EventCard";
+import { useGetAllHotels, useGetFlightData } from "../../context/Api/useGetApi";
+import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
+  const { dataGetAllHotels } = useGetAllHotels();
+  const { getFlightData } = useGetFlightData();
+  const navigate = useNavigate();
+  const handleNavigate = (code: string) => {
+    navigate("/detail", {
+      state: {
+        code,
+      },
+    });
+  };
   return (
     <Box
       sx={{
@@ -22,7 +34,7 @@ const Hero = () => {
         color: "white",
       }}
     >
-      <Box padding={2} textAlign={"center"}>
+      <Box padding={1} textAlign={"center"}>
         <Typography variant="h3" color="gray">
           Discover the best flights for your points.
         </Typography>
@@ -69,16 +81,18 @@ const Hero = () => {
         color="primary"
         background="#f5f5f5"
       >
-        {[...Array(32)].map((_, i) => (
+        {dataGetAllHotels?.list?.map((e, i) => (
           <EventCard
             key={i + 21}
-            url="1"
-            from="20"
-            color="blue"
-            when="Tue, Sep 21, 2024 19:00"
-            name="Event name goes here"
+            link={() => handleNavigate(e?.hotelCode || "")}
+            location={e.address}
+            tagColor="blue"
+            tagLabel={e.hotelCode || ""}
+            price={e.price}
+            rating={e.rating}
+            name={e.name}
             // venue="Royal Albert Hall"
-            image=""
+            image={e.imageUrl}
           />
           //   <Typography variant="subtitle1">Card {i + 1}</Typography>
           // </EventCard>
@@ -91,37 +105,18 @@ const Hero = () => {
         color="primary"
         background="#f5f5f5"
       >
-        {[...Array(12)].map((_, i) => (
+        {getFlightData?.list?.map((e, i) => (
           <EventCard
             key={i + 5}
-            url="1"
-            from="20"
-            color="blue"
-            when="Tue, Sep 21, 2024 19:00"
-            name="Event name goes here"
-            image=""
-          />
-          //   <Typography variant="subtitle1">Card {i + 1}</Typography>
-          // </EventCard>
-        ))}
-      </CardGroup>
-
-      <CardGroup
-        url="/products"
-        title="Featured Products"
-        color={theme.palette.primary.light}
-        background="#f5f5f5"
-      >
-        {[...Array(32)].map((_, i) => (
-          <EventCard
-            key={i + 1}
-            url="1"
-            from="20"
-            color="blue"
-            when="Tue, Sep 21, 2024 19:00"
-            name="Event name goes here"
+            link={() => handleNavigate(e?.flightNo || "")}
+            location={e.departureAirport}
+            tagColor="blue"
+            tagLabel={e.flightNo || ""}
+            price={e.priceBusiness || 0}
+            rating={0}
+            name={e.flightNo || ""}
             // venue="Royal Albert Hall"
-            image=""
+            // image={''}
           />
           //   <Typography variant="subtitle1">Card {i + 1}</Typography>
           // </EventCard>

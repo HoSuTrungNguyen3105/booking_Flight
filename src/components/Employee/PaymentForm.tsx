@@ -12,13 +12,18 @@ import {
 // import Cards from "react-credit-cards-2"; // thư viện hiển thị thẻ credit card
 // import "react-credit-cards-2/dist/es/styles-compiled.css";
 import { CreditCard } from "@mui/icons-material";
+import { useLocation } from "react-router-dom";
+import type { Seat } from "../../utils/type";
 
 interface PaymentFormProps {
   onPay: () => void;
   passengers: string[];
 }
 
-const PaymentForm: React.FC<PaymentFormProps> = ({ onPay, passengers }) => {
+const PaymentForm = () => {
+  const location = useLocation();
+  const seat = location.state?.seat;
+
   const [number, setNumber] = useState("");
   const [name, setName] = useState("");
   const [expiry, setExpiry] = useState("");
@@ -52,7 +57,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ onPay, passengers }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onPay();
+    // onPay();
   };
 
   return (
@@ -146,16 +151,12 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ onPay, passengers }) => {
           <Grid container spacing={2}>
             <Grid size={6}>
               <Typography color="text.secondary">Username</Typography>
-              <Typography fontWeight={600}>
-                {localStorage.getItem("username") || "Guest"}
-              </Typography>
+              <Typography fontWeight={600}>{`${seat.id}`}</Typography>
 
               <Typography color="text.secondary" mt={2}>
                 Date
               </Typography>
-              <Typography fontWeight={600}>
-                {localStorage.getItem("date")}
-              </Typography>
+              <Typography fontWeight={600}>{`${seat.seatNumber}`}</Typography>
 
               <Typography color="text.secondary" mt={2}>
                 From
@@ -174,11 +175,11 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ onPay, passengers }) => {
               <Typography color="text.secondary" mt={2}>
                 Passengers
               </Typography>
-              {passengers.map((p, i) => (
+              {/* {passengers.map((p, i) => (
                 <Typography key={i} fontWeight={600}>
                   {p}
                 </Typography>
-              ))}
+              ))} */}
             </Grid>
 
             <Grid size={6}>

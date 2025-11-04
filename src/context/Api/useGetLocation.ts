@@ -95,14 +95,12 @@ export const useGetLocationCode = (lat: number, lng: number) => {
     error,
   } = useFetch<GeoNearbyCitiesResponse, void>({
     isFullUrl: true,
-    url: `https://wft-geo-db.p.rapidapi.com/v1/geo/locations/+${String(
-      lat
-    )}+${String(lng)}/nearbyCities?limit=1`,
+    url: `https://wft-geo-db.p.rapidapi.com/v1/geo/locations/${+lat}${+lng}/nearbyCities?limit=1`,
     autoFetch: false, // chỉ fetch khi đủ id
     config: {
       method: MethodType.GET,
       headers: {
-        "Content-Type": "application/json",
+        // "Content-Type": "application/json",
         "X-RapidAPI-Key": "d0f81ef94amsh2bf5537ea7d8bc6p182b9bjsn4e67a7051177",
         "X-RapidAPI-Host": "wft-geo-db.p.rapidapi.com",
       },

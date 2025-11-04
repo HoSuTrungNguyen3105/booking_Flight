@@ -12,7 +12,7 @@ interface ButtonCircleProps {
 const ButtonCircle: React.FC<ButtonCircleProps> = ({ url, icon, text }) => {
   return (
     <Link
-      to={`/${url}`}
+      to={`${url}`}
       style={{
         textDecoration: "none",
         userSelect: "none",

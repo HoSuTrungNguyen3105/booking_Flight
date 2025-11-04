@@ -40,6 +40,7 @@ export const Header = () => {
     { value: "/flight/info-page", label: "flpage" },
     { value: "/admin", label: "Admin dashboard" },
     { value: "/hotels", label: " hotels" },
+    { value: "/flight/deals", label: " deals" },
   ];
 
   const handleNavigate = useCallback((value: string) => {

@@ -46,6 +46,8 @@ import PassengerChooseSeat from "../components/Employee/PassengerChooseSeat";
 import FlightInfoPage from "../components/Employee/FlightInfoPage";
 import HotelListPage from "../components/Admin/component/Hotel/HotelListPage";
 import HotelDetailPage from "../components/Admin/component/Hotel/HotelDetailPage";
+import EventCardDetail from "../common/CustomRender/EventCardDetail";
+import FlightDeals from "../common/CustomRender/FlightDeals";
 
 const routes = [
   {
@@ -94,7 +96,7 @@ const routes = [
       },
       {
         path: "/payment",
-        element: <PaymentForm onPay={() => {}} passengers={[]} />,
+        element: <PaymentForm />,
       },
       {
         path: "/booking-detail",
@@ -107,6 +109,14 @@ const routes = [
       {
         path: "/hotels/detail",
         element: <HotelDetailPage />,
+      },
+      {
+        path: "/detail",
+        element: <EventCardDetail />,
+      },
+      {
+        path: "/flight/deals",
+        element: <FlightDeals />,
       },
       {
         path: ROUTE_PATHS.FILE_UPLOAD.replace("/", ""),

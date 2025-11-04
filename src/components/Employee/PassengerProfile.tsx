@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import {
   Box,
   Button,
@@ -51,66 +51,96 @@ const PassengerProfile = () => {
   const [coords, setCoords] = useState<[number, number] | null>(null);
   const [countryCode, setCountryCode] = useState("");
 
-  const { dataLocation, refetchDistance } = useGetLocationCode(
+  const handleRender = useCallback(() => {
+    const saved = localStorage.getItem("cord");
+    if (!saved) return;
+
+    try {
+      // Nếu lưu dạng JSON.stringify([lat, lng])
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && parsed.length === 2) {
+        const lat = Number(parsed[0]);
+        const lng = Number(parsed[1]);
+
+        // Đảm bảo đúng kiểu [number, number]
+        if (!isNaN(lat) && !isNaN(lng)) {
+          setCoords([lat, lng]);
+        } else {
+          console.warn("Dữ liệu toạ độ không hợp lệ:", parsed);
+        }
+      }
+    } catch (err) {
+      console.error("Lỗi khi parse localStorage:", err);
+    }
+  }, []);
+
+  useEffect(() => {
+    handleRender();
+  }, [handleRender]);
+
+  const { refetchDistance } = useGetLocationCode(
     coords?.[0] as number,
     coords?.[1] as number
   );
-  // ✅ Lấy toạ độ từ localStorage hoặc trình duyệt
+  const hasFetched = useRef(false);
+
   useEffect(() => {
+    if (hasFetched.current) return;
+    hasFetched.current = true;
+
     const fetchData = async () => {
       const saved = localStorage.getItem("cord");
-      console.log("saved", saved);
-
       if (saved) {
+        console.log("save", saved);
         const parsed: [number, number] = JSON.parse(saved);
         console.log("parsed", parsed);
-
         if (Array.isArray(parsed) && parsed.length === 2) {
           setCoords(parsed);
-          // Gọi refetchDistance với toạ độ mới
-          const res = await refetchDistance();
-          console.log("res", res);
+          // const res = await refetchDistance();
+          // console.log("res", res);
         }
       }
+
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const newCoords: [number, number] = [
+            pos.coords.latitude,
+            pos.coords.longitude,
+          ];
+          setCoords(newCoords);
+          localStorage.setItem("cord", JSON.stringify(newCoords));
+        },
+        (err) => console.error("Không thể lấy vị trí:", err)
+      );
     };
 
     fetchData();
-    // console.log("saved", saved);
-    // Nếu chưa có trong localStorage → lấy mới
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        console.log("pes", pos);
-        const newCoords: [number, number] = [
-          pos.coords.latitude,
-          pos.coords.longitude,
-        ];
-        setCoords(newCoords);
-        localStorage.setItem("cord", JSON.stringify(newCoords));
-      },
-      (err) => {
-        console.error("Không thể lấy vị trí:", err);
-      }
-    );
   }, []);
 
   useEffect(() => {
     const fetchCountry = async () => {
-      if (coords) {
-        const res = await refetchDistance();
-        console.log("res", res);
-        if (res?.data[0].countryCode) {
-          setCountryCode(res.data[0].countryCode);
-        }
+      if (!coords) return;
+      console.log("fgs", coords);
+
+      const res = await refetchDistance();
+      console.log("res", res);
+      const newCode = res?.data?.[0]?.countryCode;
+      if (newCode && newCode !== countryCode) {
+        setCountryCode(newCode);
+        // localStorage.setItem("countryCode", newCode);
       }
     };
+
     fetchCountry();
+    // ⚠️ Chỉ chạy lại khi coords thay đổi
+    // Không nên thêm countryCode vào dependency!
   }, [coords]);
 
   const { dataDistance } = useGetDistancesByLocationCode(countryCode);
 
-  console.log("countryCode", countryCode);
-  console.log("dataDistance", dataDistance?.data.callingCode);
-
+  const [callingCode, setCallingCode] = useState(
+    dataDistance?.data.callingCode
+  );
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
   };
@@ -169,7 +199,7 @@ const PassengerProfile = () => {
               <Typography>Email phone</Typography>
             </Box>
             <InputTextField
-              name="phone"
+              name="callingCode"
               value={formValues.phone}
               onChange={handleChange}
               placeholder="Enter your phone"

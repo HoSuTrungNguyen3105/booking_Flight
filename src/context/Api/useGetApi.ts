@@ -331,7 +331,7 @@ export const useGetAllHotels = () => {
     void
   >({
     url: "/sys/hotels",
-    autoFetch: false,
+    autoFetch: true,
     config: getMethod,
   });
   return {
