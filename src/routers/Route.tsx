@@ -44,6 +44,8 @@ import PassengerProfile from "../components/Employee/PassengerProfile";
 import PaymentForm from "../components/Employee/PaymentForm";
 import PassengerChooseSeat from "../components/Employee/PassengerChooseSeat";
 import FlightInfoPage from "../components/Employee/FlightInfoPage";
+import HotelListPage from "../components/Admin/component/Hotel/HotelListPage";
+import HotelDetailPage from "../components/Admin/component/Hotel/HotelDetailPage";
 
 const routes = [
   {
@@ -97,6 +99,14 @@ const routes = [
       {
         path: "/booking-detail",
         element: <PassengerChooseSeat />,
+      },
+      {
+        path: "/hotels",
+        element: <HotelListPage />,
+      },
+      {
+        path: "/hotels/detail",
+        element: <HotelDetailPage />,
       },
       {
         path: ROUTE_PATHS.FILE_UPLOAD.replace("/", ""),
@@ -219,10 +229,10 @@ const routes = [
         path: "terminal/facility",
         element: <FacilityManagement />,
       },
-      {
-        path: ROUTE_PATHS.FLIGHT_PATH,
-        element: <FlightPath />,
-      },
+      // {
+      //   path: ROUTE_PATHS.FLIGHT_PATH,
+      //   element: <FlightPath />,
+      // },
       {
         path: ROUTE_PATHS.SETTING,
         element: <ManageMyInformation />,

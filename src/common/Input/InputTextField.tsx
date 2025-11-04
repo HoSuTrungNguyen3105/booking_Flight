@@ -20,8 +20,9 @@ import { useCopyToClipboard } from "../../context/use[custom]/useCopyToClipboard
 import { GridCheckCircleIcon } from "@mui/x-data-grid";
 
 interface IInputTextFieldProps {
-  type?: HTMLInputTypeAttribute;
+  type?: "number" | "password" | "text";
   showEyeIcon?: boolean;
+  variant?: "outlined" | "filled" | "standard";
   placeholder?: string;
   startIcon?: React.ReactNode;
   endIcon?: React.ReactNode;
@@ -46,6 +47,7 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
       showEyeIcon = false,
       startIcon,
       endIcon,
+      variant = "outlined",
       clearable = true,
       value = "",
       disabled,
@@ -82,11 +84,9 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
       }
     }, [value, copy]);
 
-    const isEmailValid = useCallback((value: string) => {
-      const pattern =
-        /^([a-zA-Z0-9_\\-\\.+]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,5}|[0-9]{1,3})(\\]?)$/;
-
-      return pattern.test(value);
+    const isEmailValid = useCallback((email: string) => {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
     }, []);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -138,6 +138,7 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
       <TextField
         type={actualInputType}
         value={value}
+        variant={variant}
         inputRef={ref}
         autoComplete="off"
         onChange={handleChange}

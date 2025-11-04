@@ -97,6 +97,12 @@ export default function FlightList() {
     { field: "arrivalAirport", headerName: "To", flex: 0.5 },
     { field: "flightType", headerName: "Type", flex: 0.5 },
     {
+      field: "seat",
+      headerName: "seat",
+      flex: 0.5,
+      renderCell: (params: GridRenderCellParams) => params.row._count.seats,
+    },
+    {
       field: "update",
       headerName: "Update",
       flex: 1,

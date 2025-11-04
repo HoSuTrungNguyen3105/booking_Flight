@@ -666,6 +666,19 @@ export interface TransferAdmin {
   approvedAt?: string | number | null;
 }
 
+export interface CountryResponse {
+  data: {
+    capital: string;
+    code: string;
+    callingCode: string;
+    currencyCodes: string[];
+    flagImageUri: string;
+    name: string;
+    numRegions: number;
+    wikiDataId: string;
+  };
+}
+
 export type FacilityType =
   | "RESTAURANT"
   | "SHOP"
@@ -789,6 +802,27 @@ export interface Passenger {
   lastLoginDate?: number;
   bookings: Booking[];
 }
+
+export type Hotel = {
+  id: number;
+  hotelCode?: string;
+  name: string;
+  city: string;
+  address: string;
+  rating: number;
+  reviewCount: number;
+  distanceToCenter: number;
+  imageUrl: string;
+  price: number;
+  discountPercent?: number;
+  isPrime: boolean;
+  freeWifi: boolean;
+  covidMeasures: boolean;
+  freeCancel: boolean;
+  payLater: boolean;
+  createdAt: number;
+  updatedAt: number;
+};
 
 export type TerminalType = "INTERNATIONAL" | "DOMESTIC" | "BUSINESS";
 

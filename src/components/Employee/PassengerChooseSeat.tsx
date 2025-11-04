@@ -31,10 +31,8 @@ const PassengerChooseSeat = () => {
   const navigate = useNavigate();
   const {
     detail,
-    setMaxSelectSeats,
     getTypeColor,
     handleSelectSeat,
-    // setSelectedSeats,
     seatCount,
     filteredSeats,
     handleResetSelections,
@@ -42,17 +40,11 @@ const PassengerChooseSeat = () => {
     isUpdateModalOpen,
     setFilter,
     openSeatModal,
-    setCreateSeat,
     updateSeat,
     handleOpenUpdateModal,
-    // selectedSeat,
-    // refetchGetAllInfoFlightData,
     getAllInfoFlightByIdData,
     selectedSeats,
-    maxSelectSeats,
     filter,
-    // setOpenSeatModal,
-    // setSelectedSeat,
   } = useChooseSeatToBooking({
     id,
   });
@@ -101,22 +93,10 @@ const PassengerChooseSeat = () => {
 
         <Grid container spacing={2}>
           <Grid size={6} gap={1}>
-            <Typography>Select one seat</Typography>
-            <Button variant="contained" onClick={() => setCreateSeat(true)}>
-              Create Seat
-            </Button>
-
-            <Button
-              variant={maxSelectSeats === 1 ? "contained" : "outlined"}
-              onClick={() => setMaxSelectSeats(1)}
-            >
-              Single
-            </Button>
-
             <DetailSection mode="row" data={detail} />
 
             {selectedSeats.length > 0 && (
-              <Box sx={{ pt: 1, width: { xs: "100%", md: "320px" } }}>
+              <Box sx={{ pt: 1, width: { xs: "100%", md: "500px" } }}>
                 <Card
                   sx={{
                     padding: { xs: "16px", sm: "20px" },
@@ -249,7 +229,7 @@ const PassengerChooseSeat = () => {
                           borderRadius: "8px",
                         }}
                       >
-                        Update
+                        Booking
                       </Button>
                     </Box>
                   ) : (

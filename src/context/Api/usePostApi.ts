@@ -53,7 +53,7 @@ import type { UserFormConfig } from "../../common/Setting/hooks/useDataSection.t
 
 const postMethod = {
   method: MethodType.POST,
-  headers: { "Content-Type": "application/json" },
+  // headers: { "Content-Type": "application/json" },
 };
 
 export const mapToDropdown = (

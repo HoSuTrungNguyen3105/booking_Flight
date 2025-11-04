@@ -111,8 +111,6 @@ export const LoginPage: React.FC = () => {
           authType,
         });
 
-        console.log("ss", loginRes);
-
         if (!loginRes) {
           toast("Login failed — no response from server!", "error");
           reset();
@@ -138,9 +136,9 @@ export const LoginPage: React.FC = () => {
       reset();
     } catch (error) {
       console.error("Login error:", error);
-      toast("Unexpected error occurred during login!", "error");
     } finally {
       setLoading(false);
+      toast("Unexpected error occurred during login!", "error");
     }
   };
 

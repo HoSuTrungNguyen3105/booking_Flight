@@ -22,9 +22,11 @@ type TUseFetch<T, P> = {
   autoFetch?: boolean;
   onSuccess?: (res?: T) => void;
   onError?: () => void;
+  isFullUrl?: boolean;
 };
 
-export const useFetch = <T extends Partial<ResponseMessage>, P>({
+export const useFetch = <T, P>({
+  //extends Partial<ResponseMessage>
   url,
   params,
   config,
@@ -32,6 +34,7 @@ export const useFetch = <T extends Partial<ResponseMessage>, P>({
   autoFetch,
   onSuccess,
   onError,
+  isFullUrl = false,
 }: TUseFetch<T, P>) => {
   const { get, post, delete: del, update } = useApi();
   const [data, setData] = useState<T | undefined>(defaultValue);
@@ -40,6 +43,13 @@ export const useFetch = <T extends Partial<ResponseMessage>, P>({
   const [error, setError] = useState(false);
   const [currentParams, setCurrentParams] = useState<P | undefined>(params);
   const abortController = useRef<AbortController | null>(null);
+
+  const finalUrl = useMemo(() => {
+    const isHttp = url.startsWith("http://") || url.startsWith("https://");
+    if (isFullUrl || isHttp) return url;
+    return `http://localhost:3000${url}`;
+  }, [url, isFullUrl]);
+
   const refetch = useCallback(
     async (extra?: P, overrideUrl?: string): Promise<T | undefined> => {
       if (abortController.current) {
@@ -47,22 +57,24 @@ export const useFetch = <T extends Partial<ResponseMessage>, P>({
       }
       abortController.current = new AbortController();
       setLoading(true);
-      const finalUrl = overrideUrl ?? url;
-      const method = config?.method?.toUpperCase();
       const controller = abortController.current;
+      const method = config?.method?.toUpperCase();
+      const requestUrl = overrideUrl ?? finalUrl;
+
       const finalConfig = {
         ...config,
         signal: controller?.signal,
       };
+
       try {
         const fetchMethod =
           method === MethodType.POST
-            ? post<T, P>(finalUrl, extra ?? currentParams, finalConfig)
+            ? post<T, P>(requestUrl, extra ?? currentParams, finalConfig)
             : method === MethodType.PUT || method === MethodType.PATCH
-            ? update<T, P>(finalUrl, extra ?? currentParams, finalConfig)
+            ? update<T, P>(requestUrl, extra ?? currentParams, finalConfig)
             : method === MethodType.DELETE
-            ? del<T>(finalUrl, finalConfig)
-            : get<T, P>(finalUrl, extra ?? currentParams, finalConfig);
+            ? del<T>(requestUrl, finalConfig)
+            : get<T, P>(requestUrl, extra ?? currentParams, finalConfig);
 
         const res = await fetchMethod;
         setData(res);
@@ -78,21 +90,27 @@ export const useFetch = <T extends Partial<ResponseMessage>, P>({
         setLoading(false);
       }
     },
-    [url, params, config, onSuccess, onError]
+    [
+      finalUrl,
+      config,
+      onSuccess,
+      onError,
+      currentParams,
+      get,
+      post,
+      del,
+      update,
+    ]
   );
 
   useEffect(() => {
-    if (autoFetch) {
-      refetch();
-    }
+    if (autoFetch) refetch();
     return () => {
-      if (abortController.current) {
-        abortController.current.abort();
-      }
+      abortController.current?.abort();
     };
-  }, [fetch, autoFetch]);
+  }, [autoFetch, refetch]);
 
-  const state = useMemo(
+  return useMemo(
     () => ({
       data,
       loading,
@@ -101,7 +119,6 @@ export const useFetch = <T extends Partial<ResponseMessage>, P>({
       refetch,
       setParams: setCurrentParams,
     }),
-    [data, loading, success, error, refetch, setCurrentParams]
+    [data, loading, success, error, refetch]
   );
-  return state;
 };

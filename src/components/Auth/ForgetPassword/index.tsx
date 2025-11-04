@@ -5,6 +5,7 @@ import InputTextField from "../../../common/Input/InputTextField";
 import { useForgotPassword } from "../../../context/Api/usePostApi";
 import { useNavigate } from "react-router-dom";
 import { ResponseCode } from "../../../utils/response";
+import { ArrowBack } from "@mui/icons-material";
 
 const ForgetPassword = () => {
   const toast = useToast();
@@ -35,19 +36,28 @@ const ForgetPassword = () => {
     }
   };
 
-  // if (navigateOTP && userId) {
-  //   return <VerifyOpt email={email} userId={userId} />;
-  // }
-
   return (
     <Box
       sx={{
+        minHeight: "100vh",
         display: "flex",
-        justifyContent: "center",
+        flexDirection: "column",
         alignItems: "center",
-        minHeight: "80vh",
+        justifyContent: "flex-start",
+        pt: 3, // padding top for spacing from header
       }}
     >
+      {/* Return Button - stays on top */}
+      <Box sx={{ alignSelf: "flex-start", ml: 2 }}>
+        <Button
+          variant="text"
+          startIcon={<ArrowBack />}
+          size="large"
+          onClick={returnPage}
+        >
+          Return
+        </Button>
+      </Box>
       <Box component="form" onSubmit={handleSubmitForm}>
         <Typography variant="h6" sx={{ mb: 2 }}>
           Quên mật khẩu
@@ -83,9 +93,6 @@ const ForgetPassword = () => {
             {loading ? "Đang xử lý..." : "Xác nhận"}
           </Button>
         </Box>
-        <Button variant="contained" size="large" onClick={returnPage}>
-          Return
-        </Button>
       </Box>
     </Box>
   );

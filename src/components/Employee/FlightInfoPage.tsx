@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useState } from "react";
+import React, { memo, useEffect, useMemo, useState } from "react";
 import {
   Box,
   Button,
@@ -10,43 +10,79 @@ import {
   Stack,
 } from "@mui/material";
 import { FlightOutlined, Search } from "@mui/icons-material";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useGetAllFlightMainInfo } from "../../context/Api/useGetApi";
 import { DateFormatEnum, formatDate } from "../../hooks/format";
 import Zigzag from "../../common/IconComponent/Zigzag";
 import { useNavigate } from "react-router-dom";
+import DateTimePickerComponent from "../../common/DayPicker/index";
+import InputTextField from "../../common/Input/InputTextField";
+import type { DataFlight } from "../../utils/type";
+import { useGetDistanceBetweenPlaces } from "../../context/Api/useGetLocation";
 
 interface SearchFormData {
   departureAirport: string;
   arrivalAirport: string;
-  flightNo: string;
+  scheduledDeparture: number;
+  scheduledArrival: number;
 }
 
 const FlightInfoPage: React.FC = () => {
   const { getAllFlightInfoInfo } = useGetAllFlightMainInfo();
   const res = getAllFlightInfoInfo?.list || [];
-
-  const { register, handleSubmit, reset } = useForm<SearchFormData>();
-  const [filtered, setFiltered] = useState(res);
   const navigate = useNavigate();
+
+  const [search, setSearch] = useState<SearchFormData>({
+    departureAirport: "",
+    arrivalAirport: "",
+    scheduledDeparture: 0,
+    scheduledArrival: 0,
+  });
+
+  const [filtered, setFiltered] = useState(res);
+
   /** Lọc chuyến bay theo input */
-  const onSearch = (data: SearchFormData) => {
-    const filteredFlights = res.filter((f: any) => {
-      const matchDeparture = data.departureAirport
+  const onSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const filteredFlights = res.filter((f: SearchFormData) => {
+      const matchDeparture = search.departureAirport
         ? f.departureAirport
             ?.toLowerCase()
-            .includes(data.departureAirport.toLowerCase())
-        : true;
-      const matchArrival = data.arrivalAirport
-        ? f.arrivalAirport
-            ?.toLowerCase()
-            .includes(data.arrivalAirport.toLowerCase())
-        : true;
-      const matchFlightNo = data.flightNo
-        ? f.flightNo?.toLowerCase().includes(data.flightNo.toLowerCase())
+            .includes(search.departureAirport.toLowerCase())
         : true;
 
-      return matchDeparture && matchArrival && matchFlightNo;
+      const matchArrival = search.arrivalAirport
+        ? f.arrivalAirport
+            ?.toLowerCase()
+            .includes(search.arrivalAirport.toLowerCase())
+        : true;
+
+      const matchScheduledDeparture = search.scheduledDeparture
+        ? formatDate(
+            DateFormatEnum.DD_MM_YYYY_HH_MM_SS,
+            f.scheduledDeparture
+          ) ===
+          formatDate(
+            DateFormatEnum.DD_MM_YYYY_HH_MM_SS,
+            search.scheduledDeparture
+          )
+        : true;
+
+      const matchScheduledArrival = search.scheduledArrival
+        ? formatDate(DateFormatEnum.DD_MM_YYYY_HH_MM_SS, f.scheduledArrival) ===
+          formatDate(
+            DateFormatEnum.DD_MM_YYYY_HH_MM_SS,
+            search.scheduledArrival
+          )
+        : true;
+
+      return (
+        matchDeparture &&
+        matchArrival &&
+        matchScheduledDeparture &&
+        matchScheduledArrival
+      );
     });
 
     setFiltered(filteredFlights);
@@ -54,61 +90,117 @@ const FlightInfoPage: React.FC = () => {
 
   /** Reset filter */
   const onReset = () => {
-    reset();
+    setSearch({
+      departureAirport: "",
+      arrivalAirport: "",
+      scheduledDeparture: 0,
+      scheduledArrival: 0,
+    });
     setFiltered(res);
+  };
+
+  /** Cập nhật state khi nhập input */
+  const handleInputChange = (
+    key: keyof SearchFormData,
+    value: string | number
+  ) => {
+    setSearch((prev) => ({ ...prev, [key]: value }));
   };
 
   const handleNavigate = (id: number) => {
     navigate("/booking-detail", { state: { id } });
   };
 
-  /** Render danh sách */
   const displayFlights = useMemo(() => filtered, [filtered]);
+
+  // const {dataDistance  }= useGetDistanceBetweenPlaces()
 
   return (
     <Box sx={{ p: 3 }}>
+      {/* Thanh header tab */}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          borderRadius: "8px 8px 0 0",
+          overflow: "hidden",
+        }}
+      >
+        {["SEARCH FLIGHT", "MANAGE BOOKING", "CHECK IN"].map((label, idx) => (
+          <Button
+            key={idx}
+            sx={{
+              flex: 1,
+              bgcolor: idx === 0 ? "#00647A" : "#8FD3E9",
+              color: "white",
+              py: 1.5,
+              fontWeight: "bold",
+              fontSize: "1rem",
+              borderRadius: 0,
+              "&:hover": {
+                bgcolor: idx === 0 ? "#005566" : "#77c3dc",
+              },
+            }}
+          >
+            {label}
+          </Button>
+        ))}
+      </Box>
+
+      {/* Form tìm kiếm */}
       <Card
         sx={{
           maxWidth: "100%",
-          borderRadius: 3,
-          boxShadow: 3,
+          borderRadius: "0 0 8px 8px",
           p: 3,
-          mb: 3,
-          backgroundColor: "#fafafa",
+          backgroundColor: "#fefdfb",
+          boxShadow: "0 3px 6px rgba(0,0,0,0.1)",
         }}
       >
-        <Typography variant="h6" fontWeight="bold" mb={2}>
-          🔍 Search Flights
-        </Typography>
-        <form onSubmit={handleSubmit(onSearch)}>
+        <form onSubmit={onSearch}>
           <Grid container spacing={2}>
             <Grid size={4}>
-              <TextField
-                fullWidth
-                label="Departure Airport"
-                variant="outlined"
-                {...register("departureAirport")}
+              {" "}
+              <InputTextField
+                placeholder="From"
+                variant="standard"
+                value={search.departureAirport}
+                onChange={(e) => handleInputChange("departureAirport", e)}
               />
             </Grid>
+
             <Grid size={4}>
-              <TextField
-                fullWidth
-                label="Arrival Airport"
-                variant="outlined"
-                {...register("arrivalAirport")}
+              {" "}
+              <InputTextField
+                placeholder="To"
+                variant="standard"
+                value={search.arrivalAirport}
+                onChange={(e) => handleInputChange("arrivalAirport", e)}
               />
             </Grid>
-            <Grid size={4}>
-              <TextField
-                fullWidth
-                label="Flight Number"
-                variant="outlined"
-                {...register("flightNo")}
-              />
+
+            <Grid size={4} sx={{ width: "31rem" }}>
+              <Box sx={{ display: "flex", gap: 2 }}>
+                <DateTimePickerComponent
+                  value={search.scheduledDeparture}
+                  onChange={(value) =>
+                    handleInputChange("scheduledDeparture", value)
+                  }
+                  language="en"
+                />
+
+                <DateTimePickerComponent
+                  value={search.scheduledArrival}
+                  onChange={(value) =>
+                    handleInputChange("scheduledArrival", value)
+                  }
+                  language="en"
+                />
+              </Box>
             </Grid>
           </Grid>
 
-          <Stack direction="row" justifyContent="flex-end" spacing={2} mt={2}>
+          <Stack direction="row" justifyContent="flex-end" spacing={2} mt={3}>
             <Button onClick={onReset} variant="outlined" color="inherit">
               Reset
             </Button>
@@ -117,6 +209,10 @@ const FlightInfoPage: React.FC = () => {
               variant="contained"
               color="primary"
               startIcon={<Search />}
+              sx={{
+                bgcolor: "#00647A",
+                "&:hover": { bgcolor: "#005566" },
+              }}
             >
               Search
             </Button>
@@ -126,7 +222,7 @@ const FlightInfoPage: React.FC = () => {
 
       <Grid container spacing={2} mt={1}>
         {displayFlights.length > 0 ? (
-          displayFlights.map((flight: any) => (
+          displayFlights.map((flight: DataFlight) => (
             <Grid size={12} key={flight.flightId}>
               <Card
                 sx={{
@@ -236,7 +332,7 @@ const FlightInfoPage: React.FC = () => {
                     </Typography>
 
                     <Button
-                      onClick={() => handleNavigate(flight.flightId)}
+                      onClick={() => handleNavigate(flight.flightId || 0)}
                       variant="contained"
                       color="primary"
                     >

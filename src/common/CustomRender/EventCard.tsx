@@ -18,17 +18,17 @@ interface EventCardProps {
   from: string;
   when: string;
   name: string;
-  venue: string;
+  // venue: string;
   image: string;
   color: string;
 }
 
 const EventCard: React.FC<EventCardProps> = ({
   url,
-  from,
+  // from,
   when,
   name,
-  venue,
+  // venue,
   image,
   color,
 }) => {
@@ -63,13 +63,6 @@ const EventCard: React.FC<EventCardProps> = ({
         <Stack spacing={0.5}>
           <Typography variant="body2" color={theme.palette.grey[300]}>
             <span className="material-symbols-outlined">event</span> {when}
-          </Typography>
-          <Typography variant="body2" color={theme.palette.grey[300]}>
-            <span className="material-symbols-outlined">apartment</span> {venue}
-          </Typography>
-          <Typography variant="body2" color={theme.palette.grey[300]}>
-            <span className="material-symbols-outlined">local_activity</span>{" "}
-            from <strong>£{from}</strong>
           </Typography>
         </Stack>
       </CardContent>

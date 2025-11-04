@@ -11,8 +11,7 @@ type FlightWithSeatLayoutProps = {
 };
 
 export const useChooseSeatToBooking = ({ id }: FlightWithSeatLayoutProps) => {
-  const { getAllInfoFlightByIdData, refetchGetAllInfoFlightData } =
-    useGetAllInfoFlightByIDData({ id });
+  const { getAllInfoFlightByIdData } = useGetAllInfoFlightByIDData({ id });
   const [selectedSeats, setSelectedSeats] = useState<Seat[]>([]);
   const toast = useToast();
 
@@ -72,7 +71,6 @@ export const useChooseSeatToBooking = ({ id }: FlightWithSeatLayoutProps) => {
 
   const [filter, setFilter] = useState<AircraftSeatTypeProps>("ALL");
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
-  const [createSeat, setCreateSeat] = useState(false);
   const [openSeatModal, setOpenSeatModal] = useState(false);
 
   const [updateSeat, setUpdateSeat] = useState<{ seatIds: number[] }>({
@@ -172,7 +170,6 @@ export const useChooseSeatToBooking = ({ id }: FlightWithSeatLayoutProps) => {
 
   return {
     detail,
-    setMaxSelectSeats,
     getTypeColor,
     handleSelectSeat,
     seatCount,
@@ -182,18 +179,10 @@ export const useChooseSeatToBooking = ({ id }: FlightWithSeatLayoutProps) => {
     isUpdateModalOpen,
     setFilter,
     openSeatModal,
-    createSeat,
-    setCreateSeat,
     updateSeat,
     handleOpenUpdateModal,
-    selectedSeat,
-    setSelectedSeats,
-    refetchGetAllInfoFlightData,
     getAllInfoFlightByIdData,
     selectedSeats,
-    maxSelectSeats,
     filter,
-    setOpenSeatModal,
-    setSelectedSeat,
   } as const;
 };

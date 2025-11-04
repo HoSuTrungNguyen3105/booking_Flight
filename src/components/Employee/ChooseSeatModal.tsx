@@ -2,7 +2,6 @@ import { Box, Button, Typography, FormControl } from "@mui/material";
 import { memo, useCallback, useMemo, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import type { Seat, SeatTypeValue } from "../../utils/type";
-import { useToast } from "../../context/ToastContext";
 import SelectDropdown from "../../common/Dropdown/SelectDropdown";
 import BaseModal from "../../common/Modal/BaseModal";
 
@@ -63,15 +62,13 @@ const ChooseSeatModal = ({
 
   const [type, setType] = useState<SeatTypeValue>("ECONOMY");
   const [position, setPosition] = useState("WINDOW");
-  const toast = useToast();
   //   const { refetchUpdateSeatByIds } = useSeatUpdateByIds();
 
   const handleUpdate = async () => {
-    const updateData: Partial<SeatFeatures> = {
-      type,
-      [position]: true, // gán động key (ví dụ: isWing: true)
-    };
-
+    // const updateData: Partial<SeatFeatures> = {
+    //   type,
+    //   [position]: true, // gán động key (ví dụ: isWing: true)
+    // };
     // if (res?.resultCode === ResponseCode.SUCCESS) {
     //   toast(res.resultMessage, "success");
     //   onSuccess();

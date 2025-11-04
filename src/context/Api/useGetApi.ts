@@ -29,6 +29,7 @@ import {
   type FacilyByTerminalIdResponseMessage,
   type Payroll,
   type BookingResponseMessage,
+  type Hotel,
 } from "../../utils/type.ts";
 import { useFetch } from "../use[custom]/useFetch.ts";
 import type { ActionType } from "../../common/Dropdown/SelectDropdown.tsx";
@@ -37,7 +38,7 @@ import type { UserWithRelationsData } from "../../components/Sample/type.ts";
 
 const getMethod = {
   method: MethodType.GET,
-  headers: { "Content-Type": "application/json" },
+  // headers: { "Content-Type": "application/json" },
 };
 
 type FlightId = {
@@ -321,6 +322,34 @@ export const useGetAllFlightMainInfo = () => {
   return {
     getAllFlightInfoInfo,
     refetchGetAllFlightInfoInfo,
+  };
+};
+
+export const useGetAllHotels = () => {
+  const { data: dataGetAllHotels, refetch: refetchGetAllHotels } = useFetch<
+    DetailResponseMessage<Hotel>,
+    void
+  >({
+    url: "/sys/hotels",
+    autoFetch: false,
+    config: getMethod,
+  });
+  return {
+    dataGetAllHotels,
+    refetchGetAllHotels,
+  };
+};
+
+export const useGetHotelByHotelCode = (hotelCode: string) => {
+  const { data: dataHotelByHotelCode, refetch: refetchGetHotelByHotelCode } =
+    useFetch<DetailResponseMessage<Hotel>, void>({
+      url: `/sys/hotels/find-by-hotel-code/${hotelCode}`,
+      autoFetch: !!hotelCode,
+      config: getMethod,
+    });
+  return {
+    dataHotelByHotelCode,
+    refetchGetHotelByHotelCode,
   };
 };
 

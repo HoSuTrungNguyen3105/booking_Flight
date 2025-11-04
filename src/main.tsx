@@ -29,13 +29,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   render() {
     if (this.state.hasError) {
       return (
-        <div
-          style={{
-            background: theme.palette.error.dark,
-            color: "white",
-            padding: "12px",
-          }}
-        >
+        <div>
           <h1>Đã xảy ra lỗi!</h1>
           <pre>{this.state.error?.stack}</pre>
         </div>
@@ -60,11 +54,11 @@ function RootWrapper() {
     }
   }
 
-  React.useEffect(() => {
-    checkBackendConnection();
-    const interval = setInterval(checkBackendConnection, 5000);
-    return () => clearInterval(interval);
-  }, []);
+  // React.useEffect(() => {
+  //   checkBackendConnection();
+  //   const interval = setInterval(checkBackendConnection, 5000);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   if (!isBackendOnline) {
     throw new Error("Server or client is offline");

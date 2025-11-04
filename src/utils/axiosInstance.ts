@@ -16,6 +16,14 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use((config) => {
+  // Nếu request URL có http hoặc https → dùng full URL, bỏ baseURL
+  if (config.url?.startsWith("http")) {
+    config.baseURL = "";
+  }
+  return config;
+});
+
+axiosInstance.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;

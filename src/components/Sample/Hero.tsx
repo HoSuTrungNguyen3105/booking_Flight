@@ -22,12 +22,15 @@ const Hero = () => {
         color: "white",
       }}
     >
-      <Box textAlign={"center"}>
-        <Typography variant="h1" color="gray">
-          Discover
+      <Box padding={2} textAlign={"center"}>
+        <Typography variant="h3" color="gray">
+          Discover the best flights for your points.
         </Typography>
-        <Typography variant="subtitle2" color="gray">
-          Discover, search and filter best events in London.
+        <Typography variant="subtitle1" color="gray">
+          Discover, search and filter best events in London.This is the fastest
+          search engine for award travel. Explore availability across entire
+          regions, search with instant results, create free alerts and more to
+          find the best flights for your points.
         </Typography>
       </Box>
 
@@ -74,7 +77,7 @@ const Hero = () => {
             color="blue"
             when="Tue, Sep 21, 2024 19:00"
             name="Event name goes here"
-            venue="Royal Albert Hall"
+            // venue="Royal Albert Hall"
             image=""
           />
           //   <Typography variant="subtitle1">Card {i + 1}</Typography>
@@ -96,7 +99,6 @@ const Hero = () => {
             color="blue"
             when="Tue, Sep 21, 2024 19:00"
             name="Event name goes here"
-            venue="Royal Albert Hall"
             image=""
           />
           //   <Typography variant="subtitle1">Card {i + 1}</Typography>
@@ -118,7 +120,7 @@ const Hero = () => {
             color="blue"
             when="Tue, Sep 21, 2024 19:00"
             name="Event name goes here"
-            venue="Royal Albert Hall"
+            // venue="Royal Albert Hall"
             image=""
           />
           //   <Typography variant="subtitle1">Card {i + 1}</Typography>

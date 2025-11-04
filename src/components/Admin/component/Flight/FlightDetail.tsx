@@ -82,7 +82,7 @@ const FlightDetailPage = ({ flight, onBookFlight }: FlightDetailPageProps) => {
             data={priceData}
           />
 
-          <FlightPath />
+          {/* <FlightPath arrivalTime={flight.} departureTime={} /> */}
         </Paper>
 
         <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end" }}>
