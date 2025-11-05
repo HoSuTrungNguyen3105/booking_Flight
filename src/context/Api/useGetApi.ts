@@ -549,27 +549,6 @@ export const useGetBaggageData = () => {
   };
 };
 
-export const useGetMyInfo = () => {
-  const { data: getMyInfo, refetch } = useFetch<
-    DetailResponseMessage<UserData>,
-    null
-  >({
-    url: "",
-    autoFetch: false,
-    config: getMethod,
-  });
-
-  const refetchGetMyInfo = async (id: number) => {
-    const res = await refetch(null, `/sys/users/getUserInfo/${id}`);
-    return res;
-  };
-
-  return {
-    getMyInfo,
-    refetchGetMyInfo,
-  };
-};
-
 // export const useFlightList = () => {
 //   const { data: fetchFlightList, refetch: refetchFlightList } = useFetch<
 //     FlightListApiResponse,

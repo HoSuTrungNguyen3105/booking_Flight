@@ -3,10 +3,10 @@ import { useApi } from "../../context/ApiContext";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MethodType } from "../../utils/type";
 
-type ResponseMessage = {
-  resultCode?: string;
-  resultMessage?: string;
-};
+// type ResponseMessage = {
+//   resultCode?: string;
+//   resultMessage?: string;
+// };
 
 interface AbortError extends Error {
   name: "AbortError";

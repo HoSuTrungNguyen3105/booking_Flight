@@ -10,7 +10,7 @@ import DataAccessPermissionSection from "./DataAccessPermissionSection";
 import DeleteAccount from "../../components/Profile/DeleteAccount";
 import ChangePasswordInProfile from "../../components/Profile/ChangePasswordInProfile";
 import AccountSettings from "../../components/Auth/AccountModel/AccountSettings";
-import { useGetMyInfo } from "../../context/Api/useGetApi";
+import { ResponseCode } from "../../utils/response";
 
 export type UserDataToUpdate = Pick<
   UserData,
@@ -37,8 +37,8 @@ export type UserDataToTransferAdmin = Pick<
 >;
 
 const ManageMyInformation = () => {
-  const { user } = useAuth();
-  const { refetchGetMyInfo } = useGetMyInfo();
+  const { user, fetchMyUserInfo } = useAuth();
+  // const { refetchGetMyUserInfo } = useGetMyUserInfo();
   const [mode, setMode] = useState<"info" | "action" | "update">("info");
   const [openConfirmModal, setOpenConfirmModal] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
@@ -91,10 +91,10 @@ const ManageMyInformation = () => {
   const handleUpdateMyInfo = useCallback(async () => {
     try {
       const res = await refetchUpdateUserInfo(myInfo);
-      if (res?.resultCode === "00") {
+      if (res?.resultCode === ResponseCode.SUCCESS) {
         setOpenConfirmModal(false);
         setHasChanges(false);
-        refetchGetMyInfo(userId);
+        fetchMyUserInfo();
       }
     } catch (error) {
       console.error("Update error:", error);

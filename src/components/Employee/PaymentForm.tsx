@@ -161,9 +161,7 @@ const PaymentForm = () => {
               <Typography color="text.secondary" mt={2}>
                 From
               </Typography>
-              <Typography fontWeight={600}>
-                {localStorage.getItem("start")}
-              </Typography>
+              <Typography fontWeight={600}>{`${seat.seatRow}`}</Typography>
 
               <Typography color="text.secondary" mt={2}>
                 To

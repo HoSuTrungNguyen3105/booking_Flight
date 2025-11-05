@@ -23,7 +23,7 @@ import type { AircraftSeatTypeProps } from "../Admin/component/Flight/hooks/useS
 import DetailSection from "../../common/CustomRender/DetailSection";
 import theme from "../../scss/theme";
 import { useChooseSeatToBooking } from "./useChooseSeatToBooking";
-import LegendItem from "../Admin/component/Seat/ButtonSeat/LegendItem";
+// import LegendItem from "../Admin/component/Seat/ButtonSeat/LegendItem";
 import ButtonSeat from "../Admin/component/Seat/ButtonSeat";
 import ChooseSeatModal from "./ChooseSeatModal";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -108,7 +108,7 @@ const PassengerChooseSeat = () => {
             Back to Flights
           </Button>
 
-          <Box
+          {/* <Box
             sx={{
               display: "flex",
               alignItems: "center",
@@ -125,11 +125,11 @@ const PassengerChooseSeat = () => {
             <Typography variant="h6" fontWeight={700} color="primary.main">
               Seat Selection
             </Typography>
-          </Box>
+          </Box> */}
         </Box>
 
         {/* Filter Chips - Improved */}
-        <Box
+        {/* <Box
           sx={{
             display: "flex",
             justifyContent: "center",
@@ -173,7 +173,7 @@ const PassengerChooseSeat = () => {
               }}
             />
           ))}
-        </Box>
+        </Box> */}
       </Box>
 
       <Grid container spacing={3}>
@@ -403,8 +403,6 @@ const PassengerChooseSeat = () => {
             </Typography>
           </Box>
 
-          <LegendItem />
-
           {/* Seat Map Container - Improved */}
           <Box
             sx={{
@@ -527,6 +525,7 @@ const PassengerChooseSeat = () => {
             })}
           </Box>
         </Grid>
+        {/* <LegendItem /> */}
       </Grid>
 
       {isUpdateModalOpen && (

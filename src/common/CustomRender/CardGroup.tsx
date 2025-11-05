@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import theme from "../../scss/theme";
 
 interface IProps {
   url: string;
@@ -30,7 +31,6 @@ const CardGroup: React.FC<IProps> = ({
   //   touch = true,
   children,
 }) => {
-  const theme = useTheme();
   const navRef = useRef<HTMLDivElement>(null);
 
   const [scrollState, setScrollState] = useState({
@@ -164,8 +164,8 @@ const CardGroup: React.FC<IProps> = ({
             display: "flex",
             overflowX: "auto",
             gap: 2,
+            // px: 2,
             scrollBehavior: "smooth",
-            px: 6,
             "&::-webkit-scrollbar": { display: "none" },
           }}
         >

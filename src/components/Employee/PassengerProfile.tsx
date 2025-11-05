@@ -25,7 +25,7 @@ type ProfilePassenger = Pick<
 const PassengerProfile = () => {
   const { passenger } = useAuth();
   const [value, setValue] = useState("account");
-
+  console.log("passenger", passenger);
   const handleChangeToggle = (
     event: React.MouseEvent<HTMLElement>,
     newValue: string
@@ -39,6 +39,7 @@ const PassengerProfile = () => {
     phone: passenger?.phone || "",
     passport: passenger?.passport || "",
   });
+
   const handleChange = (text: string) => {
     // const { name, value } = e.target;
 

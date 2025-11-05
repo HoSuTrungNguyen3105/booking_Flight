@@ -43,6 +43,7 @@ import {
   type LoginDataResponse,
   type UserData,
   type Ticket,
+  type Passenger,
 } from "../../utils/type.ts";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
 import { useFetch } from "../use[custom]/useFetch.ts";
@@ -373,9 +374,55 @@ export type LoginReqProps = {
   authType: string;
 };
 
+export const useLoginAdmin = () => {
+  const { refetch: refetchAdminLogin } = useFetch<
+    LoginDataResponse<UserData>,
+    LoginReqProps
+  >({
+    url: "/auth/login-admin",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchAdminLogin,
+  };
+};
+
+export const useGetMyUserInfo = () => {
+  const { data, refetch } = useFetch<
+    DetailResponseMessage<Passenger>,
+    { id: string }
+  >({
+    url: "/auth/find-passenger-info",
+    autoFetch: false,
+    config: postMethod,
+  });
+
+  return {
+    getMyInfo: data,
+    refetchGetMyUserInfo: refetch,
+  };
+};
+
+export const useGetMyAdminInfo = () => {
+  const { data, refetch } = useFetch<
+    DetailResponseMessage<UserData>,
+    { id: number }
+  >({
+    url: "/sys/users/get-user-info",
+    autoFetch: false,
+    config: postMethod,
+  });
+
+  return {
+    getMyInfo: data,
+    refetchGetMyAdminInfo: refetch,
+  };
+};
+
 export const useLoginUser = () => {
   const { data: loginUserData, refetch: refetchLogin } = useFetch<
-    LoginDataResponse<UserData>,
+    LoginDataResponse<Passenger>,
     LoginReqProps
   >({
     url: "/auth/login",
@@ -412,6 +459,21 @@ export const useFindPassengerTicket = () => {
     useFetch<DetailResponseMessage<Ticket>, { id: string }>({
       url: "/sys/flights/find-passenger-ticket",
       autoFetch: true,
+      config: postMethod,
+    });
+  return {
+    dataFindPassengerTicket,
+    refetchFindPassengerTicket,
+  };
+};
+
+export type GetReqponseOneTicket = { id: string; ticketNo: string };
+
+export const useFindOnePassengerTicket = () => {
+  const { data: dataFindPassengerTicket, refetch: refetchFindPassengerTicket } =
+    useFetch<DetailResponseMessage<Ticket>, GetReqponseOneTicket>({
+      url: "/sys/flights/find-one-passenger-ticket",
+      autoFetch: false,
       config: postMethod,
     });
   return {

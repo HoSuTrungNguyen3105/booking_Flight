@@ -7,6 +7,7 @@ import {
   useState,
 } from "react";
 import {
+  useLoginAdmin,
   useLoginByMfa,
   useLoginUser,
   useUpdateUserRank,
@@ -21,8 +22,8 @@ import {
   type ResponseGGAuthenticate,
   type UserData,
 } from "../utils/type";
-import { useGetMyInfo } from "./Api/useGetApi";
 import { ResponseCode } from "../utils/response";
+import { useGetMyAdminInfo, useGetMyUserInfo } from "./Api/usePostApi";
 
 export type UserWithMFA = {
   email: string;
@@ -30,7 +31,7 @@ export type UserWithMFA = {
   authType: string;
 };
 
-// export type AuthType = "MFA" | "IDPW";
+export type AuthType = "ADMIN" | "IDPW";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -43,7 +44,12 @@ interface AuthContextType {
   verifyPassword: (password: string) => Promise<boolean>;
   setValid: (valid: boolean) => void;
   resetValidation: () => void;
-  login: (userData: LoginReqProps) => Promise<LoginDataResponse<UserData>>;
+  fetchMyUserInfo: () => void;
+  fetchMyAdminInfo: () => void;
+  loginPassenger: (
+    data: LoginReqProps
+  ) => Promise<LoginDataResponse<Passenger>>;
+  loginAdmin: (data: LoginReqProps) => Promise<LoginDataResponse<UserData>>;
   loginWithGGAuthenticator: (
     userData: UserWithMFA
   ) => Promise<ResponseGGAuthenticate>;
@@ -54,8 +60,8 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [passenger, _] = useState<Passenger | null>(null);
-
+  const [passenger, setPassenger] = useState<Passenger | null>(null);
+  const [stateLogin, setStateLogin] = useState<AuthType>("IDPW");
   const [user, setUser] = useState<UserData | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const { refetchUpdateUserRank } = useUpdateUserRank();
@@ -63,13 +69,15 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const toast = useToast();
   const { refetchLogin } = useLoginUser();
+  const { refetchAdminLogin } = useLoginAdmin();
   const { refetchSetLoginMfa } = useLoginByMfa();
-  const { refetchGetMyInfo } = useGetMyInfo();
+  const { refetchGetMyUserInfo } = useGetMyUserInfo();
+  const { refetchGetMyAdminInfo } = useGetMyAdminInfo();
   const { fetchVerifyPassword } = useVerifyPw({ id: user?.id });
 
   const isAdminLogin = useMemo(
     () => user?.role === UserRole.ADMIN,
-    [user, refetchGetMyInfo]
+    [user, refetchGetMyAdminInfo]
   );
 
   const verifyPassword = useCallback(
@@ -107,24 +115,43 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const updateLocalStorage = (
     isAuthenticated: boolean,
     token: string | null,
-    userId?: number | string
+    id?: number | string
   ) => {
     localStorage.setItem("isAuthenticated", String(isAuthenticated));
     localStorage.setItem("token", token || "");
-    if (userId) localStorage.setItem("userId", String(userId));
+    if (id) localStorage.setItem("userId", String(id));
   };
 
-  const login = async (
-    userData: LoginReqProps
-  ): Promise<LoginDataResponse<UserData>> => {
-    const res = await refetchLogin(userData);
+  const loginPassenger = async (
+    data: LoginReqProps
+  ): Promise<LoginDataResponse<Passenger>> => {
+    const res = await refetchLogin(data);
     if (res?.resultCode === ResponseCode.SUCCESS && res.data) {
       const accessToken = res.accessToken;
       const id = res.data.id;
       setIsAuthenticated(true);
       setToken(accessToken ?? null);
       updateLocalStorage(true, accessToken ?? null, id);
-      await fetchMyInfo(id);
+      await fetchMyUserInfo(id);
+      return res;
+    } else {
+      toast(res?.resultMessage || "Unexpected error occurred", "error");
+      return res as LoginDataResponse<Passenger>;
+    }
+  };
+
+  const loginAdmin = async (
+    data: LoginReqProps
+  ): Promise<LoginDataResponse<UserData>> => {
+    const res = await refetchAdminLogin(data);
+    if (res?.resultCode === ResponseCode.SUCCESS && res.data) {
+      const accessToken = res.accessToken;
+      const id = res.data.id;
+      setIsAuthenticated(true);
+      setToken(accessToken ?? null);
+      updateLocalStorage(true, accessToken ?? null, id);
+      setStateLogin("ADMIN");
+      await fetchMyAdminInfo(id);
       return res;
     } else {
       toast(res?.resultMessage || "Unexpected error occurred", "error");
@@ -146,7 +173,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setIsAuthenticated(true);
       setToken(accessToken ?? null);
       updateLocalStorage(true, accessToken ?? null, id);
-      await fetchMyInfo(id);
+      await fetchMyAdminInfo(id);
       return res;
     } else {
       toast(res?.resultMessage || "Đăng nhập thất bại", "error");
@@ -154,11 +181,31 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const fetchMyInfo = useCallback(
+  const fetchMyUserInfo = useCallback(async (id?: string) => {
+    if (!id) return;
+    try {
+      const requests = await refetchGetMyUserInfo({ id });
+      const dataUser = requests?.data;
+      if (requests?.resultCode === ResponseCode.SUCCESS && dataUser) {
+        setPassenger(dataUser);
+        setIsAuthenticated(true);
+        // await refetchUpdateUserRank({ userId: id });
+      } else {
+        setIsAuthenticated(false);
+        setPassenger(null);
+      }
+
+      return requests;
+    } catch (err) {
+      return undefined;
+    }
+  }, []);
+
+  const fetchMyAdminInfo = useCallback(
     async (id?: number) => {
       if (!id) return;
       try {
-        const requests = await refetchGetMyInfo(id);
+        const requests = await refetchGetMyAdminInfo({ id });
         const dataUser = requests?.data;
         if (requests?.resultCode === ResponseCode.SUCCESS && dataUser) {
           setUser(dataUser);
@@ -186,44 +233,21 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     localStorage.removeItem("userId");
   };
 
-  // useEffect(() => {
-  //   let isMounted = true;
-
-  //   const savedToken = localStorage.getItem("token");
-  //   const savedUserId = localStorage.getItem("userId");
-
-  //   if (!savedToken || !savedUserId) {
-  //     logout();
-  //     return;
-  //   }
-
-  //   setToken(savedToken);
-
-  //   const verifyUser = async () => {
-  //     try {
-  //       await fetchMyInfo(Number(savedUserId));
-  //     } catch (err) {
-  //       if (isMounted) logout();
-  //     }
-  //   };
-
-  //   verifyUser();
-
-  //   return () => {
-  //     isMounted = false;
-  //   };
-  // }, []);
-
   useEffect(() => {
     const savedToken = localStorage.getItem("token");
-    const savedUserId = localStorage.getItem("userId");
+    const savedId = localStorage.getItem("userId");
 
-    if (!savedToken || !savedUserId) return;
+    if (!savedToken || !savedId) return;
 
     setToken(savedToken);
     setIsAuthenticated(true);
-    fetchMyInfo(Number(savedUserId));
-  }, [fetchMyInfo]);
+
+    if (stateLogin === "ADMIN") {
+      fetchMyAdminInfo(Number(savedId));
+    } else {
+      fetchMyUserInfo(savedId);
+    }
+  }, [fetchMyUserInfo, fetchMyAdminInfo, stateLogin]);
 
   return (
     <AuthContext.Provider
@@ -232,8 +256,11 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         user,
         passenger,
         token,
-        login,
+        loginPassenger,
+        loginAdmin,
         loginWithGGAuthenticator,
+        fetchMyAdminInfo,
+        fetchMyUserInfo,
         logout,
         isValid,
         verifyPassword,
