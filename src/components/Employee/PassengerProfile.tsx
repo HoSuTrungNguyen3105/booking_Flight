@@ -25,7 +25,6 @@ type ProfilePassenger = Pick<
 const PassengerProfile = () => {
   const { passenger } = useAuth();
   const [value, setValue] = useState("account");
-  console.log("passenger", passenger);
   const handleChangeToggle = (
     event: React.MouseEvent<HTMLElement>,
     newValue: string
@@ -33,115 +32,111 @@ const PassengerProfile = () => {
     if (newValue !== null) setValue(newValue);
   };
 
-  const [formValues, setFormValues] = useState<ProfilePassenger>({
-    fullName: passenger?.fullName || "",
-    email: passenger?.email || "",
-    phone: passenger?.phone || "",
-    passport: passenger?.passport || "",
-  });
+  // const [formValues, setFormValues] = useState<ProfilePassenger>({
+  //   fullName: passenger?.fullName || "",
+  //   email: passenger?.email || "",
+  //   phone: passenger?.phone || "",
+  //   passport: passenger?.passport || "",
+  // });
 
-  const handleChange = (text: string) => {
-    // const { name, value } = e.target;
+  // const handleChange = (text: string) => {
+  //   // const { name, value } = e.target;
 
-    setFormValues({
-      ...formValues,
-      [text]: text,
-    });
-  };
+  //   setFormValues({
+  //     ...formValues,
+  //     [text]: text,
+  //   });
+  // };
 
-  const [coords, setCoords] = useState<[number, number] | null>(null);
-  const [countryCode, setCountryCode] = useState("");
+  // const [coords, setCoords] = useState<[number, number] | null>(null);
+  // const [countryCode, setCountryCode] = useState("");
 
-  const handleRender = useCallback(() => {
-    const saved = localStorage.getItem("cord");
-    if (!saved) return;
+  // const handleRender = useCallback(() => {
+  //   const saved = localStorage.getItem("cord");
+  //   if (!saved) return;
 
-    try {
-      // Nếu lưu dạng JSON.stringify([lat, lng])
-      const parsed = JSON.parse(saved);
-      if (Array.isArray(parsed) && parsed.length === 2) {
-        const lat = Number(parsed[0]);
-        const lng = Number(parsed[1]);
+  //   try {
+  //     // Nếu lưu dạng JSON.stringify([lat, lng])
+  //     const parsed = JSON.parse(saved);
+  //     if (Array.isArray(parsed) && parsed.length === 2) {
+  //       const lat = Number(parsed[0]);
+  //       const lng = Number(parsed[1]);
 
-        // Đảm bảo đúng kiểu [number, number]
-        if (!isNaN(lat) && !isNaN(lng)) {
-          setCoords([lat, lng]);
-        } else {
-          console.warn("Dữ liệu toạ độ không hợp lệ:", parsed);
-        }
-      }
-    } catch (err) {
-      console.error("Lỗi khi parse localStorage:", err);
-    }
-  }, []);
+  //       // Đảm bảo đúng kiểu [number, number]
+  //       if (!isNaN(lat) && !isNaN(lng)) {
+  //         setCoords([lat, lng]);
+  //       } else {
+  //         console.warn("Dữ liệu toạ độ không hợp lệ:", parsed);
+  //       }
+  //     }
+  //   } catch (err) {
+  //     console.error("Lỗi khi parse localStorage:", err);
+  //   }
+  // }, []);
 
-  useEffect(() => {
-    handleRender();
-  }, [handleRender]);
+  // useEffect(() => {
+  //   handleRender();
+  // }, [handleRender]);
 
-  const { refetchDistance } = useGetLocationCode(
-    coords?.[0] as number,
-    coords?.[1] as number
-  );
-  const hasFetched = useRef(false);
+  // const { refetchDistance } = useGetLocationCode(
+  //   coords?.[0] as number,
+  //   coords?.[1] as number
+  // );
+  // const hasFetched = useRef(false);
 
-  useEffect(() => {
-    if (hasFetched.current) return;
-    hasFetched.current = true;
+  // useEffect(() => {
+  //   if (hasFetched.current) return;
+  //   hasFetched.current = true;
 
-    const fetchData = async () => {
-      const saved = localStorage.getItem("cord");
-      if (saved) {
-        console.log("save", saved);
-        const parsed: [number, number] = JSON.parse(saved);
-        console.log("parsed", parsed);
-        if (Array.isArray(parsed) && parsed.length === 2) {
-          setCoords(parsed);
-          // const res = await refetchDistance();
-          // console.log("res", res);
-        }
-      }
+  //   const fetchData = async () => {
+  //     const saved = localStorage.getItem("cord");
+  //     if (saved) {
+  //       console.log("save", saved);
+  //       const parsed: [number, number] = JSON.parse(saved);
+  //       console.log("parsed", parsed);
+  //       if (Array.isArray(parsed) && parsed.length === 2) {
+  //         setCoords(parsed);
+  //         // const res = await refetchDistance();
+  //         // console.log("res", res);
+  //       }
+  //     }
 
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          const newCoords: [number, number] = [
-            pos.coords.latitude,
-            pos.coords.longitude,
-          ];
-          setCoords(newCoords);
-          localStorage.setItem("cord", JSON.stringify(newCoords));
-        },
-        (err) => console.error("Không thể lấy vị trí:", err)
-      );
-    };
+  //     navigator.geolocation.getCurrentPosition(
+  //       (pos) => {
+  //         const newCoords: [number, number] = [
+  //           pos.coords.latitude,
+  //           pos.coords.longitude,
+  //         ];
+  //         setCoords(newCoords);
+  //         localStorage.setItem("cord", JSON.stringify(newCoords));
+  //       },
+  //       (err) => console.error("Không thể lấy vị trí:", err)
+  //     );
+  //   };
 
-    fetchData();
-  }, []);
+  //   fetchData();
+  // }, []);
 
-  useEffect(() => {
-    const fetchCountry = async () => {
-      if (!coords) return;
-      console.log("fgs", coords);
+  // useEffect(() => {
+  //   const fetchCountry = async () => {
+  //     if (!coords) return;
+  //     const res = await refetchDistance();
+  //     const newCode = res?.data?.[0]?.countryCode;
+  //     if (newCode && newCode !== countryCode) {
+  //       setCountryCode(newCode);
+  //       // localStorage.setItem("countryCode", newCode);
+  //     }
+  //   };
 
-      const res = await refetchDistance();
-      console.log("res", res);
-      const newCode = res?.data?.[0]?.countryCode;
-      if (newCode && newCode !== countryCode) {
-        setCountryCode(newCode);
-        // localStorage.setItem("countryCode", newCode);
-      }
-    };
+  //   fetchCountry();
+  //   // Không nên thêm countryCode vào dependency!
+  // }, [coords]);
 
-    fetchCountry();
-    // ⚠️ Chỉ chạy lại khi coords thay đổi
-    // Không nên thêm countryCode vào dependency!
-  }, [coords]);
+  // const { dataDistance } = useGetDistancesByLocationCode(countryCode);
 
-  const { dataDistance } = useGetDistancesByLocationCode(countryCode);
-
-  const [callingCode, setCallingCode] = useState(
-    dataDistance?.data.callingCode
-  );
+  // const [callingCode, setCallingCode] = useState(
+  //   dataDistance?.data.callingCode
+  // );
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
   };
@@ -181,12 +176,12 @@ const PassengerProfile = () => {
               justifyContent="space-between"
               alignItems="center"
             >
-              <Typography> {countryCode}</Typography>
+              {/* <Typography> {countryCode}</Typography> */}
             </Box>
             <InputTextField
               name="fullName"
-              value={formValues.fullName}
-              onChange={handleChange}
+              value={passenger?.fullName}
+              // onChange={handleChange}
               placeholder="Enter your fullName"
             />
           </Box>
@@ -201,8 +196,8 @@ const PassengerProfile = () => {
             </Box>
             <InputTextField
               name="callingCode"
-              value={formValues.phone}
-              onChange={handleChange}
+              value={passenger?.phone}
+              // onChange={handleChange}
               placeholder="Enter your phone"
             />
           </Box>
@@ -221,7 +216,7 @@ const PassengerProfile = () => {
             </Box>
             <InputTextField
               name="email"
-              value={formValues.email}
+              value={passenger?.email}
               onChange={() => {}}
               placeholder="Enter your e-mail"
               disabled

@@ -7,6 +7,7 @@ import {
 import { useToast } from "../../../context/ToastContext";
 import VerifyOpt from "../MFA/VerifyOTP";
 import InputTextField from "../../../common/Input/InputTextField";
+import { ResponseCode } from "../../../utils/response";
 
 interface RegisterProps {
   email: string;
@@ -15,6 +16,7 @@ interface RegisterProps {
 
 const Registration = ({ email }: RegisterProps) => {
   const { refetchRegister } = useRegisterUser();
+
   const toast = useToast();
 
   const [formData, setFormData] = useState<PassengerFormData>({
@@ -26,12 +28,12 @@ const Registration = ({ email }: RegisterProps) => {
   });
 
   const [verifyOTPcode, setVerifyOTPcode] = useState(false);
-  const [userId, setUserId] = useState<number | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
 
   const onSubmit = async () => {
     try {
       const res = await refetchRegister(formData);
-      if (res?.resultCode === "00") {
+      if (res?.resultCode === ResponseCode.SUCCESS) {
         toast(res.resultMessage);
         setVerifyOTPcode(true);
         setUserId(res.data?.userId ?? null);
@@ -69,6 +71,7 @@ const Registration = ({ email }: RegisterProps) => {
         <InputTextField
           value={formData.email}
           placeholder="email"
+          isEmail
           onChange={(value) =>
             setFormData((prev) => ({ ...prev, email: value }))
           }

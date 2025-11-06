@@ -12,20 +12,12 @@ import {
   alpha,
 } from "@mui/material";
 import _ from "lodash";
-import {
-  ArrowBack,
-  Chair,
-  Flight,
-  LocalAirport,
-  RestartAlt,
-} from "@mui/icons-material";
-import type { AircraftSeatTypeProps } from "../Admin/component/Flight/hooks/useSeatInFlightDetail";
+import { ArrowBack, Flight, RestartAlt } from "@mui/icons-material";
 import DetailSection from "../../common/CustomRender/DetailSection";
 import theme from "../../scss/theme";
 import { useChooseSeatToBooking } from "./useChooseSeatToBooking";
 // import LegendItem from "../Admin/component/Seat/ButtonSeat/LegendItem";
 import ButtonSeat from "../Admin/component/Seat/ButtonSeat";
-import ChooseSeatModal from "./ChooseSeatModal";
 import { useLocation, useNavigate } from "react-router-dom";
 import type { Seat } from "../../utils/type";
 
@@ -35,8 +27,8 @@ import type { Seat } from "../../utils/type";
 
 const PassengerChooseSeat = () => {
   const location = useLocation();
-  const { id } = location.state || {};
   const navigate = useNavigate();
+  const { id } = location.state || {};
   const {
     detail,
     getTypeColor,
@@ -44,15 +36,9 @@ const PassengerChooseSeat = () => {
     seatCount,
     filteredSeats,
     handleResetSelections,
-    handleCloseModal,
-    isUpdateModalOpen,
-    setFilter,
-    openSeatModal,
-    updateSeat,
     handleOpenUpdateModal,
     getAllInfoFlightByIdData,
     selectedSeats,
-    filter,
   } = useChooseSeatToBooking({
     id,
   });
@@ -527,15 +513,6 @@ const PassengerChooseSeat = () => {
         </Grid>
         {/* <LegendItem /> */}
       </Grid>
-
-      {isUpdateModalOpen && (
-        <ChooseSeatModal
-          open={openSeatModal}
-          selectedSeats={updateSeat}
-          onSuccess={handleCloseModal}
-          onClose={handleCloseModal}
-        />
-      )}
     </Box>
   );
 };

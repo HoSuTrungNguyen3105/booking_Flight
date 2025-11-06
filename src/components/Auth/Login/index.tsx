@@ -15,6 +15,7 @@ import { useToast } from "../../../context/ToastContext";
 import { useCheckMfaAvailable } from "../../../context/Api/usePostApi";
 import { useNavigate } from "react-router-dom";
 import { ResponseCode } from "../../../utils/response";
+import { getDeviceInfo } from "../../../hooks/format";
 
 interface ILoginForm {
   email: string;
@@ -67,6 +68,12 @@ export const LoginPage: React.FC = () => {
 
   const onSubmit = async (data: ILoginForm) => {
     setLoading(true);
+    const deviceInfo = getDeviceInfo();
+
+    const session = {
+      ipAddress: (await deviceInfo).ipAddress,
+      userAgent: (await deviceInfo).userAgent,
+    };
     const email = watch("email")?.trim();
     try {
       // CASE 1: MFA
@@ -86,11 +93,12 @@ export const LoginPage: React.FC = () => {
 
       // CASE 2 & 3: ADMIN or ID,PW
       const loginFn = authType === "ADMIN" ? loginAdmin : loginPassenger;
-      console.log("logoin", authType);
+
       const loginRes = await loginFn({
         email,
         password: data.password,
         authType,
+        ...session,
       });
 
       // if (!loginRes) {

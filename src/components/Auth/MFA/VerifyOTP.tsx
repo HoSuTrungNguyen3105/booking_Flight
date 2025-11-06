@@ -19,10 +19,23 @@ const VerifyOpt = ({ email, userId }: EmailProps) => {
       return;
     }
     try {
-      const res = await refetchVerifyOTPcode({
-        otp: otpText,
-        userId: userId,
-      });
+      const typeSaved = localStorage.getItem("stateLogin") as
+        | "ADMIN"
+        | "IDPW"
+        | null;
+
+      if (!typeSaved) {
+        toast("Không xác định được loại đăng nhập", "error");
+        return;
+      }
+
+      const payload = {
+        otp: otpText.trim(),
+        userId: String(userId),
+        type: typeSaved,
+      };
+      const res = await refetchVerifyOTPcode(payload);
+
       if (res?.resultCode == ResponseCode.SUCCESS) {
         sethasValidate(true);
       } else {
@@ -39,7 +52,7 @@ const VerifyOpt = ({ email, userId }: EmailProps) => {
 
   return (
     <Box
-      component="form"
+      component="div"
       height="30vh"
       display="flex"
       justifyContent="center"

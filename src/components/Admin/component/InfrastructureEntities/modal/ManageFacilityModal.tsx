@@ -7,7 +7,7 @@ import {
   FormControl,
 } from "@mui/material";
 import { type Facility } from "../../../../../utils/type";
-import { OpeningHoursPicker } from "../../../../../common/DayPicker/date-picker";
+import { HoursPicker } from "../../../../../common/DayPicker/hours-picker";
 import {
   mapStringToDropdown,
   useFindAllFacilityTypes,
@@ -235,7 +235,7 @@ const ManageFacilityModal = ({
 
           {/* Opening Hours */}
           <Grid size={12}>
-            <OpeningHoursPicker
+            <HoursPicker
               value={formData.openingHours}
               onChange={(val) =>
                 setFormData((prev) => ({ ...prev, openingHours: val }))

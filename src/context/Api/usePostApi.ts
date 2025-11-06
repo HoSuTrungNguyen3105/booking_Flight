@@ -44,6 +44,8 @@ import {
   type UserData,
   type Ticket,
   type Passenger,
+  type UserSession,
+  type VerifyOTPProps,
 } from "../../utils/type.ts";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
 import { useFetch } from "../use[custom]/useFetch.ts";
@@ -372,6 +374,9 @@ export type LoginReqProps = {
   email: string;
   password: string;
   authType: string;
+  userAgent: string;
+  ipAddress: string;
+  location: string;
 };
 
 export const useLoginAdmin = () => {
@@ -385,6 +390,17 @@ export const useLoginAdmin = () => {
   });
   return {
     refetchAdminLogin,
+  };
+};
+
+export const useLogoutAllSessions = () => {
+  const { refetch } = useFetch<ResponseMessage, undefined>({
+    url: "/auth/logoutAllOtherSessions",
+    config: postMethod,
+    autoFetch: false, // Không tự động gọi, phải gọi thủ công
+  });
+  return {
+    refetchLogoutAllSessions: refetch,
   };
 };
 
@@ -433,6 +449,77 @@ export const useLoginUser = () => {
     loginUserData,
     refetchLogin,
   };
+};
+
+export const useAdminSessions = () => {
+  const { refetch, data } = useFetch<
+    DetailResponseMessage<UserSession>,
+    { userId: number }
+  >({
+    url: "/auth/get-admin-sessions",
+    config: postMethod,
+    autoFetch: false,
+  });
+  return {
+    dataSessions: data,
+    refetchUserSessions: refetch,
+  };
+};
+
+export const usePassengerSessions = () => {
+  const { refetch, data } = useFetch<
+    DetailResponseMessage<UserSession>,
+    { passengerId: string }
+  >({
+    url: "/auth/get-passenger-sessions",
+    config: postMethod,
+    autoFetch: false,
+  });
+  return {
+    dataSessions: data,
+    refetchPassengerSessions: refetch,
+  };
+};
+
+export const useDeleteSessionsFromID = () => {
+  const { refetch, data } = useFetch<
+    ResponseMessage,
+    { sessionId: number; userId: number | null; passengerId: string | null }
+  >({
+    url: `/auth/logoutSession`,
+    config: postMethod,
+    autoFetch: false,
+  });
+  return {
+    dataSessions: data,
+    refetchDeleteSessions: refetch,
+  };
+};
+
+export const useGetSessionsByID = () => {
+  const { refetch } = useFetch<
+    DetailResponseMessage<{ requireLogout: boolean }>,
+    { userId: number | null; passengerId: string | null; token: string }
+  >({
+    url: `/auth/get-sessions-by-id`,
+    config: postMethod,
+    autoFetch: false,
+  });
+  return {
+    refetchGetSessionByID: refetch,
+  };
+};
+
+export const useLogoutSessionFromPassenger = () => {
+  const { refetch: refetchLogoutSession } = useFetch<
+    ResponseMessage,
+    { id: number; token: string }
+  >({
+    url: "/auth/logout",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return { refetchLogoutSession };
 };
 
 interface RequestUnlock {
@@ -1168,10 +1255,6 @@ export const useRegisterUser = () => {
   };
 };
 
-type VerifyOTPProps = {
-  userId?: number;
-  otp: string;
-};
 export const useVerifyOTPCode = () => {
   const { refetch: refetchVerifyOTPcode } = useFetch<
     RegisterOTPCodeVerifyResponse,

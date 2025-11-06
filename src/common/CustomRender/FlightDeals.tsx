@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Container,
@@ -19,49 +19,13 @@ import {
 } from "@mui/material";
 import { Check as CheckIcon, FlightTakeoff } from "@mui/icons-material";
 import InputTextField from "../Input/InputTextField";
-
-interface FlightDeal {
-  id: number;
-  dates: string;
-  destination: string;
-  originalPrice: number;
-  primePrice: number;
-  savings: number;
-  rating?: number;
-}
+import type { FlightDiscount } from "../../utils/type";
 
 const FlightDeals: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
-  const flightDeals: FlightDeal[] = [
-    {
-      id: 1,
-      dates: "21 Nov – 24 Nov",
-      destination: "Bangkok",
-      originalPrice: 190,
-      primePrice: 145,
-      savings: 45,
-      rating: 2.25,
-    },
-    {
-      id: 2,
-      dates: "7 Jan – 15 Jan",
-      destination: "Manila",
-      originalPrice: 201,
-      primePrice: 167,
-      savings: 34,
-      rating: 0.65,
-    },
-    {
-      id: 3,
-      dates: "6 Feb – 13 Feb",
-      destination: "Taipei",
-      originalPrice: 276,
-      primePrice: 276,
-      savings: 0,
-    },
-  ];
+  const [flightDeals, setFlightDeals] = useState<FlightDiscount[]>([]);
 
   const features = [
     "Save €100s on your flights",
@@ -104,9 +68,12 @@ const FlightDeals: React.FC = () => {
           </Typography>
         </Box>
 
-        <Box alignItems={"flex-start"}>
-          <InputTextField />
-          <InputTextField />
+        <Box display={"flex"} justifyContent={"space-around"} gap={1.5}>
+          <InputTextField placeholder="FlightCode" sx={{ maxWidth: "10rem" }} />
+          <InputTextField
+            placeholder="Passenger No"
+            sx={{ maxWidth: "10rem" }}
+          />
         </Box>
       </Box>
 

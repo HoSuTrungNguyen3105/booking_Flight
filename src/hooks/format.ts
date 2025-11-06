@@ -1,5 +1,6 @@
 import { isNaN } from "lodash";
 import moment, { type MomentInput } from "moment";
+import { UAParser } from "ua-parser-js";
 
 export type Currency = "VND" | "USD" | "JPY" | "KRW";
 
@@ -17,6 +18,39 @@ export enum DateFormatEnum {
 }
 
 const SECOND_TO_MILLISECOND = 1000;
+
+export const getDeviceInfo = async () => {
+  const parser = new UAParser();
+  const result = parser.getResult();
+  // const device = result.device.model || result.device.type || "Unknown device";
+  const browser = result.browser.name || "Unknown browser";
+  const os = result.os.name || "Unknown OS";
+  const userAgent = navigator.userAgent;
+
+  const ipRes = await fetch("https://api.ipify.org?format=json");
+  const ipData = await ipRes.json();
+  const ipAddress = ipData.ip;
+
+  // Lấy location (nếu người dùng cho phép)
+  const location = await new Promise<string>((resolve) => {
+    if (!navigator.geolocation) {
+      resolve("Unknown location");
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => resolve(`${pos.coords.latitude},${pos.coords.longitude}`),
+      () => resolve("Permission denied")
+    );
+  });
+
+  return {
+    ipAddress,
+    location,
+    browser: `${browser} (${os})`,
+    userAgent,
+  };
+};
 
 const isValidDate = (targetDate?: MomentInput) => {
   if (!targetDate) return false;
@@ -146,3 +180,43 @@ export function convertCurrency(
     maximumFractionDigits: 2,
   }).format(amount);
 }
+
+export const formatSessionDate = (timestamp: number | null): string => {
+  if (!timestamp) return "Unknown date";
+
+  // Chuyển đổi từ decimal timestamp (giây) sang milliseconds
+  const date = new Date(Number(timestamp) * 1000);
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+
+// export const getDeviceInfo = (userAgent: string | null): { device: string; browser: string } => {
+//     if (!userAgent) {
+//       return { device: 'Unknown Device', browser: 'Unknown Browser' };
+//     }
+
+//     const ua = userAgent.toLowerCase();
+
+//     // Detect device
+//     let device = 'Unknown Device';
+//     if (ua.includes('windows')) device = 'Windows';
+//     else if (ua.includes('mac os')) device = 'Mac';
+//     else if (ua.includes('android')) device = 'Android';
+//     else if (ua.includes('iphone') || ua.includes('ipad')) device = 'iOS';
+//     else if (ua.includes('linux')) device = 'Linux';
+
+//     // Detect browser
+//     let browser = 'Unknown Browser';
+//     if (ua.includes('chrome') && !ua.includes('edg')) browser = 'Chrome';
+//     else if (ua.includes('firefox')) browser = 'Firefox';
+//     else if (ua.includes('safari') && !ua.includes('chrome')) browser = 'Safari';
+//     else if (ua.includes('edge')) browser = 'Edge';
+//     else if (ua.includes('opera')) browser = 'Opera';
+
+//     return { device, browser };
+//   };

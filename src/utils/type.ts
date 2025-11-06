@@ -651,10 +651,41 @@ export type SeatResponseMessage = DetailResponseMessage<Seat>;
 
 export type EmailProps = {
   email?: string;
-  userId?: number;
+  userId?: string;
   authType?: string;
   onClose?: () => void;
 };
+
+export interface FlightDiscount {
+  id: number;
+  discountCodeId: number;
+  flightId: number;
+  createdAt: number;
+
+  // Quan hệ
+  discountCode?: DiscountCode;
+  flight?: DataFlight; // giả sử anh cũng có interface Flight
+}
+
+// DiscountCode
+export interface DiscountCode {
+  id: number;
+  code: string;
+  description?: string;
+  discountAmount?: number; // fixed amount (cents)
+  discountPercent?: number; // 0..100 nếu %
+  isPercentage: boolean;
+  active: boolean;
+  validFrom: number;
+  validTo: number;
+  usageLimit?: number;
+  usedCount: number;
+  createdAt: number;
+  updatedAt: number;
+
+  // Quan hệ
+  flights?: FlightDiscount[];
+}
 
 export interface TransferAdmin {
   id: number;
@@ -678,6 +709,35 @@ export interface CountryResponse {
     wikiDataId: string;
   };
 }
+
+// types/session.types.ts
+export interface UserSession {
+  id: number;
+  userId: number;
+  token: string;
+  createdAt: number | null;
+  device: string | null;
+  browser: string | null;
+  location: string | null;
+  ipAddress: string | null;
+  userAgent: string | null;
+  isCurrent: boolean;
+}
+
+// export interface LogoutAllResponse {
+//   message: string;
+//   deletedCount: number;
+// }
+
+// export interface LogoutSessionResponse {
+//   message: string;
+// }
+
+export type VerifyOTPProps = {
+  userId: string;
+  type: "ADMIN" | "IDPW";
+  otp: string;
+};
 
 export type FacilityType =
   | "RESTAURANT"

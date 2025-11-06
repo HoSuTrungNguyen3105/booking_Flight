@@ -36,7 +36,6 @@ export const Header = () => {
   const navItems = [
     { value: "/contact", label: "Contact us" },
     { value: "/profile", label: "Profile" },
-    { value: "/payment", label: "News" },
     { value: "/flight/info-page", label: "flpage" },
     { value: "/admin", label: "Admin dashboard" },
     { value: "/hotels", label: " hotels" },
@@ -89,6 +88,7 @@ export const Header = () => {
           {/* Left section - Logo and System Name */}
           <Stack direction="row" alignItems="center" spacing={1}>
             <IconButton
+              onClick={() => navigate("/")}
               size="large"
               sx={{
                 width: "100px",
@@ -125,7 +125,7 @@ export const Header = () => {
             sx={{
               bgcolor: theme.palette.background.paper,
               display: "flex", // giúp các Button nằm ngang
-              alignItems: "center", // căn giữa theo chiều dọc
+              alignItems: "start", // căn giữa theo chiều dọc
               gap: 2, // khoảng cách giữa các nút
               flexWrap: "wrap",
             }}

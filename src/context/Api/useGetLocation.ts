@@ -95,8 +95,9 @@ export const useGetLocationCode = (lat: number, lng: number) => {
     error,
   } = useFetch<GeoNearbyCitiesResponse, void>({
     isFullUrl: true,
-    url: `https://wft-geo-db.p.rapidapi.com/v1/geo/locations/${+lat}${+lng}/nearbyCities?limit=1`,
-    autoFetch: false, // chỉ fetch khi đủ id
+    url: `https://wft-geo-db.p.rapidapi.com/v1/geo/locations/${lat},${lng}/nearbyCities?limit=1`,
+    // ✅ autoFetch chỉ bật khi có đủ lat & lng
+    autoFetch: !!lat && !!lng,
     config: {
       method: MethodType.GET,
       headers: {

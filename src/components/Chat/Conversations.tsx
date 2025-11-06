@@ -17,6 +17,7 @@ import { DateFormatEnum, formatDate } from "../../hooks/format";
 import useDebounce from "../../context/use[custom]/useDebounce";
 import SearchUserFromMessage from "./SearchUserFromMessage";
 import type { SearchEmailFromSidebarMessageRes } from "../../context/Api/usePostApi";
+import { ResponseCode } from "../../utils/response";
 
 const Conversations = ({
   userId,
@@ -32,7 +33,7 @@ const Conversations = ({
     autoListen: true,
     userId,
     onSuccess: (res) => {
-      if (res?.resultCode === "00") {
+      if (res?.resultCode === ResponseCode.SUCCESS) {
         console.log(" Conversations:", res.list);
       } else {
         console.warn("Server error:", res?.resultMessage);
@@ -88,7 +89,7 @@ const Conversations = ({
   return (
     <Box height={"90vh"} minWidth={0}>
       <SearchUserFromMessage onChange={(result) => setSearchResult(result)} />
-      {data?.resultCode === "00" && (
+      {data?.resultCode === ResponseCode.SUCCESS && (
         <List sx={{ py: 0, height: "100%", overflow: "auto" }}>
           {filteredUsers?.map((conv, index) => (
             <ListItem

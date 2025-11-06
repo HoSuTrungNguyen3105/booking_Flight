@@ -62,7 +62,7 @@ const DateTimePickerComponent: React.FC<Props> = ({
       <Box display="flex" gap={2}>
         <DatePicker
           value={date}
-          onChange={handleChange}
+          onChange={(newValue) => handleChange(newValue as Moment | null)}
           enableAccessibleFieldDOMStructure={false}
           slotProps={{
             textField: (params) => (

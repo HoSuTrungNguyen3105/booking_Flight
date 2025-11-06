@@ -13,6 +13,7 @@ import {
 import EventCard from "../../common/CustomRender/EventCard";
 import { useGetAllHotels, useGetFlightData } from "../../context/Api/useGetApi";
 import { useNavigate } from "react-router-dom";
+import FlightSearchForm from "./FlightSearchForm";
 
 const Hero = () => {
   const { dataGetAllHotels } = useGetAllHotels();
@@ -35,7 +36,7 @@ const Hero = () => {
       }}
     >
       <Box padding={1} textAlign={"center"}>
-        <Typography variant="h3" color="gray">
+        {/* <Typography variant="h3" color="gray">
           Discover the best flights for your points.
         </Typography>
         <Typography variant="subtitle1" color="gray">
@@ -43,10 +44,11 @@ const Hero = () => {
           search engine for award travel. Explore availability across entire
           regions, search with instant results, create free alerts and more to
           find the best flights for your points.
-        </Typography>
+        </Typography> */}
+        <FlightSearchForm />
       </Box>
 
-      <Box
+      {/* <Box
         sx={{
           maxWidth: "80%",
           overflow: "hidden",
@@ -54,7 +56,7 @@ const Hero = () => {
         }}
       >
         <InputTextField endIcon={<Search />} />
-      </Box>
+      </Box> */}
 
       <Box sx={{ position: "relative", zIndex: 2 }}>
         <Stack

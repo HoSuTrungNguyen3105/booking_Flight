@@ -4,12 +4,15 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import {
+  useGetSessionsByID,
   useLoginAdmin,
   useLoginByMfa,
   useLoginUser,
+  useLogoutSessionFromPassenger,
   useUpdateUserRank,
   useVerifyPw,
   type LoginReqProps,
@@ -24,6 +27,10 @@ import {
 } from "../utils/type";
 import { ResponseCode } from "../utils/response";
 import { useGetMyAdminInfo, useGetMyUserInfo } from "./Api/usePostApi";
+import {
+  useGetDistancesByLocationCode,
+  useGetLocationCode,
+} from "./Api/useGetLocation";
 
 export type UserWithMFA = {
   email: string;
@@ -31,7 +38,7 @@ export type UserWithMFA = {
   authType: string;
 };
 
-export type AuthType = "ADMIN" | "IDPW";
+export type AuthType = "ADMIN" | "IDPW" | "MFA";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -57,43 +64,152 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
-
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [passenger, setPassenger] = useState<Passenger | null>(null);
-  const [stateLogin, setStateLogin] = useState<AuthType>("IDPW");
-  const [user, setUser] = useState<UserData | null>(null);
-  const [token, setToken] = useState<string | null>(null);
-  const { refetchUpdateUserRank } = useUpdateUserRank();
-  const [isValid, setIsValid] = useState(false);
-
   const toast = useToast();
+  const hasFetched = useRef(false);
+
+  const [token, setToken] = useState<string | null>(null);
+  const [user, setUser] = useState<UserData | null>(null);
+  const [passenger, setPassenger] = useState<Passenger | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isValid, setIsValid] = useState(false);
+  // const [loading, setLoading] = useState(false);
+  // const [stateLogin, setStateLogin] = useState<AuthType>(() => {
+  //   return (localStorage.getItem("stateLogin") as AuthType) || "IDPW";
+  // });
+
   const { refetchLogin } = useLoginUser();
   const { refetchAdminLogin } = useLoginAdmin();
   const { refetchSetLoginMfa } = useLoginByMfa();
+  const { fetchVerifyPassword } = useVerifyPw({ id: user?.id });
   const { refetchGetMyUserInfo } = useGetMyUserInfo();
   const { refetchGetMyAdminInfo } = useGetMyAdminInfo();
-  const { fetchVerifyPassword } = useVerifyPw({ id: user?.id });
+  const { refetchLogoutSession } = useLogoutSessionFromPassenger();
+  const { refetchUpdateUserRank } = useUpdateUserRank();
+  const { refetchGetSessionByID } = useGetSessionsByID();
+  const isAdmin = useMemo(() => user?.role === UserRole.ADMIN, [user]);
 
-  const isAdminLogin = useMemo(
-    () => user?.role === UserRole.ADMIN,
-    [user, refetchGetMyAdminInfo]
+  const [coords, setCoords] = useState<[number, number] | null>(null);
+  const [countryCode, setCountryCode] = useState("");
+
+  const handleRender = useCallback(() => {
+    const saved = localStorage.getItem("cord");
+    if (!saved) return;
+
+    try {
+      // Nếu lưu dạng JSON.stringify([lat, lng])
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && parsed.length === 2) {
+        const lat = Number(parsed[0]);
+        const lng = Number(parsed[1]);
+
+        // Đảm bảo đúng kiểu [number, number]
+        if (!isNaN(lat) && !isNaN(lng)) {
+          setCoords([lat, lng]);
+        } else {
+          console.warn("Dữ liệu toạ độ không hợp lệ:", parsed);
+        }
+      }
+    } catch (err) {
+      console.error("Lỗi khi parse localStorage:", err);
+    }
+  }, []);
+
+  useEffect(() => {
+    handleRender();
+  }, [handleRender]);
+
+  const { refetchDistance } = useGetLocationCode(
+    coords?.[0] as number,
+    coords?.[1] as number
   );
 
+  console.log("cor", coords);
+
+  useEffect(() => {
+    if (hasFetched.current) return;
+    hasFetched.current = true;
+
+    const fetchData = async () => {
+      const saved = localStorage.getItem("cord");
+      if (saved) {
+        console.log("save", saved);
+        const parsed: [number, number] = JSON.parse(saved);
+        console.log("parsed", parsed);
+        if (Array.isArray(parsed) && parsed.length === 2) {
+          setCoords(parsed);
+          // const res = await refetchDistance();
+          // console.log("res", res);
+        }
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const newCoords: [number, number] = [
+            pos.coords.latitude,
+            pos.coords.longitude,
+          ];
+          setCoords(newCoords);
+          localStorage.setItem("cord", JSON.stringify(newCoords));
+        },
+        (err) => console.error("Không thể lấy vị trí:", err)
+      );
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchCountry = async () => {
+      if (!coords) return;
+      const res = await refetchDistance();
+      console.log("refetchDistance", res);
+      const newCode = res?.data?.[0]?.countryCode;
+      if (newCode && newCode !== countryCode) {
+        setCountryCode(newCode);
+        localStorage.setItem("countryCode", newCode);
+      }
+    };
+
+    fetchCountry();
+    // Không nên thêm countryCode vào dependency!
+  }, [coords]);
+
+  // const { dataDistance } = useGetDistancesByLocationCode(countryCode);
+
+  // const [callingCode, setCallingCode] = useState(
+  //   dataDistance?.data.callingCode
+  // );
+
+  /** Helper quản lý localStorage */
+  const storage = {
+    save: (token: string, userId: number | string, state: AuthType) => {
+      localStorage.setItem("token", token);
+      localStorage.setItem("userId", String(userId));
+      localStorage.setItem("isAuthenticated", "true");
+      localStorage.setItem("stateLogin", state);
+    },
+    clear: () => {
+      localStorage.removeItem("token");
+      localStorage.removeItem("userId");
+      localStorage.removeItem("isAuthenticated");
+      localStorage.removeItem("stateLogin");
+    },
+  };
+
+  /** Verify Password */
   const verifyPassword = useCallback(
     async (password: string): Promise<boolean> => {
       try {
         const response = await fetchVerifyPassword({ password });
         const isValidResult = response?.resultCode === ResponseCode.SUCCESS;
-
         setIsValid(isValidResult);
-
-        if (isValidResult) {
-          toast("Xác thực thành công", "success");
-        } else {
-          toast(response?.resultMessage || "Lỗi xác thực mật khẩu", "error");
-        }
-
+        toast(
+          isValidResult
+            ? "Xác thực thành công"
+            : (response?.resultMessage as string),
+          isValidResult ? "success" : "error"
+        );
         return isValidResult;
       } catch (error) {
         console.error("verifyPassword error:", error);
@@ -104,170 +220,201 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     [fetchVerifyPassword, toast]
   );
 
-  const setValid = useCallback((valid: boolean) => {
-    setIsValid(valid);
+  const setValid = useCallback((v: boolean) => setIsValid(v), []);
+  const resetValidation = useCallback(() => setIsValid(false), []);
+
+  /** Fetch thông tin user */
+  const fetchMyUserInfo = useCallback(async (id?: string) => {
+    if (!id) return;
+    const res = await refetchGetMyUserInfo({ id });
+    if (res?.resultCode === ResponseCode.SUCCESS && res.data) {
+      setPassenger(res.data);
+      setIsAuthenticated(true);
+    } else {
+      setPassenger(null);
+      setIsAuthenticated(false);
+    }
+    return res;
   }, []);
 
-  const resetValidation = useCallback(() => {
-    setIsValid(false);
-  }, []);
+  /** Fetch thông tin admin */
+  const fetchMyAdminInfo = useCallback(
+    async (id?: number) => {
+      if (!id) return;
+      const res = await refetchGetMyAdminInfo({ id });
 
-  const updateLocalStorage = (
-    isAuthenticated: boolean,
-    token: string | null,
-    id?: number | string
+      if (res?.resultCode === ResponseCode.SUCCESS && res.data) {
+        setUser(res.data);
+        setIsAuthenticated(true);
+        await refetchUpdateUserRank({ userId: id });
+      } else {
+        setUser(null);
+        setIsAuthenticated(false);
+      }
+      return res;
+    },
+    [refetchUpdateUserRank]
+  );
+
+  /** Hàm xử lý login dùng chung */
+  const handleLogin = async (
+    fetchFn: Function,
+    data: LoginReqProps,
+    type: AuthType
   ) => {
-    localStorage.setItem("isAuthenticated", String(isAuthenticated));
-    localStorage.setItem("token", token || "");
-    if (id) localStorage.setItem("userId", String(id));
+    // setLoading(true);
+    const res = await fetchFn(data);
+    // setLoading(false);
+    if (res?.resultCode === ResponseCode.SUCCESS && res.data) {
+      const token = res.accessToken;
+      const id = res.data.id;
+      setToken(token);
+      setIsAuthenticated(true);
+      storage.save(token, id, type);
+      return { success: true, data: res };
+    }
+
+    toast(res?.resultMessage || "Đăng nhập thất bại", "error");
+    return { success: false, data: res };
   };
 
-  const loginPassenger = async (
-    data: LoginReqProps
-  ): Promise<LoginDataResponse<Passenger>> => {
-    const res = await refetchLogin(data);
-    if (res?.resultCode === ResponseCode.SUCCESS && res.data) {
-      const accessToken = res.accessToken;
-      const id = res.data.id;
-      setIsAuthenticated(true);
-      setToken(accessToken ?? null);
-      updateLocalStorage(true, accessToken ?? null, id);
-      await fetchMyUserInfo(id);
-      return res;
-    } else {
-      toast(res?.resultMessage || "Unexpected error occurred", "error");
-      return res as LoginDataResponse<Passenger>;
+  const logout = useCallback(async () => {
+    const id = localStorage.getItem("userId");
+    const token = localStorage.getItem("token");
+    if (!id || !token) return;
+
+    try {
+      await refetchLogoutSession({ id: Number(id), token });
+    } catch (err) {
+      console.error("Lỗi khi logout:", err);
+    } finally {
+      setIsAuthenticated(false);
+      setUser(null);
+      setPassenger(null);
+      setToken(null);
+      storage.clear();
     }
+  }, [refetchLogoutSession]);
+
+  const hasValidLogin = useCallback(async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const userId = localStorage.getItem("userId");
+      const savedState = localStorage.getItem("stateLogin") as AuthType;
+
+      // const savedId = localStorage.getItem("userId");
+      if (!token) {
+        console.warn("Token không tồn tại, logout...");
+        logout();
+        return;
+      }
+
+      const isADMIN = savedState === "ADMIN" ? userId : null;
+      const isPassenger = savedState === "IDPW" ? userId : null;
+
+      const res = await refetchGetSessionByID({
+        passengerId: isPassenger,
+        userId: Number(isADMIN),
+        token,
+      });
+
+      if (!res) {
+        console.warn("Không nhận được phản hồi từ server");
+        // logout();
+        return;
+      }
+
+      if (res.data?.requireLogout) {
+        toast("Server yêu cầu logout do phiên không hợp lệ");
+        logout();
+        return false;
+      }
+      return true;
+    } catch (error) {
+      console.error("Lỗi khi kiểm tra phiên đăng nhập:", error);
+      // logout();
+      return false;
+    }
+  }, [logout, passenger?.id, user?.id, refetchGetSessionByID]);
+
+  const loginPassenger = async (data: LoginReqProps) => {
+    const result = await handleLogin(refetchLogin, data, "IDPW");
+    if (result.success) await fetchMyUserInfo(result.data.data.id);
+    return result.data;
   };
 
-  const loginAdmin = async (
-    data: LoginReqProps
-  ): Promise<LoginDataResponse<UserData>> => {
-    const res = await refetchAdminLogin(data);
-    if (res?.resultCode === ResponseCode.SUCCESS && res.data) {
-      const accessToken = res.accessToken;
-      const id = res.data.id;
-      setIsAuthenticated(true);
-      setToken(accessToken ?? null);
-      updateLocalStorage(true, accessToken ?? null, id);
-      setStateLogin("ADMIN");
-      await fetchMyAdminInfo(id);
-      return res;
-    } else {
-      toast(res?.resultMessage || "Unexpected error occurred", "error");
-      return res as LoginDataResponse<UserData>;
-    }
+  const loginAdmin = async (data: LoginReqProps) => {
+    const result = await handleLogin(refetchAdminLogin, data, "ADMIN");
+    if (result.success) await fetchMyAdminInfo(result.data.data.id);
+    return result.data;
   };
 
   const loginWithGGAuthenticator = async (
     userData: UserWithMFA
   ): Promise<ResponseGGAuthenticate> => {
-    const res = await refetchSetLoginMfa({
-      email: userData.email,
-      code: userData.code,
-      authType: userData.authType,
-    });
-    if (res?.resultCode === ResponseCode.SUCCESS && res.data) {
-      const accessToken = res.accessToken;
-      const id = res.data.id;
-      setIsAuthenticated(true);
-      setToken(accessToken ?? null);
-      updateLocalStorage(true, accessToken ?? null, id);
-      await fetchMyAdminInfo(id);
-      return res;
-    } else {
-      toast(res?.resultMessage || "Đăng nhập thất bại", "error");
-      return res as ResponseGGAuthenticate;
-    }
-  };
-
-  const fetchMyUserInfo = useCallback(async (id?: string) => {
-    if (!id) return;
     try {
-      const requests = await refetchGetMyUserInfo({ id });
-      const dataUser = requests?.data;
-      if (requests?.resultCode === ResponseCode.SUCCESS && dataUser) {
-        setPassenger(dataUser);
+      const res = await refetchSetLoginMfa(userData);
+      if (res?.resultCode === ResponseCode.SUCCESS && res.data) {
+        const token = res.accessToken as string;
+        const id = res.data.id;
+        setToken(token);
         setIsAuthenticated(true);
-        // await refetchUpdateUserRank({ userId: id });
+        storage.save(token, id, "MFA");
+        await fetchMyAdminInfo(id);
       } else {
-        setIsAuthenticated(false);
-        setPassenger(null);
+        toast(res?.resultMessage || "Đăng nhập thất bại", "error");
       }
-
-      return requests;
-    } catch (err) {
-      return undefined;
+      return res as ResponseGGAuthenticate;
+    } catch (error) {
+      console.error("loginWithGGAuthenticator error:", error);
+      return error as ResponseGGAuthenticate;
     }
-  }, []);
-
-  const fetchMyAdminInfo = useCallback(
-    async (id?: number) => {
-      if (!id) return;
-      try {
-        const requests = await refetchGetMyAdminInfo({ id });
-        const dataUser = requests?.data;
-        if (requests?.resultCode === ResponseCode.SUCCESS && dataUser) {
-          setUser(dataUser);
-          setIsAuthenticated(true);
-          await refetchUpdateUserRank({ userId: id });
-        } else {
-          setIsAuthenticated(false);
-          setUser(null);
-        }
-
-        return requests;
-      } catch (err) {
-        return undefined;
-      }
-    },
-    [refetchUpdateUserRank]
-  );
-
-  const logout = () => {
-    setIsAuthenticated(false);
-    setUser(null);
-    setToken(null);
-    localStorage.removeItem("isAuthenticated");
-    localStorage.removeItem("token");
-    localStorage.removeItem("userId");
   };
 
+  /** Khôi phục login khi reload */
   useEffect(() => {
-    const savedToken = localStorage.getItem("token");
-    const savedId = localStorage.getItem("userId");
+    const initAuth = async () => {
+      const savedToken = localStorage.getItem("token");
+      const savedId = localStorage.getItem("userId");
+      const savedState = localStorage.getItem("stateLogin") as AuthType;
 
-    if (!savedToken || !savedId) return;
+      if (!savedToken || !savedId) return;
+      setToken(savedToken);
+      setIsAuthenticated(true);
 
-    setToken(savedToken);
-    setIsAuthenticated(true);
+      const valid = await hasValidLogin();
+      console.warn("valid", valid);
+      if (!valid) return;
 
-    if (stateLogin === "ADMIN") {
-      fetchMyAdminInfo(Number(savedId));
-    } else {
-      fetchMyUserInfo(savedId);
-    }
-  }, [fetchMyUserInfo, fetchMyAdminInfo, stateLogin]);
+      if (savedState === "IDPW") {
+        await fetchMyUserInfo(savedId);
+      }
+      if (savedState === "ADMIN") {
+        await fetchMyAdminInfo(Number(savedId));
+      }
+    };
+    initAuth();
+  }, []);
 
   return (
     <AuthContext.Provider
       value={{
         isAuthenticated,
+        token,
         user,
         passenger,
-        token,
+        isAdmin,
+        isValid,
+        // loading,
         loginPassenger,
         loginAdmin,
         loginWithGGAuthenticator,
-        fetchMyAdminInfo,
         fetchMyUserInfo,
+        fetchMyAdminInfo,
         logout,
-        isValid,
         verifyPassword,
         setValid,
         resetValidation,
-        isAdmin: isAdminLogin,
-        // authType: "IDPW",
       }}
     >
       {children}

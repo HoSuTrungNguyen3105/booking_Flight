@@ -10,7 +10,7 @@ type TimePickerProps = {
   onChange: (val: string) => void;
 };
 
-export const OpeningHoursPicker = ({ value, onChange }: TimePickerProps) => {
+export const HoursPicker = ({ value, onChange }: TimePickerProps) => {
   const [startTime, setStartTime] = useState<Moment | null>(
     value ? moment(value.split(" - ")[0], "HH:mm") : null
   );
@@ -32,8 +32,9 @@ export const OpeningHoursPicker = ({ value, onChange }: TimePickerProps) => {
           label="Mở"
           value={startTime}
           onChange={(newValue) => {
-            setStartTime(newValue);
-            handleUpdate(newValue, endTime);
+            const val = newValue as Moment | null;
+            setStartTime(val);
+            handleUpdate(val, endTime);
           }}
           slotProps={{ textField: { size: "small" } }}
         />
@@ -42,8 +43,9 @@ export const OpeningHoursPicker = ({ value, onChange }: TimePickerProps) => {
           label="Đóng"
           value={endTime}
           onChange={(newValue) => {
-            setEndTime(newValue);
-            handleUpdate(startTime, newValue);
+            const val = newValue as Moment | null;
+            setEndTime(val);
+            handleUpdate(startTime, val);
           }}
           slotProps={{ textField: { size: "small" } }}
         />

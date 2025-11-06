@@ -1,9 +1,8 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import {
   Box,
   Grid,
   Typography,
-  TextField,
   Button,
   Divider,
   Paper,
@@ -14,31 +13,30 @@ import {
 import { CreditCard } from "@mui/icons-material";
 import { useLocation } from "react-router-dom";
 import type { Seat } from "../../utils/type";
-
-interface PaymentFormProps {
-  onPay: () => void;
-  passengers: string[];
-}
+import InputTextField from "../../common/Input/InputTextField";
 
 const PaymentForm = () => {
   const location = useLocation();
-  const seat = location.state?.seat;
+  const seat = location.state?.seat as Seat;
+
+  console.log("seas", seat);
 
   const [number, setNumber] = useState("");
   const [name, setName] = useState("");
   const [expiry, setExpiry] = useState("");
   const [cvc, setCvc] = useState("");
-  const [focused, setFocused] = useState<keyof typeof formValues | undefined>(
-    undefined
-  );
+  // const [focused, setFocused] = useState<keyof typeof formValues | undefined>(
+  //   undefined
+  // );
 
-  const formValues = { number, name, expiry, cvc };
+  // const formValues = { number, name, expiry, cvc };
 
-  const handleInputFocus = (e: React.FocusEvent<HTMLInputElement>) =>
-    setFocused(e.target.name as keyof typeof formValues);
+  // const handleInputFocus = (e: React.FocusEvent<HTMLInputElement>) =>
+  //   setFocused(e.target.name as keyof typeof formValues);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+  type FieldName = "number" | "name" | "expiry" | "cvc";
+
+  const handleInputChange = (name: FieldName, value: string) => {
     switch (name) {
       case "number":
         setNumber(value);
@@ -60,6 +58,14 @@ const PaymentForm = () => {
     // onPay();
   };
 
+  if (!seat) {
+    return (
+      <Typography variant="h5" fontWeight={700} mt={1} ml={3}>
+        No seat
+      </Typography>
+    );
+  }
+
   return (
     <Grid container spacing={4} sx={{ p: 4 }}>
       {/* ===== LEFT: PAYMENT FORM ===== */}
@@ -75,50 +81,35 @@ const PaymentForm = () => {
 
           <Box component="form" onSubmit={handleSubmit} noValidate>
             <Stack spacing={2}>
-              <TextField
-                label="Card Number"
+              <InputTextField
                 name="number"
                 placeholder="1234 5678 9012 3456"
                 value={number}
-                onChange={handleInputChange}
-                onFocus={handleInputFocus}
-                inputProps={{ pattern: "[\\d| ]{16,22}" }}
-                required
+                onChange={(e) => handleInputChange("number", e)}
               />
 
-              <TextField
-                label="Name on Card"
+              <InputTextField
                 name="name"
                 placeholder="John Doe"
                 value={name}
-                onChange={handleInputChange}
-                onFocus={handleInputFocus}
-                required
+                onChange={(e) => handleInputChange("name", e)}
               />
 
               <Grid container spacing={2}>
                 <Grid size={6}>
-                  <TextField
-                    label="Expiry Date"
+                  <InputTextField
                     name="expiry"
                     placeholder="MM/YY"
                     value={expiry}
-                    onChange={handleInputChange}
-                    onFocus={handleInputFocus}
-                    inputProps={{ pattern: "\\d\\d/\\d\\d" }}
-                    required
+                    onChange={(e) => handleInputChange("expiry", e)}
                   />
                 </Grid>
                 <Grid size={6}>
-                  <TextField
-                    label="CVC"
+                  <InputTextField
                     name="cvc"
                     placeholder="123"
                     value={cvc}
-                    onChange={handleInputChange}
-                    onFocus={handleInputFocus}
-                    inputProps={{ pattern: "\\d{3,4}" }}
-                    required
+                    onChange={(e) => handleInputChange("cvc", e)}
                   />
                 </Grid>
               </Grid>

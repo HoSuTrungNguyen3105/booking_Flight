@@ -45,6 +45,7 @@
     "react-toastify": "^11.0.5",
     "recharts": "^3.2.1",
     "socket.io-client": "^4.8.1",
+    "ua-parser-js": "^2.0.6",
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
