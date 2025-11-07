@@ -43,7 +43,19 @@ export const ApiProvider = ({ children }: { children: ReactNode }) => {
       setLoading(true);
       setError(null);
       try {
-        const response = await axiosInstance({ method, url, data, ...config });
+        const response = await axiosInstance({
+          method,
+          url,
+          data,
+          ...config,
+          headers: {
+            ...(axiosInstance.defaults.headers.common as Record<
+              string,
+              string
+            >),
+            ...(config?.headers ?? {}),
+          },
+        });
         return response.data;
       } catch (error) {
         setError("An error occured");

@@ -27,10 +27,7 @@ import {
 } from "../utils/type";
 import { ResponseCode } from "../utils/response";
 import { useGetMyAdminInfo, useGetMyUserInfo } from "./Api/usePostApi";
-import {
-  useGetDistancesByLocationCode,
-  useGetLocationCode,
-} from "./Api/useGetLocation";
+import { refetchDistance } from "./Api/useGetLocation";
 
 export type UserWithMFA = {
   email: string;
@@ -38,7 +35,7 @@ export type UserWithMFA = {
   authType: string;
 };
 
-export type AuthType = "ADMIN" | "IDPW" | "MFA";
+export type AuthType = "ADMIN" | "IDPW" | "DEV" | "MFA";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -46,6 +43,7 @@ interface AuthContextType {
   passenger: Passenger | null;
   token: string | null;
   isAdmin: boolean;
+  countryCode: string;
   // authType: AuthType;
   isValid: boolean;
   verifyPassword: (password: string) => Promise<boolean>;
@@ -73,20 +71,16 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [passenger, setPassenger] = useState<Passenger | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isValid, setIsValid] = useState(false);
-  // const [loading, setLoading] = useState(false);
-  // const [stateLogin, setStateLogin] = useState<AuthType>(() => {
-  //   return (localStorage.getItem("stateLogin") as AuthType) || "IDPW";
-  // });
 
-  const { refetchLogin } = useLoginUser();
-  const { refetchAdminLogin } = useLoginAdmin();
-  const { refetchSetLoginMfa } = useLoginByMfa();
-  const { fetchVerifyPassword } = useVerifyPw({ id: user?.id });
   const { refetchGetMyUserInfo } = useGetMyUserInfo();
   const { refetchGetMyAdminInfo } = useGetMyAdminInfo();
   const { refetchLogoutSession } = useLogoutSessionFromPassenger();
   const { refetchUpdateUserRank } = useUpdateUserRank();
   const { refetchGetSessionByID } = useGetSessionsByID();
+  const { refetchLogin } = useLoginUser();
+  const { refetchAdminLogin } = useLoginAdmin();
+  const { refetchSetLoginMfa } = useLoginByMfa();
+  const { fetchVerifyPassword } = useVerifyPw({ id: user?.id });
   const isAdmin = useMemo(() => user?.role === UserRole.ADMIN, [user]);
 
   const [coords, setCoords] = useState<[number, number] | null>(null);
@@ -97,17 +91,12 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (!saved) return;
 
     try {
-      // Nếu lưu dạng JSON.stringify([lat, lng])
       const parsed = JSON.parse(saved);
       if (Array.isArray(parsed) && parsed.length === 2) {
         const lat = Number(parsed[0]);
         const lng = Number(parsed[1]);
-
-        // Đảm bảo đúng kiểu [number, number]
         if (!isNaN(lat) && !isNaN(lng)) {
           setCoords([lat, lng]);
-        } else {
-          console.warn("Dữ liệu toạ độ không hợp lệ:", parsed);
         }
       }
     } catch (err) {
@@ -119,41 +108,32 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     handleRender();
   }, [handleRender]);
 
-  const { refetchDistance } = useGetLocationCode(
-    coords?.[0] as number,
-    coords?.[1] as number
-  );
-
-  console.log("cor", coords);
+  // Hook lấy API (chưa tự fetch)
+  // const { refetchDistance, dataLocation } = useGetLocationCode();
 
   useEffect(() => {
-    if (hasFetched.current) return;
-    hasFetched.current = true;
-
     const fetchData = async () => {
       const saved = localStorage.getItem("cord");
       if (saved) {
-        console.log("save", saved);
         const parsed: [number, number] = JSON.parse(saved);
-        console.log("parsed", parsed);
         if (Array.isArray(parsed) && parsed.length === 2) {
           setCoords(parsed);
-          // const res = await refetchDistance();
-          // console.log("res", res);
         }
       }
 
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          const newCoords: [number, number] = [
-            pos.coords.latitude,
-            pos.coords.longitude,
-          ];
-          setCoords(newCoords);
-          localStorage.setItem("cord", JSON.stringify(newCoords));
-        },
-        (err) => console.error("Không thể lấy vị trí:", err)
-      );
+      if (!saved) {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            const newCoords: [number, number] = [
+              pos.coords.latitude,
+              pos.coords.longitude,
+            ];
+            setCoords(newCoords);
+            localStorage.setItem("cord", JSON.stringify(newCoords));
+          },
+          (err) => console.error("Không thể lấy vị trí:", err)
+        );
+      }
     };
 
     fetchData();
@@ -161,25 +141,28 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const fetchCountry = async () => {
-      if (!coords) return;
-      const res = await refetchDistance();
-      console.log("refetchDistance", res);
-      const newCode = res?.data?.[0]?.countryCode;
-      if (newCode && newCode !== countryCode) {
-        setCountryCode(newCode);
-        localStorage.setItem("countryCode", newCode);
-      }
+      if (!coords || hasFetched.current) return;
+      hasFetched.current = true;
+
+      const res = await refetchDistance(coords?.[0], coords?.[1]);
+      setTimeout(() => {
+        const newCode = res?.data?.[0]?.countryCode;
+        if (newCode && newCode !== countryCode) {
+          setCountryCode(newCode);
+          localStorage.setItem("countryCode", newCode);
+        }
+      }, 2000);
+      // const newCode = res?.data?.[0]?.countryCode;
+
+      // if (newCode && newCode !== countryCode) {
+      //   setCountryCode(newCode);
+      //   localStorage.setItem("countryCode", newCode);
+      //   console.log(" Country code set:", newCode);
+      // }
     };
 
     fetchCountry();
-    // Không nên thêm countryCode vào dependency!
   }, [coords]);
-
-  // const { dataDistance } = useGetDistancesByLocationCode(countryCode);
-
-  // const [callingCode, setCallingCode] = useState(
-  //   dataDistance?.data.callingCode
-  // );
 
   /** Helper quản lý localStorage */
   const storage = {
@@ -194,6 +177,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       localStorage.removeItem("userId");
       localStorage.removeItem("isAuthenticated");
       localStorage.removeItem("stateLogin");
+      localStorage.removeItem("cord");
+      localStorage.removeItem("countryCode");
     },
   };
 
@@ -320,8 +305,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (!res) {
         console.warn("Không nhận được phản hồi từ server");
-        // logout();
-        return;
+        return false;
       }
 
       if (res.data?.requireLogout) {
@@ -383,7 +367,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setIsAuthenticated(true);
 
       const valid = await hasValidLogin();
-      console.warn("valid", valid);
       if (!valid) return;
 
       if (savedState === "IDPW") {
@@ -403,9 +386,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         token,
         user,
         passenger,
+        countryCode,
         isAdmin,
         isValid,
-        // loading,
         loginPassenger,
         loginAdmin,
         loginWithGGAuthenticator,

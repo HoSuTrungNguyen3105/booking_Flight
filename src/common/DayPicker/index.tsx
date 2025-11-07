@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo, memo } from "react";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { koKR, enUS } from "@mui/x-date-pickers/locales";
-import { Box, TextField } from "@mui/material";
+import { Box } from "@mui/material";
 import moment, { type Moment } from "moment";
 
 interface Props {
@@ -65,15 +65,11 @@ const DateTimePickerComponent: React.FC<Props> = ({
           onChange={(newValue) => handleChange(newValue as Moment | null)}
           enableAccessibleFieldDOMStructure={false}
           slotProps={{
-            textField: (params) => (
-              <TextField
-                {...params}
-                key={Number(params)}
-                fullWidth
-                error={hasError}
-                helperText={hasError ? "Invalid date" : ""}
-              />
-            ),
+            textField: {
+              fullWidth: true,
+              error: hasError,
+              helperText: hasError ? "Invalid date" : "",
+            },
           }}
         />
       </Box>

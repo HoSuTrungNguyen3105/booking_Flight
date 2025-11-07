@@ -12,16 +12,15 @@ const axiosInstance = axios.create({
   baseURL,
   headers: {
     "Content-Type": "application/json",
+    // "X-RapidAPI-Key": "...",
+    // "X-RapidAPI-Host": "wft-geo-db.p.rapidapi.com",
   },
 });
 
-axiosInstance.interceptors.request.use((config) => {
-  // Nếu request URL có http hoặc https → dùng full URL, bỏ baseURL
-  if (config.url?.startsWith("http")) {
-    config.baseURL = "";
-  }
-  return config;
-});
+// axiosInstance.interceptors.response.use(
+//   (response) => response, // phải return nguyên response
+//   (error) => Promise.reject(error)
+// );
 
 axiosInstance.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");

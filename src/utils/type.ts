@@ -570,6 +570,8 @@ export interface Ticket {
   flightId: number;
   seatClass: string;
   seatNo: string;
+
+  seatPrice: number;
   bookedAt: string; // ISO datetime hoặc number nếu backend trả về timestamp
 
   // Quan hệ
@@ -577,6 +579,37 @@ export interface Ticket {
   flight?: DataFlight;
   boardingPass?: BoardingPass | null;
   baggage?: Baggage[];
+  payments?: Payment[];
+}
+
+export enum PaymentMethod {
+  MOMO = "MOMO",
+  ZALOPAY = "ZALOPAY",
+  STRIPE = "STRIPE",
+}
+
+export enum PaymentStatus {
+  PENDING = "PENDING", // chưa thanh toán
+  SUCCESS = "SUCCESS", // thanh toán thành công
+  FAILED = "FAILED", // thất bại
+  CANCELLED = "CANCELLED", // hủy
+}
+
+// Type cho Payment
+export interface Payment {
+  id: number;
+  ticketId: number;
+  amount: number; // lưu VNĐ hoặc cents
+  currency: string; // "VND" | "USD" ...
+  method: PaymentMethod;
+  status: PaymentStatus;
+  transactionId?: string; // từ Momo/ZaloPay/Stripe
+  paymentUrl?: string; // QR code link / checkout link
+  createdAt: number; // timestamp (ms)
+  updatedAt: number; // timestamp (ms)
+
+  // Nếu muốn reference tới ticket, bạn có thể thêm optional relation
+  ticket?: Ticket; // import { Ticket } from './Ticket';
 }
 
 export interface BoardingPass {
@@ -586,6 +619,7 @@ export interface BoardingPass {
   gate: string;
   boardingTime: string;
   flightId: number;
+  status: string;
 
   ticket?: Ticket;
   flight?: DataFlight;
@@ -667,6 +701,28 @@ export interface FlightDiscount {
   flight?: DataFlight; // giả sử anh cũng có interface Flight
 }
 
+export interface GeoNearbyCity {
+  id: number;
+  wikiDataId: string;
+  type: string;
+  city: string;
+  name: string;
+  country: string;
+  countryCode: string;
+  latitude: number;
+  longitude: number;
+  population: number;
+  distance: number;
+}
+
+export interface GeoNearbyCitiesResponse {
+  data: GeoNearbyCity[];
+  metadata?: {
+    currentOffset?: number;
+    totalCount?: number;
+  };
+}
+
 // DiscountCode
 export interface DiscountCode {
   id: number;
@@ -697,18 +753,18 @@ export interface TransferAdmin {
   approvedAt?: string | number | null;
 }
 
-export interface CountryResponse {
-  data: {
-    capital: string;
-    code: string;
-    callingCode: string;
-    currencyCodes: string[];
-    flagImageUri: string;
-    name: string;
-    numRegions: number;
-    wikiDataId: string;
-  };
-}
+// export interface CountryResponse {
+//   data: {
+//     capital: string;
+//     code: string;
+//     callingCode: string;
+//     currencyCodes: string[];
+//     flagImageUri: string;
+//     name: string;
+//     numRegions: number;
+//     wikiDataId: string;
+//   };
+// }
 
 // types/session.types.ts
 export interface UserSession {

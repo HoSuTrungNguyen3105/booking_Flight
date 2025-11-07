@@ -1,14 +1,26 @@
-import { useFetch } from "../use[custom]/useFetch";
-import { MethodType, type CountryResponse } from "../../utils/type";
+import { axiosRapid } from "../../utils/axiosRapid";
 
-// Định nghĩa kiểu dữ liệu thật sự mà API trả về
-// (RapidAPI GeoDB Distance API trả về object có trường "data.distance" v.v.)
-interface GeoDistanceResponse {
-  data: {
-    id: string;
-    distance: number;
-    distanceUnit: string;
-  };
+// interface GeoDistanceResponse {
+//   data: {
+//     id: string;
+//     distance: number;
+//     distanceUnit: string;
+//   };
+// }
+
+export interface CountryResponse {
+  data: CountryData;
+}
+
+export interface CountryData {
+  capital: string;
+  code: string; // ví dụ "VN"
+  callingCode: string; // ví dụ "+84"
+  currencyCodes: string[]; // ví dụ ["VND"]
+  flagImageUri: string;
+  name: string; // ví dụ "Vietnam"
+  numRegions: number; // ví dụ 63
+  wikiDataId: string; // ví dụ "Q881"
 }
 
 export interface GeoLink {
@@ -41,72 +53,35 @@ export interface GeoNearbyCitiesResponse {
   metadata: GeoMetadata;
 }
 
-export const useGetDistanceBetweenPlaces = (fromId: string, toId: string) => {
-  const {
-    data: dataDistance,
-    refetch: refetchDistance,
-    loading,
-    error,
-  } = useFetch<GeoDistanceResponse, void>({
-    isFullUrl: true,
-    url: `https://wft-geo-db.p.rapidapi.com/v1/geo/places/${fromId}/distance?toPlaceId=${toId}`,
-    autoFetch: !!fromId && !!toId, // chỉ fetch khi đủ id
-    config: {
-      method: MethodType.GET,
-      headers: {
-        "Content-Type": "application/json",
-        "X-RapidAPI-Key": "d0f81ef94amsh2bf5537ea7d8bc6p182b9bjsn4e67a7051177",
-        "X-RapidAPI-Host": "wft-geo-db.p.rapidapi.com",
-      },
-    },
-  });
-
-  return { dataDistance, refetchDistance, loading, error };
+export const refethDistancesToGetCallingCode = async (
+  fromId: string
+): Promise<CountryResponse | undefined> => {
+  try {
+    const res = await axiosRapid.get<CountryResponse>(
+      `geo/countries/${fromId}`
+    );
+    console.log(" RapidAPI response:", res.data);
+    return res.data;
+  } catch (error) {
+    console.error("RapidAPI error:", error);
+    return undefined;
+  }
 };
 
-export const useGetDistancesByLocationCode = (fromId: string) => {
-  const {
-    data: dataDistance,
-    refetch: refetchDistance,
-    loading,
-    error,
-  } = useFetch<CountryResponse, void>({
-    isFullUrl: true,
-    url: `https://wft-geo-db.p.rapidapi.com/v1/geo/countries/${fromId}`,
-    autoFetch: !!fromId, // chỉ fetch khi đủ id
-    config: {
-      method: MethodType.GET,
-      headers: {
-        "Content-Type": "application/json",
-        "X-RapidAPI-Key": "d0f81ef94amsh2bf5537ea7d8bc6p182b9bjsn4e67a7051177",
-        "X-RapidAPI-Host": "wft-geo-db.p.rapidapi.com",
-      },
-    },
-  });
+export const refetchDistance = async (
+  lat?: number,
+  lng?: number
+): Promise<GeoNearbyCitiesResponse | undefined> => {
+  if (!lat || !lng) return;
 
-  return { dataDistance, refetchDistance, loading, error };
-};
-
-export const useGetLocationCode = (lat: number, lng: number) => {
-  const {
-    data: dataLocation,
-    refetch: refetchDistance,
-    loading,
-    error,
-  } = useFetch<GeoNearbyCitiesResponse, void>({
-    isFullUrl: true,
-    url: `https://wft-geo-db.p.rapidapi.com/v1/geo/locations/${lat},${lng}/nearbyCities?limit=1`,
-    // ✅ autoFetch chỉ bật khi có đủ lat & lng
-    autoFetch: !!lat && !!lng,
-    config: {
-      method: MethodType.GET,
-      headers: {
-        // "Content-Type": "application/json",
-        "X-RapidAPI-Key": "d0f81ef94amsh2bf5537ea7d8bc6p182b9bjsn4e67a7051177",
-        "X-RapidAPI-Host": "wft-geo-db.p.rapidapi.com",
-      },
-    },
-  });
-
-  return { dataLocation, refetchDistance, loading, error };
+  try {
+    const res = await axiosRapid.get<GeoNearbyCitiesResponse>(
+      `geo/locations/${lat}+${lng}/nearbyCities?limit=1`
+    );
+    console.log(" RapidAPI response:", res.data);
+    return res.data;
+  } catch (error) {
+    console.error("RapidAPI error:", error);
+    return undefined;
+  }
 };

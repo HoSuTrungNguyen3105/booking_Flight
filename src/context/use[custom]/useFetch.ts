@@ -3,10 +3,10 @@ import { useApi } from "../../context/ApiContext";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MethodType } from "../../utils/type";
 
-// type ResponseMessage = {
-//   resultCode?: string;
-//   resultMessage?: string;
-// };
+type ResponseMessage = {
+  resultCode?: string;
+  resultMessage?: string;
+};
 
 interface AbortError extends Error {
   name: "AbortError";
@@ -22,11 +22,9 @@ type TUseFetch<T, P> = {
   autoFetch?: boolean;
   onSuccess?: (res?: T) => void;
   onError?: () => void;
-  isFullUrl?: boolean;
 };
 
-export const useFetch = <T, P>({
-  //extends Partial<ResponseMessage>
+export const useFetch = <T extends Partial<ResponseMessage>, P>({
   url,
   params,
   config,
@@ -34,7 +32,6 @@ export const useFetch = <T, P>({
   autoFetch,
   onSuccess,
   onError,
-  isFullUrl = false,
 }: TUseFetch<T, P>) => {
   const { get, post, delete: del, update } = useApi();
   const [data, setData] = useState<T | undefined>(defaultValue);
@@ -43,13 +40,6 @@ export const useFetch = <T, P>({
   const [error, setError] = useState(false);
   const [currentParams, setCurrentParams] = useState<P | undefined>(params);
   const abortController = useRef<AbortController | null>(null);
-
-  const finalUrl = useMemo(() => {
-    const isHttp = url.startsWith("http://") || url.startsWith("https://");
-    if (isFullUrl || isHttp) return url;
-    return `http://localhost:3000${url}`;
-  }, [url, isFullUrl]);
-
   const refetch = useCallback(
     async (extra?: P, overrideUrl?: string): Promise<T | undefined> => {
       if (abortController.current) {
@@ -57,24 +47,22 @@ export const useFetch = <T, P>({
       }
       abortController.current = new AbortController();
       setLoading(true);
-      const controller = abortController.current;
+      const finalUrl = overrideUrl ?? url;
       const method = config?.method?.toUpperCase();
-      const requestUrl = overrideUrl ?? finalUrl;
-
+      const controller = abortController.current;
       const finalConfig = {
         ...config,
         signal: controller?.signal,
       };
-
       try {
         const fetchMethod =
           method === MethodType.POST
-            ? post<T, P>(requestUrl, extra ?? currentParams, finalConfig)
+            ? post<T, P>(finalUrl, extra ?? currentParams, finalConfig)
             : method === MethodType.PUT || method === MethodType.PATCH
-            ? update<T, P>(requestUrl, extra ?? currentParams, finalConfig)
+            ? update<T, P>(finalUrl, extra ?? currentParams, finalConfig)
             : method === MethodType.DELETE
-            ? del<T>(requestUrl, finalConfig)
-            : get<T, P>(requestUrl, extra ?? currentParams, finalConfig);
+            ? del<T>(finalUrl, finalConfig)
+            : get<T, P>(finalUrl, extra ?? currentParams, finalConfig);
 
         const res = await fetchMethod;
         setData(res);
@@ -90,27 +78,21 @@ export const useFetch = <T, P>({
         setLoading(false);
       }
     },
-    [
-      finalUrl,
-      config,
-      onSuccess,
-      onError,
-      currentParams,
-      get,
-      post,
-      del,
-      update,
-    ]
+    [url, params, config, onSuccess, onError]
   );
 
   useEffect(() => {
-    if (autoFetch) refetch();
+    if (autoFetch) {
+      refetch();
+    }
     return () => {
-      abortController.current?.abort();
+      if (abortController.current) {
+        abortController.current.abort();
+      }
     };
-  }, [autoFetch, refetch]);
+  }, [fetch, autoFetch]);
 
-  return useMemo(
+  const state = useMemo(
     () => ({
       data,
       loading,
@@ -119,6 +101,7 @@ export const useFetch = <T, P>({
       refetch,
       setParams: setCurrentParams,
     }),
-    [data, loading, success, error, refetch]
+    [data, loading, success, error, refetch, setCurrentParams]
   );
+  return state;
 };

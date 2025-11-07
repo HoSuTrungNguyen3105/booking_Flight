@@ -4,7 +4,7 @@ import { Box, Button, Typography } from "@mui/material";
 import TableSection from "../CustomRender/TableSection";
 import type { GridColDef } from "@mui/x-data-grid";
 import theme from "../../scss/theme";
-import { useFindPassengerById } from "../../context/Api/usePostApi";
+import { useFindPassengerFromBooking } from "../../context/Api/usePostApi";
 import type { Passenger } from "../../utils/type";
 import DetailSection, { type IDetailItem } from "../CustomRender/DetailSection";
 import { DateFormatEnum, formatDate } from "../../hooks/format";
@@ -19,14 +19,17 @@ type DataSecureProps = {
 const DataSecure = ({ passenger, returnButton }: DataSecureProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState<Passenger | null>(null);
-  const { dataPassengerById, refetchPassengerById } = useFindPassengerById();
+  const { refetchPassengerFromBooking } = useFindPassengerFromBooking();
   const toast = useToast();
   const fetchPassenger = useCallback(async () => {
     if (!passenger) return;
 
     setIsLoading(true);
     try {
-      const res = await refetchPassengerById({ id: passenger });
+      console.log("passenger", passenger);
+      const res = await refetchPassengerFromBooking({ id: passenger });
+      console.log("res", res);
+
       if (res?.resultCode === ResponseCode.SUCCESS && res.data) {
         setData(res.data as Passenger);
       } else {
@@ -39,7 +42,7 @@ const DataSecure = ({ passenger, returnButton }: DataSecureProps) => {
     } finally {
       setIsLoading(false);
     }
-  }, [passenger, refetchPassengerById]);
+  }, [passenger, refetchPassengerFromBooking]);
 
   useEffect(() => {
     fetchPassenger();
@@ -98,20 +101,20 @@ const DataSecure = ({ passenger, returnButton }: DataSecureProps) => {
 
   const rowData = useMemo(
     () =>
-      dataPassengerById?.data?.bookings.map((item) => ({
+      data?.bookings.map((item) => ({
         ...item,
         id: item.id,
       })) || [],
-    [dataPassengerById]
+    [data]
   );
 
   const rowDataMealOrder = useMemo(
     () =>
-      dataPassengerById?.data?.bookings[0]?.mealOrders?.map((item) => ({
+      data?.bookings[0]?.mealOrders?.map((item) => ({
         ...item,
         id: item.id,
       })) || [],
-    [dataPassengerById]
+    [data]
   );
 
   const detailData: IDetailItem[] = [

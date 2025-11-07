@@ -56,7 +56,7 @@ import type { UserFormConfig } from "../../common/Setting/hooks/useDataSection.t
 
 const postMethod = {
   method: MethodType.POST,
-  // headers: { "Content-Type": "application/json" },
+  headers: { "Content-Type": "application/json" },
 };
 
 export const mapToDropdown = (
@@ -306,17 +306,18 @@ export const useSearchBooking = () => {
   };
 };
 
-export const useFindPassengerById = () => {
-  const { data: dataPassengerById, refetch: refetchPassengerById } = useFetch<
-    PassengerResponseMessage,
-    { id: string }
-  >({
-    url: "sys/bookings/findPassengerById",
+export const useFindPassengerFromBooking = () => {
+  const {
+    data: dataPassengerFromBooking,
+    refetch: refetchPassengerFromBooking,
+  } = useFetch<PassengerResponseMessage, { id: string }>({
+    url: "sys/bookings/find-passenger-from-booking",
     autoFetch: true,
     config: postMethod,
   });
-  return { dataPassengerById, refetchPassengerById };
+  return { dataPassengerFromBooking, refetchPassengerFromBooking };
 };
+
 export type SearchEmailFromSidebarMessageReq = {
   email: string;
   id: number;

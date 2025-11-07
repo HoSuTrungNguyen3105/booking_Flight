@@ -110,6 +110,8 @@ export const Header = () => {
             </Typography>
           </Stack>
 
+          {/* <Switch /> */}
+
           {isMobile && (
             <IconButton
               color="primary"
@@ -131,7 +133,17 @@ export const Header = () => {
             }}
           >
             {navItems
-              .filter((e) => isAdmin || !e.value.includes("/admin"))
+              .filter((item) => {
+                if (isAdmin) {
+                  // Admin: chỉ các item admin, ẩn /profile
+                  return item.value.includes("/admin");
+                } else {
+                  // Non-admin: ẩn /admin, chỉ hiển thị /profile và nav bình thường
+                  return (
+                    item.value === "/profile" || !item.value.includes("/admin")
+                  );
+                }
+              })
               .map((e, i) => (
                 <Button
                   key={i}

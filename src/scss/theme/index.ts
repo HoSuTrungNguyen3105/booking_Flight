@@ -79,6 +79,13 @@ const theme = createTheme({
     borderRadius: 3,
   },
   components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          transition: "background-color 0.3s ease, color 0.3s ease",
+        },
+      },
+    },
     MuiInputBase: {
       styleOverrides: {
         root: {

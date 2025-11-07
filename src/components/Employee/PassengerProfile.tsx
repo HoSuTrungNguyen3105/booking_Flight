@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useRef, useState } from "react";
+import React, { memo, useState } from "react";
 import {
   Box,
   Button,
@@ -12,10 +12,9 @@ import { useAuth } from "../../context/AuthContext";
 import { Link } from "react-router-dom";
 import InputTextField from "../../common/Input/InputTextField";
 import TicketPage from ".";
-import {
-  useGetDistancesByLocationCode,
-  useGetLocationCode,
-} from "../../context/Api/useGetLocation";
+import PhoneInput from "react-phone-input-2";
+// import type { E164Number } from "react-phone-number-input";
+import "react-phone-input-2/lib/style.css";
 
 type ProfilePassenger = Pick<
   Passenger,
@@ -23,120 +22,39 @@ type ProfilePassenger = Pick<
 >;
 
 const PassengerProfile = () => {
-  const { passenger } = useAuth();
+  const { passenger, countryCode } = useAuth();
   const [value, setValue] = useState("account");
   const handleChangeToggle = (
-    event: React.MouseEvent<HTMLElement>,
+    _: React.MouseEvent<HTMLElement>,
     newValue: string
   ) => {
     if (newValue !== null) setValue(newValue);
   };
 
-  // const [formValues, setFormValues] = useState<ProfilePassenger>({
-  //   fullName: passenger?.fullName || "",
-  //   email: passenger?.email || "",
-  //   phone: passenger?.phone || "",
-  //   passport: passenger?.passport || "",
-  // });
+  // type E164Number = string;
 
-  // const handleChange = (text: string) => {
-  //   // const { name, value } = e.target;
+  // const [phone, setPhone] = useState<E164Number | undefined>();
 
-  //   setFormValues({
-  //     ...formValues,
-  //     [text]: text,
-  //   });
+  const [formValues, setFormValues] = useState<ProfilePassenger>({
+    fullName: passenger?.fullName || "",
+    email: passenger?.email || "",
+    phone: passenger?.phone || "",
+    passport: passenger?.passport || "",
+  });
+
+  const handleChange = (text: string) => {
+    // const { name, value } = e.target;
+    setFormValues({
+      ...formValues,
+      [text]: text,
+    });
+  };
+
+  // const handlePhoneChange = (value: string) => {
+  //   setPhone(value);
+  //   console.log("📞 Số điện thoại:", value);
   // };
 
-  // const [coords, setCoords] = useState<[number, number] | null>(null);
-  // const [countryCode, setCountryCode] = useState("");
-
-  // const handleRender = useCallback(() => {
-  //   const saved = localStorage.getItem("cord");
-  //   if (!saved) return;
-
-  //   try {
-  //     // Nếu lưu dạng JSON.stringify([lat, lng])
-  //     const parsed = JSON.parse(saved);
-  //     if (Array.isArray(parsed) && parsed.length === 2) {
-  //       const lat = Number(parsed[0]);
-  //       const lng = Number(parsed[1]);
-
-  //       // Đảm bảo đúng kiểu [number, number]
-  //       if (!isNaN(lat) && !isNaN(lng)) {
-  //         setCoords([lat, lng]);
-  //       } else {
-  //         console.warn("Dữ liệu toạ độ không hợp lệ:", parsed);
-  //       }
-  //     }
-  //   } catch (err) {
-  //     console.error("Lỗi khi parse localStorage:", err);
-  //   }
-  // }, []);
-
-  // useEffect(() => {
-  //   handleRender();
-  // }, [handleRender]);
-
-  // const { refetchDistance } = useGetLocationCode(
-  //   coords?.[0] as number,
-  //   coords?.[1] as number
-  // );
-  // const hasFetched = useRef(false);
-
-  // useEffect(() => {
-  //   if (hasFetched.current) return;
-  //   hasFetched.current = true;
-
-  //   const fetchData = async () => {
-  //     const saved = localStorage.getItem("cord");
-  //     if (saved) {
-  //       console.log("save", saved);
-  //       const parsed: [number, number] = JSON.parse(saved);
-  //       console.log("parsed", parsed);
-  //       if (Array.isArray(parsed) && parsed.length === 2) {
-  //         setCoords(parsed);
-  //         // const res = await refetchDistance();
-  //         // console.log("res", res);
-  //       }
-  //     }
-
-  //     navigator.geolocation.getCurrentPosition(
-  //       (pos) => {
-  //         const newCoords: [number, number] = [
-  //           pos.coords.latitude,
-  //           pos.coords.longitude,
-  //         ];
-  //         setCoords(newCoords);
-  //         localStorage.setItem("cord", JSON.stringify(newCoords));
-  //       },
-  //       (err) => console.error("Không thể lấy vị trí:", err)
-  //     );
-  //   };
-
-  //   fetchData();
-  // }, []);
-
-  // useEffect(() => {
-  //   const fetchCountry = async () => {
-  //     if (!coords) return;
-  //     const res = await refetchDistance();
-  //     const newCode = res?.data?.[0]?.countryCode;
-  //     if (newCode && newCode !== countryCode) {
-  //       setCountryCode(newCode);
-  //       // localStorage.setItem("countryCode", newCode);
-  //     }
-  //   };
-
-  //   fetchCountry();
-  //   // Không nên thêm countryCode vào dependency!
-  // }, [coords]);
-
-  // const { dataDistance } = useGetDistancesByLocationCode(countryCode);
-
-  // const [callingCode, setCallingCode] = useState(
-  //   dataDistance?.data.callingCode
-  // );
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
   };
@@ -181,7 +99,7 @@ const PassengerProfile = () => {
             <InputTextField
               name="fullName"
               value={passenger?.fullName}
-              // onChange={handleChange}
+              onChange={handleChange}
               placeholder="Enter your fullName"
             />
           </Box>
@@ -192,13 +110,24 @@ const PassengerProfile = () => {
               justifyContent="space-between"
               alignItems="center"
             >
-              <Typography>Email phone</Typography>
+              <Typography>Phone number</Typography>
             </Box>
-            <InputTextField
-              name="callingCode"
+            <PhoneInput
+              country={countryCode.toLowerCase()}
               value={passenger?.phone}
-              // onChange={handleChange}
-              placeholder="Enter your phone"
+              onChange={handleChange}
+              inputStyle={{
+                width: "100%",
+                height: "40px",
+                fontSize: "14px",
+                borderRadius: "6px",
+                border: "1px solid #ccc",
+              }}
+              buttonStyle={{
+                border: "1px solid #ccc",
+                borderRight: "none",
+                borderRadius: "6px 0 0 6px",
+              }}
             />
           </Box>
 

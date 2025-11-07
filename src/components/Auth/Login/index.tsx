@@ -93,11 +93,13 @@ export const LoginPage: React.FC = () => {
 
       // CASE 2 & 3: ADMIN or ID,PW
       const loginFn = authType === "ADMIN" ? loginAdmin : loginPassenger;
+      const countryCode = localStorage.getItem("countryCode");
 
       const loginRes = await loginFn({
         email,
         password: data.password,
         authType,
+        location: countryCode as string,
         ...session,
       });
 

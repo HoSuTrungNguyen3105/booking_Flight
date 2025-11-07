@@ -22,6 +22,7 @@ import {
   mapStringToDropdown,
   useGetAllCode,
 } from "../../context/Api/useGetApi";
+import theme from "../../scss/theme";
 interface FlightSearchFormProps {
   initialData?: {
     origin?: string;
@@ -75,7 +76,7 @@ const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
 
   const handleSearch = () => {
     // In real app, this would call an API
-    console.log("Searching flights with:", formData);
+    // console.log("Searching flights with:", formData);
     // Navigate to results page or show results
   };
 
@@ -86,19 +87,15 @@ const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
         <Box sx={{ mb: 4, textAlign: "center" }}>
           <Typography
             variant="h4"
-            component="h1"
             gutterBottom
-            sx={{ fontWeight: "bold" }}
+            sx={{ fontWeight: "bold", color: theme.palette.text.primary }}
           >
             Book Flights from Vietnam with Cathay Pacific from USD196
-          </Typography>
-          <Typography variant="subtitle1" color="text.secondary">
-            Return • 1 Passenger(s), Economy
           </Typography>
         </Box>
 
         {/* Discount Code Section */}
-        <Card sx={{ mb: 3, backgroundColor: "grey.50" }}>
+        {/* <Card sx={{ mb: 3, backgroundColor: "grey.50" }}>
           <CardContent>
             <Typography variant="h6" gutterBottom>
               DISCOUNT CODE (OPTIONAL)
@@ -112,7 +109,7 @@ const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
               sx={{ maxWidth: 300 }}
             />
           </CardContent>
-        </Card>
+        </Card> */}
 
         {/* Search Form */}
         <Paper elevation={3} sx={{ p: 3, mb: 3 }}>

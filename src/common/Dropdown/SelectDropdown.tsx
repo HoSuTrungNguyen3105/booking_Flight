@@ -93,9 +93,27 @@ const SelectDropdown: FC<OptionSelectDropdownProps> = ({
         onClose={handleClose}
         onMouseDown={handleMouseDown}
         size="small"
+        displayEmpty
         IconComponent={CustomSelectIcon}
         MenuProps={{
           disableScrollLock: true,
+          PaperProps: {
+            sx: {
+              maxHeight: 200,
+              overflowY: "auto",
+              mt: 0.5,
+              zIndex: 9999,
+            },
+          },
+          anchorOrigin: {
+            vertical: "bottom",
+            horizontal: "left",
+          },
+          transformOrigin: {
+            vertical: "top",
+            horizontal: "left",
+          },
+          // getContentAnchorEl: null,
         }}
         renderValue={(selected) => {
           if (!selected) {
@@ -108,7 +126,6 @@ const SelectDropdown: FC<OptionSelectDropdownProps> = ({
           const option = options.find((o) => o.value === selected);
           return option ? option.label : String(selected);
         }}
-        displayEmpty
       >
         {defaultValue && (
           <MenuItem sx={{ display: "none" }} value={defaultValue}>
