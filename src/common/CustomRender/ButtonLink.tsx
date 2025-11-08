@@ -1,4 +1,4 @@
-import { Button, Box, Typography } from "@mui/material";
+import { Button, Box } from "@mui/material";
 import { Link } from "react-router-dom";
 
 interface IProps {
@@ -30,8 +30,8 @@ const ButtonLink: React.FC<IProps> = ({
         fontWeight: "bold",
         textTransform: "none",
         "&:hover": {
-          color: "black", // đổi màu chữ khi hover
-          backgroundColor: "transparent", // không có nền hover
+          color: "black",
+          backgroundColor: "transparent",
         },
       }}
     >
@@ -41,7 +41,7 @@ const ButtonLink: React.FC<IProps> = ({
         </Box>
       )}
 
-      <Typography variant="body1">{text}</Typography>
+      {text}
 
       {rightIcon && (
         <Box component="span" sx={{ fontSize: 20 }}>

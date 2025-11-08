@@ -35,12 +35,12 @@ export const Header = () => {
   };
 
   const navItems = [
-    { value: "/contact", label: "Contact us" },
-    { value: "/profile", label: "Profile" },
-    { value: "/flight/info-page", label: "flpage" },
-    { value: "/admin", label: "Admin dashboard" },
-    { value: "/hotels", label: " hotels" },
-    { value: "/flight/deals", label: " deals" },
+    { value: "contact", label: "Contact us" },
+    { value: "profile", label: "Profile" },
+    { value: "flight/info-page", label: "flpage" },
+    { value: "admin", label: "Admin dashboard" },
+    { value: "hotels", label: " hotels" },
+    { value: "flight/deals", label: " deals" },
   ];
 
   const handleNavigate = useCallback((value: string) => {
@@ -127,21 +127,19 @@ export const Header = () => {
           <Box
             sx={{
               bgcolor: theme.palette.background.paper,
-              display: "flex", // giúp các Button nằm ngang
-              alignItems: "start", // căn giữa theo chiều dọc
-              gap: 2, // khoảng cách giữa các nút
+              display: "flex",
+              alignItems: "start",
+              gap: 2,
               flexWrap: "wrap",
             }}
           >
             {navItems
               .filter((item) => {
                 if (isAdmin) {
-                  // Admin: chỉ các item admin, ẩn /profile
-                  return item.value.includes("/admin");
+                  return item.value.includes("admin");
                 } else {
-                  // Non-admin: ẩn /admin, chỉ hiển thị /profile và nav bình thường
                   return (
-                    item.value === "/profile" || !item.value.includes("/admin")
+                    item.value === "profile" || !item.value.includes("admin")
                   );
                 }
               })
@@ -151,26 +149,7 @@ export const Header = () => {
                   url={e.value}
                   text={e.label}
                   variant="text"
-                  // color="secondary"
-                  leftIcon="dashboard"
                 />
-                // <Button
-                //   key={i}
-                //   onClick={() => handleNavigate(e.value)}
-                //   variant="text"
-                //   sx={{
-                //     color: "gray",
-                //     fontSize: "1.1rem",
-                //     fontWeight: "bold",
-                //     textTransform: "none",
-                //     "&:hover": {
-                //       color: "black", // đổi màu chữ khi hover
-                //       backgroundColor: "transparent", // không có nền hover
-                //     },
-                //   }}
-                // >
-                //   {e.label}
-                // </Button>
               ))}
           </Box>
           {isAuthenticated ? (

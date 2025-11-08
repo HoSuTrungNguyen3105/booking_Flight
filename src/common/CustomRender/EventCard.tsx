@@ -11,7 +11,6 @@ import {
   Chip,
 } from "@mui/material";
 import { LocationOn, Star } from "@mui/icons-material";
-import { Link } from "react-router-dom";
 import theme from "../../scss/theme";
 
 interface EventCardProps {
@@ -38,6 +37,8 @@ const EventCard: React.FC<EventCardProps> = ({
   return (
     <Box sx={{ my: 4 }}>
       <Box
+        height={"20vh"}
+        maxHeight={"20vh"}
         display="flex"
         justifyContent="space-between"
         alignItems="center"

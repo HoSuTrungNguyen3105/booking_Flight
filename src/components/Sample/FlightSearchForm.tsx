@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Activity, useState } from "react";
 import {
   Box,
   Typography,
@@ -20,15 +20,18 @@ import SelectDropdown, {
 } from "../../common/Dropdown/SelectDropdown";
 import {
   mapStringToDropdown,
+  useFindAllFlightTypes,
   useGetAllCode,
 } from "../../context/Api/useGetApi";
 import theme from "../../scss/theme";
+import InputTextField from "../../common/Input/InputTextField";
 interface FlightSearchFormProps {
   initialData?: {
     origin?: string;
     destination?: string;
     departDate?: number;
     returnDate?: number;
+    type: string;
     discountCode?: string;
   };
 }
@@ -47,16 +50,26 @@ const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
     destination: initialData.destination || "",
     departDate: initialData.departDate || 0,
     returnDate: initialData.returnDate || 0,
+    types: initialData.type,
     discountCode: initialData.discountCode || "",
   });
 
-  const { getAllCode } = useGetAllCode();
+  const [activeSelect, setActiveSelect] = useState<"roundtrip" | "oneway">(
+    "oneway"
+  );
 
+  const { getAllCode } = useGetAllCode();
+  const { dataFlightTypes } = useFindAllFlightTypes();
+  const optionDataFlightTypes = mapStringToDropdown(
+    dataFlightTypes?.data || []
+  );
   // Mock data for airports - in real app, this would come from API
   const airports: ActionType[] = (getAllCode?.data?.airport || []).map((e) => ({
     value: e.code,
     label: e.value,
   }));
+
+  // const handleFilterType = useCa
 
   const handleInputChange = (field: string) => () => {
     setFormData((prev) => ({
@@ -75,7 +88,6 @@ const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
   };
 
   const handleSearch = () => {
-    // In real app, this would call an API
     // console.log("Searching flights with:", formData);
     // Navigate to results page or show results
   };
@@ -83,7 +95,6 @@ const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <Container maxWidth="lg" sx={{ py: 4 }}>
-        {/* Header Section */}
         <Box sx={{ mb: 4, textAlign: "center" }}>
           <Typography
             variant="h4"
@@ -94,27 +105,29 @@ const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
           </Typography>
         </Box>
 
-        {/* Discount Code Section */}
-        {/* <Card sx={{ mb: 3, backgroundColor: "grey.50" }}>
-          <CardContent>
-            <Typography variant="h6" gutterBottom>
-              DISCOUNT CODE (OPTIONAL)
-            </Typography>
-            <TextField
-              fullWidth
-              variant="outlined"
-              placeholder="Enter discount code"
-              value={formData.discountCode}
-              onChange={handleInputChange("discountCode")}
-              sx={{ maxWidth: 300 }}
-            />
-          </CardContent>
-        </Card> */}
+        <Activity mode={activeSelect === "oneway" ? "hidden" : "visible"}>
+          <Typography variant="subtitle2" gutterBottom fontWeight="bold">
+            RETURN
+          </Typography>
+          <SelectDropdown
+            value={formData.origin}
+            options={optionDataFlightTypes}
+            onChange={handleInputChange("type")}
+            variant="outlined"
+            placeholder="Select Types"
+          />
+        </Activity>
 
-        {/* Search Form */}
-        <Paper elevation={3} sx={{ p: 3, mb: 3 }}>
-          <Grid container spacing={3} alignItems="end">
-            {/* Origin */}
+        <Paper
+          elevation={3}
+          sx={{
+            p: 3,
+            mb: 3,
+            borderRadius: 3,
+            backgroundColor: "#fff",
+          }}
+        >
+          <Grid container spacing={3} alignItems="flex-end">
             <Grid size={3}>
               <Typography variant="subtitle2" gutterBottom fontWeight="bold">
                 ORIGIN
@@ -125,11 +138,22 @@ const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
                 onChange={handleInputChange("origin")}
                 variant="outlined"
                 placeholder="Select departure"
-              ></SelectDropdown>
+              />
             </Grid>
 
-            {/* Destination */}
-            {/* Origin */}
+            <Grid size={3}>
+              {/* <Typography variant="subtitle2" gutterBottom fontWeight="bold">
+                RETURN
+              </Typography>
+              <SelectDropdown
+                value={formData.origin}
+                options={optionDataFlightTypes}
+                onChange={handleInputChange("type")}
+                variant="outlined"
+                placeholder="Select Types"
+              /> */}
+            </Grid>
+
             <Grid size={3}>
               <Typography variant="subtitle2" gutterBottom fontWeight="bold">
                 DESTINATION
@@ -140,11 +164,9 @@ const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
                 onChange={handleInputChange("destination")}
                 variant="outlined"
                 placeholder="Select arrival"
-              ></SelectDropdown>
+              />
             </Grid>
 
-            {/* Depart Date */}
-            {/* Origin */}
             <Grid size={3}>
               {" "}
               <Typography variant="subtitle2" gutterBottom fontWeight="bold">
@@ -157,8 +179,6 @@ const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
               />
             </Grid>
 
-            {/* Return Date */}
-            {/* Origin */}
             <Grid size={3}>
               {" "}
               <Typography variant="subtitle2" gutterBottom fontWeight="bold">
@@ -171,9 +191,19 @@ const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
               />
             </Grid>
 
-            {/* Search Button */}
-            {/* Origin */}
             <Grid size={3}>
+              <Typography variant="subtitle2" gutterBottom fontWeight="bold">
+                Ticket code
+              </Typography>
+              <InputTextField
+                value={formData.discountCode}
+                onChange={handleInputChange("ticket")}
+                variant="outlined"
+                placeholder="Select ticket"
+              />
+            </Grid>
+
+            <Grid size={12} display="flex" justifyContent="end" mt={2}>
               {" "}
               <Button
                 fullWidth
@@ -181,10 +211,10 @@ const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
                 size="large"
                 onClick={handleSearch}
                 sx={{
+                  maxWidth: "20rem",
                   py: 1.5,
-                  backgroundColor: "#E2001A", // Cathay Pacific red
                   "&:hover": {
-                    backgroundColor: "#B30015",
+                    backgroundColor: "#B91097",
                   },
                 }}
               >
