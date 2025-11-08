@@ -10,12 +10,20 @@ type FlightWithSeatLayoutProps = {
   id: number;
 };
 
-export type AircraftSeatTypeProps =
+// export type AircraftSeatTypeProps =
+//   | "ALL"
+//   | "VIP"
+//   | "ECONOMY"
+//   | "FIRST"
+//   | "BUSINESS";
+
+export type FilterType =
   | "ALL"
-  | "VIP"
-  | "ECONOMY"
-  | "FIRST"
-  | "BUSINESS";
+  | "AVAILABLE"
+  | "EXIT_ROW"
+  | "EXTRA_LEGROOM"
+  | "HANDICAP_ACCESSIBLE";
+// const [filter, setFilter] = useState<FilterType>("ALL");
 
 export const useSeatInFlightDetail = ({ id }: FlightWithSeatLayoutProps) => {
   const { getAllInfoFlightByIdData, refetchGetAllInfoFlightData } =
@@ -76,7 +84,7 @@ export const useSeatInFlightDetail = ({ id }: FlightWithSeatLayoutProps) => {
     },
   ];
 
-  const [filter, setFilter] = useState<AircraftSeatTypeProps>("ALL");
+  const [filter, setFilter] = useState<FilterType>("ALL");
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [createSeat, setCreateSeat] = useState(false);
   const [openSeatModal, setOpenSeatModal] = useState(false);
@@ -114,27 +122,29 @@ export const useSeatInFlightDetail = ({ id }: FlightWithSeatLayoutProps) => {
     });
   };
 
+  const filterOptions: { key: FilterType; label: string }[] = [
+    { key: "ALL", label: "All Seats" },
+    { key: "AVAILABLE", label: "Available" },
+    { key: "EXIT_ROW", label: "Exit Row" },
+    { key: "EXTRA_LEGROOM", label: "Extra Legroom" },
+    { key: "HANDICAP_ACCESSIBLE", label: "Accessible" },
+  ];
+
   const filteredSeats = useMemo(() => {
-    if (filter === "ALL") return getAllInfoFlightByIdData?.data?.seats;
-    if (filter === "FIRST")
-      return getAllInfoFlightByIdData?.data?.seats?.filter(
-        (s) => s.type === "FIRST"
-      );
-    if (filter === "BUSINESS")
-      return getAllInfoFlightByIdData?.data?.seats?.filter(
-        (s) => s.type === "BUSINESS"
-      );
-    if (filter === "VIP")
-      return getAllInfoFlightByIdData?.data?.seats?.filter(
-        (s) => s.type === "VIP"
-      );
-    if (filter === "ECONOMY")
-      return getAllInfoFlightByIdData?.data?.seats?.filter(
-        (s) => s.type === "ECONOMY"
-      );
-    return getAllInfoFlightByIdData?.data?.seats?.filter(
-      (s) => s.type === filter
-    );
+    const allSeats = getAllInfoFlightByIdData?.data?.seats || [];
+    if (filter === "ALL") return allSeats;
+
+    const filterMap: Record<string, keyof Seat> = {
+      AVAILABLE: "isAvailable",
+      EXIT_ROW: "isExitRow",
+      EXTRA_LEGROOM: "isExtraLegroom",
+      HANDICAP_ACCESSIBLE: "isHandicapAccessible",
+    };
+
+    const key = filterMap[filter as keyof typeof filterMap];
+    if (!key) return allSeats;
+
+    return allSeats.filter((s) => (s as any)[key]);
   }, [getAllInfoFlightByIdData, filter]);
 
   const seatNumberCountUnique = _.uniqBy(
@@ -143,26 +153,6 @@ export const useSeatInFlightDetail = ({ id }: FlightWithSeatLayoutProps) => {
   );
 
   const seatCount = seatNumberCountUnique.length;
-
-  // const handleSelectSeat = (seat: Seat) => {
-  //   setSelectedSeats((prev) => {
-  //     const exists = prev.some((s) => s.id === seat.id);
-
-  //     if (exists) {
-  //       return prev.filter((s) => s.id !== seat.id);
-  //     }
-
-  //     if (maxSelectSeats === 1) {
-  //       return [seat];
-  //     }
-
-  //     if (prev.length < maxSelectSeats) {
-  //       return [...prev, seat];
-  //     }
-
-  //     return prev;
-  //   });
-  // };
 
   const handleSelectSeat = (seat: Seat) => {
     setSelectedSeats((prev) => {
@@ -238,6 +228,7 @@ export const useSeatInFlightDetail = ({ id }: FlightWithSeatLayoutProps) => {
     handleOpenUpdateModal,
     selectedSeat,
     setSelectedSeats,
+    filterOptions,
     refetchGetAllInfoFlightData,
     getAllInfoFlightByIdData,
     selectedSeats,

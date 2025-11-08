@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useState } from "react";
 import {
   Box,
   Typography,
@@ -10,6 +10,7 @@ import {
   Card,
   Stack,
   alpha,
+  CircularProgress,
 } from "@mui/material";
 import _ from "lodash";
 import { ArrowBack, Flight, RestartAlt } from "@mui/icons-material";
@@ -20,6 +21,7 @@ import { useChooseSeatToBooking } from "./useChooseSeatToBooking";
 import ButtonSeat from "../Admin/component/Seat/ButtonSeat";
 import { useLocation, useNavigate } from "react-router-dom";
 import type { Seat } from "../../utils/type";
+import { convertCurrency, type Currency } from "../../hooks/format";
 
 // type FlightWithSeatLayoutProps = {
 //   id: number;
@@ -42,6 +44,10 @@ const PassengerChooseSeat = () => {
   } = useChooseSeatToBooking({
     id,
   });
+
+  const paymoney = localStorage.getItem("paymoney") as Currency;
+
+  const [loading, setLoading] = useState(false);
 
   const handleNavigateBooking = (seat: Seat) => {
     navigate("/payment", {
@@ -93,73 +99,7 @@ const PassengerChooseSeat = () => {
           >
             Back to Flights
           </Button>
-
-          {/* <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
-            }}
-          >
-            <LocalAirport
-              sx={{
-                fontSize: 32,
-                color: "primary.main",
-                transform: "rotate(45deg)",
-              }}
-            />
-            <Typography variant="h6" fontWeight={700} color="primary.main">
-              Seat Selection
-            </Typography>
-          </Box> */}
         </Box>
-
-        {/* Filter Chips - Improved */}
-        {/* <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: 1.5,
-            flexWrap: "wrap",
-            mb: 3,
-          }}
-        >
-          {[
-            { key: "ALL", label: "All Seats" },
-            { key: "VIP", label: "VIP" },
-            { key: "ECONOMY", label: "Economy" },
-            { key: "FIRST", label: "First Class" },
-            { key: "BUSINESS", label: "Business" },
-          ].map((item) => (
-            <Chip
-              key={item.key}
-              label={item.label}
-              onClick={() => setFilter(item.key as AircraftSeatTypeProps)}
-              variant={filter === item.key ? "filled" : "outlined"}
-              color={filter === item.key ? "primary" : "default"}
-              sx={{
-                fontWeight: filter === item.key ? 700 : 500,
-                px: 1,
-                py: 2,
-                borderRadius: 2,
-                transition: "all 0.2s ease-in-out",
-                "&:hover": {
-                  transform: "translateY(-1px)",
-                  boxShadow: 2,
-                },
-                ...(filter === item.key && {
-                  backgroundColor: "primary.main",
-                  color: "white",
-                  boxShadow: `0 4px 12px ${alpha(
-                    theme.palette.primary.main,
-                    0.3
-                  )}`,
-                }),
-              }}
-            />
-          ))}
-        </Box> */}
       </Box>
 
       <Grid container spacing={3}>
@@ -209,8 +149,6 @@ const PassengerChooseSeat = () => {
 
                 <Stack spacing={1.5} sx={{ mb: 3 }}>
                   {selectedSeats.map((seat) => {
-                    const typeColor = getTypeColor(seat.type || "ECONOMY");
-
                     return (
                       <Box
                         key={seat.id}
@@ -218,79 +156,74 @@ const PassengerChooseSeat = () => {
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "space-between",
-                          gap: 2,
-                          p: 2,
+                          gap: 1.5,
+                          p: "6px 10px",
                           borderRadius: 2,
                           backgroundColor: seat.isBooked
-                            ? `${theme.palette.error.light}15`
-                            : `${typeColor}08`,
-                          border: `2px solid ${
+                            ? `${theme.palette.error.light}22`
+                            : "transparent",
+                          border: `1px solid ${
                             seat.isBooked
-                              ? alpha(theme.palette.error.main, 0.2)
-                              : alpha(typeColor, 0.3)
+                              ? theme.palette.error.light
+                              : "transparent"
                           }`,
+                          transition: "all 0.2s ease-in-out",
+                          "&:hover": {
+                            backgroundColor: seat.isBooked
+                              ? `${theme.palette.error.light}33`
+                              : `${theme.palette.action.hover}`,
+                            transform: "translateY(-1px)",
+                          },
                         }}
                       >
                         <Box
-                          sx={{ display: "flex", alignItems: "center", gap: 2 }}
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 1,
+                          }}
                         >
                           <Box
                             sx={{
-                              width: 12,
-                              height: 12,
+                              width: 10,
+                              height: 10,
                               borderRadius: "50%",
                               backgroundColor: seat.isBooked
                                 ? theme.palette.error.main
-                                : typeColor,
-                              boxShadow: `0 2px 8px ${alpha(
-                                seat.isBooked
-                                  ? theme.palette.error.main
-                                  : typeColor,
-                                0.4
-                              )}`,
+                                : theme.palette.success.main,
                             }}
                           />
-                          <Box>
-                            <Typography
-                              variant="body1"
-                              sx={{ fontWeight: 600 }}
-                            >
-                              {seat.seatRow}
-                              {seat.seatNumber}
-                            </Typography>
-                            <Typography
-                              variant="caption"
-                              color="text.secondary"
-                            >
-                              {seat.type}
-                            </Typography>
-                          </Box>
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              fontWeight: seat.isBooked ? 600 : 500,
+                              color: seat.isBooked
+                                ? theme.palette.error.dark
+                                : theme.palette.text.primary,
+                            }}
+                          >
+                            {seat.seatRow}
+                            {seat.seatNumber} — {seat.flightId}
+                          </Typography>
                         </Box>
 
+                        {/* Status chip */}
                         {seat.isBooked && (
                           <Chip
-                            label="Already Booked"
+                            label="Booked"
                             size="small"
                             sx={{
-                              height: 24,
+                              height: 22,
                               fontSize: "0.7rem",
-                              fontWeight: 700,
+                              fontWeight: 600,
                               color: theme.palette.error.dark,
-                              bgcolor: `${theme.palette.error.light}30`,
-                              border: `1px solid ${alpha(
-                                theme.palette.error.main,
-                                0.3
-                              )}`,
+                              bgcolor: `${theme.palette.error.light}99`,
+                              "& .MuiChip-label": {
+                                px: 1,
+                              },
                             }}
                           />
                         )}
-                        <Button
-                          onClick={() => handleNavigateBooking(seat)}
-                          variant="outlined"
-                        >
-                          {" "}
-                          Booking
-                        </Button>
                       </Box>
                     );
                   })}
@@ -323,12 +256,12 @@ const PassengerChooseSeat = () => {
                   </IconButton>
                 </Box>
 
-                <Divider
+                {/* <Divider
                   sx={{
                     my: 2,
                     borderColor: alpha(theme.palette.primary.main, 0.1),
                   }}
-                />
+                /> */}
 
                 <Button
                   variant="contained"

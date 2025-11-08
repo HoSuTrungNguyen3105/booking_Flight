@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 import {
   Box,
   Typography,
@@ -15,15 +15,17 @@ import ButtonSeat from "../../Seat/ButtonSeat";
 import type { Seat } from "../../../../../utils/type";
 import { Chair, LocalAirport, RestartAlt } from "@mui/icons-material";
 import SeatManagementModal from "../../Seat/modal/SeatManagementModal";
-import CreateSeat from "../../Seat/CreateSeat";
+import CreateSeat from "../../Seat/ModifieldSeat";
 import InfoAndUpdateSeatModal from "../../Seat/modal/InfoAndUpdateSeatModal";
 import _ from "lodash";
 import LegendItem from "../../Seat/ButtonSeat/LegendItem";
 import {
   useSeatInFlightDetail,
-  type AircraftSeatTypeProps,
+  type FilterType,
+  // type AircraftSeatTypeProps,
 } from "../hooks/useSeatInFlightDetail";
 import theme from "../../../../../scss/theme";
+import UpdateSeatPrice from "../../Seat/ModifieldSeat/UpdateSeatPrice";
 
 type FlightWithSeatLayoutProps = {
   id: number;
@@ -50,6 +52,7 @@ const FlightWithSeatLayout: React.FC<FlightWithSeatLayoutProps> = ({
     openSeatModal,
     createSeat,
     setCreateSeat,
+    filterOptions,
     updateSeat,
     handleOpenUpdateModal,
     selectedSeat,
@@ -64,6 +67,8 @@ const FlightWithSeatLayout: React.FC<FlightWithSeatLayoutProps> = ({
     id,
   });
 
+  const [updateSeatPrice, setUpdateSeatPrice] = useState(false);
+
   if (createSeat) {
     return (
       <CreateSeat
@@ -72,6 +77,15 @@ const FlightWithSeatLayout: React.FC<FlightWithSeatLayoutProps> = ({
           setCreateSeat(false);
           refetchGetAllInfoFlightData();
         }}
+      />
+    );
+  }
+
+  if (updateSeatPrice) {
+    return (
+      <UpdateSeatPrice
+        flightId={id}
+        flightNo={getAllInfoFlightByIdData?.data?.flightNo || ""}
       />
     );
   }
@@ -93,17 +107,11 @@ const FlightWithSeatLayout: React.FC<FlightWithSeatLayoutProps> = ({
           </Button>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
             <LocalAirport sx={{ fontSize: 28 }} />
-            {[
-              { key: "ALL", label: "All Seats" },
-              { key: "VIP", label: "VIP" },
-              { key: "ECONOMY", label: "Economy" },
-              { key: "FIRST", label: "First" },
-              { key: "BUSINESS", label: "Business" },
-            ].map((item) => (
+            {filterOptions.map((item) => (
               <Chip
                 key={item.key}
                 label={item.label}
-                onClick={() => setFilter(item.key as AircraftSeatTypeProps)}
+                onClick={() => setFilter(item.key as FilterType)}
                 variant={filter === item.key ? "filled" : "outlined"}
                 color={filter === item.key ? "primary" : "default"}
                 sx={{
@@ -141,6 +149,13 @@ const FlightWithSeatLayout: React.FC<FlightWithSeatLayoutProps> = ({
               Multiple
             </Button>
 
+            <Button
+              variant={maxSelectSeats > 1 ? "contained" : "outlined"}
+              onClick={() => setUpdateSeatPrice(true)}
+            >
+              Update seat Multiple
+            </Button>
+
             <DetailSection mode="row" data={detail} />
 
             {selectedSeats.length > 0 && (
@@ -161,9 +176,9 @@ const FlightWithSeatLayout: React.FC<FlightWithSeatLayoutProps> = ({
                     <Box>
                       <Stack spacing={1} sx={{ mb: 2 }}>
                         {selectedSeats.map((seat) => {
-                          const typeColor = getTypeColor(
-                            seat.type || "ECONOMY"
-                          );
+                          // const typeColor = getTypeColor(
+                          //   seat.type || "ECONOMY"
+                          // );
 
                           return (
                             <Box
@@ -177,17 +192,17 @@ const FlightWithSeatLayout: React.FC<FlightWithSeatLayoutProps> = ({
                                 borderRadius: 2,
                                 backgroundColor: seat.isBooked
                                   ? `${theme.palette.error.light}22`
-                                  : `${typeColor}10`,
+                                  : "transparent",
                                 border: `1px solid ${
                                   seat.isBooked
                                     ? theme.palette.error.light
-                                    : `${typeColor}40`
+                                    : "transparent"
                                 }`,
                                 transition: "all 0.2s ease-in-out",
                                 "&:hover": {
                                   backgroundColor: seat.isBooked
                                     ? `${theme.palette.error.light}33`
-                                    : `${typeColor}22`,
+                                    : `${theme.palette.action.hover}`,
                                   transform: "translateY(-1px)",
                                 },
                               }}
@@ -206,7 +221,7 @@ const FlightWithSeatLayout: React.FC<FlightWithSeatLayoutProps> = ({
                                     borderRadius: "50%",
                                     backgroundColor: seat.isBooked
                                       ? theme.palette.error.main
-                                      : typeColor,
+                                      : theme.palette.success.main,
                                   }}
                                 />
                                 <Typography
@@ -219,7 +234,7 @@ const FlightWithSeatLayout: React.FC<FlightWithSeatLayoutProps> = ({
                                   }}
                                 >
                                   {seat.seatRow}
-                                  {seat.seatNumber} — {seat.type}
+                                  {seat.seatNumber} — {seat.flightId}
                                 </Typography>
                               </Box>
 

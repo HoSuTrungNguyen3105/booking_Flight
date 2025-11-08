@@ -137,7 +137,7 @@ export const getToday = (format: DateFormatEnum = DateFormatEnum.ISO_8601) => {
   return moment().endOf("day").format(format);
 };
 
-export function convertCurrency(
+export const convertCurrency = (
   amountVND: number,
   targetCurrency: Currency,
   rates: Record<Currency, number> = {
@@ -146,7 +146,7 @@ export function convertCurrency(
     KRW: 0.053,
     VND: 1,
   }
-): string {
+) => {
   if (isNaN(amountVND)) return "";
 
   const amount = amountVND * (rates[targetCurrency] || 1);
@@ -179,7 +179,7 @@ export function convertCurrency(
     minimumFractionDigits,
     maximumFractionDigits: 2,
   }).format(amount);
-}
+};
 
 export const formatSessionDate = (timestamp: number | null): string => {
   if (!timestamp) return "Unknown date";

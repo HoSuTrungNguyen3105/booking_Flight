@@ -33,7 +33,7 @@ const TicketInfo = ({ id, ticketNo }: GetReqponseOneTicket) => {
   }, [handleGetInfoTicket]);
 
   return (
-    <div>
+    <Stack>
       {ticket?.map((ticket, index) => (
         <Box
           key={index}
@@ -78,10 +78,13 @@ const TicketInfo = ({ id, ticketNo }: GetReqponseOneTicket) => {
             }}
           >
             <Typography variant="h6" fontWeight={700} lineHeight={1}>
-              {ticket.seatNo + " - " + ticket.seatClass}
+              {ticket.booking.seatClass + " - " + ticket.booking.seatClass}
             </Typography>
             <Typography variant="subtitle1" sx={{ mb: 2 }}>
-              {formatDate(DateFormatEnum.DD_MM_YYYY_HH_MM_SS, ticket.bookedAt)}
+              {formatDate(
+                DateFormatEnum.DD_MM_YYYY_HH_MM_SS,
+                ticket.booking.bookingTime
+              )}
             </Typography>
             {/* <QrCode2Icon sx={{ fontSize: 48, mb: 1, color: "white" }} /> */}
             <Box
@@ -210,7 +213,7 @@ const TicketInfo = ({ id, ticketNo }: GetReqponseOneTicket) => {
           </Box>
         </Box>
       ))}
-    </div>
+    </Stack>
   );
 };
 

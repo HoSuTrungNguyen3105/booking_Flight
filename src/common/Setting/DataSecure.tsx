@@ -152,9 +152,9 @@ const DataSecure = ({ passenger, returnButton }: DataSecureProps) => {
     {
       title: "Seat No",
       description:
-        data?.bookings?.[0]?.seats?.seatNumber &&
-        data?.bookings?.[0]?.seats?.seatRow
-          ? `${data.bookings[0].seats.seatNumber} - ${data.bookings[0].seats.seatRow}`
+        data?.bookings?.[0]?.seat?.seatNumber &&
+        data?.bookings?.[0]?.seat?.seatRow
+          ? `${data.bookings[0].seat.seatNumber} - ${data.bookings[0].seat.seatRow}`
           : "-",
     },
     {

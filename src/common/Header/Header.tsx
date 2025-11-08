@@ -19,9 +19,10 @@ import SignOut from "../../components/Common/SignOut";
 import { Link, useNavigate } from "react-router-dom";
 import { GridMenuIcon } from "@mui/x-data-grid";
 import { Login } from "@mui/icons-material";
-import LanguageButton from "../../components/Common/ChangeLanguageSelect";
+import LanguageButton from "../../components/Common/HeaderOptionSelect";
 import { useCallback, useState } from "react";
 import theme from "../../scss/theme";
+import ButtonLink from "../CustomRender/ButtonLink";
 
 export const Header = () => {
   const { isAuthenticated, isAdmin } = useAuth();
@@ -145,23 +146,31 @@ export const Header = () => {
                 }
               })
               .map((e, i) => (
-                <Button
+                <ButtonLink
                   key={i}
-                  onClick={() => handleNavigate(e.value)}
+                  url={e.value}
+                  text={e.label}
                   variant="text"
-                  sx={{
-                    color: "gray",
-                    fontSize: "1.1rem",
-                    fontWeight: "bold",
-                    textTransform: "none",
-                    "&:hover": {
-                      color: "black", // đổi màu chữ khi hover
-                      backgroundColor: "transparent", // không có nền hover
-                    },
-                  }}
-                >
-                  {e.label}
-                </Button>
+                  // color="secondary"
+                  leftIcon="dashboard"
+                />
+                // <Button
+                //   key={i}
+                //   onClick={() => handleNavigate(e.value)}
+                //   variant="text"
+                //   sx={{
+                //     color: "gray",
+                //     fontSize: "1.1rem",
+                //     fontWeight: "bold",
+                //     textTransform: "none",
+                //     "&:hover": {
+                //       color: "black", // đổi màu chữ khi hover
+                //       backgroundColor: "transparent", // không có nền hover
+                //     },
+                //   }}
+                // >
+                //   {e.label}
+                // </Button>
               ))}
           </Box>
           {isAuthenticated ? (

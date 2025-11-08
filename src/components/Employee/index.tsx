@@ -80,7 +80,6 @@ const TicketPage: React.FC = () => {
   }
 
   const renderTicketsMini = (ticketList: Ticket[]) => {
-    console.log("ticketList", ticketList);
     return ticketList.map((ticket, idx) => (
       <Box
         key={ticket.ticketNo || idx}
@@ -132,14 +131,14 @@ const TicketPage: React.FC = () => {
             </Box>
             <Box>
               <Typography variant="h6" fontWeight={700} color="primary">
-                {ticket.seatNo}
+                {ticket.booking.bookingTime}
               </Typography>
               <Typography
                 variant="caption"
                 color="text.secondary"
                 fontWeight={500}
               >
-                {ticket.seatClass}
+                {ticket.booking.bookingCode}
               </Typography>
             </Box>
           </Box>
@@ -272,7 +271,7 @@ const TicketPage: React.FC = () => {
                       Booking Reference:
                     </Typography>
                     <Typography variant="body2" fontFamily="monospace">
-                      {ticket.bookedAt || "N/A"}
+                      {ticket.booking.bookingTime || "N/A"}
                     </Typography>
                   </Box>
                 </Stack>
@@ -353,7 +352,7 @@ const TicketPage: React.FC = () => {
   };
 
   return (
-    <Box sx={{ width: "2000px", mx: "auto", my: 2, px: 1 }}>
+    <Box sx={{ width: "1500px", mx: "auto", my: 2, px: 1 }}>
       <Tabs
         value={tabValue}
         onChange={(_, newVal) => setTabValue(newVal)}

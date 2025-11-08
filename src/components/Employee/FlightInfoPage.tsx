@@ -1,24 +1,26 @@
-import React, { memo, useEffect, useMemo, useState } from "react";
+import React, { memo, useMemo, useState } from "react";
 import {
   Box,
   Button,
   Card,
   CardContent,
   Grid,
-  TextField,
   Typography,
   Stack,
 } from "@mui/material";
-import { FlightOutlined, Search } from "@mui/icons-material";
-import { Controller, useForm } from "react-hook-form";
-import { useGetAllFlightMainInfo } from "../../context/Api/useGetApi";
+import { ArrowBack, FlightOutlined, Search } from "@mui/icons-material";
+import {
+  mapStringToDropdown,
+  useFindAllSeatTypes,
+  useGetAllFlightMainInfo,
+} from "../../context/Api/useGetApi";
 import { DateFormatEnum, formatDate } from "../../hooks/format";
 import Zigzag from "../../common/IconComponent/Zigzag";
 import { useNavigate } from "react-router-dom";
 import DateTimePickerComponent from "../../common/DayPicker/index";
 import InputTextField from "../../common/Input/InputTextField";
 import type { DataFlight } from "../../utils/type";
-import { useGetDistanceBetweenPlaces } from "../../context/Api/useGetLocation";
+import SelectDropdown from "../../common/Dropdown/SelectDropdown";
 
 interface SearchFormData {
   departureAirport: string;
@@ -41,6 +43,8 @@ const FlightInfoPage: React.FC = () => {
 
   const [filtered, setFiltered] = useState(res);
 
+  const { dataSeatTypes } = useFindAllSeatTypes();
+  const optionsSeatTypes = mapStringToDropdown(dataSeatTypes?.data || []);
   /** Lọc chuyến bay theo input */
   const onSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -167,6 +171,7 @@ const FlightInfoPage: React.FC = () => {
                 value={search.departureAirport}
                 onChange={(e) => handleInputChange("departureAirport", e)}
               />
+              <SelectDropdown options={optionsSeatTypes} />
             </Grid>
 
             <Grid size={4}>
@@ -228,9 +233,6 @@ const FlightInfoPage: React.FC = () => {
                 sx={{
                   borderRadius: 3,
                   padding: 2,
-                  //boxShadow: 2,
-                  //   transition: "all 0.3s",
-                  //   "&:hover": { boxShadow: 5, transform: "scale(1.01)" },
                   maxWidth: "95%",
                   margin: "0 auto",
                 }}
@@ -298,7 +300,7 @@ const FlightInfoPage: React.FC = () => {
 
                     <Zigzag
                       items={
-                        <FlightOutlined
+                        <ArrowBack
                           fontSize="medium"
                           sx={{
                             color: "#007bff",

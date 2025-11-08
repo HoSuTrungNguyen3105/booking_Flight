@@ -568,12 +568,20 @@ export interface Ticket {
   passengerId: string;
   qrCodeImage?: string;
   flightId: number;
-  seatClass: string;
-  seatNo: string;
+  // seatClass: string;
+  // seatNo: string;
 
-  seatPrice: number;
-  bookedAt: string; // ISO datetime hoặc number nếu backend trả về timestamp
+  // seatPrice: number;
+  // bookedAt: string; // ISO datetime hoặc number nếu backend trả về timestamp
+  // id          Int     @id @default(autoincrement())
+  // ticketNo    String  @unique
+  bookingId?: number;
+  // passengerId String
+  // flightId    Int
+  // qrCodeImage String? @db.Text
 
+  // Quan hệ
+  booking: Booking;
   // Quan hệ
   passenger?: Passenger;
   flight?: DataFlight;
@@ -682,6 +690,17 @@ export type GetAllCodeResponseMessage =
   DetailResponseMessage<AllFlightCodeProps>;
 
 export type SeatResponseMessage = DetailResponseMessage<Seat>;
+
+export interface ChangeEmailPassengerProps {
+  // email: string;
+  id: string;
+  newEmail: string;
+}
+
+export interface VerifyOtpFromEmailChangeProps {
+  id: string;
+  otp: string;
+}
 
 export type EmailProps = {
   email?: string;
@@ -873,7 +892,7 @@ export type Seat = {
   seatRow: string;
   flightId?: number;
   bookingId?: number;
-  type: SeatTypeValue;
+  // type: SeatTypeValue;
   price: number;
   isBooked: boolean;
   isAvailable?: boolean;
@@ -886,16 +905,29 @@ export type Seat = {
   note?: string;
 };
 
+export enum BookingStatus {
+  PENDING = "PENDING",
+  CONFIRMED = "CONFIRMED",
+  CANCELLED = "CANCELLED",
+  PAID = "PAID",
+}
+
 export interface Booking {
   id: number;
   bookingTime: string;
+  flightId: number;
+  bookingCode?: string;
+  passengerId: string;
+  seatNo: string;
+  seatClass: string;
+  seatPrice?: number;
+
+  status: BookingStatus;
   mealOrders: MealOrder[];
   flight: DataFlight;
-  seats: Seat;
-
-  passengerId: string;
-  flightId: number;
+  seat: Seat;
   passenger: Passenger;
+  tickets: Ticket[];
 }
 
 export type BookingResponseMessage = DetailResponseMessage<Booking>;

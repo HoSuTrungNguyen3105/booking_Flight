@@ -31,12 +31,13 @@ export const useChangeLanguage = () => {
   );
 
   const [selectedPayMoney, setSelectedPayMoney] = useState<ActionType | null>(
-    currencyOptions.find(
-      (o) => o.value === localStorage.getItem("currencyOptions")
-    ) || currencyOptions[0]
+    currencyOptions.find((o) => o.value === localStorage.getItem("currency")) ||
+      currencyOptions[0]
   );
 
-  const [pendingLang, setPendingLang] = useState<ActionType | null>(null);
+  const [pendingLanguage, setPendingLanguage] = useState<ActionType | null>(
+    null
+  );
   const [pendingPayMoney, setPendingPayMoney] = useState<ActionType | null>(
     null
   );
@@ -44,7 +45,7 @@ export const useChangeLanguage = () => {
   const handleLanguageSelect = (newValue: string | number) => {
     const selected = optionLanguage.find((o) => o.value === newValue);
     if (!selected) return;
-    setPendingLang(selected);
+    setPendingLanguage(selected);
   };
 
   const handlePayMoneySelect = (newValue: string | number) => {
@@ -60,12 +61,12 @@ export const useChangeLanguage = () => {
       setPendingPayMoney(null);
     }
 
-    if (pendingLang) {
-      setSelectedLang(pendingLang);
-      const lng = String(pendingLang.value);
+    if (pendingLanguage) {
+      setSelectedLang(pendingLanguage);
+      const lng = String(pendingLanguage.value);
       i18n.changeLanguage(lng);
       localStorage.setItem("language", lng);
-      setPendingLang(null);
+      setPendingLanguage(null);
     }
   };
 
@@ -73,7 +74,7 @@ export const useChangeLanguage = () => {
     selectedLang,
     selectedPayMoney,
 
-    pendingLang,
+    pendingLanguage,
     pendingPayMoney,
 
     handleLanguageSelect,

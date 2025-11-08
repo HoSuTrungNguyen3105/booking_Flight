@@ -31,7 +31,6 @@ export type SeatFeatures = Pick<
   | "isHandicapAccessible"
   | "isUpperDeck"
   | "isExtraLegroom"
-  | "type"
 >;
 
 const SeatManagementModal = ({
@@ -71,7 +70,6 @@ const SeatManagementModal = ({
 
   const handleUpdate = async () => {
     const updateData: Partial<SeatFeatures> = {
-      type,
       [position]: true, // gán động key (ví dụ: isWing: true)
     };
     const res = await refetchUpdateSeatByIds({

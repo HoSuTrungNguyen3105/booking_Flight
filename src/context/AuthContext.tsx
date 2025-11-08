@@ -62,11 +62,14 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
+
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const toast = useToast();
   const hasFetched = useRef(false);
 
   const [token, setToken] = useState<string | null>(null);
+  const [currency, setCurrency] = useState<string | null>(null);
+
   const [user, setUser] = useState<UserData | null>(null);
   const [passenger, setPassenger] = useState<Passenger | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -107,9 +110,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     handleRender();
   }, [handleRender]);
-
-  // Hook lấy API (chưa tự fetch)
-  // const { refetchDistance, dataLocation } = useGetLocationCode();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -366,14 +366,18 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setToken(savedToken);
       setIsAuthenticated(true);
 
-      const valid = await hasValidLogin();
-      if (!valid) return;
+      await hasValidLogin();
+      // if (!valid) return;
 
       if (savedState === "IDPW") {
-        await fetchMyUserInfo(savedId);
+        const res = await fetchMyUserInfo(savedId);
+        console.log("IDPW", res);
+        return;
       }
       if (savedState === "ADMIN") {
-        await fetchMyAdminInfo(Number(savedId));
+        const res = await fetchMyAdminInfo(Number(savedId));
+        console.log("ADMIN", res);
+        return;
       }
     };
     initAuth();

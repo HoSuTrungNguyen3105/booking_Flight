@@ -11,6 +11,7 @@ import {
 } from "@mui/icons-material";
 import { Box, Stack, Typography } from "@mui/material";
 import theme from "../../../../../scss/theme";
+import { convertCurrency, type Currency } from "../../../../../hooks/format";
 
 interface SeatManagementProps {
   seat: Seat;
@@ -22,12 +23,13 @@ export const useSeatManagement = ({
   selectedSeats,
 }: SeatManagementProps) => {
   const isSelected = selectedSeats.some((s) => s.id === seat.id);
+  const currencyOptions = localStorage.getItem("paymoney");
 
   const tooltipTitle = (
     <Box sx={{ minWidth: 200 }}>
       <Typography variant="body2" fontWeight="bold" sx={{ mb: 1 }}>
         {seat.seatRow}
-        {seat.seatNumber} - {seat.type}
+        {seat.seatNumber} -{/* {seat.type} */}
       </Typography>
       <Stack spacing={0.5}>
         {[
@@ -92,7 +94,8 @@ export const useSeatManagement = ({
             >
               <Paid fontSize="small" />
               <Typography variant="caption">
-                ${seat.price?.toFixed(2)}
+                {/* ${seat.price?.toFixed(2)} */}
+                {convertCurrency(seat.price || 0, currencyOptions as Currency)}
               </Typography>
             </Box>
           ),

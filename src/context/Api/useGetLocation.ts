@@ -60,7 +60,10 @@ export const refethDistancesToGetCallingCode = async (
     const res = await axiosRapid.get<CountryResponse>(
       `geo/countries/${fromId}`
     );
-    console.log(" RapidAPI response:", res.data);
+    console.log(
+      " RapidAPI refethDistancesToGetCallingCode response:",
+      res.data
+    );
     return res.data;
   } catch (error) {
     console.error("RapidAPI error:", error);

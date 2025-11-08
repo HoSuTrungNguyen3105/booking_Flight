@@ -18,7 +18,6 @@ const ButtonSeat: React.FC<ButtonSeatProps> = ({
   handleSelectSeat,
 }) => {
   const featureKey = (seat: SeatFeatures): keyof SeatFeatures | undefined => {
-    // Lấy ra key đầu tiên có giá trị true
     return (Object.keys(seat) as (keyof SeatFeatures)[]).find(
       (key) => seat[key] === true
     );
@@ -30,6 +29,7 @@ const ButtonSeat: React.FC<ButtonSeatProps> = ({
   });
 
   const activeFeature = featureKey(seat);
+
   const { backgroundColor, textColor, borderColor, icon } = useSeatColor({
     seatFeature: activeFeature,
     seat,

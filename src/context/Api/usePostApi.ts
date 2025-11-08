@@ -46,6 +46,9 @@ import {
   type Passenger,
   type UserSession,
   type VerifyOTPProps,
+  EmployeeStatus,
+  type ChangeEmailPassengerProps,
+  type VerifyOtpFromEmailChangeProps,
 } from "../../utils/type.ts";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
 import { useFetch } from "../use[custom]/useFetch.ts";
@@ -289,6 +292,20 @@ export const useDeleteSeatInFlightByIds = () => {
   });
   return {
     refetchDeleteSeatInFlightByIds,
+  };
+};
+
+export const useUpdatePriceSeatInFlightByIds = () => {
+  const { refetch: refetchUpdatePriceSeatInFlightByIds } = useFetch<
+    ResponseMessage,
+    { price: number; flightId: number }
+  >({
+    url: "/sys/seats/update/price-multi",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchUpdatePriceSeatInFlightByIds,
   };
 };
 
@@ -583,26 +600,25 @@ export const useDeleteRequestUnlockById = () => {
   };
 };
 
-// export const useFlightDelete = () => {
-//   const { data: deleteFlightId, refetch: refetchDeleteFlight } = useFetch<
-//     FlightDetailApiResponse,
-//     FlightId
-//   >({
-//     url: "",
-//     params: {},
-//     defaultValue: { resultCode: "", resultMessage: "" },
-//     autoFetch: false,
-//     config: deleteMethod,
-//   });
-//   const deleteFlightById = async ({ id }: FlightId) => {
-//     const res = await refetchDeleteFlight({}, `/sys/flights/flights/${id}`);
-//     return res;
-//   };
-//   return {
-//     deleteFlightId,
-//     deleteFlightById,
-//   };
-// };
+export type UpdatePassengerDto = {
+  fullName?: string;
+  phone?: string;
+  passport?: string;
+};
+
+export const useUpdatePassengerInProfile = (id: string) => {
+  const { refetch: refetchUpdatePassengerInProfile } = useFetch<
+    ResponseMessage,
+    UpdatePassengerDto
+  >({
+    url: `/sys/users/passenger/update/profile/${id}`,
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchUpdatePassengerInProfile,
+  };
+};
 
 export const useAirCraftList = (craftParams: AvailableAircraft) => {
   const { data: aircraftList, refetch: refetchAircraftList } = useFetch<
@@ -1269,6 +1285,33 @@ export const useVerifyOTPCode = () => {
     refetchVerifyOTPcode,
   };
 };
+
+export const useChangeEmailPassenger = () => {
+  const { refetch: refetchChangeEmailPassenger } = useFetch<
+    DetailResponseMessage<{ requireVerified: true }>,
+    ChangeEmailPassengerProps
+  >({
+    url: "/auth/passenger/change-email",
+    autoFetch: false,
+    config: postMethod,
+  });
+
+  return { refetchChangeEmailPassenger };
+};
+
+export const useVerifyOtpToAccessEmail = () => {
+  const { refetch: refetchVerifyOtp } = useFetch<
+    ResponseMessage,
+    VerifyOtpFromEmailChangeProps
+  >({
+    url: "/auth/passenger/verify-otp",
+    autoFetch: false,
+    config: postMethod,
+  });
+
+  return { refetchVerifyOtp };
+};
+
 export const useVerifyMfa = () => {
   const { data: verifyMfa, refetch: refetchVerifyMfa } = useFetch<
     MFAAuthResponse,

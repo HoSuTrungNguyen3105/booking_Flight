@@ -49,6 +49,8 @@ import HotelDetailPage from "../components/Admin/component/Hotel/HotelDetailPage
 import EventCardDetail from "../common/CustomRender/EventCardDetail";
 import FlightDeals from "../common/CustomRender/FlightDeals";
 import OrderSeat from "../components/Employee/OrderSeat";
+import { UpdateEmailForm } from "../components/Sample/UpdateEmailForm";
+import BookingPage from "../components/Employee/BookingPage";
 
 const routes = [
   {
@@ -97,7 +99,7 @@ const routes = [
       },
       {
         path: "/payment",
-        element: <PaymentForm />,
+        element: <BookingPage />,
       },
       {
         path: "/booking-detail",
@@ -114,6 +116,10 @@ const routes = [
       {
         path: "/detail",
         element: <EventCardDetail />,
+      },
+      {
+        path: "/change/email",
+        element: <UpdateEmailForm />,
       },
       {
         path: "/flight/deals",
