@@ -1,16 +1,13 @@
-import React, { Activity, useState } from "react";
+import React, { Activity, useCallback, useState } from "react";
 import {
   Box,
   Typography,
-  TextField,
-  MenuItem,
   Button,
   Paper,
   Grid,
   Container,
   Link,
-  Card,
-  CardContent,
+  Radio,
 } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -25,6 +22,7 @@ import {
 } from "../../context/Api/useGetApi";
 import theme from "../../scss/theme";
 import InputTextField from "../../common/Input/InputTextField";
+
 interface FlightSearchFormProps {
   initialData?: {
     origin?: string;
@@ -34,12 +32,6 @@ interface FlightSearchFormProps {
     type: string;
     discountCode?: string;
   };
-}
-
-interface Airport {
-  code: string;
-  name: string;
-  country: string;
 }
 
 const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
@@ -53,6 +45,16 @@ const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
     types: initialData.type,
     discountCode: initialData.discountCode || "",
   });
+
+  //    const pageTransition = addTransitionType({
+  //   name: "page-motion",
+  //   onTransitionStart: () => {
+  //     console.log("🔄 Page transition started");
+  //   },
+  //   onTransitionComplete: () => {
+  //     console.log("✅ Page transition done");
+  //   },
+  // });
 
   const [activeSelect, setActiveSelect] = useState<"roundtrip" | "oneway">(
     "oneway"
@@ -69,7 +71,12 @@ const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
     label: e.value,
   }));
 
-  // const handleFilterType = useCa
+  const handleFilterType = useCallback(() => {
+    if (activeSelect === "oneway") setActiveSelect("roundtrip");
+    else {
+      setActiveSelect("oneway");
+    }
+  }, [activeSelect]);
 
   const handleInputChange = (field: string) => () => {
     setFormData((prev) => ({
@@ -105,19 +112,6 @@ const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
           </Typography>
         </Box>
 
-        <Activity mode={activeSelect === "oneway" ? "hidden" : "visible"}>
-          <Typography variant="subtitle2" gutterBottom fontWeight="bold">
-            RETURN
-          </Typography>
-          <SelectDropdown
-            value={formData.origin}
-            options={optionDataFlightTypes}
-            onChange={handleInputChange("type")}
-            variant="outlined"
-            placeholder="Select Types"
-          />
-        </Activity>
-
         <Paper
           elevation={3}
           sx={{
@@ -128,6 +122,7 @@ const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
           }}
         >
           <Grid container spacing={3} alignItems="flex-end">
+            <Radio title="Return" onClick={handleFilterType} />
             <Grid size={3}>
               <Typography variant="subtitle2" gutterBottom fontWeight="bold">
                 ORIGIN
@@ -142,19 +137,6 @@ const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
             </Grid>
 
             <Grid size={3}>
-              {/* <Typography variant="subtitle2" gutterBottom fontWeight="bold">
-                RETURN
-              </Typography>
-              <SelectDropdown
-                value={formData.origin}
-                options={optionDataFlightTypes}
-                onChange={handleInputChange("type")}
-                variant="outlined"
-                placeholder="Select Types"
-              /> */}
-            </Grid>
-
-            <Grid size={3}>
               <Typography variant="subtitle2" gutterBottom fontWeight="bold">
                 DESTINATION
               </Typography>
@@ -166,6 +148,19 @@ const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
                 placeholder="Select arrival"
               />
             </Grid>
+
+            <Activity mode={activeSelect === "oneway" ? "hidden" : "visible"}>
+              <Typography variant="subtitle2" gutterBottom fontWeight="bold">
+                RETURN
+              </Typography>
+              <SelectDropdown
+                value={formData.origin}
+                options={optionDataFlightTypes}
+                onChange={handleInputChange("type")}
+                variant="outlined"
+                placeholder="Select Types"
+              />
+            </Activity>
 
             <Grid size={3}>
               {" "}

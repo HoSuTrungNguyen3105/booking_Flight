@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useRef, useState } from "react";
+import React, {
+  Activity,
+  createContext,
+  useContext,
+  useRef,
+  useState,
+} from "react";
 import { Box, SvgIcon, type SvgIconProps } from "@mui/material";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -75,7 +81,7 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
           alignContent: "center",
           padding: 2,
           gap: 1,
-          width: "100%",
+          width: "auto", //100%
           pointerEvents: "none",
           zIndex: theme.zIndex.modal + 1,
         })}
@@ -97,7 +103,7 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
                     maxWidth: 500,
                     width: "fit-content",
                     padding: "8px 12px",
-                    borderRadius: "20px",
+                    borderRadius: 3,
                     border: "1px solid white",
                     backgroundColor:
                       toast.type === "success"
@@ -108,15 +114,27 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
                     color: "#fff",
                     display: "flex",
                     alignItems: "center",
-                    gap: 1.5,
+                    gap: 1,
                     pointerEvents: "auto",
                     mx: "auto",
                   }}
                 >
                   <Box sx={{ display: "flex", alignItems: "center" }}>
-                    {toast.type === "success" && <Success />}
-                    {toast.type === "error" && <Warning />}
-                    {toast.type === "info" && <Info />}
+                    <Activity
+                      mode={toast.type === "success" ? "visible" : "hidden"}
+                    >
+                      <Success />
+                    </Activity>
+                    <Activity
+                      mode={toast.type === "error" ? "visible" : "hidden"}
+                    >
+                      <Warning />
+                    </Activity>
+                    <Activity
+                      mode={toast.type === "info" ? "visible" : "hidden"}
+                    >
+                      <Info />
+                    </Activity>
                   </Box>
                   <Box
                     sx={{

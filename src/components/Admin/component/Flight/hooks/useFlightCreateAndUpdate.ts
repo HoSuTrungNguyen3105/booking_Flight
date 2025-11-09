@@ -254,15 +254,15 @@ export const useFlightCreateAndUpdate = ({
     "Cổng & Trạng thái",
   ];
 
-  const handleInputChange = <K extends keyof FlightFormData>(
-    field: K,
-    value: FlightFormData[K]
-  ) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
+  const handleInputChange = useCallback(
+    <K extends keyof FlightFormData>(field: K, value: FlightFormData[K]) => {
+      setFormData((prev) => ({
+        ...prev,
+        [field]: value,
+      }));
+    },
+    []
+  );
 
   const handleSubmit = () => {
     handleSave();

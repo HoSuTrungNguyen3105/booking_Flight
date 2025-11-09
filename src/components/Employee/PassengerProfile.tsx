@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from "react";
+import React, { Activity, memo, useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -19,6 +19,7 @@ import { useUpdatePassengerInProfile } from "../../context/Api/usePostApi";
 import { DateFormatEnum, formatDate } from "../../hooks/format";
 import { refethDistancesToGetCallingCode } from "../../context/Api/useGetLocation";
 import theme from "../../scss/theme";
+import { locales } from "../../i18n";
 
 type ProfilePassenger = Pick<
   Passenger,
@@ -28,14 +29,12 @@ type ProfilePassenger = Pick<
 const PassengerProfile = () => {
   const { passenger, countryCode } = useAuth();
   const [callingCode, setCallingCode] = useState("");
-  console.log("passenger", passenger);
 
   useEffect(() => {
-    // Hàm fetch chỉ gọi khi countryCode thay đổi
     const fetch = async () => {
+      if (passenger == null) return;
       const res = await refethDistancesToGetCallingCode(countryCode);
       setCallingCode(res?.data.callingCode || "");
-      console.log("refethDistancesToGetCallingCode", res?.data.callingCode);
     };
 
     if (countryCode) {
@@ -44,6 +43,11 @@ const PassengerProfile = () => {
   }, [countryCode]);
 
   const [value, setValue] = useState("account");
+
+  type LocaleKey = keyof typeof locales;
+
+  const localesFilter: LocaleKey[] = [];
+
   const handleChangeToggle = (
     _: React.MouseEvent<HTMLElement>,
     newValue: string
@@ -63,23 +67,16 @@ const PassengerProfile = () => {
     lastLoginDate: undefined,
   });
 
-  // Khi passenger load xong, cập nhật vào state
   useEffect(() => {
     if (passenger) {
       let phone = passenger.phone || "";
 
-      // Nếu không có + ở đầu, thêm +callingCode
-      //  if (!phone) return "";
-
-      // Nếu phone chưa có dấu + → thêm vào
       if (!phone.startsWith("+")) {
         phone = `+${callingCode}${phone.replace(/^0/, "")}`;
       }
 
-      // Chuẩn hóa chỉ 1 khoảng trắng sau mã vùng
       phone.replace(/^\+(\d{1,3})\s*(\d+)$/, "+$1 $2");
 
-      console.log("phone", phone);
       setFormValues({
         fullName: passenger.fullName || "",
         email: passenger.email || "",
@@ -98,11 +95,10 @@ const PassengerProfile = () => {
   };
 
   const addPlusToPhoneNumber = (phoneNumber: string) => {
-    // Kiểm tra nếu chuỗi không bắt đầu bằng dấu "+"
     if (!phoneNumber.startsWith("+")) {
-      return "+" + phoneNumber; // Thêm dấu "+" vào đầu chuỗi
+      return "+" + phoneNumber;
     }
-    return phoneNumber; // Nếu chuỗi đã có dấu "+", trả lại nguyên bản
+    return phoneNumber;
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -110,33 +106,21 @@ const PassengerProfile = () => {
     if (formValues.phone) {
       let phone = formValues.phone;
       addPlusToPhoneNumber(phone);
-      // Nếu số điện thoại bắt đầu bằng "0", thay thế bằng mã vùng
       if (!phone.startsWith("+")) {
-        phone = callingCode + " " + phone.slice(2); // Loại bỏ '0' đầu và thêm mã vùng + callingCode
+        phone = callingCode + " " + phone.slice(2);
       } else if (!phone.startsWith(callingCode)) {
-        // Nếu không phải mã vùng hiện tại, thêm mã vùng vào đầu
         phone = phone;
       }
 
-      // Cập nhật lại phone trong formValues
       setFormValues({ ...formValues, phone });
 
-      console.log("Số điện thoại sau khi xử lý:", phone);
-
-      // Gửi dữ liệu cập nhật qua API
-      await refetchUpdatePassengerInProfile({ ...formValues, phone });
+      const res = await refetchUpdatePassengerInProfile({
+        ...formValues,
+        phone,
+      });
+      console.log("formValues", formValues);
+      console.log("masks", res);
     }
-    // Kiểm tra số điện thoại và thêm mã vùng nếu cần
-    // if (formValues.phone && !formValues.phone.startsWith(callingCode)) {
-    //   // Thêm mã vùng vào đầu số điện thoại
-    //   const updatedPhone = callingCode + formValues.phone.replace(/^0/, " "); // Thêm mã vùng và thay thế 0 đầu thành số tương ứng
-    //   setFormValues({ ...formValues, phone: updatedPhone }); // Cập nhật lại phone trong formValues
-    // }
-    // console.log("formValues", formValues);
-    // console.log("formValues phone", formValues.phone);
-
-    // // Gửi data cập nhật qua API
-    // await refetchUpdatePassengerInProfile(formValues);
   };
 
   return (
@@ -155,7 +139,6 @@ const PassengerProfile = () => {
       <Typography variant="h6" color="text.secondary">
         You can update your profile photo and your account details here.
       </Typography>
-      {/* <div className={{  padding: 30px 0;}}> */}
       <ToggleButtonGroup
         value={value}
         exclusive
@@ -165,20 +148,12 @@ const PassengerProfile = () => {
         <ToggleButton value="account">Account</ToggleButton>
         <ToggleButton value="ticket">Ticket</ToggleButton>
       </ToggleButtonGroup>
-
-      {value === "account" ? (
+      <Activity mode={value === "account" ? "visible" : "hidden"}>
         <Box gap={1} height={100}>
           <Box display="flex" flexDirection="column" gap={1}>
-            <Box
-              display="flex"
-              justifyContent="space-between"
-              alignItems="center"
-            >
-              {/* <Typography> {countryCode}</Typography> */}
-            </Box>
             <InputTextField
               name="fullName"
-              value={formValues.fullName} // <- phải là state
+              value={formValues.fullName}
               onChange={(e) => handleChange("fullName", e)}
               placeholder="Enter your fullName"
             />
@@ -196,6 +171,7 @@ const PassengerProfile = () => {
               country={
                 !formValues.phone ? countryCode.toLowerCase() : undefined
               }
+              onlyCountries={localesFilter}
               value={formValues.phone}
               onChange={(value) => handleChange("phone", value)}
               inputStyle={{
@@ -290,11 +266,11 @@ const PassengerProfile = () => {
             </Button>
           </Stack>
         </Box>
-      ) : (
-        <>
-          <TicketPage />
-        </>
-      )}
+      </Activity>
+
+      <Activity mode={value === "account" ? "hidden" : "visible"}>
+        <TicketPage />
+      </Activity>
     </Box>
   );
 };

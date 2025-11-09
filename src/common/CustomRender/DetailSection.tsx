@@ -12,6 +12,7 @@ interface IDetailSectionProps {
   title?: string;
   itemPerRow?: 1 | 2 | 3 | 4 | 6 | 12;
   data: IDetailItem[];
+  border?: boolean;
   mode?: "row" | "column";
 }
 
@@ -22,6 +23,7 @@ const DetailSection = ({
   itemPerRow = 4,
   data,
   mode = "column",
+  border = false,
 }: IDetailSectionProps) => {
   const renderDescription = useCallback(
     (description: string | React.ReactNode) => {
@@ -56,32 +58,39 @@ const DetailSection = ({
         </Box>
       )}
       <Grid container spacing={2} p={2}>
-        {data.map((item, index) => (
-          <Grid
-            size={item.size || GRID_COL_NUM / itemPerRow}
-            key={index}
-            sx={{
-              display: "flex",
-              flexDirection: mode === "row" ? "row" : "column",
-              alignItems: mode === "row" ? "center" : "flex-start",
-              justifyContent: mode === "row" ? "space-between" : "flex-start",
-              borderRight:
-                item.hasBorder || (index + 1) % itemPerRow === 0 ? 0 : 1,
-              borderColor: "grey.200",
-              pr: (index + 1) % itemPerRow !== 0 ? 2 : 0,
-              gap: mode === "row" ? 2 : 0,
-            }}
-          >
-            <Typography
-              variant="body2"
-              color="grey.500"
-              sx={{ minWidth: mode === "row" ? 120 : "auto" }}
+        {data.map((item, index) => {
+          const borderRight = border
+            ? item.hasBorder || (index + 1) % itemPerRow === 0
+              ? 0
+              : 1
+            : undefined;
+
+          return (
+            <Grid
+              size={item.size || GRID_COL_NUM / itemPerRow}
+              key={index}
+              sx={{
+                display: "flex",
+                flexDirection: mode === "row" ? "row" : "column",
+                alignItems: mode === "row" ? "center" : "flex-start",
+                justifyContent: mode === "row" ? "space-between" : "flex-start",
+                borderRight: borderRight,
+                borderColor: "grey.200",
+                pr: (index + 1) % itemPerRow !== 0 ? 2 : 0,
+                gap: mode === "row" ? 2 : 0,
+              }}
             >
-              {item.title}
-            </Typography>
-            <Box flex={1}>{renderDescription(item.description)}</Box>
-          </Grid>
-        ))}
+              <Typography
+                variant="body2"
+                color="grey.500"
+                sx={{ minWidth: mode === "row" ? 120 : "auto" }}
+              >
+                {item.title}
+              </Typography>
+              <Box flex={1}>{renderDescription(item.description)}</Box>
+            </Grid>
+          );
+        })}
       </Grid>
     </Box>
   );

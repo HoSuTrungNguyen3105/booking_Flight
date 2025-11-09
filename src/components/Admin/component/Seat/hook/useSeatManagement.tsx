@@ -28,8 +28,7 @@ export const useSeatManagement = ({
   const tooltipTitle = (
     <Box sx={{ minWidth: 200 }}>
       <Typography variant="body2" fontWeight="bold" sx={{ mb: 1 }}>
-        {seat.seatRow}
-        {seat.seatNumber} -{/* {seat.type} */}
+        {seat.seatRow} - {seat.seatNumber}
       </Typography>
       <Stack spacing={0.5}>
         {[

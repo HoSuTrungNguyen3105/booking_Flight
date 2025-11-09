@@ -1,15 +1,7 @@
-// import { Slider } from "@mui/material";
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import ButtonCircle from "../../common/CustomRender/ButtonCircle";
 import CardGroup from "../../common/CustomRender/CardGroup";
-import theme from "../../scss/theme";
-import InputTextField from "../../common/Input/InputTextField";
-import {
-  ControlCameraTwoTone,
-  RoomService,
-  Search,
-  Sports,
-} from "@mui/icons-material";
+import { ControlCameraTwoTone, RoomService, Sports } from "@mui/icons-material";
 import EventCard from "../../common/CustomRender/EventCard";
 import { useGetAllHotels, useGetFlightData } from "../../context/Api/useGetApi";
 import { useNavigate } from "react-router-dom";
@@ -26,6 +18,7 @@ const Hero = () => {
       },
     });
   };
+
   return (
     <Box
       sx={{
@@ -36,34 +29,15 @@ const Hero = () => {
       }}
     >
       <Box padding={1} textAlign={"center"}>
-        {/* <Typography variant="h3" color="gray">
-          Discover the best flights for your points.
-        </Typography>
-        <Typography variant="subtitle1" color="gray">
-          Discover, search and filter best events in London.This is the fastest
-          search engine for award travel. Explore availability across entire
-          regions, search with instant results, create free alerts and more to
-          find the best flights for your points.
-        </Typography> */}
         <FlightSearchForm />
       </Box>
 
-      {/* <Box
-        sx={{
-          maxWidth: "80%",
-          overflow: "hidden",
-          margin: "30px auto",
-        }}
-      >
-        <InputTextField endIcon={<Search />} />
-      </Box> */}
-
       <Box sx={{ position: "relative", zIndex: 2 }}>
         <Stack
-          direction="row" // nằm ngang
-          spacing={5} // khoảng cách giữa các nút
-          justifyContent="center" // căn giữa theo chiều ngang
-          alignItems="center" // căn giữa theo chiều dọc
+          direction="row"
+          spacing={5}
+          justifyContent="center"
+          alignItems="center"
           sx={{ flexWrap: "wrap", mt: 2 }}
         >
           <ButtonCircle
@@ -71,8 +45,8 @@ const Hero = () => {
             text="Concert"
             url="list"
           />
-          <ButtonCircle icon={<RoomService />} text="Kids" url="list" />
-          <ButtonCircle icon={<Sports />} text="Sports" url="list" />
+          <ButtonCircle icon={<RoomService />} text="Hotels" url="list" />
+          <ButtonCircle icon={<Sports />} text="Flights" url="list" />
         </Stack>
       </Box>
       {/* <TicketPage /> */}
@@ -93,11 +67,8 @@ const Hero = () => {
             price={e.price}
             rating={e.rating}
             name={e.name}
-            // venue="Royal Albert Hall"
             image={e.imageUrl}
           />
-          //   <Typography variant="subtitle1">Card {i + 1}</Typography>
-          // </EventCard>
         ))}
       </CardGroup>
 

@@ -23,16 +23,26 @@ import InputTextField from "../../../../common/Input/InputTextField";
 import SelectDropdown from "../../../../common/Dropdown/SelectDropdown";
 import DateTimePickerComponent from "../../../../common/DayPicker";
 import Android12Switch from "../../../../common/Switch/Switch";
-import { memo, useCallback } from "react";
+import { Activity, memo, useCallback } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import BaseModal from "../../../../common/Modal/BaseModal";
 import { DateFormatEnum, formatDate } from "../../../../hooks/format";
 import type { DataFlight } from "../../../../utils/type";
-import FormRow from "../../../../common/CustomRender/FormRow";
 import { useFlightCreateAndUpdate } from "./hooks/useFlightCreateAndUpdate";
 import InputNumber from "../../../../common/Input/InputNumber";
+import DetailSection, {
+  type IDetailItem,
+} from "../../../../common/CustomRender/DetailSection";
 
-export type FlightFormData = Omit<DataFlight, "meals">;
+export type FlightFormData = Omit<
+  DataFlight,
+  | "meals"
+  | "_count"
+  | "flightStatuses"
+  | "aircraft"
+  | "departureAirportRel"
+  | "arrivalAirportRel"
+>;
 
 export type FlightFormMode = "create" | "update";
 
@@ -72,120 +82,105 @@ const FlightManagementModal = ({
     flightId,
   });
 
-  // const [hasTerminal, setHasTerminal] = useState(false);
+  const flight_tab1: IDetailItem[] = [
+    {
+      title: "Flight Number",
+      description: (
+        <InputTextField
+          value={formData.flightNo}
+          placeholder="Nhập mã chuyến bay"
+          onChange={(e) => handleInputChange("flightNo", e)}
+          startIcon={<AirplaneTicket color="primary" />}
+        />
+      ),
+      size: 12,
+    },
+    {
+      title: "Flight Type",
+      description: (
+        <SelectDropdown
+          options={optionWay}
+          placeholder="Chọn loại chuyến bay"
+          value={formData.flightType || ""}
+          onChange={(e) => handleInputChange("flightType", e as string)}
+        />
+      ),
+      size: 12,
+    },
+    {
+      title: "Flight Aircraft Code",
+      description: (
+        <SelectDropdown
+          options={optionAircraftCode}
+          placeholder="Chọn loại Aircraft Code chuyến bay"
+          value={formData.aircraftCode || ""}
+          onChange={(e) => handleInputChange("aircraftCode", e as string)}
+        />
+      ),
+      size: 12,
+    },
+    {
+      title: "Arrival Airport",
+      description: (
+        <SelectDropdown
+          options={optionAirportCode}
+          placeholder="Sân bay đến"
+          value={formData.arrivalAirport}
+          onChange={(e) => handleInputChange("arrivalAirport", e as string)}
+        />
+      ),
+      size: 12,
+    },
+    {
+      title: "Departure Airport",
+      description: (
+        <SelectDropdown
+          options={optionAirportCode}
+          placeholder="Sân bay khởi hành"
+          value={formData.departureAirport}
+          onChange={(e) => handleInputChange("departureAirport", e as string)}
+        />
+      ),
+      size: 12,
+    },
+    {
+      title: "Is Domestic",
+      description: (
+        <Android12Switch
+          checked={formData.isDomestic}
+          onChange={(e) => handleInputChange("isDomestic", e.target.checked)}
+        />
+      ),
+      size: 12,
+    },
+    {
+      title: "Cancelled Status",
+      description: (
+        <Activity mode={formData.isCancelled ? "visible" : "hidden"}>
+          <Cancel color="error" />
+          <Typography color="error.main" fontWeight="500">
+            Chuyến bay đã bị hủy
+          </Typography>
+        </Activity>
+      ),
+      size: 12,
+    },
+    {
+      title: "Active Status",
+      description: (
+        <Activity mode={!formData.isCancelled ? "visible" : "hidden"}>
+          <CheckCircle color="success" />
+          <Typography color="success.main" fontWeight="500">
+            Chuyến bay đang hoạt động
+          </Typography>
+        </Activity>
+      ),
+      size: 12,
+    },
+  ];
 
   const renderBasicInfo = useCallback(() => {
-    const fieldSpacing = 2;
-
-    return (
-      <Grid container spacing={fieldSpacing}>
-        {/* Flight Number */}
-        <Grid size={12}>
-          <FormRow label="Flight No">
-            <InputTextField
-              value={formData.flightNo}
-              placeholder="Nhập mã chuyến bay"
-              onChange={(e) => handleInputChange("flightNo", e)}
-              startIcon={<AirplaneTicket color="primary" />}
-            />
-          </FormRow>
-        </Grid>
-
-        {/* Flight Type */}
-        <Grid size={12}>
-          <FormRow label="Flight Type">
-            <SelectDropdown
-              options={optionWay}
-              placeholder="Chọn loại chuyến bay"
-              value={formData.flightType || ""}
-              onChange={(e) => handleInputChange("flightType", e as string)}
-            />
-          </FormRow>
-        </Grid>
-
-        {/* Departure Airport */}
-        <Grid size={12}>
-          <FormRow label="Departure Airport">
-            <SelectDropdown
-              options={optionAirportCode}
-              placeholder="Sân bay khởi hành"
-              value={formData.departureAirport}
-              onChange={(e) =>
-                handleInputChange("departureAirport", e as string)
-              }
-            />
-          </FormRow>
-        </Grid>
-
-        {/* Arrival Airport */}
-        <Grid size={12}>
-          <FormRow label="Arrival Airport">
-            <SelectDropdown
-              options={optionAirportCode}
-              placeholder="Sân bay đến"
-              value={formData.arrivalAirport}
-              onChange={(e) => handleInputChange("arrivalAirport", e as string)}
-            />
-          </FormRow>
-        </Grid>
-
-        {/* Aircraft Code */}
-        <Grid size={12}>
-          <FormRow label="Aircraft Code">
-            <SelectDropdown
-              options={optionAircraftCode}
-              placeholder="Chọn máy bay"
-              value={formData.aircraftCode}
-              onChange={(e) => handleInputChange("aircraftCode", e as string)}
-            />
-          </FormRow>
-        </Grid>
-
-        <Grid size={6}>
-          <Box
-            display="flex"
-            alignItems="center"
-            justifyContent="space-between"
-            sx={{
-              px: 2,
-              py: 1.5,
-              borderRadius: 2,
-              bgcolor: formData.isDomestic ? "error.light" : "success.light",
-            }}
-          >
-            <Box
-              display="flex"
-              sx={{ width: "30rem" }}
-              alignItems="center"
-              gap={1}
-            >
-              {formData.isDomestic ? (
-                <>
-                  <Cancel color="error" />
-                  <Typography color="error.main" fontWeight="500">
-                    Chuyến bay đã bị hủy
-                  </Typography>
-                </>
-              ) : (
-                <>
-                  <CheckCircle color="success" />
-                  <Typography color="success.main" fontWeight="500">
-                    Chuyến bay đang hoạt động
-                  </Typography>
-                </>
-              )}
-            </Box>
-
-            <Android12Switch
-              checked={formData.isDomestic}
-              onChange={(e) =>
-                handleInputChange("isDomestic", e.target.checked)
-              }
-            />
-          </Box>
-        </Grid>
-      </Grid>
-    );
+    return <DetailSection data={flight_tab1} title="row" />;
   }, [formData, handleInputChange]);
 
   const renderTimeInfo = useCallback(() => {
@@ -243,9 +238,9 @@ const FlightManagementModal = ({
 
   const renderGateStatus = useCallback(
     () => (
-      <Box sx={{ width: "42rem", mx: "auto" }}>
+      <Box sx={{ maxWidth: 700, mx: "auto", p: 2 }}>
         <Grid container spacing={3}>
-          {/* Gate selection */}
+          {/* Cổng khởi hành */}
           <Grid size={6}>
             <Typography sx={{ mb: 1, fontWeight: 500 }}>
               Cổng khởi hành
@@ -258,44 +253,57 @@ const FlightManagementModal = ({
             />
           </Grid>
 
-          {mode === "update" && (
-            <>
-              {/* Trạng thái chuyến bay */}
-              <Grid size={6}>
+          {/* Thời gian trễ */}
+          <Grid size={6}>
+            <Typography sx={{ mb: 1, fontWeight: 500 }}>
+              Thời gian trễ (phút)
+            </Typography>
+            <InputTextField
+              type="number"
+              value={String(formData.delayMinutes ?? 0)}
+              onChange={(e) => handleInputChange("delayMinutes", parseInt(e))}
+              placeholder="Nhập số phút delay (nếu có)"
+            />
+          </Grid>
+
+          {/* Chỉ hiển thị khi ở mode update */}
+          <Activity mode={mode === "update" ? "visible" : "hidden"}>
+            <Grid size={12}>
+              <Box
+                sx={{
+                  p: 2,
+                  borderRadius: 2,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 2,
+                  bgcolor: formData.isCancelled
+                    ? "error.light"
+                    : "success.light",
+                }}
+              >
+                {/* Trạng thái chuyến bay */}
                 <Box
                   display="flex"
                   alignItems="center"
                   justifyContent="space-between"
-                  sx={{
-                    px: 2,
-                    py: 1.5,
-                    borderRadius: 2,
-                    bgcolor: formData.isCancelled
-                      ? "error.light"
-                      : "success.light",
-                  }}
                 >
-                  <Box
-                    display="flex"
-                    sx={{ width: "30rem" }}
-                    alignItems="center"
-                    gap={1}
-                  >
-                    {formData.isCancelled ? (
-                      <>
-                        <Cancel color="error" />
-                        <Typography color="error.main" fontWeight="500">
-                          Chuyến bay đã bị hủy
-                        </Typography>
-                      </>
-                    ) : (
-                      <>
-                        <CheckCircle color="success" />
-                        <Typography color="success.main" fontWeight="500">
-                          Chuyến bay đang hoạt động
-                        </Typography>
-                      </>
-                    )}
+                  <Box display="flex" alignItems="center" gap={1}>
+                    <Activity
+                      mode={formData.isCancelled ? "visible" : "hidden"}
+                    >
+                      <Cancel color="error" />
+                      <Typography color="error.main" fontWeight={500}>
+                        Chuyến bay đã bị hủy
+                      </Typography>
+                    </Activity>
+                    <Activity
+                      mode={!formData.isCancelled ? "visible" : "hidden"}
+                    >
+                      <CheckCircle color="success" />
+                      <Typography color="success.main" fontWeight={500}>
+                        Chuyến bay đang hoạt động
+                      </Typography>
+                    </Activity>
                   </Box>
 
                   <Android12Switch
@@ -305,43 +313,33 @@ const FlightManagementModal = ({
                     }
                   />
                 </Box>
-              </Grid>
 
-              {/* Delay input */}
-              <Grid size={6}>
-                <Typography sx={{ mb: 1, fontWeight: 500 }}>
-                  Thời gian trễ (phút)
-                </Typography>
-                <InputTextField
-                  type="number"
-                  value={String(formData.delayMinutes ?? 0)}
-                  onChange={(e) =>
-                    handleInputChange("delayMinutes", parseInt(e))
-                  }
-                  placeholder="Nhập số phút delay (nếu có)"
-                />
-              </Grid>
-
-              {/* Lý do hủy chuyến */}
-              {formData.isCancelled && (
-                <Grid size={6}>
-                  <Typography sx={{ mb: 1, fontWeight: 500 }}>
-                    Lý do hủy chuyến
-                  </Typography>
-                  <InputTextField
-                    value={formData.cancellationReason}
-                    onChange={(e) =>
-                      handleInputChange("cancellationReason", e as string)
-                    }
-                    placeholder="Nhập lý do hủy chuyến"
-                  />
-                </Grid>
-              )}
-
+                {/* Lý do hủy chuyến */}
+                <Activity mode={formData.isCancelled ? "visible" : "hidden"}>
+                  <Box>
+                    <Typography sx={{ mb: 1, fontWeight: 500 }}>
+                      Lý do hủy chuyến
+                    </Typography>
+                    <InputTextField
+                      value={formData.cancellationReason}
+                      onChange={(e) =>
+                        handleInputChange("cancellationReason", e as string)
+                      }
+                      placeholder="Nhập lý do hủy chuyến"
+                    />
+                  </Box>
+                </Activity>
+              </Box>
               {/* Lý do delay */}
-              {formData.delayMinutes && formData.delayMinutes > 0 && (
-                <Grid size={12}>
-                  <Typography sx={{ mb: 1, fontWeight: 500 }}>
+              <Activity
+                mode={
+                  formData.delayMinutes && formData.delayMinutes > 0
+                    ? "visible"
+                    : "hidden"
+                }
+              >
+                <Box>
+                  <Typography sx={{ mt: 1, fontWeight: 500 }}>
                     Lý do delay
                   </Typography>
                   <InputTextField
@@ -351,10 +349,10 @@ const FlightManagementModal = ({
                     }
                     placeholder="Nhập lý do delay"
                   />
-                </Grid>
-              )}
-            </>
-          )}
+                </Box>
+              </Activity>
+            </Grid>
+          </Activity>
         </Grid>
       </Box>
     ),
@@ -368,7 +366,7 @@ const FlightManagementModal = ({
           Hủy
         </Button>
 
-        {mode === "update" && (
+        <Activity mode={mode === "update" ? "visible" : "hidden"}>
           <Button
             onClick={handleRefetchAllData}
             variant="outlined"
@@ -376,18 +374,18 @@ const FlightManagementModal = ({
           >
             Refresh
           </Button>
-        )}
+        </Activity>
 
-        {activeStep > 0 && (
+        <Activity mode={activeStep > 0 ? "visible" : "hidden"}>
           <Button
             onClick={() => setActiveStep((prev) => prev - 1)}
             variant="outlined"
           >
             Quay lại
           </Button>
-        )}
+        </Activity>
 
-        {activeStep < steps.length - 1 ? (
+        <Activity mode={activeStep < steps.length - 1 ? "visible" : "hidden"}>
           <Button
             onClick={() => setActiveStep((prev) => prev + 1)}
             variant="contained"
@@ -395,7 +393,9 @@ const FlightManagementModal = ({
           >
             Tiếp theo
           </Button>
-        ) : (
+        </Activity>
+
+        <Activity mode={activeStep < steps.length - 1 ? "hidden" : "visible"}>
           <Button
             onClick={handleSubmit}
             variant="contained"
@@ -403,7 +403,7 @@ const FlightManagementModal = ({
           >
             {mode === "update" ? "Update" : "Create"}
           </Button>
-        )}
+        </Activity>
       </Box>
     );
   }, [handleSubmit, steps.length, mode, activeStep, onClose]);
@@ -421,7 +421,30 @@ const FlightManagementModal = ({
           </Stepper>
 
           <Box sx={{ minHeight: "400px" }}>
-            {(() => {
+            <Activity mode={activeStep === 0 ? "visible" : "hidden"}>
+              {renderBasicInfo()}
+            </Activity>
+            <Activity mode={activeStep === 1 ? "visible" : "hidden"}>
+              {renderTimeInfo()}
+            </Activity>
+            <Activity mode={activeStep === 2 ? "visible" : "hidden"}>
+              <Activity mode={mode === "create" ? "visible" : "hidden"}>
+                {renderPriceCapacity()}{" "}
+              </Activity>
+              <Activity mode={mode === "update" ? "visible" : "hidden"}>
+                {renderGateStatus()}{" "}
+              </Activity>
+            </Activity>
+            <Activity mode={activeStep === 3 ? "visible" : "hidden"}>
+              <Activity mode={mode === "create" ? "visible" : "hidden"}>
+                {renderGateStatus()}{" "}
+              </Activity>
+              <Activity mode={mode === "update" ? "visible" : "hidden"}>
+                {renderPriceCapacity()}{" "}
+              </Activity>
+            </Activity>
+
+            {/* {(() => {
               switch (activeStep) {
                 case 0:
                   return renderBasicInfo();
@@ -442,11 +465,11 @@ const FlightManagementModal = ({
                 default:
                   return null;
               }
-            })()}
+            })()} */}
           </Box>
 
           {formData && (
-            <Card sx={{ mt: 3, bgcolor: "grey.50" }}>
+            <Card sx={{ mt: 2, bgcolor: "grey.50" }}>
               <CardContent>
                 <Typography
                   variant="subtitle2"

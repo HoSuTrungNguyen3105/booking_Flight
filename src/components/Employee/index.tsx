@@ -12,14 +12,11 @@ import {
   Button,
 } from "@mui/material";
 import ForwardToInboxIcon from "@mui/icons-material/ForwardToInbox";
-import EventIcon from "@mui/icons-material/Event";
-import ApartmentIcon from "@mui/icons-material/Apartment";
 import { useFindPassengerTicket } from "../../context/Api/usePostApi";
 import { useAuth } from "../../context/AuthContext";
 import type { Ticket } from "../../utils/type";
 import { ResponseCode } from "../../utils/response";
 import { DateFormatEnum, formatDate } from "../../hooks/format";
-import ButtonCircle from "../../common/CustomRender/ButtonCircle";
 import TicketInfo from "./TicketInfo";
 import theme from "../../scss/theme";
 import AccountSecurity from "../Common/AccountSecurity";
