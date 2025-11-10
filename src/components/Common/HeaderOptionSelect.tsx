@@ -19,15 +19,13 @@ const LanguageButton = () => {
     currencyOptions,
   } = useChangeLanguage();
 
-  /** 💾 Save changes when user clicks Submit in popover */
   const handleSaveChange = useCallback(() => {
     confirmSaveChange();
   }, [confirmSaveChange]);
 
-  /** 🧠 Memoized content to avoid re-render */
   const renderContent = useMemo(
     () => (
-      <>
+      <Box gap={1}>
         <Typography
           variant="subtitle1"
           fontWeight={600}
@@ -57,7 +55,7 @@ const LanguageButton = () => {
           onChange={handlePayMoneySelect}
           sx={{ minWidth: 200 }}
         />
-      </>
+      </Box>
     ),
     [
       t,

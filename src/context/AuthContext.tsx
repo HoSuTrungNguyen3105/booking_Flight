@@ -28,6 +28,7 @@ import {
 import { ResponseCode } from "../utils/response";
 import { useGetMyAdminInfo, useGetMyUserInfo } from "./Api/usePostApi";
 import { refetchDistance } from "./Api/useGetLocation";
+import type { AuthType } from "../components/Auth/Login";
 
 export type UserWithMFA = {
   email: string;
@@ -35,7 +36,7 @@ export type UserWithMFA = {
   authType: string;
 };
 
-export type AuthType = "ADMIN" | "IDPW" | "DEV" | "MFA";
+// export type AuthType = "ADMIN" | "IDPW" | "DEV" | "MFA";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -254,31 +255,29 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const logout = useCallback(async () => {
-    // const id = localStorage.getItem("userId");
     const token = localStorage.getItem("token");
     if (!token) return;
-
     try {
-      const res = await refetchLogoutSession({ token });
-      console.log("res", res);
-      if (res?.resultCode === ResponseCode.SUCCESS) {
-        setIsAuthenticated(false);
-        setUser(null);
-        setPassenger(null);
-        setToken(null);
-        storage.clear();
-      } else {
-        console.error(res?.resultMessage);
-      }
+      await refetchLogoutSession({ token });
+      // if (res?.resultCode === ResponseCode.SUCCESS) {
+      setIsAuthenticated(false);
+      setUser(null);
+      setPassenger(null);
+      setToken(null);
+      storage.clear();
+      // } else {
+      //   console.error(res?.resultMessage);
+      // }
     } catch (err) {
       console.error("Lỗi khi logout:", err);
-    } finally {
-      // setIsAuthenticated(false);
-      // setUser(null);
-      // setPassenger(null);
-      // setToken(null);
-      // storage.clear();
     }
+    //finally {
+    // setIsAuthenticated(false);
+    // setUser(null);
+    // setPassenger(null);
+    // setToken(null);
+    // storage.clear();
+    //}
   }, [refetchLogoutSession]);
 
   const hasValidLogin = useCallback(async () => {
@@ -295,7 +294,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
 
       const isADMIN = savedState === "ADMIN" ? userId : null;
-      const isPassenger = savedState === "IDPW" ? userId : null;
+      const isPassenger = savedState === "ID,PW" ? userId : null;
 
       const res = await refetchGetSessionByID({
         passengerId: isPassenger,
@@ -322,7 +321,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, [logout, passenger?.id, user?.id, refetchGetSessionByID]);
 
   const loginPassenger = async (data: LoginReqProps) => {
-    const result = await handleLogin(refetchLogin, data, "IDPW");
+    const result = await handleLogin(refetchLogin, data, "ID,PW");
     if (result.success) await fetchMyUserInfo(result.data.data.id);
     return result.data;
   };
@@ -369,14 +368,12 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       await hasValidLogin();
       // if (!valid) return;
 
-      if (savedState === "IDPW") {
-        const res = await fetchMyUserInfo(savedId);
-        console.log("IDPW", res);
+      if (savedState === "ID,PW") {
+        await fetchMyUserInfo(savedId);
         return;
       }
       if (savedState === "ADMIN") {
-        const res = await fetchMyAdminInfo(Number(savedId));
-        console.log("ADMIN", res);
+        await fetchMyAdminInfo(Number(savedId));
         return;
       }
     };

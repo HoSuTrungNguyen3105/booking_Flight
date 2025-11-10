@@ -41,13 +41,15 @@ export default function MfaSetup({ email, onClose, authType }: EmailProps) {
     }
     try {
       const data = await refetchSetUpMfa({ email });
+      console.log("data", data);
       if (data?.data?.hasVerified === "Y") {
         setCurrentState("login");
         // setCanLoginMfa(true);
         // setIsSetMfa(true);
-        setQrCode(null);
+        // setQrCode(data.data.qrCodeDataURL);
       } else if (data?.data?.hasVerified === "N" && data?.data?.qrCodeDataURL) {
         setQrCode(data.data.qrCodeDataURL);
+        setCurrentState("qrSetup");
         // setCanLoginMfa(false);
         // setIsSetMfa(false);
       } else if (data?.resultCode === "09") {
@@ -105,7 +107,7 @@ export default function MfaSetup({ email, onClose, authType }: EmailProps) {
         authType: authType as string,
       });
 
-      if (res?.resultCode === "00") {
+      if (res?.resultCode === ResponseCode.SUCCESS) {
         toast("Đăng nhập thành công");
         setQrCode(null);
       } else {

@@ -1,4 +1,5 @@
 import type { GridRowDef } from "../common/DataGrid";
+import type { AuthType } from "../components/Auth/Login";
 // import type { SeatTypeValue } from "../context/Api/usePostApi";
 
 export enum MethodType {
@@ -586,7 +587,7 @@ export interface Ticket {
   passenger?: Passenger;
   flight?: DataFlight;
   boardingPass?: BoardingPass | null;
-  baggage?: Baggage[];
+  baggage?: Baggage;
   payments?: Payment[];
 }
 
@@ -810,7 +811,7 @@ export interface UserSession {
 
 export type VerifyOTPProps = {
   userId: string;
-  type: "ADMIN" | "IDPW";
+  type: AuthType;
   otp: string;
 };
 

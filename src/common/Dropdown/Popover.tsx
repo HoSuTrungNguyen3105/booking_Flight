@@ -61,9 +61,9 @@ const CustomPopover: React.FC<IButtonSettingProps> = ({
         disableScrollLock
         anchorEl={anchorEl}
         onClose={handleClose}
-        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
-        <Box sx={{ p: 1 }}>
+        <Box sx={{ p: 3 }}>
           {option?.map((item, index) => {
             if (typeof item === "string") {
               return (

@@ -14,13 +14,13 @@ export interface CountryResponse {
 
 export interface CountryData {
   capital: string;
-  code: string; // ví dụ "VN"
-  callingCode: string; // ví dụ "+84"
-  currencyCodes: string[]; // ví dụ ["VND"]
+  code: string;
+  callingCode: string;
+  currencyCodes: string[];
   flagImageUri: string;
-  name: string; // ví dụ "Vietnam"
-  numRegions: number; // ví dụ 63
-  wikiDataId: string; // ví dụ "Q881"
+  name: string;
+  numRegions: number;
+  wikiDataId: string;
 }
 
 export interface GeoLink {
@@ -31,11 +31,11 @@ export interface GeoLink {
 export interface GeoCity {
   id: number;
   wikiDataId: string;
-  type: string; // "ADM2" | "CITY" | "ADM1" ...
+  type: string;
   city: string;
   name: string;
   country: string;
-  countryCode: string; // ví dụ "VN"
+  countryCode: string;
   latitude: number;
   longitude: number;
   population: number;
@@ -60,10 +60,6 @@ export const refethDistancesToGetCallingCode = async (
     const res = await axiosRapid.get<CountryResponse>(
       `geo/countries/${fromId}`
     );
-    console.log(
-      " RapidAPI refethDistancesToGetCallingCode response:",
-      res.data
-    );
     return res.data;
   } catch (error) {
     console.error("RapidAPI error:", error);
@@ -81,7 +77,6 @@ export const refetchDistance = async (
     const res = await axiosRapid.get<GeoNearbyCitiesResponse>(
       `geo/locations/${lat}+${lng}/nearbyCities?limit=1`
     );
-    console.log(" RapidAPI response:", res.data);
     return res.data;
   } catch (error) {
     console.error("RapidAPI error:", error);

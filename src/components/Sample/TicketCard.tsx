@@ -5,36 +5,15 @@ import {
   Chip,
   Grid,
   Paper,
-  List,
-  ListItem,
-  ListItemText,
-  Divider,
   Container,
   Stack,
 } from "@mui/material";
-import {
-  Flight,
-  Person,
-  Luggage,
-  QrCode2,
-  EventSeat,
-} from "@mui/icons-material";
+import { Flight, Person, QrCode2, EventSeat } from "@mui/icons-material";
 import type { Ticket, TicketResponseMessage } from "../../utils/type";
 import { DateFormatEnum, formatDate } from "../../hooks/format";
 
 // Component for displaying ticket card
 const TicketCard: React.FC<{ ticket: Ticket }> = ({ ticket }) => {
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "CHECKED_IN":
-        return "success";
-      case "PENDING":
-        return "warning";
-      default:
-        return "default";
-    }
-  };
-
   if (!ticket) {
     return <Typography>No item</Typography>;
   }
@@ -55,14 +34,16 @@ const TicketCard: React.FC<{ ticket: Ticket }> = ({ ticket }) => {
         </Typography>
         <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
           <Chip
-            label={ticket.seatClass}
-            color={ticket.seatClass === "ECONOMY" ? "primary" : "secondary"}
+            label={ticket.booking.seatClass}
+            color={
+              ticket.booking.seatClass === "ECONOMY" ? "primary" : "secondary"
+            }
             variant="outlined"
             size="small"
           />
           <Chip
             icon={<EventSeat />}
-            label={`Seat ${ticket.seatNo}`}
+            label={`Seat ${ticket.booking.seatNo}`}
             variant="filled"
             size="small"
             color="info"
@@ -192,74 +173,16 @@ const TicketCard: React.FC<{ ticket: Ticket }> = ({ ticket }) => {
             </Box>
           </Paper>
         </Grid>
-
-        {/* Baggage Information */}
-        <Grid size={6}>
-          <Paper elevation={1} sx={{ p: 2, borderRadius: 2 }}>
-            <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-              <Luggage sx={{ mr: 1 }} color="primary" />
-              <Typography variant="h6" fontWeight="medium">
-                Baggage
-              </Typography>
-            </Box>
-
-            {ticket?.baggage?.length ? (
-              <List dense sx={{ py: 0 }}>
-                {ticket.baggage.map((bag, index) => (
-                  <React.Fragment key={bag.id}>
-                    <ListItem sx={{ px: 0 }}>
-                      <ListItemText
-                        primary={
-                          <Box
-                            sx={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              alignItems: "center",
-                            }}
-                          >
-                            <Typography variant="body2">
-                              <strong>Weight:</strong> {bag.weight} kg
-                            </Typography>
-                            <Chip
-                              label={bag.status}
-                              color={getStatusColor(bag.status) as any}
-                              size="small"
-                            />
-                          </Box>
-                        }
-                        secondary={
-                          <Typography variant="body2" color="text.secondary">
-                            Checked at:{" "}
-                            {formatDate(
-                              DateFormatEnum.DDD_MMM_D_YYYY,
-                              bag.checkedAt
-                            )}
-                          </Typography>
-                        }
-                      />
-                    </ListItem>
-                    {index < (ticket?.baggage?.length ?? 0) - 1 ? (
-                      <Divider />
-                    ) : (
-                      <Divider />
-                    )}
-                  </React.Fragment>
-                ))}
-              </List>
-            ) : (
-              <Typography variant="body2" color="text.secondary">
-                No baggage information
-              </Typography>
-            )}
-          </Paper>
-        </Grid>
       </Grid>
 
       {/* Booking Information */}
       <Box sx={{ mt: 2, pt: 1, borderTop: 1, borderColor: "divider" }}>
         <Typography variant="body2" color="text.secondary">
           Booked at:{" "}
-          {formatDate(DateFormatEnum.DDD_MMM_D_YYYY, ticket.bookedAt)}
+          {formatDate(
+            DateFormatEnum.DDD_MMM_D_YYYY,
+            ticket.booking.bookingTime
+          )}
         </Typography>
       </Box>
     </Stack>

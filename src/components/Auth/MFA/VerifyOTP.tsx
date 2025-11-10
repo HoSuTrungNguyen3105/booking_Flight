@@ -6,12 +6,15 @@ import { useVerifyOTPCode } from "../../../context/Api/usePostApi";
 import MfaSetup from ".";
 import { useToast } from "../../../context/ToastContext";
 import { ResponseCode } from "../../../utils/response";
+import type { AuthType } from "../Login";
 
-const VerifyOpt = ({ email, userId }: EmailProps) => {
+const VerifyOpt = ({ email, userId, authType }: EmailProps) => {
   const [otpText, setOtpText] = useState<string>("");
   const { refetchVerifyOTPcode } = useVerifyOTPCode();
   const [hasValidate, sethasValidate] = useState(false);
   const toast = useToast();
+
+  console.log("user", userId, email);
 
   const handleCheckOTPYn = useCallback(async () => {
     if (typeof otpText !== "string" || otpText.trim() === "") {
@@ -19,12 +22,12 @@ const VerifyOpt = ({ email, userId }: EmailProps) => {
       return;
     }
     try {
-      const typeSaved = localStorage.getItem("stateLogin") as
-        | "ADMIN"
-        | "IDPW"
-        | null;
+      // const typeSaved = localStorage.getItem("stateLogin") as
+      //   | "ADMIN"
+      //   | "ID,PW"
+      //   | null;
 
-      if (!typeSaved) {
+      if (!authType) {
         toast("Không xác định được loại đăng nhập", "error");
         return;
       }
@@ -32,7 +35,7 @@ const VerifyOpt = ({ email, userId }: EmailProps) => {
       const payload = {
         otp: otpText.trim(),
         userId: String(userId),
-        type: typeSaved,
+        type: authType as AuthType,
       };
       const res = await refetchVerifyOTPcode(payload);
 
@@ -47,7 +50,7 @@ const VerifyOpt = ({ email, userId }: EmailProps) => {
   }, [otpText, userId, sethasValidate, refetchVerifyOTPcode, toast]);
 
   if (hasValidate) {
-    return <MfaSetup authType="login" email={email} />;
+    return <MfaSetup authType="qrSetup" email={email} />;
   }
 
   return (

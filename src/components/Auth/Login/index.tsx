@@ -10,7 +10,6 @@ import TabPanel, {
   type ITabItem,
 } from "../../../common/AdditionalCustomFC/TabPanel";
 import theme from "../../../scss/theme";
-import { Loading } from "../../../common/Loading/Loading";
 import AccountYn from "../AccountModel";
 import Registration from "../Registration";
 import { useToast } from "../../../context/ToastContext";
@@ -24,7 +23,7 @@ interface ILoginForm {
   password: string;
 }
 
-type AuthType = "ID,PW" | "DEV" | "MFA" | "ADMIN" | "MONITER";
+export type AuthType = "ID,PW" | "DEV" | "MFA" | "ADMIN" | "MONITER";
 type ViewMode =
   | "login"
   | "register"
@@ -51,7 +50,7 @@ export const LoginPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   const toast = useToast();
-  const { refetchMfaCheck, loadingMfaCheck } = useCheckMfaAvailable();
+  const { refetchMfaCheck } = useCheckMfaAvailable();
   const { loginPassenger, loginAdmin } = useAuth();
 
   const { handleSubmit, watch, control, reset } = useForm<ILoginForm>({
@@ -201,7 +200,9 @@ export const LoginPage: React.FC = () => {
         );
 
       case 1:
-        return <Registration onClose={() => setTabValue(0)} />;
+        return (
+          <Registration authType={authType} onClose={() => setTabValue(0)} />
+        );
     }
   };
 

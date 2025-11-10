@@ -23,6 +23,7 @@ import LanguageButton from "../../components/Common/HeaderOptionSelect";
 import { useCallback, useState } from "react";
 import theme from "../../scss/theme";
 import ButtonLink from "../AdditionalCustomFC/ButtonLink";
+import NavbarItem from "./NavbarItem";
 
 export const Header = () => {
   const { isAuthenticated, isAdmin } = useAuth();
@@ -75,7 +76,7 @@ export const Header = () => {
         sx={{
           bgcolor: "white",
           margin: " 0 auto",
-          padding: "0 20px",
+          padding: "8px 20px",
           maxWidth: "1700px",
           borderBottom: `1px solid ${theme.palette.grey[200]}`,
           px: { xs: 2, md: 4 },
@@ -123,6 +124,7 @@ export const Header = () => {
               <GridMenuIcon />
             </IconButton>
           )}
+          <NavbarItem />
 
           <Box
             sx={{
@@ -156,19 +158,13 @@ export const Header = () => {
             <Stack
               direction="row-reverse"
               alignItems="center"
-              spacing={1}
+              spacing={2}
               sx={{
                 cursor: "pointer",
               }}
             >
-              <Box
-                sx={{
-                  padding: { xs: "4px", sm: "6px" },
-                }}
-              >
-                <LanguageButton />
-              </Box>
               <SignOut />
+              <LanguageButton />
             </Stack>
           ) : (
             <Button

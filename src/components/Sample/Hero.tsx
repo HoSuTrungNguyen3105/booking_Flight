@@ -6,6 +6,7 @@ import EventCard from "../../common/AdditionalCustomFC/EventCard";
 import { useGetAllHotels, useGetFlightData } from "../../context/Api/useGetApi";
 import { useNavigate } from "react-router-dom";
 import FlightSearchForm from "./FlightSearchForm";
+import AdvancedAnalytics from "../../common/Header/AdvancedAnalytics";
 
 const Hero = () => {
   const { dataGetAllHotels } = useGetAllHotels();
@@ -26,9 +27,12 @@ const Hero = () => {
         maxHeight: "350vh",
         textAlign: "center",
         color: "white",
+        alignItems: "center",
+        width: "100%",
       }}
     >
       <Box padding={1} textAlign={"center"}>
+        <AdvancedAnalytics />
         <FlightSearchForm />
       </Box>
 

@@ -8,6 +8,11 @@ export interface CurrencyInfo {
   locale: string;
 }
 
+type AppSettings = {
+  language: string | null;
+  currency: string | null;
+};
+
 export type CurrencyMap = Record<string, CurrencyInfo>;
 
 export const CURRENCIES: CurrencyMap = {
@@ -20,19 +25,25 @@ export const CURRENCIES: CurrencyMap = {
 export const currencyOptions: ActionType[] = Object.keys(CURRENCIES).map(
   (key) => ({
     label: CURRENCIES[key].title,
-    value: key as keyof typeof CURRENCIES,
+    value: key,
   })
 );
 
 export const useChangeLanguage = () => {
+  let settings: AppSettings = { language: null, currency: null };
+  try {
+    const raw = localStorage.getItem("appSettings");
+    if (raw) settings = JSON.parse(raw);
+  } catch {
+    console.warn("Invalid appSettings in localStorage");
+  }
+
   const [selectedLang, setSelectedLang] = useState<ActionType | null>(
-    optionLanguage.find((o) => o.value === localStorage.getItem("language")) ||
-      null
+    optionLanguage.find((o) => o.value === settings.language) || null
   );
 
   const [selectedPayMoney, setSelectedPayMoney] = useState<ActionType | null>(
-    currencyOptions.find((o) => o.value === localStorage.getItem("currency")) ||
-      currencyOptions[0]
+    currencyOptions.find((o) => o.value === settings.currency) || null
   );
 
   const [pendingLanguage, setPendingLanguage] = useState<ActionType | null>(
@@ -55,17 +66,23 @@ export const useChangeLanguage = () => {
   };
 
   const confirmSaveChange = () => {
+    const newSettings: AppSettings = {
+      language:
+        (pendingLanguage?.value as string) ?? selectedLang?.value ?? null,
+      currency:
+        (pendingPayMoney?.value as string) ?? selectedPayMoney?.value ?? null,
+    };
+
+    localStorage.setItem("appSettings", JSON.stringify(newSettings));
+
     if (pendingPayMoney) {
       setSelectedPayMoney(pendingPayMoney);
-      localStorage.setItem("paymoney", String(pendingPayMoney.value));
       setPendingPayMoney(null);
     }
 
     if (pendingLanguage) {
       setSelectedLang(pendingLanguage);
-      const lng = String(pendingLanguage.value);
-      i18n.changeLanguage(lng);
-      localStorage.setItem("language", lng);
+      i18n.changeLanguage(String(pendingLanguage.value));
       setPendingLanguage(null);
     }
   };

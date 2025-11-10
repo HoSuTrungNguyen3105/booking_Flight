@@ -46,7 +46,6 @@ import {
   type Passenger,
   type UserSession,
   type VerifyOTPProps,
-  EmployeeStatus,
   type ChangeEmailPassengerProps,
   type VerifyOtpFromEmailChangeProps,
 } from "../../utils/type.ts";
