@@ -93,7 +93,6 @@ export const useSeatManagement = ({
             >
               <Paid fontSize="small" />
               <Typography variant="caption">
-                {/* ${seat.price?.toFixed(2)} */}
                 {convertCurrency(seat.price || 0, currencyOptions as Currency)}
               </Typography>
             </Box>

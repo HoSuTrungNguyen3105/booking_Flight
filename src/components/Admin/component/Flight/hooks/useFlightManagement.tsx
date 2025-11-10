@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import type { FlightDetailPageProps } from "../FlightDetail";
 import { useNavigate } from "react-router-dom";
-import type { IDetailItem } from "../../../../../common/CustomRender/DetailSection";
+import type { IDetailItem } from "../../../../../common/AdditionalCustomFC/DetailSection";
 import { DateFormatEnum, formatDate } from "../../../../../hooks/format";
 
 export const useFlightManagement = ({

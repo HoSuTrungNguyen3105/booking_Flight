@@ -6,7 +6,9 @@ import InputTextField from "../../../common/Input/InputTextField";
 import MfaSetup from "../MFA";
 import SelectDropdown from "../../../common/Dropdown/SelectDropdown";
 import RequestUnlock from "../RequestUnlock";
-import TabPanel, { type ITabItem } from "../../../common/CustomRender/TabPanel";
+import TabPanel, {
+  type ITabItem,
+} from "../../../common/AdditionalCustomFC/TabPanel";
 import theme from "../../../scss/theme";
 import { Loading } from "../../../common/Loading/Loading";
 import AccountYn from "../AccountModel";
@@ -49,7 +51,7 @@ export const LoginPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   const toast = useToast();
-  const { refetchMfaCheck } = useCheckMfaAvailable();
+  const { refetchMfaCheck, loadingMfaCheck } = useCheckMfaAvailable();
   const { loginPassenger, loginAdmin } = useAuth();
 
   const { handleSubmit, watch, control, reset } = useForm<ILoginForm>({
@@ -103,12 +105,6 @@ export const LoginPage: React.FC = () => {
         ...session,
       });
 
-      // if (!loginRes) {
-      //   toast("Login failed — no response from server!", "error");
-      //   reset();
-      //   return;
-      // }
-
       if (loginRes.requireUnlock) {
         setViewMode("unlock");
         setUserId(loginRes.userId);
@@ -118,16 +114,10 @@ export const LoginPage: React.FC = () => {
         setViewMode("changePw");
         setUserId(loginRes.userId);
       } else {
-        // login successful — handle token / redirect
-        // e.g., setToken(loginRes.token);
         reset();
-        // toast("Unexpected error occurred during login!", "error");
       }
-
-      // reset();
     } catch (error) {
       console.error("Login error:", error);
-      // toast("Unexpected error occurred during login!", "error");
     } finally {
       setLoading(false);
     }
@@ -173,8 +163,10 @@ export const LoginPage: React.FC = () => {
                   render={({ field }) => (
                     <InputTextField
                       {...field}
+                      onError={(err) => console.error("err", err)}
                       placeholder="Password "
                       type="password"
+                      showEyeIcon
                     />
                   )}
                 />
@@ -209,11 +201,11 @@ export const LoginPage: React.FC = () => {
         );
 
       case 1:
-        return <Registration email="" onClose={() => setTabValue(0)} />;
+        return <Registration onClose={() => setTabValue(0)} />;
     }
   };
 
-  if (loading) return <Loading />;
+  // if (loading) return <Loading />;
 
   switch (viewMode) {
     case "mfa":

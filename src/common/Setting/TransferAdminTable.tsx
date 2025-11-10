@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from "react";
 import { Box, Chip, IconButton, Tooltip, Typography } from "@mui/material";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { DateFormatEnum, formatDate } from "../../hooks/format";
-import TableSection from "../CustomRender/TableSection";
+import TableSection from "../AdditionalCustomFC/TableSection";
 import type { TypeStatus } from "../../utils/type";
 import { usefindAllTransferRequests } from "../../context/Api/useGetApi";
 import { CheckCircle, Cancel } from "@mui/icons-material";

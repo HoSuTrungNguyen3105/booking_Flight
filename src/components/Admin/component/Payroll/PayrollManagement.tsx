@@ -17,7 +17,7 @@ import {
 } from "@mui/icons-material";
 import { GridActionsCellItem, type GridColDef } from "@mui/x-data-grid";
 import { useMemo, useState } from "react";
-import TableSection from "../../../../common/CustomRender/TableSection";
+import TableSection from "../../../../common/AdditionalCustomFC/TableSection";
 import {
   useExportPayrollExcel,
   useGetPayrollData,
@@ -26,7 +26,7 @@ import SelectDropdown, {
   type ActionType,
 } from "../../../../common/Dropdown/SelectDropdown";
 import { DateFormatEnum, formatDate } from "../../../../hooks/format";
-import FormRow from "../../../../common/CustomRender/FormRow";
+import FormRow from "../../../../common/AdditionalCustomFC/FormRow";
 import ManagementPayrollModal from "./modal/ManagementPayrollModal";
 
 const PayrollManagement = () => {

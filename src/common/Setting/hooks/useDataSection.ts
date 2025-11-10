@@ -1,6 +1,9 @@
 import { useMemo } from "react";
 import { UserRole, type UserRoleType } from "../../../utils/type";
-import { FieldType, type IFormField } from "../../CustomRender/FieldRenderer";
+import {
+  FieldType,
+  type IFormField,
+} from "../../AdditionalCustomFC/FieldRenderer";
 import {
   mapStringToDropdown,
   useFindAllDepartments,

@@ -8,9 +8,10 @@ import { useToast } from "../../../context/ToastContext";
 import VerifyOpt from "../MFA/VerifyOTP";
 import InputTextField from "../../../common/Input/InputTextField";
 import { ResponseCode } from "../../../utils/response";
+import theme from "../../../scss/theme";
 
 interface RegisterProps {
-  email: string;
+  email?: string;
   onClose: () => void;
 }
 
@@ -29,6 +30,7 @@ const Registration = ({ email }: RegisterProps) => {
 
   const [verifyOTPcode, setVerifyOTPcode] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
+  const [error, setError] = useState("");
 
   const onSubmit = async () => {
     try {
@@ -36,7 +38,7 @@ const Registration = ({ email }: RegisterProps) => {
       if (res?.resultCode === ResponseCode.SUCCESS) {
         toast(res.resultMessage);
         setVerifyOTPcode(true);
-        setUserId(res.data?.userId ?? null);
+        setUserId(res.data?.userId ? null : "");
       } else {
         toast(res?.resultMessage || "Yêu cầu thất bại, vui lòng thử lại.");
       }
@@ -72,6 +74,7 @@ const Registration = ({ email }: RegisterProps) => {
           value={formData.email}
           placeholder="email"
           isEmail
+          onError={(err) => setError(err as string)}
           onChange={(value) =>
             setFormData((prev) => ({ ...prev, email: value }))
           }
@@ -92,9 +95,16 @@ const Registration = ({ email }: RegisterProps) => {
             setFormData((prev) => ({ ...prev, phone: value }))
           }
         />
-        <Button variant="contained" color="primary" onClick={onSubmit}>
-          Đăng ký
-        </Button>
+        <Box display={"flex"} justifyContent={"end"}>
+          {error && (
+            <Typography sx={{ color: theme.palette.error.dark }}>
+              {error}
+            </Typography>
+          )}
+          <Button variant="contained" color="primary" onClick={onSubmit}>
+            Đăng ký
+          </Button>
+        </Box>
       </Box>
     </Box>
   );

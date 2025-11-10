@@ -8,37 +8,10 @@ import ContentCopyRoundedIcon from "@mui/icons-material/ContentCopyRounded";
 import DoneAllRoundedIcon from "@mui/icons-material/DoneAllRounded";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import React, {
-  forwardRef,
-  memo,
-  useCallback,
-  useMemo,
-  useState,
-  type HTMLInputTypeAttribute,
-} from "react";
+import React, { forwardRef, memo, useCallback, useMemo, useState } from "react";
 import { useCopyToClipboard } from "../../context/use[custom]/useCopyToClipboard";
 import { GridCheckCircleIcon } from "@mui/x-data-grid";
-
-interface IInputTextFieldProps {
-  type?: "number" | "password" | "text";
-  showEyeIcon?: boolean;
-  variant?: "outlined" | "filled" | "standard";
-  placeholder?: string;
-  startIcon?: React.ReactNode;
-  endIcon?: React.ReactNode;
-  clearable?: boolean;
-  sx?: SxProps;
-  error?: boolean;
-  disabled?: boolean;
-  name?: string;
-  value?: string;
-  readOnly?: boolean;
-  canCopy?: boolean;
-  isEmail?: boolean;
-  realease3phrase?: boolean;
-  onChange?: (value: string) => void;
-  onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
-}
+import type { IInputTextFieldProps } from "./type";
 
 const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
   (
@@ -52,6 +25,7 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
       value = "",
       disabled,
       onChange = () => {},
+      onError,
       onKeyDown,
       error,
       canCopy = false,
@@ -93,15 +67,20 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
       const newValue = e.target.value;
       onChange(newValue);
 
+      let newError: string | null = null;
+
       if (isEmail) {
         if (newValue === "") {
-          setError(null);
+          newError = null;
         } else if (!isEmailValid(newValue)) {
-          setError("Email không hợp lệ");
+          newError = "Email không hợp lệ";
         } else {
-          setError(null);
+          newError = null;
         }
       }
+
+      setError(newError);
+      onError?.(newError);
     };
 
     const readonlyStyles: SxProps = {

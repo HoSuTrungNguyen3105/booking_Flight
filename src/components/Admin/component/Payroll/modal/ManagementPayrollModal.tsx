@@ -15,7 +15,7 @@ import {
 } from "../../../../../context/Api/useGetApi";
 import { useGeneratePayroll } from "../../../../../context/Api/usePostApi";
 import SelectDropdown from "../../../../../common/Dropdown/SelectDropdown";
-import FormRow from "../../../../../common/CustomRender/FormRow";
+import FormRow from "../../../../../common/AdditionalCustomFC/FormRow";
 import LocalAtmIcon from "@mui/icons-material/LocalAtm";
 import InputNumber from "../../../../../common/Input/InputNumber";
 import InputTextField from "../../../../../common/Input/InputTextField";

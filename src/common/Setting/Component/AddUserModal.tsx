@@ -2,7 +2,7 @@ import { Box, Button, Typography } from "@mui/material";
 import { memo, useCallback } from "react";
 import BaseModal from "../../Modal/BaseModal";
 import AddIcon from "@mui/icons-material/Add";
-import FieldRenderer from "../../CustomRender/FieldRenderer";
+import FieldRenderer from "../../AdditionalCustomFC/FieldRenderer";
 import { useCreateUser } from "../hooks/useCreateUser";
 import type { UserFormConfig } from "../hooks/useDataSection";
 

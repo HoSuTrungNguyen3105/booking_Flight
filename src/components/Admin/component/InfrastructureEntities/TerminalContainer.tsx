@@ -12,7 +12,7 @@ import {
   alpha,
 } from "@mui/material";
 import { Edit, Add } from "@mui/icons-material";
-import TabPanel from "../../../../common/CustomRender/TabPanel";
+import TabPanel from "../../../../common/AdditionalCustomFC/TabPanel";
 import {
   type CreateGateProps,
   type Facility,

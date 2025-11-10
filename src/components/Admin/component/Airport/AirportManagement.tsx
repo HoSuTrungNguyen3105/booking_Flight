@@ -16,7 +16,7 @@ import {
 import { useGetAllAirportInfo } from "../../../../context/Api/useGetApi";
 import type { Airport } from "../../../../utils/type";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
-import TableSection from "../../../../common/CustomRender/TableSection";
+import TableSection from "../../../../common/AdditionalCustomFC/TableSection";
 import AirportManageModal from "./AirportManageModal";
 import AirportBatchCreator from "./AirportBatchCreator";
 import DialogConfirm from "../../../../common/Modal/DialogConfirm";

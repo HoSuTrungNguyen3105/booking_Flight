@@ -12,8 +12,6 @@ const axiosInstance = axios.create({
   baseURL,
   headers: {
     "Content-Type": "application/json",
-    // "X-RapidAPI-Key": "...",
-    // "X-RapidAPI-Host": "wft-geo-db.p.rapidapi.com",
   },
 });
 
@@ -23,8 +21,8 @@ const axiosInstance = axios.create({
 // );
 
 axiosInstance.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-  if (token) {
+  const token = localStorage.getItem("token"); // hoặc "accessToken" tùy bạn lưu key
+  if (token && config.headers) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;

@@ -531,7 +531,7 @@ export const useGetSessionsByID = () => {
 export const useLogoutSessionFromPassenger = () => {
   const { refetch: refetchLogoutSession } = useFetch<
     ResponseMessage,
-    { id: number; token: string }
+    { token: string }
   >({
     url: "/auth/logout",
     autoFetch: false,
@@ -1224,15 +1224,17 @@ export const useResetPasswordByMfa = () => {
 };
 
 export const useCheckMfaAvailable = () => {
-  const { refetch: refetchMfaCheck } = useFetch<ResponseMessage, CheckMfaProps>(
-    {
-      url: "/auth/checkMfaSettingYn",
-      autoFetch: false,
-      config: postMethod,
-    }
-  );
+  const { refetch: refetchMfaCheck, loading: loadingMfaCheck } = useFetch<
+    ResponseMessage,
+    CheckMfaProps
+  >({
+    url: "/auth/checkMfaSettingYn",
+    autoFetch: false,
+    config: postMethod,
+  });
   return {
     refetchMfaCheck,
+    loadingMfaCheck,
   };
 };
 

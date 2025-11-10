@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from "react";
 import type { Seat, SeatTypeValue } from "../../../../../utils/type";
 import { useGetAllInfoFlightByIDData } from "../../../../../context/Api/useGetApi";
 import { useDeleteSeatInFlightByIds } from "../../../../../context/Api/usePostApi";
-import type { IDetailItem } from "../../../../../common/CustomRender/DetailSection";
+import type { IDetailItem } from "../../../../../common/AdditionalCustomFC/DetailSection";
 import { useToast } from "../../../../../context/ToastContext";
 import _ from "lodash";
 
@@ -94,6 +94,7 @@ export const useSeatInFlightDetail = ({ id }: FlightWithSeatLayoutProps) => {
   });
   const [selectedSeat, setSelectedSeat] = useState<Seat | null>(null);
   const toast = useToast();
+
   const handleOpenUpdateModal = useCallback(() => {
     if (selectedSeats.length === 0) {
       toast("Please select at least one seat to update.");
@@ -154,28 +155,36 @@ export const useSeatInFlightDetail = ({ id }: FlightWithSeatLayoutProps) => {
 
   const seatCount = seatNumberCountUnique.length;
 
-  const handleSelectSeat = (seat: Seat) => {
-    setSelectedSeats((prev) => {
-      const exists = prev.some((s) => s.id === seat.id);
+  const handleSelectSeat = useCallback(
+    (seat: Seat) => {
+      setSelectedSeats((prev) => {
+        const exists = prev.some((s) => s.id === seat.id);
+        if (exists) {
+          toast(String(exists));
+          return prev.filter((s) => s.id !== seat.id);
+        }
 
-      if (exists) {
-        return prev.filter((s) => s.id !== seat.id);
-      }
+        if (maxSelectSeats === 1) {
+          if (prev.length === 1) {
+            toast(String(maxSelectSeats));
+            setSelectedSeat(seat);
+            setOpenSeatModal(true);
+          }
 
-      if (maxSelectSeats === 1) {
-        // setOpenSeatModal(true);
-        setSelectedSeat(selectedSeats[selectedSeats.length - 1]);
-        setOpenSeatModal(true);
-        return [seat];
-      }
+          return [seat];
+        }
+        // toast(String(maxSelectSeats))
 
-      if (prev.length < maxSelectSeats) {
-        return [...prev, seat];
-      }
+        if (prev.length < maxSelectSeats) {
+          toast(String(prev));
+          return [...prev, seat];
+        }
 
-      return prev;
-    });
-  };
+        return prev;
+      });
+    },
+    [maxSelectSeats]
+  );
 
   const getTypeColor = (type: string) => {
     switch (type as SeatTypeValue) {

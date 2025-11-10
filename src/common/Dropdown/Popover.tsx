@@ -2,15 +2,15 @@ import { Box, Button, Popover, styled } from "@mui/material";
 import React, { memo, useState, type ReactNode } from "react";
 
 export interface IButtonSettingProps {
-  option?: ReactNode[];
+  option?: (string | ReactNode)[];
   text: string;
   icon?: ReactNode;
   buttonProps?: React.ComponentProps<typeof Button>;
-  handleAction: (opt: any) => void;
+  handleAction?: (opt: string | null) => void;
   hideSubmitButton?: boolean;
 }
 
-const StyledPopover = styled(Popover)<{}>(() => ({
+const StyledPopover = styled(Popover)(() => ({
   "& .MuiPaper-root": {
     borderRadius: "10px",
     padding: "10px",
@@ -36,6 +36,8 @@ const CustomPopover: React.FC<IButtonSettingProps> = ({
     setAnchorEl(null);
   };
 
+  const open = Boolean(anchorEl);
+
   return (
     <>
       <Button
@@ -44,12 +46,10 @@ const CustomPopover: React.FC<IButtonSettingProps> = ({
         startIcon={icon}
         onClick={handleClick}
         sx={{
-          // px: 1.5,
           minWidth: "80px",
           display: "flex",
-          position: "relative",
           alignItems: "center",
-          // gap: 1,
+          justifyContent: "center",
           ...buttonProps?.sx,
         }}
       >
@@ -57,33 +57,37 @@ const CustomPopover: React.FC<IButtonSettingProps> = ({
       </Button>
 
       <StyledPopover
-        open={Boolean(anchorEl)}
+        open={open}
         disableScrollLock
         anchorEl={anchorEl}
         onClose={handleClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
       >
         <Box sx={{ p: 1 }}>
-          {Array.isArray(option) && option.length > 0
-            ? option.map((item, index) => {
-                if (typeof item === "string") {
-                  return (
-                    <Box
-                      key={index}
-                      sx={{ cursor: "pointer" }}
-                      onClick={() => {
-                        handleAction?.(item);
-                        handleClose();
-                      }}
-                    >
-                      {item}
-                    </Box>
-                  );
-                } else {
-                  return <Box key={index}>{item}</Box>;
-                }
-              })
-            : null}
+          {option?.map((item, index) => {
+            if (typeof item === "string") {
+              return (
+                <Box
+                  key={index}
+                  sx={{
+                    cursor: "pointer",
+                    py: 0.5,
+                    px: 1,
+                    "&:hover": { backgroundColor: "#f5f5f5" },
+                  }}
+                  onClick={() => {
+                    handleAction?.(item);
+                    handleClose();
+                  }}
+                >
+                  {item}
+                </Box>
+              );
+            }
+
+            // Nếu là ReactNode (icon, element, component,…)
+            return <Box key={index}>{item}</Box>;
+          })}
 
           {!hideSubmitButton && (
             <Button

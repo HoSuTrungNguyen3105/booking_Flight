@@ -6,7 +6,7 @@ import {
 } from "../../context/Api/usePostApi";
 import { useAuth } from "../../context/AuthContext";
 import type { DropdownOptions } from "../../common/Dropdown/type";
-import { SearchInputWithList } from "../../common/Dropdown/SearchInputWithList";
+import { SearchInputWithList } from "./SearchInputWithList";
 
 type SearchUserFromMessageProps = {
   onChange: (searchResult: SearchEmailFromSidebarMessageRes[]) => void;

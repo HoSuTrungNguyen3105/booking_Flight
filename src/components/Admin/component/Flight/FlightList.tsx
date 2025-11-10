@@ -8,7 +8,7 @@ import { Box, Button, Typography } from "@mui/material";
 import { type GridRowDef } from "../../../../common/DataGrid/index";
 import { DateFormatEnum, formatDate } from "../../../../hooks/format";
 import FlightModalTriggerManagement from "./FlightModalTriggerManagement";
-import TableSection from "../../../../common/CustomRender/TableSection";
+import TableSection from "../../../../common/AdditionalCustomFC/TableSection";
 import { Download } from "@mui/icons-material";
 import FlightWithSeatLayout from "./components/FlightWithSeatLayout";
 import type { GridRenderCellParams } from "@mui/x-data-grid";

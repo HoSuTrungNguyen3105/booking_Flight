@@ -10,7 +10,7 @@ import {
   Card,
   Stack,
 } from "@mui/material";
-import DetailSection from "../../../../../common/CustomRender/DetailSection";
+import DetailSection from "../../../../../common/AdditionalCustomFC/DetailSection";
 import ButtonSeat from "../../Seat/ButtonSeat";
 import type { Seat } from "../../../../../utils/type";
 import { Chair, LocalAirport, RestartAlt } from "@mui/icons-material";

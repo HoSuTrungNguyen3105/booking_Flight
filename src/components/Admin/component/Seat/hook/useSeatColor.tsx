@@ -24,7 +24,6 @@ export const useSeatColor = ({
 }: OptionSeatProps) => {
   const isSelected = selectedSeats?.some((s) => s.id === seat?.id);
 
-  // 🎨 Màu định nghĩa cho từng loại ghế
   const seatColors = useMemo(
     () => ({
       isAvailable: "#4caf50",
@@ -39,7 +38,6 @@ export const useSeatColor = ({
     []
   );
 
-  // 🪑 Icon tương ứng từng loại
   const iconMap: Partial<Record<keyof SeatFeatures, JSX.Element | null>> = {
     isAvailable: <Chair sx={{ fontSize: 16, color: seatColors.isAvailable }} />,
     isBooked: <Chair sx={{ fontSize: 16, color: seatColors.isBooked }} />,
@@ -67,18 +65,11 @@ export const useSeatColor = ({
     ),
   };
 
-  // 🧠 Xác định icon & màu nền mặc định
   let backgroundColor = "#ffffff";
   let textColor = theme.palette.text.primary;
   let borderColor = "#ddd";
   let icon = seatFeature ? iconMap[seatFeature] || null : null;
 
-  // 🧩 Nếu có feature
-  // if (seatFeature && seatColors[seatFeature]) {
-  //   borderColor = seatColors[seatFeature];
-  // }
-
-  // ✅ Nếu ghế đang được chọn
   if (isSelected) {
     backgroundColor = theme.palette.primary.main;
     textColor = "#fff";

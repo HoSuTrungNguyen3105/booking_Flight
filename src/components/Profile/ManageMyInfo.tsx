@@ -7,7 +7,7 @@ import UpdateUserModal from "../../common/Setting/Component/UpdateUserModal";
 import AccountLock from "../../common/Setting/Component/AccountLockModal";
 import { memo, useCallback, useState } from "react";
 import SendEmailToUsers from "../Common/SendEmailToUsers";
-import TableSection from "../../common/CustomRender/TableSection";
+import TableSection from "../../common/AdditionalCustomFC/TableSection";
 import type { GridRowId } from "@mui/x-data-grid";
 import BatchUpdateEmployeeNo from "./BatchUpdateEmployeeNo";
 import type { BatchEmployeeNoReq } from "../../context/Api/usePostApi";

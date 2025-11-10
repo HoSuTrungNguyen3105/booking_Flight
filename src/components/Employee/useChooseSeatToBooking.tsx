@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from "react";
 import _ from "lodash";
 import { useGetAllInfoFlightByIDData } from "../../context/Api/useGetApi";
 import type { Seat, SeatTypeValue } from "../../utils/type";
-import type { IDetailItem } from "../../common/CustomRender/DetailSection";
+import type { IDetailItem } from "../../common/AdditionalCustomFC/DetailSection";
 import { useToast } from "../../context/ToastContext";
 import type { AircraftSeatTypeProps } from "../Admin/component/Flight/hooks/useSeatInFlightDetail";
 

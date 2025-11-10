@@ -14,6 +14,7 @@ import { useToast } from "../../../context/ToastContext";
 import InputTextField from "../../../common/Input/InputTextField";
 import { useAuth } from "../../../context/AuthContext";
 import type { EmailProps } from "../../../utils/type";
+import { ResponseCode } from "../../../utils/response";
 
 type MfaState = "initial" | "qrSetup" | "verification" | "login" | "success";
 
@@ -72,7 +73,7 @@ export default function MfaSetup({ email, onClose, authType }: EmailProps) {
         code: code,
       });
 
-      if (res?.resultCode === "00") {
+      if (res?.resultCode === ResponseCode.SUCCESS) {
         // setCurrentState("success");
         setQrCode(null);
         // setCanLoginMfa(true);

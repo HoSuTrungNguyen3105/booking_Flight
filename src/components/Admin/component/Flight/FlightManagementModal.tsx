@@ -32,7 +32,7 @@ import { useFlightCreateAndUpdate } from "./hooks/useFlightCreateAndUpdate";
 import InputNumber from "../../../../common/Input/InputNumber";
 import DetailSection, {
   type IDetailItem,
-} from "../../../../common/CustomRender/DetailSection";
+} from "../../../../common/AdditionalCustomFC/DetailSection";
 
 export type FlightFormData = Omit<
   DataFlight,

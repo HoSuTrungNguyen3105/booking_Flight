@@ -1,8 +1,8 @@
 import { Box, Stack } from "@mui/material";
-import ButtonCircle from "../../common/CustomRender/ButtonCircle";
-import CardGroup from "../../common/CustomRender/CardGroup";
+import ButtonCircle from "../../common/AdditionalCustomFC/ButtonCircle";
+import CardGroup from "../../common/AdditionalCustomFC/CardGroup";
 import { ControlCameraTwoTone, RoomService, Sports } from "@mui/icons-material";
-import EventCard from "../../common/CustomRender/EventCard";
+import EventCard from "../../common/AdditionalCustomFC/EventCard";
 import { useGetAllHotels, useGetFlightData } from "../../context/Api/useGetApi";
 import { useNavigate } from "react-router-dom";
 import FlightSearchForm from "./FlightSearchForm";

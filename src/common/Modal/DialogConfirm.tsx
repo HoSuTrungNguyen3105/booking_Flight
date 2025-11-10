@@ -33,7 +33,7 @@ const DialogConfirm = ({
 }: DialogConfirmProps) => {
   return (
     <Dialog open={open} onClose={onClose}>
-      <Box height={"12rem"} width="478px" px="8px">
+      <Box height={"10rem"} maxHeight={"auto"} width="478px" px="8px">
         <DialogTitle>
           <Stack direction={"row"} spacing={1} alignItems={"center"}>
             {icon && (

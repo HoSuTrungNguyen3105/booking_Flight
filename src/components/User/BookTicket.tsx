@@ -13,8 +13,8 @@ import { useForm } from "react-hook-form";
 import { useSearchBooking } from "../../context/Api/usePostApi";
 import { FlightOutlined, RefreshOutlined } from "@mui/icons-material";
 import Zigzag from "../../common/IconComponent/Zigzag";
-import type { IDetailItem } from "../../common/CustomRender/DetailSection";
-import DetailSection from "../../common/CustomRender/DetailSection";
+import type { IDetailItem } from "../../common/AdditionalCustomFC/DetailSection";
+import DetailSection from "../../common/AdditionalCustomFC/DetailSection";
 import InputTextField from "../../common/Input/InputTextField";
 import SelectDropdown from "../../common/Dropdown/SelectDropdown";
 import {

@@ -5,6 +5,7 @@ import { useChangePassword } from "../../../context/Api/usePostApi";
 import { memo, useState } from "react";
 import VerifyOpt from "../MFA/VerifyOTP";
 import type { ChangePasswordProps } from "../../../utils/type";
+import { ResponseCode } from "../../../utils/response";
 
 interface IUserIdNumber {
   onClose: () => void;
@@ -18,7 +19,7 @@ const ChangePassword = ({ userId, email, onClose }: IUserIdNumber) => {
 
   const { control, handleSubmit } = useForm<ChangePasswordProps>({
     defaultValues: {
-      userId: userId,
+      userId,
       newPassword: "",
       confirmPassword: "",
     },
@@ -27,7 +28,7 @@ const ChangePassword = ({ userId, email, onClose }: IUserIdNumber) => {
   const onSubmit = async (data: ChangePasswordProps) => {
     try {
       const response = await refetchChangePassword(data);
-      if (response?.resultCode === "00") {
+      if (response?.resultCode === ResponseCode.SUCCESS) {
         onClose();
         setVerifyOTPcode(true);
       }

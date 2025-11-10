@@ -22,7 +22,7 @@ import {
 } from "recharts";
 import TabPanel, {
   type ITabItem,
-} from "../../../../common/CustomRender/TabPanel";
+} from "../../../../common/AdditionalCustomFC/TabPanel";
 import theme from "../../../../scss/theme";
 
 // Styled components

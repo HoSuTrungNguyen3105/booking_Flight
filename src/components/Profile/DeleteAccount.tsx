@@ -20,6 +20,7 @@ import {
 } from "../../context/Api/usePostApi";
 import { useToast } from "../../context/ToastContext";
 import { useAuth } from "../../context/AuthContext";
+import { ResponseCode } from "../../utils/response";
 
 const DeleteAccount: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -32,10 +33,10 @@ const DeleteAccount: React.FC = () => {
       const res = await refetchUserEmailData({ email });
       const id = res?.data?.userId;
 
-      if (res?.resultCode === "00" && id) {
+      if (res?.resultCode === ResponseCode.SUCCESS && id) {
         const resDelete = await refetchDeleteMyAccount({ id });
 
-        if (resDelete?.resultCode === "00") {
+        if (resDelete?.resultCode === ResponseCode.SUCCESS) {
           toast(resDelete?.resultMessage || "Success");
           logout();
         } else {

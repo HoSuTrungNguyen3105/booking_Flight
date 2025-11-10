@@ -26,11 +26,11 @@ import {
   StarBorder as StarBorderIcon,
 } from "@mui/icons-material";
 import FlightDetail from "./FlightDetail.tsx";
-import TableSection from "../../../../common/CustomRender/TableSection.tsx";
+import TableSection from "../../../../common/AdditionalCustomFC/TableSection.tsx";
 import ConfirmPasswordToCallApi from "../../../Common/ConfirmPasswordToCallApi.tsx";
 import { useToast } from "../../../../context/ToastContext.tsx";
-import type { IDetailItem } from "../../../../common/CustomRender/DetailSection.tsx";
-import DetailSection from "../../../../common/CustomRender/DetailSection.tsx";
+import type { IDetailItem } from "../../../../common/AdditionalCustomFC/DetailSection.tsx";
+import DetailSection from "../../../../common/AdditionalCustomFC/DetailSection.tsx";
 import { DateFormatEnum, formatDate } from "../../../../hooks/format.ts";
 import { ResponseCode } from "../../../../utils/response.ts";
 

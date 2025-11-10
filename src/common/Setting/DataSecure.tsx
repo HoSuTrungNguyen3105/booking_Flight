@@ -1,12 +1,14 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import type { GridRowDef } from "../DataGrid";
 import { Box, Button, Typography } from "@mui/material";
-import TableSection from "../CustomRender/TableSection";
+import TableSection from "../AdditionalCustomFC/TableSection";
 import type { GridColDef } from "@mui/x-data-grid";
 import theme from "../../scss/theme";
 import { useFindPassengerFromBooking } from "../../context/Api/usePostApi";
 import type { Passenger } from "../../utils/type";
-import DetailSection, { type IDetailItem } from "../CustomRender/DetailSection";
+import DetailSection, {
+  type IDetailItem,
+} from "../AdditionalCustomFC/DetailSection";
 import { DateFormatEnum, formatDate } from "../../hooks/format";
 import { useToast } from "../../context/ToastContext";
 import { ResponseCode } from "../../utils/response";

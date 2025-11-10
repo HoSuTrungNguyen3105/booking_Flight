@@ -39,7 +39,7 @@ const VerifyOpt = ({ email, userId }: EmailProps) => {
       if (res?.resultCode == ResponseCode.SUCCESS) {
         sethasValidate(true);
       } else {
-        toast("Error", "error");
+        toast(res?.resultMessage || "Error", "error");
       }
     } catch (error) {
       console.error("Error during OTP verification:", error);

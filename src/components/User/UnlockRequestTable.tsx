@@ -2,7 +2,7 @@ import { Chip, Box, Button, Typography } from "@mui/material";
 import type { GridColDef } from "@mui/x-data-grid";
 import { useGetUnlockRequests } from "../../context/Api/useGetApi";
 import { memo, useCallback, useMemo } from "react";
-import TableSection from "../../common/CustomRender/TableSection";
+import TableSection from "../../common/AdditionalCustomFC/TableSection";
 import { DateFormatEnum, formatDate } from "../../hooks/format";
 import theme from "../../scss/theme";
 import {

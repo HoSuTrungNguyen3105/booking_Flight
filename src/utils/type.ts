@@ -704,7 +704,7 @@ export interface VerifyOtpFromEmailChangeProps {
 
 export type EmailProps = {
   email?: string;
-  userId?: string;
+  userId?: string | number;
   authType?: string;
   onClose?: () => void;
 };

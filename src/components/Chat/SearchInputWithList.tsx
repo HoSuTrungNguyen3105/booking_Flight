@@ -16,9 +16,9 @@ import {
   Tooltip,
   Stack,
 } from "@mui/material";
-import type { DropdownOptions, DropdownType } from "./type";
+import type { DropdownOptions, DropdownType } from "../../common/Dropdown/type";
 import useDebounce from "../../context/use[custom]/useDebounce";
-import InputTextField from "../Input/InputTextField";
+import InputTextField from "../../common/Input/InputTextField";
 
 interface ApiCallFunction {
   (searchText: string): Promise<DropdownOptions[]>;

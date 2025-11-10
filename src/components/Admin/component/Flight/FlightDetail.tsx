@@ -1,7 +1,7 @@
 import { Box, Button, Paper, Typography, Container } from "@mui/material";
 import { memo, useCallback, useEffect } from "react";
 import type { DataFlight } from "../../../../utils/type";
-import DetailSection from "../../../../common/CustomRender/DetailSection.tsx";
+import DetailSection from "../../../../common/AdditionalCustomFC/DetailSection.tsx";
 import FlightPath from "./FlightPath";
 import { useFlightManagement } from "./hooks/useFlightManagement.tsx";
 

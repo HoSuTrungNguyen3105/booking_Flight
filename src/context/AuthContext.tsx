@@ -68,7 +68,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const hasFetched = useRef(false);
 
   const [token, setToken] = useState<string | null>(null);
-  const [currency, setCurrency] = useState<string | null>(null);
 
   const [user, setUser] = useState<UserData | null>(null);
   const [passenger, setPassenger] = useState<Passenger | null>(null);
@@ -152,19 +151,11 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           localStorage.setItem("countryCode", newCode);
         }
       }, 2000);
-      // const newCode = res?.data?.[0]?.countryCode;
-
-      // if (newCode && newCode !== countryCode) {
-      //   setCountryCode(newCode);
-      //   localStorage.setItem("countryCode", newCode);
-      //   console.log(" Country code set:", newCode);
-      // }
     };
 
     fetchCountry();
   }, [coords]);
 
-  /** Helper quản lý localStorage */
   const storage = {
     save: (token: string, userId: number | string, state: AuthType) => {
       localStorage.setItem("token", token);
@@ -182,7 +173,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     },
   };
 
-  /** Verify Password */
   const verifyPassword = useCallback(
     async (password: string): Promise<boolean> => {
       try {
@@ -264,20 +254,30 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const logout = useCallback(async () => {
-    const id = localStorage.getItem("userId");
+    // const id = localStorage.getItem("userId");
     const token = localStorage.getItem("token");
-    if (!id || !token) return;
+    if (!token) return;
 
     try {
-      await refetchLogoutSession({ id: Number(id), token });
+      const res = await refetchLogoutSession({ token });
+      console.log("res", res);
+      if (res?.resultCode === ResponseCode.SUCCESS) {
+        setIsAuthenticated(false);
+        setUser(null);
+        setPassenger(null);
+        setToken(null);
+        storage.clear();
+      } else {
+        console.error(res?.resultMessage);
+      }
     } catch (err) {
       console.error("Lỗi khi logout:", err);
     } finally {
-      setIsAuthenticated(false);
-      setUser(null);
-      setPassenger(null);
-      setToken(null);
-      storage.clear();
+      // setIsAuthenticated(false);
+      // setUser(null);
+      // setPassenger(null);
+      // setToken(null);
+      // storage.clear();
     }
   }, [refetchLogoutSession]);
 

@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import _ from "lodash";
 import { ArrowBack, Flight, RestartAlt } from "@mui/icons-material";
-import DetailSection from "../../common/CustomRender/DetailSection";
+import DetailSection from "../../common/AdditionalCustomFC/DetailSection";
 import theme from "../../scss/theme";
 import { useChooseSeatToBooking } from "./useChooseSeatToBooking";
 // import LegendItem from "../Admin/component/Seat/ButtonSeat/LegendItem";
