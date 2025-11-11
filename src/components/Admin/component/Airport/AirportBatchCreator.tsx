@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   Box,
   Button,
@@ -18,48 +18,54 @@ type ReturnProps = {
   onClose: () => void;
 };
 
+const DEFAULT_AIRPORT = { code: "", name: "", city: "", country: "" };
+
 const AirportBatchCreator: React.FC<ReturnProps> = ({ onClose }) => {
   const { refetchCreateBatchAirport } = useCreateBatchAirport();
-
   const [airports, setAirports] = useState<CreateAirportReq[]>([
-    { code: "", name: "", city: "", country: "" },
+    DEFAULT_AIRPORT,
   ]);
-
   const [errors, setErrors] = useState<Record<number, string>>({});
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleChange = (
-    index: number,
-    field: keyof CreateAirportReq,
-    value: string
-  ) => {
-    const newAirports = [...airports];
-    newAirports[index][field] = value;
-    setAirports(newAirports);
-  };
+  const handleChange = useCallback(
+    (index: number, field: keyof CreateAirportReq, value: string) => {
+      setAirports((prev) =>
+        prev.map((airport, i) =>
+          i === index ? { ...airport, [field]: value } : airport
+        )
+      );
+    },
+    []
+  );
 
-  const handleAddAirport = () => {
-    setAirports([...airports, { code: "", name: "", city: "", country: "" }]);
-  };
+  const handleAddAirport = useCallback(() => {
+    setAirports((prev) => [...prev, DEFAULT_AIRPORT]);
+  }, []);
 
-  const handleRemoveAirport = (index: number) => {
-    const newAirports = airports.filter((_, i) => i !== index);
-    setAirports(newAirports);
-  };
+  const handleRemoveAirport = useCallback((index: number) => {
+    setAirports((prev) => prev.filter((_, i) => i !== index));
+    setErrors((prev) => {
+      const newErrors = { ...prev };
+      delete newErrors[index];
+      return newErrors;
+    });
+  }, []);
 
   const handleSubmit = async () => {
+    setSubmitting(true);
     try {
       const res = await refetchCreateBatchAirport(airports);
 
-      if (res?.resultCode === "00") {
+      if (res?.resultCode === ResponseCode.SUCCESS) {
         const errorMap: Record<number, string> = {};
-        const newAirports = [...airports];
-
-        res?.list?.forEach((item, idx) => {
-          if (item.errorCode !== ResponseCode.SUCCESS) {
-            errorMap[idx] = item.errorMessage;
-          } else {
-            newAirports[idx] = { code: "", name: "", city: "", country: "" };
+        const newAirports = airports.map((airport, idx) => {
+          const item = res.list?.[idx];
+          if (item?.errorCode !== ResponseCode.SUCCESS) {
+            errorMap[idx] = item?.errorMessage || "Unknown error";
+            return airport;
           }
+          return DEFAULT_AIRPORT;
         });
 
         setAirports(newAirports);
@@ -69,8 +75,10 @@ const AirportBatchCreator: React.FC<ReturnProps> = ({ onClose }) => {
           onClose();
         }
       }
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -86,7 +94,7 @@ const AirportBatchCreator: React.FC<ReturnProps> = ({ onClose }) => {
 
       {airports.map((airport, index) => (
         <Card
-          key={`${airport.code} - ${airport.name}`}
+          key={index}
           sx={{
             mb: 2,
             mt: 2,
@@ -153,7 +161,7 @@ const AirportBatchCreator: React.FC<ReturnProps> = ({ onClose }) => {
           Thêm sân bay
         </Button>
         <Button variant="contained" color="primary" onClick={handleSubmit}>
-          Submit
+          {submitting ? "Submitting..." : "Submit"}
         </Button>
       </Box>
     </Box>

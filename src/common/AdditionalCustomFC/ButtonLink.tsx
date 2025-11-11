@@ -1,4 +1,5 @@
 import { Button, Box } from "@mui/material";
+import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
 interface IProps {
@@ -6,8 +7,8 @@ interface IProps {
   text: string;
   color?: "primary" | "secondary" | "success" | "error" | "info" | "warning";
   variant: "contained" | "outlined" | "text";
-  leftIcon?: string;
-  rightIcon?: string;
+  leftIcon?: ReactNode;
+  rightIcon?: ReactNode;
 }
 
 const ButtonLink: React.FC<IProps> = ({
@@ -36,17 +37,12 @@ const ButtonLink: React.FC<IProps> = ({
       }}
     >
       {leftIcon && (
-        <Box component="span" sx={{ fontSize: 20 }}>
-          {leftIcon}
-        </Box>
+        <Box sx={{ display: "flex", alignItems: "center" }}>{leftIcon}</Box>
       )}
 
       {text}
-
       {rightIcon && (
-        <Box component="span" sx={{ fontSize: 20 }}>
-          {rightIcon}
-        </Box>
+        <Box sx={{ display: "flex", alignItems: "center" }}>{rightIcon}</Box>
       )}
     </Button>
   );

@@ -258,27 +258,42 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const token = localStorage.getItem("token");
     if (!token) return;
     try {
-      await refetchLogoutSession({ token });
+      const res = await refetchLogoutSession();
       // if (res?.resultCode === ResponseCode.SUCCESS) {
       setIsAuthenticated(false);
       setUser(null);
       setPassenger(null);
       setToken(null);
       storage.clear();
-      // } else {
-      //   console.error(res?.resultMessage);
       // }
     } catch (err) {
       console.error("Lỗi khi logout:", err);
     }
-    //finally {
-    // setIsAuthenticated(false);
-    // setUser(null);
-    // setPassenger(null);
-    // setToken(null);
-    // storage.clear();
-    //}
   }, [refetchLogoutSession]);
+
+  // const logout = useCallback(async () => {
+  //   const storedToken = localStorage.getItem("token");
+  //   if (!storedToken) {
+  //     setIsAuthenticated(false);
+  //     setUser(null);
+  //     setPassenger(null);
+  //     setToken(null);
+  //     storage.clear();
+  //     return;
+  //   }
+
+  //   try {
+  //     await refetchLogoutSession({ token: storedToken });
+  //   } catch (err) {
+  //     console.error("Lỗi khi logout:", err);
+  //   } finally {
+  //     setIsAuthenticated(false);
+  //     setUser(null);
+  //     setPassenger(null);
+  //     setToken(null);
+  //     storage.clear();
+  //   }
+  // }, [refetchLogoutSession]);
 
   const hasValidLogin = useCallback(async () => {
     try {

@@ -93,7 +93,11 @@ export const LoginPage: React.FC = () => {
       }
 
       // CASE 2 & 3: ADMIN or ID,PW
-      const loginFn = authType === "ADMIN" ? loginAdmin : loginPassenger;
+      const isAdminTypes = ["ADMIN", "DEV"];
+      const loginFn = isAdminTypes.includes(authType)
+        ? loginAdmin
+        : loginPassenger;
+
       const countryCode = localStorage.getItem("countryCode");
 
       const loginRes = await loginFn({
@@ -218,7 +222,13 @@ export const LoginPage: React.FC = () => {
         />
       );
     case "verify":
-      return <AccountYn mode="verify" onClose={() => setViewMode("login")} />;
+      return (
+        <AccountYn
+          authType={authType}
+          mode="verify"
+          onClose={() => setViewMode("login")}
+        />
+      );
     case "changePw":
       return <AccountYn mode="change" onClose={() => setViewMode("login")} />;
     // case "forgotPw":

@@ -14,9 +14,10 @@ import { ResponseCode } from "../../../utils/response";
 type AccountModePageProps = {
   mode: "verify" | "change";
   onClose?: () => void;
+  authType?: string | undefined;
 };
 
-const AccountModePage = ({ mode, onClose }: AccountModePageProps) => {
+const AccountModePage = ({ mode, onClose, authType }: AccountModePageProps) => {
   const { control, handleSubmit } = useForm();
   const email = useWatch({ control, name: "email" });
   const { refetchUserEmailData } = getUserIdByEmail();
@@ -40,7 +41,7 @@ const AccountModePage = ({ mode, onClose }: AccountModePageProps) => {
       if (res?.resultCode === ResponseCode.SUCCESS) {
         const id = res?.data?.userId;
         if (!id) {
-          toast("Không tìm thấy tài khoản, vui lòng thử lại!", "error");
+          // toast("Không tìm thấy tài khoản, vui lòng thử lại!", "error");
           return;
         }
         setVerifyOTPcode(true);
@@ -64,7 +65,7 @@ const AccountModePage = ({ mode, onClose }: AccountModePageProps) => {
   }, [email, refetchUserEmailData, mode, toast]);
 
   if (verifyOTPcode) {
-    return <VerifyOpt authType="" userId={userId} email={email} />;
+    return <VerifyOpt authType={authType} userId={userId} email={email} />;
   }
 
   if (hasValidate && userId) {

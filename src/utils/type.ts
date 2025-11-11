@@ -983,6 +983,15 @@ export type CreateTerminalDto = {
   airportId: string;
 };
 
+export interface SearchFlightFromPassengerParams {
+  departureAirport?: string;
+  arrivalAirport?: string;
+  scheduledDeparture?: number;
+  scheduledArrival?: number;
+  passengers?: number;
+  flightClass?: string;
+}
+
 export type CreateGateProps = {
   code: string;
   terminalId: string;

@@ -25,6 +25,7 @@ import InputTextField from "../../../../../common/Input/InputTextField";
 import BaseModal from "../../../../../common/Modal/BaseModal";
 import { ManageAccountsSharp } from "@mui/icons-material";
 import { useToast } from "../../../../../context/ToastContext";
+import { ResponseCode } from "../../../../../utils/response";
 
 type IManageFacilityModalProps = {
   open: boolean;
@@ -119,7 +120,7 @@ const ManageFacilityModal = ({
 
       const response = await action(formData);
 
-      const isSuccess = response?.resultCode === "00";
+      const isSuccess = response?.resultCode === ResponseCode.SUCCESS;
       const message =
         response?.resultMessage || (isSuccess ? "Thành công" : "Thất bại");
 

@@ -118,8 +118,6 @@ const PassengerProfile = () => {
         ...formValues,
         phone,
       });
-      console.log("formValues", formValues);
-      console.log("masks", res);
     }
   };
 
@@ -171,8 +169,12 @@ const PassengerProfile = () => {
               country={
                 !formValues.phone ? countryCode.toLowerCase() : undefined
               }
-              onlyCountries={localesFilter}
+              //onlyCountries={["vi", "en", "ko", "jp"]}
+              // preserveOrder={["onlyCountries", "preferredCountries"]}
+              // onlyCountries={localesFilter.map((c) => c.toLowerCase())}
               value={formValues.phone}
+              // masks={{ fr: "(...) ..-..-..", at: "(....) ...-...." }}
+              // areaCodes={{ vn: ["84"], fr: ["369", "463"], us: ["300"] }}
               onChange={(value) => handleChange("phone", value)}
               inputStyle={{
                 width: "100%",

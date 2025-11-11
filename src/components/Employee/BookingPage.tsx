@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Card,
@@ -69,13 +69,22 @@ const BookingPage = () => {
     }));
   };
 
+  const [bookingCode, setBookingCode] = useState("");
+
+  useEffect(() => {
+    // Tạo bookingCode khi component mount
+    const code = "BK" + random(10000, 99999, true);
+    setBookingCode(code);
+  }, []);
+
   const handleBooking = () => {
     const bookingData = {
       ...form,
       bookingTime: new Date().toISOString(),
       passengerId: passenger?.id,
-      bookingCode: "BK" + random(10000, 99999, true), // BK53921
+      bookingCode, // dùng state bookingCode
     };
+
     console.log("Booking Confirmed:", bookingData);
     alert(`Đặt vé thành công!\nMã đặt chỗ: ${bookingData.bookingCode}`);
   };
@@ -93,17 +102,17 @@ const BookingPage = () => {
             <Grid size={12}>
               <Box p={2} bgcolor="#f9f9f9" borderRadius={2}>
                 <Typography fontWeight={600}>
-                  {/* Chuyến bay: {form.flight.flightNo} */}
+                  Chuyến bay: {form.flight.flightNo}
                 </Typography>
                 <Typography color="text.secondary">
-                  {/* {form.flight.departureAirport} → {form.flight.arrivalAirport} */}
+                  {form.flight.departureAirport} → {form.flight.arrivalAirport}
                 </Typography>
                 <Typography color="text.secondary" mt={1}>
-                  {/* {new Date(
+                  {new Date(
                     form.flight.scheduledDeparture
                   ).toLocaleTimeString()}{" "}
                   →{" "}
-                  {new Date(form.flight.scheduledArrival).toLocaleTimeString()} */}
+                  {new Date(form.flight.scheduledArrival).toLocaleTimeString()}
                 </Typography>
               </Box>
             </Grid>

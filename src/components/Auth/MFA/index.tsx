@@ -9,7 +9,11 @@ import {
   Stack,
 } from "@mui/material";
 import { QrCode2, Security, Login, ArrowBack } from "@mui/icons-material";
-import { useSetUpMfa, useVerifyMfa } from "../../../context/Api/usePostApi";
+import {
+  useSetUpMfa,
+  useSetUpMfaFromAdmin,
+  useVerifyMfa,
+} from "../../../context/Api/usePostApi";
 import { useToast } from "../../../context/ToastContext";
 import InputTextField from "../../../common/Input/InputTextField";
 import { useAuth } from "../../../context/AuthContext";
@@ -27,6 +31,7 @@ export default function MfaSetup({ email, onClose, authType }: EmailProps) {
   const { refetchVerifyMfa } = useVerifyMfa();
   const { loginWithGGAuthenticator } = useAuth();
   const { refetchSetUpMfa } = useSetUpMfa();
+  const { refetchSetUpMfaFromAdmin } = useSetUpMfaFromAdmin();
   const toast = useToast();
 
   const resetState = () => {
@@ -35,13 +40,20 @@ export default function MfaSetup({ email, onClose, authType }: EmailProps) {
   };
 
   const fetchQrCode = async () => {
-    if (!email) {
-      toast("Vui lòng nhập email để tạo MFA");
+    if (!email || !authType) {
+      toast("Loi ko co authtype hoac chua nhập email để tạo MFA");
       return;
     }
     try {
-      const data = await refetchSetUpMfa({ email });
-      console.log("data", data);
+      // const data =
+      //   authType === "DEV" || authType === "ADMIN"
+      //     ? await refetchSetUpMfa({ email })
+      //     : await refetchSetUpMfaFromAdmin({ email });
+      const isAdmin = ["DEV", "ADMIN"].includes(authType);
+      const data = isAdmin
+        ? await refetchSetUpMfa({ email })
+        : await refetchSetUpMfaFromAdmin({ email });
+
       if (data?.data?.hasVerified === "Y") {
         setCurrentState("login");
         // setCanLoginMfa(true);
@@ -52,7 +64,7 @@ export default function MfaSetup({ email, onClose, authType }: EmailProps) {
         setCurrentState("qrSetup");
         // setCanLoginMfa(false);
         // setIsSetMfa(false);
-      } else if (data?.resultCode === "09") {
+      } else if (data?.resultCode !== ResponseCode.SUCCESS) {
         setCode("");
         // toast(data?.resultMessage);
       }
@@ -61,9 +73,16 @@ export default function MfaSetup({ email, onClose, authType }: EmailProps) {
     }
   };
 
+  useEffect(() => {
+    if (authType === "MFA") {
+      setCurrentState("login");
+      fetchQrCode();
+    }
+  }, [authType, fetchQrCode]);
+
   const handleVerify = async () => {
     if (!code || code.length !== 6) {
-      toast("Vui lòng nhập mã xác thực 6 số", "info");
+      toast("Vui lòng nhập mã xác thực 6 số");
       return;
     }
 
@@ -78,6 +97,7 @@ export default function MfaSetup({ email, onClose, authType }: EmailProps) {
       if (res?.resultCode === ResponseCode.SUCCESS) {
         // setCurrentState("success");
         setQrCode(null);
+        setCurrentState("login");
         // setCanLoginMfa(true);
         setCode("");
       } else {
@@ -121,12 +141,6 @@ export default function MfaSetup({ email, onClose, authType }: EmailProps) {
     }
   };
 
-  useEffect(() => {
-    if (authType === "MFA") {
-      fetchQrCode();
-    }
-  }, [authType]);
-
   const handleBack = () => {
     resetState();
     setCurrentState("initial");
@@ -145,6 +159,7 @@ export default function MfaSetup({ email, onClose, authType }: EmailProps) {
         p: 3,
       }}
     >
+      {email}
       {currentState === "initial" && (
         <Box
           sx={{

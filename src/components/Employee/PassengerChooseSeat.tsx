@@ -1,31 +1,22 @@
-import { memo, useState } from "react";
+import { memo } from "react";
 import {
   Box,
   Typography,
   Grid,
   Chip,
-  Divider,
   Button,
   IconButton,
   Card,
   Stack,
   alpha,
-  CircularProgress,
 } from "@mui/material";
 import _ from "lodash";
 import { ArrowBack, Flight, RestartAlt } from "@mui/icons-material";
 import DetailSection from "../../common/AdditionalCustomFC/DetailSection";
 import theme from "../../scss/theme";
 import { useChooseSeatToBooking } from "./useChooseSeatToBooking";
-// import LegendItem from "../Admin/component/Seat/ButtonSeat/LegendItem";
 import ButtonSeat from "../Admin/component/Seat/ButtonSeat";
 import { useLocation, useNavigate } from "react-router-dom";
-import type { Seat } from "../../utils/type";
-import { convertCurrency, type Currency } from "../../hooks/format";
-
-// type FlightWithSeatLayoutProps = {
-//   id: number;
-// };
 
 const PassengerChooseSeat = () => {
   const location = useLocation();
@@ -33,7 +24,6 @@ const PassengerChooseSeat = () => {
   const { id } = location.state || {};
   const {
     detail,
-    getTypeColor,
     handleSelectSeat,
     seatCount,
     filteredSeats,
@@ -44,18 +34,6 @@ const PassengerChooseSeat = () => {
   } = useChooseSeatToBooking({
     id,
   });
-
-  const paymoney = localStorage.getItem("paymoney") as Currency;
-
-  const [loading, setLoading] = useState(false);
-
-  const handleNavigateBooking = (seat: Seat) => {
-    navigate("/payment", {
-      state: {
-        seat,
-      },
-    });
-  };
 
   return (
     <Box

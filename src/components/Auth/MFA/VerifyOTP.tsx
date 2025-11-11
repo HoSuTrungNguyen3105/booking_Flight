@@ -14,8 +14,6 @@ const VerifyOpt = ({ email, userId, authType }: EmailProps) => {
   const [hasValidate, sethasValidate] = useState(false);
   const toast = useToast();
 
-  console.log("user", userId, email);
-
   const handleCheckOTPYn = useCallback(async () => {
     if (typeof otpText !== "string" || otpText.trim() === "") {
       toast("Invalid OTP", "error");

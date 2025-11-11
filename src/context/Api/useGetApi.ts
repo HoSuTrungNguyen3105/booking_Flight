@@ -31,6 +31,7 @@ import {
   type BookingResponseMessage,
   type Hotel,
   type UserSession,
+  type SearchFlightFromPassengerParams,
 } from "../../utils/type.ts";
 import { useFetch } from "../use[custom]/useFetch.ts";
 import type { ActionType } from "../../common/Dropdown/SelectDropdown.tsx";
@@ -51,7 +52,9 @@ export interface SelectOptions {
   value: string;
 }
 
-export const mapStringToDropdown = (list: string[]): SelectOptions[] => {
+export const mapStringToDropdown: (list: string[]) => SelectOptions[] = (
+  list
+) => {
   return list.map((item) => ({
     label: item,
     value: item,
@@ -941,6 +944,21 @@ export const useFindAllTerminalTypes = () => {
   };
 };
 
+export const useFindAllAirportIds = () => {
+  const { data, loading } = useFetch<
+    DetailResponseMessage<{ code: string }>,
+    null
+  >({
+    url: "/sys/flights/getAllAirportIds",
+    autoFetch: true,
+    config: getMethod,
+  });
+  return {
+    dataFindAllAirportIds: data,
+    loadingFindAllAirportIds: loading,
+  };
+};
+
 // GateStatus
 export const useFindAllGateStatuses = () => {
   const { data, refetch, loading } = useFetch<
@@ -987,6 +1005,33 @@ export const useFindAllSeatTypes = () => {
   });
   return {
     dataSeatTypes: data,
+    refetchSeatTypes: refetch,
+    loadingSeatTypes: loading,
+  };
+};
+
+export interface FlightSearchFromPassengerRes {
+  flightId: number;
+  flightNo: string;
+  departureAirport: string;
+  arrivalAirport: string;
+  scheduledDeparture: number; // timestamp (mili giây)
+  scheduledArrival: number; // timestamp (mili giây)
+  flightClass: string;
+  seats: number;
+}
+
+export const useSearchFlightFromPassenger = () => {
+  const { refetch, loading, setParams } = useFetch<
+    DetailResponseMessage<string[]>,
+    SearchFlightFromPassengerParams
+  >({
+    url: "/sys/flights/passenger/searchs",
+    autoFetch: false,
+    config: getMethod,
+  });
+  return {
+    setParamsSearch: setParams,
     refetchSeatTypes: refetch,
     loadingSeatTypes: loading,
   };

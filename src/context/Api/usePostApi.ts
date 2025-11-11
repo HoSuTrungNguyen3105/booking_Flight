@@ -528,10 +528,7 @@ export const useGetSessionsByID = () => {
 };
 
 export const useLogoutSessionFromPassenger = () => {
-  const { refetch: refetchLogoutSession } = useFetch<
-    ResponseMessage,
-    { token: string }
-  >({
+  const { refetch: refetchLogoutSession } = useFetch<ResponseMessage, void>({
     url: "/auth/logout",
     autoFetch: false,
     config: postMethod,
@@ -899,6 +896,20 @@ export const useSetUpMfa = () => {
   };
 };
 
+export const useSetUpMfaFromAdmin = () => {
+  const { refetch: refetchSetUpMfaFromAdmin } = useFetch<
+    MFAAuthResponse,
+    MfaRequest
+  >({
+    url: "/auth/setmfa",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchSetUpMfaFromAdmin,
+  };
+};
+
 export const useResetPassword = () => {
   const { refetch: refetchResetPassword } = useFetch<
     ResponseMessage,
@@ -1022,6 +1033,20 @@ export const useCreateGate = () => {
   };
 };
 
+export const useCreateFacilities = () => {
+  const { refetch: refetchCreateFacilities } = useFetch<
+    ResponseMessage,
+    FacilityFormProps
+  >({
+    url: "/sys/gates/facilities",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchCreateFacilities,
+  };
+};
+
 export const useUpdateGate = ({ id }: { id: string }) => {
   const { refetch: refetchUpdateGate } = useFetch<
     ResponseMessage,
@@ -1036,19 +1061,19 @@ export const useUpdateGate = ({ id }: { id: string }) => {
   };
 };
 
-export const useCreateFacilities = () => {
-  const { refetch: refetchCreateFacilities } = useFetch<
-    ResponseMessage,
-    FacilityFormProps
-  >({
-    url: "/sys/flights/facilities",
-    autoFetch: false,
-    config: postMethod,
-  });
-  return {
-    refetchCreateFacilities,
-  };
-};
+// export const useCreateFacilities = () => {
+//   const { refetch: refetchCreateFacilities } = useFetch<
+//     ResponseMessage,
+//     FacilityFormProps
+//   >({
+//     url: "/sys/flights/facilities",
+//     autoFetch: false,
+//     config: postMethod,
+//   });
+//   return {
+//     refetchCreateFacilities,
+//   };
+// };
 
 export const useUpdateFacilities = (id: string) => {
   const { refetch: refetchUpdateFacilities } = useFetch<

@@ -188,7 +188,7 @@ export const useFlightCreateAndUpdate = ({
         mode === "update"
           ? await refetchUpdateFlightId(payload)
           : await refetchCreateFlightData(payload);
-
+      console.log("res", payload);
       if (response?.resultCode === ResponseCode.SUCCESS) {
         toast(response?.resultMessage || "Success", "success");
         onSuccess?.();

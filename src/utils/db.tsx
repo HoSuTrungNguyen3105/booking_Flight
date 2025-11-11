@@ -87,7 +87,11 @@ export const menuData: MenuSection[] = [
             label: "Quản lý Gate",
             icon: <Apartment />,
           },
-          { id: "CreateGateForm", label: "Tạo mới Gate", icon: <GppBad /> },
+          {
+            id: "MANAGEMENTATTENDANCE",
+            label: "Tạo mới Gate",
+            icon: <GppBad />,
+          },
           {
             id: "BulkMealCreator",
             label: "Tạo suất ăn hàng loạt",
@@ -128,12 +132,12 @@ export const menuData: MenuSection[] = [
                 label: "Quản lý Terminal",
               },
               {
-                id: "LeaveRequestTable",
+                id: "TerminalBatchCreator",
                 label: "Yêu cầu nghỉ phép",
                 icon: <TimeToLeave />,
               },
               {
-                id: "FlightStatisticsPage",
+                id: "AirportManagement",
                 label: "Quản lý chuyến bay hàng loạt",
                 icon: <Apartment />,
               },

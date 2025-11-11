@@ -1,17 +1,11 @@
-import { Box, Button, Typography, Paper } from "@mui/material";
+import { Box, Button, Typography, Paper, Divider } from "@mui/material";
 import { useState, useRef, useEffect, type ReactNode } from "react";
-import {
-  Person as PersonIcon,
-  Star as StarIcon,
-  Folder as FolderIcon,
-  DirectionsRun as DirectionsRunIcon,
-  Info as InfoIcon,
-  FlightTakeoff as FlightTakeoffIcon,
-  Flight as FlightIcon,
-  LocalOffer as LocalOfferIcon,
-  SupportAgent as SupportAgentIcon,
-} from "@mui/icons-material";
+import { User, Star, Folder, Info, Tag, Users, Headphones } from "lucide-react";
+import DirectionsRunIcon from "@mui/icons-material/DirectionsRun";
 import ButtonLink from "../AdditionalCustomFC/ButtonLink";
+// import { useAuth } from "../../context/AuthContext";
+import { Building2, Zap } from "lucide-react";
+import theme from "../../scss/theme";
 
 type MenuItem = {
   value: string;
@@ -19,51 +13,123 @@ type MenuItem = {
   label: string;
 };
 
+// type MenuItem = {
+//   value: string;
+//   icon: React.ReactNode;
+//   label: string;
+// };
+
 type TabData = {
-  [key: string]: MenuItem[];
+  [key: string]: {
+    name: string;
+    items: MenuItem[];
+  };
 };
 
 export const menuData: TabData = {
-  Customers: [
-    { value: "contact", icon: <PersonIcon />, label: "Hồ sơ khách hàng" },
-    { value: "profile", icon: <StarIcon />, label: "Đánh giá khách hàng" },
-    { value: "flight/info-page", icon: <FolderIcon />, label: "Lưu trữ hồ sơ" },
-    {
-      value: "hotels",
-      icon: <DirectionsRunIcon />,
-      label: "Hướng dẫn sử dụng",
-    },
-    { value: "flight/deals", icon: <InfoIcon />, label: "Trung tâm hỗ trợ" },
-  ],
+  Customers: {
+    name: "Customers",
+    items: [
+      {
+        value: "contact",
+        icon: <User size={24} color="#6a1b9a" strokeWidth={1.5} />,
+        label: "Hồ sơ khách hàng",
+      },
+      {
+        value: "profile",
+        icon: <Star size={24} />,
+        label: "Đánh giá khách hàng",
+      },
+      {
+        value: "flight/info-page",
+        icon: <Folder size={24} />,
+        label: "Lưu trữ hồ sơ",
+      },
+      {
+        value: "hotels",
+        icon: <DirectionsRunIcon />,
+        label: "Hướng dẫn sử dụng",
+      },
+      {
+        value: "flight/deals",
+        icon: <Info size={24} />,
+        label: "Trung tâm hỗ trợ",
+      },
+    ],
+  },
 
-  Platform: [
-    { icon: <FlightIcon />, value: "admin", label: "Admin dashboard" },
-    { icon: <FolderIcon />, label: "Quản lý hồ sơ vé" },
-    { icon: <LocalOfferIcon />, label: "Quản lý giảm giá" },
-  ],
+  Platform: {
+    name: "Platform",
+    items: [
+      {
+        icon: <Building2 size={24} />,
+        value: "admin",
+        label: "Admin dashboard",
+      },
+      {
+        icon: <Folder size={24} />,
+        value: "AttendancePage",
+        label: "Quản lý hồ sơ vé",
+      },
+      {
+        icon: <Tag size={24} />,
+        value: "discount-management",
+        label: "Quản lý giảm giá",
+      },
+    ],
+  },
 
-  Solutions: [
-    { icon: <SupportAgentIcon />, label: "Quản lý đại lý" },
-    { icon: <StarIcon />, label: "Chính sách hạng vé" },
-  ],
+  Solutions: {
+    name: "Solutions",
+    items: [
+      {
+        icon: <Headphones size={24} />,
+        value: "agency-management",
+        label: "Quản lý đại lý",
+      },
+      {
+        icon: <Star size={24} />,
+        value: "ticket-class-policy",
+        label: "Chính sách hạng vé",
+      },
+    ],
+  },
 
-  Pricing: [
-    { icon: <LocalOfferIcon />, label: "Bảng giá" },
-    { icon: <InfoIcon />, label: "Điều khoản giá" },
-  ],
+  Pricing: {
+    name: "Pricing",
+    items: [
+      { icon: <Tag size={24} />, value: "pricing-table", label: "Bảng giá" },
+      {
+        icon: <Info size={24} />,
+        value: "pricing-terms",
+        label: "Điều khoản giá",
+      },
+    ],
+  },
 
-  Resources: [
-    { icon: <InfoIcon />, label: "Tài liệu" },
-    { icon: <SupportAgentIcon />, label: "Hỗ trợ kỹ thuật" },
-  ],
+  Resources: {
+    name: "Resources",
+    items: [
+      { icon: <Info size={24} />, value: "documents", label: "Tài liệu" },
+      {
+        icon: <Headphones size={24} />,
+        value: "tech-support",
+        label: "Hỗ trợ kỹ thuật",
+      },
+    ],
+  },
 
-  Company: [
-    { icon: <InfoIcon />, label: "Về chúng tôi" },
-    { icon: <PersonIcon />, label: "Nhân sự" },
-  ],
+  Company: {
+    name: "Company",
+    items: [
+      { icon: <Zap size={24} />, value: "about-us", label: "Về chúng tôi" },
+      { icon: <Users size={24} />, value: "teams", label: "Nhân sự" },
+    ],
+  },
 };
 
 export default function NavbarItem() {
+  //   const { isAdmin } = useAuth();
   const [activeTab, setActiveTab] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -124,54 +190,86 @@ export default function NavbarItem() {
         ))}
       </Box>
 
-      {/* ==== DROPDOWN ==== */}
-      {activeTab && menuData[activeTab].length > 0 && (
+      {activeTab && menuData[activeTab].name.length > 0 && (
         <Paper
           ref={dropdownRef}
-          elevation={4}
+          elevation={3}
           sx={{
             position: "absolute",
+            top: "100%",
             left: 0,
-            width: "100%",
-            backgroundColor: "#fff",
-            py: 6,
-            px: 15,
+            width: "1200px",
+            bgcolor: "#fff",
+            py: 3,
+            px: 6,
             display: "grid",
             gridTemplateColumns: "repeat(2, 1fr)",
             gap: 4,
+            borderRadius: 2,
+            boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
             zIndex: 50,
+            opacity: 0,
+            transform: "translateY(-10px)",
+            animation: "fadeSlideIn 0.25s forwards",
+            "@keyframes fadeSlideIn": {
+              "0%": { opacity: 0, transform: "translateY(-10px)" },
+              "100%": { opacity: 1, transform: "translateY(0)" },
+            },
           }}
         >
-          {menuData[activeTab].map((item, e) => (
+          <Typography
+            variant="h6"
+            sx={{ gridColumn: "1 / -1", mb: 0.5, fontWeight: 600 }}
+          >
+            {menuData[activeTab].name}
+            <Divider sx={{ my: 3 }} />
+          </Typography>
+
+          {menuData[activeTab].items.map((item, idx) => (
             <Box
               key={item.label}
-              sx={{ display: "flex", alignItems: "center", gap: 2 }}
+              onClick={() => setActiveTab(null)}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 2,
+                p: 1,
+                borderRadius: 2,
+                cursor: "pointer",
+                transition: "all 0.25s ease",
+                "&:hover": {
+                  backgroundColor: theme.palette.action.hover,
+                  transform: "translateY(-2px)",
+                },
+              }}
             >
-              <ButtonLink
-                key={e}
-                url={item.value}
-                text={item.label}
-                variant="text"
-              />
-              {/* <Box
+              <Box
                 sx={{
-                  width: 40,
-                  height: 40,
-                  bgColor: "primary.main",
-                  background: "#23005a",
-                  color: "#fff",
-                  borderRadius: "8px",
+                  width: 50,
+                  height: 50,
+                  borderRadius: 2,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  fontSize: "20px",
+                  bgcolor: theme.palette.primary.light,
+                  color: theme.palette.primary.dark,
+                  transition: "all 0.25s ease",
+                  "&:hover": {
+                    bgcolor: theme.palette.primary.main,
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                  },
                 }}
               >
                 {item.icon}
               </Box>
-              <Typography sx={{ fontSize: "18px", fontWeight: 600 }}>
-                {item.label}
-              </Typography> */}
+
+              <ButtonLink
+                key={idx}
+                url={item.value}
+                text={item.label}
+                variant="text"
+                //   sx={{ textTransform: "none", fontWeight: 500 }}
+              />
             </Box>
           ))}
         </Paper>

@@ -137,6 +137,10 @@ export const getToday = (format: DateFormatEnum = DateFormatEnum.ISO_8601) => {
   return moment().endOf("day").format(format);
 };
 
+export const nowDecimal = (): number => {
+  return Math.floor(Date.now() / 1000);
+};
+
 export const convertCurrency = (
   amountVND: number,
   targetCurrency: Currency,
@@ -184,7 +188,6 @@ export const convertCurrency = (
 export const formatSessionDate = (timestamp: number | null): string => {
   if (!timestamp) return "Unknown date";
 
-  // Chuyển đổi từ decimal timestamp (giây) sang milliseconds
   const date = new Date(Number(timestamp) * 1000);
   return date.toLocaleDateString("en-US", {
     month: "short",
@@ -194,29 +197,3 @@ export const formatSessionDate = (timestamp: number | null): string => {
     minute: "2-digit",
   });
 };
-
-// export const getDeviceInfo = (userAgent: string | null): { device: string; browser: string } => {
-//     if (!userAgent) {
-//       return { device: 'Unknown Device', browser: 'Unknown Browser' };
-//     }
-
-//     const ua = userAgent.toLowerCase();
-
-//     // Detect device
-//     let device = 'Unknown Device';
-//     if (ua.includes('windows')) device = 'Windows';
-//     else if (ua.includes('mac os')) device = 'Mac';
-//     else if (ua.includes('android')) device = 'Android';
-//     else if (ua.includes('iphone') || ua.includes('ipad')) device = 'iOS';
-//     else if (ua.includes('linux')) device = 'Linux';
-
-//     // Detect browser
-//     let browser = 'Unknown Browser';
-//     if (ua.includes('chrome') && !ua.includes('edg')) browser = 'Chrome';
-//     else if (ua.includes('firefox')) browser = 'Firefox';
-//     else if (ua.includes('safari') && !ua.includes('chrome')) browser = 'Safari';
-//     else if (ua.includes('edge')) browser = 'Edge';
-//     else if (ua.includes('opera')) browser = 'Opera';
-
-//     return { device, browser };
-//   };

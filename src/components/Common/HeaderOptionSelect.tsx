@@ -70,7 +70,6 @@ const LanguageButton = () => {
     ]
   );
 
-  /** 🧩 Popover content */
   const renderDropdown = useMemo(
     () => <Box sx={{ maxWidth: 240, minWidth: 240 }}>{renderContent}</Box>,
     [renderContent]

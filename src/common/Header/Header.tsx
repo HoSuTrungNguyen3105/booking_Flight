@@ -22,7 +22,6 @@ import { Login } from "@mui/icons-material";
 import LanguageButton from "../../components/Common/HeaderOptionSelect";
 import { useCallback, useState } from "react";
 import theme from "../../scss/theme";
-import ButtonLink from "../AdditionalCustomFC/ButtonLink";
 import NavbarItem from "./NavbarItem";
 
 export const Header = () => {
@@ -44,10 +43,6 @@ export const Header = () => {
     { value: "flight/deals", label: " deals" },
   ];
 
-  const handleNavigate = useCallback((value: string) => {
-    navigate(value);
-  }, []);
-
   const drawer = useCallback(
     () => (
       <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
@@ -55,13 +50,23 @@ export const Header = () => {
           HSTN
         </Typography>
         <List>
-          {navItems.map((item) => (
-            <ListItem key={item.value} disablePadding>
-              <ListItemButton sx={{ textAlign: "center" }}>
-                <ListItemText primary={item.label} />
-              </ListItemButton>
-            </ListItem>
-          ))}
+          {navItems
+            .filter((item) => {
+              if (isAdmin) {
+                return item.value.includes("admin");
+              } else {
+                return (
+                  item.value === "profile" || !item.value.includes("admin")
+                );
+              }
+            })
+            .map((item) => (
+              <ListItem key={item.value} disablePadding>
+                <ListItemButton sx={{ textAlign: "center" }}>
+                  <ListItemText primary={item.label} />
+                </ListItemButton>
+              </ListItem>
+            ))}
         </List>
       </Box>
     ),
@@ -126,7 +131,7 @@ export const Header = () => {
           )}
           <NavbarItem />
 
-          <Box
+          {/* <Box
             sx={{
               bgcolor: theme.palette.background.paper,
               display: "flex",
@@ -153,7 +158,7 @@ export const Header = () => {
                   variant="text"
                 />
               ))}
-          </Box>
+          </Box> */}
           {isAuthenticated ? (
             <Stack
               direction="row-reverse"

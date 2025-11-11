@@ -436,9 +436,9 @@ const FlightManagementModal = ({
               </Activity>
             </Activity>
             <Activity mode={activeStep === 3 ? "visible" : "hidden"}>
-              <Activity mode={mode === "create" ? "visible" : "hidden"}>
+              {/* <Activity mode={mode === "create" ? "visible" : "hidden"}>
                 {renderGateStatus()}{" "}
-              </Activity>
+              </Activity> */}
               <Activity mode={mode === "update" ? "visible" : "hidden"}>
                 {renderPriceCapacity()}{" "}
               </Activity>

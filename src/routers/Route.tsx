@@ -51,6 +51,8 @@ import FlightDeals from "../common/AdditionalCustomFC/FlightDeals";
 import OrderSeat from "../components/Employee/OrderSeat";
 import { UpdateEmailForm } from "../components/Sample/UpdateEmailForm";
 import BookingPage from "../components/Employee/BookingPage";
+import { TerminalBatchCreator } from "../components/Admin/component/InfrastructureEntities/CreateTerminal";
+import AttendancePage from "../components/Employee/AttendancePage";
 
 const routes = [
   {
@@ -100,6 +102,10 @@ const routes = [
       {
         path: "/payment",
         element: <BookingPage />,
+      },
+      {
+        path: "/AttendancePage",
+        element: <AttendancePage />,
       },
       {
         path: "/booking-detail",
@@ -224,16 +230,20 @@ const routes = [
       },
       {
         path: ROUTE_PATHS.AIRPORT_MANAGEMENT_DETAIL,
-        // element: <AirportManagementDetail />,
+        element: <AirportManagement />,
+      },
+      {
+        path: ROUTE_PATHS.MANAGEMENT_ATTENDANCE,
+        element: <AttendancePage />,
       },
       {
         path: ROUTE_PATHS.CALENDER_ATTENDANCE,
         element: <AttendanceCalendar />,
       },
-      // {
-      //   path: ROUTE_PATHS.FLIGHT_BATCH_CREATOR,
-      //   element: <FlightBatchCreator />,
-      // },
+      {
+        path: ROUTE_PATHS.TERMINAL_BATCH_CREATOR,
+        element: <TerminalBatchCreator />,
+      },
       {
         path: ROUTE_PATHS.AIRPORT_MANAGEMENT,
         element: <AirportManagement />,
