@@ -582,7 +582,7 @@ export interface Ticket {
   // qrCodeImage String? @db.Text
 
   // Quan hệ
-  booking: Booking;
+  bookings: Booking;
   // Quan hệ
   passenger?: Passenger;
   flight?: DataFlight;
@@ -904,6 +904,8 @@ export type Seat = {
   isUpperDeck?: boolean;
   isWing?: boolean;
   note?: string;
+  booking: Booking;
+  flight: DataFlight;
 };
 
 export enum BookingStatus {

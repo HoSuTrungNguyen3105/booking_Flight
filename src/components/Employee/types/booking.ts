@@ -1,6 +1,3 @@
-// export type Flight = { id: string; flightNo: string };
-// export type Passenger = { name: string; email: string };
-
 import type { DataFlight, Passenger } from "../../../utils/type";
 
 export type BookingState = {

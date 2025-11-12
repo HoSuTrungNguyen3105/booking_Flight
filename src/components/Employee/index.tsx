@@ -127,16 +127,16 @@ const TicketPage: React.FC = () => {
               <FaTicketAlt color="white" />
             </Box>
             <Box>
-              <Typography variant="h6" fontWeight={700} color="primary">
+              {/* <Typography variant="h6" fontWeight={700} color="primary">
                 {ticket.booking.bookingTime}
-              </Typography>
-              <Typography
+              </Typography> */}
+              {/* <Typography
                 variant="caption"
                 color="text.secondary"
                 fontWeight={500}
               >
                 {ticket.booking.bookingCode}
-              </Typography>
+              </Typography> */}
             </Box>
           </Box>
 
@@ -267,9 +267,9 @@ const TicketPage: React.FC = () => {
                     <Typography variant="caption" color="text.secondary">
                       Booking Reference:
                     </Typography>
-                    <Typography variant="body2" fontFamily="monospace">
+                    {/* <Typography variant="body2" fontFamily="monospace">
                       {ticket.booking.bookingTime || "N/A"}
-                    </Typography>
+                    </Typography> */}
                   </Box>
                 </Stack>
               </Grid>

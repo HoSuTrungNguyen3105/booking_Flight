@@ -62,61 +62,72 @@ const FlightInfoPage: React.FC = () => {
   const { dataSeatTypes } = useFindAllSeatTypes();
   const optionsSeatTypes = mapStringToDropdown(dataSeatTypes?.data || []);
   /** Lọc chuyến bay theo input */
-  const onSearch = (e: React.FormEvent) => {
+  const onSearch = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const filteredFlights = res.filter((f: SearchFormData) => {
-      const matchDeparture = search.departureAirport
-        ? f.departureAirport
-            ?.toLowerCase()
-            .includes(search.departureAirport.toLowerCase())
-        : true;
-
-      const matchArrival = search.arrivalAirport
-        ? f.arrivalAirport
-            ?.toLowerCase()
-            .includes(search.arrivalAirport.toLowerCase())
-        : true;
-
-      const matchFlightClass = search.flightClass
-        ? f.flightClass
-            ?.toLowerCase()
-            .includes(search.flightClass.toLowerCase())
-        : true;
-
-      // const matchPassengers = search.passengers
-      //   ? f.passengers.includes(search.arrivalAirport.toLowerCase())
-      //   : true;
-
-      const matchScheduledDeparture = search.scheduledDeparture
-        ? formatDate(
-            DateFormatEnum.DD_MM_YYYY_HH_MM_SS,
-            f.scheduledDeparture
-          ) ===
-          formatDate(
-            DateFormatEnum.DD_MM_YYYY_HH_MM_SS,
-            search.scheduledDeparture
-          )
-        : true;
-
-      const matchScheduledArrival = search.scheduledArrival
-        ? formatDate(DateFormatEnum.DD_MM_YYYY_HH_MM_SS, f.scheduledArrival) ===
-          formatDate(
-            DateFormatEnum.DD_MM_YYYY_HH_MM_SS,
-            search.scheduledArrival
-          )
-        : true;
-
-      return (
-        matchDeparture &&
-        matchArrival &&
-        matchScheduledDeparture &&
-        matchScheduledArrival &&
-        matchFlightClass
-      );
+    const res = await refetchSeatTypes({
+      ...search,
     });
 
-    setFiltered(filteredFlights);
+    //   //   const filteredFlights = res.filter((f: SearchFormData) => {
+    //   //       const matchDeparture = search.departureAirport
+    //   //   ? f.departureAirport
+    //   //       ?.toLowerCase()
+    //   //       .includes(search.departureAirport.toLowerCase())
+    //   //   : true;
+
+    //   // // So khớp sân bay đến
+    //   // const matchArrival = search.arrivalAirport
+    //   //   ? f.arrivalAirport
+    //   //       ?.toLowerCase()
+    //   //       .includes(search.arrivalAirport.toLowerCase())
+    //   //   : true;
+
+    //   // // So khớp hạng ghế (Economy / Business)
+    //   // const matchFlightClass = search.flightClass
+    //   //   ? f.flightClass
+    //   //       ?.toLowerCase()
+    //   //       .includes(search.flightClass.toLowerCase())
+    //   //   : true;
+
+    //   // So khớp số hành khách (nếu có trường số lượng ghế khả dụng hoặc tổng ghế)
+    //   // const matchPassengers = search.passengers
+    //   //   ? f.seatCount && f.seat >= search.passengers
+    //   //   : true;
+
+    //   // So khớp thời gian khởi hành
+    //   const matchScheduledDeparture = search.scheduledDeparture
+    //     ? formatDate(
+    //         DateFormatEnum.DD_MM_YYYY_HH_MM_SS,
+    //         f.scheduledDeparture
+    //       ) ===
+    //       formatDate(
+    //         DateFormatEnum.DD_MM_YYYY_HH_MM_SS,
+    //         search.scheduledDeparture
+    //       )
+    //     : true;
+
+    //   // So khớp thời gian đến
+    //   const matchScheduledArrival = search.scheduledArrival
+    //     ? formatDate(DateFormatEnum.DD_MM_YYYY_HH_MM_SS, f.scheduledArrival) ===
+    //       formatDate(
+    //         DateFormatEnum.DD_MM_YYYY_HH_MM_SS,
+    //         search.scheduledArrival
+    //       )
+    //     : true;
+
+    //   // Điều kiện lọc cuối cùng
+    //   return (
+    //     matchDeparture &&
+    //     matchArrival &&
+    //     matchScheduledDeparture &&
+    //     matchScheduledArrival &&
+    //     matchFlightClass
+    //     // matchPassengers
+    //   );
+    // });
+
+    setFiltered([]);
   };
 
   /** Reset filter */

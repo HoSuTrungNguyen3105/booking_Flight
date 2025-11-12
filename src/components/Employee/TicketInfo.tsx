@@ -78,12 +78,12 @@ const TicketInfo = ({ id, ticketNo }: GetReqponseOneTicket) => {
             }}
           >
             <Typography variant="h6" fontWeight={700} lineHeight={1}>
-              {ticket.booking.seatClass + " - " + ticket.booking.seatClass}
+              {ticket.bookings.seatClass + " - " + ticket.bookings.seatClass}
             </Typography>
             <Typography variant="subtitle1" sx={{ mb: 2 }}>
               {formatDate(
                 DateFormatEnum.DD_MM_YYYY_HH_MM_SS,
-                ticket.booking.bookingTime
+                ticket.bookings.bookingTime
               )}
             </Typography>
             {/* <QrCode2Icon sx={{ fontSize: 48, mb: 1, color: "white" }} /> */}
