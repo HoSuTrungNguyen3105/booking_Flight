@@ -75,9 +75,11 @@ const LanguageButton = () => {
     [renderContent]
   );
 
+  const getLocalStorage = localStorage.getItem("appSettings");
+
   return (
     <CustomPopover
-      text={t("language_settings") || "Language"}
+      text={getLocalStorage}
       handleAction={handleSaveChange}
       option={[renderDropdown]}
       hideSubmitButton={false}

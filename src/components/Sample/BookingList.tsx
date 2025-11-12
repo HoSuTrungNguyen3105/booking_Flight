@@ -22,7 +22,6 @@ const BookingList: React.FC = () => {
     }
   }, [dataBookingList]);
 
-  console.log("dataBookingList", dataBookingList);
   const rowData = useMemo(
     () =>
       data?.map((item) => ({

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -6,6 +6,7 @@ import {
   CardContent,
   Typography,
   Stack,
+  Divider,
 } from "@mui/material";
 import { Clock, LogIn, LogOut } from "lucide-react";
 import dayjs from "dayjs";
@@ -15,15 +16,22 @@ export const AttendanceCard = () => {
   const [checkedIn, setCheckedIn] = useState(false);
   const [checkInTime, setCheckInTime] = useState<number | null>(null);
   const [checkOutTime, setCheckOutTime] = useState<number | null>(null);
+  const [currentTime, setCurrentTime] = useState(dayjs().format("HH:mm:ss"));
+
+  // Cập nhật thời gian hiện tại mỗi giây
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(dayjs().format("HH:mm:ss"));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   const handleCheckIn = () => {
-    // const now = dayjs().format("HH:mm:ss");
     setCheckInTime(nowDecimal());
     setCheckedIn(true);
   };
 
   const handleCheckOut = () => {
-    // const now = dayjs().format("HH:mm:ss");
     setCheckOutTime(nowDecimal());
     setCheckedIn(false);
   };
@@ -31,28 +39,34 @@ export const AttendanceCard = () => {
   return (
     <Card
       sx={{
-        maxWidth: 400,
+        maxWidth: 420,
         mx: "auto",
-        mt: 6,
+        mt: 8,
         p: 3,
-        borderRadius: 3,
-        boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-        background: "#fafafa",
+        borderRadius: 4,
+        boxShadow: "0 6px 16px rgba(0,0,0,0.15)",
+        background: "linear-gradient(145deg, #e3f2fd, #ffffff)",
+        textAlign: "center",
       }}
     >
       <CardContent>
         <Stack spacing={2} alignItems="center">
-          <Clock size={42} color="#1976d2" />
-          <Typography variant="h5" fontWeight={600}>
+          <Clock size={46} color="#1976d2" />
+          <Typography variant="h5" fontWeight={700} color="primary.main">
             Attendance Tracker
           </Typography>
 
-          {/* Thời gian */}
-          <Typography variant="body2" color="text.secondary">
+          {/* Hiển thị ngày và giờ */}
+          <Typography variant="body1" color="text.secondary">
             {dayjs().format("dddd, DD MMM YYYY")}
           </Typography>
+          <Typography variant="h6" color="text.primary">
+            {currentTime}
+          </Typography>
 
-          {/* Check-in time */}
+          <Divider sx={{ width: "80%", my: 2 }} />
+
+          {/* Thời gian check-in */}
           {checkInTime && (
             <Box textAlign="center">
               <Typography variant="body2" color="success.main">
@@ -62,7 +76,7 @@ export const AttendanceCard = () => {
             </Box>
           )}
 
-          {/* Check-out time */}
+          {/* Thời gian check-out */}
           {checkOutTime && (
             <Box textAlign="center">
               <Typography variant="body2" color="error.main">
@@ -73,14 +87,19 @@ export const AttendanceCard = () => {
           )}
 
           {/* Nút hành động */}
-          <Stack direction="row" spacing={2} mt={2}>
+          <Stack direction="row" spacing={2} mt={3}>
             <Button
               variant="contained"
               color="success"
               disabled={checkedIn}
               onClick={handleCheckIn}
               startIcon={<LogIn />}
-              sx={{ px: 3 }}
+              sx={{
+                px: 3,
+                textTransform: "none",
+                borderRadius: 3,
+                boxShadow: "0 3px 6px rgba(0,0,0,0.1)",
+              }}
             >
               Check In
             </Button>
@@ -90,7 +109,12 @@ export const AttendanceCard = () => {
               disabled={!checkedIn}
               onClick={handleCheckOut}
               startIcon={<LogOut />}
-              sx={{ px: 3 }}
+              sx={{
+                px: 3,
+                textTransform: "none",
+                borderRadius: 3,
+                boxShadow: "0 3px 6px rgba(0,0,0,0.1)",
+              }}
             >
               Check Out
             </Button>

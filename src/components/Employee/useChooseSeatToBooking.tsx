@@ -4,7 +4,7 @@ import { useGetAllInfoFlightByIDData } from "../../context/Api/useGetApi";
 import type { Seat, SeatTypeValue } from "../../utils/type";
 import type { IDetailItem } from "../../common/AdditionalCustomFC/DetailSection";
 import { useToast } from "../../context/ToastContext";
-import type { AircraftSeatTypeProps } from "../Admin/component/Flight/hooks/useSeatInFlightDetail";
+import type { FilterType } from "../Admin/component/Flight/hooks/useSeatInFlightDetail";
 
 type FlightWithSeatLayoutProps = {
   id: number;
@@ -69,7 +69,7 @@ export const useChooseSeatToBooking = ({ id }: FlightWithSeatLayoutProps) => {
     },
   ];
 
-  const [filter, setFilter] = useState<AircraftSeatTypeProps>("ALL");
+  const [filter, setFilter] = useState<FilterType>("ALL");
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [openSeatModal, setOpenSeatModal] = useState(false);
 
@@ -102,25 +102,33 @@ export const useChooseSeatToBooking = ({ id }: FlightWithSeatLayoutProps) => {
 
   const filteredSeats = useMemo(() => {
     if (filter === "ALL") return getAllInfoFlightByIdData?.data?.seats;
-    if (filter === "FIRST")
+    if (filter === "EXIT_ROW")
+      return getAllInfoFlightByIdData?.data?.seats?.filter((s) => s.isExitRow);
+    if (filter === "EXTRA_LEGROOM")
       return getAllInfoFlightByIdData?.data?.seats?.filter(
-        (s) => s.type === "FIRST"
+        (s) => s.isExtraLegroom
       );
-    if (filter === "BUSINESS")
+    if (filter === "AVAILABLE")
       return getAllInfoFlightByIdData?.data?.seats?.filter(
-        (s) => s.type === "BUSINESS"
+        (s) => s.isAvailable
       );
-    if (filter === "VIP")
+    if (filter === "HANDICAP_ACCESSIBLE")
       return getAllInfoFlightByIdData?.data?.seats?.filter(
-        (s) => s.type === "VIP"
+        (s) => s.isHandicapAccessible
       );
-    if (filter === "ECONOMY")
+    if (filter === "IS_BOOKED")
+      return getAllInfoFlightByIdData?.data?.seats?.filter((s) => s.isBooked);
+    if (filter === "IS_NEAR_LAVATORY")
       return getAllInfoFlightByIdData?.data?.seats?.filter(
-        (s) => s.type === "ECONOMY"
+        (s) => s.isNearLavatory
       );
-    return getAllInfoFlightByIdData?.data?.seats?.filter(
-      (s) => s.type === filter
-    );
+    if (filter === "IS_UPPERDECK")
+      return getAllInfoFlightByIdData?.data?.seats?.filter(
+        (s) => s.isUpperDeck
+      );
+    if (filter === "IS_WING")
+      return getAllInfoFlightByIdData?.data?.seats?.filter((s) => s.isWing);
+    return getAllInfoFlightByIdData?.data?.seats?.filter((s) => s.isAvailable);
   }, [getAllInfoFlightByIdData, filter]);
 
   const seatNumberCountUnique = _.uniqBy(
@@ -153,24 +161,24 @@ export const useChooseSeatToBooking = ({ id }: FlightWithSeatLayoutProps) => {
     });
   };
 
-  const getTypeColor = (type: string) => {
-    switch (type as SeatTypeValue) {
-      case "ECONOMY":
-        return "#ff9800";
-      case "BUSINESS":
-        return "#2196f3";
-      case "VIP":
-        return "#fff3e0";
-      case "FIRST":
-        return "#d3d3d3";
-      default:
-        return "#4caf50";
-    }
-  };
+  // const getTypeColor = (type: string) => {
+  //   switch (type as SeatTypeValue) {
+  //     case "ECONOMY":
+  //       return "#ff9800";
+  //     case "BUSINESS":
+  //       return "#2196f3";
+  //     case "VIP":
+  //       return "#fff3e0";
+  //     case "FIRST":
+  //       return "#d3d3d3";
+  //     default:
+  //       return "#4caf50";
+  //   }
+  // };
 
   return {
     detail,
-    getTypeColor,
+    // getTypeColor,
     handleSelectSeat,
     seatCount,
     filteredSeats,

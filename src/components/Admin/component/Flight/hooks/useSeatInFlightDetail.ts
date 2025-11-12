@@ -22,8 +22,11 @@ export type FilterType =
   | "AVAILABLE"
   | "EXIT_ROW"
   | "EXTRA_LEGROOM"
-  | "HANDICAP_ACCESSIBLE";
-// const [filter, setFilter] = useState<FilterType>("ALL");
+  | "HANDICAP_ACCESSIBLE"
+  | "IS_BOOKED"
+  | "IS_NEAR_LAVATORY"
+  | "IS_UPPERDECK"
+  | "IS_WING";
 
 export const useSeatInFlightDetail = ({ id }: FlightWithSeatLayoutProps) => {
   const { getAllInfoFlightByIdData, refetchGetAllInfoFlightData } =
@@ -135,17 +138,23 @@ export const useSeatInFlightDetail = ({ id }: FlightWithSeatLayoutProps) => {
     const allSeats = getAllInfoFlightByIdData?.data?.seats || [];
     if (filter === "ALL") return allSeats;
 
-    const filterMap: Record<string, keyof Seat> = {
+    const filterMap: Record<FilterType, keyof Seat> = {
+      ALL: "isAvailable",
       AVAILABLE: "isAvailable",
       EXIT_ROW: "isExitRow",
       EXTRA_LEGROOM: "isExtraLegroom",
       HANDICAP_ACCESSIBLE: "isHandicapAccessible",
+      IS_BOOKED: "isAvailable",
+      IS_NEAR_LAVATORY: "isExitRow",
+      IS_UPPERDECK: "isExtraLegroom",
+      IS_WING: "isHandicapAccessible",
     };
 
     const key = filterMap[filter as keyof typeof filterMap];
     if (!key) return allSeats;
 
-    return allSeats.filter((s) => (s as any)[key]);
+    // Lọc theo key boolean
+    return allSeats.filter((s) => Boolean(s[key]));
   }, [getAllInfoFlightByIdData, filter]);
 
   const seatNumberCountUnique = _.uniqBy(

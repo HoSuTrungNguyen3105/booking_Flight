@@ -9,9 +9,20 @@ import {
   Button,
   Stack,
   Chip,
+  IconButton,
+  Skeleton,
+  Tooltip,
+  Rating,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
-import { LocationOn, Star } from "@mui/icons-material";
-import theme from "../../scss/theme";
+import {
+  LocationOn,
+  Favorite,
+  FavoriteBorder,
+  Share,
+  CalendarToday,
+} from "@mui/icons-material";
 
 interface EventCardProps {
   link: () => void;
@@ -22,6 +33,11 @@ interface EventCardProps {
   rating?: number;
   tagColor?: string;
   tagLabel?: string;
+  date?: string;
+  onFavorite?: () => void;
+  isFavorite?: boolean;
+  onShare?: () => void;
+  availableSpots?: number;
 }
 
 const EventCard: React.FC<EventCardProps> = ({
@@ -31,173 +47,319 @@ const EventCard: React.FC<EventCardProps> = ({
   location,
   price,
   rating = 0,
-  tagColor = theme.palette.primary.main,
-  tagLabel = "Featured",
+  tagColor,
+  tagLabel,
+  date,
+  onFavorite,
+  isFavorite = false,
+  onShare,
+  availableSpots,
 }) => {
-  return (
-    <Box sx={{ my: 4 }}>
-      <Box
-        height={"20vh"}
-        maxHeight={"20vh"}
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        mb={2}
-      >
-        <Typography variant="h5" sx={{ fontWeight: "bold", color: tagColor }}>
-          {name}
-        </Typography>
-        <Button
-          variant="contained"
-          sx={{ textTransform: "none", backgroundColor: tagColor }}
-        >
-          See all →
-        </Button>
-      </Box>
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const [imageLoaded, setImageLoaded] = React.useState(false);
+  const [imageError, setImageError] = React.useState(false);
 
-      <Box
-        display="flex"
-        overflow="auto"
-        sx={{
-          "&::-webkit-scrollbar": { display: "none" },
-          gap: 2,
-        }}
-      >
-        <Card
+  const handleImageLoad = () => {
+    setImageLoaded(true);
+    setImageError(false);
+  };
+
+  const handleImageError = () => {
+    setImageLoaded(true);
+    setImageError(true);
+  };
+
+  const formatPrice = (price: number) => {
+    if (price === 0) return "Free";
+    return `$${price.toLocaleString()}`;
+  };
+
+  const getSpotsText = (spots?: number) => {
+    if (!spots) return null;
+    if (spots < 10) return `${spots} spots left`;
+    if (spots < 20) return "Almost full";
+    return null;
+  };
+
+  const spotsText = getSpotsText(availableSpots);
+  const isLowAvailability = availableSpots && availableSpots < 20;
+
+  return (
+    <Card
+      sx={{
+        width: isMobile ? "100%" : 350,
+        minWidth: isMobile ? "100%" : 350,
+        borderRadius: 3,
+        overflow: "hidden",
+        boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+        transition: "all 0.3s ease-in-out",
+        "&:hover": {
+          transform: "translateY(-4px)",
+          boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
+        },
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+      }}
+    >
+      {/* Image Section */}
+      <Box sx={{ position: "relative", flexShrink: 0 }}>
+        {!imageLoaded && (
+          <Skeleton
+            variant="rectangular"
+            height={200}
+            sx={{ bgcolor: "grey.100" }}
+          />
+        )}
+
+        {image && !imageError ? (
+          <CardMedia
+            component="img"
+            height="200"
+            image={image}
+            alt={name}
+            sx={{
+              objectFit: "cover",
+              display: imageLoaded ? "block" : "none",
+              transition: "transform 0.3s ease",
+              "&:hover": {
+                transform: "scale(1.05)",
+              },
+            }}
+            onLoad={handleImageLoad}
+            onError={handleImageError}
+          />
+        ) : (
+          <Box
+            sx={{
+              height: 200,
+              bgcolor: "grey.100",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Typography color="text.secondary" variant="body2">
+              No image available
+            </Typography>
+          </Box>
+        )}
+
+        {/* Top Badges */}
+        <Box
           sx={{
-            width: 330,
-            minWidth: 330,
-            borderRadius: 2,
-            overflow: "hidden",
-            // boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
-            // transition: "all 0.3s ease",
-            // display: "flex",
-            // flexDirection: "column",
-            // backgroundColor: "#fff",
-            // "&:hover": {
-            //   transform: "translateY(-4px)",
-            //   boxShadow: "0 6px 14px rgba(0,0,0,0.15)",
-            // },
+            position: "absolute",
+            top: 12,
+            left: 12,
+            right: 12,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
           }}
         >
-          <Box sx={{ position: "relative", flexShrink: 0 }}>
-            {image && (
-              <CardMedia
-                component="img"
-                height="200"
-                image={image}
-                alt={name}
-                sx={{ objectFit: "cover" }}
-              />
-            )}
+          <Stack direction="column" spacing={1}>
             {tagLabel && (
               <Chip
                 label={tagLabel}
                 sx={{
-                  position: "absolute",
-                  top: 12,
-                  left: 12,
-                  backgroundColor: tagColor,
+                  backgroundColor: tagColor || theme.palette.primary.main,
                   color: "#fff",
-                  fontWeight: 500,
+                  fontWeight: 600,
+                  fontSize: "0.75rem",
+                  height: 24,
                 }}
                 size="small"
               />
             )}
-          </Box>
-
-          <CardContent
-            sx={{
-              flexGrow: 1,
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              minHeight: 140,
-            }}
-          >
-            <Box>
-              <Typography
-                variant="h6"
-                fontWeight={600}
-                color={theme.palette.text.primary}
+            {spotsText && (
+              <Chip
+                label={spotsText}
                 sx={{
-                  display: "-webkit-box",
-                  WebkitLineClamp: 2,
-                  WebkitBoxOrient: "vertical",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  minHeight: "48px",
+                  backgroundColor: isLowAvailability
+                    ? theme.palette.error.main
+                    : theme.palette.warning.main,
+                  color: "#fff",
+                  fontWeight: 600,
+                  fontSize: "0.7rem",
+                  height: 20,
                 }}
-              >
-                {name}
-              </Typography>
+                size="small"
+              />
+            )}
+          </Stack>
 
-              <Stack direction="row" alignItems="center" spacing={0.5}>
-                <LocationOn
-                  sx={{ fontSize: 18, color: theme.palette.text.secondary }}
-                />
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
+          {/* Action Buttons */}
+          <Stack direction="row" spacing={0.5}>
+            {onShare && (
+              <Tooltip title="Share">
+                <IconButton
+                  size="small"
+                  onClick={onShare}
                   sx={{
-                    display: "-webkit-box",
-                    WebkitLineClamp: 1,
-                    WebkitBoxOrient: "vertical",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
+                    backgroundColor: "rgba(255,255,255,0.9)",
+                    "&:hover": {
+                      backgroundColor: "rgba(255,255,255,1)",
+                    },
                   }}
                 >
-                  {location}
-                </Typography>
-              </Stack>
-            </Box>
+                  <Share sx={{ fontSize: 18 }} />
+                </IconButton>
+              </Tooltip>
+            )}
+            {onFavorite && (
+              <Tooltip
+                title={
+                  isFavorite ? "Remove from favorites" : "Add to favorites"
+                }
+              >
+                <IconButton
+                  size="small"
+                  onClick={onFavorite}
+                  sx={{
+                    backgroundColor: "rgba(255,255,255,0.9)",
+                    "&:hover": {
+                      backgroundColor: "rgba(255,255,255,1)",
+                    },
+                  }}
+                >
+                  {isFavorite ? (
+                    <Favorite
+                      sx={{ fontSize: 18, color: theme.palette.error.main }}
+                    />
+                  ) : (
+                    <FavoriteBorder sx={{ fontSize: 18 }} />
+                  )}
+                </IconButton>
+              </Tooltip>
+            )}
+          </Stack>
+        </Box>
+      </Box>
 
-            <Stack
-              direction="row"
-              alignItems="center"
-              justifyContent="space-between"
-              mt={1}
-            >
-              <Stack direction="row" alignItems="center" spacing={0.3}>
-                <Star sx={{ fontSize: 18, color: "#FFC107" }} />
-                <Typography variant="body2" fontWeight={500}>
-                  {rating.toFixed(1)}
-                </Typography>
-              </Stack>
-
-              <Typography variant="body1" fontWeight={600} color="primary">
-                ${price.toLocaleString()}
-              </Typography>
-            </Stack>
-          </CardContent>
-
-          <CardActions
+      {/* Content Section */}
+      <CardContent
+        sx={{
+          flexGrow: 1,
+          display: "flex",
+          flexDirection: "column",
+          p: 2.5,
+          "&:last-child": { pb: 2.5 },
+        }}
+      >
+        {/* Event Name */}
+        <Tooltip title={name} placement="top">
+          <Typography
+            variant="h6"
+            fontWeight={600}
             sx={{
-              justifyContent: "center",
-              pb: 2,
-              pt: 0,
+              display: "-webkit-box",
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              minHeight: "48px",
+              lineHeight: 1.3,
+              mb: 1,
             }}
           >
-            <Button
-              // component={Link}
-              // to={link}
-              onClick={link}
-              variant="contained"
+            {name}
+          </Typography>
+        </Tooltip>
+
+        {/* Location and Date */}
+        <Stack spacing={1} mb={2}>
+          <Stack direction="row" alignItems="center" spacing={0.5}>
+            <LocationOn
+              sx={{ fontSize: 18, color: theme.palette.text.secondary }}
+            />
+            <Typography
+              variant="body2"
+              color="text.secondary"
               sx={{
-                textTransform: "none",
-                borderRadius: 6,
-                px: 3,
-                py: 1,
-                backgroundColor: theme.palette.primary.main,
-                "&:hover": { backgroundColor: theme.palette.primary.dark },
+                display: "-webkit-box",
+                WebkitLineClamp: 1,
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
               }}
             >
-              View Details
-            </Button>
-          </CardActions>
-        </Card>
-      </Box>
-    </Box>
+              {location}
+            </Typography>
+          </Stack>
+
+          {date && (
+            <Stack direction="row" alignItems="center" spacing={0.5}>
+              <CalendarToday
+                sx={{ fontSize: 16, color: theme.palette.text.secondary }}
+              />
+              <Typography variant="body2" color="text.secondary">
+                {date}
+              </Typography>
+            </Stack>
+          )}
+        </Stack>
+
+        {/* Rating and Price */}
+        <Box sx={{ mt: "auto" }}>
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            <Stack direction="row" alignItems="center" spacing={0.5}>
+              <Rating
+                value={rating}
+                readOnly
+                size="small"
+                precision={0.5}
+                sx={{ fontSize: "1.1rem" }}
+              />
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                fontWeight={500}
+              >
+                ({rating.toFixed(1)})
+              </Typography>
+            </Stack>
+
+            <Typography
+              variant="h6"
+              fontWeight={700}
+              color="primary"
+              sx={{ fontSize: "1.25rem" }}
+            >
+              {formatPrice(price)}
+            </Typography>
+          </Stack>
+        </Box>
+      </CardContent>
+
+      {/* Action Section */}
+      <CardActions sx={{ p: 2.5, pt: 0 }}>
+        <Button
+          onClick={link}
+          variant="contained"
+          fullWidth
+          sx={{
+            textTransform: "none",
+            borderRadius: 3,
+            py: 1.2,
+            fontSize: "1rem",
+            fontWeight: 600,
+            boxShadow: "none",
+            "&:hover": {
+              boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+              transform: "translateY(-1px)",
+            },
+            transition: "all 0.2s ease-in-out",
+          }}
+        >
+          View Details
+        </Button>
+      </CardActions>
+    </Card>
   );
 };
 

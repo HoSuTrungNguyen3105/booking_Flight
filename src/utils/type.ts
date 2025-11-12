@@ -963,6 +963,7 @@ export type Hotel = {
   distanceToCenter: number;
   imageUrl: string;
   price: number;
+  rooms?: number;
   discountPercent?: number;
   isPrime: boolean;
   freeWifi: boolean;
@@ -972,6 +973,8 @@ export type Hotel = {
   createdAt: number;
   updatedAt: number;
 };
+
+export type CreateHotelDto = Omit<Hotel, "id" | "createdAt" | "updatedAt">;
 
 export type TerminalType = "INTERNATIONAL" | "DOMESTIC" | "BUSINESS";
 

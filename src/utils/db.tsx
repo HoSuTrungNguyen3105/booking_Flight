@@ -93,7 +93,7 @@ export const menuData: MenuSection[] = [
             icon: <GppBad />,
           },
           {
-            id: "BulkMealCreator",
+            id: "CreateHotels",
             label: "Tạo suất ăn hàng loạt",
             icon: <Restaurant />,
           },

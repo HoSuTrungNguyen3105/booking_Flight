@@ -48,6 +48,9 @@ import {
   type VerifyOTPProps,
   type ChangeEmailPassengerProps,
   type VerifyOtpFromEmailChangeProps,
+  type Hotel,
+  type CreateHotelDto,
+  type TypeWithErrorResponse,
 } from "../../utils/type.ts";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
 import { useFetch } from "../use[custom]/useFetch.ts";
@@ -907,6 +910,20 @@ export const useSetUpMfaFromAdmin = () => {
   });
   return {
     refetchSetUpMfaFromAdmin,
+  };
+};
+
+export const useCreateBulkHotels = () => {
+  const { refetch: refetchCreateBulkHotels } = useFetch<
+    DetailResponseMessage<TypeWithErrorResponse>,
+    CreateHotelDto[]
+  >({
+    url: "sys/hotels/bulk",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchCreateBulkHotels,
   };
 };
 

@@ -3,7 +3,7 @@ import React, { memo, useState, type ReactNode } from "react";
 
 export interface IButtonSettingProps {
   option?: (string | ReactNode)[];
-  text: string;
+  text: ReactNode;
   icon?: ReactNode;
   buttonProps?: React.ComponentProps<typeof Button>;
   handleAction?: (opt: string | null) => void;

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import {
   Box,
   Card,
@@ -16,6 +16,7 @@ import {
   BookingStatus,
   type Booking,
   type DataFlight,
+  type Passenger,
   type Seat,
 } from "../../utils/type"; // lấy enum từ model anh có
 import { random } from "lodash";
@@ -34,6 +35,41 @@ export type CreateBookingProps = Omit<
   "id" | "mealOrders" | "seat" | "passenger"
 >;
 
+// const initialState = {
+//   selectedFlight: null,
+//   selectedSeats: [],
+//   passengerInfo: {
+//     name: "",
+//     email: "",
+//     phone: "",
+//   },
+//   paymentStatus: "idle" as "idle" | "processing" | "success" | "failed",
+//   bookingConfirmed: false,
+// };
+
+// const ACTIONS = {
+//   SELECT_FLIGHT: "select_flight",
+//   SELECT_SEATS: "select_seats",
+//   SET_PASSENGER_INFO: "set_passenger_info",
+//   PROCESS_PAYMENT: "process_payment",
+//   PAYMENT_SUCCESS: "payment_success",
+//   PAYMENT_FAIL: "payment_fail",
+//   CONFIRM_BOOKING: "confirm_booking",
+//   RESET: "reset",
+// };
+
+// export type Action =
+//   | { type: typeof ACTIONS.SELECT_FLIGHT; payload: DataFlight }
+//   | { type: typeof ACTIONS.SELECT_SEATS; payload: string[] }
+//   | { type: typeof ACTIONS.SET_PASSENGER_INFO; payload: Partial<Passenger> }
+//   | { type: typeof ACTIONS.PROCESS_PAYMENT }
+//   | { type: typeof ACTIONS.PAYMENT_SUCCESS }
+//   | { type: typeof ACTIONS.PAYMENT_FAIL; error?: string }
+//   | { type: typeof ACTIONS.CONFIRM_BOOKING; payload?: Booking }
+//   | { type: typeof ACTIONS.RESET };
+
+// type BookingState = typeof initialState;
+
 const BookingPage = () => {
   const location = useLocation();
   const data = location.state.seat as Seat;
@@ -44,6 +80,42 @@ const BookingPage = () => {
   const { passenger } = useAuth();
 
   const paymoney = localStorage.getItem("paymoney");
+
+  function bookingReducer(state: BookingState, action: Action): BookingState {
+    switch (action.type) {
+      case ACTIONS.SELECT_FLIGHT:
+        return { ...state, selectedFlight: action.payload };
+
+      case ACTIONS.SELECT_SEATS:
+        return { ...state, selectedSeats: action.payload };
+
+      case ACTIONS.SET_PASSENGER_INFO:
+        return {
+          ...state,
+          passengerInfo: { ...state.passengerInfo, ...action.payload },
+        };
+
+      case ACTIONS.PROCESS_PAYMENT:
+        return { ...state, paymentStatus: "processing" };
+
+      case ACTIONS.PAYMENT_SUCCESS:
+        return { ...state, paymentStatus: "success" };
+
+      case ACTIONS.PAYMENT_FAIL:
+        return { ...state, paymentStatus: "failed" };
+
+      case ACTIONS.CONFIRM_BOOKING:
+        return { ...state, bookingConfirmed: true };
+
+      case ACTIONS.RESET:
+        return initialState;
+
+      default:
+        return state;
+    }
+  }
+
+  const [state, dispatch] = useReducer(bookingReducer, initialState);
 
   const [form, setForm] = useState<CreateBookingProps>({
     bookingTime: booking?.bookingTime ?? "",

@@ -148,17 +148,7 @@ const FlightInfoPage: React.FC = () => {
 
   return (
     <Box sx={{ p: 3 }}>
-      {/* Tabs */}
-      <Box
-        sx={{
-          display: "flex",
-          width: "100%",
-          // borderRadius: "8px 8px 0 0",
-          // overflow: "hidden",
-          // mb: 1,
-          // boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-        }}
-      >
+      <Box sx={{ display: "flex" }}>
         <TabPanel
           sx={{ width: "100%" }}
           activeTab={activeTab}

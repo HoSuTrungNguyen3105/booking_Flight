@@ -234,13 +234,6 @@ const PassengerChooseSeat = () => {
                   </IconButton>
                 </Box>
 
-                {/* <Divider
-                  sx={{
-                    my: 2,
-                    borderColor: alpha(theme.palette.primary.main, 0.1),
-                  }}
-                /> */}
-
                 <Button
                   variant="contained"
                   fullWidth

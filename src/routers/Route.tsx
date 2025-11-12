@@ -53,6 +53,8 @@ import { UpdateEmailForm } from "../components/Sample/UpdateEmailForm";
 import BookingPage from "../components/Employee/BookingPage";
 import { TerminalBatchCreator } from "../components/Admin/component/InfrastructureEntities/CreateTerminal";
 import AttendancePage from "../components/Employee/AttendancePage";
+import { HotelBatchCreator } from "../components/Admin/component/Hotel/HotelBatchCreator";
+import Tictoctoe from "../components/User/Tictoctoe";
 
 const routes = [
   {
@@ -86,6 +88,10 @@ const routes = [
       {
         path: "/TicketPage",
         element: <TicketPage />,
+      },
+      {
+        path: "/Tictoctoe",
+        element: <Tictoctoe />,
       },
       {
         path: "/contact",
@@ -130,6 +136,10 @@ const routes = [
       {
         path: "/flight/deals",
         element: <FlightDeals />,
+      },
+      {
+        path: "/hotel/Batch",
+        element: <HotelBatchCreator />,
       },
       {
         path: ROUTE_PATHS.FILE_UPLOAD.replace("/", ""),
@@ -189,8 +199,8 @@ const routes = [
         element: <UnlockRequestTable />,
       },
       {
-        path: ROUTE_PATHS.CREATE_GATE_FORM,
-        // element: <TicketTable />,
+        path: ROUTE_PATHS.CREATE_HOTELS,
+        element: <HotelBatchCreator />,
       },
       {
         path: ROUTE_PATHS.TRANSFER_ADMIN,

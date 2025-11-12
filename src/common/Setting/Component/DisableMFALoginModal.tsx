@@ -5,6 +5,7 @@ import type { UserData } from "../../../utils/type";
 import BaseModal from "../../Modal/BaseModal";
 import { useToast } from "../../../context/ToastContext";
 import { useDisabledMFALogin } from "../../../context/Api/usePostApi";
+import { ResponseCode } from "../../../utils/response";
 
 interface IDisableMFALoginModalProps {
   open: boolean;
@@ -25,7 +26,7 @@ const DisableMFALoginModal = ({
 
   const handleLockAccount = useCallback(async () => {
     if (!user?.id) {
-      return toast("NO id");
+      return toast("No id");
     }
     try {
       const params: { userId: number } = {
@@ -34,12 +35,12 @@ const DisableMFALoginModal = ({
 
       const result = await refetchDisabledMFALogin(params);
 
-      if (result?.resultCode === "00") {
+      if (result?.resultCode === ResponseCode.SUCCESS) {
         toast(result.resultMessage, "success");
         onClose();
         onSuccess();
       } else {
-        toast(result?.resultMessage || "", "error");
+        toast(result?.resultMessage || "Error result", "error");
       }
     } catch (error) {
       console.error("Error locking/unlocking account:", error);
@@ -54,7 +55,7 @@ const DisableMFALoginModal = ({
     return (
       <Box display="flex" gap={1} justifyContent="flex-end" alignItems="center">
         <Button variant="outlined" onClick={handleLockAccount}>
-          {"Submit"}
+          Submit
         </Button>
       </Box>
     );

@@ -84,7 +84,7 @@ export const menuData: TabData = {
     items: [
       {
         icon: <Headphones size={24} />,
-        value: "agency-management",
+        value: "hotel/Batch",
         label: "Quản lý đại lý",
       },
       {

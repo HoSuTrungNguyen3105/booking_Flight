@@ -1,10 +1,12 @@
 export const ResponseCode = {
   SUCCESS: "00",
+  PARTIAL_SUCCESS: "01",
   UNKNOWN: "99",
 };
 
 export const Message = {
   [ResponseCode.SUCCESS]: "Success",
+  [ResponseCode.PARTIAL_SUCCESS]: "Partial success occurred.",
   [ResponseCode.UNKNOWN]: "Unknown error occurred.",
 };
 

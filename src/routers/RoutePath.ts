@@ -31,7 +31,7 @@ export const ROUTE_PATHS = {
   SERVICE: "service",
   MEAL_FORM: "MealForm",
   UNLOCK_REQUEST: "unlock_request",
-  CREATE_GATE_FORM: "CreateGateForm",
+  CREATE_HOTELS: "CreateHotels",
   TRANSFER_ADMIN: "TransferAdminTable",
   FLIGHT_MEALS: "meals",
   FLIGHT_LIST: "flightlist",

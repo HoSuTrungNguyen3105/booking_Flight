@@ -64,6 +64,7 @@ interface ChartData {
   month: string;
   domestic: number;
   international: number;
+  aircrafts: string[];
 }
 
 // Mock data
@@ -116,18 +117,48 @@ const flightRoutes: FlightRoute[] = [
 ];
 
 const chartData: ChartData[] = [
-  { month: "Jan", domestic: 120, international: 80 },
-  { month: "Feb", domestic: 150, international: 95 },
-  { month: "Mar", domestic: 180, international: 110 },
-  { month: "Apr", domestic: 210, international: 130 },
-  { month: "May", domestic: 190, international: 140 },
-  { month: "Jun", domestic: 220, international: 160 },
-  { month: "Jul", domestic: 250, international: 180 },
-  { month: "Aug", domestic: 230, international: 170 },
-  { month: "Sep", domestic: 260, international: 190 },
-  { month: "Oct", domestic: 280, international: 210 },
-  { month: "Nov", domestic: 300, international: 230 },
-  { month: "Dec", domestic: 320, international: 250 },
+  {
+    month: "Jan",
+    domestic: 120,
+    international: 80,
+    aircrafts: ["VN-A321", "VN-A322", "VN-B787"],
+  },
+  {
+    month: "Feb",
+    domestic: 150,
+    international: 95,
+    aircrafts: ["VN-A321", "VN-A322", "VN-B787"],
+  },
+  {
+    month: "Mar",
+    domestic: 180,
+    international: 110,
+    aircrafts: ["VN-A321", "VN-A322", "VN-B787"],
+  },
+  {
+    month: "Apr",
+    domestic: 210,
+    international: 130,
+    aircrafts: ["VN-A321", "VN-A322", "VN-B787"],
+  },
+  {
+    month: "May",
+    domestic: 190,
+    international: 140,
+    aircrafts: ["VN-A321", "VN-A322", "VN-B787"],
+  },
+  {
+    month: "Jun",
+    domestic: 220,
+    international: 160,
+    aircrafts: ["VN-A321", "VN-A322", "VN-B787"],
+  },
+  {
+    month: "Jul",
+    domestic: 250,
+    international: 180,
+    aircrafts: ["VN-A321", "VN-A322", "VN-B787"],
+  },
 ];
 
 const FlightRoutesDashboard: React.FC = () => {

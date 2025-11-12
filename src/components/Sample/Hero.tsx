@@ -92,11 +92,7 @@ const Hero = () => {
             price={e.priceBusiness || 0}
             rating={0}
             name={e.flightNo || ""}
-            // venue="Royal Albert Hall"
-            // image={''}
           />
-          //   <Typography variant="subtitle1">Card {i + 1}</Typography>
-          // </EventCard>
         ))}
       </CardGroup>
     </Box>
