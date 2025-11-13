@@ -39,7 +39,6 @@ const FlightWithSeatLayout: React.FC<FlightWithSeatLayoutProps> = ({
   const {
     detail,
     setMaxSelectSeats,
-    getTypeColor,
     handleSelectSeat,
     setSelectedSeats,
     seatCount,

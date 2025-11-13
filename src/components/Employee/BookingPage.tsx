@@ -16,7 +16,6 @@ import {
   BookingStatus,
   type Booking,
   type DataFlight,
-  type Passenger,
   type Seat,
 } from "../../utils/type";
 import { useAuth } from "../../context/AuthContext";
@@ -34,16 +33,27 @@ import {
   type BookingState,
 } from "./types/booking";
 
-// --- Types cho reducer ---
-
 const BookingPage = () => {
   const location = useLocation();
-  const data = location.state.seat as Seat;
+  const { data, flightId } = location.state as {
+    data: Seat;
+    flightId: DataFlight;
+  };
+  const [bookingData, setBookingData] = useState({
+    passengerId: "",
+    flightId,
+    seatId: [] as number[],
+    bookingCode: "",
+    seatClass: "ECONOMY",
+    seatNo: "",
+    seatPrice: 0,
+    mealOrders: [] as { mealId: number; quantity: number; price: number }[],
+  });
 
   const { dataSeatTypes } = useFindAllSeatTypes();
   const optionsSeatTypes = mapStringToDropdown(dataSeatTypes?.data || []);
   const { passenger } = useAuth();
-  const paymoney = localStorage.getItem("paymoney") as Currency;
+  // const paymoney = localStorage.getItem("paymoney") as Currency;
 
   const [state, dispatch] = useReducer(
     (state: BookingState, action: Action): BookingState => {
@@ -52,6 +62,20 @@ const BookingPage = () => {
           return { ...state, selectedFlight: action.payload };
         case ACTIONS.SELECT_SEATS:
           return { ...state, selectedSeats: action.payload };
+        case ACTIONS.UPDATE_MEAL: {
+          const { mealId, quantity, id } = action;
+          const exists = state.mealOrders.find((m) => m.mealId === mealId);
+          let mealOrders;
+          if (exists) {
+            mealOrders = state.mealOrders.map((m) =>
+              m.mealId === mealId ? { ...m, quantity } : m
+            );
+          } else {
+            mealOrders = [...state.mealOrders, { id, mealId, quantity }];
+          }
+          return { ...state, mealOrders };
+        }
+
         case ACTIONS.SET_PASSENGER_INFO:
           return {
             ...state,
@@ -180,7 +204,7 @@ const BookingPage = () => {
               >
                 <Typography fontWeight={600}>Giá vé:</Typography>
                 <Typography color="primary" fontWeight={700}>
-                  {convertCurrency(form.seatPrice ?? 0, paymoney)}
+                  {/* {convertCurrency(form.seatPrice ?? 0, paymoney)} */}
                 </Typography>
               </Box>
             </Grid>

@@ -15,6 +15,7 @@ import type { GridRenderCellParams } from "@mui/x-data-grid";
 import FlightStatus from "./FlightStatus";
 import { useDeleteManyFlightIds } from "../../../../context/Api/usePostApi";
 import { useToast } from "../../../../context/ToastContext";
+import { ResponseCode } from "../../../../utils/response";
 
 export default function FlightList() {
   const { getFlightData, refetchGetFlightData, loadingFlightData } =
@@ -66,7 +67,7 @@ export default function FlightList() {
 
     const res = await refetchDeleteManyFlightIds(ids);
 
-    if (res?.resultCode === "00") {
+    if (res?.resultCode === ResponseCode.SUCCESS) {
       toast(res.resultMessage);
     } else {
       toast(res?.resultMessage || "", "info");

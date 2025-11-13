@@ -53,12 +53,24 @@ export type CodeItem = {
   acodeName?: string;
 };
 
+export enum FlightStatusType {
+  SCHEDULED = "SCHEDULED",
+  BOARDING = "BOARDING",
+  DELAYED = "DELAYED",
+  DEPARTED = "DEPARTED",
+  IN_AIR = "IN_AIR",
+  ARRIVED = "ARRIVED",
+  CANCELLED = "CANCELLED",
+  COMPLETED = "COMPLETED",
+}
+
 export type FlightStatus = {
   id: number;
   flightId?: number;
   status: string;
   description: string;
   updatedAt: number;
+  flight: DataFlight;
 };
 
 export type DataFlight = {
@@ -79,10 +91,10 @@ export type DataFlight = {
   gateId?: string;
   // terminal?: string;
   isDomestic?: boolean;
-  isCancelled?: boolean;
-  delayMinutes?: number | null;
-  cancellationReason?: string;
-  delayReason?: string;
+  // isCancelled?: boolean;
+  // delayMinutes?: number | null;
+  // cancellationReason?: string;
+  // delayReason?: string;
   aircraft?: Aircraft;
   departureAirportRel?: Airport;
   arrivalAirportRel?: Airport;

@@ -44,8 +44,8 @@ export const useFlightCreateAndUpdate = ({
     priceFirst: 0,
     gateId: "",
     isDomestic: false,
-    isCancelled: false,
-    delayMinutes: 0,
+    // isCancelled: false,
+    // delayMinutes: 0,
     seats: [],
   });
 
@@ -176,12 +176,12 @@ export const useFlightCreateAndUpdate = ({
         priceFirst: formData.priceFirst,
         isDomestic: formData.isDomestic,
         gateId: formData.gateId,
-        isCancelled: formData.isCancelled,
-        delayMinutes: formData.delayMinutes,
-        cancellationReason: formData.isCancelled
-          ? formData.cancellationReason
-          : undefined,
-        delayReason: formData.delayMinutes ? formData.delayReason : undefined,
+        // isCancelled: formData.isCancelled,
+        // delayMinutes: formData.delayMinutes,
+        // cancellationReason: formData.isCancelled
+        //   ? formData.cancellationReason
+        //   : undefined,
+        // delayReason: formData.delayMinutes ? formData.delayReason : undefined,
       };
 
       const response =

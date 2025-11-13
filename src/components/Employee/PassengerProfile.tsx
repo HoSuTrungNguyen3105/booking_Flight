@@ -13,13 +13,11 @@ import { Link } from "react-router-dom";
 import InputTextField from "../../common/Input/InputTextField";
 import TicketPage from ".";
 import PhoneInput from "react-phone-input-2";
-// import type { E164Number } from "react-phone-number-input";
 import "react-phone-input-2/lib/style.css";
 import { useUpdatePassengerInProfile } from "../../context/Api/usePostApi";
 import { DateFormatEnum, formatDate } from "../../hooks/format";
 import { refethDistancesToGetCallingCode } from "../../context/Api/useGetLocation";
 import theme from "../../scss/theme";
-import { locales } from "../../i18n";
 
 type ProfilePassenger = Pick<
   Passenger,
@@ -29,31 +27,7 @@ type ProfilePassenger = Pick<
 const PassengerProfile = () => {
   const { passenger, countryCode } = useAuth();
   const [callingCode, setCallingCode] = useState("");
-
-  useEffect(() => {
-    const fetch = async () => {
-      if (passenger == null) return;
-      const res = await refethDistancesToGetCallingCode(countryCode);
-      setCallingCode(res?.data.callingCode || "");
-    };
-
-    if (countryCode) {
-      fetch();
-    }
-  }, [countryCode]);
-
   const [value, setValue] = useState("account");
-
-  type LocaleKey = keyof typeof locales;
-
-  const localesFilter: LocaleKey[] = [];
-
-  const handleChangeToggle = (
-    _: React.MouseEvent<HTMLElement>,
-    newValue: string
-  ) => {
-    if (newValue !== null) setValue(newValue);
-  };
 
   const { refetchUpdatePassengerInProfile } = useUpdatePassengerInProfile(
     passenger?.id || ""
@@ -67,15 +41,25 @@ const PassengerProfile = () => {
     lastLoginDate: undefined,
   });
 
+  // Fetch mã quốc gia khi có countryCode
+  useEffect(() => {
+    if (!countryCode) return;
+    const fetch = async () => {
+      const res = await refethDistancesToGetCallingCode(countryCode);
+      setCallingCode(res?.data.callingCode || "");
+    };
+    fetch();
+  }, [countryCode]);
+
+  // Khi passenger có dữ liệu => update form ngay
   useEffect(() => {
     if (passenger) {
       let phone = passenger.phone || "";
 
-      if (!phone.startsWith("+")) {
+      // Nếu số chưa có dấu + thì thêm vào
+      if (!phone.startsWith("+") && callingCode) {
         phone = `+${callingCode}${phone.replace(/^0/, "")}`;
       }
-
-      phone.replace(/^\+(\d{1,3})\s*(\d+)$/, "+$1 $2");
 
       setFormValues({
         fullName: passenger.fullName || "",
@@ -88,37 +72,30 @@ const PassengerProfile = () => {
   }, [passenger, callingCode]);
 
   const handleChange = (name: keyof ProfilePassenger, value: string) => {
-    setFormValues({
-      ...formValues,
+    setFormValues((prev) => ({
+      ...prev,
       [name]: value,
-    });
+    }));
   };
 
-  const addPlusToPhoneNumber = (phoneNumber: string) => {
-    if (!phoneNumber.startsWith("+")) {
-      return "+" + phoneNumber;
-    }
-    return phoneNumber;
+  const handleChangeToggle = (
+    _: React.MouseEvent<HTMLElement>,
+    newValue: string
+  ) => {
+    if (newValue !== null) setValue(newValue);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (formValues.phone) {
-      let phone = formValues.phone;
-      addPlusToPhoneNumber(phone);
-      if (!phone.startsWith("+")) {
-        phone = callingCode + " " + phone.slice(2);
-      } else if (!phone.startsWith(callingCode)) {
-        phone = phone;
-      }
 
-      setFormValues({ ...formValues, phone });
+    const formattedPhone = formValues.phone.startsWith("+")
+      ? formValues.phone
+      : `+${callingCode}${formValues.phone.replace(/^0/, "")}`;
 
-      const res = await refetchUpdatePassengerInProfile({
-        ...formValues,
-        phone,
-      });
-    }
+    await refetchUpdatePassengerInProfile({
+      ...formValues,
+      phone: formattedPhone,
+    });
   };
 
   return (
@@ -128,7 +105,7 @@ const PassengerProfile = () => {
       onSubmit={handleSubmit}
       sx={{
         maxWidth: "80%",
-        margin: "25px auto 10px ",
+        margin: "25px auto 10px",
         display: "flex",
         flexDirection: "column",
         gap: 3,
@@ -169,12 +146,7 @@ const PassengerProfile = () => {
               country={
                 !formValues.phone ? countryCode.toLowerCase() : undefined
               }
-              //onlyCountries={["vi", "en", "ko", "jp"]}
-              // preserveOrder={["onlyCountries", "preferredCountries"]}
-              // onlyCountries={localesFilter.map((c) => c.toLowerCase())}
               value={formValues.phone}
-              // masks={{ fr: "(...) ..-..-..", at: "(....) ...-...." }}
-              // areaCodes={{ vn: ["84"], fr: ["369", "463"], us: ["300"] }}
               onChange={(value) => handleChange("phone", value)}
               inputStyle={{
                 width: "100%",

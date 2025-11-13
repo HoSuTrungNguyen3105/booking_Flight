@@ -3,21 +3,15 @@ import { useState, useRef, useEffect, type ReactNode } from "react";
 import { User, Star, Folder, Info, Tag, Users, Headphones } from "lucide-react";
 import DirectionsRunIcon from "@mui/icons-material/DirectionsRun";
 import ButtonLink from "../AdditionalCustomFC/ButtonLink";
-// import { useAuth } from "../../context/AuthContext";
 import { Building2, Zap } from "lucide-react";
 import theme from "../../scss/theme";
+import { useAuth } from "../../context/AuthContext";
 
 type MenuItem = {
   value: string;
   icon: ReactNode;
   label: string;
 };
-
-// type MenuItem = {
-//   value: string;
-//   icon: React.ReactNode;
-//   label: string;
-// };
 
 type TabData = {
   [key: string]: {
@@ -57,9 +51,8 @@ export const menuData: TabData = {
       },
     ],
   },
-
-  Platform: {
-    name: "Platform",
+  Admin: {
+    name: "Admin",
     items: [
       {
         icon: <Building2 size={24} />,
@@ -78,7 +71,6 @@ export const menuData: TabData = {
       },
     ],
   },
-
   Solutions: {
     name: "Solutions",
     items: [
@@ -89,16 +81,15 @@ export const menuData: TabData = {
       },
       {
         icon: <Star size={24} />,
-        value: "ticket-class-policy",
+        value: "TripSummary",
         label: "Chính sách hạng vé",
       },
     ],
   },
-
   Pricing: {
     name: "Pricing",
     items: [
-      { icon: <Tag size={24} />, value: "pricing-table", label: "Bảng giá" },
+      { icon: <Tag size={24} />, value: "OrderMeal", label: "Bảng giá" },
       {
         icon: <Info size={24} />,
         value: "pricing-terms",
@@ -106,7 +97,6 @@ export const menuData: TabData = {
       },
     ],
   },
-
   Resources: {
     name: "Resources",
     items: [
@@ -118,7 +108,6 @@ export const menuData: TabData = {
       },
     ],
   },
-
   Company: {
     name: "Company",
     items: [
@@ -129,13 +118,11 @@ export const menuData: TabData = {
 };
 
 export default function NavbarItem() {
-  //   const { isAdmin } = useAuth();
+  const { isAdmin } = useAuth();
   const [activeTab, setActiveTab] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  const handleTabClick = (tab: string) => {
+  const handleTabClick = (tab: string) =>
     setActiveTab((prev) => (prev === tab ? null : tab));
-  };
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -150,9 +137,14 @@ export default function NavbarItem() {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
+  // Lọc tab hiển thị
+  const visibleTabs = Object.keys(menuData).filter(
+    (tab) => isAdmin || menuData[tab].name !== "Admin"
+  );
+
   return (
     <Box sx={{ width: "100%", position: "relative" }}>
-      {/* ==== NAV BAR ==== */}
+      {/* NAV BAR */}
       <Box
         sx={{
           display: "flex",
@@ -166,8 +158,7 @@ export default function NavbarItem() {
         <Typography variant="h5" sx={{ fontWeight: 700 }}>
           NAVAN
         </Typography>
-
-        {Object.keys(menuData).map((tab) => (
+        {visibleTabs.map((tab) => (
           <Button
             key={tab}
             onClick={() => handleTabClick(tab)}
@@ -179,17 +170,15 @@ export default function NavbarItem() {
               borderBottom: activeTab === tab ? "2px solid #6a0dad" : "none",
               borderRadius: 0,
               textTransform: "none",
-              "&:hover": {
-                color: "#6a0dad",
-                background: "transparent",
-              },
+              "&:hover": { color: "#6a0dad", background: "transparent" },
             }}
           >
-            {tab}
+            {menuData[tab].name}
           </Button>
         ))}
       </Box>
 
+      {/* DROPDOWN */}
       {activeTab && menuData[activeTab].name.length > 0 && (
         <Paper
           ref={dropdownRef}
@@ -204,12 +193,10 @@ export default function NavbarItem() {
             px: 6,
             display: "grid",
             gridTemplateColumns: "repeat(2, 1fr)",
-            gap: 4,
+            gap: 2,
             borderRadius: 2,
             boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
             zIndex: 50,
-            opacity: 0,
-            transform: "translateY(-10px)",
             animation: "fadeSlideIn 0.25s forwards",
             "@keyframes fadeSlideIn": {
               "0%": { opacity: 0, transform: "translateY(-10px)" },
@@ -225,7 +212,7 @@ export default function NavbarItem() {
             <Divider sx={{ my: 3 }} />
           </Typography>
 
-          {menuData[activeTab].items.map((item, idx) => (
+          {menuData[activeTab].items.map((item) => (
             <Box
               key={item.label}
               onClick={() => setActiveTab(null)}
@@ -243,32 +230,31 @@ export default function NavbarItem() {
                 },
               }}
             >
-              <Box
-                sx={{
-                  width: 50,
-                  height: 50,
-                  borderRadius: 2,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  bgcolor: theme.palette.primary.light,
-                  color: theme.palette.primary.dark,
-                  transition: "all 0.25s ease",
-                  "&:hover": {
-                    bgcolor: theme.palette.primary.main,
-                    boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-                  },
-                }}
-              >
-                {item.icon}
-              </Box>
-
               <ButtonLink
-                key={idx}
+                leftIcon={
+                  <Box
+                    sx={{
+                      width: 50,
+                      height: 50,
+                      borderRadius: 2,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      bgcolor: theme.palette.primary.light,
+                      color: theme.palette.primary.dark,
+                      transition: "all 0.25s ease",
+                      "&:hover": {
+                        bgcolor: theme.palette.primary.main,
+                        boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                      },
+                    }}
+                  >
+                    {item.icon}
+                  </Box>
+                }
                 url={item.value}
                 text={item.label}
                 variant="text"
-                //   sx={{ textTransform: "none", fontWeight: 500 }}
               />
             </Box>
           ))}

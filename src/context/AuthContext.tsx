@@ -29,6 +29,7 @@ import { ResponseCode } from "../utils/response";
 import { useGetMyAdminInfo, useGetMyUserInfo } from "./Api/usePostApi";
 import { refetchDistance } from "./Api/useGetLocation";
 import type { AuthType } from "../components/Auth/Login";
+import { useLocation } from "react-router-dom";
 
 export type UserWithMFA = {
   email: string;
@@ -200,18 +201,43 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const resetValidation = useCallback(() => setIsValid(false), []);
 
   /** Fetch thông tin user */
-  const fetchMyUserInfo = useCallback(async (id?: string) => {
-    if (!id) return;
-    const res = await refetchGetMyUserInfo({ id });
-    if (res?.resultCode === ResponseCode.SUCCESS && res.data) {
-      setPassenger(res.data);
-      setIsAuthenticated(true);
-    } else {
-      setPassenger(null);
-      setIsAuthenticated(false);
-    }
-    return res;
-  }, []);
+  // const fetchMyUserInfo = useCallback(async (id?: string) => {
+  //   if (!id) return;
+  //   const res = await refetchGetMyUserInfo({ id });
+  //   if (res?.resultCode === ResponseCode.SUCCESS && res.data) {
+  //     setPassenger(res.data);
+  //     setIsAuthenticated(true);
+  //   } else {
+  //     setPassenger(null);
+  //     setIsAuthenticated(false);
+  //   }
+  //   return res;
+  // }, []);
+
+  const fetchMyUserInfo = useCallback(
+    async (id?: string) => {
+      if (!id) return;
+
+      try {
+        const res = await refetchGetMyUserInfo({ id });
+
+        if (res?.resultCode === ResponseCode.SUCCESS && res.data) {
+          setPassenger(res.data);
+          setIsAuthenticated(true);
+        } else {
+          setPassenger(null);
+          setIsAuthenticated(false);
+        }
+
+        return res;
+      } catch (error) {
+        console.error("Fetch user info failed:", error);
+        setPassenger(null);
+        setIsAuthenticated(false);
+      }
+    },
+    [refetchGetMyUserInfo]
+  ); // nhớ thêm dependency
 
   /** Fetch thông tin admin */
   const fetchMyAdminInfo = useCallback(
@@ -381,17 +407,17 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setIsAuthenticated(true);
 
       await hasValidLogin();
-      // if (!valid) return;
 
       if (savedState === "ID,PW") {
         await fetchMyUserInfo(savedId);
         return;
       }
-      if (savedState === "ADMIN") {
+      if (savedState === "ADMIN" || savedState === "DEV") {
         await fetchMyAdminInfo(Number(savedId));
         return;
       }
     };
+
     initAuth();
   }, []);
 

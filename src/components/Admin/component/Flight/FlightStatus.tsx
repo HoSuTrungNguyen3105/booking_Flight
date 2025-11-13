@@ -13,6 +13,8 @@ import {
 } from "../../../../context/Api/usePostApi";
 import { useToast } from "../../../../context/ToastContext";
 import InputTextField from "../../../../common/Input/InputTextField";
+import { ResponseCode } from "../../../../utils/response";
+import { FlightStatusType } from "../../../../utils/type";
 
 const FlightStatus = ({ onReturn }: { onReturn: () => void }) => {
   const { dataFlightStatuses } = useFindAllFlightStatuses();
@@ -54,11 +56,11 @@ const FlightStatus = ({ onReturn }: { onReturn: () => void }) => {
         });
       }
 
-      if (res?.resultCode === "00") {
+      if (res?.resultCode === ResponseCode.SUCCESS) {
         toast(res.resultMessage);
         refetchGetAllFlightIds();
       } else {
-        toast(res?.resultMessage || "", "error");
+        toast(res?.resultMessage || "error", "error");
       }
     },
     [
@@ -89,15 +91,23 @@ const FlightStatus = ({ onReturn }: { onReturn: () => void }) => {
     });
   };
 
-  const getStatusColor = (status: string): string => {
-    switch (status.toUpperCase()) {
-      case "APPROVED":
+  const getStatusColor = (status: FlightStatusType): string => {
+    switch (status) {
+      case FlightStatusType.COMPLETED:
         return "success";
-      case "PENDING":
+      case FlightStatusType.ARRIVED:
         return "warning";
-      case "REJECTED":
+      case FlightStatusType.DELAYED:
         return "error";
-      case "CANCELLED":
+      case FlightStatusType.CANCELLED:
+        return "default";
+      case FlightStatusType.BOARDING:
+        return "success";
+      case FlightStatusType.DEPARTED:
+        return "warning";
+      case FlightStatusType.IN_AIR:
+        return "error";
+      case FlightStatusType.SCHEDULED:
         return "default";
       default:
         return "info";
@@ -111,7 +121,7 @@ const FlightStatus = ({ onReturn }: { onReturn: () => void }) => {
   const statusOptions = mapStringToDropdown(dataFlightStatuses?.data || []).map(
     (item) => ({
       ...item,
-      color: getStatusColor(item.value),
+      color: item.value, //getStatusColor
     })
   );
 
@@ -196,7 +206,11 @@ const FlightStatus = ({ onReturn }: { onReturn: () => void }) => {
 
                       <Chip
                         label={statusLabel}
-                        sx={{ color: getStatusColor(statusLabel) }}
+                        sx={{
+                          color: getStatusColor(
+                            statusLabel as FlightStatusType
+                          ),
+                        }}
                         variant="filled"
                         size="small"
                       />
@@ -246,7 +260,7 @@ const FlightStatus = ({ onReturn }: { onReturn: () => void }) => {
                           handleSave(
                             "update",
                             statusId,
-                            flight.flightStatuses[0].id
+                            flight.flightStatuses[0].flightId
                           )
                         }
                         disabled={!isFlightEdited(statusId)}
@@ -270,7 +284,9 @@ const FlightStatus = ({ onReturn }: { onReturn: () => void }) => {
                       sx={{
                         width: "33%",
                         height: "100%",
-                        bgcolor: getStatusColor(statusLabel),
+                        bgcolor: getStatusColor(
+                          statusLabel as FlightStatusType
+                        ),
                         borderRadius: 2,
                       }}
                     />

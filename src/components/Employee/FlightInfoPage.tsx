@@ -37,7 +37,8 @@ interface SearchFormData {
 
 const FlightInfoPage: React.FC = () => {
   const { getAllFlightInfoInfo } = useGetAllFlightMainInfo();
-  const { setParamsSearch, refetchSeatTypes } = useSearchFlightFromPassenger();
+  const { setParamsSearch, refetchSearchFlightFromPassenger } =
+    useSearchFlightFromPassenger();
   const res = getAllFlightInfoInfo?.list || [];
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState(0);
@@ -65,9 +66,11 @@ const FlightInfoPage: React.FC = () => {
   const onSearch = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const res = await refetchSeatTypes({
+    const res = await refetchSearchFlightFromPassenger({
       ...search,
     });
+
+    console.log("res search flight:", res);
 
     //   //   const filteredFlights = res.filter((f: SearchFormData) => {
     //   //       const matchDeparture = search.departureAirport
@@ -127,7 +130,7 @@ const FlightInfoPage: React.FC = () => {
     //   );
     // });
 
-    setFiltered([]);
+    setFiltered(res?.list || []);
   };
 
   /** Reset filter */

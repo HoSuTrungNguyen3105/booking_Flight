@@ -23,6 +23,7 @@ import {
   Share,
   CalendarToday,
 } from "@mui/icons-material";
+import theme from "../../scss/theme";
 
 interface EventCardProps {
   link: () => void;
@@ -31,7 +32,6 @@ interface EventCardProps {
   location: string;
   price: number;
   rating?: number;
-  tagColor?: string;
   tagLabel?: string;
   date?: string;
   onFavorite?: () => void;
@@ -47,7 +47,6 @@ const EventCard: React.FC<EventCardProps> = ({
   location,
   price,
   rating = 0,
-  tagColor,
   tagLabel,
   date,
   onFavorite,
@@ -55,7 +54,6 @@ const EventCard: React.FC<EventCardProps> = ({
   onShare,
   availableSpots,
 }) => {
-  const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [imageLoaded, setImageLoaded] = React.useState(false);
   const [imageError, setImageError] = React.useState(false);
@@ -163,7 +161,7 @@ const EventCard: React.FC<EventCardProps> = ({
               <Chip
                 label={tagLabel}
                 sx={{
-                  backgroundColor: tagColor || theme.palette.primary.main,
+                  backgroundColor: theme.palette.primary.main,
                   color: "#fff",
                   fontWeight: 600,
                   fontSize: "0.75rem",

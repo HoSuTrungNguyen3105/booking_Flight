@@ -32,6 +32,7 @@ import {
   type Hotel,
   type UserSession,
   type SearchFlightFromPassengerParams,
+  type DataFlight,
 } from "../../utils/type.ts";
 import { useFetch } from "../use[custom]/useFetch.ts";
 import type { ActionType } from "../../common/Dropdown/SelectDropdown.tsx";
@@ -1023,7 +1024,7 @@ export interface FlightSearchFromPassengerRes {
 
 export const useSearchFlightFromPassenger = () => {
   const { refetch, loading, setParams } = useFetch<
-    DetailResponseMessage<string[]>,
+    DetailResponseMessage<DataFlight>,
     SearchFlightFromPassengerParams
   >({
     url: "/sys/flights/passenger/searchs",
@@ -1032,8 +1033,8 @@ export const useSearchFlightFromPassenger = () => {
   });
   return {
     setParamsSearch: setParams,
-    refetchSeatTypes: refetch,
-    loadingSeatTypes: loading,
+    refetchSearchFlightFromPassenger: refetch,
+    loadingSearchFlightFromPassenger: loading,
   };
 };
 

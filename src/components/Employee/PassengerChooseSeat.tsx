@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -17,11 +17,12 @@ import theme from "../../scss/theme";
 import { useChooseSeatToBooking } from "./useChooseSeatToBooking";
 import ButtonSeat from "../Admin/component/Seat/ButtonSeat";
 import { useLocation, useNavigate } from "react-router-dom";
+import { string } from "prop-types";
 
 const PassengerChooseSeat = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { id } = location.state || {};
+  const { id } = location.state || { id: string };
   const {
     detail,
     handleSelectSeat,
@@ -29,11 +30,17 @@ const PassengerChooseSeat = () => {
     filteredSeats,
     handleResetSelections,
     handleOpenUpdateModal,
-    getAllInfoFlightByIdData,
+    flightData,
     selectedSeats,
   } = useChooseSeatToBooking({
     id,
   });
+
+  console.log("handleSelectSeat", handleSelectSeat, selectedSeats);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
   return (
     <Box
@@ -287,9 +294,7 @@ const PassengerChooseSeat = () => {
             }}
           >
             <Typography variant="h5" fontWeight={800} color="primary.main">
-              {getAllInfoFlightByIdData?.data?.aircraft?.model ||
-                "Unknown Model"}{" "}
-              — Seat Map
+              {flightData?.aircraft?.model || "Unknown Model"} — Seat Map
             </Typography>
           </Box>
 

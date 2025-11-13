@@ -7,7 +7,6 @@ import { useSeatColor } from "../hook/useSeatColor";
 import { type SeatFeatures } from "../modal/SeatManagementModal";
 
 interface ButtonSeatProps {
-  // mode : 'type' | 'hasValueSeat',
   seat: Seat;
   selectedSeats: Seat[];
   handleSelectSeat: (seat: Seat) => void;

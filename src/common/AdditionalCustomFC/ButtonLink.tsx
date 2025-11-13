@@ -1,10 +1,11 @@
 import { Button, Box } from "@mui/material";
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
+import { memo } from "react";
 
 interface IProps {
   url: string;
-  text: string;
+  text: ReactNode;
   color?: "primary" | "secondary" | "success" | "error" | "info" | "warning";
   variant: "contained" | "outlined" | "text";
   leftIcon?: ReactNode;
@@ -29,6 +30,7 @@ const ButtonLink: React.FC<IProps> = ({
         color: "gray",
         fontSize: "1.1rem",
         fontWeight: "bold",
+        gap: 1,
         textTransform: "none",
         "&:hover": {
           color: "black",
@@ -41,6 +43,7 @@ const ButtonLink: React.FC<IProps> = ({
       )}
 
       {text}
+
       {rightIcon && (
         <Box sx={{ display: "flex", alignItems: "center" }}>{rightIcon}</Box>
       )}
@@ -48,4 +51,4 @@ const ButtonLink: React.FC<IProps> = ({
   );
 };
 
-export default ButtonLink;
+export default memo(ButtonLink);

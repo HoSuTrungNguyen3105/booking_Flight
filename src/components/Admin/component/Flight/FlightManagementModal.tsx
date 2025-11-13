@@ -153,30 +153,6 @@ const FlightManagementModal = ({
       ),
       size: 12,
     },
-    {
-      title: "Cancelled Status",
-      description: (
-        <Activity mode={formData.isCancelled ? "visible" : "hidden"}>
-          <Cancel color="error" />
-          <Typography color="error.main" fontWeight="500">
-            Chuyến bay đã bị hủy
-          </Typography>
-        </Activity>
-      ),
-      size: 12,
-    },
-    {
-      title: "Active Status",
-      description: (
-        <Activity mode={!formData.isCancelled ? "visible" : "hidden"}>
-          <CheckCircle color="success" />
-          <Typography color="success.main" fontWeight="500">
-            Chuyến bay đang hoạt động
-          </Typography>
-        </Activity>
-      ),
-      size: 12,
-    },
   ];
 
   const renderBasicInfo = useCallback(() => {
@@ -252,107 +228,6 @@ const FlightManagementModal = ({
               onChange={(e) => handleInputChange("gateId", e as string)}
             />
           </Grid>
-
-          {/* Thời gian trễ */}
-          <Grid size={6}>
-            <Typography sx={{ mb: 1, fontWeight: 500 }}>
-              Thời gian trễ (phút)
-            </Typography>
-            <InputTextField
-              type="number"
-              value={String(formData.delayMinutes ?? 0)}
-              onChange={(e) => handleInputChange("delayMinutes", parseInt(e))}
-              placeholder="Nhập số phút delay (nếu có)"
-            />
-          </Grid>
-
-          {/* Chỉ hiển thị khi ở mode update */}
-          <Activity mode={mode === "update" ? "visible" : "hidden"}>
-            <Grid size={12}>
-              <Box
-                sx={{
-                  p: 2,
-                  borderRadius: 2,
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 2,
-                  bgcolor: formData.isCancelled
-                    ? "error.light"
-                    : "success.light",
-                }}
-              >
-                {/* Trạng thái chuyến bay */}
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="space-between"
-                >
-                  <Box display="flex" alignItems="center" gap={1}>
-                    <Activity
-                      mode={formData.isCancelled ? "visible" : "hidden"}
-                    >
-                      <Cancel color="error" />
-                      <Typography color="error.main" fontWeight={500}>
-                        Chuyến bay đã bị hủy
-                      </Typography>
-                    </Activity>
-                    <Activity
-                      mode={!formData.isCancelled ? "visible" : "hidden"}
-                    >
-                      <CheckCircle color="success" />
-                      <Typography color="success.main" fontWeight={500}>
-                        Chuyến bay đang hoạt động
-                      </Typography>
-                    </Activity>
-                  </Box>
-
-                  <Android12Switch
-                    checked={formData.isCancelled}
-                    onChange={(e) =>
-                      handleInputChange("isCancelled", e.target.checked)
-                    }
-                  />
-                </Box>
-
-                {/* Lý do hủy chuyến */}
-                <Activity mode={formData.isCancelled ? "visible" : "hidden"}>
-                  <Box>
-                    <Typography sx={{ mb: 1, fontWeight: 500 }}>
-                      Lý do hủy chuyến
-                    </Typography>
-                    <InputTextField
-                      value={formData.cancellationReason}
-                      onChange={(e) =>
-                        handleInputChange("cancellationReason", e as string)
-                      }
-                      placeholder="Nhập lý do hủy chuyến"
-                    />
-                  </Box>
-                </Activity>
-              </Box>
-              {/* Lý do delay */}
-              <Activity
-                mode={
-                  formData.delayMinutes && formData.delayMinutes > 0
-                    ? "visible"
-                    : "hidden"
-                }
-              >
-                <Box>
-                  <Typography sx={{ mt: 1, fontWeight: 500 }}>
-                    Lý do delay
-                  </Typography>
-                  <InputTextField
-                    value={formData.delayReason || ""}
-                    onChange={(e) =>
-                      handleInputChange("delayReason", e as string)
-                    }
-                    placeholder="Nhập lý do delay"
-                  />
-                </Box>
-              </Activity>
-            </Grid>
-          </Activity>
         </Grid>
       </Box>
     ),

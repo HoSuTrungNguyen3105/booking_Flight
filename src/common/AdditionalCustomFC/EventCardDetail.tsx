@@ -12,22 +12,9 @@ import {
   ListItem,
   ListItemText,
 } from "@mui/material";
-import { Event, LocationOn, CalendarToday } from "@mui/icons-material";
+import { LocationOn, CalendarToday } from "@mui/icons-material";
 import theme from "../../scss/theme";
 import { useLocation } from "react-router-dom";
-
-interface Ticket {
-  name: string;
-  status: "available" | "soldout";
-}
-
-interface EventCardProps {
-  eventName: string;
-  date: string;
-  venue: string;
-  description: string;
-  tickets: Ticket[];
-}
 
 const EventCardDetail = () => {
   const location = useLocation();

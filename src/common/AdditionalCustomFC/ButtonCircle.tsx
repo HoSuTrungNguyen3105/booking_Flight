@@ -68,7 +68,6 @@ const ButtonCircle: React.FC<ButtonCircleProps> = ({
     </Box>
   );
 
-  // Nếu có url → bọc Link
   if (url) {
     return (
       <Link

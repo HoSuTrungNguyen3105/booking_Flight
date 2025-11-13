@@ -132,6 +132,10 @@ export const useSeatInFlightDetail = ({ id }: FlightWithSeatLayoutProps) => {
     { key: "EXIT_ROW", label: "Exit Row" },
     { key: "EXTRA_LEGROOM", label: "Extra Legroom" },
     { key: "HANDICAP_ACCESSIBLE", label: "Accessible" },
+    { key: "IS_BOOKED", label: "Booked" },
+    { key: "IS_NEAR_LAVATORY", label: "Near Lavatory" },
+    { key: "IS_UPPERDECK", label: "Upper Deck" },
+    { key: "IS_WING", label: "Wing" },
   ];
 
   const filteredSeats = useMemo(() => {
@@ -144,10 +148,10 @@ export const useSeatInFlightDetail = ({ id }: FlightWithSeatLayoutProps) => {
       EXIT_ROW: "isExitRow",
       EXTRA_LEGROOM: "isExtraLegroom",
       HANDICAP_ACCESSIBLE: "isHandicapAccessible",
-      IS_BOOKED: "isAvailable",
-      IS_NEAR_LAVATORY: "isExitRow",
-      IS_UPPERDECK: "isExtraLegroom",
-      IS_WING: "isHandicapAccessible",
+      IS_BOOKED: "isBooked",
+      IS_NEAR_LAVATORY: "isNearLavatory",
+      IS_UPPERDECK: "isUpperDeck",
+      IS_WING: "isWing",
     };
 
     const key = filterMap[filter as keyof typeof filterMap];
@@ -168,27 +172,29 @@ export const useSeatInFlightDetail = ({ id }: FlightWithSeatLayoutProps) => {
     (seat: Seat) => {
       setSelectedSeats((prev) => {
         const exists = prev.some((s) => s.id === seat.id);
+
         if (exists) {
-          toast(String(exists));
+          toast("Đã bỏ chọn ghế");
           return prev.filter((s) => s.id !== seat.id);
         }
 
         if (maxSelectSeats === 1) {
-          if (prev.length === 1) {
-            toast(String(maxSelectSeats));
-            setSelectedSeat(seat);
-            setOpenSeatModal(true);
-          }
-
+          // luôn set seat khi chỉ được chọn 1
+          setSelectedSeat(seat);
+          setOpenSeatModal(true);
           return [seat];
         }
-        // toast(String(maxSelectSeats))
 
         if (prev.length < maxSelectSeats) {
-          toast(String(prev));
+          if (seat.isBooked) {
+            toast("Ghế đã được đặt, vui lòng chọn ghế khác");
+            return prev;
+          }
+          toast(`Đã chọn ${prev.length + 1} ghế`);
           return [...prev, seat];
         }
 
+        toast(`Bạn chỉ được chọn tối đa ${maxSelectSeats} ghế`);
         return prev;
       });
     },

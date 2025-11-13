@@ -1,10 +1,11 @@
 import { useCallback, useMemo, useState } from "react";
 import _ from "lodash";
 import { useGetAllInfoFlightByIDData } from "../../context/Api/useGetApi";
-import type { Seat, SeatTypeValue } from "../../utils/type";
+import type { Seat } from "../../utils/type";
 import type { IDetailItem } from "../../common/AdditionalCustomFC/DetailSection";
 import { useToast } from "../../context/ToastContext";
 import type { FilterType } from "../Admin/component/Flight/hooks/useSeatInFlightDetail";
+import { useNavigate } from "react-router-dom";
 
 type FlightWithSeatLayoutProps = {
   id: number;
@@ -12,185 +13,142 @@ type FlightWithSeatLayoutProps = {
 
 export const useChooseSeatToBooking = ({ id }: FlightWithSeatLayoutProps) => {
   const { getAllInfoFlightByIdData } = useGetAllInfoFlightByIDData({ id });
-  const [selectedSeats, setSelectedSeats] = useState<Seat[]>([]);
   const toast = useToast();
+  const navigate = useNavigate();
 
-  const [maxSelectSeats, setMaxSelectSeats] = useState<number>(1);
-  const detail: IDetailItem[] = [
-    {
-      title: "Flight No",
-      description: getAllInfoFlightByIdData?.data?.flightNo,
-      size: 12,
-    },
-    {
-      title: "Aircraft",
-      description: getAllInfoFlightByIdData?.data?.aircraft?.model,
-      size: 12,
-    },
-    {
-      title: "Aircraft Code",
-      description: getAllInfoFlightByIdData?.data?.aircraftCode,
-      size: 12,
-    },
-    {
-      title: "Arrival Airport",
-      description: getAllInfoFlightByIdData?.data?.arrivalAirport,
-      size: 12,
-    },
-    {
-      title: "Departure Airport",
-      description: getAllInfoFlightByIdData?.data?.departureAirport,
-      size: 12,
-    },
-    {
-      title: "City",
-      description: getAllInfoFlightByIdData?.data?.arrivalAirportRel?.city,
-      size: 12,
-    },
-    {
-      title: "Flight ID",
-      description: getAllInfoFlightByIdData?.data?.flightId,
-      size: 12,
-    },
-    {
-      title: "Status",
-      description: getAllInfoFlightByIdData?.data?.flightStatuses?.[0]?.status,
-      size: 12,
-    },
-    {
-      title: "Flight Type",
-      description: getAllInfoFlightByIdData?.data?.flightType,
-      size: 12,
-    },
-    {
-      title: "Seats",
-      description: getAllInfoFlightByIdData?.data?.seats?.length,
-      size: 12,
-    },
-  ];
+  // Seats được chọn
+  const [selectedSeats, setSelectedSeats] = useState<Seat[]>([]);
+  // Chỉ cho phép chọn 1 ghế (nếu cần thay đổi sau này thì mở rộng)
+  const maxSelectSeats = 1;
+  // Lọc loại ghế
+  const [filter] = useState<FilterType>("ALL");
 
-  const [filter, setFilter] = useState<FilterType>("ALL");
-  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
-  const [openSeatModal, setOpenSeatModal] = useState(false);
+  // 🔹 Dữ liệu chi tiết flight
+  const flightData = getAllInfoFlightByIdData?.data;
 
-  const [updateSeat, setUpdateSeat] = useState<{ seatIds: number[] }>({
-    seatIds: [],
-  });
-  const [selectedSeat, setSelectedSeat] = useState<Seat | null>(null);
-  const handleOpenUpdateModal = useCallback(() => {
-    if (selectedSeats.length === 0) {
-      toast("Please select at least one seat to update.");
-      return;
-    }
-    setUpdateSeat({
-      seatIds: selectedSeats.map((seat) => seat.id),
-    });
-
-    setIsUpdateModalOpen(true);
-  }, [selectedSeats]);
-
-  const handleCloseModal = () => {
-    setIsUpdateModalOpen(false);
-  };
-
-  const handleResetSelections = () => {
-    setSelectedSeats([]);
-    setUpdateSeat({
-      seatIds: [],
-    });
-  };
-
-  const filteredSeats = useMemo(() => {
-    if (filter === "ALL") return getAllInfoFlightByIdData?.data?.seats;
-    if (filter === "EXIT_ROW")
-      return getAllInfoFlightByIdData?.data?.seats?.filter((s) => s.isExitRow);
-    if (filter === "EXTRA_LEGROOM")
-      return getAllInfoFlightByIdData?.data?.seats?.filter(
-        (s) => s.isExtraLegroom
-      );
-    if (filter === "AVAILABLE")
-      return getAllInfoFlightByIdData?.data?.seats?.filter(
-        (s) => s.isAvailable
-      );
-    if (filter === "HANDICAP_ACCESSIBLE")
-      return getAllInfoFlightByIdData?.data?.seats?.filter(
-        (s) => s.isHandicapAccessible
-      );
-    if (filter === "IS_BOOKED")
-      return getAllInfoFlightByIdData?.data?.seats?.filter((s) => s.isBooked);
-    if (filter === "IS_NEAR_LAVATORY")
-      return getAllInfoFlightByIdData?.data?.seats?.filter(
-        (s) => s.isNearLavatory
-      );
-    if (filter === "IS_UPPERDECK")
-      return getAllInfoFlightByIdData?.data?.seats?.filter(
-        (s) => s.isUpperDeck
-      );
-    if (filter === "IS_WING")
-      return getAllInfoFlightByIdData?.data?.seats?.filter((s) => s.isWing);
-    return getAllInfoFlightByIdData?.data?.seats?.filter((s) => s.isAvailable);
-  }, [getAllInfoFlightByIdData, filter]);
-
-  const seatNumberCountUnique = _.uniqBy(
-    getAllInfoFlightByIdData?.data?.seats || [],
-    "seatNumber"
+  const detail: IDetailItem[] = useMemo(
+    () => [
+      { title: "Flight No", description: flightData?.flightNo, size: 12 },
+      { title: "Aircraft", description: flightData?.aircraft?.model, size: 12 },
+      {
+        title: "Aircraft Code",
+        description: flightData?.aircraftCode,
+        size: 12,
+      },
+      {
+        title: "Arrival Airport",
+        description: flightData?.arrivalAirport,
+        size: 12,
+      },
+      {
+        title: "Departure Airport",
+        description: flightData?.departureAirport,
+        size: 12,
+      },
+      {
+        title: "City",
+        description: flightData?.arrivalAirportRel?.city,
+        size: 12,
+      },
+      { title: "Flight ID", description: flightData?.flightId, size: 12 },
+      {
+        title: "Status",
+        description: flightData?.flightStatuses?.[0]?.status,
+        size: 12,
+      },
+      { title: "Flight Type", description: flightData?.flightType, size: 12 },
+      { title: "Seats", description: flightData?.seats?.length, size: 12 },
+      { title: "Price First", description: flightData?.priceFirst, size: 12 },
+    ],
+    [flightData]
   );
 
-  const seatCount = seatNumberCountUnique.length;
+  // 🔹 Lọc danh sách ghế
+  const filteredSeats = useMemo(() => {
+    if (!flightData?.seats) return [];
+    const { seats } = flightData;
 
-  const handleSelectSeat = (seat: Seat) => {
-    setSelectedSeats((prev) => {
-      const exists = prev.some((s) => s.id === seat.id);
+    const filters: Record<FilterType, (s: Seat) => boolean> = {
+      ALL: () => true,
+      EXIT_ROW: (s) => !!s.isExitRow,
+      EXTRA_LEGROOM: (s) => !!s.isExtraLegroom,
+      AVAILABLE: (s) => !!s.isAvailable,
+      HANDICAP_ACCESSIBLE: (s) => !!s.isHandicapAccessible,
+      IS_BOOKED: (s) => !!s.isBooked,
+      IS_NEAR_LAVATORY: (s) => !!s.isNearLavatory,
+      IS_UPPERDECK: (s) => !!s.isUpperDeck,
+      IS_WING: (s) => !!s.isWing,
+    };
 
-      if (exists) {
-        return prev.filter((s) => s.id !== seat.id);
-      }
+    return seats.filter(filters[filter] || (() => true));
+  }, [flightData, filter]);
 
-      if (maxSelectSeats === 1) {
-        // setOpenSeatModal(true);
-        setSelectedSeat(selectedSeats[selectedSeats.length - 1]);
-        setOpenSeatModal(true);
-        return [seat];
-      }
+  // 🔹 Đếm số ghế duy nhất
+  const seatCount = useMemo(
+    () => _.uniqBy(flightData?.seats || [], "seatNumber").length,
+    [flightData]
+  );
 
-      if (prev.length < maxSelectSeats) {
-        return [...prev, seat];
-      }
+  // 🔹 Chọn ghế
+  const handleSelectSeat = useCallback(
+    (seat: Seat) => {
+      setSelectedSeats((prev) => {
+        const exists = prev.some((s) => s.id === seat.id);
+        if (exists) {
+          return prev.filter((s) => s.id !== seat.id);
+        }
 
-      return prev;
+        if (maxSelectSeats === 1) {
+          return [seat]; // chỉ giữ 1 ghế
+        }
+
+        if (prev.length < maxSelectSeats) {
+          return [...prev, seat];
+        }
+
+        toast(`You can select up to ${maxSelectSeats} seats only.`);
+        return prev;
+      });
+    },
+    [maxSelectSeats, toast]
+  );
+
+  // 🔹 Reset chọn ghế
+  const handleResetSelections = useCallback(() => {
+    setSelectedSeats([]);
+  }, []);
+
+  // 🔹 Mở trang thanh toán
+  const handleOpenUpdateModal = useCallback(() => {
+    if (selectedSeats.length === 0) {
+      toast("Please select at least one seat to continue.");
+      return;
+    }
+
+    const selectedSeatIds = selectedSeats.map((s) => s.id);
+    const seatNos = selectedSeats.map((s) => s.seatNumber).join(",");
+
+    navigate("/payment", {
+      state: {
+        flightId: id,
+        seats: selectedSeatIds,
+        seatNos,
+        flightData,
+      },
     });
-  };
 
-  // const getTypeColor = (type: string) => {
-  //   switch (type as SeatTypeValue) {
-  //     case "ECONOMY":
-  //       return "#ff9800";
-  //     case "BUSINESS":
-  //       return "#2196f3";
-  //     case "VIP":
-  //       return "#fff3e0";
-  //     case "FIRST":
-  //       return "#d3d3d3";
-  //     default:
-  //       return "#4caf50";
-  //   }
-  // };
+    // Cuộn lên đầu trang (UX)
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [selectedSeats, id, flightData, navigate, toast]);
 
   return {
     detail,
-    // getTypeColor,
     handleSelectSeat,
     seatCount,
     filteredSeats,
     handleResetSelections,
-    handleCloseModal,
-    isUpdateModalOpen,
-    setFilter,
-    openSeatModal,
-    updateSeat,
     handleOpenUpdateModal,
-    getAllInfoFlightByIdData,
+    flightData,
     selectedSeats,
-    filter,
   } as const;
 };

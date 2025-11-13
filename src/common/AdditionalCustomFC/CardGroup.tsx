@@ -6,7 +6,6 @@ import {
   Stack,
   IconButton,
   Fade,
-  useTheme,
 } from "@mui/material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";

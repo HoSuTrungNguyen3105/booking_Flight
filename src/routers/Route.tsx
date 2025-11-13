@@ -55,6 +55,9 @@ import { TerminalBatchCreator } from "../components/Admin/component/Infrastructu
 import AttendancePage from "../components/Employee/AttendancePage";
 import { HotelBatchCreator } from "../components/Admin/component/Hotel/HotelBatchCreator";
 import Tictoctoe from "../components/User/Tictoctoe";
+import FlightSummaryRef from "../components/Employee/FlightSummary";
+import TripSummary from "../components/Employee/TripSummary";
+import OrderMeal from "../components/Admin/component/Meal/OrderMeal";
 
 const routes = [
   {
@@ -94,6 +97,10 @@ const routes = [
         element: <Tictoctoe />,
       },
       {
+        path: "/FlightSummaryRef",
+        element: <FlightSummaryRef />,
+      },
+      {
         path: "/contact",
         element: <ContactPage />,
       },
@@ -108,6 +115,14 @@ const routes = [
       {
         path: "/payment",
         element: <BookingPage />,
+      },
+      {
+        path: "/TripSummary",
+        element: <TripSummary />,
+      },
+      {
+        path: "/OrderMeal",
+        element: <OrderMeal />,
       },
       {
         path: "/AttendancePage",
