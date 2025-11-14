@@ -43,6 +43,52 @@ export interface SeatUpdateProps {
   };
 }
 
+export type LocaleConfig = {
+  locale: string;
+  language: {
+    code: string;
+    name: string;
+  };
+  currency: {
+    code: string;
+    symbol: string;
+    displayName: string;
+  };
+  logo: {
+    url: string;
+    alt: string;
+  };
+  country: {
+    country: string;
+    flag: string;
+  };
+};
+
+// export type LocaleConfig = {
+//   locale: string;
+
+//   language: {
+//     code: string;
+//     name: string;
+//   };
+
+//   currency: {
+//     code: string;
+//     symbol: string;
+//     displayName: string;
+//   };
+
+//   logo: {
+//     url: string;
+//     alt: string;
+//   };
+
+//   country: {
+//     country: string;
+//     flag: string;
+//   };
+// };
+
 // export type DeleteUserProps = {
 //   id: number;
 // };

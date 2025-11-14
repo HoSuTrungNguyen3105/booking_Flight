@@ -34,16 +34,16 @@ const TicketCard: React.FC<{ ticket: Ticket }> = ({ ticket }) => {
         </Typography>
         <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
           <Chip
-            label={ticket.booking.seatClass}
+            label={ticket.bookings.seatClass}
             color={
-              ticket.booking.seatClass === "ECONOMY" ? "primary" : "secondary"
+              ticket.bookings.seatClass === "ECONOMY" ? "primary" : "secondary"
             }
             variant="outlined"
             size="small"
           />
           <Chip
             icon={<EventSeat />}
-            label={`Seat ${ticket.booking.seatNo}`}
+            label={`Seat ${ticket.bookings.seatNo}`}
             variant="filled"
             size="small"
             color="info"
@@ -181,7 +181,7 @@ const TicketCard: React.FC<{ ticket: Ticket }> = ({ ticket }) => {
           Booked at:{" "}
           {formatDate(
             DateFormatEnum.DDD_MMM_D_YYYY,
-            ticket.booking.bookingTime
+            ticket.bookings.bookingTime
           )}
         </Typography>
       </Box>

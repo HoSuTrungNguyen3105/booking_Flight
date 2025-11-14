@@ -1,5 +1,11 @@
 import React, { memo } from "react";
-import { Box, Typography, IconButton } from "@mui/material";
+import {
+  Box,
+  Typography,
+  IconButton,
+  type SxProps,
+  type Theme,
+} from "@mui/material";
 import { Link } from "react-router-dom";
 import theme from "../../scss/theme";
 
@@ -8,6 +14,7 @@ interface ButtonCircleProps {
   setState?: React.Dispatch<React.SetStateAction<boolean>>;
   icon: React.ReactNode;
   text: string;
+  sx?: SxProps<Theme>;
 }
 
 const ButtonCircle: React.FC<ButtonCircleProps> = ({
@@ -15,28 +22,22 @@ const ButtonCircle: React.FC<ButtonCircleProps> = ({
   url,
   icon,
   text,
+  sx,
 }) => {
   const content = (
     <Box
       onClick={() => setState?.(true)}
-      sx={{
-        width: 100,
-        height: 120,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        margin: "0 15px",
-        borderRadius: "50%",
-        transition: "all 0.3s ease",
-        cursor: "pointer",
-        "&:hover": {
-          transform: "scale(1.05)",
-          "& .circle": {
-            backgroundColor: theme.palette.primary.dark,
-          },
+      sx={[
+        {
+          width: 100,
+          height: 120,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
         },
-      }}
+        ...(Array.isArray(sx) ? sx : [sx]), // merge array/object
+      ]}
     >
       <IconButton
         className="circle"

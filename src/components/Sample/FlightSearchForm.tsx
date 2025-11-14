@@ -1,4 +1,4 @@
-import React, { Activity, useCallback, useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   Box,
   Typography,
@@ -7,7 +7,9 @@ import {
   Grid,
   Container,
   Link,
+  FormControlLabel,
   Radio,
+  TextField,
 } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -29,7 +31,7 @@ interface FlightSearchFormProps {
     destination?: string;
     departDate?: number;
     returnDate?: number;
-    type: string;
+    type?: string;
     discountCode?: string;
   };
 }
@@ -42,19 +44,9 @@ const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
     destination: initialData.destination || "",
     departDate: initialData.departDate || 0,
     returnDate: initialData.returnDate || 0,
-    types: initialData.type,
+    type: initialData.type || "Economy",
     discountCode: initialData.discountCode || "",
   });
-
-  //    const pageTransition = addTransitionType({
-  //   name: "page-motion",
-  //   onTransitionStart: () => {
-  //     console.log("🔄 Page transition started");
-  //   },
-  //   onTransitionComplete: () => {
-  //     console.log("✅ Page transition done");
-  //   },
-  // });
 
   const [activeSelect, setActiveSelect] = useState<"roundtrip" | "oneway">(
     "oneway"
@@ -65,18 +57,15 @@ const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
   const optionDataFlightTypes = mapStringToDropdown(
     dataFlightTypes?.data || []
   );
-  // Mock data for airports - in real app, this would come from API
+
   const airports: ActionType[] = (getAllCode?.data?.airport || []).map((e) => ({
     value: e.code,
     label: e.value,
   }));
 
   const handleFilterType = useCallback(() => {
-    if (activeSelect === "oneway") setActiveSelect("roundtrip");
-    else {
-      setActiveSelect("oneway");
-    }
-  }, [activeSelect]);
+    setActiveSelect((prev) => (prev === "oneway" ? "roundtrip" : "oneway"));
+  }, []);
 
   const handleInputChange = (field: string) => () => {
     setFormData((prev) => ({
@@ -85,8 +74,15 @@ const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
     }));
   };
 
+  const handleDropdownChange = (field: string) => (value: string | number) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value as string,
+    }));
+  };
+
   const handleDateChange = (field: string) => (date: number | null) => {
-    if (date) {
+    if (date !== null) {
       setFormData((prev) => ({
         ...prev,
         [field]: date,
@@ -95,8 +91,8 @@ const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
   };
 
   const handleSearch = () => {
-    // console.log("Searching flights with:", formData);
-    // Navigate to results page or show results
+    console.log("Searching flights with:", formData);
+    // Call API or navigate to results page
   };
 
   return (
@@ -114,56 +110,70 @@ const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
 
         <Paper
           elevation={3}
-          sx={{
-            p: 3,
-            mb: 3,
-            borderRadius: 3,
-            backgroundColor: "#fff",
-          }}
+          sx={{ p: 3, mb: 3, borderRadius: 3, backgroundColor: "#fff" }}
         >
           <Grid container spacing={3} alignItems="flex-end">
-            <Radio title="Return" onClick={handleFilterType} />
-            <Grid size={3}>
+            <Grid size={12}>
+              <FormControlLabel
+                control={
+                  <Radio
+                    checked={activeSelect === "roundtrip"}
+                    onChange={handleFilterType}
+                  />
+                }
+                label="Round Trip"
+              />
+              <FormControlLabel
+                control={
+                  <Radio
+                    checked={activeSelect === "oneway"}
+                    onChange={handleFilterType}
+                  />
+                }
+                label="One Way"
+              />
+            </Grid>
+
+            <Grid size={4}>
               <Typography variant="subtitle2" gutterBottom fontWeight="bold">
                 ORIGIN
               </Typography>
               <SelectDropdown
                 value={formData.origin}
                 options={airports}
-                onChange={handleInputChange("origin")}
+                onChange={handleDropdownChange("origin")}
                 variant="outlined"
                 placeholder="Select departure"
               />
             </Grid>
 
-            <Grid size={3}>
+            <Grid size={4}>
               <Typography variant="subtitle2" gutterBottom fontWeight="bold">
                 DESTINATION
               </Typography>
               <SelectDropdown
-                value={formData.origin}
+                value={formData.destination}
                 options={airports}
-                onChange={handleInputChange("destination")}
+                onChange={handleDropdownChange("destination")}
                 variant="outlined"
                 placeholder="Select arrival"
               />
             </Grid>
 
-            <Activity mode={activeSelect === "oneway" ? "hidden" : "visible"}>
+            <Grid size={4}>
               <Typography variant="subtitle2" gutterBottom fontWeight="bold">
-                RETURN
+                FLIGHT TYPE
               </Typography>
               <SelectDropdown
-                value={formData.origin}
+                value={formData.type}
                 options={optionDataFlightTypes}
-                onChange={handleInputChange("type")}
+                onChange={handleDropdownChange("type")}
                 variant="outlined"
-                placeholder="Select Types"
+                placeholder="Select type"
               />
-            </Activity>
+            </Grid>
 
-            <Grid size={3}>
-              {" "}
+            <Grid size={4}>
               <Typography variant="subtitle2" gutterBottom fontWeight="bold">
                 DEPART ON
               </Typography>
@@ -174,32 +184,32 @@ const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
               />
             </Grid>
 
-            <Grid size={3}>
-              {" "}
-              <Typography variant="subtitle2" gutterBottom fontWeight="bold">
-                RETURN ON
-              </Typography>
-              <DateTimePickerComponent
-                value={formData.returnDate}
-                onChange={handleDateChange("returnDate")}
-                language="en"
-              />
-            </Grid>
+            {activeSelect === "roundtrip" && (
+              <Grid size={4}>
+                <Typography variant="subtitle2" gutterBottom fontWeight="bold">
+                  RETURN ON
+                </Typography>
+                <DateTimePickerComponent
+                  value={formData.returnDate}
+                  onChange={handleDateChange("returnDate")}
+                  language="en"
+                />
+              </Grid>
+            )}
 
-            <Grid size={3}>
+            <Grid size={4}>
               <Typography variant="subtitle2" gutterBottom fontWeight="bold">
                 Ticket code
               </Typography>
               <InputTextField
                 value={formData.discountCode}
-                onChange={handleInputChange("ticket")}
+                onChange={handleInputChange("discountCode")}
                 variant="outlined"
-                placeholder="Select ticket"
+                placeholder="Enter ticket code"
               />
             </Grid>
 
-            <Grid size={12} display="flex" justifyContent="end" mt={2}>
-              {" "}
+            <Grid size={12} display="flex" justifyContent="flex-end" mt={2}>
               <Button
                 fullWidth
                 variant="contained"
@@ -208,9 +218,6 @@ const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
                 sx={{
                   maxWidth: "20rem",
                   py: 1.5,
-                  "&:hover": {
-                    backgroundColor: "#B91097",
-                  },
                 }}
               >
                 Search flights
@@ -225,7 +232,7 @@ const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
             We use cookies to make sure that our website works properly and to
             offer you the best experience possible. By continuing to use our
             site, you consent to the use of cookies. If you wish to learn more
-            about our use of Cookies and / or change your Cookie preferences,
+            about our use of Cookies and/or change your Cookie preferences,
             please visit our{" "}
             <Link href="#" underline="hover" sx={{ fontWeight: "bold" }}>
               Cookies Policy

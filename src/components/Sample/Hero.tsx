@@ -5,12 +5,13 @@ import { ControlCameraTwoTone, RoomService, Sports } from "@mui/icons-material";
 import EventCard from "../../common/AdditionalCustomFC/EventCard";
 import { useGetAllHotels, useGetFlightData } from "../../context/Api/useGetApi";
 import { useNavigate } from "react-router-dom";
-import FlightSearchForm from "./FlightSearchForm";
-import AdvancedAnalytics from "../../common/Header/AdvancedAnalytics";
+import FlightDeals from "../Admin/component/Flight/components/FlightDeals";
+import HeroV2 from "./HeroV2";
 
 const Hero = () => {
   const { dataGetAllHotels } = useGetAllHotels();
   const { getFlightData } = useGetFlightData();
+
   const navigate = useNavigate();
   const handleNavigate = (code: string) => {
     navigate("/detail", {
@@ -32,8 +33,8 @@ const Hero = () => {
       }}
     >
       <Box padding={1} textAlign={"center"}>
-        <AdvancedAnalytics />
-        <FlightSearchForm />
+        {/* <FlightSearchForm /> */}
+        <HeroV2 />
       </Box>
 
       <Box sx={{ position: "relative", zIndex: 2 }}>
@@ -53,8 +54,9 @@ const Hero = () => {
           <ButtonCircle icon={<Sports />} text="Flights" url="list" />
         </Stack>
       </Box>
-      {/* <TicketPage /> */}
-      {/* <Box sx={{ position: "relative", zIndex: 2 }}> */}
+
+      <FlightDeals />
+
       <CardGroup
         url="/products"
         title="Featured Products"
@@ -66,7 +68,6 @@ const Hero = () => {
             key={i + 21}
             link={() => handleNavigate(e?.hotelCode || "")}
             location={e.address}
-            tagColor="blue"
             tagLabel={e.hotelCode || ""}
             price={e.price}
             rating={e.rating}
@@ -87,9 +88,11 @@ const Hero = () => {
             key={i + 5}
             link={() => handleNavigate(e?.flightNo || "")}
             location={e.departureAirport}
-            tagColor="blue"
             tagLabel={e.flightNo || ""}
             price={e.priceBusiness || 0}
+            availableSpots={
+              e.seats?.filter((seat) => seat.isAvailable).length ?? 0
+            }
             rating={0}
             name={e.flightNo || ""}
           />

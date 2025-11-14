@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import { memo, useCallback, useMemo } from "react";
+import { memo, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import CustomPopover from "../../common/Dropdown/Popover";
 import SelectDropdown from "../../common/Dropdown/SelectDropdown";
@@ -8,20 +8,22 @@ import { useChangeLanguage } from "../../context/use[custom]/useChangeOptions";
 const LanguageButton = () => {
   const { t } = useTranslation();
   const {
+    handleSaveChange,
+
     selectedLang,
-    handleLanguageSelect,
     selectedPayMoney,
-    handlePayMoneySelect,
-    confirmSaveChange,
+
     pendingLanguage,
     pendingPayMoney,
+
+    handleLanguageSelect,
+    handlePayMoneySelect,
+
     optionLanguage,
     currencyOptions,
-  } = useChangeLanguage();
 
-  const handleSaveChange = useCallback(() => {
-    confirmSaveChange();
-  }, [confirmSaveChange]);
+    dataFindLocaleConfig,
+  } = useChangeLanguage();
 
   const renderContent = useMemo(
     () => (
@@ -75,11 +77,44 @@ const LanguageButton = () => {
     [renderContent]
   );
 
-  const getLocalStorage = localStorage.getItem("appSettings");
+  const renderName = useMemo(
+    () => (
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1, // khoảng cách giữa flag và text
+        }}
+      >
+        <Box
+          component="img"
+          src={dataFindLocaleConfig?.data?.country.flag}
+          sx={{
+            width: 24,
+            height: 16, // flag nhìn đúng tỉ lệ hơn
+            objectFit: "cover",
+            borderRadius: 0.5,
+          }}
+        />
+
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          {dataFindLocaleConfig?.data?.currency.symbol}
+          {dataFindLocaleConfig?.data?.country.country}
+        </Box>
+      </Box>
+    ),
+    [dataFindLocaleConfig]
+  );
 
   return (
     <CustomPopover
-      text={getLocalStorage}
+      text={renderName}
       handleAction={handleSaveChange}
       option={[renderDropdown]}
       hideSubmitButton={false}

@@ -114,7 +114,8 @@ const EventCard: React.FC<EventCardProps> = ({
         {image && !imageError ? (
           <CardMedia
             component="img"
-            height="200"
+            height={250}
+            width={200}
             image={image}
             alt={name}
             sx={{
@@ -132,6 +133,7 @@ const EventCard: React.FC<EventCardProps> = ({
           <Box
             sx={{
               height: 200,
+              width: 200,
               bgcolor: "grey.100",
               display: "flex",
               alignItems: "center",
@@ -170,23 +172,32 @@ const EventCard: React.FC<EventCardProps> = ({
                 size="small"
               />
             )}
-            {spotsText && (
+            {isLowAvailability && (
               <Chip
                 label={spotsText}
                 sx={{
-                  backgroundColor: isLowAvailability
-                    ? theme.palette.error.main
-                    : theme.palette.warning.main,
+                  backgroundColor: theme.palette.primary.main,
                   color: "#fff",
                   fontWeight: 600,
-                  fontSize: "0.7rem",
-                  height: 20,
+                  fontSize: "0.75rem",
+                  height: 24,
                 }}
                 size="small"
               />
             )}
+            {/* <ButtonCircle
+              sx={{
+                width: 12,
+                height: 12,
+                minWidth: 12,
+                minHeight: 12,
+                padding: 0, // nếu muốn không có padding
+                borderRadius: "50%", // để vẫn là hình tròn
+              }}
+              icon={""}
+              text=""
+            /> */}
           </Stack>
-
           {/* Action Buttons */}
           <Stack direction="row" spacing={0.5}>
             {onShare && (

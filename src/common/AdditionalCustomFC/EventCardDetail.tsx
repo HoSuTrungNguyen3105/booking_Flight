@@ -19,6 +19,7 @@ import { useLocation } from "react-router-dom";
 const EventCardDetail = () => {
   const location = useLocation();
   const { code } = location.state || {};
+  console.log("Event code:", code);
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const eventName = "Event name goes here",
     date = "Tue, Sep 21, 2024 19:00",
@@ -26,14 +27,15 @@ const EventCardDetail = () => {
     description =
       "I am ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna",
     tickets = [{ name: "A. Familia", status: "soldout" }];
+
   return (
     <Box
       sx={{
         minHeight: "100vh",
-        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        width: "50vw",
         display: "flex",
         alignItems: "center",
-        justifyContent: "center",
+        justifyItems: "center",
         padding: 3,
         position: "relative",
         "&::before": {
@@ -43,7 +45,6 @@ const EventCardDetail = () => {
           left: 0,
           right: 0,
           bottom: 0,
-          backgroundImage: 'url("/api/placeholder/1200/800")', // Thay bằng image URL thực tế
           backgroundSize: "cover",
           backgroundPosition: "center",
           filter: "blur(20px) brightness(0.7)",
@@ -71,7 +72,6 @@ const EventCardDetail = () => {
             left: 0,
             right: 0,
             height: "4px",
-            background: "linear-gradient(90deg, #667eea, #764ba2)",
           },
         }}
       >

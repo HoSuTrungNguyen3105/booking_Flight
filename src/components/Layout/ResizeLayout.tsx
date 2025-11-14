@@ -12,7 +12,7 @@ import {
   Stack,
 } from "@mui/material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
-import { menuData, type MenuItem } from "./../../utils/db";
+import { menuData, type MenuItem } from "../../utils/name_sb2";
 import Header from "../Admin/Header";
 import theme from "../../scss/theme";
 import ScrollToTop from "../../context/use[custom]/useScrollToTop";

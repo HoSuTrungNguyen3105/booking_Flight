@@ -51,6 +51,7 @@ import {
   type Hotel,
   type CreateHotelDto,
   type TypeWithErrorResponse,
+  type LocaleConfig,
 } from "../../utils/type.ts";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
 import { useFetch } from "../use[custom]/useFetch.ts";
@@ -583,6 +584,24 @@ export const useFindOnePassengerTicket = () => {
   return {
     dataFindPassengerTicket,
     refetchFindPassengerTicket,
+  };
+};
+
+export type LocaleTypeProps = {
+  language: string;
+  currency: string;
+};
+
+export const useFindLocaleConfig = () => {
+  const { data: dataFindLocaleConfig, refetch: refetchFindLocaleConfig } =
+    useFetch<DetailResponseMessage<LocaleConfig>, LocaleTypeProps>({
+      url: "/sys/locale/config",
+      autoFetch: true,
+      config: postMethod,
+    });
+  return {
+    dataFindLocaleConfig,
+    refetchFindLocaleConfig,
   };
 };
 

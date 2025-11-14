@@ -8,27 +8,6 @@ import { axiosRapid } from "../../utils/axiosRapid";
 //   };
 // }
 
-export type LocaleConfig = {
-  locale: string;
-  language: {
-    code: string;
-    name: string;
-  };
-  currency: {
-    code: string;
-    symbol: string;
-    displayName: string;
-  };
-  logo: {
-    url: string;
-    alt: string;
-  };
-  country: {
-    country: string;
-    flag: string;
-  };
-};
-
 export interface CountryResponse {
   data: CountryData;
 }

@@ -34,16 +34,8 @@ export type MenuSection = {
   title: string;
   items: MenuItem[];
 };
+
 export const menuData: MenuSection[] = [
-  // {
-  //   title: "Home",
-  //   items: [
-  //     {
-  //       id: "/",
-  //       label: "Người dùng",
-  //     },
-  //   ],
-  // },
   {
     title: "Quản trị hệ thống",
     items: [
@@ -141,16 +133,6 @@ export const menuData: MenuSection[] = [
                 label: "Quản lý chuyến bay hàng loạt",
                 icon: <Apartment />,
               },
-              // {
-              //   id: "AirportManagementDetail",
-              //   label: "Chi tiết sân bay",
-              //   icon: <Apartment />,
-              // },
-              // {
-              //   id: "sampleFormDemo",
-              //   label: "Quản lý sân bay",
-              //   icon: <Apartment />,
-              // },
             ],
           },
         ],

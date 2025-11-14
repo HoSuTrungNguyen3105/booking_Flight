@@ -1,17 +1,13 @@
-import { useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import i18n from "../../i18n";
 import { optionLanguage } from "../../i18n/resource";
 import type { ActionType } from "../../common/Dropdown/SelectDropdown";
+import { useFindLocaleConfig, type LocaleTypeProps } from "../Api/usePostApi";
 
 export interface CurrencyInfo {
   title: string;
   locale: string;
 }
-
-type AppSettings = {
-  language: string | null;
-  currency: string | null;
-};
 
 export type CurrencyMap = Record<string, CurrencyInfo>;
 
@@ -29,21 +25,30 @@ export const currencyOptions: ActionType[] = Object.keys(CURRENCIES).map(
   })
 );
 
-export const useChangeLanguage = () => {
-  let settings: AppSettings = { language: null, currency: null };
+type AppSettings = LocaleTypeProps | null;
+
+const loadSettings = (): AppSettings => {
   try {
     const raw = localStorage.getItem("appSettings");
-    if (raw) settings = JSON.parse(raw);
+    return raw ? (JSON.parse(raw) as LocaleTypeProps) : null;
   } catch {
     console.warn("Invalid appSettings in localStorage");
+    return null;
   }
+};
+
+export const useChangeLanguage = () => {
+  const { dataFindLocaleConfig, refetchFindLocaleConfig } =
+    useFindLocaleConfig();
+
+  const settings = useMemo(() => loadSettings(), []);
 
   const [selectedLang, setSelectedLang] = useState<ActionType | null>(
-    optionLanguage.find((o) => o.value === settings.language) || null
+    () => optionLanguage.find((o) => o.value === settings?.language) || null
   );
 
   const [selectedPayMoney, setSelectedPayMoney] = useState<ActionType | null>(
-    currencyOptions.find((o) => o.value === settings.currency) || null
+    () => currencyOptions.find((o) => o.value === settings?.currency) || null
   );
 
   const [pendingLanguage, setPendingLanguage] = useState<ActionType | null>(
@@ -53,24 +58,28 @@ export const useChangeLanguage = () => {
     null
   );
 
-  const handleLanguageSelect = (newValue: string | number) => {
+  // ------------------------------
+  // Handlers
+  // ------------------------------
+  const handleLanguageSelect = useCallback((newValue: string | number) => {
     const selected = optionLanguage.find((o) => o.value === newValue);
-    if (!selected) return;
-    setPendingLanguage(selected);
-  };
+    if (selected) setPendingLanguage(selected);
+  }, []);
 
-  const handlePayMoneySelect = (newValue: string | number) => {
+  const handlePayMoneySelect = useCallback((newValue: string | number) => {
     const selected = currencyOptions.find((o) => o.value === newValue);
-    if (!selected) return;
-    setPendingPayMoney(selected);
-  };
+    if (selected) setPendingPayMoney(selected);
+  }, []);
 
-  const confirmSaveChange = () => {
-    const newSettings: AppSettings = {
+  // ------------------------------
+  // Save Changes
+  // ------------------------------
+  const confirmSaveChange = useCallback(() => {
+    const newSettings: LocaleTypeProps = {
       language:
-        (pendingLanguage?.value as string) ?? selectedLang?.value ?? null,
+        (pendingLanguage?.value as string) ?? selectedLang?.value ?? "en",
       currency:
-        (pendingPayMoney?.value as string) ?? selectedPayMoney?.value ?? null,
+        (pendingPayMoney?.value as string) ?? selectedPayMoney?.value ?? "USD",
     };
 
     localStorage.setItem("appSettings", JSON.stringify(newSettings));
@@ -85,9 +94,32 @@ export const useChangeLanguage = () => {
       i18n.changeLanguage(String(pendingLanguage.value));
       setPendingLanguage(null);
     }
-  };
+
+    refetchFindLocaleConfig(newSettings);
+  }, [
+    pendingLanguage,
+    pendingPayMoney,
+    selectedLang,
+    selectedPayMoney,
+    refetchFindLocaleConfig,
+  ]);
+
+  const handleSaveChange = useCallback(() => {
+    confirmSaveChange();
+  }, [confirmSaveChange]);
+
+  // ------------------------------
+  // Auto load locale config on mount
+  // ------------------------------
+  useEffect(() => {
+    if (settings?.language && settings?.currency) {
+      refetchFindLocaleConfig(settings);
+    }
+  }, []);
 
   return {
+    handleSaveChange,
+
     selectedLang,
     selectedPayMoney,
 
@@ -101,5 +133,7 @@ export const useChangeLanguage = () => {
 
     optionLanguage,
     currencyOptions,
+
+    dataFindLocaleConfig,
   };
 };
