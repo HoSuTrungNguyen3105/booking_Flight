@@ -1,72 +1,47 @@
-import React, { useCallback, useState } from "react";
-import {
-  Box,
-  Typography,
-  Button,
-  InputBase,
-  Menu,
-  MenuItem,
-  Grid,
-  Popover,
-  Grow,
-} from "@mui/material";
-import { Link } from "react-router-dom";
-// import { DateRange } from "react-date-range";
+import React, { useCallback, useState, type ReactNode } from "react";
+import { Box, Typography, Button, Grid, Popover, Grow } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import departure from "../../svgs/account-avatar-profile-user.svg";
 import arrival from "../../svgs/account-avatar-profile-user.svg";
-import calendar from "../../svgs/account-avatar-profile-user.svg";
 import person from "../../svgs/account-avatar-profile-user.svg";
 import { addDays, format } from "date-fns";
-import { DateRange } from "@mui/icons-material";
 import InputTextField from "../../common/Input/InputTextField";
+import { useToast } from "../../context/ToastContext";
+import DateTimePickerComponent from "../../common/DayPicker/index";
 
-interface HeroProps {
-  departureSuggest: any;
-  arrivalSuggest: any;
-  openDate: boolean;
-  setOpenDate: React.Dispatch<React.SetStateAction<boolean>>;
-  date: any[];
-  setDate: any;
-  openOptions: boolean;
-  setOpenOptions: React.Dispatch<React.SetStateAction<boolean>>;
-  options: { adult: number; minor: number };
-  handleOptions: (type: "adult" | "minor", action: "i" | "d") => void;
+interface SuggestionState {
+  input: string;
+  isOpen: boolean;
+  matchingSuggestions: string[];
 }
 
 const HeroV2: React.FC = () => {
-  const [departureSuggest, setDepartureSuggest] = useState({
+  const [departureSuggest, setDepartureSuggest] = useState<SuggestionState>({
     input: "",
     isOpen: false,
     matchingSuggestions: ["Hanoi", "Ho Chi Minh", "Da Nang"],
-    handleInputChange: (value: string) =>
-      setDepartureSuggest((prev) => ({ ...prev, input: value })),
-    handleSuggestionClick: (value: string) =>
-      setDepartureSuggest((prev) => ({
-        ...prev, // giữ lại handleInputChange, handleSuggestionClick, setIsOpen
-        input: value,
-        isOpen: false,
-        matchingSuggestions: [],
-      })),
-    setIsOpen: (val: boolean) =>
-      setDepartureSuggest((prev) => ({ ...prev, isOpen: val })),
   });
 
-  const [arrivalSuggest, setArrivalSuggest] = useState({
+  const [arrivalSuggest, setArrivalSuggest] = useState<SuggestionState>({
     input: "",
     isOpen: false,
     matchingSuggestions: ["Tokyo", "Seoul", "Singapore"],
-    handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) =>
-      setArrivalSuggest((prev) => ({ ...prev, input: e.target.value })),
-    handleSuggestionClick: (value: string) =>
-      setArrivalSuggest((prev) => ({
-        ...prev, // giữ lại handleInputChange, handleSuggestionClick, setIsOpen
-        input: value,
-        isOpen: false,
-        matchingSuggestions: [],
-      })),
-    setIsOpen: (val: boolean) =>
-      setArrivalSuggest((prev) => ({ ...prev, isOpen: val })),
   });
+
+  const handleInputChange = (type: "departure" | "arrival", value: string) => {
+    const setter =
+      type === "departure" ? setDepartureSuggest : setArrivalSuggest;
+    setter((prev) => ({ ...prev, input: value }));
+  };
+
+  const handleSuggestionClick = (
+    type: "departure" | "arrival",
+    value: string
+  ) => {
+    const setter =
+      type === "departure" ? setDepartureSuggest : setArrivalSuggest;
+    setter({ input: value, isOpen: false, matchingSuggestions: [] });
+  };
 
   const [date, setDate] = useState([
     {
@@ -75,21 +50,15 @@ const HeroV2: React.FC = () => {
       key: "selection",
     },
   ]);
+
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
   const open = Boolean(anchorEl);
-  const id = open ? "simple-popover" : undefined;
   const [openDate, setOpenDate] = useState(false);
+
+  const [ticketCode, setTicketCode] = useState<string>("");
 
   const [options, setOptions] = useState({ adult: 1, minor: 0 });
   const [openOptions, setOpenOptions] = useState(false);
@@ -104,9 +73,62 @@ const HeroV2: React.FC = () => {
     }));
   };
 
-  const renderSearchBox = useCallback(() => {
-    return (
-      <Grid size={3}>
+  const navigate = useNavigate();
+
+  const toast = useToast();
+
+  const handleSubmit = () => {
+    const departure = departureSuggest.input;
+    const arrival = arrivalSuggest.input;
+    const passengerCount = options.adult + options.minor;
+    const dateRange = `${format(date[0].startDate, "yyyy-MM-dd")}_${format(
+      date[0].endDate,
+      "yyyy-MM-dd"
+    )}`;
+
+    const hasTicket = ticketCode.trim() !== "" ? ticketCode.trim() : null;
+
+    const urlParts = ["/explore"];
+
+    if (!arrival) return toast("Please enter an arrival location");
+    else urlParts.push(arrival);
+    if (!departure) return toast("Please enter an departure location");
+    else urlParts.push(departure);
+
+    const finalUrl = [
+      "/explore",
+      arrivalSuggest.input,
+      departureSuggest.input,
+      `${format(date[0].startDate, "yyyy-MM-dd")}_${format(
+        date[0].endDate,
+        "yyyy-MM-dd"
+      )}`,
+      (options.adult + options.minor).toString(),
+      ticketCode.trim() || undefined,
+    ]
+      .filter(Boolean)
+      .join("/");
+
+    navigate(finalUrl);
+    // if (dateRange) urlParts.push(dateRange);
+    // if (passengerCount) urlParts.push(String(passengerCount));
+    // if (hasTicket) urlParts.push(hasTicket);
+
+    // // Join thành URL
+    // const finalUrl = urlParts.join("/");
+
+    navigate(finalUrl);
+  };
+
+  const renderSearchBox = useCallback(
+    (
+      content: ReactNode,
+      image: string,
+      title: string,
+      input: string,
+      handleInputChange: (value: string) => void
+    ) => {
+      return (
         <Box
           sx={{
             display: "flex",
@@ -118,83 +140,27 @@ const HeroV2: React.FC = () => {
             borderRadius: { lg: "4px 0 0 4px" },
           }}
         >
-          <img
-            style={{ height: 23, width: 23 }}
-            src={departure}
-            alt="departure"
-          />
+          <img style={{ height: 23, width: 23 }} src={image} alt={image} />
           <InputTextField
-            placeholder="From where?"
-            value={departureSuggest.input}
-            onChange={departureSuggest.handleInputChange}
-            // onChange={(e) => handleInputChange("departureSuggest", e)}
+            placeholder={title}
+            value={input}
+            onChange={handleInputChange}
           />
-          {/* {departureSuggest.isOpen && (
-                <Box
-                  sx={{
-                    width: 220,
-                    height: 224,
-                    bgcolor: "white",
-                    borderRadius: 1,
-                    overflowY: "auto",
-                    position: "absolute",
-                    top: "70px",
-                    zIndex: 10,
-                  }}
-                > */}
-          {/* {departureSuggest.matchingSuggestions.map(
-                    (suggestion: string) => (
-                      <Box
-                        key={suggestion}
-                        onClick={() =>
-                          departureSuggest.handleSuggestionClick(suggestion)
-                        }
-                        sx={{
-                          textTransform: "uppercase",
-                          px: 2,
-                          py: 1,
-                          cursor: "pointer",
-                          color: "#7C8DB0",
-                          "&:hover": { bgcolor: "#605DEC", color: "#F6F6FE" },
-                        }}
-                      >
-                        {suggestion}
-                      </Box>
-                    )
-                  )} */}
           <Popover
-            open={departureSuggest.isOpen}
+            open={open}
             anchorEl={anchorEl}
             onClose={() => setAnchorEl(null)}
             anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
             transformOrigin={{ vertical: "top", horizontal: "center" }}
             TransitionComponent={Grow}
           >
-            {departureSuggest.matchingSuggestions.map((suggestion: string) => (
-              <Box
-                key={suggestion}
-                onClick={() =>
-                  departureSuggest.handleSuggestionClick(suggestion)
-                }
-                sx={{
-                  textTransform: "uppercase",
-                  px: 2,
-                  py: 1,
-                  cursor: "pointer",
-                  color: "#7C8DB0",
-                  "&:hover": { bgcolor: "#605DEC", color: "#F6F6FE" },
-                }}
-              >
-                {suggestion}
-              </Box>
-            ))}
+            {content}
           </Popover>
         </Box>
-        {/* )}
-            </Box> */}
-      </Grid>
-    );
-  }, []);
+      );
+    },
+    []
+  );
 
   return (
     <Box
@@ -244,181 +210,110 @@ const HeroV2: React.FC = () => {
         }}
       >
         <Grid container spacing={3} alignItems="flex-end">
+          <Grid size={4}>
+            {renderSearchBox(
+              <></>,
+              departure,
+              "From where?",
+              departureSuggest.input,
+              (value: string) => handleInputChange("departure", value)
+            )}
+          </Grid>
+
+          <Grid size={4}>
+            {renderSearchBox(
+              <>
+                {arrivalSuggest.isOpen && (
+                  <Box
+                    sx={{
+                      width: 220,
+                      height: 224,
+                      bgcolor: "white",
+                      borderRadius: 1,
+                      overflowY: "auto",
+                      position: "absolute",
+                      top: "70px",
+                      zIndex: 10,
+                    }}
+                  >
+                    {arrivalSuggest.matchingSuggestions.map(
+                      (suggestion: string) => (
+                        <Box
+                          key={suggestion}
+                          onClick={() =>
+                            handleSuggestionClick("arrival", suggestion)
+                          }
+                          sx={{
+                            textTransform: "uppercase",
+                            px: 2,
+                            py: 1,
+                            cursor: "pointer",
+                            color: "#7C8DB0",
+                            "&:hover": { bgcolor: "#605DEC", color: "#F6F6FE" },
+                          }}
+                        >
+                          {suggestion}
+                        </Box>
+                      )
+                    )}
+                  </Box>
+                )}
+              </>,
+              arrival,
+              "Where to?",
+              arrivalSuggest.input,
+              (value: string) => handleInputChange("arrival", value)
+            )}
+          </Grid>
           <Grid size={3}>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                flex: 1,
-                border: "1px solid #CBD4E6",
-                p: 1,
-                position: "relative",
-                borderRadius: { lg: "4px 0 0 4px" },
-              }}
-            >
-              <img
-                style={{ height: 23, width: 23 }}
-                src={departure}
-                alt="departure"
-              />
-              <InputTextField
-                placeholder="From where?"
-                value={departureSuggest.input}
-                onChange={departureSuggest.handleInputChange}
-                // onChange={(e) => handleInputChange("departureSuggest", e)}
-              />
-              {departureSuggest.isOpen && (
-                <Box
+            {renderSearchBox(
+              <>
+                <Typography
                   sx={{
-                    width: 220,
-                    height: 224,
-                    bgcolor: "white",
-                    borderRadius: 1,
-                    overflowY: "auto",
-                    position: "absolute",
-                    top: "70px",
-                    zIndex: 10,
+                    ml: 2,
+                    color: "#7C8DB0",
+                    cursor: "pointer",
+                    fontSize: "1rem",
+                    lineHeight: 1.5,
                   }}
+                  onClick={() => setOpenDate(!openDate)}
                 >
-                  {departureSuggest.matchingSuggestions.map(
-                    (suggestion: string) => (
-                      <Box
-                        key={suggestion}
-                        onClick={() =>
-                          departureSuggest.handleSuggestionClick(suggestion)
-                        }
-                        sx={{
-                          textTransform: "uppercase",
-                          px: 2,
-                          py: 1,
-                          cursor: "pointer",
-                          color: "#7C8DB0",
-                          "&:hover": { bgcolor: "#605DEC", color: "#F6F6FE" },
-                        }}
-                      >
-                        {suggestion}
-                      </Box>
-                    )
-                  )}
-                </Box>
-              )}
-            </Box>
+                  {openDate
+                    ? `${format(date[0].startDate, "dd/MM/yyyy")} to ${format(
+                        date[0].endDate,
+                        "dd/MM/yyyy"
+                      )}`
+                    : "Depart to Return"}
+                </Typography>
+                {openDate && (
+                  <Box sx={{ position: "absolute", top: 64, zIndex: 10 }}>
+                    <DateTimePickerComponent
+                      language="en"
+                      //editableDateInputs
+                      //onChange={(item: number) => setDate([item.selection])}
+                      //moveRangeOnFirstSelection={false}
+                      //ranges={date}
+                    />
+                  </Box>
+                )}
+              </>,
+              arrival, // icon
+              "Where to?", // placeholder
+              arrivalSuggest.input, // input value
+              (value: string) => handleInputChange("arrival", value) // onChange
+            )}
           </Grid>
 
           <Grid size={3}>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                flex: 1,
-                border: "1px solid #CBD4E6",
-                p: 1,
-                position: "relative",
-              }}
-            >
-              <img
-                style={{ height: 23, width: 23 }}
-                src={arrival}
-                alt="arrival"
-              />
-              <InputBase
-                placeholder="Where to?"
-                value={arrivalSuggest.input}
-                onChange={arrivalSuggest.handleInputChange}
-                onFocus={() => arrivalSuggest.setIsOpen(true)}
-                sx={{
-                  ml: 2,
-                  textTransform: "uppercase",
-                  color: "#7C8DB0",
-                  "&::placeholder": {
-                    textTransform: "capitalize",
-                    color: "#7C8DB0",
-                  },
-                  flex: 1,
-                }}
-              />
-              {arrivalSuggest.isOpen && (
-                <Box
-                  sx={{
-                    width: 220,
-                    height: 224,
-                    bgcolor: "white",
-                    borderRadius: 1,
-                    overflowY: "auto",
-                    position: "absolute",
-                    top: "70px",
-                    zIndex: 10,
-                  }}
-                >
-                  {arrivalSuggest.matchingSuggestions.map(
-                    (suggestion: string) => (
-                      <Box
-                        key={suggestion}
-                        onClick={() =>
-                          arrivalSuggest.handleSuggestionClick(suggestion)
-                        }
-                        sx={{
-                          textTransform: "uppercase",
-                          px: 2,
-                          py: 1,
-                          cursor: "pointer",
-                          color: "#7C8DB0",
-                          "&:hover": { bgcolor: "#605DEC", color: "#F6F6FE" },
-                        }}
-                      >
-                        {suggestion}
-                      </Box>
-                    )
-                  )}
-                </Box>
-              )}
-            </Box>
-          </Grid>
-          {/* Date Picker */}
-          <Grid size={3}>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                flex: 1,
-                border: "1px solid #CBD4E6",
-                p: 1,
-                position: "relative",
-              }}
-            >
-              <img
-                style={{ height: 23, width: 23 }}
-                src={calendar}
-                alt="calendar"
-              />
-              <Typography
-                sx={{
-                  ml: 2,
-                  color: "#7C8DB0",
-                  cursor: "pointer",
-                  fontSize: "1rem",
-                  lineHeight: 1.5,
-                }}
-                onClick={() => setOpenDate(!openDate)}
-              >
-                {openDate
-                  ? `${format(date[0].startDate, "dd/MM/yyyy")} to ${format(
-                      date[0].endDate,
-                      "dd/MM/yyyy"
-                    )}`
-                  : "Depart to Return"}
-              </Typography>
-              {openDate && (
-                <Box sx={{ position: "absolute", top: 64, zIndex: 10 }}>
-                  <DateRange
-                  // editableDateInputs
-                  // onChange={(item: any) => setDate([item.selection])}
-                  // moveRangeOnFirstSelection={false}
-                  // ranges={date}
-                  />
-                </Box>
-              )}
-            </Box>
+            <Typography variant="subtitle2" gutterBottom fontWeight="bold">
+              Ticket code
+            </Typography>
+            <InputTextField
+              value={ticketCode}
+              onChange={(e) => setTicketCode(e)}
+              variant="outlined"
+              placeholder="Enter ticket code"
+            />
           </Grid>
           {/* Passenger Selector */}
           <Box
@@ -515,22 +410,23 @@ const HeroV2: React.FC = () => {
           </Box>
 
           {/* Search Button */}
-          <Link to="/explore" style={{ width: "100%" }}>
-            <Button
-              sx={{
-                width: "100%",
-                backgroundColor: "#605DEC",
-                color: "#FAFAFA",
-                fontSize: "1rem",
-                height: { xs: 45, lg: 65 },
-                px: 2,
-                borderRadius: { lg: "0 4px 4px 0" },
-                "&:hover": { backgroundColor: "#4a47c3" },
-              }}
-            >
-              Search
-            </Button>
-          </Link>
+          {/* <Link to="/explore" style={{ width: "100%" }}> */}
+          <Button
+            onClick={handleSubmit}
+            sx={{
+              width: "100%",
+              backgroundColor: "#605DEC",
+              color: "#FAFAFA",
+              fontSize: "1rem",
+              height: { xs: 45, lg: 65 },
+              px: 2,
+              borderRadius: { lg: "0 4px 4px 0" },
+              "&:hover": { backgroundColor: "#4a47c3" },
+            }}
+          >
+            Search
+          </Button>
+          {/* </Link> */}
         </Grid>
       </Box>
     </Box>

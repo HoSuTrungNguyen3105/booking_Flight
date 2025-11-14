@@ -14,8 +14,6 @@ import {
 import {
   AttachMoney,
   AirplaneTicket,
-  Cancel,
-  CheckCircle,
   Save,
   Refresh,
 } from "@mui/icons-material";
@@ -318,29 +316,6 @@ const FlightManagementModal = ({
                 {renderPriceCapacity()}{" "}
               </Activity>
             </Activity>
-
-            {/* {(() => {
-              switch (activeStep) {
-                case 0:
-                  return renderBasicInfo();
-
-                case 1:
-                  return renderTimeInfo();
-
-                case 2:
-                  if (mode === "create") return renderPriceCapacity();
-
-                  if (mode === "update") return renderGateStatus();
-                  return null;
-                case 3:
-                  if (mode === "update") return renderPriceCapacity();
-
-                  if (mode === "create") return renderGateStatus();
-                  return null;
-                default:
-                  return null;
-              }
-            })()} */}
           </Box>
 
           {formData && (

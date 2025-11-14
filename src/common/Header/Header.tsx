@@ -129,36 +129,9 @@ export const Header = () => {
               <GridMenuIcon />
             </IconButton>
           )}
+
           <NavbarItem />
 
-          {/* <Box
-            sx={{
-              bgcolor: theme.palette.background.paper,
-              display: "flex",
-              alignItems: "start",
-              gap: 2,
-              flexWrap: "wrap",
-            }}
-          >
-            {navItems
-              .filter((item) => {
-                if (isAdmin) {
-                  return item.value.includes("admin");
-                } else {
-                  return (
-                    item.value === "profile" || !item.value.includes("admin")
-                  );
-                }
-              })
-              .map((e, i) => (
-                <ButtonLink
-                  key={i}
-                  url={e.value}
-                  text={e.label}
-                  variant="text"
-                />
-              ))}
-          </Box> */}
           {isAuthenticated ? (
             <Stack
               direction="row-reverse"

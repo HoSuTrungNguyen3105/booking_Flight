@@ -7,6 +7,7 @@ import { useGetAllHotels, useGetFlightData } from "../../context/Api/useGetApi";
 import { useNavigate } from "react-router-dom";
 import FlightDeals from "../Admin/component/Flight/components/FlightDeals";
 import HeroV2 from "./HeroV2";
+import HeroV3 from "./HeroV3";
 
 const Hero = () => {
   const { dataGetAllHotels } = useGetAllHotels();

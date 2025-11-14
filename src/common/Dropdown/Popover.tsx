@@ -12,8 +12,8 @@ export interface IButtonSettingProps {
 
 const StyledPopover = styled(Popover)(() => ({
   "& .MuiPaper-root": {
-    borderRadius: "10px",
-    padding: "10px",
+    borderRadius: 1.5,
+    padding: 1,
     minWidth: "120px",
   },
 }));

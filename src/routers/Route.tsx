@@ -58,6 +58,9 @@ import Tictoctoe from "../components/User/Tictoctoe";
 import FlightSummaryRef from "../components/Employee/FlightSummary";
 import TripSummary from "../components/Employee/TripSummary";
 import OrderMeal from "../components/Admin/component/Meal/OrderMeal";
+import ExplorePage from "../components/Sample/ExplorePage";
+import SeatSelect from "../components/Sample/SeatSelect";
+import ContentPackage from "../components/Common/ContentPackage";
 
 const routes = [
   {
@@ -155,6 +158,18 @@ const routes = [
       {
         path: "/hotel/Batch",
         element: <HotelBatchCreator />,
+      },
+      {
+        path: "/seat/select",
+        element: <SeatSelect />,
+      },
+      {
+        path: "/content/:title",
+        element: <ContentPackage />,
+      },
+      {
+        path: "/explore/:arrival/:departure/:dateRange/:passengerCount/:hasTicket",
+        element: <ExplorePage />,
       },
       {
         path: ROUTE_PATHS.FILE_UPLOAD.replace("/", ""),

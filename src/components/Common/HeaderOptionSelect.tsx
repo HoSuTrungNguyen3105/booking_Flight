@@ -81,6 +81,8 @@ const LanguageButton = () => {
     () => (
       <Box
         sx={{
+          width: "auto",
+          minWidth: "7rem",
           display: "flex",
           alignItems: "center",
           gap: 1, // khoảng cách giữa flag và text
@@ -89,6 +91,7 @@ const LanguageButton = () => {
         <Box
           component="img"
           src={dataFindLocaleConfig?.data?.country.flag}
+          alt={`${dataFindLocaleConfig?.data?.country.country} flag`}
           sx={{
             width: 24,
             height: 16, // flag nhìn đúng tỉ lệ hơn

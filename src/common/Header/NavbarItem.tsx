@@ -4,14 +4,32 @@ import ButtonLink from "../AdditionalCustomFC/ButtonLink";
 import theme from "../../scss/theme";
 import { useAuth } from "../../context/AuthContext";
 import { menuData } from "../../utils/name_sb1";
+import { keyframes } from "@emotion/react";
+import { useNavigate } from "react-router-dom";
+
+const fadeSlideIn = keyframes`
+  0% { opacity: 0; transform: translateY(-10px); }
+  100% { opacity: 1; transform: translateY(0); }
+`;
 
 export default function NavbarItem() {
   const { isAdmin } = useAuth();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const handleTabClick = (tab: string) =>
-    setActiveTab((prev) => (prev === tab ? null : tab));
 
+  const handleTabClick = (title: string) => {
+    // Nếu muốn toggle active tab
+    setActiveTab((prev) => (prev === title ? null : title));
+
+    // Navigate đến đường dẫn tương ứng với tab
+    navigate(`/content/${title}`); // tab chính là đường dẫn trong items.value
+  };
+
+  // const handleTabClick = (tab: string) =>
+  //   setActiveTab((prev) => (prev === tab ? null : tab));
+  const handleTabEnter = (tab: string) => setActiveTab(tab);
+  // const handleTabLeave = () => setActiveTab(null);
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (
@@ -43,12 +61,14 @@ export default function NavbarItem() {
           borderBottom: "1px solid #ddd",
         }}
       >
-        <Typography variant="h5" sx={{ fontWeight: 700 }}>
-          NAVAN
-        </Typography>
         {visibleTabs.map((tab) => (
           <Button
+            // key={tab}
+            // onMouseEnter={() => handleTabEnter(tab)}
+            // onMouseLeave={handleTabLeave}
+            // onClick={() => handleTabClick(tab)}
             key={tab}
+            onMouseEnter={() => handleTabEnter(tab)}
             onClick={() => handleTabClick(tab)}
             sx={{
               fontSize: "14px",
@@ -69,8 +89,14 @@ export default function NavbarItem() {
       {/* DROPDOWN */}
       {activeTab && menuData[activeTab].name.length > 0 && (
         <Paper
+          // ref={dropdownRef}
+          // elevation={2}
+          // onMouseEnter={() => setActiveTab(activeTab)}
+          // onMouseLeave={handleTabLeave}
           ref={dropdownRef}
-          elevation={3}
+          elevation={2}
+          onMouseEnter={() => setActiveTab(activeTab)}
+          onMouseLeave={() => setActiveTab(null)}
           sx={{
             position: "absolute",
             top: "100%",
@@ -85,11 +111,7 @@ export default function NavbarItem() {
             borderRadius: 2,
             boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
             zIndex: 50,
-            animation: "fadeSlideIn 0.25s forwards",
-            "@keyframes fadeSlideIn": {
-              "0%": { opacity: 0, transform: "translateY(-10px)" },
-              "100%": { opacity: 1, transform: "translateY(0)" },
-            },
+            animation: `${fadeSlideIn} 0.26s ease-out forwards`,
           }}
         >
           <Typography

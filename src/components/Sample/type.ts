@@ -2,10 +2,10 @@ import type { UnlockRequest } from "../../context/Api/useGetApi";
 import type {
   Attendance,
   LeaveRequest,
+  Payroll,
   TransferAdmin,
   UserData,
 } from "../../utils/type";
-import type { Payroll } from "../Admin/component/Payroll/PayrollManagement";
 
 export type UserWithRelationsData = Pick<
   UserData,
