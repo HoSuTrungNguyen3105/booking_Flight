@@ -10,10 +10,8 @@ import {
   Stack,
   Chip,
   IconButton,
-  Skeleton,
   Tooltip,
   Rating,
-  useTheme,
   useMediaQuery,
 } from "@mui/material";
 import {
@@ -103,13 +101,13 @@ const EventCard: React.FC<EventCardProps> = ({
     >
       {/* Image Section */}
       <Box sx={{ position: "relative", flexShrink: 0 }}>
-        {!imageLoaded && (
+        {/* {!imageLoaded && (
           <Skeleton
             variant="rectangular"
             height={200}
             sx={{ bgcolor: "grey.100" }}
           />
-        )}
+        )} */}
 
         {image && !imageError ? (
           <CardMedia
@@ -132,12 +130,17 @@ const EventCard: React.FC<EventCardProps> = ({
         ) : (
           <Box
             sx={{
-              height: 200,
-              width: 200,
-              bgcolor: "grey.100",
+              width: "100%",
+              aspectRatio: "1/1",
+              bgcolor: "#f5f5f5",
+              height: 250,
+              borderRadius: 2,
+              border: "1px solid #e0e0e0",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
+              textAlign: "center",
+              p: 2,
             }}
           >
             <Typography color="text.secondary" variant="body2">

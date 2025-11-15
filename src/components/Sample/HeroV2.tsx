@@ -1,5 +1,14 @@
 import React, { useCallback, useState, type ReactNode } from "react";
-import { Box, Typography, Button, Grid, Popover, Grow } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Button,
+  Grid,
+  Popover,
+  Grow,
+  FormControlLabel,
+  Radio,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import departure from "../../svgs/account-avatar-profile-user.svg";
 import arrival from "../../svgs/account-avatar-profile-user.svg";
@@ -8,25 +17,51 @@ import { addDays, format } from "date-fns";
 import InputTextField from "../../common/Input/InputTextField";
 import { useToast } from "../../context/ToastContext";
 import DateTimePickerComponent from "../../common/DayPicker/index";
+import {
+  mapStringToDropdown,
+  useFindAllFlightTypes,
+  useGetAllCode,
+} from "../../context/Api/useGetApi";
+import type { ActionType } from "../../common/Dropdown/SelectDropdown";
+import SelectDropdown from "../../common/Dropdown/SelectDropdown";
 
 interface SuggestionState {
   input: string;
   isOpen: boolean;
-  matchingSuggestions: string[];
+  matchingSuggestions: ActionType[];
 }
 
 const HeroV2: React.FC = () => {
+  const { getAllCode } = useGetAllCode();
+
+  const airports: ActionType[] = (getAllCode?.data?.airport || []).map((e) => ({
+    value: e.code,
+    label: e.value,
+  }));
   const [departureSuggest, setDepartureSuggest] = useState<SuggestionState>({
     input: "",
     isOpen: false,
-    matchingSuggestions: ["Hanoi", "Ho Chi Minh", "Da Nang"],
+    matchingSuggestions: airports,
   });
 
   const [arrivalSuggest, setArrivalSuggest] = useState<SuggestionState>({
     input: "",
     isOpen: false,
-    matchingSuggestions: ["Tokyo", "Seoul", "Singapore"],
+    matchingSuggestions: airports,
   });
+
+  const [activeSelect, setActiveSelect] = useState<"roundtrip" | "oneway">(
+    "oneway"
+  );
+
+  const { dataFlightTypes } = useFindAllFlightTypes();
+  const optionDataFlightTypes = mapStringToDropdown(
+    dataFlightTypes?.data || []
+  );
+
+  const handleFilterType = useCallback(() => {
+    setActiveSelect((prev) => (prev === "oneway" ? "roundtrip" : "oneway"));
+  }, []);
 
   const handleInputChange = (type: "departure" | "arrival", value: string) => {
     const setter =
@@ -51,9 +86,7 @@ const HeroV2: React.FC = () => {
     },
   ]);
 
-  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
-    null
-  );
+  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
 
   const open = Boolean(anchorEl);
   const [openDate, setOpenDate] = useState(false);
@@ -80,13 +113,6 @@ const HeroV2: React.FC = () => {
   const handleSubmit = () => {
     const departure = departureSuggest.input;
     const arrival = arrivalSuggest.input;
-    const passengerCount = options.adult + options.minor;
-    const dateRange = `${format(date[0].startDate, "yyyy-MM-dd")}_${format(
-      date[0].endDate,
-      "yyyy-MM-dd"
-    )}`;
-
-    const hasTicket = ticketCode.trim() !== "" ? ticketCode.trim() : null;
 
     const urlParts = ["/explore"];
 
@@ -110,26 +136,22 @@ const HeroV2: React.FC = () => {
       .join("/");
 
     navigate(finalUrl);
-    // if (dateRange) urlParts.push(dateRange);
-    // if (passengerCount) urlParts.push(String(passengerCount));
-    // if (hasTicket) urlParts.push(hasTicket);
-
-    // // Join thành URL
-    // const finalUrl = urlParts.join("/");
-
-    navigate(finalUrl);
   };
 
   const renderSearchBox = useCallback(
     (
+      icon: string,
       content: ReactNode,
-      image: string,
-      title: string,
-      input: string,
-      handleInputChange: (value: string) => void
+      hasPopover: boolean,
+      popoverContent?: ReactNode
     ) => {
       return (
         <Box
+          onClick={(e) => {
+            if (hasPopover) {
+              setAnchorEl(e.currentTarget); // mở popover
+            }
+          }}
           sx={{
             display: "flex",
             alignItems: "center",
@@ -140,26 +162,32 @@ const HeroV2: React.FC = () => {
             borderRadius: { lg: "4px 0 0 4px" },
           }}
         >
-          <img style={{ height: 23, width: 23 }} src={image} alt={image} />
-          <InputTextField
-            placeholder={title}
-            value={input}
-            onChange={handleInputChange}
-          />
-          <Popover
-            open={open}
-            anchorEl={anchorEl}
-            onClose={() => setAnchorEl(null)}
-            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-            transformOrigin={{ vertical: "top", horizontal: "center" }}
-            TransitionComponent={Grow}
-          >
-            {content}
-          </Popover>
+          {icon && (
+            <img
+              src={icon}
+              alt=""
+              style={{ width: 23, height: 23, marginRight: 8 }}
+            />
+          )}
+
+          {content}
+
+          {hasPopover && (
+            <Popover
+              open={Boolean(anchorEl)}
+              anchorEl={anchorEl}
+              onClose={() => setAnchorEl(null)}
+              anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+              transformOrigin={{ vertical: "top", horizontal: "center" }}
+              TransitionComponent={Grow}
+            >
+              {popoverContent}
+            </Popover>
+          )}
         </Box>
       );
     },
-    []
+    [anchorEl]
   );
 
   return (
@@ -210,63 +238,46 @@ const HeroV2: React.FC = () => {
         }}
       >
         <Grid container spacing={3} alignItems="flex-end">
+          <Grid size={12}>
+            <FormControlLabel
+              control={
+                <Radio
+                  checked={activeSelect === "roundtrip"}
+                  onChange={handleFilterType}
+                />
+              }
+              label="Round Trip"
+            />
+            <FormControlLabel
+              control={
+                <Radio
+                  checked={activeSelect === "oneway"}
+                  onChange={handleFilterType}
+                />
+              }
+              label="One Way"
+            />
+          </Grid>
           <Grid size={4}>
             {renderSearchBox(
-              <></>,
               departure,
-              "From where?",
-              departureSuggest.input,
-              (value: string) => handleInputChange("departure", value)
+              <InputTextField />,
+              true,
+              <>{departureSuggest.input}</>
             )}
           </Grid>
 
           <Grid size={4}>
             {renderSearchBox(
-              <>
-                {arrivalSuggest.isOpen && (
-                  <Box
-                    sx={{
-                      width: 220,
-                      height: 224,
-                      bgcolor: "white",
-                      borderRadius: 1,
-                      overflowY: "auto",
-                      position: "absolute",
-                      top: "70px",
-                      zIndex: 10,
-                    }}
-                  >
-                    {arrivalSuggest.matchingSuggestions.map(
-                      (suggestion: string) => (
-                        <Box
-                          key={suggestion}
-                          onClick={() =>
-                            handleSuggestionClick("arrival", suggestion)
-                          }
-                          sx={{
-                            textTransform: "uppercase",
-                            px: 2,
-                            py: 1,
-                            cursor: "pointer",
-                            color: "#7C8DB0",
-                            "&:hover": { bgcolor: "#605DEC", color: "#F6F6FE" },
-                          }}
-                        >
-                          {suggestion}
-                        </Box>
-                      )
-                    )}
-                  </Box>
-                )}
-              </>,
               arrival,
-              "Where to?",
-              arrivalSuggest.input,
-              (value: string) => handleInputChange("arrival", value)
+              <SelectDropdown options={arrivalSuggest.matchingSuggestions} />,
+              true,
+              <>{arrivalSuggest.input}</>
             )}
           </Grid>
           <Grid size={3}>
             {renderSearchBox(
+              "", // icon anh gửi vào
               <>
                 <Typography
                   sx={{
@@ -279,28 +290,20 @@ const HeroV2: React.FC = () => {
                   onClick={() => setOpenDate(!openDate)}
                 >
                   {openDate
-                    ? `${format(date[0].startDate, "dd/MM/yyyy")} to ${format(
+                    ? `${format(date[0].startDate, "dd/MM/yyyy")} → ${format(
                         date[0].endDate,
                         "dd/MM/yyyy"
                       )}`
                     : "Depart to Return"}
                 </Typography>
+
                 {openDate && (
                   <Box sx={{ position: "absolute", top: 64, zIndex: 10 }}>
-                    <DateTimePickerComponent
-                      language="en"
-                      //editableDateInputs
-                      //onChange={(item: number) => setDate([item.selection])}
-                      //moveRangeOnFirstSelection={false}
-                      //ranges={date}
-                    />
+                    <DateTimePickerComponent language="en" />
                   </Box>
                 )}
               </>,
-              arrival, // icon
-              "Where to?", // placeholder
-              arrivalSuggest.input, // input value
-              (value: string) => handleInputChange("arrival", value) // onChange
+              false
             )}
           </Grid>
 
@@ -326,91 +329,48 @@ const HeroV2: React.FC = () => {
               position: "relative",
             }}
           >
-            <img style={{ height: 23, width: 23 }} src={person} alt="person" />
-            <Typography
-              sx={{
-                ml: 2,
-                color: "#7C8DB0",
-                cursor: "pointer",
-                fontSize: "1rem",
-                lineHeight: 1.5,
-              }}
-              onClick={() => setOpenOptions(!openOptions)}
-            >
-              {`${options.adult} Adult - ${options.minor} Minor`}
-            </Typography>
-            {openOptions && (
-              <Box
+            {renderSearchBox(
+              "",
+              <Typography
                 sx={{
-                  width: 208,
-                  bgcolor: "white",
-                  borderRadius: 1,
-                  boxShadow: "0px 4px 12px rgba(0,0,0,0.1)",
-                  position: "absolute",
-                  top: 70,
-                  p: 2,
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 2,
-                  zIndex: 10,
+                  ml: 2,
+                  color: "#7C8DB0",
+                  cursor: "pointer",
+                  fontSize: "1rem",
                 }}
+                onClick={() => setOpenOptions(!openOptions)}
               >
-                {["adult", "minor"].map((type) => (
+                {`${options.adult} Adult - ${options.minor} Minor`}
+              </Typography>,
+              openOptions, // bật popover
+              <>
+                {(["adult", "minor"] as const).map((type) => (
                   <Box
                     key={type}
                     sx={{
                       display: "flex",
                       justifyContent: "space-between",
-                      alignItems: "center",
+                      p: 1,
                     }}
                   >
-                    <Typography sx={{ color: "#7C8DB0", fontSize: "1rem" }}>
-                      {type === "adult" ? "Adults:" : "Minors:"}
+                    <Typography>
+                      {type === "adult" ? "Adults" : "Minors"}
                     </Typography>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                      <Button
-                        sx={{
-                          border: "2px solid #605DEC",
-                          color: "#7C8DB0",
-                          minWidth: 32,
-                          px: 1,
-                        }}
-                        onClick={() =>
-                          handleOptions(type as "adult" | "minor", "d")
-                        }
-                        disabled={
-                          type === "adult"
-                            ? options.adult <= 1
-                            : options.minor <= 0
-                        }
-                      >
+                    <Box sx={{ display: "flex", gap: 1 }}>
+                      <Button onClick={() => handleOptions(type, "d")}>
                         -
                       </Button>
-                      <Typography sx={{ color: "#7C8DB0" }}>
-                        {type === "adult" ? options.adult : options.minor}
-                      </Typography>
-                      <Button
-                        sx={{
-                          border: "2px solid #605DEC",
-                          color: "#7C8DB0",
-                          minWidth: 32,
-                          px: 1,
-                        }}
-                        onClick={() =>
-                          handleOptions(type as "adult" | "minor", "i")
-                        }
-                      >
+                      <Typography>{options[type]}</Typography>
+                      <Button onClick={() => handleOptions(type, "i")}>
                         +
                       </Button>
                     </Box>
                   </Box>
                 ))}
-              </Box>
+              </>
             )}
           </Box>
 
-          {/* Search Button */}
-          {/* <Link to="/explore" style={{ width: "100%" }}> */}
           <Button
             onClick={handleSubmit}
             sx={{

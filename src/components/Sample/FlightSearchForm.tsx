@@ -1,98 +1,43 @@
-import React, { useCallback, useState } from "react";
-import {
-  Box,
-  Typography,
-  Button,
-  Paper,
-  Grid,
-  Container,
-  Link,
-  FormControlLabel,
-  Radio,
-  TextField,
-} from "@mui/material";
+import React, { useState } from "react";
+import { Box, Typography, Paper, Container, Link } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import DateTimePickerComponent from "../../common/DayPicker/index";
-import SelectDropdown, {
-  type ActionType,
-} from "../../common/Dropdown/SelectDropdown";
-import {
-  mapStringToDropdown,
-  useFindAllFlightTypes,
-  useGetAllCode,
-} from "../../context/Api/useGetApi";
 import theme from "../../scss/theme";
-import InputTextField from "../../common/Input/InputTextField";
+import FieldRenderer from "../../common/AdditionalCustomFC/FieldRenderer";
+import { useDataSection, type SearchFormConfig } from "./search_type_input";
 
-interface FlightSearchFormProps {
-  initialData?: {
-    origin?: string;
-    destination?: string;
-    departDate?: number;
-    returnDate?: number;
-    type?: string;
-    discountCode?: string;
-  };
-}
-
-const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
-  initialData = {},
+const FlightSearchForm: React.FC<{ type: keyof SearchFormConfig }> = ({
+  type,
 }) => {
   const [formData, setFormData] = useState({
-    origin: initialData.origin || "",
-    destination: initialData.destination || "",
-    departDate: initialData.departDate || 0,
-    returnDate: initialData.returnDate || 0,
-    type: initialData.type || "Economy",
-    discountCode: initialData.discountCode || "",
+    origin: "",
+    destination: "",
+    departDate: 0,
+    returnDate: 0,
+    type: "Economy",
+    discountCode: "",
   });
+  const dataSection = useDataSection(type, formData);
 
-  const [activeSelect, setActiveSelect] = useState<"roundtrip" | "oneway">(
-    "oneway"
-  );
+  // const [activeSelect, setActiveSelect] = useState<"roundtrip" | "oneway">(
+  //   "oneway"
+  // );
 
-  const { getAllCode } = useGetAllCode();
-  const { dataFlightTypes } = useFindAllFlightTypes();
-  const optionDataFlightTypes = mapStringToDropdown(
-    dataFlightTypes?.data || []
-  );
-
-  const airports: ActionType[] = (getAllCode?.data?.airport || []).map((e) => ({
-    value: e.code,
-    label: e.value,
-  }));
-
-  const handleFilterType = useCallback(() => {
-    setActiveSelect((prev) => (prev === "oneway" ? "roundtrip" : "oneway"));
-  }, []);
-
-  const handleInputChange = (field: string) => () => {
+  const handleChange = <
+    T extends keyof SearchFormConfig,
+    K extends keyof SearchFormConfig[T]
+  >(
+    section: T,
+    key: K,
+    value: SearchFormConfig[T][K]
+  ) => {
     setFormData((prev) => ({
       ...prev,
-      [field]: field,
+      [section]: {
+        // ...prev[section],
+        [key]: value,
+      },
     }));
-  };
-
-  const handleDropdownChange = (field: string) => (value: string | number) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value as string,
-    }));
-  };
-
-  const handleDateChange = (field: string) => (date: number | null) => {
-    if (date !== null) {
-      setFormData((prev) => ({
-        ...prev,
-        [field]: date,
-      }));
-    }
-  };
-
-  const handleSearch = () => {
-    console.log("Searching flights with:", formData);
-    // Call API or navigate to results page
   };
 
   return (
@@ -112,7 +57,43 @@ const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
           elevation={3}
           sx={{ p: 3, mb: 3, borderRadius: 3, backgroundColor: "#fff" }}
         >
-          <Grid container spacing={3} alignItems="flex-end">
+          {dataSection?.map(
+            (section, index) =>
+              !section.visible && (
+                <Box key={index} mb={2}>
+                  <Typography variant="body1" sx={{ mb: 1 }}>
+                    {section.label}
+                  </Typography>
+
+                  {section.fields.map((field, fieldIndex) => (
+                    <Box key={fieldIndex} mb={1}>
+                      <FieldRenderer
+                        type={field.type}
+                        value={
+                          formData[
+                            field.id as keyof SearchFormConfig["flight"]
+                          ] ?? ""
+                        }
+                        disabled={field.disabled}
+                        options={field.options}
+                        placeholder={field.placeholder}
+                        //  onChange={(val) =>
+                        //    handleChange(field.id as keyof SearchFormConfig['flight'], val)
+                        //  }
+                        onChange={(val) =>
+                          handleChange(
+                            "flight",
+                            field.id as keyof SearchFormConfig["flight"],
+                            val as string
+                          )
+                        }
+                      />
+                    </Box>
+                  ))}
+                </Box>
+              )
+          )}
+          {/* <Grid container spacing={3} alignItems="flex-end">
             <Grid size={12}>
               <FormControlLabel
                 control={
@@ -223,7 +204,7 @@ const FlightSearchForm: React.FC<FlightSearchFormProps> = ({
                 Search flights
               </Button>
             </Grid>
-          </Grid>
+          </Grid> */}
         </Paper>
 
         {/* Cookies Notice */}

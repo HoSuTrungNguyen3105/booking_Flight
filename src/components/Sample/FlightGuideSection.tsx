@@ -61,14 +61,13 @@ const FlightGuideSection: React.FC<{ title: string }> = ({ title }) => {
   // nếu không tồn tại thì trả về UI rỗng
   if (!section) return null;
 
-  // lấy các item con
   const cards = section.items.map((item) => ({
     title: item.label,
     image: item.image || "",
   }));
 
   return (
-    <Box sx={{ px: { xs: 2, md: 8 }, py: 5 }}>
+    <Box sx={{ width: "100%", px: { xs: 2, md: 8 }, py: 5 }}>
       <Typography
         variant="h4"
         sx={{
@@ -83,7 +82,7 @@ const FlightGuideSection: React.FC<{ title: string }> = ({ title }) => {
 
       <Grid container spacing={3}>
         {cards.map((card, idx) => (
-          <Grid size={6} key={idx}>
+          <Grid size={3} key={idx}>
             <FlightGuideCard
               image={card.image}
               title={card.title}

@@ -20,10 +20,10 @@ export default function NavbarItem() {
 
   const handleTabClick = (title: string) => {
     // Nếu muốn toggle active tab
-    setActiveTab((prev) => (prev === title ? null : title));
+    // setActiveTab(null);
 
-    // Navigate đến đường dẫn tương ứng với tab
-    navigate(`/content/${title}`); // tab chính là đường dẫn trong items.value
+    navigate(`/content/${title}`);
+    setActiveTab(null);
   };
 
   // const handleTabClick = (tab: string) =>

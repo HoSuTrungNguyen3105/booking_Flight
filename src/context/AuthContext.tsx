@@ -285,17 +285,17 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (!token) return;
     try {
       const res = await refetchLogoutSession();
-      // if (res?.resultCode === ResponseCode.SUCCESS) {
-      setIsAuthenticated(false);
-      setUser(null);
-      setPassenger(null);
-      setToken(null);
-      storage.clear();
-      // }
-    } catch (err) {
-      console.error("Lỗi khi logout:", err);
+      if (res?.resultCode === ResponseCode.SUCCESS) {
+        setIsAuthenticated(false);
+        setUser(null);
+        setPassenger(null);
+        setToken(null);
+        storage.clear();
+      }
+    } catch (err: any) {
+      toast(err.message);
     }
-  }, [refetchLogoutSession]);
+  }, [toast, refetchLogoutSession]);
 
   // const logout = useCallback(async () => {
   //   const storedToken = localStorage.getItem("token");

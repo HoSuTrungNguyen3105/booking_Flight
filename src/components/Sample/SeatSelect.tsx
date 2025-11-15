@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import economy from "../../svgs/EconomySeats.png";
 import business from "../../svgs/BusinessSeats.png";
 import plane3 from "../../svgs/Plane1.png";
+import { uniqueId } from "lodash";
 
 const SeatSelect: React.FC = () => {
   return (
@@ -61,7 +62,7 @@ const SeatSelect: React.FC = () => {
             { code: "Mar 21 | 12:15PM", desc: "Arriving" },
           ].map((item, index) => (
             <Box
-              key={index}
+              key={uniqueId()}
               sx={{
                 flex: 1,
                 px: 2,
@@ -178,34 +179,6 @@ const SeatSelect: React.FC = () => {
             </Box>
           </Box>
         </Box>
-
-        {/* PASSENGER + BUTTONS */}
-        {/* <Box
-          sx={{
-            borderTop: "1px solid #f2f0f0",
-            height: 93,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            px: 3,
-          }}
-        >
-          <Box>
-            <Typography sx={{ color: "#7C8DB0", fontSize: 12 }}>
-              Passenger 1
-            </Typography>
-            <Typography sx={{ color: "#6E7491", fontSize: 18 }}>
-              Sofia Knowles
-            </Typography>
-          </Box>
-
-          <Box>
-            <Typography sx={{ color: "#7C8DB0", fontSize: 12 }}>
-              Seat number
-            </Typography>
-            <Typography sx={{ color: "#6E7491", fontSize: 18 }}>9F</Typography>
-          </Box>
-        </Box> */}
         <Box sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
           <Button
             variant="outlined"

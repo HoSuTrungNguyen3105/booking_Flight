@@ -24,7 +24,7 @@ type FormField = {
   id: string;
   type: FieldType;
   placeholder?: string;
-  options: ActionType[];
+  options?: ActionType[];
   value: FieldValue;
   sx?: SxProps;
   readOnly?: boolean;
@@ -71,7 +71,7 @@ const FieldRenderer = ({
         <SelectDropdown
           sx={{ width: "100%" }}
           placeholder={placeholder}
-          options={options}
+          options={options as ActionType[]}
           value={value as string | number}
           disabled={disabled}
           onChange={onChange}

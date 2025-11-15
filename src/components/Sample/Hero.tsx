@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import FlightDeals from "../Admin/component/Flight/components/FlightDeals";
 import HeroV2 from "./HeroV2";
 import HeroV3 from "./HeroV3";
+import FlightSearchForm from "./FlightSearchForm";
 
 const Hero = () => {
   const { dataGetAllHotels } = useGetAllHotels();
@@ -34,8 +35,8 @@ const Hero = () => {
       }}
     >
       <Box padding={1} textAlign={"center"}>
-        {/* <FlightSearchForm /> */}
-        <HeroV2 />
+        <FlightSearchForm type="flight" />
+        {/* <HeroV2 /> */}
       </Box>
 
       <Box sx={{ position: "relative", zIndex: 2 }}>
