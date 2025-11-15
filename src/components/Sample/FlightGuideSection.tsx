@@ -5,14 +5,12 @@ import { menuData } from "../../utils/name_sb1";
 interface FlightGuideCardProps {
   image: string;
   title: string;
-  subtitle: string;
   onClick?: () => void;
 }
 
 const FlightGuideCard: React.FC<FlightGuideCardProps> = ({
   image,
   title,
-  subtitle,
   onClick,
 }) => {
   return (
@@ -58,7 +56,6 @@ const FlightGuideCard: React.FC<FlightGuideCardProps> = ({
 const FlightGuideSection: React.FC<{ title: string }> = ({ title }) => {
   const section = menuData[title];
 
-  // nếu không tồn tại thì trả về UI rỗng
   if (!section) return null;
 
   const cards = section.items.map((item) => ({
@@ -86,7 +83,6 @@ const FlightGuideSection: React.FC<{ title: string }> = ({ title }) => {
             <FlightGuideCard
               image={card.image}
               title={card.title}
-              subtitle=""
               onClick={() => console.log("Clicked:", card.title)}
             />
           </Grid>

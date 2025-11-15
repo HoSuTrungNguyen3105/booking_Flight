@@ -1,16 +1,8 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Typography,
-  Button,
-  Popover,
-  Grow,
-  TextField,
-} from "@mui/material";
+import { Box, Typography, Button, Popover, Grow } from "@mui/material";
 import { Link } from "react-router-dom";
-import departure from "../../svgs/account-avatar-profile-user.svg";
-import arrival from "../../svgs/account-avatar-profile-user.svg";
 import person from "../../svgs/account-avatar-profile-user.svg";
+import InputTextField from "../../common/Input/InputTextField";
 
 interface SuggestionState {
   input: string;
@@ -37,11 +29,7 @@ const HeroV3: React.FC = () => {
     null
   );
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    type: "departure" | "arrival"
-  ) => {
-    const value = e.target.value;
+  const handleInputChange = (value: string, type: "departure" | "arrival") => {
     if (type === "departure") {
       setDepartureSuggest((prev) => ({ ...prev, input: value, isOpen: true }));
     } else {
@@ -71,11 +59,11 @@ const HeroV3: React.FC = () => {
     >
       {/* Departure Input */}
       <Box sx={{ position: "relative", mb: 2 }}>
-        <TextField
+        <InputTextField
           placeholder="From where?"
           value={departureSuggest.input}
           onChange={(e) => handleInputChange(e, "departure")}
-          onFocus={(e) => setAnchorElDeparture(e.currentTarget)}
+          // onFocus={(e) => setAnchorElDeparture(e.currentTarget)}
         />
         <Popover
           open={departureSuggest.isOpen}
@@ -108,11 +96,11 @@ const HeroV3: React.FC = () => {
 
       {/* Arrival Input */}
       <Box sx={{ position: "relative", mb: 2 }}>
-        <TextField
+        <InputTextField
           placeholder="Where to?"
           value={arrivalSuggest.input}
           onChange={(e) => handleInputChange(e, "arrival")}
-          onFocus={(e) => setAnchorElArrival(e.currentTarget)}
+          // onFocus={(e) => setAnchorElArrival(e.currentTarget)}
         />
         <Popover
           open={arrivalSuggest.isOpen}

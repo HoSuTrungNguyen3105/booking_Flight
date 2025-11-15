@@ -61,6 +61,8 @@ import OrderMeal from "../components/Admin/component/Meal/OrderMeal";
 import ExplorePage from "../components/Sample/ExplorePage";
 import SeatSelect from "../components/Sample/SeatSelect";
 import ContentPackage from "../components/Common/ContentPackage";
+import FlightDealsAcceppst from "../components/Sample/FlightDeal";
+import CreateRandomFlights from "../components/User/CreateRandomFlights";
 
 const routes = [
   {
@@ -148,6 +150,10 @@ const routes = [
         element: <EventCardDetail />,
       },
       {
+        path: "/CreateRandomFlights",
+        element: <CreateRandomFlights />,
+      },
+      {
         path: "/change/email",
         element: <UpdateEmailForm />,
       },
@@ -159,9 +165,13 @@ const routes = [
         path: "/hotel/Batch",
         element: <HotelBatchCreator />,
       },
+      // {
+      //   path: "/seat/select",
+      //   element: <SeatSelect />,
+      // },
       {
-        path: "/seat/select",
-        element: <SeatSelect />,
+        path: "/flight/dealsAcceppst",
+        element: <FlightDealsAcceppst />,
       },
       {
         path: "/content/:title",

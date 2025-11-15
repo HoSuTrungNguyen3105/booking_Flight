@@ -137,9 +137,9 @@ export const Header = () => {
               direction="row-reverse"
               alignItems="center"
               spacing={2}
-              sx={{
-                cursor: "pointer",
-              }}
+              // sx={{
+              //   cursor: "pointer",
+              // }}
             >
               <SignOut />
               <LanguageButton />

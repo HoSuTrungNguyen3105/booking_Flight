@@ -1,10 +1,46 @@
-import React, { useState } from "react";
-import { Box, Typography, Paper, Container, Link } from "@mui/material";
+import React, { useCallback, useState } from "react";
+import {
+  Box,
+  Typography,
+  Button,
+  Paper,
+  Grid,
+  Container,
+  Link,
+  FormControlLabel,
+  Radio,
+} from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import SelectDropdown, {
+  type ActionType,
+} from "../../common/Dropdown/SelectDropdown";
+import {
+  mapStringToDropdown,
+  useFindAllFlightTypes,
+  useGetAllCode,
+} from "../../context/Api/useGetApi";
 import theme from "../../scss/theme";
 import FieldRenderer from "../../common/AdditionalCustomFC/FieldRenderer";
 import { useDataSection, type SearchFormConfig } from "./search_type_input";
+
+// interface FlightSearchFormProps {
+//   initialData?: {
+//     origin?: string;
+//     destination?: string;
+//     departDate?: number;
+//     returnDate?: number;
+//     type?: string;
+//     discountCode?: string;
+//   };
+// }
+
+// type InputItemsProps = {
+//   name : string;
+//   label : string;
+//   placeholder : string;
+//   ty
+// }
 
 const FlightSearchForm: React.FC<{ type: keyof SearchFormConfig }> = ({
   type,

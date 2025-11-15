@@ -1,8 +1,14 @@
 import { Box, Typography, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import FlightDealsCard from "./FlightDealsCard";
+import right from "../../svgs/system-users-symbolic.svg";
+import shangai from "../../svgs/system-users-symbolic.svg";
+import temple from "../../svgs/system-users-symbolic.svg";
+import sydney from "../../svgs/system-users-symbolic.svg";
+import sunrise from "../../svgs/system-users-symbolic.svg";
+import msunrise from "../../svgs/system-users-symbolic.svg";
 
-const FlightDeals = () => {
+const FlightDealsAcceppst = () => {
   const navigate = useNavigate();
 
   const handleSeeAllClick = (e: React.MouseEvent) => {
@@ -153,4 +159,4 @@ const FlightDeals = () => {
   );
 };
 
-export default FlightDeals;
+export default FlightDealsAcceppst;

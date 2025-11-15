@@ -191,6 +191,22 @@ export const useDeleteManyFlightIds = () => {
   };
 };
 
+export const useCreateRandomFlight = () => {
+  const {
+    refetch: refetchCreateRandomFlight,
+    loading: loadingCreateRandomFlight,
+  } = useFetch<ResponseMessage, void>({
+    url: "/sys/airport/flight/random",
+    autoFetch: true,
+    config: postMethod,
+  });
+
+  return {
+    refetchCreateRandomFlight,
+    loadingCreateRandomFlight,
+  };
+};
+
 export const useVerifyPw = ({ id }: ReqUserIDProps) => {
   const { refetch: fetchVerifyPassword } = useFetch<
     DetailResponseMessage<{ isValid: boolean }>,

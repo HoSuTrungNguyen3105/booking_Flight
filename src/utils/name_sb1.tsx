@@ -18,28 +18,6 @@ type TabSection = {
 
 export type TabData = Record<string, TabSection>;
 
-// type MenuItemProps = {
-//   value: string;
-//   icon: ReactNode;
-//   label: string;
-// };
-
-// type MenuItem = {
-//     name: string;
-//   columns: Array<{
-//     title: string;
-//     items: MenuItemProps[];
-//   }>;
-//   specialItems: string[];
-// };
-
-// type TabData = {
-//   [key: string]: {
-//     name: string;
-//     items: MenuItem[];
-//   };
-// };
-
 export const menuData: TabData = {
   Customers: {
     name: "Customers",
@@ -119,8 +97,8 @@ export const menuData: TabData = {
       { icon: <Tag size={24} />, value: "OrderMeal", label: "Bảng giá" },
       {
         icon: <Info size={24} />,
-        value: "pricing-terms",
-        label: "Điều khoản giá",
+        value: "flight/dealsAcceppst",
+        label: "Điều khoản /flight/dealsAcceppst",
       },
     ],
   },
@@ -130,7 +108,7 @@ export const menuData: TabData = {
       { icon: <Info size={24} />, value: "seat/select", label: "Tài liệu" },
       {
         icon: <Headphones size={24} />,
-        value: "tech-support",
+        value: "CreateRandomFlights",
         label: "Hỗ trợ kỹ thuật",
       },
     ],

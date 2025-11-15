@@ -1,6 +1,12 @@
 import { useMemo } from "react";
 import type { IFormField } from "../../../common/AdditionalCustomFC/FieldRenderer";
 import { FieldType } from "../../../common/AdditionalCustomFC/FieldRenderer";
+import {
+  mapStringToDropdown,
+  useFindAllFlightTypes,
+  useGetAllCode,
+} from "../../../context/Api/useGetApi";
+import type { ActionType } from "../../../common/Dropdown/SelectDropdown";
 
 export type SearchFormConfig = {
   passenger: {
@@ -36,6 +42,17 @@ export const useDataSection = (
   section: keyof SearchFormConfig,
   data: Partial<SearchFormConfig[keyof SearchFormConfig]>
 ): IFormField[] => {
+  const { getAllCode } = useGetAllCode();
+  const { dataFlightTypes } = useFindAllFlightTypes();
+  const optionDataFlightTypes = mapStringToDropdown(
+    dataFlightTypes?.data || []
+  );
+
+  const airports: ActionType[] = (getAllCode?.data?.airport || []).map((e) => ({
+    value: e.code,
+    label: e.value,
+  }));
+
   return useMemo<IFormField[]>(() => {
     if (!data) return [];
 
@@ -86,15 +103,18 @@ export const useDataSection = (
           fields: [
             {
               id: "origin",
-              type: FieldType.INPUT_WITH_TYPE_TEXT,
+              type: FieldType.DROPDOWN,
               value: flight.origin ?? "",
               placeholder: "Điểm đi…",
+              options: airports,
+              sx: { minWidth: 120 },
             },
             {
               id: "destination",
-              type: FieldType.INPUT_WITH_TYPE_TEXT,
+              type: FieldType.DROPDOWN,
               value: flight.destination ?? "",
               placeholder: "Điểm đến…",
+              options: airports,
             },
             {
               id: "departDate",
@@ -113,6 +133,7 @@ export const useDataSection = (
               type: FieldType.DROPDOWN,
               value: flight.type ?? "",
               placeholder: "Loại chuyến bay…",
+              options: optionDataFlightTypes,
             },
             {
               id: "discountCode",
