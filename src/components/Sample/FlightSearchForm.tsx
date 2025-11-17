@@ -113,9 +113,6 @@ const FlightSearchForm: React.FC<{ type: keyof SearchFormConfig }> = ({
                         disabled={field.disabled}
                         options={field.options}
                         placeholder={field.placeholder}
-                        //  onChange={(val) =>
-                        //    handleChange(field.id as keyof SearchFormConfig['flight'], val)
-                        //  }
                         onChange={(val) =>
                           handleChange(
                             "flight",

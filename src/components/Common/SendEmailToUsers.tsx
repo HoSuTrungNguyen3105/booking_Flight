@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Box, Button, Divider, Stack, Typography } from "@mui/material";
 import { Send } from "@mui/icons-material";
 import { useAuth } from "../../context/AuthContext";
-import ChipInput from "../../common/ChipInput";
 import InputTextField from "../../common/Input/InputTextField";
 import InputTextArea from "../../common/Input/InputTextArea";
 import { useSendMail } from "../../context/Api/usePostApi";
@@ -67,19 +66,19 @@ const SendEmailToUsers = ({ selectedUser, onSubmit }: SendEmailProps) => {
       {/* To */}
       <Box>
         <Typography variant="body2">To:</Typography>
-        <ChipInput name="Chip" label="Chip" value={to} onChange={setTo} />
+        {/* <ChipInput name="Chip" label="Chip" value={to} onChange={setTo} /> */}
       </Box>
 
       {/* Cc */}
       <Box>
         <Typography variant="body2">Cc:</Typography>
-        <ChipInput value={cc} onChange={setCc} name="Chip" label="Chip" />
+        {/* <ChipInput value={cc} onChange={setCc} name="Chip" label="Chip" /> */}
       </Box>
 
       {/* Bcc */}
       <Box>
         <Typography variant="body2">Bcc:</Typography>
-        <ChipInput value={bcc} onChange={setBcc} name="Chip" label="Chip" />
+        {/* <ChipInput value={bcc} onChange={setBcc} name="Chip" label="Chip" /> */}
       </Box>
 
       {/* Subject */}

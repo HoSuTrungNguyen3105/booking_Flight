@@ -26,22 +26,6 @@ function App() {
                   },
                 }}
               />
-              {/* <Button
-                onClick={toggleTheme}
-                sx={{
-                  position: "fixed",
-                  top: 12,
-                  right: 12,
-                  zIndex: 2000,
-                  borderRadius: 5,
-                  padding: "6px 12px",
-                }}
-                variant="contained"
-                color="primary"
-                startIcon={mode === "light" ? <Brightness4 /> : <Brightness7 />}
-              >
-                {mode === "light" ? "Dark Mode" : "Light Mode"}
-              </Button> */}
               <RouterProvider router={router} />
             </AuthProvider>
           </ApiProvider>

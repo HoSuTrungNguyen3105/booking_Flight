@@ -1,7 +1,7 @@
 import React from "react";
 import { CardContent, Grid } from "@mui/material";
 import LegendItem from "../Admin/component/Seat/ButtonSeat/LegendItem";
-import PassengerChooseSeat from "./PassengerChooseSeat";
+import PassengerChooseSeat from "../Sample/PassengerChooseSeat";
 
 const OrderSeat: React.FC = () => {
   return (

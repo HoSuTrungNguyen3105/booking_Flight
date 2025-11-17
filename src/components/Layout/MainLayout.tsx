@@ -4,12 +4,13 @@ import { Box } from "@mui/material";
 import { Header } from "../../common/Header/Header";
 import { Loading } from "../../common/Loading/Loading";
 import { Footer } from "../../common/Footer/Footer";
+import ScrollToTop from "../../context/use[custom]/useScrollToTop";
 
 const MainLayout = () => {
   const headerRef = useRef<HTMLElement>(null);
   const footerRef = useRef<HTMLElement>(null);
-  const [headerHeight, setHeaderHeight] = useState<number>(0);
-  const [footerHeight, setFooterHeight] = useState<number>(0);
+  const [headerHeight, setHeaderHeight] = useState(0);
+  const [footerHeight, setFooterHeight] = useState(0);
 
   useEffect(() => {
     const updateHeights = () => {
@@ -39,18 +40,25 @@ const MainLayout = () => {
         <Header />
       </Box>
 
+      {/* Scroll To Top */}
+      <ScrollToTop />
+
       <Box
         component="main"
         sx={{
           flex: 1,
-          paddingTop: `${headerHeight}px`,
-          paddingBottom: `${footerHeight}px`,
+          pt: `${headerHeight}px`,
+          pb: `${footerHeight}px`,
           width: "100%",
         }}
       >
         <Outlet />
       </Box>
-      <Footer />
+
+      <Box ref={footerRef}>
+        <Footer />
+      </Box>
+
       <Loading />
     </Box>
   );

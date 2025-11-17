@@ -11,9 +11,9 @@ import msunrise from "../../svgs/system-users-symbolic.svg";
 const FlightDealsAcceppst = () => {
   const navigate = useNavigate();
 
-  const handleSeeAllClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    window.scrollTo(0, 0);
+  const handleSeeAllClick = () => {
+    // e.preventDefault();
+    // window.scrollTo(0, 0);
     navigate("/packages");
   };
 

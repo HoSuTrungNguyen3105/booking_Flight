@@ -115,12 +115,14 @@ export const useDataSection = (
               value: flight.destination ?? "",
               placeholder: "Điểm đến…",
               options: airports,
+              sx: { minWidth: 120 },
             },
             {
               id: "departDate",
               type: FieldType.INPUT_WITH_NUMBER,
               value: flight.departDate ?? 0,
               placeholder: "Ngày đi…",
+              sx: { minWidth: 60 },
             },
             {
               id: "returnDate",

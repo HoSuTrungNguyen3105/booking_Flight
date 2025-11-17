@@ -99,16 +99,7 @@ const EventCard: React.FC<EventCardProps> = ({
         height: "100%",
       }}
     >
-      {/* Image Section */}
       <Box sx={{ position: "relative", flexShrink: 0 }}>
-        {/* {!imageLoaded && (
-          <Skeleton
-            variant="rectangular"
-            height={200}
-            sx={{ bgcolor: "grey.100" }}
-          />
-        )} */}
-
         {image && !imageError ? (
           <CardMedia
             component="img"

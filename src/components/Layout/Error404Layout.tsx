@@ -17,6 +17,7 @@ import {
 } from "react-router-dom";
 import { memo, useCallback } from "react";
 import theme from "../../scss/theme";
+import { useExit } from "../../context/use[custom]/useExit";
 
 const GradientBox = styled(Box)<BoxProps>(() => ({
   minHeight: "100vh",
@@ -60,6 +61,7 @@ const ErrorLayout = () => {
   const error = useRouteError();
   const navigate = useNavigate();
   const theme = useTheme();
+  const exit = useExit();
 
   const returnHome = useCallback(() => {
     navigate("/");
@@ -172,7 +174,7 @@ const ErrorLayout = () => {
 
               <ActionButton
                 variant="outlined"
-                onClick={() => navigate(-1)}
+                onClick={exit}
                 startIcon={<ArrowBack />}
               >
                 Go Back

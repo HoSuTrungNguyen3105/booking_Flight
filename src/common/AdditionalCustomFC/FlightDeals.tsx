@@ -13,29 +13,24 @@ import {
   ListItemIcon,
   ListItemText,
   Paper,
-  useTheme,
   useMediaQuery,
   Stack,
 } from "@mui/material";
 import { Check as CheckIcon, FlightTakeoff } from "@mui/icons-material";
 import InputTextField from "../Input/InputTextField";
 import type { FlightDiscount } from "../../utils/type";
+import theme from "../../scss/theme";
 
 const FlightDeals: React.FC = () => {
-  const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
-  const [flightDeals, setFlightDeals] = useState<FlightDiscount[]>([]);
+  const [flightDeals, _] = useState<FlightDiscount[]>([]);
 
   const features = [
     "Save €100s on your flights",
     "Save up to €270 on accommodation",
     "Best price guaranteed or we pay 2x the difference",
   ];
-
-  const formatPrice = (price: number): string => {
-    return `€${price}`;
-  };
 
   return (
     <Container maxWidth="lg" sx={{ py: 6 }}>

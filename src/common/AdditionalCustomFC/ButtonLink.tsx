@@ -6,7 +6,7 @@ import { memo } from "react";
 interface IProps {
   url: string;
   text: ReactNode;
-  color?: "primary" | "secondary" | "success" | "error" | "info" | "warning";
+  color?: "primary" | "secondary";
   variant: "contained" | "outlined" | "text";
   leftIcon?: ReactNode;
   rightIcon?: ReactNode;

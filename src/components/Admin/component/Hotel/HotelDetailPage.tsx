@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   Box,
   Typography,
@@ -21,6 +21,7 @@ import { BookOnline, Info, Search } from "@mui/icons-material";
 import type { Hotel } from "../../../../utils/type";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useGetHotelByHotelCode } from "../../../../context/Api/useGetApi";
+import { useExit } from "../../../../context/use[custom]/useExit";
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -87,7 +88,8 @@ const HotelDetailPage = () => {
   const location = useLocation();
   const state = location.state as HotelDetailProps;
   const code = state?.code;
-  const navigate = useNavigate();
+  const exit = useExit();
+  const handlechange4 = (name: string) => {};
 
   const { dataHotelByHotelCode } = useGetHotelByHotelCode(code);
   const hotel = dataHotelByHotelCode?.data;
@@ -123,14 +125,14 @@ const HotelDetailPage = () => {
 
   useEffect(() => {
     if (!code) {
-      navigate(-1);
+      exit();
     }
-  }, [code, navigate]);
+  }, [code, exit]);
 
   return (
     <Box sx={{ padding: 8, bgcolor: "#fafafa", minHeight: "100vh" }}>
       {/* Header */}
-      <Button variant="contained" onClick={() => navigate(-1)}>
+      <Button variant="contained" onClick={exit}>
         {" "}
         Return{" "}
       </Button>

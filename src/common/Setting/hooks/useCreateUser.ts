@@ -4,6 +4,8 @@ import { useRandomPassword } from "../../../context/Api/useGetApi";
 import { useDataSection, type UserFormConfig } from "./useDataSection";
 import { useCreateUserByAdmin } from "../../../context/Api/usePostApi";
 import { useToast } from "../../../context/ToastContext";
+import { ResponseCode } from "../../../utils/response";
+import type { FieldValue } from "../../AdditionalCustomFC/FieldRenderer";
 
 interface IUseUpdateUserProps {
   onClose: () => void;
@@ -24,7 +26,7 @@ export const useCreateUser = ({ onClose, onSuccess }: IUseUpdateUserProps) => {
   useEffect(() => {
     const generatePassword = async () => {
       const password = await refetchUserPw();
-      if (password?.resultCode === "00") {
+      if (password?.resultCode === ResponseCode.SUCCESS) {
         setUpdateInfo((prev) => ({ ...prev, password: password.data }));
       }
     };
@@ -36,7 +38,7 @@ export const useCreateUser = ({ onClose, onSuccess }: IUseUpdateUserProps) => {
 
   const formDetailConfig = useDataSection(updateInfo, "register");
 
-  const handleChange = (key: string, value: any) => {
+  const handleChange = (key: string, value: FieldValue) => {
     setUpdateInfo((prev) => ({ ...prev, [key]: value }));
   };
   const { refetchCreateUser } = useCreateUserByAdmin();
@@ -54,7 +56,7 @@ export const useCreateUser = ({ onClose, onSuccess }: IUseUpdateUserProps) => {
 
     const res = await refetchCreateUser(payload);
 
-    if (res?.resultCode === "00") {
+    if (res?.resultCode === ResponseCode.SUCCESS) {
       toast(res.resultMessage, "success");
       onSuccess();
       onClose();

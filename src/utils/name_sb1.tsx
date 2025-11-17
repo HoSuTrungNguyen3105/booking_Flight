@@ -3,6 +3,7 @@ import DirectionsRunIcon from "@mui/icons-material/DirectionsRun";
 import { Building2, Zap } from "lucide-react";
 import type { ReactNode } from "react";
 import Icon from "../svgs/Huongdan_muave_Thumb.webp";
+import { FlightClass } from "@mui/icons-material";
 type MenuItemProps = {
   value: string; // route string
   icon: ReactNode;
@@ -44,6 +45,12 @@ export const menuData: TabData = {
         value: "hotels",
         icon: <DirectionsRunIcon />,
         label: "Hướng dẫn sử dụng",
+        image: Icon,
+      },
+      {
+        value: "SeatSelection",
+        icon: <FlightClass />,
+        label: "SeatSelection",
         image: Icon,
       },
       {
@@ -116,8 +123,8 @@ export const menuData: TabData = {
   Company: {
     name: "Company",
     items: [
-      { icon: <Zap size={24} />, value: "about-us", label: "Về chúng tôi" },
-      { icon: <Users size={24} />, value: "teams", label: "Nhân sự" },
+      { icon: <Zap size={24} />, value: "select", label: "Về chúng tôi" },
+      { icon: <Users size={24} />, value: "flight/select", label: "Nhân sự" },
     ],
   },
 };

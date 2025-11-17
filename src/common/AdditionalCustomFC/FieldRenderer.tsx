@@ -5,8 +5,9 @@ import type { SxProps } from "@mui/system";
 import SelectDropdown, { type ActionType } from "../Dropdown/SelectDropdown";
 import InputNumber from "../Input/InputNumber";
 import { memo } from "react";
+import DateTimePickerComponent from "../DayPicker/index";
 
-type FieldValue = boolean | string | number | null;
+export type FieldValue = boolean | string | number | null;
 
 export enum FieldType {
   SWITCH = "switch",
@@ -69,7 +70,7 @@ const FieldRenderer = ({
     case FieldType.DROPDOWN:
       return (
         <SelectDropdown
-          sx={{ width: "100%" }}
+          sx={{ width: "100%", ...sx }}
           placeholder={placeholder}
           options={options as ActionType[]}
           value={value as string | number}
@@ -81,7 +82,7 @@ const FieldRenderer = ({
     case FieldType.INPUT_WITH_TYPE_PASSWORD:
       return (
         <InputTextField
-          {...sx}
+          sx={sx}
           type="password"
           canCopy
           showEyeIcon
@@ -93,7 +94,7 @@ const FieldRenderer = ({
     case FieldType.INPUT_WITH_TYPE_TEXT:
       return (
         <InputTextField
-          {...sx}
+          sx={sx}
           error={error as boolean}
           type="text"
           clearable
@@ -107,7 +108,7 @@ const FieldRenderer = ({
     case FieldType.INPUT_WITH_TYPE_EMAIL:
       return (
         <InputTextField
-          {...sx}
+          sx={sx}
           error={error as boolean}
           clearable
           readOnly={readOnly}
@@ -120,13 +121,12 @@ const FieldRenderer = ({
     case FieldType.INPUT_WITH_NUMBER:
       return (
         <InputNumber
-          {...sx}
+          sx={{ width: "100%", ...sx }}
           value={value as number}
           onChange={onChange}
           placeholder={placeholder}
           isSeparator
           min={0}
-          sx={{ width: "100%" }}
           size="small"
           textAlign="left"
         />
@@ -138,6 +138,15 @@ const FieldRenderer = ({
           placeholder={placeholder}
           value={value as string}
           disabled={disabled}
+        />
+      );
+
+    case FieldType.DATE:
+      return (
+        <DateTimePickerComponent
+          value={value as number}
+          onChange={onChange}
+          language="en"
         />
       );
   }

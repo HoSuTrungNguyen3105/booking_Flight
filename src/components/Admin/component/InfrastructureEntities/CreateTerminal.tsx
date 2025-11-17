@@ -25,21 +25,6 @@ import { ResponseCode } from "../../../../utils/response";
 
 export type TerminalType = "DOMESTIC" | "INTERNATIONAL" | "CARGO";
 
-// export interface CreateTerminalReq {
-//   code: string;
-//   name: string;
-//   description?: string;
-//   type: TerminalType;
-//   airportId: string;
-// }
-
-interface TerminalBatchCreatorProps {
-  onClose: () => void;
-  //   createBatchTerminal: (
-  //     terminals: CreateTerminalReq[]
-  //   ) => Promise<{ resultCode: string; list?: any[] }>;
-}
-
 const DEFAULT_TERMINAL: CreateTerminalDto = {
   code: "",
   name: "",
@@ -67,7 +52,7 @@ export const TerminalBatchCreator = () => {
   const [submitting, setSubmitting] = useState(false);
 
   const handleChange = useCallback(
-    (index: number, field: keyof CreateTerminalDto, value: any) => {
+    (index: number, field: keyof CreateTerminalDto, value: string) => {
       setTerminals((prev) =>
         prev.map((t, i) => (i === index ? { ...t, [field]: value } : t))
       );
@@ -148,7 +133,7 @@ export const TerminalBatchCreator = () => {
                   placeholder="Airport ID"
                   options={optionDataAllAirportIds}
                   value={t.airportId}
-                  onChange={(e) => handleChange(idx, "airportId", e)}
+                  onChange={(e) => handleChange(idx, "airportId", e as string)}
                 />
                 {/* <TextField
                   fullWidth

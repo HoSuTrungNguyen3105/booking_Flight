@@ -36,7 +36,7 @@ const ButtonCircle: React.FC<ButtonCircleProps> = ({
           alignItems: "center",
           justifyContent: "center",
         },
-        ...(Array.isArray(sx) ? sx : [sx]), // merge array/object
+        ...(Array.isArray(sx) ? sx : [sx]),
       ]}
     >
       <IconButton

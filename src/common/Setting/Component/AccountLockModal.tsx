@@ -9,6 +9,7 @@ import {
 import { useTranslation } from "react-i18next";
 import type { UserData } from "../../../utils/type";
 import BaseModal from "../../Modal/BaseModal";
+import { ResponseCode } from "../../../utils/response";
 
 interface IModalStatisticalDataLearningProps {
   open: boolean;
@@ -44,7 +45,7 @@ const AccountLockModal = ({
 
       const result = await refetchAccountLock(params);
 
-      if (result?.resultCode === "00") {
+      if (result?.resultCode === ResponseCode.SUCCESS) {
         toast(result.resultMessage, "success");
         onClose();
         onSuccess();

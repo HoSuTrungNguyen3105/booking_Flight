@@ -3,22 +3,19 @@ import type { FlightDetailPageProps } from "../FlightDetail";
 import { useNavigate } from "react-router-dom";
 import type { IDetailItem } from "../../../../../common/AdditionalCustomFC/DetailSection";
 import { DateFormatEnum, formatDate } from "../../../../../hooks/format";
+import { useExit } from "../../../../../context/use[custom]/useExit";
 
 export const useFlightManagement = ({
   flight,
   onBookFlight,
 }: FlightDetailPageProps) => {
-  const navigate = useNavigate();
+  const handleGoBack = useExit();
 
   const handleBookFlight = useCallback(() => {
     if (flight && onBookFlight) {
       onBookFlight(flight.flightId as number);
     }
   }, [flight, onBookFlight]);
-
-  const handleGoBack = useCallback(() => {
-    navigate(-1);
-  }, [navigate]);
 
   if (!flight) {
     return "No item";
@@ -56,16 +53,6 @@ export const useFlightManagement = ({
         flight.actualArrival
       ),
       size: 4,
-    },
-    {
-      title: "Delay Minutes",
-      description: flight.delayMinutes ? `${flight.delayMinutes} minutes` : "-",
-      size: 4,
-    },
-    {
-      title: "Delay Reason",
-      description: flight.delayReason || "-",
-      size: 8,
     },
   ];
 
@@ -126,20 +113,8 @@ export const useFlightManagement = ({
     },
   ];
 
-  const cancellationData: IDetailItem[] =
-    flight.isCancelled && flight.cancellationReason
-      ? [
-          {
-            title: "Cancellation Reason",
-            description: flight.cancellationReason,
-            size: 12,
-          },
-        ]
-      : [];
-
   return {
     priceData,
-    cancellationData,
     handleBookFlight,
     handleGoBack,
     scheduleData,

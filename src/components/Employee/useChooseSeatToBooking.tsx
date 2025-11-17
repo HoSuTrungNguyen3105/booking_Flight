@@ -23,7 +23,7 @@ export const useChooseSeatToBooking = ({ id }: FlightWithSeatLayoutProps) => {
   // Lọc loại ghế
   const [filter] = useState<FilterType>("ALL");
 
-  // 🔹 Dữ liệu chi tiết flight
+  // Dữ liệu chi tiết flight
   const flightData = getAllInfoFlightByIdData?.data;
 
   const detail: IDetailItem[] = useMemo(
@@ -89,36 +89,65 @@ export const useChooseSeatToBooking = ({ id }: FlightWithSeatLayoutProps) => {
     [flightData]
   );
 
-  // 🔹 Chọn ghế
+  // // 🔹 Chọn ghế
+  // const handleSelectSeat = useCallback(
+  //   (seat: Seat) => {
+  //     setSelectedSeats((prev) => {
+  //       const exists = prev.some((s) => s.id === seat.id);
+  //       if (exists) {
+  //         return prev.filter((s) => s.id !== seat.id);
+  //       }
+
+  //       if (maxSelectSeats === 1) {
+  //         return [seat]; // chỉ giữ 1 ghế
+  //       }
+
+  //       if (prev.length < maxSelectSeats) {
+  //         return [...prev, seat];
+  //       }
+
+  //       toast(`You can select up to ${maxSelectSeats} seats only.`);
+  //       return prev;
+  //     });
+  //   },
+  //   [maxSelectSeats, toast]
+  // );
+
   const handleSelectSeat = useCallback(
     (seat: Seat) => {
       setSelectedSeats((prev) => {
         const exists = prev.some((s) => s.id === seat.id);
+
         if (exists) {
+          toast("Đã bỏ chọn ghế");
           return prev.filter((s) => s.id !== seat.id);
         }
 
         if (maxSelectSeats === 1) {
-          return [seat]; // chỉ giữ 1 ghế
+          // luôn set seat khi chỉ được chọn 1
+          // setSelectedSeat(seat);
+          // setOpenSeatModal(true);
+          return [seat];
         }
 
-        if (prev.length < maxSelectSeats) {
-          return [...prev, seat];
+        // if (prev.length < maxSelectSeats) {
+        if (seat.isBooked) {
+          toast("Ghế đã được đặt, vui lòng chọn ghế khác");
+          return prev;
         }
-
-        toast(`You can select up to ${maxSelectSeats} seats only.`);
-        return prev;
+        toast(`Đã chọn ${prev.length + 1} ghế`);
+        return [...prev, seat];
       });
     },
-    [maxSelectSeats, toast]
+    [maxSelectSeats]
   );
 
-  // 🔹 Reset chọn ghế
+  //  Reset chọn ghế
   const handleResetSelections = useCallback(() => {
     setSelectedSeats([]);
   }, []);
 
-  // 🔹 Mở trang thanh toán
+  //  Mở trang thanh toán
   const handleOpenUpdateModal = useCallback(() => {
     if (selectedSeats.length === 0) {
       toast("Please select at least one seat to continue.");
@@ -138,7 +167,7 @@ export const useChooseSeatToBooking = ({ id }: FlightWithSeatLayoutProps) => {
     });
 
     // Cuộn lên đầu trang (UX)
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    // window.scrollTo({ top: 0, behavior: "smooth" });
   }, [selectedSeats, id, flightData, navigate, toast]);
 
   return {

@@ -42,7 +42,7 @@ import TicketPage from "../components/Employee";
 import ContactPage from "../components/Contact";
 import PassengerProfile from "../components/Employee/PassengerProfile";
 import PaymentForm from "../components/Employee/PaymentForm";
-import PassengerChooseSeat from "../components/Employee/PassengerChooseSeat";
+import PassengerChooseSeat from "../components/Sample/PassengerChooseSeat";
 import FlightInfoPage from "../components/Employee/FlightInfoPage";
 import HotelListPage from "../components/Admin/component/Hotel/HotelListPage";
 import HotelDetailPage from "../components/Admin/component/Hotel/HotelDetailPage";
@@ -63,6 +63,9 @@ import SeatSelect from "../components/Sample/SeatSelect";
 import ContentPackage from "../components/Common/ContentPackage";
 import FlightDealsAcceppst from "../components/Sample/FlightDeal";
 import CreateRandomFlights from "../components/User/CreateRandomFlights";
+import FlightPassengerSelector from "../components/Employee/PassengerSelector";
+import FlightSelection from "../components/Employee/FlightSelection";
+import SeatSelection from "../components/Sample/SeatSelection";
 
 const routes = [
   {
@@ -118,6 +121,14 @@ const routes = [
         element: <FlightInfoPage />,
       },
       {
+        path: "/SeatSelection",
+        element: <SeatSelection />,
+      },
+      {
+        path: "/flight/select",
+        element: <FlightSelection />,
+      },
+      {
         path: "/payment",
         element: <BookingPage />,
       },
@@ -152,6 +163,10 @@ const routes = [
       {
         path: "/CreateRandomFlights",
         element: <CreateRandomFlights />,
+      },
+      {
+        path: "/select",
+        element: <FlightPassengerSelector departureDate="Nov.26,2025(Wed)" />,
       },
       {
         path: "/change/email",

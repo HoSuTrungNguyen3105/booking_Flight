@@ -17,16 +17,12 @@ const FlightDetailPage = ({ flight, onBookFlight }: FlightDetailPageProps) => {
 
   const {
     priceData,
-    cancellationData,
+    // cancellationData,
     handleBookFlight,
     handleGoBack,
     scheduleData,
     airportData,
   } = management;
-
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, []);
 
   const renderContent = useCallback(() => {
     if (!flight) {
@@ -63,17 +59,6 @@ const FlightDetailPage = ({ flight, onBookFlight }: FlightDetailPageProps) => {
             data={airportData}
           />
 
-          {cancellationData.length > 0 && (
-            <>
-              <Box sx={{ my: 3 }} />
-              <DetailSection
-                title="Cancellation Information"
-                itemPerRow={1}
-                data={cancellationData}
-              />
-            </>
-          )}
-
           <Box sx={{ my: 3 }} />
 
           <DetailSection
@@ -98,7 +83,6 @@ const FlightDetailPage = ({ flight, onBookFlight }: FlightDetailPageProps) => {
     handleBookFlight,
     scheduleData,
     airportData,
-    cancellationData,
     priceData,
   ]);
 
