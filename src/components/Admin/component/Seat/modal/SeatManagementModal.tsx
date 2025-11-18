@@ -3,8 +3,7 @@ import { memo, useCallback, useMemo, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import BaseModal from "../../../../../common/Modal/BaseModal";
 import SelectDropdown from "../../../../../common/Dropdown/SelectDropdown";
-// import Android12Switch from "../../../../common/Switch/Switch";
-import type { Seat, SeatTypeValue } from "../../../../../utils/type";
+import type { Seat } from "../../../../../utils/type";
 import { useSeatUpdateByIds } from "../../../../../context/Api/usePostApi";
 import { getMessage, ResponseCode } from "../../../../../utils/response";
 import { useToast } from "../../../../../context/ToastContext";
@@ -39,15 +38,15 @@ const SeatManagementModal = ({
   onSuccess,
   selectedSeats,
 }: IModalStatisticalDataLearningProps) => {
-  const seatTypeOptions = useMemo(
-    () => [
-      { value: "ECONOMY", label: "Economy" },
-      { value: "BUSINESS", label: "Business" },
-      { value: "FIRST", label: "First" },
-      { value: "VIP", label: "Vip" },
-    ],
-    []
-  );
+  // const seatTypeOptions = useMemo(
+  //   () => [
+  //     { value: "ECONOMY", label: "Economy" },
+  //     { value: "BUSINESS", label: "Business" },
+  //     { value: "FIRST", label: "First" },
+  //     { value: "VIP", label: "Vip" },
+  //   ],
+  //   []
+  // );
 
   const seatFeatureOptions: SeatFeatureOption[] = useMemo(
     () => [
@@ -63,7 +62,7 @@ const SeatManagementModal = ({
     []
   );
 
-  const [type, setType] = useState<SeatTypeValue>("ECONOMY");
+  // const [type, setType] = useState<SeatTypeValue>("ECONOMY");
   const [position, setPosition] = useState("WINDOW");
   const toast = useToast();
   const { refetchUpdateSeatByIds } = useSeatUpdateByIds();
@@ -117,13 +116,13 @@ const SeatManagementModal = ({
           Updating seats: {selectedSeats?.seatIds?.join(", ")}
         </Typography>
 
-        <FormControl fullWidth sx={{ mb: 2 }}>
+        {/* <FormControl fullWidth sx={{ mb: 2 }}>
           <SelectDropdown
             options={seatTypeOptions}
             value={type}
             onChange={(val) => setType(val as SeatTypeValue)}
           />
-        </FormControl>
+        </FormControl> */}
 
         <FormControl fullWidth sx={{ mb: 2 }}>
           <SelectDropdown
@@ -134,7 +133,7 @@ const SeatManagementModal = ({
         </FormControl>
       </Box>
     );
-  }, [selectedSeats, type, position, seatTypeOptions, seatFeatureOptions]);
+  }, [selectedSeats, position, seatFeatureOptions]);
 
   return (
     <BaseModal

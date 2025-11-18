@@ -1,46 +1,10 @@
-import React, { useCallback, useState } from "react";
-import {
-  Box,
-  Typography,
-  Button,
-  Paper,
-  Grid,
-  Container,
-  Link,
-  FormControlLabel,
-  Radio,
-} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box, Typography, Paper, Container, Link } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import SelectDropdown, {
-  type ActionType,
-} from "../../common/Dropdown/SelectDropdown";
-import {
-  mapStringToDropdown,
-  useFindAllFlightTypes,
-  useGetAllCode,
-} from "../../context/Api/useGetApi";
 import theme from "../../scss/theme";
 import FieldRenderer from "../../common/AdditionalCustomFC/FieldRenderer";
 import { useDataSection, type SearchFormConfig } from "./search_type_input";
-
-// interface FlightSearchFormProps {
-//   initialData?: {
-//     origin?: string;
-//     destination?: string;
-//     departDate?: number;
-//     returnDate?: number;
-//     type?: string;
-//     discountCode?: string;
-//   };
-// }
-
-// type InputItemsProps = {
-//   name : string;
-//   label : string;
-//   placeholder : string;
-//   ty
-// }
 
 const FlightSearchForm: React.FC<{ type: keyof SearchFormConfig }> = ({
   type,
@@ -53,28 +17,51 @@ const FlightSearchForm: React.FC<{ type: keyof SearchFormConfig }> = ({
     type: "Economy",
     discountCode: "",
   });
+
   const dataSection = useDataSection(type, formData);
 
-  // const [activeSelect, setActiveSelect] = useState<"roundtrip" | "oneway">(
-  //   "oneway"
-  // );
+  useEffect(() => {
+    localStorage.setItem("search_data", JSON.stringify(formData));
+  }, [formData]);
 
-  const handleChange = <
-    T extends keyof SearchFormConfig,
-    K extends keyof SearchFormConfig[T]
-  >(
-    section: T,
+  //   const handleChange = <
+  //   T extends keyof SearchFormConfig,
+  //   K extends keyof SearchFormConfig[T]
+  // >(
+  //   section: T,
+  //   key: K,
+  //   value: SearchFormConfig[T][K]
+  // ) => {
+  //   setFormData(prev => ({
+  //     ...prev,
+  //     [section]: {
+  //       ...prev[section], // giữ lại các key cũ trong section
+  //       [key]: value,
+  //     },
+  //   }));
+  // };
+
+  const handleChange = <K extends keyof typeof formData>(
     key: K,
-    value: SearchFormConfig[T][K]
+    value: (typeof formData)[K]
   ) => {
     setFormData((prev) => ({
       ...prev,
-      [section]: {
-        // ...prev[section],
-        [key]: value,
-      },
+      [key]: value,
     }));
   };
+
+  // const handleChange = <
+  //   T extends keyof SearchFormConfig
+  // >(
+  //   key: T,
+  //   value: SearchFormConfig[T]
+  // ) => {
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     [key]: value,
+  //   }));
+  // };
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -115,7 +102,7 @@ const FlightSearchForm: React.FC<{ type: keyof SearchFormConfig }> = ({
                         placeholder={field.placeholder}
                         onChange={(val) =>
                           handleChange(
-                            "flight",
+                            // "flight",
                             field.id as keyof SearchFormConfig["flight"],
                             val as string
                           )
@@ -126,118 +113,6 @@ const FlightSearchForm: React.FC<{ type: keyof SearchFormConfig }> = ({
                 </Box>
               )
           )}
-          {/* <Grid container spacing={3} alignItems="flex-end">
-            <Grid size={12}>
-              <FormControlLabel
-                control={
-                  <Radio
-                    checked={activeSelect === "roundtrip"}
-                    onChange={handleFilterType}
-                  />
-                }
-                label="Round Trip"
-              />
-              <FormControlLabel
-                control={
-                  <Radio
-                    checked={activeSelect === "oneway"}
-                    onChange={handleFilterType}
-                  />
-                }
-                label="One Way"
-              />
-            </Grid>
-
-            <Grid size={4}>
-              <Typography variant="subtitle2" gutterBottom fontWeight="bold">
-                ORIGIN
-              </Typography>
-              <SelectDropdown
-                value={formData.origin}
-                options={airports}
-                onChange={handleDropdownChange("origin")}
-                variant="outlined"
-                placeholder="Select departure"
-              />
-            </Grid>
-
-            <Grid size={4}>
-              <Typography variant="subtitle2" gutterBottom fontWeight="bold">
-                DESTINATION
-              </Typography>
-              <SelectDropdown
-                value={formData.destination}
-                options={airports}
-                onChange={handleDropdownChange("destination")}
-                variant="outlined"
-                placeholder="Select arrival"
-              />
-            </Grid>
-
-            <Grid size={4}>
-              <Typography variant="subtitle2" gutterBottom fontWeight="bold">
-                FLIGHT TYPE
-              </Typography>
-              <SelectDropdown
-                value={formData.type}
-                options={optionDataFlightTypes}
-                onChange={handleDropdownChange("type")}
-                variant="outlined"
-                placeholder="Select type"
-              />
-            </Grid>
-
-            <Grid size={4}>
-              <Typography variant="subtitle2" gutterBottom fontWeight="bold">
-                DEPART ON
-              </Typography>
-              <DateTimePickerComponent
-                value={formData.departDate}
-                onChange={handleDateChange("departDate")}
-                language="en"
-              />
-            </Grid>
-
-            {activeSelect === "roundtrip" && (
-              <Grid size={4}>
-                <Typography variant="subtitle2" gutterBottom fontWeight="bold">
-                  RETURN ON
-                </Typography>
-                <DateTimePickerComponent
-                  value={formData.returnDate}
-                  onChange={handleDateChange("returnDate")}
-                  language="en"
-                />
-              </Grid>
-            )}
-
-            <Grid size={4}>
-              <Typography variant="subtitle2" gutterBottom fontWeight="bold">
-                Ticket code
-              </Typography>
-              <InputTextField
-                value={formData.discountCode}
-                onChange={handleInputChange("discountCode")}
-                variant="outlined"
-                placeholder="Enter ticket code"
-              />
-            </Grid>
-
-            <Grid size={12} display="flex" justifyContent="flex-end" mt={2}>
-              <Button
-                fullWidth
-                variant="contained"
-                size="large"
-                onClick={handleSearch}
-                sx={{
-                  maxWidth: "20rem",
-                  py: 1.5,
-                }}
-              >
-                Search flights
-              </Button>
-            </Grid>
-          </Grid> */}
         </Paper>
 
         {/* Cookies Notice */}

@@ -29,7 +29,7 @@ export type SeatTypeValue = "ECONOMY" | "BUSINESS" | "FIRST" | "VIP";
 export interface SeatUpdateProps {
   seatIds: number[];
   data: {
-    type?: SeatTypeValue;
+    // type?: SeatTypeValue;
     price?: number;
     isBooked?: boolean;
     isAvailable?: boolean;
@@ -544,6 +544,9 @@ export interface Meal {
   isAvailable: boolean;
   flightMeals: FlightMeal[];
 }
+
+export type CreateFlightMealProps = Omit<FlightMeal, "id" | "meal" | "flight">;
+
 export type MealType =
   | "VEG"
   | "NONVEG"
@@ -943,6 +946,12 @@ export type PassengerResponseMessage = DetailResponseMessage<Passenger>;
 export type ResponseMessage = {
   resultCode: string;
   resultMessage: string;
+};
+
+export type FlightByDay = {
+  day: string;
+  date: string;
+  year: number;
 };
 
 export type Seat = {

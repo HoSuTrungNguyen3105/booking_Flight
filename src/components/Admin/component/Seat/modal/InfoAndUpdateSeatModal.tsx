@@ -3,15 +3,10 @@ import { memo, useCallback } from "react";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
 import BaseModal from "../../../../../common/Modal/BaseModal";
 import InputTextField from "../../../../../common/Input/InputTextField";
-import type { Seat, SeatTypeValue } from "../../../../../utils/type";
+import type { Seat } from "../../../../../utils/type";
 import { useSeatUpdateByIds } from "../../../../../context/Api/usePostApi";
 import Android12Switch from "../../../../../common/Switch/Switch";
 import InputNumber from "../../../../../common/Input/InputNumber";
-import SelectDropdown from "../../../../../common/Dropdown/SelectDropdown";
-import {
-  mapStringToDropdown,
-  useFindAllSeatTypes,
-} from "../../../../../context/Api/useGetApi";
 import { ResponseCode } from "../../../../../utils/response";
 
 interface ISeatModalProps {
@@ -30,11 +25,6 @@ const InfoAndUpdateSeatModal = ({
   onSuccess,
 }: ISeatModalProps) => {
   const { refetchUpdateSeatByIds } = useSeatUpdateByIds();
-
-  const { dataSeatTypes } = useFindAllSeatTypes();
-
-  const seatTypeOptions = mapStringToDropdown(dataSeatTypes?.data || []);
-
   const handleUpdate = async () => {
     const seatId = formData?.id;
     const seatIds = seatId ? [seatId] : [];
@@ -42,7 +32,6 @@ const InfoAndUpdateSeatModal = ({
     const res = await refetchUpdateSeatByIds({
       seatIds,
       data: {
-        type: formData.type as SeatTypeValue,
         price: formData.price,
         isBooked: formData.isBooked,
         isAvailable: formData.isAvailable,
@@ -112,15 +101,6 @@ const InfoAndUpdateSeatModal = ({
               placeholder="Hàng ghế"
               value={formData.seatRow}
               onChange={(e) => setFormData({ ...formData, seatRow: e })}
-            />
-          </Grid>
-          <Grid size={6}>
-            <SelectDropdown
-              value={formData.type}
-              onChange={(e) =>
-                setFormData({ ...formData, type: e as SeatTypeValue })
-              }
-              options={seatTypeOptions}
             />
           </Grid>
           <Grid size={6}>

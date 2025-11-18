@@ -70,7 +70,7 @@ export default function FlightList() {
     if (res?.resultCode === ResponseCode.SUCCESS) {
       toast(res.resultMessage);
     } else {
-      toast(res?.resultMessage || "", "info");
+      toast(res?.resultMessage || "Error", "error");
     }
   };
 
@@ -84,15 +84,19 @@ export default function FlightList() {
       field: "scheduledDeparture",
       headerName: "Departure",
       flex: 1,
-      valueFormatter: (params: number) =>
-        params ? formatDate(DateFormatEnum.MMMM_D_YYYY_HH_MM_SS, params) : "-",
+      valueFormatter: (params: string) =>
+        params
+          ? formatDate(DateFormatEnum.MMMM_D_YYYY_HH_MM_SS, Number(params))
+          : "-",
     },
     {
       field: "scheduledArrival",
       headerName: "Arrival",
       flex: 1,
-      valueFormatter: (params: number) =>
-        params ? formatDate(DateFormatEnum.MMMM_D_YYYY_HH_MM_SS, params) : "-",
+      valueFormatter: (params: string) =>
+        params
+          ? formatDate(DateFormatEnum.MMMM_D_YYYY_HH_MM_SS, Number(params))
+          : "-",
     },
     { field: "departureAirport", headerName: "From", flex: 0.5 },
     { field: "arrivalAirport", headerName: "To", flex: 0.5 },

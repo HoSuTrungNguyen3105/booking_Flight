@@ -59,12 +59,7 @@ const Hero = () => {
 
       <FlightDeals />
 
-      <CardGroup
-        url="/products"
-        title="Featured Products"
-        color="primary"
-        background="#f5f5f5"
-      >
+      <CardGroup url="/products" title="Featured Products" color="primary">
         {dataGetAllHotels?.list?.map((e, i) => (
           <EventCard
             key={i + 21}
@@ -79,12 +74,7 @@ const Hero = () => {
         ))}
       </CardGroup>
 
-      <CardGroup
-        url="/products"
-        title="Featured Products"
-        color="primary"
-        background="#f5f5f5"
-      >
+      <CardGroup url="/products" title="Featured Products" color="primary">
         {getFlightData?.list?.map((e, i) => (
           <EventCard
             key={i + 5}

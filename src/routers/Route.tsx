@@ -66,6 +66,10 @@ import CreateRandomFlights from "../components/User/CreateRandomFlights";
 import FlightPassengerSelector from "../components/Employee/PassengerSelector";
 import FlightSelection from "../components/Employee/FlightSelection";
 import SeatSelection from "../components/Sample/SeatSelection";
+import FareComparison from "../components/Admin/component/Meal/FareComparison";
+import OrderTable from "../components/Admin/component/Meal/OrderTable";
+import FlightMealList from "../components/Admin/component/Meal/FlightMealList";
+import FlightScheduleDashboard from "../components/User/FlightScheduleDashboard";
 
 const routes = [
   {
@@ -105,6 +109,14 @@ const routes = [
         element: <Tictoctoe />,
       },
       {
+        path: "/FlightScheduleDashboard",
+        element: <FlightScheduleDashboard />,
+      },
+      {
+        path: "/FareComparison",
+        element: <FareComparison />,
+      },
+      {
         path: "/FlightSummaryRef",
         element: <FlightSummaryRef />,
       },
@@ -126,11 +138,19 @@ const routes = [
       },
       {
         path: "/flight/select",
-        element: <FlightSelection />,
+        element: <FlightSelection aircraftCode="SGN" />,
       },
       {
         path: "/payment",
         element: <BookingPage />,
+      },
+      {
+        path: "/OrderTable",
+        element: <OrderTable />,
+      },
+      {
+        path: "/FlightMealList",
+        element: <FlightMealList />,
       },
       {
         path: "/TripSummary",

@@ -18,18 +18,19 @@ import {
   useLogoutAllSessions,
   usePassengerSessions,
 } from "../../context/Api/usePostApi";
-import { useAuth, type AuthType } from "../../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 import type { UserSession } from "../../utils/type";
 import { ResponseCode } from "../../utils/response";
 import { DateFormatEnum, formatDate } from "../../hooks/format";
 import InputTextField from "../../common/Input/InputTextField";
+import type { AuthType } from "../Auth/Login";
 
 const AccountSecurity: React.FC = () => {
   const { passenger, user } = useAuth();
   const [displaySessions, setDisplaySessions] = useState<UserSession[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const [sessionId, setSessionId] = useState<number | null>(null);
+  // const [sessionId, setSessionId] = useState<number | null>(null);
 
   const { refetchPassengerSessions } = usePassengerSessions();
 
@@ -62,8 +63,6 @@ const AccountSecurity: React.FC = () => {
     if (!sesId) return;
 
     try {
-      setSessionId(sesId);
-
       const savedState = (localStorage.getItem("stateLogin") as AuthType) || "";
 
       const payload =
@@ -83,14 +82,8 @@ const AccountSecurity: React.FC = () => {
       }
     } catch (error) {
       console.error("Logout session error:", error);
-      // setSnackbar({
-      //   open: true,
-      //   message: "Không thể đăng xuất thiết bị này.",
-      //   severity: "error",
-      // });
     } finally {
       // reset sessionId hoặc state khác nếu cần
-      setSessionId(0);
     }
   };
 

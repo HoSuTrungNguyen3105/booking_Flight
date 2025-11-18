@@ -48,10 +48,10 @@ import {
   type VerifyOTPProps,
   type ChangeEmailPassengerProps,
   type VerifyOtpFromEmailChangeProps,
-  type Hotel,
   type CreateHotelDto,
   type TypeWithErrorResponse,
   type LocaleConfig,
+  type CreateFlightMealProps,
 } from "../../utils/type.ts";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
 import { useFetch } from "../use[custom]/useFetch.ts";
@@ -204,6 +204,19 @@ export const useCreateRandomFlight = () => {
   return {
     refetchCreateRandomFlight,
     loadingCreateRandomFlight,
+  };
+};
+
+export const useCreateFlightMeal = () => {
+  const { refetch: refetchAddMealToFlight, loading: loadingAddMealToFlight } =
+    useFetch<ResponseMessage, CreateFlightMealProps>({
+      url: "/sys/flight-meals",
+      autoFetch: false,
+      config: postMethod,
+    });
+  return {
+    refetchAddMealToFlight,
+    loadingAddMealToFlight,
   };
 };
 

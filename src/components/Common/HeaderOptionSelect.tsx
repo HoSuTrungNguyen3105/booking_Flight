@@ -82,10 +82,11 @@ const LanguageButton = () => {
       <Box
         sx={{
           width: "auto",
-          minWidth: "7rem",
+          minWidth: "8rem",
           display: "flex",
           alignItems: "center",
-          gap: 1, // khoảng cách giữa flag và text
+          gap: 0.5,
+          margin: 0.5, // khoảng cách giữa flag và text
         }}
       >
         <Box

@@ -4,6 +4,7 @@ import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
 import InputTextField from "../../common/Input/InputTextField";
 import BaseModal from "../../common/Modal/BaseModal";
 import type { DetailResponseMessage } from "../../utils/type";
+import { ResponseCode } from "../../utils/response";
 
 interface ConfirmPasswordToCallApiProps {
   open: boolean;
@@ -50,7 +51,7 @@ const ConfirmPasswordToCallApiModal = ({
     setInternalLoading(true);
     try {
       const response = await onSuccess(passwordPrompt);
-      if (response.resultCode === "00") {
+      if (response.resultCode === ResponseCode.SUCCESS) {
         if (hasPendingRequest) {
           onValidPassword?.();
         } else {

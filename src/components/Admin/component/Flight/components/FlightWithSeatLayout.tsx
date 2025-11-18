@@ -26,6 +26,7 @@ import {
 } from "../hooks/useSeatInFlightDetail";
 import theme from "../../../../../scss/theme";
 import UpdateSeatPrice from "../../Seat/ModifieldSeat/UpdateSeatPrice";
+import AddMealToFlight from "../../Meal/AddMealToFlight";
 
 type FlightWithSeatLayoutProps = {
   id: number;
@@ -67,6 +68,7 @@ const FlightWithSeatLayout: React.FC<FlightWithSeatLayoutProps> = ({
   });
 
   const [updateSeatPrice, setUpdateSeatPrice] = useState(false);
+  const [addmealtoflight, setAddmealtoflight] = useState(false);
 
   if (createSeat) {
     return (
@@ -85,6 +87,18 @@ const FlightWithSeatLayout: React.FC<FlightWithSeatLayoutProps> = ({
       <UpdateSeatPrice
         flightId={id}
         flightNo={getAllInfoFlightByIdData?.data?.flightNo || ""}
+        onReturn={() => {
+          setUpdateSeatPrice(false), refetchGetAllInfoFlightData();
+        }}
+      />
+    );
+  }
+
+  if (addmealtoflight) {
+    return (
+      <AddMealToFlight
+        flightId={id}
+        name={getAllInfoFlightByIdData?.data?.flightNo || ""}
       />
     );
   }
@@ -103,6 +117,10 @@ const FlightWithSeatLayout: React.FC<FlightWithSeatLayoutProps> = ({
           <Button onClick={onReturn} variant="contained">
             {" "}
             Return
+          </Button>
+          <Button onClick={() => setAddmealtoflight(true)} variant="outlined">
+            {" "}
+            Add meal to flight
           </Button>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
             <LocalAirport sx={{ fontSize: 28 }} />

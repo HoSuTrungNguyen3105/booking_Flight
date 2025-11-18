@@ -33,6 +33,8 @@ import {
   type UserSession,
   type SearchFlightFromPassengerParams,
   type DataFlight,
+  type FlightByDay,
+  type FlightMeal,
 } from "../../utils/type.ts";
 import { useFetch } from "../use[custom]/useFetch.ts";
 import type { ActionType } from "../../common/Dropdown/SelectDropdown.tsx";
@@ -205,6 +207,42 @@ export const useGetFlightData = () => {
     getFlightData,
     refetchGetFlightData,
     loadingFlightData,
+  };
+};
+
+export const useGetFlightAvailableDates = (airportCode: string) => {
+  const {
+    data: getFlightData,
+    refetch: refetchGetFlightData,
+    loading: loadingFlightData,
+  } = useFetch<DetailResponseMessage<FlightByDay>, void>({
+    url: `/sys/flights/dates/${airportCode}`,
+    autoFetch: true,
+    config: getMethod,
+  });
+
+  return {
+    getFlightData,
+    refetchGetFlightData,
+    loadingFlightData,
+  };
+};
+
+export const useGetMealByFlightId = (id: number) => {
+  const {
+    data: getGetMealByFlightId,
+    refetch: refetchGetMealByFlightId,
+    loading: loadingGetMealByFlightId,
+  } = useFetch<DetailResponseMessage<FlightMeal>, void>({
+    url: `/sys/flight-meals/flight/${id}`,
+    autoFetch: true,
+    config: getMethod,
+  });
+
+  return {
+    getGetMealByFlightId,
+    refetchGetMealByFlightId,
+    loadingGetMealByFlightId,
   };
 };
 

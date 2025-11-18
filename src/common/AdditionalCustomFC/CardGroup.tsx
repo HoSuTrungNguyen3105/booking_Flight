@@ -12,12 +12,9 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import theme from "../../scss/theme";
 
 interface IProps {
-  url: string;
+  url?: string;
   title: string;
   color?: string;
-  background?: string;
-  touch?: boolean;
-  margin?: number;
   children: React.ReactNode;
 }
 
@@ -25,9 +22,6 @@ const CardGroup: React.FC<IProps> = ({
   url,
   title,
   color = "primary",
-  background = "transparent",
-  margin = 0,
-  //   touch = true,
   children,
 }) => {
   const navRef = useRef<HTMLDivElement>(null);
@@ -73,7 +67,7 @@ const CardGroup: React.FC<IProps> = ({
     const el = navRef.current;
     if (!el) return;
     const firstChild = el.children[0] as HTMLElement | undefined;
-    const scrollAmount = (firstChild?.offsetWidth || 300) + margin;
+    const scrollAmount = (firstChild?.offsetWidth || 300) + 0;
 
     el.scrollBy({
       left: direction === "left" ? -scrollAmount : scrollAmount,
@@ -89,7 +83,7 @@ const CardGroup: React.FC<IProps> = ({
       sx={{
         py: 1,
         px: 2,
-        backgroundColor: background,
+        backgroundColor: "transparent",
         position: "relative",
       }}
     >
@@ -108,19 +102,21 @@ const CardGroup: React.FC<IProps> = ({
         >
           {title}
         </Typography>
-        <Button
-          variant="contained"
-          endIcon={<ArrowForwardIcon />}
-          href={url}
-          sx={{
-            textTransform: "none",
-            borderRadius: 3,
-            px: 2.5,
-            py: 1,
-          }}
-        >
-          See all
-        </Button>
+        {url && (
+          <Button
+            variant="contained"
+            endIcon={<ArrowForwardIcon />}
+            href={url}
+            sx={{
+              textTransform: "none",
+              borderRadius: 3,
+              px: 2.5,
+              py: 1,
+            }}
+          >
+            See all
+          </Button>
+        )}
       </Stack>
 
       {/* Scrollable container */}

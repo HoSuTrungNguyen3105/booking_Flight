@@ -76,7 +76,7 @@ export const TerminalBatchCreator = () => {
     setSubmitting(true);
     try {
       const res = await refetchCreateTerminalBulk(terminals);
-      toast(res?.resultMessage || "Succes");
+
       if (res?.resultCode === ResponseCode.SUCCESS) {
         const errorMap: Record<number, string> = {};
         const newTerminals = terminals.map((t, idx) => {
@@ -86,6 +86,7 @@ export const TerminalBatchCreator = () => {
           //     return t;
           //   }
           // toast(item || "Succes");
+          toast(res?.resultMessage || "Success", "success");
           navigate("/admin/TerminalContainer");
           return DEFAULT_TERMINAL;
         });

@@ -18,18 +18,7 @@ export default function NavbarItem() {
   const [activeTab, setActiveTab] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const handleTabClick = (title: string) => {
-    // Nếu muốn toggle active tab
-    // setActiveTab(null);
-
-    navigate(`/content/${title}`);
-    setActiveTab(null);
-  };
-
-  // const handleTabClick = (tab: string) =>
-  //   setActiveTab((prev) => (prev === tab ? null : tab));
-  const handleTabEnter = (tab: string) => setActiveTab(tab);
-  // const handleTabLeave = () => setActiveTab(null);
+  // Click ngoài dropdown → đóng
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (
@@ -43,7 +32,11 @@ export default function NavbarItem() {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  // Lọc tab hiển thị
+  const handleTabClick = (title: string) => {
+    navigate(`/content/${title}`);
+    setActiveTab(null);
+  };
+
   const visibleTabs = Object.keys(menuData).filter(
     (tab) => isAdmin || menuData[tab].name !== "Admin"
   );
@@ -63,12 +56,8 @@ export default function NavbarItem() {
       >
         {visibleTabs.map((tab) => (
           <Button
-            // key={tab}
-            // onMouseEnter={() => handleTabEnter(tab)}
-            // onMouseLeave={handleTabLeave}
-            // onClick={() => handleTabClick(tab)}
             key={tab}
-            onMouseEnter={() => handleTabEnter(tab)}
+            onMouseEnter={() => setActiveTab(tab)}
             onClick={() => handleTabClick(tab)}
             sx={{
               fontSize: "14px",
@@ -78,6 +67,7 @@ export default function NavbarItem() {
               borderBottom: activeTab === tab ? "2px solid #6a0dad" : "none",
               borderRadius: 0,
               textTransform: "none",
+              transition: "color 0.2s",
               "&:hover": { color: "#6a0dad", background: "transparent" },
             }}
           >
@@ -87,40 +77,37 @@ export default function NavbarItem() {
       </Box>
 
       {/* DROPDOWN */}
-      {activeTab && menuData[activeTab].name.length > 0 && (
+      {activeTab && menuData[activeTab].items.length > 0 && (
         <Paper
-          // ref={dropdownRef}
-          // elevation={2}
-          // onMouseEnter={() => setActiveTab(activeTab)}
-          // onMouseLeave={handleTabLeave}
           ref={dropdownRef}
-          elevation={2}
+          elevation={4}
           onMouseEnter={() => setActiveTab(activeTab)}
           onMouseLeave={() => setActiveTab(null)}
           sx={{
             position: "absolute",
             top: "100%",
             left: 0,
-            width: "1200px",
+            width: "max-content",
+            minWidth: 600,
+            maxWidth: "90vw",
             bgcolor: "#fff",
             py: 3,
-            px: 6,
+            px: 4,
             display: "grid",
-            gridTemplateColumns: "repeat(2, 1fr)",
-            gap: 2,
+            gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+            gap: 3,
             borderRadius: 2,
             boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
             zIndex: 50,
             animation: `${fadeSlideIn} 0.26s ease-out forwards`,
           }}
         >
-          <Typography
-            variant="h6"
-            sx={{ gridColumn: "1 / -1", mb: 0.5, fontWeight: 600 }}
-          >
-            {menuData[activeTab].name}
-            <Divider sx={{ my: 3 }} />
-          </Typography>
+          <Box sx={{ gridColumn: "1 / -1" }}>
+            <Typography variant="h6" sx={{ fontWeight: 600 }}>
+              {menuData[activeTab].name}
+            </Typography>
+            <Divider sx={{ my: 2 }} />
+          </Box>
 
           {menuData[activeTab].items.map((item) => (
             <Box
@@ -130,41 +117,40 @@ export default function NavbarItem() {
                 display: "flex",
                 alignItems: "center",
                 gap: 2,
-                p: 1,
-                borderRadius: 2,
                 cursor: "pointer",
+                borderRadius: 2,
+                p: 1,
                 transition: "all 0.25s ease",
                 "&:hover": {
-                  backgroundColor: theme.palette.action.hover,
+                  bgcolor: theme.palette.action.hover,
                   transform: "translateY(-2px)",
                 },
               }}
             >
+              <Box
+                sx={{
+                  width: 50,
+                  height: 50,
+                  borderRadius: 2,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  bgcolor: theme.palette.primary.light,
+                  color: theme.palette.primary.dark,
+                  transition: "all 0.25s ease",
+                  "&:hover": {
+                    bgcolor: theme.palette.primary.main,
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                  },
+                }}
+              >
+                {item.icon}
+              </Box>
               <ButtonLink
-                leftIcon={
-                  <Box
-                    sx={{
-                      width: 50,
-                      height: 50,
-                      borderRadius: 2,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      bgcolor: theme.palette.primary.light,
-                      color: theme.palette.primary.dark,
-                      transition: "all 0.25s ease",
-                      "&:hover": {
-                        bgcolor: theme.palette.primary.main,
-                        boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-                      },
-                    }}
-                  >
-                    {item.icon}
-                  </Box>
-                }
                 url={item.value}
                 text={item.label}
                 variant="text"
+                // sx={{ flex: 1, justifyContent: "flex-start" }}
               />
             </Box>
           ))}

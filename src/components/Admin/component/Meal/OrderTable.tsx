@@ -13,22 +13,34 @@ import {
   Typography,
 } from "@mui/material";
 import { MinusCircle, PlusCircle, Trash2 } from "lucide-react";
-import type { Meal, MealOrder } from "../../../../utils/type";
+import type { Meal } from "../../../../utils/type";
+
+type MealItem = Meal & { quantity: number; note?: string };
 
 type Props = {
-  items: MealOrder[];
-  onUpdateQty: (id: string, qty: number) => void;
-  onRemove: (id: string) => void;
-  onUpdateNote: (id: string, note: string) => void;
+  items: MealItem[];
+  onUpdateQty: (id: number, qty: number) => void;
+  onRemove: (id: number) => void;
+  onUpdateNote: (id: number, note: string) => void;
 };
 
-export default function OrderTable({
-  items,
-  onUpdateQty,
-  onRemove,
-  onUpdateNote,
-}: Props) {
-  const total = items.reduce((s, it) => s + it.unitPrice * it.quantity, 0);
+export default function OrderTable() {
+  const [items, setItems] = React.useState<MealItem[]>([]);
+
+  const onUpdateQty = (id: number, qty: number) => {
+    setItems((p) =>
+      p.map((it) => (it.id === id ? { ...it, quantity: qty } : it))
+    );
+  };
+
+  const onRemove = (id: number) => {
+    setItems((p) => p.filter((it) => it.id !== id));
+  };
+
+  const onUpdateNote = (id: number, note: string) => {
+    setItems((p) => p.map((it) => (it.id === id ? { ...it, note } : it)));
+  };
+  const total = items.reduce((s, it) => s + it.price * it.quantity, 0);
 
   return (
     <Box>
@@ -48,8 +60,8 @@ export default function OrderTable({
           <TableBody>
             {items.map((it) => (
               <TableRow key={it.id}>
-                <TableCell>{it.name}</TableCell>
-                <TableCell align="right">${it.unitPrice.toFixed(2)}</TableCell>
+                <TableCell>{it.description || it.name}</TableCell>
+                <TableCell align="right">${it.price.toFixed(2)}</TableCell>
                 <TableCell align="center">
                   <Box
                     display="flex"
@@ -85,7 +97,7 @@ export default function OrderTable({
                   </Box>
                 </TableCell>
                 <TableCell align="right">
-                  ${(it.unitPrice * it.quantity).toFixed(2)}
+                  ${(it.price * it.quantity).toFixed(2)}
                 </TableCell>
                 <TableCell>
                   <TextField

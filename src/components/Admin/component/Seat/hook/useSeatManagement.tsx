@@ -23,8 +23,17 @@ export const useSeatManagement = ({
   selectedSeats,
 }: SeatManagementProps) => {
   const isSelected = selectedSeats.some((s) => s.id === seat.id);
-  const currencyOptions = localStorage.getItem("paymoney");
+  const currencyStr = localStorage.getItem("currency");
 
+  let currencyOptions: { language: string; currency: string } | null = null;
+
+  if (currencyStr) {
+    try {
+      currencyOptions = JSON.parse(currencyStr);
+    } catch (error) {
+      console.error("Error parsing currency from localStorage:", error);
+    }
+  }
   const tooltipTitle = (
     <Box sx={{ minWidth: 200 }}>
       <Typography variant="body2" fontWeight="bold" sx={{ mb: 1 }}>
@@ -32,6 +41,15 @@ export const useSeatManagement = ({
       </Typography>
       <Stack spacing={0.5}>
         {[
+          seat.isBooked && (
+            <Box
+              key="wing"
+              sx={{ display: "flex", alignItems: "center", gap: 1 }}
+            >
+              <WindowOutlined fontSize="small" />
+              <Typography variant="caption">Has Booked</Typography>
+            </Box>
+          ),
           seat.isWing && (
             <Box
               key="wing"
@@ -86,14 +104,14 @@ export const useSeatManagement = ({
               <Typography variant="caption">Handicap Accessible</Typography>
             </Box>
           ),
-          seat.price && (
+          seat.price != null && currencyOptions && (
             <Box
               key="price"
               sx={{ display: "flex", alignItems: "center", gap: 1 }}
             >
               <Paid fontSize="small" />
               <Typography variant="caption">
-                {convertCurrency(seat.price || 0, currencyOptions as Currency)}
+                {convertCurrency(seat.price || 0, currencyStr as Currency)}
               </Typography>
             </Box>
           ),

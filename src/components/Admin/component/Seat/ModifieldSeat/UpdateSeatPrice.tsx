@@ -5,41 +5,42 @@ import {
   Typography,
   Paper,
   CircularProgress,
-  Alert,
 } from "@mui/material";
-import axios from "axios";
 import InputTextField from "../../../../../common/Input/InputTextField";
 import { ResponseCode } from "../../../../../utils/response";
 import { useUpdatePriceSeatInFlightByIds } from "../../../../../context/Api/usePostApi";
+import { useToast } from "../../../../../context/ToastContext";
 
 type UpdateSeatPriceProps = {
   flightId: number;
   flightNo: string;
+  onReturn: () => void;
 };
 
 const UpdateSeatPrice: React.FC<UpdateSeatPriceProps> = ({
   flightId,
   flightNo,
+  onReturn,
 }) => {
   //   const [flightId, setFlightId] = useState<number | "">(flightId);
   const [price, setPrice] = useState<number | "">("");
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<{
-    type: "success" | "error";
-    text: string;
-  } | null>(null);
+  const toast = useToast();
+  // const [message, setMessage] = useState<{
+  //   type: "success" | "error";
+  //   text: string;
+  // } | null>(null);
 
   const { refetchUpdatePriceSeatInFlightByIds } =
     useUpdatePriceSeatInFlightByIds();
 
   const handleUpdate = async () => {
     if (!flightId || !price) {
-      setMessage({ type: "error", text: "Vui lòng nhập đầy đủ thông tin." });
+      toast("Vui lòng nhập đầy đủ thông tin.");
       return;
     }
 
     setLoading(true);
-    setMessage(null);
     try {
       const res = await refetchUpdatePriceSeatInFlightByIds({
         flightId: Number(flightId),
@@ -47,15 +48,13 @@ const UpdateSeatPrice: React.FC<UpdateSeatPriceProps> = ({
       });
 
       if (res?.resultCode === ResponseCode.SUCCESS) {
-        setMessage({ type: "success", text: "Cập nhật giá ghế thành công!" });
+        toast(res?.resultMessage || "Cập nhật giá ghế thành công!", "success");
+        onReturn();
       } else {
-        setMessage({
-          type: "error",
-          text: res?.resultMessage || "Cập nhật thất bại.",
-        });
+        toast(res?.resultMessage || "Có lỗi xảy ra", "error");
       }
-    } catch (err: any) {
-      setMessage({ type: "error", text: err.message || "Có lỗi xảy ra." });
+    } catch (err) {
+      console.error("Có lỗi xảy ra", err);
     } finally {
       setLoading(false);
     }
@@ -102,12 +101,6 @@ const UpdateSeatPrice: React.FC<UpdateSeatPriceProps> = ({
           "Cập nhật giá"
         )}
       </Button>
-
-      {message && (
-        <Alert severity={message.type} sx={{ mt: 3 }}>
-          {message.text}
-        </Alert>
-      )}
     </Paper>
   );
 };

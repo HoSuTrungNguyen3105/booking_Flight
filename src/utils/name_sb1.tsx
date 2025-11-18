@@ -48,9 +48,27 @@ export const menuData: TabData = {
         image: Icon,
       },
       {
+        value: "FareComparison",
+        icon: <DirectionsRunIcon />,
+        label: " FareComparison",
+        image: Icon,
+      },
+      {
+        value: "FlightScheduleDashboard",
+        icon: <DirectionsRunIcon />,
+        label: " FlightScheduleDashboard",
+        image: Icon,
+      },
+      {
         value: "SeatSelection",
         icon: <FlightClass />,
         label: "SeatSelection",
+        image: Icon,
+      },
+      {
+        value: "FlightMealList",
+        icon: <FlightClass />,
+        label: "FlightMealList",
         image: Icon,
       },
       {
@@ -113,6 +131,7 @@ export const menuData: TabData = {
     name: "Resources",
     items: [
       { icon: <Info size={24} />, value: "seat/select", label: "Tài liệu" },
+      { icon: <Info size={24} />, value: "OrderTable", label: "OrderTable" },
       {
         icon: <Headphones size={24} />,
         value: "CreateRandomFlights",

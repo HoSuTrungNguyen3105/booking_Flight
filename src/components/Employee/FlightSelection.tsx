@@ -15,42 +15,45 @@ import {
   Card,
   CardContent,
 } from "@mui/material";
-import { Flight, AccessTime, Schedule } from "@mui/icons-material";
-
-// Types
-interface FlightDay {
-  day: string;
-  date: string;
-  price: number;
-}
+import { Flight } from "@mui/icons-material";
+import CardGroup from "../../common/AdditionalCustomFC/CardGroup";
+import TimeSelectCard from "./TimeSelectCard";
+import type { DataFlight, FlightByDay } from "../../utils/type";
+import { useGetFlightAvailableDates } from "../../context/Api/useGetApi";
 
 interface FlightOption {
   departure: string;
   arrival: string;
   code: string;
-  cabin: string;
+  aircraftCode: string;
   price: number;
 }
 
-const FlightSelection: React.FC = () => {
+const FlightSelection: React.FC<{ aircraftCode: string }> = ({
+  aircraftCode,
+}) => {
+  const { getFlightData } = useGetFlightAvailableDates(aircraftCode);
   // Mock data
-  const flightDays: FlightDay[] = [
-    { day: "Mon", date: "17 Nov", price: 1202.5 },
-    { day: "Tue", date: "18 Nov", price: 749.5 },
-    { day: "Wed", date: "19 Nov", price: 748.5 },
-    { day: "Thu", date: "20 Nov", price: 859.5 },
-    { day: "Fri", date: "21 Nov", price: 894.5 },
-    { day: "Sat", date: "22 Nov", price: 969.5 },
-    { day: "Sun", date: "23 Nov", price: 969.5 },
-  ];
+  const flightDays: FlightByDay[] = getFlightData?.list || [];
+  //   { day: "Mon", date: "17 Nov", aircraftCode: 1202.5 },
+  //   { day: "Tue", date: "18 Nov", price: 749.5 },
+  //   { day: "Wed", date: "19 Nov", price: 748.5 },
+  //   { day: "Thu", date: "20 Nov", price: 859.5 },
+  //   { day: "Fri", date: "21 Nov", price: 894.5 },
+  //   { day: "Sat", date: "22 Nov", price: 969.5 },
+  //   { day: "Sun", date: "23 Nov", price: 969.5 },
+  // ];
 
-  const flightOptions: FlightOption[] = [
+  const flightOptions: DataFlight[] = [
     {
-      departure: "19:30",
-      arrival: "18:55",
-      code: "CX742 > CX548 > JL239",
-      cabin: "Premium Economy",
-      price: 1202.5,
+      scheduledDeparture: 77727723,
+      scheduledArrival: 77727723,
+      departureAirport: "",
+      arrivalAirport: "",
+      aircraftCode: "",
+      //code: "CX742 > CX548 > JL239",
+      //cabin: "Premium Economy",
+      //price: 1202.5,
     },
   ];
 
@@ -61,6 +64,8 @@ const FlightSelection: React.FC = () => {
     "Duration",
     "Fare",
   ];
+
+  const daysInMonth = Array.from({ length: 31 }, (_, i) => i + 1);
 
   return (
     <Box sx={{ maxWidth: 1200, margin: "0 auto", p: 2 }}>
@@ -106,21 +111,23 @@ const FlightSelection: React.FC = () => {
         </Typography>
       </Paper>
 
-      {/* Date Selection */}
       <Paper elevation={1} sx={{ p: 2, mb: 2 }}>
-        <Grid container spacing={1}>
-          {flightDays.map((day) => (
-            <Grid key={day.date}>
-              <Box textAlign="center">
-                <Typography variant="body2">{day.day}</Typography>
-                <Typography variant="body2">{day.date}</Typography>
-                <Typography variant="body2" color="primary">
-                  From USD{day.price.toFixed(2)}
-                </Typography>
-              </Box>
-            </Grid>
-          ))}
-        </Grid>
+        <CardGroup title="Featured Products" color="primary">
+          {daysInMonth.map((d, i) => {
+            const dayData = flightDays.find(
+              (f) => Number(f.date?.split(" ")[1]) === d
+            );
+
+            return (
+              <TimeSelectCard
+                key={i}
+                onSelect={() => console.log("Selected date:", dayData)}
+                day={dayData as FlightByDay}
+                // selected={selectedDay?.date === dayData?.date} // nếu muốn highlight ngày được chọn
+              />
+            );
+          })}
+        </CardGroup>
       </Paper>
 
       {/* Sort and Filter Section */}
@@ -150,25 +157,25 @@ const FlightSelection: React.FC = () => {
             <Grid container spacing={3} alignItems="center">
               {/* Flight Times */}
               <Grid size={3}>
-                <Typography variant="h6">{flight.departure}</Typography>
+                <Typography variant="h6">{flight.departureAirport}</Typography>
                 <Typography variant="body2" color="text.secondary">
                   HAN
                 </Typography>
                 <Divider sx={{ my: 1 }} />
-                <Typography variant="h6">{flight.arrival}</Typography>
+                <Typography variant="h6">{flight.arrivalAirport}</Typography>
                 <Typography variant="body2" color="text.secondary">
                   OKJ
                 </Typography>
               </Grid>
 
               <Grid size={3}>
-                <Typography variant="body2">{flight.code}</Typography>
+                <Typography variant="body2">{flight.aircraftCode}</Typography>
                 <Typography variant="body2" color="text.secondary">
                   View details
                 </Typography>
               </Grid>
 
-              <Grid size={3}>
+              {/* <Grid size={3}>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                   <Flight fontSize="small" />
                   <Typography variant="body2">{flight.cabin}</Typography>
@@ -176,11 +183,11 @@ const FlightSelection: React.FC = () => {
                 <Typography variant="body2" color="text.secondary">
                   Mixed Cabin
                 </Typography>
-              </Grid>
+              </Grid> */}
 
               <Grid size={3} textAlign="right">
                 <Typography variant="h6" color="primary">
-                  From USD{flight.price.toFixed(2)}
+                  From USD{flight.priceBusiness?.toFixed(2)}
                 </Typography>
               </Grid>
             </Grid>

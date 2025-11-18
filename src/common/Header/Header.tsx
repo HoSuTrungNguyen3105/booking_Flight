@@ -133,14 +133,7 @@ export const Header = () => {
           <NavbarItem />
 
           {isAuthenticated ? (
-            <Stack
-              direction="row-reverse"
-              alignItems="center"
-              spacing={2}
-              // sx={{
-              //   cursor: "pointer",
-              // }}
-            >
+            <Stack direction="row-reverse" alignItems="center" spacing={2}>
               <SignOut />
               <LanguageButton />
             </Stack>
