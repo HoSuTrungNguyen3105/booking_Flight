@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import type { IFormField } from "../../../common/AdditionalCustomFC/FieldRenderer";
 import { FieldType } from "../../../common/AdditionalCustomFC/FieldRenderer";
 import {
   mapStringToDropdown,
@@ -7,6 +6,10 @@ import {
   useGetAllCode,
 } from "../../../context/Api/useGetApi";
 import type { ActionType } from "../../../common/Dropdown/SelectDropdown";
+import {
+  SearchFieldType,
+  type ISearchFieldRender,
+} from "../../../common/AdditionalCustomFC/SearchFieldRender";
 
 export type SearchFormConfig = {
   passenger: {
@@ -41,7 +44,7 @@ export type SearchFormConfig = {
 export const useDataSection = (
   section: keyof SearchFormConfig,
   data: Partial<SearchFormConfig[keyof SearchFormConfig]>
-): IFormField[] => {
+): ISearchFieldRender[] => {
   const { getAllCode } = useGetAllCode();
   const { dataFlightTypes } = useFindAllFlightTypes();
   const optionDataFlightTypes = mapStringToDropdown(
@@ -53,7 +56,7 @@ export const useDataSection = (
     label: e.value,
   }));
 
-  return useMemo<IFormField[]>(() => {
+  return useMemo<ISearchFieldRender[]>(() => {
     if (!data) return [];
 
     // passenger
@@ -66,25 +69,29 @@ export const useDataSection = (
           fields: [
             {
               id: "name",
-              type: FieldType.INPUT_WITH_TYPE_TEXT,
+              size: 6,
+              type: SearchFieldType.INPUT_WITH_TYPE_TEXT,
               value: passenger.name ?? "",
               placeholder: "Nhập tên…",
             },
             {
               id: "email",
-              type: FieldType.INPUT_WITH_TYPE_EMAIL,
+              size: 6,
+              type: SearchFieldType.INPUT_WITH_TYPE_TEXT,
               value: passenger.email ?? "",
               placeholder: "Nhập email…",
             },
             {
               id: "phone",
-              type: FieldType.INPUT_WITH_TYPE_TEXT,
+              size: 6,
+              type: SearchFieldType.INPUT_WITH_TYPE_TEXT,
               value: passenger.phone ?? "",
               placeholder: "Nhập số điện thoại…",
             },
             {
               id: "bookingId",
-              type: FieldType.INPUT_WITH_TYPE_TEXT,
+              size: 6,
+              type: SearchFieldType.INPUT_WITH_TYPE_TEXT,
               value: passenger.bookingId ?? "",
               placeholder: "Nhập Booking ID…",
             },
@@ -103,7 +110,8 @@ export const useDataSection = (
           fields: [
             {
               id: "origin",
-              type: FieldType.DROPDOWN,
+              size: 4,
+              type: SearchFieldType.DROPDOWN,
               value: flight.origin ?? "",
               placeholder: "Điểm đi…",
               options: airports,
@@ -111,7 +119,8 @@ export const useDataSection = (
             },
             {
               id: "destination",
-              type: FieldType.DROPDOWN,
+              size: 4,
+              type: SearchFieldType.DROPDOWN,
               value: flight.destination ?? "",
               placeholder: "Điểm đến…",
               options: airports,
@@ -119,27 +128,30 @@ export const useDataSection = (
             },
             {
               id: "departDate",
-              type: FieldType.INPUT_WITH_NUMBER,
+              size: 6,
+              type: SearchFieldType.INPUT_WITH_NUMBER,
               value: flight.departDate ?? 0,
               placeholder: "Ngày đi…",
-              sx: { minWidth: 60 },
             },
             {
               id: "returnDate",
-              type: FieldType.INPUT_WITH_NUMBER,
+              size: 6,
+              type: SearchFieldType.INPUT_WITH_NUMBER,
               value: flight.returnDate ?? 0,
               placeholder: "Ngày về…",
             },
             {
               id: "type",
-              type: FieldType.DROPDOWN,
+              size: 2,
+              type: SearchFieldType.DROPDOWN,
               value: flight.type ?? "",
               placeholder: "Loại chuyến bay…",
               options: optionDataFlightTypes,
             },
             {
               id: "discountCode",
-              type: FieldType.INPUT_WITH_TYPE_TEXT,
+              size: 3,
+              type: SearchFieldType.INPUT_WITH_TYPE_TEXT,
               value: flight.discountCode ?? "",
               placeholder: "Mã giảm giá…",
             },
@@ -157,37 +169,43 @@ export const useDataSection = (
         fields: [
           {
             id: `location_${idx}`,
-            type: FieldType.INPUT_WITH_TYPE_TEXT,
+            size: 6,
+            type: SearchFieldType.INPUT_WITH_TYPE_TEXT,
             value: hotel.location ?? "",
             placeholder: "Địa điểm…",
           },
           {
             id: `checkInDate_${idx}`,
-            type: FieldType.INPUT_WITH_NUMBER,
+            size: 6,
+            type: SearchFieldType.INPUT_WITH_NUMBER,
             value: hotel.checkInDate ?? 0,
             placeholder: "Ngày nhận phòng…",
           },
           {
             id: `checkOutDate_${idx}`,
-            type: FieldType.INPUT_WITH_NUMBER,
+            size: 6,
+            type: SearchFieldType.INPUT_WITH_NUMBER,
             value: hotel.checkOutDate ?? 0,
             placeholder: "Ngày trả phòng…",
           },
           {
             id: `guests_${idx}`,
-            type: FieldType.INPUT_WITH_NUMBER,
+            size: 6,
+            type: SearchFieldType.INPUT_WITH_NUMBER,
             value: hotel.guests ?? 1,
             placeholder: "Số khách…",
           },
           {
             id: `rooms_${idx}`,
-            type: FieldType.INPUT_WITH_NUMBER,
+            size: 6,
+            type: SearchFieldType.INPUT_WITH_NUMBER,
             value: hotel.rooms ?? 1,
             placeholder: "Số phòng…",
           },
           {
             id: `discountCode_${idx}`,
-            type: FieldType.INPUT_WITH_TYPE_TEXT,
+            size: 6,
+            type: SearchFieldType.INPUT_WITH_TYPE_TEXT,
             value: hotel.discountCode ?? "",
             placeholder: "Mã giảm giá…",
           },
@@ -204,19 +222,22 @@ export const useDataSection = (
         fields: [
           {
             id: `flightId_${idx}`,
-            type: FieldType.INPUT_WITH_NUMBER,
+            size: 6,
+            type: SearchFieldType.INPUT_WITH_NUMBER,
             value: seat.flightId ?? 0,
             placeholder: "Flight ID…",
           },
           {
             id: `seatType_${idx}`,
-            type: FieldType.DROPDOWN,
+            size: 6,
+            type: SearchFieldType.DROPDOWN,
             value: seat.seatType ?? "",
             placeholder: "Loại ghế…",
           },
           {
             id: `quantity_${idx}`,
-            type: FieldType.INPUT_WITH_NUMBER,
+            size: 6,
+            type: SearchFieldType.INPUT_WITH_NUMBER,
             value: seat.quantity ?? 1,
             placeholder: "Số lượng…",
           },
@@ -225,5 +246,5 @@ export const useDataSection = (
     }
 
     return [];
-  }, [section, data]);
+  }, [section, data, airports, optionDataFlightTypes]);
 };

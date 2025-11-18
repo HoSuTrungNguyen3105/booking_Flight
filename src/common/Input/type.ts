@@ -39,6 +39,7 @@ export interface IInputTextFieldProps {
   readOnly?: boolean;
   canCopy?: boolean;
   isEmail?: boolean;
+  maxValueLength?: number;
   realease3phrase?: boolean;
   onChange?: (value: string) => void;
   onError?: (error: string | null) => void;

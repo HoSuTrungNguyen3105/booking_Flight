@@ -1,17 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Paper,
   Typography,
-  TextField,
-  MenuItem,
   Button,
   CircularProgress,
   Alert,
   Checkbox,
   FormControlLabel,
 } from "@mui/material";
-import type { CreateFlightMealProps, DataFlight } from "../../../../utils/type";
+import type { CreateFlightMealProps } from "../../../../utils/type";
 import { useGetMeal } from "../../../../context/Api/useGetApi";
 import { useCreateFlightMeal } from "../../../../context/Api/usePostApi";
 import { ResponseCode } from "../../../../utils/response";
@@ -21,6 +19,7 @@ import SelectDropdown, {
   type ActionType,
 } from "../../../../common/Dropdown/SelectDropdown";
 import { useToast } from "../../../../context/ToastContext";
+import InputTextField from "../../../../common/Input/InputTextField";
 
 interface FlightMealProps {
   flightId: number;
@@ -29,6 +28,7 @@ interface FlightMealProps {
 
 export default function AddMealToFlight({ flightId, name }: FlightMealProps) {
   const [data, setData] = useState<CreateFlightMealProps>({
+    mealCode: "",
     flightId: flightId || 0,
     mealId: 0,
     quantity: 1,
@@ -36,9 +36,60 @@ export default function AddMealToFlight({ flightId, name }: FlightMealProps) {
   });
 
   const [loading, setLoading] = useState(false);
-  const [successMsg, setSuccessMsg] = useState("");
-  const [errorMsg, setErrorMsg] = useState("");
   const [selectedPrice, setSelectedPrice] = useState<number | null>(null);
+
+  const generateRandomCode = (length: number = 3): string => {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    return Array.from(
+      { length },
+      () => chars[Math.floor(Math.random() * chars.length)]
+    ).join("");
+  };
+
+  // Gen code on mount
+  useEffect(() => {
+    setData((prev) => ({
+      ...prev,
+      mealCode: generateRandomCode(),
+    }));
+  }, []);
+
+  // Button nếu muốn gen lại
+  const handleGenerateCode = () => {
+    setData((prev) => ({
+      ...prev,
+      mealCode: generateRandomCode(),
+    }));
+  };
+
+  // Generate random code function
+  //   const generateRandomCode = (length: number): string => {
+  //     let result = "";
+  //     for (let i = 0; i < length; i++) {
+  //       result += CHARACTERS.charAt(
+  //         Math.floor(Math.random() * CHARACTERS.length)
+  //       );
+  //     }
+  //     return result;
+  //   };
+
+  //   // Generate unique code (you'll need to implement the API check)
+  //   const generateUniqueCode = async (): Promise<void> => {
+  //     setGeneratingCode(true);
+  //     try {
+  //       const newCode = generateRandomCode(3);
+  //       setData((prev) => ({ ...prev, mealCode: newCode }));
+  //     } catch (error) {
+  //       console.error("Error generating code:", error);
+  //     } finally {
+  //       setGeneratingCode(false);
+  //     }
+  //   };
+
+  //   // Generate code on component mount
+  //   useEffect(() => {
+  //     generateUniqueCode();
+  //   }, []);
 
   const { mealData } = useGetMeal();
   const { refetchAddMealToFlight } = useCreateFlightMeal();
@@ -51,52 +102,60 @@ export default function AddMealToFlight({ flightId, name }: FlightMealProps) {
   }));
 
   const priceOptions = [
-    { label: "20,000", value: 20000 },
-    { label: "30,000", value: 30000 },
-    { label: "50,000", value: 50000 },
-    { label: "100,000", value: 100000 },
+    { label: "20,000 VND", value: 20000 },
+    { label: "30,000 VND", value: 30000 },
+    { label: "50,000 VND", value: 50000 },
+    { label: "100,000 VND", value: 100000 },
+    { label: "150,000 VND", value: 150000 },
   ];
+
+  // Handle meal selection to auto-fill price if available
+  const handleMealSelect = (mealId: number) => {
+    const selectedMeal = meals.find((meal) => meal.id === mealId);
+    if (selectedMeal && selectedMeal.price) {
+      setSelectedPrice(selectedMeal.price);
+      setData((prev) => ({
+        ...prev,
+        mealId,
+        price: selectedMeal.price,
+      }));
+    } else {
+      setData((prev) => ({ ...prev, mealId }));
+    }
+  };
+
+  // Handle price selection
+  const handlePriceSelect = (price: number) => {
+    setSelectedPrice(price);
+    setData((prev) => ({ ...prev, price }));
+  };
 
   const onSubmit = async () => {
     if (!data.mealId || !data.quantity) {
-      setErrorMsg("Vui lòng nhập đầy đủ thông tin");
+      toast("Vui lòng nhập đầy đủ thông tin");
       return;
     }
-
     setLoading(true);
-    setErrorMsg("");
-    setSuccessMsg("");
-
     try {
       const res = await refetchAddMealToFlight(data);
 
       if (res?.resultCode === ResponseCode.SUCCESS) {
-        setSuccessMsg("Thêm Meal vào Flight thành công!");
+        toast(res.resultMessage, "success");
+      } else {
+        toast(res?.resultMessage || "Có lỗi xảy ra", "error");
       }
     } catch (err: any) {
-      setErrorMsg(err.response?.data?.message || "Có lỗi xảy ra");
+      console.error(err.message || "Có lỗi xảy ra");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Paper sx={{ p: 3, maxWidth: 500, mx: "auto", borderRadius: 3 }}>
-      <Typography variant="h6" fontWeight={700} mb={2}>
+    <Paper sx={{ p: 1, maxWidth: "100%", mx: "auto", borderRadius: 1 }}>
+      <Typography variant="h6" fontWeight={700} mb={1}>
         Thêm Meal vào Chuyến Bay {name}
       </Typography>
-
-      {errorMsg && (
-        <Alert severity="error" sx={{ mb: 2 }}>
-          {errorMsg}
-        </Alert>
-      )}
-
-      {successMsg && (
-        <Alert severity="success" sx={{ mb: 2 }}>
-          {successMsg}
-        </Alert>
-      )}
 
       <Box display="flex" flexDirection="column" gap={2}>
         <SelectDropdown
@@ -124,6 +183,32 @@ export default function AddMealToFlight({ flightId, name }: FlightMealProps) {
             label={p.label}
           />
         ))}
+
+        {/* <InputTextField
+          placeholder="Meal Code"
+          value={data.mealCode}
+          onChange={(e) =>
+            setData({
+              ...data,
+              mealCode: e,
+            })
+          }
+        /> */}
+
+        <InputTextField
+          placeholder="Meal Code"
+          value={data.mealCode}
+          onChange={(e) => setData({ ...data, mealCode: e })}
+          maxValueLength={3}
+        />
+
+        <Button
+          variant="contained"
+          onClick={handleGenerateCode}
+          sx={{ width: "fit-content", alignSelf: "flex-start", mt: -1 }}
+        >
+          Reset meal code
+        </Button>
 
         <InputNumber
           placeholder="Số lượng"

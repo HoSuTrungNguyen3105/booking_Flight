@@ -8,25 +8,17 @@ import {
   Stack,
   Avatar,
 } from "@mui/material";
-import type { FlightMeal } from "../../../../utils/type";
 import { useGetMealByFlightId } from "../../../../context/Api/useGetApi";
 
-interface Props {
-  meals: FlightMeal[];
-}
+// interface Props {
+//   mealId: number;
+// }
 
 export default function FlightMealList() {
-  //   if (!meals || meals.length === 0) {
-  //     return (
-  //       <Typography textAlign="center" mt={4} color="text.secondary">
-  //         Không có meal nào áp dụng cho chuyến bay này.
-  //       </Typography>
-  //     );
-  //   }
-
   const { getGetMealByFlightId } = useGetMealByFlightId(71);
 
   const flightMeals = getGetMealByFlightId?.list || [];
+
   const flight = flightMeals.length > 0 ? flightMeals[0].flight : null;
 
   if (!flight) return;

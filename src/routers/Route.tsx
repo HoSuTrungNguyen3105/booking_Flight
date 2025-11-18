@@ -18,7 +18,6 @@ import LeaveRequestTable from "../components/Admin/component/LeaveRequest/LeaveR
 import PayrollManagement from "../components/Admin/component/Payroll/PayrollManagement";
 import AdditionalServicesPage from "../components/Sample/BaggageList";
 import ChatContainer from "../components/Chat/ChatContainer";
-import FlightPath from "../components/Admin/component/Flight/FlightPath";
 import AirportDiagram from "../components/Admin/component/InfrastructureEntities/TerminalContainer";
 import RevenueDashboard from "../components/User/RevenueDashboard";
 import TicketSalesDashboard from "../components/User/TicketSalesDashboard";
@@ -41,8 +40,6 @@ import Hero from "../components/Sample/Hero";
 import TicketPage from "../components/Employee";
 import ContactPage from "../components/Contact";
 import PassengerProfile from "../components/Employee/PassengerProfile";
-import PaymentForm from "../components/Employee/PaymentForm";
-import PassengerChooseSeat from "../components/Sample/PassengerChooseSeat";
 import FlightInfoPage from "../components/Employee/FlightInfoPage";
 import HotelListPage from "../components/Admin/component/Hotel/HotelListPage";
 import HotelDetailPage from "../components/Admin/component/Hotel/HotelDetailPage";
@@ -59,7 +56,6 @@ import FlightSummaryRef from "../components/Employee/FlightSummary";
 import TripSummary from "../components/Employee/TripSummary";
 import OrderMeal from "../components/Admin/component/Meal/OrderMeal";
 import ExplorePage from "../components/Sample/ExplorePage";
-import SeatSelect from "../components/Sample/SeatSelect";
 import ContentPackage from "../components/Common/ContentPackage";
 import FlightDealsAcceppst from "../components/Sample/FlightDeal";
 import CreateRandomFlights from "../components/User/CreateRandomFlights";
@@ -70,6 +66,7 @@ import FareComparison from "../components/Admin/component/Meal/FareComparison";
 import OrderTable from "../components/Admin/component/Meal/OrderTable";
 import FlightMealList from "../components/Admin/component/Meal/FlightMealList";
 import FlightScheduleDashboard from "../components/User/FlightScheduleDashboard";
+import AdvancedAnalytics from "../common/Header/AdvancedAnalytics";
 
 const routes = [
   {
@@ -151,6 +148,10 @@ const routes = [
       {
         path: "/FlightMealList",
         element: <FlightMealList />,
+      },
+      {
+        path: "/AdvancedAnalytics",
+        element: <AdvancedAnalytics />,
       },
       {
         path: "/TripSummary",

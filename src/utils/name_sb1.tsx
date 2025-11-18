@@ -25,38 +25,38 @@ export const menuData: TabData = {
     items: [
       {
         value: "contact",
-        icon: <User size={24} color="#6a1b9a" strokeWidth={1.5} />,
-        label: "Hồ sơ khách hàng",
+        icon: <User size={24} />,
+        label: "contact",
         image: Icon,
       },
       {
         value: "profile",
         icon: <Star size={24} />,
-        label: "Đánh giá khách hàng",
+        label: "profile",
         image: Icon,
       },
       {
         value: "flight/info-page",
         icon: <Folder size={24} />,
-        label: "Lưu trữ hồ sơ",
+        label: "flight/info-page",
         image: Icon,
       },
       {
         value: "hotels",
         icon: <DirectionsRunIcon />,
-        label: "Hướng dẫn sử dụng",
+        label: "hotels",
         image: Icon,
       },
       {
         value: "FareComparison",
         icon: <DirectionsRunIcon />,
-        label: " FareComparison",
+        label: "FareComparison",
         image: Icon,
       },
       {
         value: "FlightScheduleDashboard",
         icon: <DirectionsRunIcon />,
-        label: " FlightScheduleDashboard",
+        label: "FlightScheduleDashboard",
         image: Icon,
       },
       {
@@ -74,7 +74,7 @@ export const menuData: TabData = {
       {
         value: "flight/deals",
         icon: <Info size={24} />,
-        label: "Trung tâm hỗ trợ",
+        label: "flight/deals",
         image: Icon,
       },
     ],
@@ -82,20 +82,16 @@ export const menuData: TabData = {
   Admin: {
     name: "Admin",
     items: [
-      {
-        icon: <Building2 size={24} />,
-        value: "admin",
-        label: "Admin dashboard",
-      },
+      { icon: <Building2 size={24} />, value: "admin", label: "admin" },
       {
         icon: <Folder size={24} />,
         value: "AttendancePage",
-        label: "Quản lý hồ sơ vé",
+        label: "AttendancePage",
       },
       {
         icon: <Tag size={24} />,
         value: "discount-management",
-        label: "Quản lý giảm giá",
+        label: "discount-management",
       },
     ],
   },
@@ -105,13 +101,13 @@ export const menuData: TabData = {
       {
         icon: <Headphones size={24} />,
         value: "hotel/Batch",
-        label: "Quản lý hotel batch",
+        label: "hotel/Batch",
         image: Icon,
       },
       {
         icon: <Star size={24} />,
         value: "TripSummary",
-        label: "Chính sách hạng vé",
+        label: "TripSummary",
         image: Icon,
       },
     ],
@@ -119,31 +115,40 @@ export const menuData: TabData = {
   Pricing: {
     name: "Pricing",
     items: [
-      { icon: <Tag size={24} />, value: "OrderMeal", label: "Bảng giá" },
+      { icon: <Tag size={24} />, value: "OrderMeal", label: "OrderMeal" },
       {
         icon: <Info size={24} />,
         value: "flight/dealsAcceppst",
-        label: "Điều khoản /flight/dealsAcceppst",
+        label: "flight/dealsAcceppst",
       },
     ],
   },
   Resources: {
     name: "Resources",
     items: [
-      { icon: <Info size={24} />, value: "seat/select", label: "Tài liệu" },
+      { icon: <Info size={24} />, value: "seat/select", label: "seat/select" },
       { icon: <Info size={24} />, value: "OrderTable", label: "OrderTable" },
       {
         icon: <Headphones size={24} />,
         value: "CreateRandomFlights",
-        label: "Hỗ trợ kỹ thuật",
+        label: "CreateRandomFlights",
       },
     ],
   },
   Company: {
     name: "Company",
     items: [
-      { icon: <Zap size={24} />, value: "select", label: "Về chúng tôi" },
-      { icon: <Users size={24} />, value: "flight/select", label: "Nhân sự" },
+      { icon: <Zap size={24} />, value: "select", label: "select" },
+      {
+        icon: <Users size={24} />,
+        value: "flight/select",
+        label: "flight/select",
+      },
+      {
+        icon: <Zap size={24} />,
+        value: "AdvancedAnalytics",
+        label: "AdvancedAnalytics",
+      },
     ],
   },
 };

@@ -163,10 +163,7 @@ export const EmailAttachmentUploader = ({
   value = [],
   uploadUrl,
   emailData,
-  onUploadSuccess,
   onUploadError,
-  headers = {},
-  withCredentials = false,
   autoUpload = true,
 }: EmailAttachmentUploaderProps) => {
   const [files, setFiles] = useState<TFileUploader[]>(value ?? []);

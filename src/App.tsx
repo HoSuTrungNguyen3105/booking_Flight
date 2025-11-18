@@ -13,10 +13,10 @@ import theme from "./scss/theme";
 function App() {
   return (
     <ToastProvider>
-      <ThemeProvider theme={theme}>
-        <I18nextProvider i18n={i18n}>
-          <ApiProvider>
-            <AuthProvider>
+      <ApiProvider>
+        <AuthProvider>
+          <ThemeProvider theme={theme}>
+            <I18nextProvider i18n={i18n}>
               <CssBaseline />
               <GlobalStyles
                 styles={{
@@ -27,10 +27,10 @@ function App() {
                 }}
               />
               <RouterProvider router={router} />
-            </AuthProvider>
-          </ApiProvider>
-        </I18nextProvider>
-      </ThemeProvider>
+            </I18nextProvider>
+          </ThemeProvider>
+        </AuthProvider>
+      </ApiProvider>
     </ToastProvider>
   );
 }

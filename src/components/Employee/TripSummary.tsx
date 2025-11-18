@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Box,
   Typography,
@@ -12,11 +11,10 @@ import {
   AccordionDetails,
   Link,
 } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
 import { PlaneTakeoff, PlaneLanding, ChevronDown } from "lucide-react";
+import theme from "../../scss/theme";
 
 const TripSummary = () => {
-  const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const FlightCard = ({
@@ -25,14 +23,12 @@ const TripSummary = () => {
     arrival,
     duration,
     stops,
-    date,
   }: {
     type: "Departing" | "Returning";
     departure: string;
     arrival: string;
     duration: string;
     stops: string;
-    date: string;
   }) => (
     <Box sx={{ mb: 3 }}>
       <Typography
@@ -145,7 +141,6 @@ const TripSummary = () => {
             arrival="2:55 pm"
             duration="16h 40m"
             stops="1 stop (SEA, 45m layover)"
-            date="Nov 30"
           />
           <FlightCard
             type="Returning"
@@ -153,7 +148,6 @@ const TripSummary = () => {
             arrival="9:00 pm"
             duration="15h 41m"
             stops="1 stop (LAX, 1h 30m layover)"
-            date="Dec 9"
           />
           <PriceSummary />
           <Accordion sx={{ mt: 3 }}>
@@ -177,7 +171,6 @@ const TripSummary = () => {
               arrival="2:55 pm"
               duration="16h 40m"
               stops="1 stop (SEA, 45m layover)"
-              date="Nov 30"
             />
             <FlightCard
               type="Returning"
@@ -185,7 +178,6 @@ const TripSummary = () => {
               arrival="9:00 pm"
               duration="15h 41m"
               stops="1 stop (LAX, 1h 30m layover)"
-              date="Dec 9"
             />
           </Grid>
           <Grid size={5}>

@@ -119,19 +119,13 @@ const CardGroup: React.FC<IProps> = ({
         )}
       </Stack>
 
-      {/* Scrollable container */}
       <Box
         sx={{
           overflow: "hidden",
           position: "relative",
           margin: "20px auto 0 auto",
-          //   maxWidth: "1700px",
-          //   position: "relative",
-          //   margin: "20px auto 0 auto",
         }}
       >
-        {/* overflow: "hidden", position: "relative" */}
-        {/* Left arrow */}
         <Fade in={!scrollState.leftDisabled}>
           <IconButton
             onClick={() => handleScroll("left")}
@@ -152,14 +146,12 @@ const CardGroup: React.FC<IProps> = ({
           </IconButton>
         </Fade>
 
-        {/* Cards */}
         <Box
           ref={navRef}
           sx={{
             display: "flex",
             overflowX: "auto",
             gap: 2,
-            // px: 2,
             scrollBehavior: "smooth",
             "&::-webkit-scrollbar": { display: "none" },
           }}
@@ -167,7 +159,6 @@ const CardGroup: React.FC<IProps> = ({
           {children}
         </Box>
 
-        {/* Right arrow */}
         <Fade in={!scrollState.rightDisabled}>
           <IconButton
             onClick={() => handleScroll("right")}

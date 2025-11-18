@@ -526,11 +526,13 @@ export type SocketResponseMessage<T = null> = {
 
 export interface FlightMeal {
   id: number;
+  mealCode: string;
   flightId: number;
   mealId: number;
   quantity: number;
   price?: number;
   flight: DataFlight;
+
   meal: Meal;
 }
 
@@ -1005,8 +1007,10 @@ export type BookingResponseMessage = DetailResponseMessage<Booking>;
 export interface MealOrder {
   id: number;
   bookingId: number;
-  mealId: number;
+  flightMealId: number;
   quantity: number;
+  booking: Booking;
+  flightMeal: FlightMeal;
 }
 
 export interface Passenger {

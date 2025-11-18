@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import { Flight } from "@mui/icons-material";
 import CardGroup from "../../common/AdditionalCustomFC/CardGroup";
-import TimeSelectCard from "./TimeSelectCard";
+import TimeSelectCard from "../../common/DayPicker/TimeSelectCard";
 import type { DataFlight, FlightByDay } from "../../utils/type";
 import { useGetFlightAvailableDates } from "../../context/Api/useGetApi";
 

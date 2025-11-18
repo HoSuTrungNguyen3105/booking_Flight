@@ -5,11 +5,13 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import theme from "../../scss/theme";
 import FieldRenderer from "../../common/AdditionalCustomFC/FieldRenderer";
 import { useDataSection, type SearchFormConfig } from "./search_type_input";
+import useLocalStorage from "../../context/use[custom]/useLocalStorage";
+import SearchFieldRender from "../../common/AdditionalCustomFC/SearchFieldRender";
 
 const FlightSearchForm: React.FC<{ type: keyof SearchFormConfig }> = ({
   type,
 }) => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useLocalStorage("search_data", {
     origin: "",
     destination: "",
     departDate: 0,
@@ -21,47 +23,18 @@ const FlightSearchForm: React.FC<{ type: keyof SearchFormConfig }> = ({
   const dataSection = useDataSection(type, formData);
 
   useEffect(() => {
-    localStorage.setItem("search_data", JSON.stringify(formData));
+    setFormData(formData);
   }, [formData]);
-
-  //   const handleChange = <
-  //   T extends keyof SearchFormConfig,
-  //   K extends keyof SearchFormConfig[T]
-  // >(
-  //   section: T,
-  //   key: K,
-  //   value: SearchFormConfig[T][K]
-  // ) => {
-  //   setFormData(prev => ({
-  //     ...prev,
-  //     [section]: {
-  //       ...prev[section], // giữ lại các key cũ trong section
-  //       [key]: value,
-  //     },
-  //   }));
-  // };
 
   const handleChange = <K extends keyof typeof formData>(
     key: K,
     value: (typeof formData)[K]
   ) => {
-    setFormData((prev) => ({
+    setFormData((prev: typeof formData) => ({
       ...prev,
       [key]: value,
     }));
   };
-
-  // const handleChange = <
-  //   T extends keyof SearchFormConfig
-  // >(
-  //   key: T,
-  //   value: SearchFormConfig[T]
-  // ) => {
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     [key]: value,
-  //   }));
-  // };
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -90,13 +63,14 @@ const FlightSearchForm: React.FC<{ type: keyof SearchFormConfig }> = ({
 
                   {section.fields.map((field, fieldIndex) => (
                     <Box key={fieldIndex} mb={1}>
-                      <FieldRenderer
+                      <SearchFieldRender
                         type={field.type}
                         value={
                           formData[
                             field.id as keyof SearchFormConfig["flight"]
                           ] ?? ""
                         }
+                        size={field.size}
                         disabled={field.disabled}
                         options={field.options}
                         placeholder={field.placeholder}

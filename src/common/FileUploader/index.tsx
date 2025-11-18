@@ -296,10 +296,10 @@ export const FileUpload: FC<FileUploaderProps> = ({
     element.value = "";
   };
 
-  const getFileIcon = (fileType: string) => {
-    if (fileType.includes("png")) return null;
-    return <Image />;
-  };
+  // const getFileIcon = (fileType: string) => {
+  //   if (fileType.includes("png")) return null;
+  //   return <Image />;
+  // };
 
   return (
     <Box sx={{ width }}>

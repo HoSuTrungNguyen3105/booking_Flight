@@ -8,11 +8,15 @@ import { AddBoxOutlined } from "@mui/icons-material";
 import { useAuth } from "../../../../context/AuthContext";
 import { UserRole } from "../../../../utils/type";
 import BulkMealCreator from "./BulkMealCreator";
+import { useLocation } from "react-router-dom";
 
 export default function MealList() {
   const { refetchMealData, mealData, loadingMealData } = useGetMeal();
   const { user } = useAuth();
-
+  const [_, setLocation] = useLocation();
+  const searchParams = new URLSearchParams(window.location.search);
+  const flightId = searchParams.get("flightId") || "";
+  const hotelId = searchParams.get("hotelId") || "";
   const [selectedFlightRows, setSelectedFlightRows] = useState<GridRowDef[]>(
     []
   );
@@ -24,6 +28,29 @@ export default function MealList() {
       selectedIds.includes(row.id)
     );
     setSelectedFlightRows(newSelectedRows);
+  };
+
+  const getMealImage = (meal: Meal) => {
+    const key = meal.name.toLowerCase();
+    if (key.includes("chicken")) return mealImages.chicken;
+    if (key.includes("pasta") || key.includes("vegetarian"))
+      return mealImages.pasta;
+    if (key.includes("salmon") || key.includes("fish"))
+      return mealImages.salmon;
+    return chickenMealImage;
+  };
+
+  const handleContinue = () => {
+    const params = new URLSearchParams({
+      flightId,
+      passengers: passengers.toString(),
+      departureDate,
+    });
+    if (hotelId) params.append("hotelId", hotelId);
+    if (selectedMeals.length > 0)
+      params.append("mealIds", selectedMeals.join(","));
+
+    setLocation(`/review?${params.toString()}`);
   };
 
   const rowsFlightMealData: GridRowDef[] = useMemo(

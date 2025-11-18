@@ -12,6 +12,7 @@ import React, { forwardRef, memo, useCallback, useMemo, useState } from "react";
 import { useCopyToClipboard } from "../../context/use[custom]/useCopyToClipboard";
 import { GridCheckCircleIcon } from "@mui/x-data-grid";
 import type { IInputTextFieldProps } from "./type";
+import _ from "lodash";
 
 const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
   (
@@ -26,6 +27,7 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
       disabled,
       onChange = () => {},
       onError,
+      maxValueLength = 50,
       onKeyDown,
       error,
       canCopy = false,
@@ -50,6 +52,11 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
       onChange("");
     }, [onChange]);
 
+    const handleSetMaxValueLength = useCallback(() => {
+      if (maxValueLength === 3) {
+      }
+    }, [maxValueLength]);
+
     const handleCopyText = useCallback(async () => {
       const success = await copy(value || "");
       if (success) {
@@ -65,6 +72,9 @@ const InputTextField = forwardRef<HTMLInputElement, IInputTextFieldProps>(
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = e.target.value;
+
+      if (newValue.length > maxValueLength) return;
+
       onChange(newValue);
 
       let newError: string | null = null;

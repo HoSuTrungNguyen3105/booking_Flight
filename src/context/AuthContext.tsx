@@ -29,7 +29,7 @@ import { ResponseCode } from "../utils/response";
 import { useGetMyAdminInfo, useGetMyUserInfo } from "./Api/usePostApi";
 import { refetchDistance } from "./Api/useGetLocation";
 import type { AuthType } from "../components/Auth/Login";
-import { useLocation } from "react-router-dom";
+import useLocalStorage from "./use[custom]/useLocalStorage";
 
 export type UserWithMFA = {
   email: string;
@@ -45,7 +45,7 @@ interface AuthContextType {
   passenger: Passenger | null;
   token: string | null;
   isAdmin: boolean;
-  countryCode: string;
+  countryCode: string | null;
   // authType: AuthType;
   isValid: boolean;
   verifyPassword: (password: string) => Promise<boolean>;
@@ -69,7 +69,35 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const toast = useToast();
   const hasFetched = useRef(false);
 
-  const [token, setToken] = useState<string | null>(null);
+  const [userId, setUserId] = useLocalStorage<string | null>("userId", null);
+  const [token, setToken] = useLocalStorage<string | null>("token", null);
+  const [stateLogin, setStateLogin] = useLocalStorage<AuthType | null>(
+    "stateLogin",
+    null
+  );
+  const [coords, setCoords] = useLocalStorage<[number, number] | null>(
+    "cord",
+    null
+  );
+  const [countryCode, setCountryCode] = useLocalStorage<string | null>(
+    "countryCode",
+    null
+  );
+
+  const storage = {
+    save: (token: string, userId: string | number, state: AuthType) => {
+      setToken(token);
+      setUserId(String(userId));
+      setStateLogin(state);
+    },
+    clear: () => {
+      setToken(null);
+      setUserId(null);
+      setStateLogin(null);
+      setCoords(null);
+      setCountryCode("");
+    },
+  };
 
   const [user, setUser] = useState<UserData | null>(null);
   const [passenger, setPassenger] = useState<Passenger | null>(null);
@@ -87,18 +115,13 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const { fetchVerifyPassword } = useVerifyPw({ id: user?.id });
   const isAdmin = useMemo(() => user?.role === UserRole.ADMIN, [user]);
 
-  const [coords, setCoords] = useState<[number, number] | null>(null);
-  const [countryCode, setCountryCode] = useState("");
-
   const handleRender = useCallback(() => {
-    const saved = localStorage.getItem("cord");
-    if (!saved) return;
+    if (!coords) return;
 
     try {
-      const parsed = JSON.parse(saved);
-      if (Array.isArray(parsed) && parsed.length === 2) {
-        const lat = Number(parsed[0]);
-        const lng = Number(parsed[1]);
+      if (Array.isArray(coords) && coords.length === 2) {
+        const lat = Number(coords[0]);
+        const lng = Number(coords[1]);
         if (!isNaN(lat) && !isNaN(lng)) {
           setCoords([lat, lng]);
         }
@@ -114,15 +137,11 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const saved = localStorage.getItem("cord");
-      if (saved) {
-        const parsed: [number, number] = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length === 2) {
-          setCoords(parsed);
-        }
+      if (coords) {
+        const [lat, lng] = coords;
+        if (!isNaN(lat) && !isNaN(lng)) return;
       }
-
-      if (!saved) {
+      if (!coords) {
         navigator.geolocation.getCurrentPosition(
           (pos) => {
             const newCoords: [number, number] = [
@@ -150,30 +169,13 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const newCode = res?.data?.[0]?.countryCode;
         if (newCode && newCode !== countryCode) {
           setCountryCode(newCode);
-          localStorage.setItem("countryCode", newCode);
+          setCountryCode(newCode);
         }
       }, 2000);
     };
 
     fetchCountry();
   }, [coords]);
-
-  const storage = {
-    save: (token: string, userId: number | string, state: AuthType) => {
-      localStorage.setItem("token", token);
-      localStorage.setItem("userId", String(userId));
-      localStorage.setItem("isAuthenticated", "true");
-      localStorage.setItem("stateLogin", state);
-    },
-    clear: () => {
-      localStorage.removeItem("token");
-      localStorage.removeItem("userId");
-      localStorage.removeItem("isAuthenticated");
-      localStorage.removeItem("stateLogin");
-      localStorage.removeItem("cord");
-      localStorage.removeItem("countryCode");
-    },
-  };
 
   const verifyPassword = useCallback(
     async (password: string): Promise<boolean> => {
@@ -199,20 +201,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const setValid = useCallback((v: boolean) => setIsValid(v), []);
   const resetValidation = useCallback(() => setIsValid(false), []);
-
-  /** Fetch thông tin user */
-  // const fetchMyUserInfo = useCallback(async (id?: string) => {
-  //   if (!id) return;
-  //   const res = await refetchGetMyUserInfo({ id });
-  //   if (res?.resultCode === ResponseCode.SUCCESS && res.data) {
-  //     setPassenger(res.data);
-  //     setIsAuthenticated(true);
-  //   } else {
-  //     setPassenger(null);
-  //     setIsAuthenticated(false);
-  //   }
-  //   return res;
-  // }, []);
 
   const fetchMyUserInfo = useCallback(
     async (id?: string) => {
@@ -281,13 +269,14 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const logout = useCallback(async () => {
-    const token = localStorage.getItem("token");
     if (!token) return;
     try {
       const res = await refetchLogoutSession();
       if (res?.resultCode === ResponseCode.SUCCESS) {
         setIsAuthenticated(false);
         setUser(null);
+        setCoords(null);
+        setCountryCode(null);
         setPassenger(null);
         setToken(null);
         storage.clear();
@@ -297,45 +286,16 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [toast, refetchLogoutSession]);
 
-  // const logout = useCallback(async () => {
-  //   const storedToken = localStorage.getItem("token");
-  //   if (!storedToken) {
-  //     setIsAuthenticated(false);
-  //     setUser(null);
-  //     setPassenger(null);
-  //     setToken(null);
-  //     storage.clear();
-  //     return;
-  //   }
-
-  //   try {
-  //     await refetchLogoutSession({ token: storedToken });
-  //   } catch (err) {
-  //     console.error("Lỗi khi logout:", err);
-  //   } finally {
-  //     setIsAuthenticated(false);
-  //     setUser(null);
-  //     setPassenger(null);
-  //     setToken(null);
-  //     storage.clear();
-  //   }
-  // }, [refetchLogoutSession]);
-
   const hasValidLogin = useCallback(async () => {
     try {
-      const token = localStorage.getItem("token");
-      const userId = localStorage.getItem("userId");
-      const savedState = localStorage.getItem("stateLogin") as AuthType;
-
-      // const savedId = localStorage.getItem("userId");
       if (!token) {
         console.warn("Token không tồn tại, logout...");
         logout();
         return;
       }
 
-      const isADMIN = savedState === "ADMIN" ? userId : null;
-      const isPassenger = savedState === "ID,PW" ? userId : null;
+      const isADMIN = stateLogin === "ADMIN" ? userId : null;
+      const isPassenger = stateLogin === "ID,PW" ? userId : null;
 
       const res = await refetchGetSessionByID({
         passengerId: isPassenger,
@@ -356,7 +316,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       return true;
     } catch (error) {
       console.error("Lỗi khi kiểm tra phiên đăng nhập:", error);
-      // logout();
       return false;
     }
   }, [logout, passenger?.id, user?.id, refetchGetSessionByID]);
@@ -395,29 +354,23 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  /** Khôi phục login khi reload */
   useEffect(() => {
     const initAuth = async () => {
-      const savedToken = localStorage.getItem("token");
-      const savedId = localStorage.getItem("userId");
-      const savedState = localStorage.getItem("stateLogin") as AuthType;
-
-      if (!savedToken || !savedId) return;
-      setToken(savedToken);
+      if (!token || !userId) return;
+      setToken(token);
       setIsAuthenticated(true);
 
       await hasValidLogin();
 
-      if (savedState === "ID,PW") {
-        await fetchMyUserInfo(savedId);
+      if (stateLogin === "ID,PW") {
+        await fetchMyUserInfo(userId);
         return;
       }
-      if (savedState === "ADMIN" || savedState === "DEV") {
-        await fetchMyAdminInfo(Number(savedId));
+      if (stateLogin === "ADMIN" || stateLogin === "DEV") {
+        await fetchMyAdminInfo(Number(userId));
         return;
       }
     };
-
     initAuth();
   }, []);
 

@@ -81,7 +81,7 @@ const LanguageButton = () => {
     () => (
       <Box
         sx={{
-          width: "auto",
+          width: "9rem",
           minWidth: "8rem",
           display: "flex",
           alignItems: "center",

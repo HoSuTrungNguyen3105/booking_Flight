@@ -7,8 +7,9 @@ import { useAuth } from "../../context/AuthContext";
 import { ROUTE_PATHS } from "../../routers/RoutePath";
 import theme from "../../scss/theme";
 import LanguageButton from "../Common/HeaderOptionSelect";
-import SearchUserFromMessage from "../Chat/SearchUserFromMessage";
 import { useTranslation } from "react-i18next";
+import DialogConfirm from "../../common/Modal/DialogConfirm";
+import SignOut from "../Common/SignOut";
 
 const Header = () => {
   const { isAdmin, logout, user } = useAuth();
@@ -91,8 +92,8 @@ const Header = () => {
           onClose={handleClose}
         >
           <MenuItem onClick={handleClickProfile}>{t("my_infor")}</MenuItem>
-          <MenuItem onClick={logout} sx={{ color: "red" }}>
-            {t("logout")}
+          <MenuItem sx={{ color: "red" }}>
+            <SignOut />
           </MenuItem>
         </Menu>
       </Box>

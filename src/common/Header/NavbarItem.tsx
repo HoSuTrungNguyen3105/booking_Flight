@@ -1,6 +1,6 @@
 import { Box, Button, Typography, Paper, Divider } from "@mui/material";
 import { useState, useRef, useEffect } from "react";
-import ButtonLink from "../AdditionalCustomFC/ButtonLink";
+import ButtonLink from "../Button/ButtonLink";
 import theme from "../../scss/theme";
 import { useAuth } from "../../context/AuthContext";
 import { menuData } from "../../utils/name_sb1";
@@ -112,6 +112,7 @@ export default function NavbarItem() {
           {menuData[activeTab].items.map((item) => (
             <Box
               key={item.label}
+              width={250}
               onClick={() => setActiveTab(null)}
               sx={{
                 display: "flex",

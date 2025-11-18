@@ -13,37 +13,37 @@ import {
   Typography,
 } from "@mui/material";
 import { MinusCircle, PlusCircle, Trash2 } from "lucide-react";
-import type { Meal } from "../../../../utils/type";
-
-type MealItem = Meal & { quantity: number; note?: string };
-
-type Props = {
-  items: MealItem[];
-  onUpdateQty: (id: number, qty: number) => void;
-  onRemove: (id: number) => void;
-  onUpdateNote: (id: number, note: string) => void;
-};
+import type { FlightMeal } from "../../../../utils/type";
+import { useGetMealByFlightId } from "../../../../context/Api/useGetApi";
+import { useLocation } from "react-router-dom";
 
 export default function OrderTable() {
-  const [items, setItems] = React.useState<MealItem[]>([]);
-
+  const location = useLocation();
+  const id = location.state.id || {};
+  const [items, setItems] = React.useState<FlightMeal[]>([]);
+  const { getGetMealByFlightId } = useGetMealByFlightId(id);
   const onUpdateQty = (id: number, qty: number) => {
-    setItems((p) =>
-      p.map((it) => (it.id === id ? { ...it, quantity: qty } : it))
+    setItems((prev) =>
+      prev.map((it) => (it.id === id ? { ...it, quantity: qty } : it))
     );
   };
 
   const onRemove = (id: number) => {
-    setItems((p) => p.filter((it) => it.id !== id));
+    setItems((prev) => prev.filter((it) => it.id !== id));
   };
 
   const onUpdateNote = (id: number, note: string) => {
-    setItems((p) => p.map((it) => (it.id === id ? { ...it, note } : it)));
+    setItems((prev) => prev.map((it) => (it.id === id ? { ...it, note } : it)));
   };
-  const total = items.reduce((s, it) => s + it.price * it.quantity, 0);
+
+  const total = items.reduce(
+    (sum, it) => sum + (it.price ?? 0) * it.quantity,
+    0
+  );
 
   return (
     <Box>
+      <Typography></Typography>
       <TableContainer component={Paper} variant="outlined">
         <Table>
           <TableHead>
@@ -52,16 +52,19 @@ export default function OrderTable() {
               <TableCell align="right">Unit Price (USD)</TableCell>
               <TableCell align="center">Quantity</TableCell>
               <TableCell align="right">Total</TableCell>
-              <TableCell>Note</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
 
           <TableBody>
-            {items.map((it) => (
+            {getGetMealByFlightId?.list?.map((it) => (
               <TableRow key={it.id}>
-                <TableCell>{it.description || it.name}</TableCell>
-                <TableCell align="right">${it.price.toFixed(2)}</TableCell>
+                <TableCell>
+                  {it.meal.description || it.meal.name || "N/A"}
+                </TableCell>
+                <TableCell align="right">
+                  ${(it.price ?? 0).toFixed(2)}
+                </TableCell>
                 <TableCell align="center">
                   <Box
                     display="flex"
@@ -79,10 +82,12 @@ export default function OrderTable() {
                     </IconButton>
                     <TextField
                       value={it.quantity}
-                      onChange={(e) => {
-                        const val = Math.max(1, Number(e.target.value || 1));
-                        onUpdateQty(it.id, val);
-                      }}
+                      onChange={(e) =>
+                        onUpdateQty(
+                          it.id,
+                          Math.max(1, Number(e.target.value || 1))
+                        )
+                      }
                       inputProps={{ style: { textAlign: "center" }, min: 1 }}
                       size="small"
                       sx={{ width: 64 }}
@@ -97,15 +102,7 @@ export default function OrderTable() {
                   </Box>
                 </TableCell>
                 <TableCell align="right">
-                  ${(it.price * it.quantity).toFixed(2)}
-                </TableCell>
-                <TableCell>
-                  <TextField
-                    size="small"
-                    placeholder="Note"
-                    value={it.note || ""}
-                    onChange={(e) => onUpdateNote(it.id, e.target.value)}
-                  />
+                  ${(it.quantity * (it.price ?? 0)).toFixed(2)}
                 </TableCell>
                 <TableCell>
                   <IconButton color="error" onClick={() => onRemove(it.id)}>

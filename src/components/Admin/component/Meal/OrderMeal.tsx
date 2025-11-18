@@ -13,12 +13,15 @@ import {
 import { PlusCircle } from "lucide-react";
 import MenuTabs from "./MenuTabs";
 import OrderTable from "./OrderTable";
-import type { Meal, MealOrder } from "../../../../utils/type";
+import type { FlightMeal, Meal, MealOrder } from "../../../../utils/type";
 import type { MealOrderToBooking } from "../../../Employee/types/booking";
 
+type CreateMealOrderDto = Omit<MealOrder, "booking" | "flightMeal">;
+
 const OrderMeal = () => {
-  const [menu, setMenu] = useState<MealOrder[]>([]);
+  const [menu, setMenu] = useState<Meal[]>([]);
   const [cart, setCart] = useState<MealOrderToBooking[]>([]);
+  const [flightMeal, setFlightMeal] = useState<FlightMeal[]>([]);
   const [selectedCategory, setSelectedCategory] =
     useState<Meal["mealType"]>("Breakfast");
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -30,16 +33,16 @@ const OrderMeal = () => {
   }, []);
 
   // CRUD menu
-  function handleAddOrUpdateMenu(item: MealOrder) {
-    setMenu((prev) => {
-      const exists = prev.find((p) => p.id === item.id);
-      if (exists) {
-        return prev.map((p) => (p.id === item.id ? item : p));
-      } else {
-        return [item, ...prev];
-      }
-    });
-  }
+  // function handleAddOrUpdateMenu(item: MealOrder) {
+  //   setMenu((prev) => {
+  //     const exists = prev.find((p) => p.id === item.id);
+  //     if (exists) {
+  //       return prev.map((p) => (p.id === item.id ? item : p));
+  //     } else {
+  //       return [item, ...prev];
+  //     }
+  //   });
+  // }
 
   function handleDeleteMenu(id: number) {
     setMenu((prev) => prev.filter((m) => m.id !== id));
@@ -48,53 +51,53 @@ const OrderMeal = () => {
   }
 
   // add to cart (create or increase)
-  function handleAddToCart(menuItem: MealOrder) {
-    setCart((prev) => {
-      const existing = prev.find((c) => c.id === menuItem.id);
-      if (existing) {
-        return prev.map((c) =>
-          c.id === menuItem.id ? { ...c, quantity: c.quantity + 1 } : c
-        );
-      } else {
-        const newCart: MealOrder = {
-          id: menuItem.id,
-          bookingId: menuItem.bookingId,
-          mealId: menuItem.mealId,
-          quantity: menuItem.quantity,
-        };
-        return [...prev, newCart];
-      }
-    });
-  }
+  // function handleAddToCart(menuItem: CreateMealOrderDto) {
+  //   setCart((prev) => {
+  //     const existing = prev.find((c) => c.id === menuItem.id);
+  //     if (existing) {
+  //       return prev.map((c) =>
+  //         c.id === menuItem.id ? { ...c, quantity: c.quantity + 1 } : c
+  //       );
+  //     } else {
+  //       const newCart: CreateMealOrderDto = {
+  //         id: menuItem.id,
+  //         bookingId: menuItem.bookingId,
+  //         flightMealId: menuItem.flightMealId,
+  //         quantity: menuItem.quantity,
+  //       };
+  //       return [...prev, newCart];
+  //     }
+  //   });
+  // }
 
   function handleUpdateQty(id: string, qty: number) {
-    setCart((prev) =>
-      prev.map((c) => (c.id === id ? { ...c, quantity: qty } : c))
-    );
+    // setCart((prev) =>
+    //   prev.map((c) => (c.id === id ? { ...c, quantity: qty } : c))
+    // );
   }
 
   function handleRemove(id: string) {
-    setCart((prev) => prev.filter((c) => c.id !== id));
+    // setCart((prev) => prev.filter((c) => c.id !== id));
   }
 
   function handleUpdateNote(id: string, note: string) {
-    setCart((prev) => prev.map((c) => (c.id === id ? { ...c, note } : c)));
+    // setCart((prev) => prev.map((c) => (c.id === id ? { ...c, note } : c)));
   }
 
   function handleSubmitOrder() {
     // demo: log order, clear cart
-    const order = {
-      id: `o${Date.now()}`,
-      items: cart,
-      total: cart.reduce((s, c) => s + c.unitPrice * c.quantity, 0),
-      createdAt: new Date().toISOString(),
-    };
-    console.log("Submitting order", order);
-    alert(
-      `Order submitted. Total: $${order.total.toFixed(
-        2
-      )}. See console for details.`
-    );
+    // const order = {
+    //   id: `o${Date.now()}`,
+    //   items: cart,
+    //   total: cart.reduce((s, c) => s + c.unitPrice * c.quantity, 0),
+    //   createdAt: new Date().toISOString(),
+    // };
+    // console.log("Submitting order", order);
+    // alert(
+    //   `Order submitted. Total: $${order.total.toFixed(
+    //     2
+    //   )}. See console for details.`
+    // );
     setCart([]);
   }
 
@@ -104,9 +107,9 @@ const OrderMeal = () => {
 
   // search filter
   const filteredMenu = menu.filter(
-    (m) =>
-      m.mealId === selectedCategory &&
-      m.quantity.toLowerCase().includes(search.toLowerCase())
+    (m) => {}
+    // m.mealId === selectedCategory &&
+    // m.quantity.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -146,11 +149,11 @@ const OrderMeal = () => {
 
               <MenuTabs
                 menu={filteredMenu}
-                onAddToCart={handleAddToCart}
+                onAddToCart={() => {}} //handleAddToCart
                 value={selectedCategory}
                 onChange={(c) => setSelectedCategory(c)}
                 onEditItem={(i) => {
-                  setEditingItem(i);
+                  //setEditingItem(i);
                   setDialogOpen(true);
                 }}
                 onDeleteItem={(id) => handleDeleteMenu(id)}
@@ -160,12 +163,12 @@ const OrderMeal = () => {
                 <Typography variant="h6" gutterBottom>
                   Selected Items
                 </Typography>
-                <OrderTable
+                {/* <OrderTable
                   items={cart}
                   onUpdateQty={handleUpdateQty}
                   onRemove={handleRemove}
                   onUpdateNote={handleUpdateNote}
-                />
+                /> */}
               </Box>
             </Paper>
           </Grid>
