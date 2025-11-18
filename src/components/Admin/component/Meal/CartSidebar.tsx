@@ -1,14 +1,21 @@
 import { Box, Paper, Typography, Divider, Button } from "@mui/material";
-import type { Meal, MealOrder } from "../../../../utils/type";
+import type { DataFlight, Meal, MealOrder } from "../../../../utils/type";
 
 type Props = {
   meal: Meal[];
+  flight: DataFlight;
   items: MealOrder[];
   onSubmit: () => void;
   onClear: () => void;
 };
 
-export default function CartSidebar({ items, meal, onSubmit, onClear }: Props) {
+export default function CartSidebar({
+  items,
+  meal,
+  flight,
+  onSubmit,
+  onClear,
+}: Props) {
   const total = items.reduce((s, it) => s + it.quantity + 2, 0);
   const meals = meal.reduce((s, it) => s + it.price + total, 0);
 
@@ -17,8 +24,10 @@ export default function CartSidebar({ items, meal, onSubmit, onClear }: Props) {
       <Typography variant="subtitle1" fontWeight={700}>
         Trip / Flight
       </Typography>
-      <Typography variant="body2">LBG → HKG</Typography>
-      <Typography variant="body2">Date: 30th Jan 2025</Typography>
+      <Typography variant="body2">
+        {flight.departureAirport}- {flight.arrivalAirport}
+      </Typography>
+      <Typography variant="body2">Date: {flight.scheduledDeparture}</Typography>
 
       <Divider sx={{ my: 2 }} />
       <Typography variant="h6">Order Summary</Typography>

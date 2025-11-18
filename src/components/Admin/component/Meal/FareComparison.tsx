@@ -14,6 +14,8 @@ import {
   Checkbox,
 } from "@mui/material";
 import { Check, FlightTakeoff, FlightLand } from "@mui/icons-material";
+import { useLocation } from "react-router-dom";
+import type { DataFlight } from "../../../../utils/type";
 
 // Types
 interface FareFeature {
@@ -22,23 +24,37 @@ interface FareFeature {
   returnValue: string | React.ReactNode;
 }
 
-interface FlightInfo {
+export interface FlightInfo {
   route: string;
   class: string;
   note?: string;
 }
 
 const FareComparison: React.FC = () => {
-  // Mock data
+  const location = useLocation();
+  const flight = location.state.flight as FlightInfo[];
+  //   const departureFlight: FlightInfo = {
+  //     route:flight[0].route,
+  //     class: flight[0].class,
+  //     note: flight[0].note,
+  //   };
+
+  //   const returnFlight: FlightInfo = {
+  //     route:flight[1].route,
+  //     class:flight[1].class,
+  //      note: flight[1].note,
+  //   };
+
   const departureFlight: FlightInfo = {
-    route: "Hà Nội → Hiroshima",
-    class: "Hạng Phó thông Cao cấp Flex",
-    note: "Nhiều hạng ghế",
+    route: flight[0]?.route ?? "",
+    class: flight[0]?.class ?? "",
+    note: flight[0]?.note ?? "",
   };
 
   const returnFlight: FlightInfo = {
-    route: "Hiroshima → Hà Nội",
-    class: "Hạng Phó Thông Flex",
+    route: flight[1]?.route ?? "",
+    class: flight[1]?.class ?? "",
+    note: flight[1]?.note ?? "",
   };
 
   const fareFeatures: FareFeature[] = [

@@ -32,12 +32,16 @@ import {
   type Action,
   type BookingState,
 } from "./types/booking";
+import InputTextField from "../../common/Input/InputTextField";
 
 const BookingPage = () => {
   const location = useLocation();
-  const { data, flightId } = location.state as {
-    data: Seat;
-    flightId: DataFlight;
+  const { flightId, seats, seatNos, flightData } = location.state as {
+    seats: Seat;
+    flightData: DataFlight;
+    seatNos: string;
+    // data: Seat;
+    flightId: number;
   };
   const [bookingData, setBookingData] = useState({
     passengerId: "",
@@ -50,10 +54,15 @@ const BookingPage = () => {
     mealOrders: [] as { mealId: number; quantity: number; price: number }[],
   });
 
+  console.log("bookingData", seatNos, flightData);
+
   const { dataSeatTypes } = useFindAllSeatTypes();
   const optionsSeatTypes = mapStringToDropdown(dataSeatTypes?.data || []);
   const { passenger } = useAuth();
   // const paymoney = localStorage.getItem("paymoney") as Currency;
+
+  const selectedMeals =
+    allMeals?.filter((meal) => mealIds.includes(meal.id)) || [];
 
   const [state, dispatch] = useReducer(
     (state: BookingState, action: Action): BookingState => {
@@ -63,15 +72,17 @@ const BookingPage = () => {
         case ACTIONS.SELECT_SEATS:
           return { ...state, selectedSeats: action.payload };
         case ACTIONS.UPDATE_MEAL: {
-          const { mealId, quantity, id } = action;
-          const exists = state.mealOrders.find((m) => m.mealId === mealId);
+          const { flightMealId, quantity, id } = action;
+          const exists = state.mealOrders.find(
+            (m) => m.flightMealId === flightMealId
+          );
           let mealOrders;
           if (exists) {
             mealOrders = state.mealOrders.map((m) =>
-              m.mealId === mealId ? { ...m, quantity } : m
+              m.flightMealId === flightMealId ? { ...m, quantity } : m
             );
           } else {
-            mealOrders = [...state.mealOrders, { id, mealId, quantity }];
+            mealOrders = [...state.mealOrders, { id, flightMealId, quantity }];
           }
           return { ...state, mealOrders };
         }
@@ -168,6 +179,81 @@ const BookingPage = () => {
               </Box>
             </Grid>
 
+            {hotel && (
+              <Card>
+                <CardHeader
+                  avatar={<HotelIcon sx={{ color: "primary.main" }} />}
+                  title="Hotel Details"
+                />
+                <CardContent>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      mb: 2,
+                    }}
+                  >
+                    <Box>
+                      <Typography variant="h6" gutterBottom>
+                        {hotel.name}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {hotel.location}
+                      </Typography>
+                    </Box>
+                    <Box sx={{ textAlign: "right" }}>
+                      <Typography variant="subtitle1" fontWeight="600">
+                        ${hotel.pricePerNight}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        per night
+                      </Typography>
+                    </Box>
+                  </Box>
+                  <Divider sx={{ my: 2 }} />
+                  <Typography variant="body2" color="text.secondary">
+                    {hotel.description}
+                  </Typography>
+                </CardContent>
+              </Card>
+            )}
+
+            {selectedMeals.length > 0 && (
+              <Card>
+                <CardHeader
+                  avatar={<Restaurant sx={{ color: "primary.main" }} />}
+                  title="Selected Meals"
+                />
+                <CardContent>
+                  <Box
+                    sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+                  >
+                    {selectedMeals.map((meal) => (
+                      <Box
+                        key={meal.id}
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <Box>
+                          <Typography variant="body1" fontWeight="500">
+                            {meal.name}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            {meal.category}
+                          </Typography>
+                        </Box>
+                        <Typography variant="subtitle1" fontWeight="600">
+                          ${meal.price}
+                        </Typography>
+                      </Box>
+                    ))}
+                  </Box>
+                </CardContent>
+              </Card>
+            )}
+
             <Divider sx={{ my: 2, width: "100%" }} />
 
             <Grid size={6}>
@@ -183,11 +269,9 @@ const BookingPage = () => {
             </Grid>
 
             <Grid size={6}>
-              <TextField
-                label="Số ghế"
-                fullWidth
+              <InputTextField
                 value={form.seatNo}
-                onChange={(e) => handleChange("seatNo", e.target.value)}
+                onChange={(e) => handleChange("seatNo", e)}
                 placeholder="VD: 12A"
               />
             </Grid>
@@ -207,6 +291,39 @@ const BookingPage = () => {
                   {/* {convertCurrency(form.seatPrice ?? 0, paymoney)} */}
                 </Typography>
               </Box>
+              {hotel && (
+                <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                  <Typography variant="body2" color="text.secondary">
+                    Hotel (1 night)
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    fontWeight="500"
+                    data-testid="text-hotel-total"
+                  >
+                    ${hotel.pricePerNight.toFixed(2)}
+                  </Typography>
+                </Box>
+              )}
+
+              {selectedMeals.length > 0 && (
+                <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                  <Typography variant="body2" color="text.secondary">
+                    Meals ({selectedMeals.length} × {passengers})
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    fontWeight="500"
+                    data-testid="text-meals-total"
+                  >
+                    $
+                    {(
+                      selectedMeals.reduce((sum, m) => sum + m.price, 0) *
+                      passengers
+                    ).toFixed(2)}
+                  </Typography>
+                </Box>
+              )}
             </Grid>
 
             <Grid size={12}>

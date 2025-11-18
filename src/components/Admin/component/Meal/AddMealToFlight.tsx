@@ -5,7 +5,6 @@ import {
   Typography,
   Button,
   CircularProgress,
-  Alert,
   Checkbox,
   FormControlLabel,
 } from "@mui/material";
@@ -54,42 +53,12 @@ export default function AddMealToFlight({ flightId, name }: FlightMealProps) {
     }));
   }, []);
 
-  // Button nếu muốn gen lại
   const handleGenerateCode = () => {
     setData((prev) => ({
       ...prev,
       mealCode: generateRandomCode(),
     }));
   };
-
-  // Generate random code function
-  //   const generateRandomCode = (length: number): string => {
-  //     let result = "";
-  //     for (let i = 0; i < length; i++) {
-  //       result += CHARACTERS.charAt(
-  //         Math.floor(Math.random() * CHARACTERS.length)
-  //       );
-  //     }
-  //     return result;
-  //   };
-
-  //   // Generate unique code (you'll need to implement the API check)
-  //   const generateUniqueCode = async (): Promise<void> => {
-  //     setGeneratingCode(true);
-  //     try {
-  //       const newCode = generateRandomCode(3);
-  //       setData((prev) => ({ ...prev, mealCode: newCode }));
-  //     } catch (error) {
-  //       console.error("Error generating code:", error);
-  //     } finally {
-  //       setGeneratingCode(false);
-  //     }
-  //   };
-
-  //   // Generate code on component mount
-  //   useEffect(() => {
-  //     generateUniqueCode();
-  //   }, []);
 
   const { mealData } = useGetMeal();
   const { refetchAddMealToFlight } = useCreateFlightMeal();
@@ -109,27 +78,6 @@ export default function AddMealToFlight({ flightId, name }: FlightMealProps) {
     { label: "150,000 VND", value: 150000 },
   ];
 
-  // Handle meal selection to auto-fill price if available
-  const handleMealSelect = (mealId: number) => {
-    const selectedMeal = meals.find((meal) => meal.id === mealId);
-    if (selectedMeal && selectedMeal.price) {
-      setSelectedPrice(selectedMeal.price);
-      setData((prev) => ({
-        ...prev,
-        mealId,
-        price: selectedMeal.price,
-      }));
-    } else {
-      setData((prev) => ({ ...prev, mealId }));
-    }
-  };
-
-  // Handle price selection
-  const handlePriceSelect = (price: number) => {
-    setSelectedPrice(price);
-    setData((prev) => ({ ...prev, price }));
-  };
-
   const onSubmit = async () => {
     if (!data.mealId || !data.quantity) {
       toast("Vui lòng nhập đầy đủ thông tin");
@@ -138,7 +86,6 @@ export default function AddMealToFlight({ flightId, name }: FlightMealProps) {
     setLoading(true);
     try {
       const res = await refetchAddMealToFlight(data);
-
       if (res?.resultCode === ResponseCode.SUCCESS) {
         toast(res.resultMessage, "success");
       } else {
@@ -183,17 +130,6 @@ export default function AddMealToFlight({ flightId, name }: FlightMealProps) {
             label={p.label}
           />
         ))}
-
-        {/* <InputTextField
-          placeholder="Meal Code"
-          value={data.mealCode}
-          onChange={(e) =>
-            setData({
-              ...data,
-              mealCode: e,
-            })
-          }
-        /> */}
 
         <InputTextField
           placeholder="Meal Code"

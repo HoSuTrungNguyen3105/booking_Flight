@@ -35,7 +35,12 @@ export enum ACTIONS {
 export type Action =
   | { type: ACTIONS.SELECT_FLIGHT; payload: DataFlight }
   | { type: ACTIONS.SELECT_SEATS; payload: string[] }
-  | { type: ACTIONS.UPDATE_MEAL; id: number; mealId: number; quantity: number }
+  | {
+      type: ACTIONS.UPDATE_MEAL;
+      id: number;
+      flightMealId: number;
+      quantity: number;
+    }
   | { type: ACTIONS.SET_PASSENGER_INFO; payload: Partial<Passenger> }
   | { type: ACTIONS.PROCESS_PAYMENT }
   | { type: ACTIONS.PAYMENT_SUCCESS }
