@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Box, Typography, Paper, Container, Link } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Paper,
+  Container,
+  Link,
+  Button,
+  FormControlLabel,
+  Checkbox,
+} from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import theme from "../../scss/theme";
@@ -7,10 +16,26 @@ import FieldRenderer from "../../common/AdditionalCustomFC/FieldRenderer";
 import { useDataSection, type SearchFormConfig } from "./search_type_input";
 import useLocalStorage from "../../context/use[custom]/useLocalStorage";
 import SearchFieldRender from "../../common/AdditionalCustomFC/SearchFieldRender";
+import { createSearchParams, useNavigate } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
+import FlightGrid from "./FlightCard";
 
+type SearchFlightFromPassengerDto = {
+  departureAirport?: string;
+  arrivalAirport?: string;
+  scheduledDeparture?: number; // timestamp hoặc Date string
+  scheduledArrival?: number; // timestamp hoặc Date string
+  passengers?: number;
+  flightClass?: string; // ECONOMY, BUSINESS, ...
+};
 const FlightSearchForm: React.FC<{ type: keyof SearchFormConfig }> = ({
   type,
 }) => {
+  const navigate = useNavigate();
+
+  // const [optionWay, setOptionWay] = useState<"oneway" | "roundtrip">("oneway");
+  const [hasReturnDay, setHasReturnDay] = useState(false);
+
   const [formData, setFormData] = useLocalStorage("search_data", {
     origin: "",
     destination: "",
@@ -20,7 +45,36 @@ const FlightSearchForm: React.FC<{ type: keyof SearchFormConfig }> = ({
     discountCode: "",
   });
 
-  const dataSection = useDataSection(type, formData);
+  const handleSubmit = () => {
+    const token = uuidv4();
+
+    const params: any = {
+      from: formData.origin,
+      to: formData.destination,
+      date: String(formData.departDate),
+      token,
+    };
+
+    // Nếu có chuyến khứ hồi thì truyền thêm return date
+    if (hasReturnDay && formData.returnDate) {
+      params.return = String(formData.returnDate);
+    }
+
+    navigate({
+      pathname: "/search",
+      search: createSearchParams(params).toString(),
+    });
+    // navigate({
+    //   pathname: "/search",
+    //   search: createSearchParams({
+    //     from: formData.origin,
+    //     to: formData.destination,
+    //     date: formData.departDate,
+    //   }).toString(),
+    // });
+  };
+
+  const dataSection = useDataSection(type, formData, hasReturnDay);
 
   useEffect(() => {
     setFormData(formData);
@@ -61,29 +115,50 @@ const FlightSearchForm: React.FC<{ type: keyof SearchFormConfig }> = ({
                     {section.label}
                   </Typography>
 
-                  {section.fields.map((field, fieldIndex) => (
-                    <Box key={fieldIndex} mb={1}>
-                      <SearchFieldRender
-                        type={field.type}
-                        value={
-                          formData[
-                            field.id as keyof SearchFormConfig["flight"]
-                          ] ?? ""
-                        }
-                        size={field.size}
-                        disabled={field.disabled}
-                        options={field.options}
-                        placeholder={field.placeholder}
-                        onChange={(val) =>
-                          handleChange(
-                            // "flight",
-                            field.id as keyof SearchFormConfig["flight"],
-                            val as string
-                          )
-                        }
+                  {section.fields.map(
+                    (field, fieldIndex) =>
+                      !field.disabled && (
+                        <Box key={fieldIndex} mb={1}>
+                          <SearchFieldRender
+                            type={field.type}
+                            value={
+                              formData[
+                                field.id as keyof SearchFormConfig["flight"]
+                              ] ?? ""
+                            }
+                            size={field.size}
+                            sx={field.sx}
+                            // disabled={field.disabled}
+                            options={field.options}
+                            placeholder={field.placeholder}
+                            onChange={(val) =>
+                              handleChange(
+                                // "flight",
+                                field.id as keyof SearchFormConfig["flight"],
+                                val as string
+                              )
+                            }
+                          />
+                        </Box>
+                      )
+                  )}
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={hasReturnDay}
+                        onChange={() => setHasReturnDay((prev) => !prev)}
                       />
-                    </Box>
-                  ))}
+                    }
+                    label="Khứ hồi (Roundtrip)"
+                  />
+
+                  <Button
+                    variant="contained"
+                    sx={{ mt: 2 }}
+                    onClick={handleSubmit}
+                  >
+                    Search flights
+                  </Button>
                 </Box>
               )
           )}
@@ -103,6 +178,7 @@ const FlightSearchForm: React.FC<{ type: keyof SearchFormConfig }> = ({
             .
           </Typography>
         </Box>
+        <FlightGrid />
       </Container>
     </LocalizationProvider>
   );

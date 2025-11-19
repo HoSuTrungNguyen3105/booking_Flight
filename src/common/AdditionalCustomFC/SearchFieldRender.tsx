@@ -123,7 +123,7 @@ const SearchFieldRender = ({
   };
 
   return (
-    <Grid container spacing={1} gap={1}>
+    <Grid container spacing={1}>
       <Grid size={size ?? 12}>{renderBox()}</Grid>
     </Grid>
   );

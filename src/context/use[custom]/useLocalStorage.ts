@@ -5,20 +5,30 @@ export default function useLocalStorage<T>(
   defaultValue: T
 ): [T, Dispatch<SetStateAction<T>>] {
   const [value, setValue] = useState<T>(() => {
+    const item = localStorage.getItem(key);
+
+    // Nếu default là string → trả raw string
+    if (typeof defaultValue === "string" || defaultValue === null) {
+      return (item as unknown as T) ?? defaultValue;
+    }
+
+    // Nếu object → parse
     try {
-      const item = window.localStorage.getItem(key);
-      return item ? JSON.parse(item) : defaultValue;
-    } catch (err) {
-      console.error("useLocalStorage read error:", err);
+      return item ? (JSON.parse(item) as T) : defaultValue;
+    } catch {
       return defaultValue;
     }
   });
 
   useEffect(() => {
-    try {
-      window.localStorage.setItem(key, JSON.stringify(value));
-    } catch (err) {
-      console.error("useLocalStorage write error:", err);
+    if (typeof value === "string") {
+      // string → store directly
+      localStorage.setItem(key, value);
+    } else if (value === null || value === undefined) {
+      localStorage.setItem(key, "");
+    } else {
+      // Object → JSON
+      localStorage.setItem(key, JSON.stringify(value));
     }
   }, [key, value]);
 

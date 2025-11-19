@@ -31,7 +31,6 @@ const CardGroup: React.FC<IProps> = ({
     rightDisabled: false,
   });
 
-  // Cập nhật trạng thái nút
   const updateArrows = useCallback(() => {
     const el = navRef.current;
     if (!el) return;
@@ -43,12 +42,10 @@ const CardGroup: React.FC<IProps> = ({
     });
   }, []);
 
-  // Theo dõi scroll, resize, thay đổi children
   useEffect(() => {
     const el = navRef.current;
     if (!el) return;
 
-    // Cập nhật ngay sau khi render
     const timeout = setTimeout(updateArrows, 100);
 
     el.addEventListener("scroll", updateArrows);

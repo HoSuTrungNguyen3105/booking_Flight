@@ -21,7 +21,7 @@ const AccountSettings = () => {
     if (res?.resultCode === ResponseCode.SUCCESS) {
       toast(res.resultMessage || "");
     } else {
-      toast(res?.resultMessage || "", "error");
+      toast(res?.resultMessage || "Error !!!", "error");
     }
   }, [refetchApproveUnlock]);
 

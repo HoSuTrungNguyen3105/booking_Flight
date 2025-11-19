@@ -3,6 +3,7 @@ import { Box, Button, Typography } from "@mui/material";
 import { useRequestUnlockAccount } from "../../../context/Api/usePostApi";
 import InputTextArea from "../../../common/Input/InputTextArea";
 import { ResponseCode } from "../../../utils/response";
+import { useToast } from "../../../context/ToastContext";
 
 const RequestUnlock = ({
   userId,
@@ -11,28 +12,23 @@ const RequestUnlock = ({
   userId: number;
   onClose: () => void;
 }) => {
+  const toast = useToast()
   const [reason, setReason] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
   const { refetchRequestUnlockAccount } = useRequestUnlockAccount();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setMessage(null);
     try {
       const res = await refetchRequestUnlockAccount({ userId, reason });
       if (res?.resultCode === ResponseCode.SUCCESS) {
-        setMessage(res?.resultMessage || null);
-        // setError(null);
+        toast(res?.resultMessage ,'success');
         onClose();
       } else {
-        setMessage(res?.resultMessage || null);
-        setError(null);
+        toast(res?.resultMessage || 'Error');
       }
     } catch (error) {
-      setMessage("Có lỗi xảy ra, vui lòng thử lại.");
-      setError(null);
+      console.error( error);
     } finally {
       setLoading(false);
     }
@@ -64,7 +60,6 @@ const RequestUnlock = ({
           value={reason}
           onChange={(e) => {
             setReason(e);
-            if (error) setError(null);
           }}
         />
         <Button
@@ -75,14 +70,6 @@ const RequestUnlock = ({
           {loading ? "Đang gửi..." : "Gửi yêu cầu"}
         </Button>
       </Box>
-
-      {message && (
-        <Box sx={{ textAlign: "start", mt: 2 }}>
-          <Typography variant="body2" color="success.main">
-            {message}
-          </Typography>
-        </Box>
-      )}
     </>
   );
 };

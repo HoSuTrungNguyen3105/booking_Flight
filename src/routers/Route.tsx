@@ -67,6 +67,9 @@ import OrderTable from "../components/Admin/component/Meal/OrderTable";
 import FlightMealList from "../components/Admin/component/Meal/FlightMealList";
 import FlightScheduleDashboard from "../components/User/FlightScheduleDashboard";
 import AdvancedAnalytics from "../common/Header/AdvancedAnalytics";
+import FlightsPage from "../components/Employee/FlightsPage";
+import BookingPassengerSearch from "../components/Employee/BookingPassengerSearch";
+import Confirmation from "../components/Admin/component/Meal/ConfirmationBooking";
 
 const routes = [
   {
@@ -126,6 +129,10 @@ const routes = [
         element: <PassengerProfile />,
       },
       {
+        path: "/Confirmation",
+        element: <Confirmation />,
+      },
+      {
         path: "/flight/info-page",
         element: <FlightInfoPage />,
       },
@@ -174,8 +181,16 @@ const routes = [
         element: <HotelListPage />,
       },
       {
+        path: "/search",
+        element: <FlightsPage />,
+      },
+      {
         path: "/hotels/detail",
         element: <HotelDetailPage />,
+      },
+      {
+        path: "/ticket/search",
+        element: <BookingPassengerSearch />,
       },
       {
         path: "/detail",

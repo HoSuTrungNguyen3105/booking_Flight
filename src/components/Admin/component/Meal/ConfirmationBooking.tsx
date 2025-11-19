@@ -8,22 +8,17 @@ import {
   Divider,
   Grid,
 } from "@mui/material";
-import {
-  CheckCircle,
-  Flight as FlightIcon,
-  Hotel as HotelIcon,
-  Restaurant,
-  Download,
-  Email,
-} from "@mui/icons-material";
+import { CheckCircle, Download, Email } from "@mui/icons-material";
+import { Link, useSearchParams } from "react-router-dom";
+import { useState } from "react";
+import type { Booking } from "../../../../utils/type";
 
 export default function Confirmation() {
-  const searchParams = new URLSearchParams(window.location.search);
+  const [searchParams] = useSearchParams();
+  const from = searchParams.get("from");
   //const bookingId = searchParams.get("bookingId") || "";
 
-  //   const { data: booking } = useQuery<Booking>({
-  //     queryKey: ['/api/bookings', bookingId],
-  //   });
+  const [booking, setState] = useState<Booking>();
 
   //   const selectedMeals =
   //     allMeals?.filter((meal) => booking?.mealIds?.includes(meal.id)) || [];
@@ -49,7 +44,7 @@ export default function Confirmation() {
         backgroundColor: "background.default",
       }}
     >
-      <Navbar />
+      {/* <Navbar /> */}
 
       <Container maxWidth="md" sx={{ py: 8, flexGrow: 1 }}>
         {/* Success Icon */}
@@ -72,7 +67,7 @@ export default function Confirmation() {
           <Typography
             variant="h3"
             gutterBottom
-            data-testid="text-confirmation-title"
+            //data-testid="text-confirmation-title"
           >
             Booking Confirmed!
           </Typography>
@@ -82,10 +77,10 @@ export default function Confirmation() {
             sx={{ mb: 2 }}
             data-testid="text-booking-reference"
           >
-            {booking.bookingReference}
+            {booking?.bookingTime}
           </Typography>
           <Typography variant="body1" color="text.secondary">
-            A confirmation email has been sent to {booking.passengerEmail}
+            {/* A confirmation email has been sent to {booking.passengerEmail} */}
           </Typography>
         </Box>
 
@@ -125,28 +120,28 @@ export default function Confirmation() {
               </Typography>
               <Divider sx={{ my: 2 }} />
               <Grid container spacing={2}>
-                <Grid item xs={12} sm={4}>
+                <Grid size={4}>
                   <Typography variant="body2" color="text.secondary">
                     Name
                   </Typography>
-                  <Typography variant="body1" fontWeight="500">
+                  {/* <Typography variant="body1" fontWeight="500">
                     {booking.passengerName}
-                  </Typography>
+                  </Typography> */}
                 </Grid>
-                <Grid item xs={12} sm={4}>
+                <Grid size={4}>
                   <Typography variant="body2" color="text.secondary">
                     Email
                   </Typography>
                   <Typography variant="body1" fontWeight="500">
-                    {booking.passengerEmail}
+                    {/* {booking.passengerEmail} */}
                   </Typography>
                 </Grid>
-                <Grid item xs={12} sm={4}>
+                <Grid size={4}>
                   <Typography variant="body2" color="text.secondary">
                     Phone
                   </Typography>
                   <Typography variant="body1" fontWeight="500">
-                    {booking.passengerPhone}
+                    {/* {booking.passengerPhone} */}
                   </Typography>
                 </Grid>
               </Grid>
@@ -154,7 +149,7 @@ export default function Confirmation() {
           </Card>
 
           {/* Flight Details */}
-          {flight && (
+          {/* {flight && (
             <Card>
               <CardContent sx={{ p: 3 }}>
                 <Box
@@ -205,10 +200,10 @@ export default function Confirmation() {
                 </Grid>
               </CardContent>
             </Card>
-          )}
+          )} */}
 
           {/* Hotel Details */}
-          {hotel && (
+          {/* {hotel && (
             <Card>
               <CardContent sx={{ p: 3 }}>
                 <Box
@@ -227,10 +222,10 @@ export default function Confirmation() {
                 <Typography variant="body2">{hotel.description}</Typography>
               </CardContent>
             </Card>
-          )}
+          )} */}
 
           {/* Meals */}
-          {selectedMeals.length > 0 && (
+          {/* {selectedMeals.length > 0 && (
             <Card>
               <CardContent sx={{ p: 3 }}>
                 <Box
@@ -249,7 +244,7 @@ export default function Confirmation() {
                 </Box>
               </CardContent>
             </Card>
-          )}
+          )} */}
 
           {/* Total */}
           <Card sx={{ backgroundColor: "primary.light" }}>
@@ -263,7 +258,7 @@ export default function Confirmation() {
               >
                 <Typography variant="h6">Total Amount Paid</Typography>
                 <Typography variant="h4" fontWeight="bold" color="primary.main">
-                  ${booking.totalPrice.toFixed(2)}
+                  {/* ${booking.totalPrice.toFixed(2)} */}
                 </Typography>
               </Box>
             </CardContent>
@@ -272,7 +267,7 @@ export default function Confirmation() {
 
         {/* Back to Home */}
         <Box sx={{ mt: 6, textAlign: "center" }}>
-          <Link href="/">
+          <Link to="/">
             <Button
               variant="contained"
               size="large"

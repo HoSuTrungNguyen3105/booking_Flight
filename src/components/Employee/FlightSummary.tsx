@@ -15,14 +15,6 @@ import {
 import { MapPin } from "lucide-react";
 import type { DataFlight } from "../../utils/type";
 
-// interface FlightInfo {
-//   route: string;
-//   date: string;
-//   time: string;
-//   duration: string;
-//   stops: string;
-// }
-
 interface FlightSummaryProps {
   outbound: DataFlight;
   returnFlight: DataFlight;

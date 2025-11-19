@@ -68,7 +68,6 @@ const AircraftBatchCreator = ({ onSuccess }: ReturnProps) => {
       const response = await refetchCreateAircraftBatchFlightData(aircrafts);
       if (response?.resultCode === ResponseCode.SUCCESS) {
         toast(response?.resultMessage);
-        // setAircrafts([{ code: "", model: "", range: 0 }]);
         refetchGetAircraftCodeData();
         const errorMap: Record<number, string> = {};
         response.list?.forEach((res: AircraftError, idx: number) => {
@@ -77,7 +76,6 @@ const AircraftBatchCreator = ({ onSuccess }: ReturnProps) => {
           }
         });
         setErrors(errorMap);
-
         if (Object.keys(errorMap).length === 0) {
           setAircrafts([{ code: "", model: "", range: 0 }]);
           onSuccess();
@@ -95,7 +93,6 @@ const AircraftBatchCreator = ({ onSuccess }: ReturnProps) => {
   return (
     <Box sx={{ maxWidth: "100%" }}>
       <Button variant="contained" onClick={onSuccess}>
-        {" "}
         Return
       </Button>
       {aircrafts.map((aircraft, index) => (
@@ -103,14 +100,7 @@ const AircraftBatchCreator = ({ onSuccess }: ReturnProps) => {
           key={index}
           sx={{ mb: 2, p: 2, border: "1px solid #ddd", borderRadius: 1 }}
         >
-          <Box
-            sx={{
-              display: "flex",
-              gap: 2,
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
+          <Box sx={{display: "flex",gap: 2,justifyContent: "space-between",alignItems: "center"}}>
             <Typography variant="h6">Aircraft No.{index + 1}</Typography>
             {aircrafts.length > 1 && (
               <Button

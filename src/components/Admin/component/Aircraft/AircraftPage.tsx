@@ -26,6 +26,7 @@ import DialogConfirm from "../../../../common/Modal/DialogConfirm";
 import DeleteIcon from "../../../../svgs/delete-2-svgrepo.svg";
 import type { Aircraft } from "../../../../utils/type";
 import AircraftBatchCreator from "./AircraftBatchCreator";
+import { ResponseCode } from "../../../../utils/response";
 
 const AircraftPage = () => {
   const { getAircraftCodeData, refetchGetAircraftCodeData } =
@@ -53,7 +54,7 @@ const AircraftPage = () => {
 
     try {
       const res = await refetchDeleteAircraftFlight();
-      if (res?.resultCode === "00") {
+      if (res?.resultCode === ResponseCode.SUCCESS) {
         await refetchGetAircraftCodeData();
       }
     } catch (error) {
@@ -110,22 +111,10 @@ const AircraftPage = () => {
         <Grid container spacing={2}>
           {getAircraftCodeData?.list?.map((aircraft: Aircraft) => (
             <Grid size={6} key={aircraft.code}>
-              <Card
-                sx={{
-                  borderRadius: 3,
-                  height: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
+              <Card sx={{borderRadius: 3,height: "100%",display: "flex",flexDirection: "column"}}>
                 <CardContent sx={{ flexGrow: 1, p: 3 }}>
                   <Stack spacing={2}>
-                    {/* Header với mã máy bay */}
-                    <Stack
-                      direction="row"
-                      justifyContent="space-between"
-                      alignItems="flex-start"
-                    >
+                    <Stack direction="row"justifyContent="space-between"alignItems="flex-start">
                       <Chip
                         label={aircraft.code}
                         color="primary"
@@ -140,7 +129,6 @@ const AircraftPage = () => {
                       />
                     </Stack>
 
-                    {/* Thông tin model */}
                     <Typography
                       variant="h6"
                       fontWeight="600"
@@ -149,7 +137,6 @@ const AircraftPage = () => {
                       {aircraft.model}
                     </Typography>
 
-                    {/* Thông tin chi tiết */}
                     <Stack spacing={1}>
                       <Stack direction="row" justifyContent="space-between">
                         <Typography variant="body2" color="text.secondary">
@@ -187,7 +174,6 @@ const AircraftPage = () => {
                       ))}
                     </Stack>
 
-                    {/* Actions */}
                     <Stack direction="row" spacing={1} mt={2}>
                       <Tooltip title="Xóa máy bay">
                         <IconButton

@@ -6,26 +6,20 @@ import {
   Typography,
   Button,
   Grid,
-  FormControl,
-  InputLabel,
   Divider,
-  TextField,
   Stack,
+  CardHeader,
 } from "@mui/material";
 import {
-  BookingStatus,
-  type Booking,
   type DataFlight,
+  type Hotel,
   type Seat,
 } from "../../utils/type";
-import { useAuth } from "../../context/AuthContext";
 import { useLocation } from "react-router-dom";
-import { convertCurrency, type Currency } from "../../hooks/format";
-import SelectDropdown from "../../common/Dropdown/SelectDropdown";
 import {
-  mapStringToDropdown,
-  useFindAllSeatTypes,
-} from "../../context/Api/useGetApi";
+  DateFormatEnum,
+  formatDate,
+} from "../../hooks/format";
 import {
   ACTIONS,
   initialState,
@@ -33,36 +27,22 @@ import {
   type BookingState,
 } from "./types/booking";
 import InputTextField from "../../common/Input/InputTextField";
+import { Restaurant } from "@mui/icons-material";
+
+type BookingState = {
+  seats: Seat;
+  flightData: DataFlight;
+  seatNos: string;
+  mealIds: number[];
+  hotel: Hotel;
+  flightId: number;
+};
 
 const BookingPage = () => {
   const location = useLocation();
-  const { flightId, seats, seatNos, flightData } = location.state as {
-    seats: Seat;
-    flightData: DataFlight;
-    seatNos: string;
-    // data: Seat;
-    flightId: number;
-  };
-  const [bookingData, setBookingData] = useState({
-    passengerId: "",
-    flightId,
-    seatId: [] as number[],
-    bookingCode: "",
-    seatClass: "ECONOMY",
-    seatNo: "",
-    seatPrice: 0,
-    mealOrders: [] as { mealId: number; quantity: number; price: number }[],
-  });
+  const statelocale = location.state as BookingState | undefined;
 
-  console.log("bookingData", seatNos, flightData);
-
-  const { dataSeatTypes } = useFindAllSeatTypes();
-  const optionsSeatTypes = mapStringToDropdown(dataSeatTypes?.data || []);
-  const { passenger } = useAuth();
-  // const paymoney = localStorage.getItem("paymoney") as Currency;
-
-  const selectedMeals =
-    allMeals?.filter((meal) => mealIds.includes(meal.id)) || [];
+    console.log('location.location',location.state)
 
   const [state, dispatch] = useReducer(
     (state: BookingState, action: Action): BookingState => {
@@ -102,6 +82,31 @@ const BookingPage = () => {
           return { ...state, bookingConfirmed: true };
         case ACTIONS.RESET:
           return initialState;
+        case ACTIONS.SET_INITIAL_DATA:
+          return {
+            ...state,
+            bookingData: {
+              ...state.bookingData,
+              flightId: action.payload.flightId,
+              passengerId: action.payload.passengerId,
+            },
+            form: {
+              ...state.form,
+              flightId: action.payload.flightId,
+              passengerId: action.payload.passengerId,
+            },
+          };
+        case ACTIONS.SET_BOOKING_CODE:
+          return {
+            ...state,
+            bookingData: { ...state.bookingData, bookingCode: action.payload },
+            form: { ...state.form, bookingCode: action.payload },
+          };
+        case ACTIONS.UPDATE_FORM_FIELD:
+          return {
+            ...state,
+            form: { ...state.form, [action.payload.name]: action.payload.value },
+          };
         default:
           return state;
       }
@@ -109,40 +114,33 @@ const BookingPage = () => {
     initialState
   );
 
-  const [form, setForm] = useState<
-    Omit<Booking, "id" | "mealOrders" | "seat" | "passenger">
-  >({
-    bookingTime: "",
-    flightId: data.flightId || 0,
-    bookingCode: "",
-    seatNo: "",
-    seatPrice: data.price,
-    status: BookingStatus.PENDING,
-    passengerId: passenger?.id ?? "",
-    tickets: [],
-    flight: data.flight || null,
-    seatClass: "",
-  });
+   const selectedMeals =
+    state.bookingData.mealOrders?.filter((meal) => mealIds.includes(meal.mealId)) ||
+    [];
 
-  const [bookingCode, setBookingCode] = useState("");
-
-  // Tạo booking code
+  // Initialize data
   useEffect(() => {
-    const code = "BK" + Math.floor(Math.random() * (99999 - 10000 + 1) + 10000);
-    setBookingCode(code);
-    setForm((prev) => ({ ...prev, bookingCode: code }));
-  }, []);
+    if (flightId && state.passengerInfo?.id) {
+      dispatch({
+        type: ACTIONS.SET_INITIAL_DATA,
+        payload: { flightId, passengerId:state.passengerInfo?.id },
+      });
+    }
+    const code =
+      "BK" + Math.floor(Math.random() * (99999 - 10000 + 1) + 10000);
+    dispatch({ type: ACTIONS.SET_BOOKING_CODE, payload: code });
+  }, [flightId,state.passengerInfo?.id]);
 
-  const handleChange = (name: keyof typeof form, value: string) => {
-    setForm((prev) => ({ ...prev, [name]: value }));
+  const handleChange = (name: keyof typeof state.form, value: string) => {
+    dispatch({ type: ACTIONS.UPDATE_FORM_FIELD, payload: { name, value } });
   };
 
   const handleBooking = () => {
     const bookingData = {
-      ...form,
+      ...state.form,
       // bookingTime: new Date().toISOString(),
-      passengerId: passenger?.id,
-      bookingCode,
+      passengerId: state.passengerInfo?.id,
+      bookingCode: state.bookingData.bookingCode,
     };
 
     console.log("Booking Confirmed:", bookingData);
@@ -161,25 +159,26 @@ const BookingPage = () => {
             <Grid size={12}>
               <Box p={2} bgcolor="#f9f9f9" borderRadius={2}>
                 <Typography fontWeight={600}>
-                  Chuyến bay: {form.flight?.flightNo}
+                  Chuyến bay: {flightData.flightNo}
                 </Typography>
                 <Typography color="text.secondary">
-                  {form.flight?.departureAirport} →{" "}
-                  {form.flight?.arrivalAirport}
+                  {flightData.departureAirport} → {flightData?.arrivalAirport}
                 </Typography>
                 <Typography color="text.secondary" mt={1}>
-                  {form.flight?.scheduledDeparture &&
-                    new Date(
-                      form.flight.scheduledDeparture
-                    ).toLocaleTimeString()}{" "}
+                  {formatDate(
+                    DateFormatEnum.DD_MM_YYYY_HH_MM_SS,
+                    flightData?.scheduledDeparture
+                  )}
                   →{" "}
-                  {form.flight?.scheduledArrival &&
-                    new Date(form.flight.scheduledArrival).toLocaleTimeString()}
+                  {formatDate(
+                    DateFormatEnum.DD_MM_YYYY_HH_MM_SS,
+                    flightData?.scheduledArrival
+                  )}
                 </Typography>
               </Box>
             </Grid>
 
-            {hotel && (
+            {/* {hotel && (
               <Card>
                 <CardHeader
                   avatar={<HotelIcon sx={{ color: "primary.main" }} />}
@@ -216,7 +215,7 @@ const BookingPage = () => {
                   </Typography>
                 </CardContent>
               </Card>
-            )}
+            )} */}
 
             {selectedMeals.length > 0 && (
               <Card>
@@ -230,20 +229,15 @@ const BookingPage = () => {
                   >
                     {selectedMeals.map((meal) => (
                       <Box
-                        key={meal.id}
+                        key={meal.mealId}
                         sx={{
                           display: "flex",
                           justifyContent: "space-between",
                         }}
                       >
-                        <Box>
-                          <Typography variant="body1" fontWeight="500">
-                            {meal.name}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            {meal.category}
-                          </Typography>
-                        </Box>
+                        <Typography variant="body1" fontWeight="500">
+                          {meal.quantity}
+                        </Typography>
                         <Typography variant="subtitle1" fontWeight="600">
                           ${meal.price}
                         </Typography>
@@ -256,21 +250,21 @@ const BookingPage = () => {
 
             <Divider sx={{ my: 2, width: "100%" }} />
 
-            <Grid size={6}>
+            {/* <Grid size={6}>
               <FormControl fullWidth>
                 <InputLabel>Hạng ghế</InputLabel>
                 <SelectDropdown
                   options={optionsSeatTypes}
-                  value={form.seatClass}
+                  value={state.form.seatClass}
                   onChange={(e) => handleChange("seatClass", String(e))}
                   placeholder="Hạng ghế"
                 />
               </FormControl>
-            </Grid>
+            </Grid> */}
 
             <Grid size={6}>
               <InputTextField
-                value={form.seatNo}
+                value={state.form.seatNo}
                 onChange={(e) => handleChange("seatNo", e)}
                 placeholder="VD: 12A"
               />
@@ -301,7 +295,7 @@ const BookingPage = () => {
                     fontWeight="500"
                     data-testid="text-hotel-total"
                   >
-                    ${hotel.pricePerNight.toFixed(2)}
+                    ${hotel.price.toFixed(2)}
                   </Typography>
                 </Box>
               )}
@@ -309,7 +303,7 @@ const BookingPage = () => {
               {selectedMeals.length > 0 && (
                 <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                   <Typography variant="body2" color="text.secondary">
-                    Meals ({selectedMeals.length} × {passengers})
+                    Meals ({selectedMeals.length} × {state.passengerInfo?.fullName})
                   </Typography>
                   <Typography
                     variant="body2"
@@ -319,7 +313,7 @@ const BookingPage = () => {
                     $
                     {(
                       selectedMeals.reduce((sum, m) => sum + m.price, 0) *
-                      passengers
+                      (state.passengerInfo?.bookings?.[0].seat?.price ?? 0)
                     ).toFixed(2)}
                   </Typography>
                 </Box>
@@ -340,7 +334,7 @@ const BookingPage = () => {
                   variant="contained"
                   color="primary"
                   onClick={handleBooking}
-                  disabled={!form.seatNo || !form.seatClass}
+                  disabled={!state.form.seatNo || !state.form.seatClass}
                 >
                   Xác nhận đặt vé
                 </Button>

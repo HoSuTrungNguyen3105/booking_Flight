@@ -179,20 +179,7 @@ const EventCard: React.FC<EventCardProps> = ({
                 size="small"
               />
             )}
-            {/* <ButtonCircle
-              sx={{
-                width: 12,
-                height: 12,
-                minWidth: 12,
-                minHeight: 12,
-                padding: 0, // nếu muốn không có padding
-                borderRadius: "50%", // để vẫn là hình tròn
-              }}
-              icon={""}
-              text=""
-            /> */}
           </Stack>
-          {/* Action Buttons */}
           <Stack direction="row" spacing={0.5}>
             {onShare && (
               <Tooltip title="Share">

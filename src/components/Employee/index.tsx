@@ -126,21 +126,8 @@ const TicketPage: React.FC = () => {
             >
               <FaTicketAlt color="white" />
             </Box>
-            <Box>
-              {/* <Typography variant="h6" fontWeight={700} color="primary">
-                {ticket.booking.bookingTime}
-              </Typography> */}
-              {/* <Typography
-                variant="caption"
-                color="text.secondary"
-                fontWeight={500}
-              >
-                {ticket.booking.bookingCode}
-              </Typography> */}
-            </Box>
           </Box>
 
-          {/* Center: Flight Info */}
           <Box sx={{ flex: 1 }}>
             <Stack direction="row" spacing={3} alignItems="center">
               <Box>
@@ -267,9 +254,6 @@ const TicketPage: React.FC = () => {
                     <Typography variant="caption" color="text.secondary">
                       Booking Reference:
                     </Typography>
-                    {/* <Typography variant="body2" fontFamily="monospace">
-                      {ticket.booking.bookingTime || "N/A"}
-                    </Typography> */}
                   </Box>
                 </Stack>
               </Grid>
@@ -285,14 +269,6 @@ const TicketPage: React.FC = () => {
                   Flight Details
                 </Typography>
                 <Stack spacing={1}>
-                  <Box display="flex" justifyContent="space-between">
-                    {/* <Typography variant="caption" color="text.secondary">
-                      Route:
-                    </Typography>
-                    <Typography variant="body2">
-                      {ticket.flight?.isCancelled} → {ticket.flight?.destination}
-                    </Typography> */}
-                  </Box>
                   <Box display="flex" justifyContent="space-between">
                     <Typography variant="caption" color="text.secondary">
                       Departure:

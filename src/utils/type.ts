@@ -526,13 +526,12 @@ export type SocketResponseMessage<T = null> = {
 
 export interface FlightMeal {
   id: number;
-  mealCode: string;
+  flightMealCode: string;
   flightId: number;
   mealId: number;
   quantity: number;
   price?: number;
   flight: DataFlight;
-
   meal: Meal;
 }
 

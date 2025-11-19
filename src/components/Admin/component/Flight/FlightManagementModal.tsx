@@ -10,6 +10,8 @@ import {
   Step,
   StepLabel,
   InputAdornment,
+  FormControlLabel,
+  Checkbox,
 } from "@mui/material";
 import {
   AttachMoney,
@@ -69,6 +71,8 @@ const FlightManagementModal = ({
     handleRefetchAllData,
     handleInputChange,
     optionWay,
+    enableAdvancedPrice,
+    setEnableAdvancedPrice,
     stepTopRef,
     activeStep,
     optionAllGateCode,
@@ -193,22 +197,43 @@ const FlightManagementModal = ({
     ];
 
     return (
-      <Grid container spacing={3}>
-        {priceFields.map(({ key, label }) => (
-          <Grid size={12} key={key}>
-            <Typography sx={{ mb: 1, fontWeight: 500 }}>{label}</Typography>
-            <InputNumber
-              placeholder={label}
-              value={formData[key] as number}
-              onChange={(e) => handleInputChange(key, Number(e))}
-              startIcon={<AttachMoney />}
-              endIcon={<InputAdornment position="end">USD</InputAdornment>}
-            />
-          </Grid>
-        ))}
-      </Grid>
+      <>
+        {/* Checkbox bật thêm class giá */}
+        <Box sx={{ mb: 2 }}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={enableAdvancedPrice}
+                onChange={(e) => setEnableAdvancedPrice(e.target.checked)}
+              />
+            }
+            label="Bật chỉnh giá Thương gia và Hạng nhất"
+          />
+        </Box>
+
+        <Grid container spacing={3}>
+          {priceFields.map(({ key, label }) => {
+            const disabled =
+              key === "priceEconomy" ? false : !enableAdvancedPrice; // economy luôn bật
+
+            return (
+              <Grid size={12} key={key}>
+                <Typography sx={{ mb: 1, fontWeight: 500 }}>{label}</Typography>
+                <InputNumber
+                  placeholder={label}
+                  value={formData[key] as number}
+                  onChange={(e) => handleInputChange(key, Number(e))}
+                  startIcon={<AttachMoney />}
+                  endIcon={<InputAdornment position="end">USD</InputAdornment>}
+                  disabled={disabled}
+                />
+              </Grid>
+            );
+          })}
+        </Grid>
+      </>
     );
-  }, [formData, handleInputChange]);
+  }, [formData, handleInputChange, enableAdvancedPrice]);
 
   const renderGateStatus = useCallback(
     () => (

@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { FieldType } from "../../../common/AdditionalCustomFC/FieldRenderer";
 import {
   mapStringToDropdown,
@@ -43,13 +43,15 @@ export type SearchFormConfig = {
 
 export const useDataSection = (
   section: keyof SearchFormConfig,
-  data: Partial<SearchFormConfig[keyof SearchFormConfig]>
+  data: Partial<SearchFormConfig[keyof SearchFormConfig]>,
+  hasValue: boolean
 ): ISearchFieldRender[] => {
   const { getAllCode } = useGetAllCode();
   const { dataFlightTypes } = useFindAllFlightTypes();
   const optionDataFlightTypes = mapStringToDropdown(
     dataFlightTypes?.data || []
   );
+  // const [optionWay, setOptionWay] = useState<"oneway" | "roundtrip">("oneway");
 
   const airports: ActionType[] = (getAllCode?.data?.airport || []).map((e) => ({
     value: e.code,
@@ -110,50 +112,55 @@ export const useDataSection = (
           fields: [
             {
               id: "origin",
-              size: 4,
               type: SearchFieldType.DROPDOWN,
+              size: 4,
               value: flight.origin ?? "",
               placeholder: "Điểm đi…",
               options: airports,
-              sx: { minWidth: 120 },
+              sx: { minWidth: 120, width: "100%" },
             },
             {
               id: "destination",
-              size: 4,
               type: SearchFieldType.DROPDOWN,
+              size: 4,
               value: flight.destination ?? "",
               placeholder: "Điểm đến…",
               options: airports,
-              sx: { minWidth: 120 },
+              sx: { minWidth: 120, width: "100%" },
             },
             {
               id: "departDate",
-              size: 6,
               type: SearchFieldType.INPUT_WITH_NUMBER,
+              size: 6,
               value: flight.departDate ?? 0,
               placeholder: "Ngày đi…",
+              sx: { width: "100%" },
             },
             {
               id: "returnDate",
-              size: 6,
               type: SearchFieldType.INPUT_WITH_NUMBER,
+              size: 6,
               value: flight.returnDate ?? 0,
               placeholder: "Ngày về…",
+              sx: { width: "100%" },
+              disabled: !hasValue, // disable nếu chuyến 1 chiều
             },
             {
               id: "type",
-              size: 2,
               type: SearchFieldType.DROPDOWN,
-              value: flight.type ?? "",
+              size: 2,
+              value: flight.type ?? "Economy",
               placeholder: "Loại chuyến bay…",
               options: optionDataFlightTypes,
+              sx: { width: "100%" },
             },
             {
               id: "discountCode",
-              size: 3,
               type: SearchFieldType.INPUT_WITH_TYPE_TEXT,
+              size: 3,
               value: flight.discountCode ?? "",
               placeholder: "Mã giảm giá…",
+              sx: { width: "100%" },
             },
           ],
         },
@@ -246,5 +253,5 @@ export const useDataSection = (
     }
 
     return [];
-  }, [section, data, airports, optionDataFlightTypes]);
+  }, [section, data, airports, hasValue, optionDataFlightTypes]);
 };

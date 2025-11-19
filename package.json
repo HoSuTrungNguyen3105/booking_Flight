@@ -33,6 +33,7 @@
     "dayjs": "^1.11.13",
     "dotenv": "^16.5.0",
     "i18next": "^25.6.1",
+    "jspdf": "^3.0.3",
     "lodash": "^4.17.21",
     "lucide-react": "^0.553.0",
     "moment": "^2.30.1",
@@ -50,6 +51,7 @@
     "recharts": "^3.2.1",
     "socket.io-client": "^4.8.1",
     "ua-parser-js": "^2.0.6",
+    "uuid": "^13.0.0",
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
@@ -64,6 +66,7 @@
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "@types/react-resizable": "^3.0.8",
+    "@types/uuid": "^11.0.0",
     "@types/zxcvbn": "^4.4.5",
     "@vitejs/plugin-react-swc": "^3.9.0",
     "eslint": "^9.25.0",

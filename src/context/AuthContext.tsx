@@ -272,6 +272,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (!token) return;
     try {
       const res = await refetchLogoutSession();
+      console.log("reslogout", res);
       if (res?.resultCode === ResponseCode.SUCCESS) {
         setIsAuthenticated(false);
         setUser(null);
@@ -284,7 +285,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } catch (err: any) {
       toast(err.message);
     }
-  }, [toast, refetchLogoutSession]);
+  }, [toast]);
 
   const hasValidLogin = useCallback(async () => {
     try {

@@ -48,9 +48,21 @@ export const menuData: TabData = {
         image: Icon,
       },
       {
+        value: "ticket/search",
+        icon: <DirectionsRunIcon />,
+        label: "ticket/search",
+        image: Icon,
+      },
+      {
         value: "FareComparison",
         icon: <DirectionsRunIcon />,
         label: "FareComparison",
+        image: Icon,
+      },
+      {
+        value: "Confirmation",
+        icon: <DirectionsRunIcon />,
+        label: "Confirmation",
         image: Icon,
       },
       {

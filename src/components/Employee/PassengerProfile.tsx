@@ -144,7 +144,7 @@ const PassengerProfile = () => {
             </Box>
             <PhoneInput
               country={
-                !formValues.phone ? countryCode.toLowerCase() : undefined
+                !formValues.phone ? countryCode?.toLowerCase() : undefined
               }
               value={formValues.phone}
               onChange={(value) => handleChange("phone", value)}

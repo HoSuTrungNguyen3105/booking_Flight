@@ -76,7 +76,6 @@ export const HotelBatchCreator: React.FC<HotelBatchCreatorProps> = ({
           i === index ? { ...hotel, [field]: value } : hotel
         )
       );
-      // Clear error when user starts typing
       if (errors[index]) {
         setErrors((prev) => {
           const newErrors = { ...prev };
@@ -98,7 +97,6 @@ export const HotelBatchCreator: React.FC<HotelBatchCreatorProps> = ({
     setErrors((prev) => {
       const newErrors = { ...prev };
       delete newErrors[index];
-      // Reindex errors for remaining hotels
       const reindexedErrors: Record<number, string> = {};
       Object.keys(newErrors).forEach((key) => {
         const oldIndex = parseInt(key);

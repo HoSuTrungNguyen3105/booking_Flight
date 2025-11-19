@@ -27,7 +27,7 @@ interface FlightMealProps {
 
 export default function AddMealToFlight({ flightId, name }: FlightMealProps) {
   const [data, setData] = useState<CreateFlightMealProps>({
-    mealCode: "",
+    flightMealCode: "",
     flightId: flightId || 0,
     mealId: 0,
     quantity: 1,
@@ -133,8 +133,8 @@ export default function AddMealToFlight({ flightId, name }: FlightMealProps) {
 
         <InputTextField
           placeholder="Meal Code"
-          value={data.mealCode}
-          onChange={(e) => setData({ ...data, mealCode: e })}
+          value={data.flightMealCode}
+          onChange={(e) => setData({ ...data, flightMealCode: e })}
           maxValueLength={3}
         />
 

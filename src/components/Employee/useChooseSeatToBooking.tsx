@@ -26,44 +26,44 @@ export const useChooseSeatToBooking = ({ id }: FlightWithSeatLayoutProps) => {
   // Dữ liệu chi tiết flight
   const flightData = getAllInfoFlightByIdData?.data;
 
-  const detail: IDetailItem[] = useMemo(
-    () => [
-      { title: "Flight No", description: flightData?.flightNo, size: 12 },
-      { title: "Aircraft", description: flightData?.aircraft?.model, size: 12 },
-      {
-        title: "Aircraft Code",
-        description: flightData?.aircraftCode,
-        size: 12,
-      },
-      {
-        title: "Arrival Airport",
-        description: flightData?.arrivalAirport,
-        size: 12,
-      },
-      {
-        title: "Departure Airport",
-        description: flightData?.departureAirport,
-        size: 12,
-      },
-      {
-        title: "City",
-        description: flightData?.arrivalAirportRel?.city,
-        size: 12,
-      },
-      { title: "Flight ID", description: flightData?.flightId, size: 12 },
-      {
-        title: "Status",
-        description: flightData?.flightStatuses?.[0]?.status,
-        size: 12,
-      },
-      { title: "Flight Type", description: flightData?.flightType, size: 12 },
-      { title: "Seats", description: flightData?.seats?.length, size: 12 },
-      { title: "Price First", description: flightData?.priceFirst, size: 12 },
-    ],
-    [flightData]
-  );
+  // const detail: IDetailItem[] = useMemo(
+  //   () => [
+  //     { title: "Flight No", description: flightData?.flightNo, size: 12 },
+  //     { title: "Aircraft", description: flightData?.aircraft?.model, size: 12 },
+  //     {
+  //       title: "Aircraft Code",
+  //       description: flightData?.aircraftCode,
+  //       size: 12,
+  //     },
+  //     {
+  //       title: "Arrival Airport",
+  //       description: flightData?.arrivalAirport,
+  //       size: 12,
+  //     },
+  //     {
+  //       title: "Departure Airport",
+  //       description: flightData?.departureAirport,
+  //       size: 12,
+  //     },
+  //     {
+  //       title: "City",
+  //       description: flightData?.arrivalAirportRel?.city,
+  //       size: 12,
+  //     },
+  //     { title: "Flight ID", description: flightData?.flightId, size: 12 },
+  //     {
+  //       title: "Status",
+  //       description: flightData?.flightStatuses?.[0]?.status,
+  //       size: 12,
+  //     },
+  //     { title: "Flight Type", description: flightData?.flightType, size: 12 },
+  //     { title: "Seats", description: flightData?.seats?.length, size: 12 },
+  //     { title: "Price First", description: flightData?.priceFirst, size: 12 },
+  //   ],
+  //   [flightData]
+  // );
 
-  // 🔹 Lọc danh sách ghế
+  // Lọc danh sách ghế
   const filteredSeats = useMemo(() => {
     if (!flightData?.seats) return [];
     const { seats } = flightData;
@@ -83,13 +83,13 @@ export const useChooseSeatToBooking = ({ id }: FlightWithSeatLayoutProps) => {
     return seats.filter(filters[filter] || (() => true));
   }, [flightData, filter]);
 
-  // 🔹 Đếm số ghế duy nhất
+  // Đếm số ghế duy nhất
   const seatCount = useMemo(
     () => _.uniqBy(flightData?.seats || [], "seatNumber").length,
     [flightData]
   );
 
-  // // 🔹 Chọn ghế
+  //  Chọn ghế
   // const handleSelectSeat = useCallback(
   //   (seat: Seat) => {
   //     setSelectedSeats((prev) => {
@@ -117,7 +117,6 @@ export const useChooseSeatToBooking = ({ id }: FlightWithSeatLayoutProps) => {
     (seat: Seat) => {
       setSelectedSeats((prev) => {
         const exists = prev.some((s) => s.id === seat.id);
-        console.log("res", seat);
         if (exists) {
           toast("Đã bỏ chọn ghế");
           return prev.filter((s) => s.id !== seat.id);
@@ -155,7 +154,10 @@ export const useChooseSeatToBooking = ({ id }: FlightWithSeatLayoutProps) => {
 
     const selectedSeatIds = selectedSeats.map((s) => s.id);
     const seatNos = selectedSeats.map((s) => s.seatNumber).join(",");
-
+// console.log('location', id,
+//        selectedSeatIds,
+//         seatNos,
+//         flightData,)
     navigate("/payment", {
       state: {
         flightId: id,
@@ -167,7 +169,7 @@ export const useChooseSeatToBooking = ({ id }: FlightWithSeatLayoutProps) => {
   }, [selectedSeats, id, flightData, navigate, toast]);
 
   return {
-    detail,
+    // detail,
     handleSelectSeat,
     seatCount,
     filteredSeats,

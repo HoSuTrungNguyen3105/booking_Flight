@@ -30,6 +30,7 @@ export const useFlightCreateAndUpdate = ({
   mode = "create",
 }: IFlightCreateAndUpdateProps) => {
   const toast = useToast();
+  const [enableAdvancedPrice, setEnableAdvancedPrice] = useState(false);
 
   const createDefaultFormData = (): FlightFormData => ({
     flightNo: "",
@@ -282,6 +283,8 @@ export const useFlightCreateAndUpdate = ({
     handleRefetchAllData,
     handleInputChange,
     optionWay,
+    enableAdvancedPrice,
+    setEnableAdvancedPrice,
     stepTopRef,
     setActiveStep,
     activeStep,
