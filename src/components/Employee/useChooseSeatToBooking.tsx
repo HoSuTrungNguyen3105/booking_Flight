@@ -1,11 +1,10 @@
 import { useCallback, useMemo, useState } from "react";
 import _ from "lodash";
-import { useGetAllInfoFlightByIDData } from "../../context/Api/useGetApi";
 import type { Seat } from "../../utils/type";
-import type { IDetailItem } from "../../common/AdditionalCustomFC/DetailSection";
 import { useToast } from "../../context/ToastContext";
 import type { FilterType } from "../Admin/component/Flight/hooks/useSeatInFlightDetail";
 import { useNavigate } from "react-router-dom";
+import { useGetAllInfoFlightByIDData } from "../../context/Api/FlightApi";
 
 type FlightWithSeatLayoutProps = {
   id: number;
@@ -154,10 +153,10 @@ export const useChooseSeatToBooking = ({ id }: FlightWithSeatLayoutProps) => {
 
     const selectedSeatIds = selectedSeats.map((s) => s.id);
     const seatNos = selectedSeats.map((s) => s.seatNumber).join(",");
-// console.log('location', id,
-//        selectedSeatIds,
-//         seatNos,
-//         flightData,)
+    // console.log('location', id,
+    //        selectedSeatIds,
+    //         seatNos,
+    //         flightData,)
     navigate("/payment", {
       state: {
         flightId: id,

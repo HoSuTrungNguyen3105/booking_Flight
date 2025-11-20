@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Grid, Typography, Card, CardActionArea } from "@mui/material";
 import { menuData } from "../../utils/name_sb1";
+import { useNavigate } from "react-router-dom";
 
 interface FlightGuideCardProps {
   image: string;
@@ -55,7 +56,7 @@ const FlightGuideCard: React.FC<FlightGuideCardProps> = ({
 
 const FlightGuideSection: React.FC<{ title: string }> = ({ title }) => {
   const section = menuData[title];
-
+const navigate = useNavigate();
   if (!section) return null;
 
   const cards = section.items.map((item) => ({
@@ -83,7 +84,7 @@ const FlightGuideSection: React.FC<{ title: string }> = ({ title }) => {
             <FlightGuideCard
               image={card.image}
               title={card.title}
-              onClick={() => console.log("Clicked:", card.title)}
+              onClick={() =>  navigate(`/${card.title}`)}
             />
           </Grid>
         ))}

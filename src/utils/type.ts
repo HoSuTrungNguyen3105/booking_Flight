@@ -212,6 +212,9 @@ export type Aircraft = {
   code: string;
   range?: number;
   model?: string;
+  manufacturer?: string;
+  totalSeats?: number;
+  imageAircraft?: string;
   flights?: FlightInAircraft[];
 };
 

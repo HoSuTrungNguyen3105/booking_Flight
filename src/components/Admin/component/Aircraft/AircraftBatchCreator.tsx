@@ -3,10 +3,12 @@ import { Box, Button, Typography } from "@mui/material";
 import { Add, Delete } from "@mui/icons-material";
 import type { Aircraft } from "../../../../utils/type";
 import { useToast } from "../../../../context/ToastContext";
-import { useCreateAircraftBatchFlight } from "../../../../context/Api/usePostApi";
-import { useGetAircraftCode } from "../../../../context/Api/useGetApi";
 import InputTextField from "../../../../common/Input/InputTextField";
 import { ResponseCode } from "../../../../utils/response";
+import {
+  useCreateAircraftBatchFlight,
+  useGetAircraftCode,
+} from "../../../../context/Api/AircraftApi";
 
 type AircraftError = {
   code: string;
@@ -22,8 +24,9 @@ type AircraftProps = Omit<Aircraft, "flights">;
 
 const AircraftBatchCreator = ({ onSuccess }: ReturnProps) => {
   const [aircrafts, setAircrafts] = useState<AircraftProps[]>([
-    { code: "", model: "", range: 0 },
+    { code: "", model: "", range: 0, manufacturer: "", totalSeats: 0 },
   ]);
+
   const toast = useToast();
   const [loading, setLoading] = useState(false);
   const { refetchCreateAircraftBatchFlightData } =
@@ -53,10 +56,10 @@ const AircraftBatchCreator = ({ onSuccess }: ReturnProps) => {
   ) => {
     const updated = [...aircrafts];
 
-    if (field === "range") {
-      updated[index].range = Number(value);
+    if (field === "range" || field === "totalSeats") {
+      updated[index][field] = Number(value);
     } else {
-      updated[index][field] = value as string;
+      updated[index][field] = String(value);
     }
 
     setAircrafts(updated);
@@ -100,7 +103,14 @@ const AircraftBatchCreator = ({ onSuccess }: ReturnProps) => {
           key={index}
           sx={{ mb: 2, p: 2, border: "1px solid #ddd", borderRadius: 1 }}
         >
-          <Box sx={{display: "flex",gap: 2,justifyContent: "space-between",alignItems: "center"}}>
+          <Box
+            sx={{
+              display: "flex",
+              gap: 2,
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <Typography variant="h6">Aircraft No.{index + 1}</Typography>
             {aircrafts.length > 1 && (
               <Button

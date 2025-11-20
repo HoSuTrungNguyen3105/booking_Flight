@@ -47,7 +47,7 @@ import EventCardDetail from "../common/AdditionalCustomFC/EventCardDetail";
 import FlightDeals from "../common/AdditionalCustomFC/FlightDeals";
 import OrderSeat from "../components/Employee/OrderSeat";
 import { UpdateEmailForm } from "../components/Sample/UpdateEmailForm";
-import BookingPage from "../components/Employee/BookingPage";
+import BookingPage from "../components/Admin/component/Booking/BookingPage";
 import { TerminalBatchCreator } from "../components/Admin/component/InfrastructureEntities/CreateTerminal";
 import AttendancePage from "../components/Employee/AttendancePage";
 import { HotelBatchCreator } from "../components/Admin/component/Hotel/HotelBatchCreator";
@@ -68,8 +68,8 @@ import FlightMealList from "../components/Admin/component/Meal/FlightMealList";
 import FlightScheduleDashboard from "../components/User/FlightScheduleDashboard";
 import AdvancedAnalytics from "../common/Header/AdvancedAnalytics";
 import FlightsPage from "../components/Employee/FlightsPage";
-import BookingPassengerSearch from "../components/Employee/BookingPassengerSearch";
 import Confirmation from "../components/Admin/component/Meal/ConfirmationBooking";
+import BookingPassengerSearch from "../components/Admin/component/Booking/BookingPassengerSearch";
 
 const routes = [
   {

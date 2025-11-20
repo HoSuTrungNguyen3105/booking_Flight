@@ -4,9 +4,9 @@ import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
 import BaseModal from "../../../../common/Modal/BaseModal";
 import type { Airport, CreateAirportReq } from "../../../../utils/type";
 import InputTextField from "../../../../common/Input/InputTextField";
-import { useCreateAirport } from "../../../../context/Api/usePostApi";
 import { useToast } from "../../../../context/ToastContext";
 import { ResponseCode } from "../../../../utils/response";
+import { useCreateAirport } from "../../../../context/Api/AirportApi";
 
 interface IRequestLeaveActionModalProps {
   open: boolean;
@@ -24,7 +24,7 @@ const AirportManageModal = ({
   formEditData,
 }: IRequestLeaveActionModalProps) => {
   // const {}=useUpdateAirportById(formEditData.code || '')
-  const { refetchUpdateAirport } = useCreateAirport();
+  const { refetchCreateAirport } = useCreateAirport();
   const toast = useToast();
   const [formData, setFormData] = useState<CreateAirportReq>({
     code: "",
@@ -54,7 +54,7 @@ const AirportManageModal = ({
   }, [open, editingAirport, formEditData]);
 
   const handleSubmit = useCallback(async () => {
-    const res = await refetchUpdateAirport(formData);
+    const res = await refetchCreateAirport(formData);
     if (res?.resultCode === ResponseCode.SUCCESS) {
       onSuccess();
     } else {

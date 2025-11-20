@@ -7,14 +7,15 @@ import temple from "../../svgs/system-users-symbolic.svg";
 import sydney from "../../svgs/system-users-symbolic.svg";
 import sunrise from "../../svgs/system-users-symbolic.svg";
 import msunrise from "../../svgs/system-users-symbolic.svg";
+import { memo } from "react";
 
-const FlightDealsAcceppst = () => {
+const FlightDealsAccept = () => {
   const navigate = useNavigate();
 
   const handleSeeAllClick = () => {
     // e.preventDefault();
     // window.scrollTo(0, 0);
-    navigate("/packages");
+    // navigate("/packages");
   };
 
   return (
@@ -159,4 +160,4 @@ const FlightDealsAcceppst = () => {
   );
 };
 
-export default FlightDealsAcceppst;
+export default memo(FlightDealsAccept);

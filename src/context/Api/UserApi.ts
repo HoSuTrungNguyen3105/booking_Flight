@@ -1,0 +1,418 @@
+import type { UserWithRelationsData } from "../../components/Sample/type.ts";
+import {
+  MethodType,
+  type DetailResponseMessage,
+  type TransferAdmin,
+  type Passenger,
+  type UserListManageResponse,
+  type UserData,
+  type LeaveRequest,
+  type UserUpdateProps,
+  type AttendanceResponseMessage,
+  // type UserWithRelationsData,
+  type ResponseMessage,
+  type RequestSendEmailResponse,
+  type PasswordProps,
+  // type SearchEmailFromSidebarMessageRes,
+  type LoginDataResponse,
+  type UserSession,
+  // type UpdatePassengerDto,
+} from "../../utils/type.ts";
+import { useFetch } from "../use[custom]/useFetch.ts";
+
+const getMethod = {
+  method: MethodType.GET,
+};
+
+const postMethod = {
+  method: MethodType.POST,
+  headers: { "Content-Type": "application/json" },
+};
+
+export const useRandomPassword = () => {
+  const {
+    data: fetchUserPw,
+    refetch: refetchUserPw,
+    loading: loadingUser,
+  } = useFetch<DetailResponseMessage<string>, null>({
+    url: "/sys/users/getRandomPw",
+    autoFetch: false,
+    config: getMethod,
+  });
+  return {
+    fetchUserPw,
+    refetchUserPw,
+    loadingUser,
+  };
+};
+
+export const usefindAllTransferRequests = () => {
+  const {
+    data: dataFindAllTransferRequests,
+    refetch: refetchFindAllTransferRequests,
+    loading: loadingFindAllTransferRequests,
+  } = useFetch<DetailResponseMessage<TransferAdmin>, void>({
+    url: "/sys/users/view/all-transfer-requests",
+    autoFetch: true,
+    config: getMethod,
+  });
+  return {
+    dataFindAllTransferRequests,
+    refetchFindAllTransferRequests,
+    loadingFindAllTransferRequests,
+  };
+};
+
+export const useFindAllPassenger = () => {
+  const {
+    data: dataAllPassenger,
+    refetch: refetchAllPassenger,
+    loading: loadingAllPassenger,
+  } = useFetch<DetailResponseMessage<Passenger>, null>({
+    url: "/sys/bookings/findAllPassenger",
+    autoFetch: true,
+    config: getMethod,
+  });
+  return {
+    dataAllPassenger,
+    refetchAllPassenger,
+    loadingAllPassenger,
+  };
+};
+
+export const useGetUserWithRelations = ({ id }: { id: string | number }) => {
+  const {
+    refetch: refetchGetUserWithRelations,
+    data: dataGetUserWithRelations,
+  } = useFetch<DetailResponseMessage<UserWithRelationsData>, void>({
+    url: `/auth/getUserWithRelations/${id as string}`,
+    autoFetch: !!id,
+    config: getMethod,
+  });
+  return {
+    dataGetUserWithRelations,
+    refetchGetUserWithRelations,
+  };
+};
+
+export const useGetUserList = () => {
+  const { data, refetch, loading } = useFetch<UserListManageResponse, UserData>(
+    {
+      url: "/sys/users",
+      autoFetch: true,
+      config: getMethod,
+    }
+  );
+  return {
+    fetchUserList: data,
+    refetchUser: refetch,
+    loadingUser: loading,
+  };
+};
+
+export const useGetLeaveRequest = () => {
+  const {
+    data: dataGetLeaveRequest,
+    refetch: refetchGetLeaveRequest,
+    loading: loadingGetLeaveRequest,
+  } = useFetch<DetailResponseMessage<LeaveRequest>, UserUpdateProps>({
+    url: "/sys/users/leave-requests/all",
+    autoFetch: true,
+    config: getMethod,
+  });
+  return {
+    dataGetLeaveRequest,
+    loadingGetLeaveRequest,
+    refetchGetLeaveRequest,
+  };
+};
+
+export const useGetAllAttendance = () => {
+  const { refetch, loading, data } = useFetch<AttendanceResponseMessage, void>({
+    url: "/sys/users/attendance/all",
+    autoFetch: true,
+    config: getMethod,
+  });
+  return {
+    dataAllAttendance: data,
+    refetchAllAttendance: refetch,
+    loadingAllAttendance: loading,
+  };
+};
+
+export const useGetUserById = (id: number) => {
+  const { data: fetchUserById, refetch: refetchUserById } = useFetch<
+    UserListManageResponse,
+    null
+  >({
+    url: `/sys/users/${id}`,
+    autoFetch: false,
+    config: getMethod,
+  });
+  return {
+    fetchUserById,
+    refetchUserById,
+  };
+};
+
+export const useFindAllRoles = () => {
+  const { data, refetch, loading } = useFetch<
+    DetailResponseMessage<string[]>,
+    null
+  >({
+    url: "/sys/enums/roles",
+    autoFetch: true,
+    config: getMethod,
+  });
+  return {
+    dataRoles: data,
+    refetchRoles: refetch,
+    loadingRoles: loading,
+  };
+};
+
+export const useDisabledMFALogin = () => {
+  const { refetch: refetchDisabledMFALogin } = useFetch<
+    ResponseMessage,
+    { userId: number }
+  >({
+    url: "/auth/disabledmfa",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchDisabledMFALogin,
+  };
+};
+
+export const useSendEmailToVerification = () => {
+  const { refetch: refetchSendEmailToVerification } = useFetch<
+    RequestSendEmailResponse,
+    { id: number }
+  >({
+    url: "/auth/sendEmailToVerification",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchSendEmailToVerification,
+  };
+};
+
+export type ReqUserIDProps = {
+  id?: number;
+};
+
+export const useVerifyPw = ({ id }: ReqUserIDProps) => {
+  const { refetch: fetchVerifyPassword } = useFetch<
+    DetailResponseMessage<{ isValid: boolean }>,
+    PasswordProps
+  >({
+    url: `/auth/verify-password/${id}`,
+    config: postMethod,
+    autoFetch: false,
+  });
+  return {
+    fetchVerifyPassword,
+  };
+};
+
+export type SearchEmailFromSidebarMessageReq = {
+  email: string;
+  id: number;
+};
+
+// export const useFindUserFromMessage = () => {
+//   const { data: dataUserFromMessage, refetch: refetchUserFromMessage } =
+//     useFetch<
+//       DetailResponseMessage<SearchEmailFromSidebarMessageRes>,
+//       SearchEmailFromSidebarMessageReq
+//     >({
+//       url: "sys/users/findUserFromMessage",
+//       autoFetch: false,
+//       config: postMethod,
+//     });
+
+//   return { dataUserFromMessage, refetchUserFromMessage };
+// };
+
+export type LoginReqProps = {
+  email: string;
+  password: string;
+  authType: string;
+  userAgent: string;
+  ipAddress: string;
+  location: string;
+};
+
+export const useLoginAdmin = () => {
+  const { refetch: refetchAdminLogin } = useFetch<
+    LoginDataResponse<UserData>,
+    LoginReqProps
+  >({
+    url: "/auth/login-admin",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchAdminLogin,
+  };
+};
+
+export const useLogoutAllSessions = () => {
+  const { refetch } = useFetch<ResponseMessage, undefined>({
+    url: "/auth/logoutAllOtherSessions",
+    config: postMethod,
+    autoFetch: false,
+  });
+  return {
+    refetchLogoutAllSessions: refetch,
+  };
+};
+
+export const useGetMyUserInfo = () => {
+  const { data, refetch } = useFetch<
+    DetailResponseMessage<Passenger>,
+    { id: string }
+  >({
+    url: "/auth/find-passenger-info",
+    autoFetch: false,
+    config: postMethod,
+  });
+
+  return {
+    getMyInfo: data,
+    refetchGetMyUserInfo: refetch,
+  };
+};
+
+export const useGetMyAdminInfo = () => {
+  const { data, refetch } = useFetch<
+    DetailResponseMessage<UserData>,
+    { id: number }
+  >({
+    url: "/sys/users/get-user-info",
+    autoFetch: false,
+    config: postMethod,
+  });
+
+  return {
+    getMyInfo: data,
+    refetchGetMyAdminInfo: refetch,
+  };
+};
+
+export const useLoginUser = () => {
+  const { data: loginUserData, refetch: refetchLogin } = useFetch<
+    LoginDataResponse<Passenger>,
+    LoginReqProps
+  >({
+    url: "/auth/login",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    loginUserData,
+    refetchLogin,
+  };
+};
+
+export const useAdminSessions = () => {
+  const { refetch, data } = useFetch<
+    DetailResponseMessage<UserSession>,
+    { userId: number }
+  >({
+    url: "/auth/get-admin-sessions",
+    config: postMethod,
+    autoFetch: false,
+  });
+  return {
+    dataSessions: data,
+    refetchUserSessions: refetch,
+  };
+};
+
+export const usePassengerSessions = () => {
+  const { refetch, data } = useFetch<
+    DetailResponseMessage<UserSession>,
+    { passengerId: string }
+  >({
+    url: "/auth/get-passenger-sessions",
+    config: postMethod,
+    autoFetch: false,
+  });
+  return {
+    dataSessions: data,
+    refetchPassengerSessions: refetch,
+  };
+};
+
+export const useDeleteSessionsFromID = () => {
+  const { refetch, data } = useFetch<
+    ResponseMessage,
+    { sessionId: number; userId: number | null; passengerId: string | null }
+  >({
+    url: `/auth/logoutSession`,
+    config: postMethod,
+    autoFetch: false,
+  });
+  return {
+    dataSessions: data,
+    refetchDeleteSessions: refetch,
+  };
+};
+
+export const useGetSessionsByID = () => {
+  const { refetch } = useFetch<
+    DetailResponseMessage<{ requireLogout: boolean }>,
+    { userId: number | null; passengerId: string | null; token: string }
+  >({
+    url: `/auth/get-sessions-by-id`,
+    config: postMethod,
+    autoFetch: false,
+  });
+  return {
+    refetchGetSessionByID: refetch,
+  };
+};
+
+export const useLogoutSessionFromPassenger = () => {
+  const { refetch: refetchLogoutSession } = useFetch<ResponseMessage, void>({
+    url: "/auth/logout",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return { refetchLogoutSession };
+};
+
+// export const useUpdatePassengerInProfile = (id: string) => {
+//   const { refetch: refetchUpdatePassengerInProfile } = useFetch<
+//     ResponseMessage,
+//     UpdatePassenger
+//   >({
+//     url: `/sys/users/passenger/update/profile/${id}`,
+//     autoFetch: false,
+//     config: postMethod,
+//   });
+//   return {
+//     refetchUpdatePassengerInProfile,
+//   };
+// };
+
+interface UpdateUserRankProps {
+  userId: number;
+}
+export const useUpdateUserRank = () => {
+  const { refetch: refetchUpdateUserRank } = useFetch<
+    ResponseMessage,
+    UpdateUserRankProps
+  >({
+    url: "/sys/users/promoteRank",
+    defaultValue: { resultCode: "", resultMessage: "" },
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchUpdateUserRank,
+  };
+};

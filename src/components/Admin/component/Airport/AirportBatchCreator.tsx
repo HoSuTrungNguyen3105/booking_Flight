@@ -11,8 +11,8 @@ import {
 import { Add, Delete } from "@mui/icons-material";
 import type { CreateAirportReq } from "../../../../utils/type";
 import InputTextField from "../../../../common/Input/InputTextField";
-import { useCreateBatchAirport } from "../../../../context/Api/usePostApi";
 import { ResponseCode } from "../../../../utils/response";
+import { useCreateBatchAirport } from "../../../../context/Api/AirportApi";
 
 type ReturnProps = {
   onClose: () => void;

@@ -14,22 +14,22 @@ import {
   type DataFlight,
   type Hotel,
   type Seat,
-} from "../../utils/type";
+} from "../../../../utils/type";
 import { useLocation } from "react-router-dom";
 import {
   DateFormatEnum,
   formatDate,
-} from "../../hooks/format";
+} from "../../../../hooks/format";
 import {
   ACTIONS,
   initialState,
   type Action,
   type BookingState,
-} from "./types/booking";
-import InputTextField from "../../common/Input/InputTextField";
+} from "../../../Employee/types/booking";
+import InputTextField from "../../../../common/Input/InputTextField";
 import { Restaurant } from "@mui/icons-material";
 
-type BookingState = {
+type BookingStateProps = {
   seats: Seat;
   flightData: DataFlight;
   seatNos: string;
@@ -40,7 +40,7 @@ type BookingState = {
 
 const BookingPage = () => {
   const location = useLocation();
-  const statelocale = location.state as BookingState | undefined;
+  const statelocale = location.state as BookingStateProps | undefined;
 
     console.log('location.location',location.state)
 
@@ -115,21 +115,21 @@ const BookingPage = () => {
   );
 
    const selectedMeals =
-    state.bookingData.mealOrders?.filter((meal) => mealIds.includes(meal.mealId)) ||
+    state.bookingData.mealOrders?.filter((meal) => statelocale?.mealIds.includes(meal.mealId)) ||
     [];
 
   // Initialize data
   useEffect(() => {
-    if (flightId && state.passengerInfo?.id) {
+    if (statelocale?.flightId && state.passengerInfo?.id) {
       dispatch({
         type: ACTIONS.SET_INITIAL_DATA,
-        payload: { flightId, passengerId:state.passengerInfo?.id },
+        payload: { flightId:statelocale?.flightId, passengerId:state.passengerInfo?.id },
       });
     }
     const code =
       "BK" + Math.floor(Math.random() * (99999 - 10000 + 1) + 10000);
     dispatch({ type: ACTIONS.SET_BOOKING_CODE, payload: code });
-  }, [flightId,state.passengerInfo?.id]);
+  }, [statelocale?.flightId,state.passengerInfo?.id]);
 
   const handleChange = (name: keyof typeof state.form, value: string) => {
     dispatch({ type: ACTIONS.UPDATE_FORM_FIELD, payload: { name, value } });
@@ -159,20 +159,20 @@ const BookingPage = () => {
             <Grid size={12}>
               <Box p={2} bgcolor="#f9f9f9" borderRadius={2}>
                 <Typography fontWeight={600}>
-                  Chuyến bay: {flightData.flightNo}
+                  Chuyến bay: {statelocale?.flightData.flightNo}
                 </Typography>
                 <Typography color="text.secondary">
-                  {flightData.departureAirport} → {flightData?.arrivalAirport}
+                  {statelocale?.flightData.departureAirport} → {statelocale?.flightData?.arrivalAirport}
                 </Typography>
                 <Typography color="text.secondary" mt={1}>
                   {formatDate(
                     DateFormatEnum.DD_MM_YYYY_HH_MM_SS,
-                    flightData?.scheduledDeparture
+                    statelocale?.flightData?.scheduledDeparture
                   )}
                   →{" "}
                   {formatDate(
                     DateFormatEnum.DD_MM_YYYY_HH_MM_SS,
-                    flightData?.scheduledArrival
+                    statelocale?.flightData?.scheduledArrival
                   )}
                 </Typography>
               </Box>
@@ -285,7 +285,7 @@ const BookingPage = () => {
                   {/* {convertCurrency(form.seatPrice ?? 0, paymoney)} */}
                 </Typography>
               </Box>
-              {hotel && (
+              {statelocale?.hotel && (
                 <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                   <Typography variant="body2" color="text.secondary">
                     Hotel (1 night)
@@ -295,7 +295,7 @@ const BookingPage = () => {
                     fontWeight="500"
                     data-testid="text-hotel-total"
                   >
-                    ${hotel.price.toFixed(2)}
+                    ${statelocale?.hotel.price.toFixed(2)}
                   </Typography>
                 </Box>
               )}

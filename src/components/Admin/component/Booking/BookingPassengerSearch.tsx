@@ -10,8 +10,8 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { jsPDF } from "jspdf";
-import InputTextField from "../../common/Input/InputTextField";
-import { BookingStatus, type Booking } from "../../utils/type";
+import { BookingStatus, type Booking } from "../../../../utils/type";
+import InputTextField from "../../../../common/Input/InputTextField";
 
 const BookingPassengerSearch: React.FC = () => {
   const [code, setCode] = useState("");
@@ -84,7 +84,9 @@ const BookingPassengerSearch: React.FC = () => {
             <Typography>Mã đặt chỗ: {booking.bookingCode}</Typography>
             <Typography>Hành khách: {booking.passenger.fullName}</Typography>
             <Typography>Chuyến bay: {booking.flight.flightNo}</Typography>
-            <Typography>Ngày bay: {booking.flight.scheduledDeparture}</Typography>
+            <Typography>
+              Ngày bay: {booking.flight.scheduledDeparture}
+            </Typography>
             <Typography>Giá: {booking.seatPrice}</Typography>
             <Typography>Trạng thái: {booking.status}</Typography>
 

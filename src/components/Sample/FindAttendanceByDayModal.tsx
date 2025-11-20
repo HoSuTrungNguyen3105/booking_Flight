@@ -2,8 +2,9 @@ import { memo, useCallback } from "react";
 import BaseModal from "../../common/Modal/BaseModal";
 import { Add as AddIcon } from "@mui/icons-material";
 import { Box, Typography, Button, Stack } from "@mui/material";
-import { formatOffsetDateTime } from "../../hooks/format";
+// import { formatOffsetDateTime } from "../../hooks/format";
 import type { Attendance } from "../../utils/type";
+import { DateFormatEnum, formatDate } from "../../hooks/format";
 
 interface IModalGeneratePayrollProps {
   open: boolean;
@@ -56,10 +57,15 @@ const FindAttendanceByDayModal = ({
                 </Typography>
                 <Typography>Status: {item.status}</Typography>
                 <Typography>
-                  Check-in: {formatOffsetDateTime(item.checkIn)}
+                  Check-in:{" "}
+                  {formatDate(DateFormatEnum.DD_MM_YYYY_HH_MM_SS, item.checkIn)}
                 </Typography>
                 <Typography>
-                  Check-out: {formatOffsetDateTime(item.checkOut)}
+                  Check-out:{" "}
+                  {formatDate(
+                    DateFormatEnum.DD_MM_YYYY_HH_MM_SS,
+                    item.checkOut
+                  )}
                 </Typography>
                 <Typography>Worked Hours: {item.workedHours ?? 0}</Typography>
               </Box>

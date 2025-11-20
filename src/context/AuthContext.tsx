@@ -7,16 +7,6 @@ import {
   useRef,
   useState,
 } from "react";
-import {
-  useGetSessionsByID,
-  useLoginAdmin,
-  useLoginByMfa,
-  useLoginUser,
-  useLogoutSessionFromPassenger,
-  useUpdateUserRank,
-  useVerifyPw,
-  type LoginReqProps,
-} from "./Api/usePostApi";
 import { useToast } from "./ToastContext";
 import {
   UserRole,
@@ -26,10 +16,21 @@ import {
   type UserData,
 } from "../utils/type";
 import { ResponseCode } from "../utils/response";
-import { useGetMyAdminInfo, useGetMyUserInfo } from "./Api/usePostApi";
 import { refetchDistance } from "./Api/useGetLocation";
 import type { AuthType } from "../components/Auth/Login";
 import useLocalStorage from "./use[custom]/useLocalStorage";
+import {
+  useGetMyAdminInfo,
+  useGetMyUserInfo,
+  useGetSessionsByID,
+  useLoginAdmin,
+  useLoginUser,
+  useLogoutSessionFromPassenger,
+  useUpdateUserRank,
+  useVerifyPw,
+  type LoginReqProps,
+} from "./Api/UserApi";
+import { useLoginByMfa } from "./Api/AuthApi";
 
 export type UserWithMFA = {
   email: string;

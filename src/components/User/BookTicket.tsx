@@ -10,26 +10,26 @@ import {
 } from "@mui/material";
 import React, { memo, useCallback } from "react";
 import { useForm } from "react-hook-form";
-import { useSearchBooking } from "../../context/Api/usePostApi";
 import { FlightOutlined, RefreshOutlined } from "@mui/icons-material";
 import Zigzag from "../../common/IconComponent/Zigzag";
 import type { IDetailItem } from "../../common/AdditionalCustomFC/DetailSection";
 import DetailSection from "../../common/AdditionalCustomFC/DetailSection";
 import InputTextField from "../../common/Input/InputTextField";
 import SelectDropdown from "../../common/Dropdown/SelectDropdown";
-import {
-  mapStringToDropdown,
-  useFindAllFlightStatuses,
-  useFindAllFlightTypes,
-  useFindAllSeatTypes,
-  useGetAllCode,
-} from "../../context/Api/useGetApi";
 import DateTimePickerComponent from "../../common/DayPicker";
 import type { SearchBookingFlightProps } from "../../utils/type";
 import type { SearchFlightDto } from "./../Admin/component/Flight/Search_layout";
 import { DateFormatEnum, formatDate } from "../../hooks/format";
 import Android12Switch from "./../../common/Switch/Switch";
 import { ResponseCode } from "../../utils/response";
+import { useGetAllCode } from "../../context/Api/FlightApi";
+import {
+  useFindAllFlightStatuses,
+  useFindAllFlightTypes,
+  useFindAllSeatTypes,
+} from "../../context/Api/EnumApi";
+import { mapStringToDropdown } from "../../context/Api/CommonApi";
+import { useSearchBooking } from "../../context/Api/BookingApi";
 
 const flightParams: SearchFlightDto = {
   from: "",
@@ -51,6 +51,8 @@ const BookTicket = () => {
   const { dataFlightTypes } = useFindAllFlightTypes();
   const { dataSeatTypes } = useFindAllSeatTypes();
   const { dataFlightStatuses } = useFindAllFlightStatuses();
+  const { refetchSearchBooking } = useSearchBooking();
+
   const flightTypeOption = mapStringToDropdown(dataFlightTypes?.data || []);
   const seatTypeOption = mapStringToDropdown(dataSeatTypes?.data || []);
   const flightStatusesOption = mapStringToDropdown(
@@ -73,8 +75,6 @@ const BookTicket = () => {
   const [inboundBookings, setInboundBookings] = React.useState<
     SearchBookingFlightProps[]
   >([]);
-
-  const { refetchSearchBooking } = useSearchBooking();
 
   const onSubmitValue = async (values: SearchFlightDto) => {
     if (!values) return;
