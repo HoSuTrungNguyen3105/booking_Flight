@@ -3,7 +3,7 @@ import DirectionsRunIcon from "@mui/icons-material/DirectionsRun";
 import { Building2, Zap } from "lucide-react";
 import type { ReactNode } from "react";
 import Icon from "../svgs/Huongdan_muave_Thumb.webp";
-import { FlightClass } from "@mui/icons-material";
+import { FlightClass, SetMealOutlined } from "@mui/icons-material";
 type MenuItemProps = {
   value: string; // route string
   icon: ReactNode;
@@ -79,7 +79,7 @@ export const menuData: TabData = {
       },
       {
         value: "SeatSelection",
-        icon: <FlightClass />,
+        icon: <SetMealOutlined />,
         label: "SeatSelection",
         image: Icon,
       },

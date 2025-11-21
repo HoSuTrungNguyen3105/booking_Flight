@@ -1,4 +1,4 @@
-import { useMemo, type JSX } from "react";
+import { type JSX } from "react";
 import {
   Accessibility,
   AirlineSeatLegroomExtra,
@@ -10,6 +10,7 @@ import {
 import theme from "../../../../../scss/theme";
 import type { SeatFeatures } from "../modal/SeatManagementModal";
 import type { Seat } from "../../../../../utils/type";
+import { useSeatFeatures } from "./useSeatFeature";
 
 type OptionSeatProps = {
   seatFeature?: keyof SeatFeatures;
@@ -22,21 +23,8 @@ export const useSeatColor = ({
   seatFeature,
   seat,
 }: OptionSeatProps) => {
+  const { seatColors } = useSeatFeatures();
   const isSelected = selectedSeats?.some((s) => s.id === seat?.id);
-
-  const seatColors = useMemo(
-    () => ({
-      isAvailable: "#4caf50",
-      isBooked: "#1e1e1e",
-      isExitRow: "#f44336",
-      isUpperDeck: "#2196f3",
-      isWing: "#ff9800",
-      isHandicapAccessible: "#9c27b0",
-      isNearLavatory: "#00bcd4",
-      isExtraLegroom: "#ff5722",
-    }),
-    []
-  );
 
   const iconMap: Partial<Record<keyof SeatFeatures, JSX.Element | null>> = {
     isAvailable: <Chair sx={{ fontSize: 16, color: seatColors.isAvailable }} />,

@@ -1,7 +1,8 @@
 import { Box, Card, styled, Typography, useMediaQuery } from "@mui/material";
-import { memo, useMemo } from "react";
+import { memo } from "react";
 import theme from "../../../../../scss/theme";
 import { useSeatColor } from "../hook/useSeatColor";
+import { useSeatFeatures } from "../hook/useSeatFeature";
 import type { SeatFeatures } from "../modal/SeatManagementModal";
 
 export interface SeatFeatureOption {
@@ -18,20 +19,7 @@ const BookingCard = styled(Card)(() => ({
 
 const LegendItemSection = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-
-  const seatFeatureOptions: SeatFeatureOption[] = useMemo(
-    () => [
-      { value: "isBooked", label: "Booked" },
-      { value: "isAvailable", label: "Available" },
-      { value: "isExitRow", label: "Exit Row" },
-      { value: "isExtraLegroom", label: "Extra Legroom" },
-      { value: "isHandicapAccessible", label: "Handicap Accessible" },
-      { value: "isNearLavatory", label: "Near Lavatory" },
-      { value: "isUpperDeck", label: "Upper Deck" },
-      { value: "isWing", label: "Wing Area" },
-    ],
-    []
-  );
+  const { seatFeatureOptions } = useSeatFeatures();
 
   return (
     <BookingCard>

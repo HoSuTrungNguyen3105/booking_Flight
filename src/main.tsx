@@ -1,7 +1,6 @@
 import React, { Component, type ReactNode } from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import theme from "./scss/theme";
 
 interface ErrorBoundaryState {
   hasError: boolean;
@@ -41,18 +40,18 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
 }
 
 function RootWrapper() {
-  const [isBackendOnline, setIsBackendOnline] = React.useState(true);
+  const [isBackendOnline, _] = React.useState(true); //setIsBackendOnline
 
-  async function checkBackendConnection() {
-    try {
-      const resBackend = await fetch("http://localhost:3000");
-      const resFrontend = await fetch("http://localhost:5173");
-      if (!resBackend.ok || !resFrontend.ok) throw new Error();
-      setIsBackendOnline(true);
-    } catch {
-      setIsBackendOnline(false);
-    }
-  }
+  // async function checkBackendConnection() {
+  //   try {
+  //     const resBackend = await fetch("http://localhost:3000");
+  //     const resFrontend = await fetch("http://localhost:5173");
+  //     if (!resBackend.ok || !resFrontend.ok) throw new Error();
+  //     setIsBackendOnline(true);
+  //   } catch {
+  //     setIsBackendOnline(false);
+  //   }
+  // }
 
   // React.useEffect(() => {
   //   checkBackendConnection();

@@ -1,5 +1,5 @@
 import { Box, Button, Typography, FormControl } from "@mui/material";
-import { memo, useCallback, useMemo, useState } from "react";
+import { memo, useCallback, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import BaseModal from "../../../../../common/Modal/BaseModal";
 import SelectDropdown from "../../../../../common/Dropdown/SelectDropdown";
@@ -7,6 +7,7 @@ import type { Seat } from "../../../../../utils/type";
 import { useSeatUpdateByIds } from "../../../../../context/Api/usePostApi";
 import { getMessage, ResponseCode } from "../../../../../utils/response";
 import { useToast } from "../../../../../context/ToastContext";
+import { useSeatFeatures } from "../hook/useSeatFeature";
 
 interface IModalStatisticalDataLearningProps {
   open: boolean;
@@ -15,7 +16,7 @@ interface IModalStatisticalDataLearningProps {
   selectedSeats?: { seatIds: number[] };
 }
 
-type SeatFeatureOption = {
+export type SeatFeatureOption = {
   value: keyof SeatFeatures;
   label: string;
 };
@@ -38,51 +39,18 @@ const SeatManagementModal = ({
   onSuccess,
   selectedSeats,
 }: IModalStatisticalDataLearningProps) => {
-  // const seatTypeOptions = useMemo(
-  //   () => [
-  //     { value: "ECONOMY", label: "Economy" },
-  //     { value: "BUSINESS", label: "Business" },
-  //     { value: "FIRST", label: "First" },
-  //     { value: "VIP", label: "Vip" },
-  //   ],
-  //   []
-  // );
-
-  const seatFeatureOptions: SeatFeatureOption[] = useMemo(
-    () => [
-      { value: "isBooked", label: "Booked" },
-      { value: "isAvailable", label: "Available" },
-      { value: "isExitRow", label: "Exit Row" },
-      { value: "isExtraLegroom", label: "Extra Legroom" },
-      { value: "isHandicapAccessible", label: "Handicap Accessible" },
-      { value: "isNearLavatory", label: "Near Lavatory" },
-      { value: "isUpperDeck", label: "Upper Deck" },
-      { value: "isWing", label: "Wing Area" },
-    ],
-    []
-  );
-
-  // const [type, setType] = useState<SeatTypeValue>("ECONOMY");
   const [position, setPosition] = useState("WINDOW");
   const toast = useToast();
   const { refetchUpdateSeatByIds } = useSeatUpdateByIds();
+  const { seatFeatureOptions } = useSeatFeatures();
 
   const handleUpdate = async () => {
     const updateData: Partial<SeatFeatures> = {
-      [position]: true, // gán động key (ví dụ: isWing: true)
+      [position]: true,
     };
     const res = await refetchUpdateSeatByIds({
       seatIds: selectedSeats?.seatIds || [],
-      data:
-        // type: type as SeatTypeValue,
-        updateData,
-      // ...seatFeatureOptions,
-      // price,
-      // isBooked,
-      // isAvailable,
-      // isExitRow,
-      // isExtraLegroom,
-      // note,
+      data: updateData,
     });
     if (res?.resultCode === ResponseCode.SUCCESS) {
       toast(res.resultMessage, "success");
