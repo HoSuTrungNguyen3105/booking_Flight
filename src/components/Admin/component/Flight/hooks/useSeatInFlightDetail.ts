@@ -1,21 +1,14 @@
 import { useCallback, useMemo, useState } from "react";
 import type { Seat, SeatTypeValue } from "../../../../../utils/type";
-import { useGetAllInfoFlightByIDData } from "../../../../../context/Api/useGetApi";
-import { useDeleteSeatInFlightByIds } from "../../../../../context/Api/usePostApi";
 import type { IDetailItem } from "../../../../../common/AdditionalCustomFC/DetailSection";
 import { useToast } from "../../../../../context/ToastContext";
 import _ from "lodash";
+import { useDeleteSeatInFlightByIds } from "../../../../../context/Api/SeatApi";
+import { useGetAllInfoFlightByIDData } from "../../../../../context/Api/FlightApi";
 
 type FlightWithSeatLayoutProps = {
   id: number;
 };
-
-// export type AircraftSeatTypeProps =
-//   | "ALL"
-//   | "VIP"
-//   | "ECONOMY"
-//   | "FIRST"
-//   | "BUSINESS";
 
 export type FilterType =
   | "ALL"

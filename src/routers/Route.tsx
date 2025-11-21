@@ -49,7 +49,7 @@ import OrderSeat from "../components/Employee/OrderSeat";
 import { UpdateEmailForm } from "../components/Sample/UpdateEmailForm";
 import BookingPage from "../components/Admin/component/Booking/BookingPage";
 import { TerminalBatchCreator } from "../components/Admin/component/InfrastructureEntities/CreateTerminal";
-import AttendancePage from "../components/Employee/AttendancePage";
+import AttendancePage from "../components/Employee/Attendance/AttendancePage";
 import { HotelBatchCreator } from "../components/Admin/component/Hotel/HotelBatchCreator";
 import Tictoctoe from "../components/User/Tictoctoe";
 import FlightSummaryRef from "../components/Employee/FlightSummary";
@@ -70,6 +70,9 @@ import AdvancedAnalytics from "../common/Header/AdvancedAnalytics";
 import FlightsPage from "../components/Employee/FlightsPage";
 import Confirmation from "../components/Admin/component/Meal/ConfirmationBooking";
 import BookingPassengerSearch from "../components/Admin/component/Booking/BookingPassengerSearch";
+import SomeComponent from "../components/Admin/component/Meal/SomeComponent";
+import BookingDemo from "../components/Sample/BookingDemo";
+import { DiscountBatchCreator } from "../components/Contact/DiscountBatchCreator";
 
 const routes = [
   {
@@ -117,6 +120,18 @@ const routes = [
         element: <FareComparison />,
       },
       {
+        path: "/BookingDemo",
+        element: <BookingDemo />,
+      },
+      {
+        path: "/DiscountBatchCreator",
+        element: <DiscountBatchCreator />,
+      },
+      {
+        path: "/SomeComponent",
+        element: <SomeComponent />,
+      },
+      {
         path: "/FlightSummaryRef",
         element: <FlightSummaryRef />,
       },
@@ -150,7 +165,7 @@ const routes = [
       },
       {
         path: "/OrderTable",
-        element: <OrderTable />,
+        // element: <OrderTable />,
       },
       {
         path: "/FlightMealList",

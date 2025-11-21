@@ -12,7 +12,6 @@ import {
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import theme from "../../scss/theme";
-import FieldRenderer from "../../common/AdditionalCustomFC/FieldRenderer";
 import { useDataSection, type SearchFormConfig } from "./search_type_input";
 import useLocalStorage from "../../context/use[custom]/useLocalStorage";
 import SearchFieldRender from "../../common/AdditionalCustomFC/SearchFieldRender";
@@ -107,61 +106,107 @@ const FlightSearchForm: React.FC<{ type: keyof SearchFormConfig }> = ({
           elevation={3}
           sx={{ p: 3, mb: 3, borderRadius: 3, backgroundColor: "#fff" }}
         >
-          {dataSection?.map(
-            (section, index) =>
-              !section.visible && (
-                <Box key={index} mb={2}>
-                  <Typography variant="body1" sx={{ mb: 1 }}>
+          {dataSection?.map((section, index) => (
+            <Box key={index} mb={2}>
+              {!section.visible && (
+                <Box
+                  sx={{ mb: 2, display: "flex", alignItems: "center", gap: 2 }}
+                >
+                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>
                     {section.label}
                   </Typography>
-
-                  {section.fields.map(
-                    (field, fieldIndex) =>
-                      !field.disabled && (
-                        <Box key={fieldIndex} mb={1}>
-                          <SearchFieldRender
-                            type={field.type}
-                            value={
-                              formData[
-                                field.id as keyof SearchFormConfig["flight"]
-                              ] ?? ""
-                            }
-                            size={field.size}
-                            sx={field.sx}
-                            // disabled={field.disabled}
-                            options={field.options}
-                            placeholder={field.placeholder}
-                            onChange={(val) =>
-                              handleChange(
-                                // "flight",
-                                field.id as keyof SearchFormConfig["flight"],
-                                val as string
-                              )
-                            }
-                          />
-                        </Box>
-                      )
-                  )}
                   <FormControlLabel
                     control={
                       <Checkbox
                         checked={hasReturnDay}
                         onChange={() => setHasReturnDay((prev) => !prev)}
+                        sx={{ p: 0.5 }}
                       />
                     }
                     label="Khứ hồi (Roundtrip)"
+                    sx={{ mr: 0 }}
                   />
-
-                  <Button
-                    variant="contained"
-                    sx={{ mt: 2 }}
-                    onClick={handleSubmit}
-                  >
-                    Search flights
-                  </Button>
                 </Box>
-              )
-          )}
+              )}
+
+              <Paper
+                elevation={3}
+                sx={{
+                  p: 1,
+                  display: "flex",
+                  bgcolor: "background.paper",
+                  border: "1px solid #e0e0e0",
+                  flexWrap: "wrap",
+                  gap: 1,
+                }}
+              >
+                {section.fields
+                  .filter((field) => !field.disabled)
+                  .map((field, fieldIndex, visibleFields) => (
+                    <React.Fragment key={fieldIndex}>
+                      <Box
+                        sx={{
+                          flex: field.size ? field.size : 1,
+                          minWidth: "150px",
+                          position: "relative",
+                          ...field.sx,
+                        }}
+                      >
+                        <SearchFieldRender
+                          type={field.type}
+                          value={
+                            formData[
+                              field.id as keyof SearchFormConfig["flight"]
+                            ] ?? ""
+                          }
+                          size={field.size}
+                          sx={{
+                            "& .MuiOutlinedInput-notchedOutline": {
+                              border: "none",
+                            },
+                            "& .MuiInputBase-root": { padding: 0 },
+                          }}
+                          options={field.options}
+                          placeholder={field.placeholder}
+                          onChange={(val) =>
+                            handleChange(
+                              field.id as keyof SearchFormConfig["flight"],
+                              val as string
+                            )
+                          }
+                        />
+                      </Box>
+                      {fieldIndex < visibleFields.length - 1 && (
+                        <Box
+                          sx={{
+                            width: "1px",
+                            height: "30px",
+                            bgcolor: "#e0e0e0",
+                            mx: 1,
+                          }}
+                        />
+                      )}
+                    </React.Fragment>
+                  ))}
+
+                <Button
+                  variant="contained"
+                  size="large"
+                  onClick={handleSubmit}
+                  sx={{
+                    borderRadius: 3,
+                    px: 4,
+                    py: 1.5,
+                    ml: "auto",
+                    boxShadow: "none",
+                    fontWeight: "bold",
+                  }}
+                >
+                  Search
+                </Button>
+              </Paper>
+            </Box>
+          ))}
         </Paper>
 
         {/* Cookies Notice */}

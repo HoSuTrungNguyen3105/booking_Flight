@@ -4,7 +4,6 @@ import {
   Typography,
   Paper,
   Grid,
-  Divider,
   Chip,
   Table,
   TableBody,
@@ -15,7 +14,6 @@ import {
 } from "@mui/material";
 import { Check, FlightTakeoff, FlightLand } from "@mui/icons-material";
 import { useLocation } from "react-router-dom";
-import type { DataFlight } from "../../../../utils/type";
 
 // Types
 interface FareFeature {
@@ -33,17 +31,6 @@ export interface FlightInfo {
 const FareComparison: React.FC = () => {
   const location = useLocation();
   const flight = location.state.flight as FlightInfo[];
-  //   const departureFlight: FlightInfo = {
-  //     route:flight[0].route,
-  //     class: flight[0].class,
-  //     note: flight[0].note,
-  //   };
-
-  //   const returnFlight: FlightInfo = {
-  //     route:flight[1].route,
-  //     class:flight[1].class,
-  //      note: flight[1].note,
-  //   };
 
   const departureFlight: FlightInfo = {
     route: flight[0]?.route ?? "",

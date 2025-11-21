@@ -15,9 +15,9 @@ import {
   Divider,
 } from "@mui/material";
 import { Check, Info } from "lucide-react";
-import DateTimePickerComponent from "../../common/DayPicker/index";
-import { nowDecimal } from "../../hooks/format";
-import InputTextField from "../../common/Input/InputTextField";
+import DateTimePickerComponent from "../../../common/DayPicker/index";
+import { nowDecimal } from "../../../hooks/format";
+import InputTextField from "../../../common/Input/InputTextField";
 import { AttendanceCard } from "./AttendanceCard";
 
 interface Worker {
@@ -56,8 +56,7 @@ export default function AttendancePage() {
     return current.getTime(); // milliseconds
     // hoặc: return Math.floor(current.getTime() / 1000); // seconds
   };
-  console.log("Morning time:", verifyDateMilionsToDaytime("morning"));
-  console.log("Afternoon time:", verifyDateMilionsToDaytime("afternoon"));
+
   const [workers, setWorkers] = useState<Worker[]>(workersMock);
   const markShift = (isAbsent: boolean) => {
     if (!selectedWorker) return;

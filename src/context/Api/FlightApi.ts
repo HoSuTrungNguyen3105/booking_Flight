@@ -11,11 +11,13 @@ import {
   type GetAllCodeResponseMessage,
   type ResponseMessage,
   type SearchFlightResponse,
+  type CreateManyFlightResultItem,
 } from "../../utils/type.ts";
 import { useFetch } from "../use[custom]/useFetch.ts";
 import { useSecureFetch } from "../use[custom]/useSecureFetch.ts";
 import type { FlightFormData } from "../../components/Admin/component/Flight/FlightManagementModal.tsx";
 import type { SearchFlightDto } from "./../../components/Admin/component/Flight/Search_layout.tsx";
+import type { CreateDiscountReq } from "../../components/Contact/DiscountBatchCreator.tsx";
 
 const getMethod = {
   method: MethodType.GET,
@@ -44,6 +46,31 @@ export const useFlightById = ({ id }: FlightId) => {
   return {
     fetchFlightId,
     refetchFlightId,
+  };
+};
+
+type DiscountCreateResult =
+  | {
+      code: string;
+      resultCode: string;
+      resultMessage: string;
+    }
+  | {
+      resultCode: string;
+      resultMessage: string;
+    };
+
+export const useCreateBatchDiscount = () => {
+  const { refetch: refetchCreateBatchDiscount } = useFetch<
+    DetailResponseMessage<DiscountCreateResult>,
+    CreateDiscountReq[]
+  >({
+    url: "/sys/flights/discounts/create",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchCreateBatchDiscount,
   };
 };
 
@@ -96,6 +123,20 @@ export const useGetFlightByIDData = ({ id }: ReqUserIDProps) => {
     getFlightByIdData,
     refetchGetFlightData,
     loadingFlightData,
+  };
+};
+
+export const useCreateMultiFlight = () => {
+  const { refetch: refetchCreateMultiFlight } = useFetch<
+    DetailResponseMessage<CreateManyFlightResultItem>,
+    FlightFormData[]
+  >({
+    url: "/sys/flights/bulk-create",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchCreateMultiFlight,
   };
 };
 

@@ -1,9 +1,5 @@
 import { useMemo, useState, useEffect } from "react";
 import { type GridColDef, type GridRowId } from "@mui/x-data-grid";
-import {
-  useExportFlightExcel,
-  useGetFlightData,
-} from "../../../../context/Api/useGetApi";
 import { Box, Button, Typography } from "@mui/material";
 import { type GridRowDef } from "../../../../common/DataGrid/index";
 import { DateFormatEnum, formatDate } from "../../../../hooks/format";
@@ -13,9 +9,13 @@ import { Download } from "@mui/icons-material";
 import FlightWithSeatLayout from "./components/FlightWithSeatLayout";
 import type { GridRenderCellParams } from "@mui/x-data-grid";
 import FlightStatus from "./FlightStatus";
-import { useDeleteManyFlightIds } from "../../../../context/Api/usePostApi";
 import { useToast } from "../../../../context/ToastContext";
 import { ResponseCode } from "../../../../utils/response";
+import {
+  useDeleteManyFlightIds,
+  useExportFlightExcel,
+  useGetFlightData,
+} from "../../../../context/Api/FlightApi";
 
 export default function FlightList() {
   const { getFlightData, refetchGetFlightData, loadingFlightData } =

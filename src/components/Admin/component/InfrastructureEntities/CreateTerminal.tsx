@@ -1,27 +1,25 @@
-import React, { useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import {
   Box,
   Button,
   Card,
   CardContent,
   Grid,
-  TextField,
   Typography,
-  MenuItem,
 } from "@mui/material";
 import { Plus, Trash } from "lucide-react";
-import { useCreateTerminalBulk } from "../../../../context/Api/usePostApi";
 import type { CreateTerminalDto } from "../../../../utils/type";
 import { useNavigate } from "react-router-dom";
-import {
-  mapStringToDropdown,
-  useFindAllAirportIds,
-  useFindAllTerminalTypes,
-} from "../../../../context/Api/useGetApi";
 import SelectDropdown from "../../../../common/Dropdown/SelectDropdown";
 import InputTextField from "../../../../common/Input/InputTextField";
 import { useToast } from "../../../../context/ToastContext";
 import { ResponseCode } from "../../../../utils/response";
+import {
+  useFindAllAirportIds,
+  useFindAllTerminalTypes,
+} from "../../../../context/Api/EnumApi";
+import { mapStringToDropdown } from "../../../../context/Api/CommonApi";
+import { useCreateTerminalBulk } from "../../../../context/Api/AirportApi";
 
 export type TerminalType = "DOMESTIC" | "INTERNATIONAL" | "CARGO";
 

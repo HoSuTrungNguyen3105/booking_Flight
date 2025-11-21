@@ -51,9 +51,6 @@ const FlightSelection: React.FC<{ aircraftCode: string }> = ({
       departureAirport: "",
       arrivalAirport: "",
       aircraftCode: "",
-      //code: "CX742 > CX548 > JL239",
-      //cabin: "Premium Economy",
-      //price: 1202.5,
     },
   ];
 

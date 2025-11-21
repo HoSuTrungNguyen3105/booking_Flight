@@ -58,11 +58,8 @@ const TripSummary = () => {
           gap: 1,
         }}
       >
-        <Typography variant="body1" sx={{ fontWeight: 500 }}>
-          BOS → HND
-        </Typography>
         <Typography variant="body2" color="text.secondary">
-          {departure} – {arrival}
+          {departure} → {arrival}
         </Typography>
         <Typography variant="body2" color="text.secondary">
           {duration} • {stops}

@@ -10,7 +10,7 @@ import type { UpdateGateProps } from "../TerminalContainer";
 import {
   useFindTerminalIDStatuses,
   useGetTerminalData,
-} from "../../../../../context/Api/useGetApi";
+} from "../../../../../context/Api/AirportApi";
 
 export const useTerminalContainer = () => {
   const { dataTerminalIDStatuses } = useFindTerminalIDStatuses();

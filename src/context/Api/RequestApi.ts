@@ -1,6 +1,7 @@
 import {
   MethodType,
   type DetailResponseMessage,
+  type LeaveRequest,
   type ResponseMessage,
 } from "../../utils/type.ts";
 import { useFetch } from "../use[custom]/useFetch.ts";
@@ -36,6 +37,74 @@ export const useGetUnlockRequests = () => {
   return {
     getUnlockRequests,
     refetchGetUnlockRequests,
+  };
+};
+
+export enum LeaveType {
+  ANNUAL = "ANNUAL",
+  SICK = "SICK",
+  UNPAID = "UNPAID",
+}
+
+export type CreateLeaveRequestDto = {
+  employeeId: number;
+  leaveType: LeaveType;
+  startDate: number;
+  endDate: number;
+  days: number;
+  reason?: string;
+};
+
+export const useCreateLeaveRequest = () => {
+  const {
+    data: dataGetLeaveRequest,
+    refetch: refetchGetLeaveRequest,
+    loading: loadingGetLeaveRequest,
+  } = useFetch<DetailResponseMessage<LeaveRequest>, CreateLeaveRequestDto>({
+    url: "/sys/users/leave-requests",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    dataGetLeaveRequest,
+    loadingGetLeaveRequest,
+    refetchGetLeaveRequest,
+  };
+};
+
+export type SendRequestProps = {
+  requestId: number;
+  approverId: number;
+  note?: string;
+};
+
+export const useApproveLeaveRequest = (id: number) => {
+  const {
+    refetch: fetchApproveLeaveRequest,
+    loading: loadingApproveLeaveRequest,
+  } = useFetch<ResponseMessage, SendRequestProps>({
+    url: `/sys/users/leave-requests/approve/${id}`,
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    fetchApproveLeaveRequest,
+    loadingApproveLeaveRequest,
+  };
+};
+
+export const useRejectLeaveRequest = (id: number) => {
+  const {
+    refetch: fetchRejectLeaveRequest,
+    loading: loadingRejectLeaveRequest,
+  } = useFetch<ResponseMessage, SendRequestProps>({
+    url: `/sys/users/leave-requests/reject/${id}`,
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    fetchRejectLeaveRequest,
+    loadingRejectLeaveRequest,
   };
 };
 

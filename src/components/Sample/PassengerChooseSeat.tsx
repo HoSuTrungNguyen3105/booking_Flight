@@ -4,7 +4,7 @@ import _ from "lodash";
 import { ArrowBack } from "@mui/icons-material";
 import theme from "../../scss/theme";
 import { useChooseSeatToBooking } from "../Employee/useChooseSeatToBooking";
-import ButtonSeat from "../Admin/component/Seat/ButtonSeat";
+import BookingSeatButton from "./BookingSeatButton";
 import { useLocation } from "react-router-dom";
 import { string } from "prop-types";
 import { useExit } from "../../context/use[custom]/useExit";
@@ -15,14 +15,10 @@ const PassengerChooseSeat = () => {
   const location = useLocation();
   const { id } = location.state || { id: string };
   const {
-    // detail,
     handleSelectSeat,
     seatCount,
     filteredSeats,
     flightData,
-    // handleResetSelections,
-    // handleOpenUpdatesModal,
-    // flightData,
     selectedSeats,
   } = useChooseSeatToBooking({
     id,
@@ -39,7 +35,6 @@ const PassengerChooseSeat = () => {
           theme.palette.primary.main,
           0.03
         )} 0%, ${alpha(theme.palette.secondary.main, 0.03)} 100%)`,
-        // p: { xs: 2, md: 4 },
       }}
     >
       {/* Header */}
@@ -54,19 +49,7 @@ const PassengerChooseSeat = () => {
           onClick={exit}
           startIcon={<ArrowBack />}
           variant="outlined"
-          sx={{
-            borderRadius: 3,
-            // px: 3,
-            // py: 1,
-            // textTransform: "none",
-            // fontWeight: 600,
-            // borderWidth: 2,
-            // transition: "all .2s ease",
-            // "&:hover": {
-            //   borderWidth: 2,
-            //   transform: "translateY(-2px)",
-            // },
-          }}
+          sx={{ borderRadius: 2 }}
         >
           Back to Flights
         </Button>
@@ -146,7 +129,7 @@ const PassengerChooseSeat = () => {
                         (s) => s.seatNumber === row && s.seatRow === col
                       );
                       return seat ? (
-                        <ButtonSeat
+                        <BookingSeatButton
                           key={col}
                           seat={seat}
                           selectedSeats={selectedSeats}
@@ -177,7 +160,7 @@ const PassengerChooseSeat = () => {
                         (s) => s.seatNumber === row && s.seatRow === col
                       );
                       return seat ? (
-                        <ButtonSeat
+                        <BookingSeatButton
                           key={col}
                           seat={seat}
                           selectedSeats={selectedSeats}

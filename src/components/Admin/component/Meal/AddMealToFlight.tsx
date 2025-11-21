@@ -9,8 +9,6 @@ import {
   FormControlLabel,
 } from "@mui/material";
 import type { CreateFlightMealProps } from "../../../../utils/type";
-import { useGetMeal } from "../../../../context/Api/useGetApi";
-import { useCreateFlightMeal } from "../../../../context/Api/usePostApi";
 import { ResponseCode } from "../../../../utils/response";
 import _ from "lodash";
 import InputNumber from "../../../../common/Input/InputNumber";
@@ -19,6 +17,10 @@ import SelectDropdown, {
 } from "../../../../common/Dropdown/SelectDropdown";
 import { useToast } from "../../../../context/ToastContext";
 import InputTextField from "../../../../common/Input/InputTextField";
+import {
+  useCreateFlightMeal,
+  useGetMeal,
+} from "../../../../context/Api/MealApi";
 
 interface FlightMealProps {
   flightId: number;

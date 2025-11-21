@@ -1,103 +1,79 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   Container,
   Grid,
   Box,
   Paper,
   TextField,
-  Button,
   IconButton,
   Typography,
 } from "@mui/material";
 
 import { PlusCircle } from "lucide-react";
 import MenuTabs from "./MenuTabs";
-import OrderTable from "./OrderTable";
-import type { FlightMeal, Meal, MealOrder } from "../../../../utils/type";
-import type { MealOrderToBooking } from "../../../Employee/types/booking";
-
-type CreateMealOrderDto = Omit<MealOrder, "booking" | "flightMeal">;
+import OrderTable, { type OrderItem } from "./OrderTable";
+import type { Meal } from "../../../../utils/type";
+import { useGetMeal } from "../../../../context/Api/MealApi";
 
 const OrderMeal = () => {
-  const [menu, setMenu] = useState<Meal[]>([]);
-  const [cart, setCart] = useState<MealOrderToBooking[]>([]);
-  const [flightMeal, setFlightMeal] = useState<FlightMeal[]>([]);
+  const { mealData } = useGetMeal();
+  const [cart, setCart] = useState<OrderItem[]>([]);
   const [selectedCategory, setSelectedCategory] =
     useState<Meal["mealType"]>("Breakfast");
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingItem, setEditingItem] = useState<MealOrder | null>(null);
+  const [editingItem, setEditingItem] = useState<Meal | null>(null);
   const [search, setSearch] = useState("");
 
+  const menu = useMemo(() => mealData?.list || [], [mealData]);
+
   useEffect(() => {
-    setMenu([]);
+    // setMenu([]); // This is no longer needed as menu is derived from mealData
   }, []);
 
-  // CRUD menu
-  // function handleAddOrUpdateMenu(item: MealOrder) {
-  //   setMenu((prev) => {
-  //     const exists = prev.find((p) => p.id === item.id);
-  //     if (exists) {
-  //       return prev.map((p) => (p.id === item.id ? item : p));
-  //     } else {
-  //       return [item, ...prev];
-  //     }
-  //   });
-  // }
-
   function handleDeleteMenu(id: number) {
-    setMenu((prev) => prev.filter((m) => m.id !== id));
-    // optionally remove from cart
+    // Implement delete logic if needed, or remove this function if not used
+    // For now, we just remove from cart if it's there
     setCart((prev) => prev.filter((c) => c.id !== id));
   }
 
   // add to cart (create or increase)
-  // function handleAddToCart(menuItem: CreateMealOrderDto) {
-  //   setCart((prev) => {
-  //     const existing = prev.find((c) => c.id === menuItem.id);
-  //     if (existing) {
-  //       return prev.map((c) =>
-  //         c.id === menuItem.id ? { ...c, quantity: c.quantity + 1 } : c
-  //       );
-  //     } else {
-  //       const newCart: CreateMealOrderDto = {
-  //         id: menuItem.id,
-  //         bookingId: menuItem.bookingId,
-  //         flightMealId: menuItem.flightMealId,
-  //         quantity: menuItem.quantity,
-  //       };
-  //       return [...prev, newCart];
-  //     }
-  //   });
-  // }
-
-  function handleUpdateQty(id: string, qty: number) {
-    // setCart((prev) =>
-    //   prev.map((c) => (c.id === id ? { ...c, quantity: qty } : c))
-    // );
+  function handleAddToCart(menuItem: Meal) {
+    setCart((prev) => {
+      const existing = prev.find((c) => c.id === menuItem.id);
+      if (existing) {
+        return prev.map((c) =>
+          c.id === menuItem.id ? { ...c, quantity: c.quantity + 1 } : c
+        );
+      } else {
+        const newCartItem: OrderItem = {
+          id: menuItem.id,
+          mealCode: menuItem.mealCode,
+          name: menuItem.name,
+          price: menuItem.price,
+          quantity: 1,
+        };
+        return [...prev, newCartItem];
+      }
+    });
   }
 
-  function handleRemove(id: string) {
-    // setCart((prev) => prev.filter((c) => c.id !== id));
+  function handleRemove(id: number) {
+    setCart((prev) => prev.filter((c) => c.id !== id));
   }
 
-  function handleUpdateNote(id: string, note: string) {
-    // setCart((prev) => prev.map((c) => (c.id === id ? { ...c, note } : c)));
+  function handleUpdateQty(id: number, qty: number) {
+    setCart((prev) =>
+      prev.map((c) => (c.id === id ? { ...c, quantity: qty } : c))
+    );
+  }
+
+  function handleUpdateNote(id: number, note: string) {
+    setCart((prev) => prev.map((c) => (c.id === id ? { ...c, note } : c)));
   }
 
   function handleSubmitOrder() {
-    // demo: log order, clear cart
-    // const order = {
-    //   id: `o${Date.now()}`,
-    //   items: cart,
-    //   total: cart.reduce((s, c) => s + c.unitPrice * c.quantity, 0),
-    //   createdAt: new Date().toISOString(),
-    // };
-    // console.log("Submitting order", order);
-    // alert(
-    //   `Order submitted. Total: $${order.total.toFixed(
-    //     2
-    //   )}. See console for details.`
-    // );
+    // TODO: Implement submit logic (e.g., create FlightMeals)
+    console.log("Submitting order:", cart);
     setCart([]);
   }
 
@@ -106,11 +82,15 @@ const OrderMeal = () => {
   }
 
   // search filter
-  const filteredMenu = menu.filter(
-    (m) => {}
-    // m.mealId === selectedCategory &&
-    // m.quantity.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredMenu = useMemo(() => {
+    return menu.filter((m) => {
+      const matchesCategory = m.mealType === selectedCategory;
+      const matchesSearch =
+        m.name.toLowerCase().includes(search.toLowerCase()) ||
+        m.mealCode.toLowerCase().includes(search.toLowerCase());
+      return matchesCategory && matchesSearch;
+    });
+  }, [menu, selectedCategory, search]);
 
   return (
     <Box>
@@ -149,11 +129,11 @@ const OrderMeal = () => {
 
               <MenuTabs
                 menu={filteredMenu}
-                onAddToCart={() => {}} //handleAddToCart
+                onAddToCart={handleAddToCart}
                 value={selectedCategory}
                 onChange={(c) => setSelectedCategory(c)}
                 onEditItem={(i) => {
-                  //setEditingItem(i);
+                  // setEditingItem(i);
                   setDialogOpen(true);
                 }}
                 onDeleteItem={(id) => handleDeleteMenu(id)}
@@ -163,12 +143,12 @@ const OrderMeal = () => {
                 <Typography variant="h6" gutterBottom>
                   Selected Items
                 </Typography>
-                {/* <OrderTable
+                <OrderTable
                   items={cart}
                   onUpdateQty={handleUpdateQty}
                   onRemove={handleRemove}
                   onUpdateNote={handleUpdateNote}
-                /> */}
+                />
               </Box>
             </Paper>
           </Grid>

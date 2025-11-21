@@ -4,14 +4,14 @@ import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
 import BaseModal from "../../../../common/Modal/BaseModal";
 import InputTextField from "../../../../common/Input/InputTextField";
 import { useAuth } from "../../../../context/AuthContext";
+import type { LeaveRequest } from "../../../../utils/type";
+import { Note, Person } from "@mui/icons-material";
+import InputTextArea from "../../../../common/Input/InputTextArea";
 import {
   useApproveLeaveRequest,
   useRejectLeaveRequest,
   type SendRequestProps,
-} from "../../../../context/Api/usePostApi";
-import type { LeaveRequest } from "../../../../utils/type";
-import { Note, Person } from "@mui/icons-material";
-import InputTextArea from "../../../../common/Input/InputTextArea";
+} from "../../../../context/Api/RequestApi";
 
 interface IRequestLeaveActionModalProps {
   open: boolean;

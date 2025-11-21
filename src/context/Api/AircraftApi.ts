@@ -48,7 +48,7 @@ export const useGetAllAircraftInfo = () => {
 export const useCreateAircraftBatchFlight = () => {
   const { refetch: refetchCreateAircraftBatchFlightData } = useFetch<
     FlightAircraftResponse,
-    Aircraft[]
+    FormData
   >({
     url: "/sys/flights/aircraft/batch",
     autoFetch: false,

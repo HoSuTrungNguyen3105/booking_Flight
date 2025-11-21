@@ -1,8 +1,7 @@
 import { Box, Button, Paper, Typography, Container } from "@mui/material";
-import { memo, useCallback, useEffect } from "react";
+import { memo, useCallback } from "react";
 import type { DataFlight } from "../../../../utils/type";
 import DetailSection from "../../../../common/AdditionalCustomFC/DetailSection.tsx";
-import FlightPath from "./FlightPath";
 import { useFlightManagement } from "./hooks/useFlightManagement.tsx";
 
 export interface FlightDetailPageProps {
@@ -17,7 +16,6 @@ const FlightDetailPage = ({ flight, onBookFlight }: FlightDetailPageProps) => {
 
   const {
     priceData,
-    // cancellationData,
     handleBookFlight,
     handleGoBack,
     scheduleData,

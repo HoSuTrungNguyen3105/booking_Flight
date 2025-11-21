@@ -119,7 +119,7 @@ const FlightDealsAccept = () => {
         </Box>
 
         {/* TEXT */}
-        <Box
+        {/* <Box
           sx={{
             px: 4,
             py: 3,
@@ -154,7 +154,7 @@ const FlightDealsAccept = () => {
             National Park is one of the oldest parks in Kenya. It is located in
             the semi-arid Taru Desert.
           </Typography>
-        </Box>
+        </Box> */}
       </Box>
     </Box>
   );

@@ -51,8 +51,6 @@ export const useDataSection = (
   const optionDataFlightTypes = mapStringToDropdown(
     dataFlightTypes?.data || []
   );
-  // const [optionWay, setOptionWay] = useState<"oneway" | "roundtrip">("oneway");
-
   const airports: ActionType[] = (getAllCode?.data?.airport || []).map((e) => ({
     value: e.code,
     label: e.value,
@@ -113,33 +111,33 @@ export const useDataSection = (
             {
               id: "origin",
               type: SearchFieldType.DROPDOWN,
-              size: 4,
+              size: 6,
               value: flight.origin ?? "",
               placeholder: "Điểm đi…",
               options: airports,
-              sx: { minWidth: 120, width: "100%" },
+              // sx: { minWidth: 120, width: "100%" },
             },
             {
               id: "destination",
               type: SearchFieldType.DROPDOWN,
-              size: 4,
+              size: 6,
               value: flight.destination ?? "",
               placeholder: "Điểm đến…",
               options: airports,
-              sx: { minWidth: 120, width: "100%" },
+              //   sx: { minWidth: 120, width: "100%" },
             },
             {
               id: "departDate",
-              type: SearchFieldType.INPUT_WITH_NUMBER,
-              size: 6,
+              type: SearchFieldType.DATE,
+              size: 8,
               value: flight.departDate ?? 0,
               placeholder: "Ngày đi…",
               sx: { width: "100%" },
             },
             {
               id: "returnDate",
-              type: SearchFieldType.INPUT_WITH_NUMBER,
-              size: 6,
+              type: SearchFieldType.DATE,
+              size: 8,
               value: flight.returnDate ?? 0,
               placeholder: "Ngày về…",
               sx: { width: "100%" },

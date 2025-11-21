@@ -143,9 +143,7 @@ const PassengerProfile = () => {
               <Typography>Phone number</Typography>
             </Box>
             <PhoneInput
-              country={
-                !formValues.phone ? countryCode?.toLowerCase() : undefined
-              }
+              country={countryCode?.toLowerCase()}
               value={formValues.phone}
               onChange={(value) => handleChange("phone", value)}
               inputStyle={{

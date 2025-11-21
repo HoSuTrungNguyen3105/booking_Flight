@@ -1,6 +1,5 @@
 import { useCallback } from "react";
 import type { FlightDetailPageProps } from "../FlightDetail";
-import { useNavigate } from "react-router-dom";
 import type { IDetailItem } from "../../../../../common/AdditionalCustomFC/DetailSection";
 import { DateFormatEnum, formatDate } from "../../../../../hooks/format";
 import { useExit } from "../../../../../context/use[custom]/useExit";

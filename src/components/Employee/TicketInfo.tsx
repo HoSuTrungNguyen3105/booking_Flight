@@ -23,8 +23,10 @@ const TicketInfo = ({ id, ticketNo }: GetReqponseOneTicket) => {
     if (!id || !ticketNo) return;
 
     const res = await refetchFindPassengerTicket({ id, ticketNo });
+    console.log("res", res);
     if (res?.resultCode === ResponseCode.SUCCESS) {
-      setTicket(res.list || []);
+      const refs = setTicket(res.list || []);
+      console.log("refs", refs);
     }
   }, [id, ticketNo, refetchFindPassengerTicket]);
 

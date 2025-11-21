@@ -17,6 +17,7 @@ export default function NavbarItem() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const timeoutRef = useRef<number | null>(null);
 
   // Click ngoài dropdown → đóng
   useEffect(() => {
@@ -35,6 +36,21 @@ export default function NavbarItem() {
   const handleTabClick = (title: string) => {
     navigate(`/content/${title}`);
     setActiveTab(null);
+  };
+
+  const handleMouseEnter = (tab: string) => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    timeoutRef.current = setTimeout(() => {
+      setActiveTab(tab);
+    }, 300);
+  };
+
+  const handleMouseLeave = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
   };
 
   const visibleTabs = Object.keys(menuData).filter(
@@ -57,7 +73,8 @@ export default function NavbarItem() {
         {visibleTabs.map((tab) => (
           <Button
             key={tab}
-            onMouseEnter={() => setActiveTab(tab)}
+            onMouseEnter={() => handleMouseEnter(tab)}
+            onMouseLeave={handleMouseLeave}
             onClick={() => handleTabClick(tab)}
             sx={{
               fontSize: "14px",

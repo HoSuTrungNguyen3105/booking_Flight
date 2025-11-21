@@ -6,7 +6,6 @@ import SelectDropdown, { type ActionType } from "../Dropdown/SelectDropdown";
 import InputNumber from "../Input/InputNumber";
 import { memo } from "react";
 import DateTimePickerComponent from "../DayPicker/index";
-import { Grid } from "@mui/material";
 
 export type FieldValue = boolean | string | number | null;
 
@@ -49,7 +48,6 @@ const SearchFieldRender = ({
   type,
   placeholder,
   options,
-  size,
   value,
   disabled,
   error,
@@ -122,11 +120,7 @@ const SearchFieldRender = ({
     }
   };
 
-  return (
-    <Grid container spacing={1}>
-      <Grid size={size ?? 12}>{renderBox()}</Grid>
-    </Grid>
-  );
+  return renderBox();
 };
 
 export default memo(SearchFieldRender);

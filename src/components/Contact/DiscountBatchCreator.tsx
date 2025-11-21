@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, Activity } from "react";
 import {
   Box,
   Button,
@@ -12,6 +12,11 @@ import {
 } from "@mui/material";
 import { Plus, Trash } from "lucide-react";
 import { nowDecimal } from "../../hooks/format";
+import { ResponseCode } from "../../utils/response";
+import { useCreateBatchDiscount } from "../../context/Api/FlightApi";
+import InputTextField from "../../common/Input/InputTextField";
+import InputNumber from "../../common/Input/InputNumber";
+import DateTimePickerComponent from "../../common/DayPicker/index";
 
 export interface CreateDiscountReq {
   code: string;
@@ -23,13 +28,6 @@ export interface CreateDiscountReq {
   usageLimit?: number;
   validFrom: number;
   validTo: number;
-}
-
-interface DiscountBatchCreatorProps {
-  onClose: () => void;
-  createBatchDiscount: (
-    discounts: CreateDiscountReq[]
-  ) => Promise<{ resultCode: string; list?: any[] }>;
 }
 
 const DEFAULT_DISCOUNT: CreateDiscountReq = {
@@ -44,10 +42,8 @@ const DEFAULT_DISCOUNT: CreateDiscountReq = {
   validTo: Date.now() + 7 * 24 * 60 * 60 * 1000,
 };
 
-export const DiscountBatchCreator: React.FC<DiscountBatchCreatorProps> = ({
-  onClose,
-  createBatchDiscount,
-}) => {
+export const DiscountBatchCreator: React.FC = () => {
+  const { refetchCreateBatchDiscount } = useCreateBatchDiscount();
   const [discounts, setDiscounts] = useState<CreateDiscountReq[]>([
     DEFAULT_DISCOUNT,
   ]);
@@ -80,20 +76,23 @@ export const DiscountBatchCreator: React.FC<DiscountBatchCreatorProps> = ({
   const handleSubmit = async () => {
     setSubmitting(true);
     try {
-      const res = await createBatchDiscount(discounts);
-      if (res?.resultCode === "00") {
+      const res = await refetchCreateBatchDiscount(discounts);
+      if (res?.resultCode === ResponseCode.SUCCESS) {
         const errorMap: Record<number, string> = {};
+
         const newDiscounts = discounts.map((d, idx) => {
           const item = res.list?.[idx];
-          if (item?.errorCode !== "SUCCESS") {
-            errorMap[idx] = item?.errorMessage || "Unknown error";
+
+          if (item?.resultCode !== ResponseCode.SUCCESS) {
+            errorMap[idx] = item?.resultCode || "Unknown error";
             return d;
           }
           return DEFAULT_DISCOUNT;
         });
         setDiscounts(newDiscounts);
         setErrors(errorMap);
-        if (Object.keys(errorMap).length === 0) onClose();
+        if (Object.keys(errorMap).length === 0) {
+        } //onClose()
       }
     } catch (err) {
       console.error(err);
@@ -116,41 +115,51 @@ export const DiscountBatchCreator: React.FC<DiscountBatchCreatorProps> = ({
           <CardContent>
             <Grid container spacing={2} alignItems="center">
               <Grid size={3}>
-                <TextField
-                  fullWidth
-                  label="Code"
+                <InputTextField
+                  placeholder="Code"
                   value={d.code}
-                  onChange={(e) =>
-                    handleChange(idx, "code", e.target.value.toUpperCase())
-                  }
+                  onChange={(e) => handleChange(idx, "code", e.toUpperCase())}
                   error={!!errors[idx]}
-                  helperText={errors[idx]}
                 />
               </Grid>
               <Grid size={3}>
-                <TextField
-                  fullWidth
-                  label="Description"
+                <InputTextField
+                  placeholder="Description"
                   value={d.description}
-                  onChange={(e) =>
-                    handleChange(idx, "description", e.target.value)
-                  }
+                  onChange={(e) => handleChange(idx, "description", e)}
                 />
               </Grid>
               <Grid size={3}>
-                <TextField
-                  fullWidth
-                  label={d.isPercentage ? "Discount (%)" : "Discount Amount"}
-                  type="number"
-                  value={d.isPercentage ? d.discountPercent : d.discountAmount}
-                  onChange={(e) =>
-                    handleChange(
-                      idx,
-                      d.isPercentage ? "discountPercent" : "discountAmount",
-                      Number(e.target.value)
-                    )
-                  }
-                />
+                <Activity mode={d.isPercentage ? "hidden" : "visible"}>
+                  <InputNumber
+                    placeholder={
+                      d.isPercentage ? "Discount (%)" : "Discount Amount"
+                    }
+                    value={d.discountAmount}
+                    onChange={(e) =>
+                      handleChange(
+                        idx,
+                        d.isPercentage ? "discountPercent" : "discountAmount",
+                        Number(e)
+                      )
+                    }
+                  />
+                </Activity>
+                <Activity mode={d.isPercentage ? "visible" : "hidden"}>
+                  <InputNumber
+                    placeholder={
+                      d.isPercentage ? "Discount (%)" : "Discount Amount"
+                    }
+                    value={d.discountPercent}
+                    onChange={(e) =>
+                      handleChange(
+                        idx,
+                        d.isPercentage ? "discountPercent" : "discountAmount",
+                        Number(e)
+                      )
+                    }
+                  />
+                </Activity>
               </Grid>
               <Grid size={3}>
                 <FormControlLabel
@@ -180,44 +189,24 @@ export const DiscountBatchCreator: React.FC<DiscountBatchCreatorProps> = ({
                 />
               </Grid>
               <Grid size={3}>
-                <TextField
-                  fullWidth
-                  label="Usage Limit"
-                  type="number"
+                <InputNumber
+                  placeholder="Usage Limit"
                   value={d.usageLimit}
-                  onChange={(e) =>
-                    handleChange(idx, "usageLimit", Number(e.target.value))
-                  }
+                  onChange={(e) => handleChange(idx, "usageLimit", Number(e))}
                 />
               </Grid>
               <Grid size={3}>
-                <TextField
-                  fullWidth
-                  label="Valid From"
-                  type="datetime-local"
-                  value={new Date(d.validFrom).toISOString().slice(0, 16)}
-                  onChange={(e) =>
-                    handleChange(
-                      idx,
-                      "validFrom",
-                      new Date(e.target.value).getTime()
-                    )
-                  }
+                <DateTimePickerComponent
+                  value={d.validFrom}
+                  language="en"
+                  onChange={(e) => handleChange(idx, "validFrom", e)}
                 />
               </Grid>
               <Grid size={3}>
-                <TextField
-                  fullWidth
-                  label="Valid To"
-                  type="datetime-local"
-                  value={new Date(d.validTo).toISOString().slice(0, 16)}
-                  onChange={(e) =>
-                    handleChange(
-                      idx,
-                      "validTo",
-                      new Date(e.target.value).getTime()
-                    )
-                  }
+                <DateTimePickerComponent
+                  value={d.validTo}
+                  language="en"
+                  onChange={(e) => handleChange(idx, "validTo", e)}
                 />
               </Grid>
 

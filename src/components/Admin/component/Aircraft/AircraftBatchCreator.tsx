@@ -27,6 +27,10 @@ const AircraftBatchCreator = ({ onSuccess }: ReturnProps) => {
     { code: "", model: "", range: 0, manufacturer: "", totalSeats: 0 },
   ]);
 
+  const formData = new FormData();
+  formData.append("createBatchAircraftDto", JSON.stringify(aircrafts));
+  // formData.append('imageAircraft', fileInput.files[0]);
+
   const toast = useToast();
   const [loading, setLoading] = useState(false);
   const { refetchCreateAircraftBatchFlightData } =
@@ -68,7 +72,7 @@ const AircraftBatchCreator = ({ onSuccess }: ReturnProps) => {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      const response = await refetchCreateAircraftBatchFlightData(aircrafts);
+      const response = await refetchCreateAircraftBatchFlightData(formData);
       if (response?.resultCode === ResponseCode.SUCCESS) {
         toast(response?.resultMessage);
         refetchGetAircraftCodeData();

@@ -27,7 +27,6 @@ import { useTerminalContainer } from "./hook/useTerminalContainer";
 import ManageFacilityModal from "./modal/ManageFacilityModal";
 import { DateFormatEnum, formatDate } from "../../../../hooks/format";
 import { useNavigate } from "react-router-dom";
-import { TerminalBatchCreator } from "./CreateTerminal";
 
 export type UpdateGateProps = Pick<Gate, "id"> &
   Omit<CreateGateProps, "terminalId">;

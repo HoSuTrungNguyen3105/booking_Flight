@@ -1,19 +1,28 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { FlightFormData, FlightFormMode } from "../FlightManagementModal";
-import {
-  useGetAllCode,
-  useGetAllGateCode,
-  useGetFlightByIDData,
-} from "../../../../../context/Api/useGetApi";
+// import {
+//   useGetAllCode,
+//   useGetAllGateCode,
+//   useGetFlightByIDData,
+// } from "../../../../../context/Api/useGetApi";
+// import {
+//   useCreateFlight,
+//   useCreateMultiFlight,
+//   useFlightUpdate,
+//   type CreateManyFlightResultItem,
+// } from "../../../../../context/Api/usePostApi";
+import { useToast } from "../../../../../context/ToastContext";
+import { useNavigate } from "react-router-dom";
+import { ResponseCode } from "../../../../../utils/response";
 import {
   useCreateFlight,
   useCreateMultiFlight,
   useFlightUpdate,
-  type CreateManyFlightResultItem,
-} from "../../../../../context/Api/usePostApi";
-import { useToast } from "../../../../../context/ToastContext";
-import { useNavigate } from "react-router-dom";
-import { ResponseCode } from "../../../../../utils/response";
+  useGetAllCode,
+  useGetFlightByIDData,
+} from "../../../../../context/Api/FlightApi";
+import type { CreateManyFlightResultItem } from "../../../../../utils/type";
+import { useGetAllGateCode } from "../../../../../context/Api/AirportApi";
 
 interface IFlightCreateAndUpdateProps {
   onClose?: () => void;

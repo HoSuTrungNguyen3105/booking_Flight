@@ -54,9 +54,15 @@ export const menuData: TabData = {
         image: Icon,
       },
       {
-        value: "FareComparison",
+        value: "BookingDemo",
         icon: <DirectionsRunIcon />,
-        label: "FareComparison",
+        label: "BookingDemo",
+        image: Icon,
+      },
+      {
+        value: "SomeComponent",
+        icon: <DirectionsRunIcon />,
+        label: "SomeComponent",
         image: Icon,
       },
       {
@@ -144,6 +150,12 @@ export const menuData: TabData = {
         icon: <Headphones size={24} />,
         value: "CreateRandomFlights",
         label: "CreateRandomFlights",
+      },
+      {
+        value: "DiscountBatchCreator",
+        icon: <DirectionsRunIcon />,
+        label: "DiscountBatchCreator",
+        image: Icon,
       },
     ],
   },

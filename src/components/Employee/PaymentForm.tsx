@@ -8,8 +8,6 @@ import {
   Paper,
   Stack,
 } from "@mui/material";
-// import Cards from "react-credit-cards-2"; // thư viện hiển thị thẻ credit card
-// import "react-credit-cards-2/dist/es/styles-compiled.css";
 import { CreditCard } from "@mui/icons-material";
 import { useLocation } from "react-router-dom";
 import type { Seat } from "../../utils/type";
@@ -18,21 +16,10 @@ import InputTextField from "../../common/Input/InputTextField";
 const PaymentForm = () => {
   const location = useLocation();
   const seat = location.state?.seat as Seat;
-
-  console.log("seas", seat);
-
   const [number, setNumber] = useState("");
   const [name, setName] = useState("");
   const [expiry, setExpiry] = useState("");
   const [cvc, setCvc] = useState("");
-  // const [focused, setFocused] = useState<keyof typeof formValues | undefined>(
-  //   undefined
-  // );
-
-  // const formValues = { number, name, expiry, cvc };
-
-  // const handleInputFocus = (e: React.FocusEvent<HTMLInputElement>) =>
-  //   setFocused(e.target.name as keyof typeof formValues);
 
   type FieldName = "number" | "name" | "expiry" | "cvc";
 

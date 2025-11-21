@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { Clock, LogIn, LogOut } from "lucide-react";
 import dayjs from "dayjs";
-import { nowDecimal } from "../../hooks/format";
+import { nowDecimal } from "../../../hooks/format";
 
 export const AttendanceCard = () => {
   const [checkedIn, setCheckedIn] = useState(false);

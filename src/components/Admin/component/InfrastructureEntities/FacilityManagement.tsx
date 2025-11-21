@@ -12,26 +12,16 @@ import {
 } from "@mui/material";
 import { Add, Edit, Delete, LocationOn, Schedule } from "@mui/icons-material";
 import { useLocation } from "react-router-dom";
-import { useGetFaclilityByTerminalID } from "../../../../context/Api/useGetApi";
 import type { Facility } from "../../../../utils/type";
 import ManageFacilityModal from "./modal/ManageFacilityModal";
+import { useGetFaclilityByTerminalID } from "../../../../context/Api/AirportApi";
 
 const FacilityManagement = () => {
   const location = useLocation();
   const { terminalId } = location.state as { terminalId: string };
-  // const [facilities, setFacilities] = useState<Facility[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingFacility, setEditingFacility] = useState<Facility | null>(null);
   const [dialogType, setDialogType] = useState<"update" | "create">("create");
-  // const [formData, setFormData] = useState({
-  //   name: "",
-  //   type: "RESTAURANT",
-  //   description: "",
-  //   location: "",
-  //   openingHours: "",
-  //   terminalId: terminalId || "",
-  // });
-
   const { dataGetFaclilityByTerminalID, refetchGetFaclilityByTerminalID } =
     useGetFaclilityByTerminalID(terminalId);
 

@@ -218,6 +218,15 @@ export type Aircraft = {
   flights?: FlightInAircraft[];
 };
 
+export interface CreateManyFlightResultItem {
+  code?: string;
+  error?: boolean;
+  resultCode?: string;
+  resultMessage?: string;
+  errorCode?: string;
+  errorMessage?: string;
+}
+
 export type PasswordProps = {
   password: string;
 };

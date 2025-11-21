@@ -9,7 +9,7 @@ import CreateLeaveRequestForm from "./CreateLeaveRequestForm";
 import { useAuth } from "../../../../context/AuthContext";
 import theme from "../../../../scss/theme";
 import TableSection from "../../../../common/AdditionalCustomFC/TableSection";
-import { useGetLeaveRequest } from "../../../../context/Api/useGetApi";
+import { useGetLeaveRequest } from "../../../../context/Api/UserApi";
 
 const LeaveRequestTable = () => {
   const { user } = useAuth();

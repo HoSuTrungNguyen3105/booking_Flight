@@ -1,4 +1,3 @@
-import React from "react";
 import {
   TableContainer,
   Table,
@@ -13,29 +12,29 @@ import {
   Typography,
 } from "@mui/material";
 import { MinusCircle, PlusCircle, Trash2 } from "lucide-react";
-import type { FlightMeal } from "../../../../utils/type";
-import { useGetMealByFlightId } from "../../../../context/Api/useGetApi";
-import { useLocation } from "react-router-dom";
 
-export default function OrderTable() {
-  const location = useLocation();
-  const id = location.state.id || {};
-  const [items, setItems] = React.useState<FlightMeal[]>([]);
-  const { getGetMealByFlightId } = useGetMealByFlightId(id);
-  const onUpdateQty = (id: number, qty: number) => {
-    setItems((prev) =>
-      prev.map((it) => (it.id === id ? { ...it, quantity: qty } : it))
-    );
-  };
+export type OrderItem = {
+  id: number;
+  name: string;
+  mealCode: string;
+  price: number;
+  quantity: number;
+  note?: string;
+};
 
-  const onRemove = (id: number) => {
-    setItems((prev) => prev.filter((it) => it.id !== id));
-  };
+type Props = {
+  items: OrderItem[];
+  onUpdateQty: (id: number, qty: number) => void;
+  onRemove: (id: number) => void;
+  onUpdateNote?: (id: number, note: string) => void;
+};
 
-  const onUpdateNote = (id: number, note: string) => {
-    setItems((prev) => prev.map((it) => (it.id === id ? { ...it, note } : it)));
-  };
-
+export default function OrderTable({
+  items,
+  onUpdateQty,
+  onRemove,
+  onUpdateNote,
+}: Props) {
   const total = items.reduce(
     (sum, it) => sum + (it.price ?? 0) * it.quantity,
     0
@@ -43,7 +42,6 @@ export default function OrderTable() {
 
   return (
     <Box>
-      <Typography></Typography>
       <TableContainer component={Paper} variant="outlined">
         <Table>
           <TableHead>
@@ -57,11 +55,9 @@ export default function OrderTable() {
           </TableHead>
 
           <TableBody>
-            {getGetMealByFlightId?.list?.map((it) => (
+            {items.map((it) => (
               <TableRow key={it.id}>
-                <TableCell>
-                  {it.meal.description || it.meal.name || "N/A"}
-                </TableCell>
+                <TableCell>{it.name || it.mealCode || "N/A"}</TableCell>
                 <TableCell align="right">
                   ${(it.price ?? 0).toFixed(2)}
                 </TableCell>

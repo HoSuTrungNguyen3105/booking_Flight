@@ -1,6 +1,5 @@
 import type {
   Booking,
-  BookingStatus as BookingStatusType,
   DataFlight,
   FlightMeal,
   MealOrder,
@@ -8,10 +7,13 @@ import type {
 } from "../../../utils/type";
 import { BookingStatus } from "../../../utils/type";
 
-export type MealOrderToBooking = Omit<MealOrder, "bookingId" | "booking" | "flightMeal"> & {
+export type MealOrderToBooking = Omit<
+  MealOrder,
+  "bookingId" | "booking" | "flightMeal"
+> & {
   booking?: Booking;
   flightMeal?: FlightMeal;
-};;
+};
 
 export type BookingState = {
   selectedFlight: DataFlight | null;
