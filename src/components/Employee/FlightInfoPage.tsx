@@ -16,7 +16,6 @@ import {
   useSearchFlightFromPassenger,
 } from "../../context/Api/useGetApi";
 import { DateFormatEnum, formatDate } from "../../hooks/format";
-
 import { useNavigate } from "react-router-dom";
 import DateTimePickerComponent from "../../common/DayPicker/index";
 import InputTextField from "../../common/Input/InputTextField";
@@ -37,8 +36,7 @@ interface SearchFormData {
 
 const FlightInfoPage: React.FC = () => {
   const { getAllFlightInfoInfo } = useGetAllFlightMainInfo();
-  const { setParamsSearch, refetchSearchFlightFromPassenger } =
-    useSearchFlightFromPassenger();
+  const { refetchSearchFlightFromPassenger } = useSearchFlightFromPassenger(); //setParamsSearch
   const res = getAllFlightInfoInfo?.list || [];
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState(0);

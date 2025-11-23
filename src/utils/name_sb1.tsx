@@ -19,6 +19,8 @@ type TabSection = {
 
 export type TabData = Record<string, TabSection>;
 
+import { ROUTE_PATHS } from "../routers/RoutePath";
+
 export const menuData: TabData = {
   Customers: {
     name: "Customers",
@@ -26,43 +28,43 @@ export const menuData: TabData = {
       {
         value: "contact",
         icon: <User size={24} />,
-        label: "contact",
+        label: "Contact Us",
         image: Icon,
       },
       {
         value: "profile",
         icon: <Star size={24} />,
-        label: "profile",
+        label: "My Profile",
         image: Icon,
       },
       {
         value: "flight/info-page",
         icon: <Folder size={24} />,
-        label: "flight/info-page",
+        label: "Flight Info",
         image: Icon,
       },
       {
         value: "hotels",
         icon: <DirectionsRunIcon />,
-        label: "hotels",
+        label: "Hotels",
         image: Icon,
       },
       {
         value: "ticket/search",
         icon: <DirectionsRunIcon />,
-        label: "ticket/search",
+        label: "Search Tickets",
         image: Icon,
       },
       {
         value: "BookingDemo",
         icon: <DirectionsRunIcon />,
-        label: "BookingDemo",
+        label: "Booking Demo",
         image: Icon,
       },
       {
         value: "SomeComponent",
         icon: <DirectionsRunIcon />,
-        label: "SomeComponent",
+        label: "Some Component",
         image: Icon,
       },
       {
@@ -74,25 +76,25 @@ export const menuData: TabData = {
       {
         value: "FlightScheduleDashboard",
         icon: <DirectionsRunIcon />,
-        label: "FlightScheduleDashboard",
+        label: "Flight Schedule",
         image: Icon,
       },
       {
         value: "SeatSelection",
         icon: <SetMealOutlined />,
-        label: "SeatSelection",
+        label: "Seat Selection",
         image: Icon,
       },
       {
         value: "FlightMealList",
         icon: <FlightClass />,
-        label: "FlightMealList",
+        label: "Flight Meals",
         image: Icon,
       },
       {
         value: "flight/deals",
         icon: <Info size={24} />,
-        label: "flight/deals",
+        label: "Flight Deals",
         image: Icon,
       },
     ],
@@ -100,16 +102,20 @@ export const menuData: TabData = {
   Admin: {
     name: "Admin",
     items: [
-      { icon: <Building2 size={24} />, value: "admin", label: "admin" },
+      {
+        icon: <Building2 size={24} />,
+        value: ROUTE_PATHS.ADMIN,
+        label: "Admin Dashboard",
+      },
       {
         icon: <Folder size={24} />,
         value: "AttendancePage",
-        label: "AttendancePage",
+        label: "Attendance",
       },
       {
         icon: <Tag size={24} />,
         value: "discount-management",
-        label: "discount-management",
+        label: "Discount Management",
       },
     ],
   },
@@ -119,13 +125,13 @@ export const menuData: TabData = {
       {
         icon: <Headphones size={24} />,
         value: "hotel/Batch",
-        label: "hotel/Batch",
+        label: "Hotel Batch",
         image: Icon,
       },
       {
         icon: <Star size={24} />,
         value: "TripSummary",
-        label: "TripSummary",
+        label: "Trip Summary",
         image: Icon,
       },
     ],
@@ -133,28 +139,28 @@ export const menuData: TabData = {
   Pricing: {
     name: "Pricing",
     items: [
-      { icon: <Tag size={24} />, value: "OrderMeal", label: "OrderMeal" },
+      { icon: <Tag size={24} />, value: "OrderMeal", label: "Order Meal" },
       {
         icon: <Info size={24} />,
         value: "flight/dealsAcceppst",
-        label: "flight/dealsAcceppst",
+        label: "Flight Deals Accepted",
       },
     ],
   },
   Resources: {
     name: "Resources",
     items: [
-      { icon: <Info size={24} />, value: "seat/select", label: "seat/select" },
-      { icon: <Info size={24} />, value: "OrderTable", label: "OrderTable" },
+      { icon: <Info size={24} />, value: "seat/select", label: "Select Seat" },
+      { icon: <Info size={24} />, value: "OrderTable", label: "Order Table" },
       {
         icon: <Headphones size={24} />,
         value: "CreateRandomFlights",
-        label: "CreateRandomFlights",
+        label: "Create Random Flights",
       },
       {
         value: "DiscountBatchCreator",
         icon: <DirectionsRunIcon />,
-        label: "DiscountBatchCreator",
+        label: "Discount Batch Creator",
         image: Icon,
       },
     ],
@@ -162,16 +168,16 @@ export const menuData: TabData = {
   Company: {
     name: "Company",
     items: [
-      { icon: <Zap size={24} />, value: "select", label: "select" },
+      { icon: <Zap size={24} />, value: "select", label: "Select" },
       {
         icon: <Users size={24} />,
         value: "flight/select",
-        label: "flight/select",
+        label: "Select Flight",
       },
       {
         icon: <Zap size={24} />,
         value: "AdvancedAnalytics",
-        label: "AdvancedAnalytics",
+        label: "Advanced Analytics",
       },
     ],
   },

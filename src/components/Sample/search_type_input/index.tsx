@@ -24,7 +24,9 @@ export type SearchFormConfig = {
     departDate?: number;
     returnDate?: number;
     type?: string;
-    discountCode?: string;
+    passengers?: number;
+    // flightClass?: string;
+    //discountCode?: string;
   };
   hotel: {
     location?: string;
@@ -115,7 +117,6 @@ export const useDataSection = (
               value: flight.origin ?? "",
               placeholder: "Điểm đi…",
               options: airports,
-              // sx: { minWidth: 120, width: "100%" },
             },
             {
               id: "destination",
@@ -153,11 +154,11 @@ export const useDataSection = (
               sx: { width: "100%" },
             },
             {
-              id: "discountCode",
-              type: SearchFieldType.INPUT_WITH_TYPE_TEXT,
+              id: "passengers",
+              type: SearchFieldType.INPUT_WITH_NUMBER,
               size: 3,
-              value: flight.discountCode ?? "",
-              placeholder: "Mã giảm giá…",
+              value: flight.passengers ?? 0,
+              placeholder: "Số lượng hành khách…",
               sx: { width: "100%" },
             },
           ],

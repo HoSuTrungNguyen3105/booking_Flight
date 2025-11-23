@@ -75,7 +75,7 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({
                     : "#0f172a",
                 color: "#fff",
                 borderRadius: 2,
-                padding: "12px 16px",
+                padding: "10px 8px", // "12px 16px",
                 display: "flex",
                 alignItems: "center",
                 gap: 1,
@@ -91,8 +91,6 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({
               <Activity mode={toast.type === "error" ? "visible" : "hidden"}>
                 <ErrorOutline />
               </Activity>
-              {/* {toast.type === "error" && <ErrorOutline />}
-              {toast.type === "info" && <InfoOutlined />} */}
               <Typography variant="body2" sx={{ flex: 1, textAlign: "center" }}>
                 {toast.message}
               </Typography>

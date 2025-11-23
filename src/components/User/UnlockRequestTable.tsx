@@ -63,7 +63,7 @@ const UnlockRequestTable = () => {
       toast(res.resultMessage || "");
       refetchGetUnlockRequests();
     } else {
-      toast(res?.resultMessage || "", "error");
+      toast(res?.resultMessage || "Error in unlock request", "error");
     }
   };
 

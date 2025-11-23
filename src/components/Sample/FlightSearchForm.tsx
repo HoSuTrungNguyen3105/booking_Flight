@@ -8,7 +8,9 @@ import {
   Button,
   FormControlLabel,
   Checkbox,
+  IconButton,
 } from "@mui/material";
+import { SwapHoriz } from "@mui/icons-material";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import theme from "../../scss/theme";
@@ -26,51 +28,52 @@ type SearchFlightFromPassengerDto = {
   scheduledArrival?: number; // timestamp hoặc Date string
   passengers?: number;
   flightClass?: string; // ECONOMY, BUSINESS, ...
+  token?: string;
 };
+
+type FormState = SearchFormConfig["flight"];
+
 const FlightSearchForm: React.FC<{ type: keyof SearchFormConfig }> = ({
   type,
 }) => {
   const navigate = useNavigate();
 
-  // const [optionWay, setOptionWay] = useState<"oneway" | "roundtrip">("oneway");
   const [hasReturnDay, setHasReturnDay] = useState(false);
 
-  const [formData, setFormData] = useLocalStorage("search_data", {
+  const [formData, setFormData] = useLocalStorage<FormState>("search_data", {
     origin: "",
     destination: "",
     departDate: 0,
     returnDate: 0,
     type: "Economy",
-    discountCode: "",
+    passengers: 1,
   });
 
   const handleSubmit = () => {
     const token = uuidv4();
 
-    const params: any = {
-      from: formData.origin,
-      to: formData.destination,
-      date: String(formData.departDate),
+    const params: Record<string, string> = {
+      departureAirport: formData.origin || "",
+      arrivalAirport: formData.destination || "",
+      scheduledDeparture: formData.departDate
+        ? String(formData.departDate)
+        : "",
+      scheduledArrival: formData.returnDate ? String(formData.returnDate) : "",
+      passengers: "1", // Default to 1 as it's not in the form
+      flightClass: formData.type || "",
       token,
     };
 
-    // Nếu có chuyến khứ hồi thì truyền thêm return date
     if (hasReturnDay && formData.returnDate) {
-      params.return = String(formData.returnDate);
+      params.scheduledArrival = String(formData.returnDate);
+    } else if (!hasReturnDay) {
+      delete params.scheduledArrival;
     }
 
     navigate({
       pathname: "/search",
       search: createSearchParams(params).toString(),
     });
-    // navigate({
-    //   pathname: "/search",
-    //   search: createSearchParams({
-    //     from: formData.origin,
-    //     to: formData.destination,
-    //     date: formData.departDate,
-    //   }).toString(),
-    // });
   };
 
   const dataSection = useDataSection(type, formData, hasReturnDay);
@@ -79,13 +82,21 @@ const FlightSearchForm: React.FC<{ type: keyof SearchFormConfig }> = ({
     setFormData(formData);
   }, [formData]);
 
-  const handleChange = <K extends keyof typeof formData>(
+  const handleChange = <K extends keyof FormState>(
     key: K,
-    value: (typeof formData)[K]
+    value: FormState[K]
   ) => {
-    setFormData((prev: typeof formData) => ({
+    setFormData((prev: FormState) => ({
       ...prev,
       [key]: value,
+    }));
+  };
+
+  const handleSwap = () => {
+    setFormData((prev: FormState) => ({
+      ...prev,
+      origin: prev.destination,
+      destination: prev.origin,
     }));
   };
 
@@ -130,7 +141,7 @@ const FlightSearchForm: React.FC<{ type: keyof SearchFormConfig }> = ({
               )}
 
               <Paper
-                elevation={3}
+                elevation={2}
                 sx={{
                   p: 1,
                   display: "flex",
@@ -154,11 +165,7 @@ const FlightSearchForm: React.FC<{ type: keyof SearchFormConfig }> = ({
                       >
                         <SearchFieldRender
                           type={field.type}
-                          value={
-                            formData[
-                              field.id as keyof SearchFormConfig["flight"]
-                            ] ?? ""
-                          }
+                          value={formData[field.id as keyof FormState] ?? ""}
                           size={field.size}
                           sx={{
                             "& .MuiOutlinedInput-notchedOutline": {
@@ -170,21 +177,46 @@ const FlightSearchForm: React.FC<{ type: keyof SearchFormConfig }> = ({
                           placeholder={field.placeholder}
                           onChange={(val) =>
                             handleChange(
-                              field.id as keyof SearchFormConfig["flight"],
-                              val as string
+                              field.id as keyof FormState,
+                              val as FormState[keyof FormState]
                             )
                           }
                         />
                       </Box>
                       {fieldIndex < visibleFields.length - 1 && (
-                        <Box
-                          sx={{
-                            width: "1px",
-                            height: "30px",
-                            bgcolor: "#e0e0e0",
-                            mx: 1,
-                          }}
-                        />
+                        <>
+                          {field.id === "origin" ? (
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                mx: 1,
+                              }}
+                            >
+                              <IconButton
+                                onClick={handleSwap}
+                                sx={{
+                                  border: "1px solid #e0e0e0",
+                                  borderRadius: "50%",
+                                  p: 0.5,
+                                  "&:hover": { backgroundColor: "#f5f5f5" },
+                                }}
+                              >
+                                <SwapHoriz fontSize="small" />
+                              </IconButton>
+                            </Box>
+                          ) : (
+                            <Box
+                              sx={{
+                                width: "1px",
+                                height: "30px",
+                                bgcolor: "#e0e0e0",
+                                mx: 1,
+                              }}
+                            />
+                          )}
+                        </>
                       )}
                     </React.Fragment>
                   ))}

@@ -19,24 +19,19 @@ import type { DataFlight, Passenger, Seat } from "../../utils/type";
 import { useSeatColor } from "../Admin/component/Seat/hook/useSeatColor";
 import { useSeatFeatures } from "../Admin/component/Seat/hook/useSeatFeature";
 import LegendItem from "../Admin/component/Seat/ButtonSeat/LegendItem";
+import { useLocation } from "react-router-dom";
+import { useChooseSeatToBooking } from "../Employee/useChooseSeatToBooking";
 
 const SeatSelection: React.FC = () => {
+  const location = useLocation();
+  const { id } = location.state || { id: 0 }; // Default to 0 or handle error
   const [selectedSeatType, setSelectedSeatType] = useState<string>("all");
-  const [selectedSeatId, setSelectedSeatId] = useState<number | null>(null);
   const { seatFeatureOptions } = useSeatFeatures();
 
-  // Mock data matching DataFlight interface
-  const flightInfo: DataFlight = {
-    flightNo: "CX542",
-    flightType: "Economy Essential",
-    departureAirport: "Hong Kong",
-    arrivalAirport: "Tokyo",
-    aircraftCode: "Boeing 777-300",
-    scheduledDeparture: 1763424000000, // Example timestamp
-    scheduledArrival: 1763445600000,
-  };
+  const { handleSelectSeat, filteredSeats, flightData, selectedSeats } =
+    useChooseSeatToBooking({ id });
 
-  // Mock data matching Passenger interface
+  // Mock data matching Passenger interface (keep for now as API doesn't provide it here)
   const passenger: Passenger = {
     id: "p1",
     fullName: "Mrs Eded Ededele",
@@ -45,69 +40,27 @@ const SeatSelection: React.FC = () => {
     passport: "A1234567",
     accountLockYn: "N",
     isEmailVerified: "Y",
-    bookings: [], // Mock empty bookings
+    bookings: [],
   };
 
-  // Helper to map column letter to number (A=1, B=2, etc.)
-  const getColNumber = (col: string) => col.charCodeAt(0) - 64;
   const getColLetter = (num: number) => String.fromCharCode(64 + num);
 
-  // Generate sample seat map matching Seat interface
-  const seats: Seat[] = useMemo(() => {
-    const generatedSeats: Seat[] = [];
-    const columns = ["A", "B", "C", "D", "E", "F", "G", "H", "J", "K"];
+  const selectedSeat = selectedSeats.length > 0 ? selectedSeats[0] : null;
 
-    let idCounter = 1;
-    for (let row = 40; row <= 45; row++) {
-      columns.forEach((col) => {
-        const seatNum = getColNumber(col);
-        const isAvailable = Math.random() > 0.3;
+  // Group seats by row (seatNumber)
+  const rows = useMemo(() => {
+    if (!filteredSeats) return [];
+    const uniqueRows = Array.from(
+      new Set(filteredSeats.map((s) => s.seatNumber))
+    ).sort((a, b) => a - b);
+    return uniqueRows;
+  }, [filteredSeats]);
 
-        // Determine features based on position (mock logic)
-        let isPreferred = false;
-        let isExitRow = false;
-        let isPriority = false;
-        let isBabyBassinet = false;
-        let isExtraLegroom = false;
+  const columns = ["A", "B", "C", "", "D", "E", "F", "G", "", "H", "J", "K"];
 
-        if (row === 42 && col === "B") {
-          isPreferred = true;
-        } else if (row === 44 && ["A", "K"].includes(col)) {
-          isExitRow = true;
-        } else if (row === 41 && ["C", "H"].includes(col)) {
-          isPriority = true;
-        } else if (row === 45 && col === "D") {
-          isBabyBassinet = true;
-        } else if (["D", "E", "F", "G"].includes(col) && isAvailable) {
-          isPreferred = Math.random() > 0.7;
-        }
-
-        generatedSeats.push({
-          id: idCounter++,
-          seatNumber: seatNum,
-          seatRow: row.toString(),
-          price: isPreferred ? 28 : 0,
-          isBooked: !isAvailable,
-          isAvailable: isAvailable,
-          isExitRow,
-          isExtraLegroom,
-          // Map other features if needed, using custom logic or extending the mock
-          // For this demo, we'll use the boolean flags directly
-          flight: flightInfo,
-          booking: {} as any, // Mock empty booking
-        } as Seat);
-      });
-    }
-    return generatedSeats;
-  }, []);
-
-  const handleSeatClick = (seat: Seat) => {
-    if (seat.isAvailable && seat.id !== selectedSeatId) {
-      setSelectedSeatId(seat.id);
-    }
-  };
-
-  const selectedSeat = seats.find((s) => s.id === selectedSeatId);
+  if (!flightData) {
+    return <Box sx={{ p: 3 }}>Loading flight data...</Box>;
+  }
 
   return (
     <Box sx={{ maxWidth: 1200, margin: "0 auto", p: 2 }}>
@@ -117,16 +70,16 @@ const SeatSelection: React.FC = () => {
           <Grid container spacing={2} alignItems="center">
             <Grid size={6}>
               <Typography variant="h6">
-                {new Date(flightInfo.scheduledDeparture).toLocaleDateString()}
+                {new Date(flightData.scheduledDeparture).toLocaleDateString()}
               </Typography>
               <Typography variant="body1" fontWeight="bold">
-                {flightInfo.flightNo} • {flightInfo.flightType}
+                {flightData.flightNo} • {flightData.flightType || "Economy"}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {flightInfo.departureAirport} to {flightInfo.arrivalAirport}
+                {flightData.departureAirport} to {flightData.arrivalAirport}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {flightInfo.aircraftCode}
+                {flightData.aircraftCode}
               </Typography>
             </Grid>
 
@@ -137,9 +90,7 @@ const SeatSelection: React.FC = () => {
                 </Typography>
                 <Typography variant="h5" color="primary" gutterBottom>
                   {selectedSeat
-                    ? `${selectedSeat.seatRow}${getColLetter(
-                        selectedSeat.seatNumber
-                      )}`
+                    ? `${selectedSeat.seatNumber}${selectedSeat.seatRow}`
                     : "No seat selected"}
                 </Typography>
                 {selectedSeat && (
@@ -161,7 +112,7 @@ const SeatSelection: React.FC = () => {
                   color="error"
                   size="small"
                   sx={{ mt: 1 }}
-                  onClick={() => setSelectedSeatId(null)}
+                  onClick={() => handleSelectSeat(selectedSeat!)}
                   disabled={!selectedSeat}
                 >
                   Remove
@@ -195,18 +146,16 @@ const SeatSelection: React.FC = () => {
                   maxWidth: 500,
                 }}
               >
-                {["A", "B", "C", "", "D", "E", "F", "G", "", "H", "J", "K"].map(
-                  (col, index) => (
-                    <Typography
-                      key={index}
-                      variant="body2"
-                      textAlign="center"
-                      fontWeight="bold"
-                    >
-                      {col}
-                    </Typography>
-                  )
-                )}
+                {columns.map((col, index) => (
+                  <Typography
+                    key={index}
+                    variant="body2"
+                    textAlign="center"
+                    fontWeight="bold"
+                  >
+                    {col}
+                  </Typography>
+                ))}
               </Box>
             </Box>
 
@@ -219,80 +168,97 @@ const SeatSelection: React.FC = () => {
                 gap: 1,
               }}
             >
-              {Array.from(new Set(seats.map((seat) => seat.seatRow))).map(
-                (row) => (
-                  <Box
-                    key={row}
-                    sx={{ display: "flex", alignItems: "center", gap: 1 }}
+              {rows.map((rowNum) => (
+                <Box
+                  key={rowNum}
+                  sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                >
+                  <Typography
+                    variant="body2"
+                    sx={{ minWidth: 30, textAlign: "right" }}
                   >
-                    <Typography
-                      variant="body2"
-                      sx={{ minWidth: 30, textAlign: "right" }}
-                    >
-                      {row}
-                    </Typography>
-                    <Box
-                      sx={{
-                        display: "grid",
-                        gridTemplateColumns: "repeat(10, 1fr)",
-                        gap: 1,
-                      }}
-                    >
-                      {seats
-                        .filter((seat) => seat.seatRow === row)
-                        .sort((a, b) => a.seatNumber - b.seatNumber)
-                        .map((seat) => {
-                          // Determine feature key for color hook
-                          let featureKey: keyof import("../Admin/component/Seat/modal/SeatManagementModal").SeatFeatures =
-                            "isAvailable";
-                          if (seat.isBooked) featureKey = "isBooked";
-                          else if (seat.isExitRow) featureKey = "isExitRow";
-                          else if (seat.isExtraLegroom)
-                            featureKey = "isExtraLegroom";
-                          // Add other mappings as needed
+                    {rowNum}
+                  </Typography>
+                  <Box
+                    sx={{
+                      display: "grid",
+                      gridTemplateColumns: "repeat(10, 1fr)",
+                      gap: 1,
+                    }}
+                  >
+                    {columns.map((col, colIndex) => {
+                      if (col === "") {
+                        return (
+                          <Box key={`aisle-${colIndex}`} sx={{ width: 32 }} />
+                        );
+                      }
 
-                          const { backgroundColor, borderColor, textColor } =
-                            useSeatColor({
-                              seatFeature: featureKey,
-                              selectedSeats:
-                                selectedSeatId === seat.id ? [seat] : [],
-                              seat: seat,
-                            });
+                      const seat = filteredSeats?.find(
+                        (s) => s.seatNumber === rowNum && s.seatRow === col
+                      );
 
-                          return (
-                            <Box
-                              key={seat.id}
-                              sx={{
-                                width: 32,
-                                height: 32,
-                                border: `1px solid ${borderColor}`,
-                                backgroundColor: backgroundColor,
-                                color: textColor,
-                                borderRadius: 1,
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                cursor:
-                                  seat.isAvailable && seat.id !== selectedSeatId
-                                    ? "pointer"
-                                    : "default",
-                                opacity: seat.isAvailable ? 1 : 0.5,
-                                "&:hover": {
-                                  opacity: 0.8,
-                                },
-                              }}
-                              onClick={() => handleSeatClick(seat)}
-                            >
-                              <Typography variant="caption" fontSize="10px">
-                                {getColLetter(seat.seatNumber)}
-                              </Typography>
-                            </Box>
-                          );
-                        })}
-                    </Box>
+                      if (!seat) {
+                        return (
+                          <Box
+                            key={`empty-${colIndex}`}
+                            sx={{ width: 32, height: 32 }}
+                          />
+                        );
+                      }
+
+                      // Determine feature key for color hook
+                      let featureKey: keyof import("../Admin/component/Seat/modal/SeatManagementModal").SeatFeatures =
+                        "isAvailable";
+                      if (seat.isBooked) featureKey = "isBooked";
+                      else if (seat.isExitRow) featureKey = "isExitRow";
+                      else if (seat.isExtraLegroom)
+                        featureKey = "isExtraLegroom";
+                      // Add other mappings as needed
+
+                      const isSelected = selectedSeats.some(
+                        (s) => s.id === seat.id
+                      );
+
+                      const { backgroundColor, borderColor, textColor } =
+                        useSeatColor({
+                          seatFeature: featureKey,
+                          selectedSeats: isSelected ? [seat] : [],
+                          seat: seat,
+                        });
+
+                      return (
+                        <Box
+                          key={seat.id}
+                          sx={{
+                            width: 32,
+                            height: 32,
+                            border: `1px solid ${borderColor}`,
+                            backgroundColor: backgroundColor,
+                            color: textColor,
+                            borderRadius: 1,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            cursor:
+                              seat.isAvailable && !seat.isBooked
+                                ? "pointer"
+                                : "default",
+                            opacity: seat.isAvailable ? 1 : 0.5,
+                            "&:hover": {
+                              opacity: 0.8,
+                            },
+                          }}
+                          onClick={() => handleSelectSeat(seat)}
+                        >
+                          <Typography variant="caption" fontSize="10px">
+                            {seat.seatRow}
+                          </Typography>
+                        </Box>
+                      );
+                    })}
                   </Box>
-                )
-              )}
+                </Box>
+              ))}
             </Box>
 
             {/* Aircraft Sections */}
