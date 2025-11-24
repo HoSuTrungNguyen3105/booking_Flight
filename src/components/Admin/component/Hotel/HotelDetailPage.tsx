@@ -18,8 +18,7 @@ import {
   StepLabel,
 } from "@mui/material";
 import { BookOnline, Info, Search } from "@mui/icons-material";
-import type { Hotel } from "../../../../utils/type";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useGetHotelByHotelCode } from "../../../../context/Api/useGetApi";
 import { useExit } from "../../../../context/use[custom]/useExit";
 
@@ -89,7 +88,7 @@ const HotelDetailPage = () => {
   const state = location.state as HotelDetailProps;
   const code = state?.code;
   const exit = useExit();
-  const handlechange4 = (name: string) => {};
+  // const handlechange4 = (name: string) => {};
 
   const { dataHotelByHotelCode } = useGetHotelByHotelCode(code);
   const hotel = dataHotelByHotelCode?.data;

@@ -1,7 +1,7 @@
 import {
   MethodType,
   type FlightDetailApiResponse,
-  type FlightListApiResponse,
+  // type FlightListApiResponse,
   type FlightResponse,
   type ReqUserIDProps,
   type TicketResponseMessage,
@@ -74,13 +74,30 @@ export const useCreateBatchDiscount = () => {
   };
 };
 
-export const useGetFlightData = () => {
+export const useGetFlightData = (page: number = 1, limit: number = 10) => {
   const {
     data: getFlightData,
     refetch: refetchGetFlightData,
     loading: loadingFlightData,
   } = useFetch<FlightResponse, null>({
-    url: "/sys/flights",
+    url: `/sys/flights/?page=${page}&limit=${limit}`,
+    autoFetch: true,
+    config: getMethod,
+  });
+  return {
+    getFlightData,
+    refetchGetFlightData,
+    loadingFlightData,
+  };
+};
+
+export const useFindBestSellerFlightsWithDiscount = () => {
+  const {
+    data: getFlightData,
+    refetch: refetchGetFlightData,
+    loading: loadingFlightData,
+  } = useFetch<FlightResponse, null>({
+    url: "/sys/flights/best-sellers",
     autoFetch: true,
     config: getMethod,
   });
@@ -253,7 +270,7 @@ export const useGetAllCode = () => {
 
 export const useCreateFlight = () => {
   const { data: createFlightData, refetch: refetchCreateFlightData } = useFetch<
-    FlightListApiResponse,
+    ResponseMessage,
     Partial<FlightFormData>
   >({
     url: "/sys/flights",

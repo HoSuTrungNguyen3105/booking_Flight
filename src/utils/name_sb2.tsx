@@ -16,6 +16,7 @@ import {
   TimeToLeave,
 } from "@mui/icons-material";
 import type { ROUTE_PATHS } from "../routers/RoutePath";
+import { FaSeedling } from "react-icons/fa";
 
 export type SideBarValueTypes = (typeof ROUTE_PATHS)[keyof typeof ROUTE_PATHS];
 
@@ -159,6 +160,11 @@ export const menuData: MenuSection[] = [
                 id: "unlock_request",
                 label: "Yêu cầu mở khóa",
                 icon: <GppBad />,
+              },
+              {
+                id: "SEED_PERMISSIONS",
+                label: "Seed Permissions",
+                icon: <FaSeedling />,
               },
               { id: "special", label: "Nhân viên", icon: <Groups /> },
               { id: "message", label: "Tin nhắn", icon: <Forum /> },

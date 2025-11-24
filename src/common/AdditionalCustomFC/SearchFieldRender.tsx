@@ -6,6 +6,7 @@ import SelectDropdown, { type ActionType } from "../Dropdown/SelectDropdown";
 import InputNumber from "../Input/InputNumber";
 import { memo } from "react";
 import DateTimePickerComponent from "../DayPicker/index";
+import { Box } from "@mui/material";
 
 export type FieldValue = boolean | string | number | null;
 
@@ -56,6 +57,8 @@ const SearchFieldRender = ({
   sx,
 }: IFieldRendererProps) => {
   const renderBox = () => {
+    const commonStyle = { width: "40rem", maxWidth: "100%", ...sx };
+
     switch (type) {
       case SearchFieldType.SWITCH:
         return (
@@ -69,7 +72,7 @@ const SearchFieldRender = ({
       case SearchFieldType.DROPDOWN:
         return (
           <SelectDropdown
-            sx={{ width: "100%", ...sx }}
+            sx={commonStyle}
             placeholder={placeholder}
             options={options as ActionType[]}
             value={value as string | number}
@@ -81,7 +84,7 @@ const SearchFieldRender = ({
       case SearchFieldType.INPUT_WITH_TYPE_TEXT:
         return (
           <InputTextField
-            sx={sx}
+            sx={commonStyle}
             error={Boolean(error)}
             type="text"
             clearable
@@ -95,7 +98,7 @@ const SearchFieldRender = ({
       case SearchFieldType.INPUT_WITH_NUMBER:
         return (
           <InputNumber
-            sx={{ width: "100%", ...sx }}
+            sx={commonStyle}
             value={value as number}
             onChange={onChange}
             placeholder={placeholder}
@@ -108,11 +111,13 @@ const SearchFieldRender = ({
 
       case SearchFieldType.DATE:
         return (
-          <DateTimePickerComponent
-            value={value as number}
-            onChange={onChange}
-            language="en"
-          />
+          <Box sx={commonStyle}>
+            <DateTimePickerComponent
+              value={value as number}
+              onChange={onChange}
+              language="en"
+            />
+          </Box>
         );
 
       default:

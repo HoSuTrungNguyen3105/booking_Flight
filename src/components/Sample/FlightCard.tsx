@@ -62,7 +62,12 @@ type FlightCardProps = {
 //   },
 // ];
 
-const FlightCard: React.FC<FlightCardProps> = ({ from, to, image, price }) => {
+export const FlightCard: React.FC<FlightCardProps> = ({
+  from,
+  to,
+  image,
+  price,
+}) => {
   return (
     <Card sx={{ maxWidth: 350, borderRadius: 3.5 }}>
       <CardMedia component="img" height="140" image={image} alt={to} />

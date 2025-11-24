@@ -105,14 +105,14 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isValid, setIsValid] = useState(false);
 
-  const { refetchGetMyUserInfo } = useGetMyUserInfo();
-  const { refetchGetMyAdminInfo } = useGetMyAdminInfo();
-  const { refetchLogoutSession } = useLogoutSessionFromPassenger();
-  const { refetchUpdateUserRank } = useUpdateUserRank();
-  const { refetchGetSessionByID } = useGetSessionsByID();
   const { refetchLogin } = useLoginUser();
   const { refetchAdminLogin } = useLoginAdmin();
   const { refetchSetLoginMfa } = useLoginByMfa();
+  const { refetchLogoutSession } = useLogoutSessionFromPassenger();
+  const { refetchGetMyUserInfo } = useGetMyUserInfo();
+  const { refetchGetMyAdminInfo } = useGetMyAdminInfo();
+  const { refetchUpdateUserRank } = useUpdateUserRank();
+  const { refetchGetSessionByID } = useGetSessionsByID();
   const { fetchVerifyPassword } = useVerifyPw({ id: user?.id });
   const isAdmin = useMemo(() => user?.role === UserRole.ADMIN, [user]);
 
@@ -274,19 +274,24 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       const res = await refetchLogoutSession();
       console.log("reslogout", res);
-      if (res?.resultCode === ResponseCode.SUCCESS) {
-        setIsAuthenticated(false);
-        setUser(null);
-        setCoords(null);
-        setCountryCode(null);
-        setPassenger(null);
-        setToken(null);
-        storage.clear();
+      if (res?.resultCode !== ResponseCode.SUCCESS) {
+        console.warn(
+          "Server logout failed or returned undefined, clearing local session anyway."
+        );
       }
     } catch (err: any) {
-      toast(err.message);
+      console.error("Logout error:", err);
+      toast(err?.message || "Logout error");
+    } finally {
+      setIsAuthenticated(false);
+      setUser(null);
+      setCoords(null);
+      setCountryCode(null);
+      setPassenger(null);
+      setToken(null);
+      storage.clear();
     }
-  }, [toast]);
+  }, [toast, token]);
 
   const hasValidLogin = useCallback(async () => {
     try {

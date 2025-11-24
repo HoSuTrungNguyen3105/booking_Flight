@@ -1,38 +1,43 @@
 import { memo, useState } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import { Add, Delete } from "@mui/icons-material";
-import type { Aircraft } from "../../../../utils/type";
+import type { Aircraft, TypeWithErrorResponse } from "../../../../utils/type";
 import { useToast } from "../../../../context/ToastContext";
 import InputTextField from "../../../../common/Input/InputTextField";
 import { ResponseCode } from "../../../../utils/response";
 import {
   useCreateAircraftBatchFlight,
+  useCreateAircraftFlight,
   useGetAircraftCode,
 } from "../../../../context/Api/AircraftApi";
-
-type AircraftError = {
-  code: string;
-  errorCode: string;
-  errorMessage: string;
-};
+import { FileUpload } from "../../../../common/FileUploader";
+import type { TFileUploader } from "../../../../common/FileUploader/type";
 
 type ReturnProps = {
   onSuccess: () => void;
 };
 
-type AircraftProps = Omit<Aircraft, "flights">;
+export type CreateAircraftProps = Omit<Aircraft, "flights">;
 
 const AircraftBatchCreator = ({ onSuccess }: ReturnProps) => {
-  const [aircrafts, setAircrafts] = useState<AircraftProps[]>([
+  const [aircrafts, setAircrafts] = useState<CreateAircraftProps[]>([
     { code: "", model: "", range: 0, manufacturer: "", totalSeats: 0 },
   ]);
+  const [state, setState] = useState<"multi" | "single">("multi");
+  const [files, setFiles] = useState<TFileUploader[]>([]);
 
-  const formData = new FormData();
-  formData.append("createBatchAircraftDto", JSON.stringify(aircrafts));
-  // formData.append('imageAircraft', fileInput.files[0]);
+  const handleStateChange = (newState: "multi" | "single") => {
+    setState(newState);
+    if (newState === "single") {
+      setAircrafts([
+        { code: "", model: "", range: 0, manufacturer: "", totalSeats: 0 },
+      ]);
+    }
+  };
 
   const toast = useToast();
   const [loading, setLoading] = useState(false);
+  const { refetchCreateAircraftFlight } = useCreateAircraftFlight();
   const { refetchCreateAircraftBatchFlightData } =
     useCreateAircraftBatchFlight();
 
@@ -55,7 +60,7 @@ const AircraftBatchCreator = ({ onSuccess }: ReturnProps) => {
 
   const updateAircraft = (
     index: number,
-    field: keyof AircraftProps,
+    field: keyof CreateAircraftProps,
     value: string | number
   ) => {
     const updated = [...aircrafts];
@@ -72,19 +77,39 @@ const AircraftBatchCreator = ({ onSuccess }: ReturnProps) => {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      const response = await refetchCreateAircraftBatchFlightData(formData);
+      const formData = new FormData();
+      if (files.length > 0) {
+        formData.append("imageAircraft", files[0].raw);
+      }
+
+      let response;
+      if (state === "single") {
+        formData.append("createAircraftDto", JSON.stringify(aircrafts[0]));
+        response = await refetchCreateAircraftFlight(formData);
+      } else {
+        formData.append("createBatchAircraftDto", JSON.stringify(aircrafts));
+        response = await refetchCreateAircraftBatchFlightData(formData);
+      }
+
       if (response?.resultCode === ResponseCode.SUCCESS) {
         toast(response?.resultMessage);
         refetchGetAircraftCodeData();
         const errorMap: Record<number, string> = {};
-        response.list?.forEach((res: AircraftError, idx: number) => {
-          if (res.errorCode !== ResponseCode.SUCCESS) {
-            errorMap[idx] = res.errorMessage;
-          }
-        });
+
+        if (response.list) {
+          response.list.forEach((res: TypeWithErrorResponse, idx: number) => {
+            if (res.errorCode !== ResponseCode.SUCCESS) {
+              errorMap[idx] = res.errorMessage;
+            }
+          });
+        }
+
         setErrors(errorMap);
         if (Object.keys(errorMap).length === 0) {
-          setAircrafts([{ code: "", model: "", range: 0 }]);
+          setAircrafts([
+            { code: "", model: "", range: 0, manufacturer: "", totalSeats: 0 },
+          ]);
+          setFiles([]);
           onSuccess();
         }
       } else {
@@ -99,9 +124,24 @@ const AircraftBatchCreator = ({ onSuccess }: ReturnProps) => {
 
   return (
     <Box sx={{ maxWidth: "100%" }}>
-      <Button variant="contained" onClick={onSuccess}>
-        Return
-      </Button>
+      <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
+        <Button variant="contained" onClick={onSuccess}>
+          Return
+        </Button>
+        <Button
+          variant={state === "single" ? "contained" : "outlined"}
+          onClick={() => handleStateChange("single")}
+        >
+          Single
+        </Button>
+        <Button
+          variant={state === "multi" ? "contained" : "outlined"}
+          onClick={() => handleStateChange("multi")}
+        >
+          Multi
+        </Button>
+      </Box>
+
       {aircrafts.map((aircraft, index) => (
         <Box
           key={index}
@@ -149,14 +189,24 @@ const AircraftBatchCreator = ({ onSuccess }: ReturnProps) => {
               onChange={(e) => updateAircraft(index, "range", e)}
               placeholder="e.g., 5600"
             />
+            <FileUpload
+              name="imageAircraft"
+              value={files}
+              onChange={setFiles}
+              maxFiles={1}
+              multiple={false}
+              accept=".jpg,.png,.jpeg"
+            />
           </Box>
         </Box>
       ))}
 
       <Box sx={{ display: "flex", gap: 2, mt: 3 }}>
-        <Button variant="outlined" startIcon={<Add />} onClick={addAircraft}>
-          Add Aircraft
-        </Button>
+        {state === "multi" && (
+          <Button variant="outlined" startIcon={<Add />} onClick={addAircraft}>
+            Add Aircraft
+          </Button>
+        )}
 
         <Button
           variant="contained"

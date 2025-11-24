@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import { Box, Button, Tooltip, Stack, alpha } from "@mui/material";
+import { Box, Tooltip } from "@mui/material";
 import type { Seat } from "../../utils/type";
 import theme from "../../scss/theme";
 import { useSeatManagement } from "../Admin/component/Seat/hook/useSeatManagement";

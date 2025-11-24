@@ -3,18 +3,15 @@ import ButtonCircle from "../../common/Button/ButtonCircle";
 import CardGroup from "../../common/AdditionalCustomFC/CardGroup";
 import { ControlCameraTwoTone, RoomService, Sports } from "@mui/icons-material";
 import EventCard from "../../common/AdditionalCustomFC/EventCard";
-// import { useGetAllHotels, useGetFlightData } from "../../context/Api/useGetApi";
 import { useNavigate } from "react-router-dom";
 import FlightDeals from "../Admin/component/Flight/components/FlightDeals";
-// import HeroV2 from "./HeroV2";
-// import HeroV3 from "./HeroV3";
 import FlightSearchForm from "./FlightSearchForm";
-import { useGetFlightData } from "../../context/Api/FlightApi";
+import { useFindBestSellerFlightsWithDiscount } from "../../context/Api/FlightApi";
 import { useGetAllHotels } from "../../context/Api/HotelApi";
 
 const Hero = () => {
   const { dataGetAllHotels } = useGetAllHotels();
-  const { getFlightData } = useGetFlightData();
+  const { getFlightData } = useFindBestSellerFlightsWithDiscount();
   const navigate = useNavigate();
 
   const handleNavigate = (code: string) => {

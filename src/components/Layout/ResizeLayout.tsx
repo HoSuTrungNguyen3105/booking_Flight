@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import AsideContainer from "./SidebarAdmin";
 import {
   Box,
@@ -19,6 +19,7 @@ import ScrollToTop from "../../context/use[custom]/useScrollToTop";
 
 const ResizeLayout = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [openMenu, setOpenMenu] = React.useState<Record<string, boolean>>({});
 
   const handleMenuToggle = (id: string) => {
@@ -35,16 +36,31 @@ const ResizeLayout = () => {
       const hasSubItems = !!item.subItems?.length;
       const isOpen = openMenu[item.id] || false;
       const fullPath = buildPath(item.id);
+      const isActive = location.pathname === fullPath;
 
       return (
         <React.Fragment key={item.id}>
           <ListItemButton
             key={item.label}
+            selected={isActive}
             sx={(theme) => ({
               borderBottom: `1px solid ${theme.palette.grey[200]}`,
               pl: 2 + level * 2,
               py: 0.5,
               minHeight: "36px",
+              "&.Mui-selected": {
+                bgcolor: theme.palette.action.selected,
+                "&:hover": {
+                  bgcolor: theme.palette.action.hover,
+                },
+                "& .MuiListItemIcon-root": {
+                  color: theme.palette.primary.main,
+                },
+                "& .MuiListItemText-primary": {
+                  color: theme.palette.primary.main,
+                  fontWeight: 600,
+                },
+              },
             })}
             onClick={() => {
               if (hasSubItems) {
@@ -104,7 +120,6 @@ const ResizeLayout = () => {
           "&::-webkit-scrollbar": {
             display: "none",
           },
-          // msOverflowStyle: "none",
         })}
       >
         {menuData.map((section, index) => (
@@ -140,15 +155,6 @@ const ResizeLayout = () => {
 };
 
 const ManageLayout = () => {
-  // const location = useLocation();
-  // const contentRef = useRef<HTMLDivElement>(null);
-
-  // useEffect(() => {
-  //   if (contentRef.current) {
-  //     contentRef.current.scrollTo({ top: 0, behavior: "smooth" });
-  //   }
-  // }, [location.pathname]);
-
   return (
     <Stack
       direction="column"

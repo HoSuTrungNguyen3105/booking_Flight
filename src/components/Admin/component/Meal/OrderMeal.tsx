@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import {
   Container,
   Grid,
@@ -7,9 +7,12 @@ import {
   TextField,
   IconButton,
   Typography,
+  InputAdornment,
+  Tooltip,
 } from "@mui/material";
 
-import { PlusCircle } from "lucide-react";
+import { PlusCircle, Search } from "lucide-react";
+
 import MenuTabs from "./MenuTabs";
 import OrderTable, { type OrderItem } from "./OrderTable";
 import type { Meal } from "../../../../utils/type";
@@ -20,23 +23,28 @@ const OrderMeal = () => {
   const [cart, setCart] = useState<OrderItem[]>([]);
   const [selectedCategory, setSelectedCategory] =
     useState<Meal["mealType"]>("Breakfast");
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingItem, setEditingItem] = useState<Meal | null>(null);
+  // const [dialogOpen, setDialogOpen] = useState(false);
+  // const [editingItem, setEditingItem] = useState<Meal | null>(null);
   const [search, setSearch] = useState("");
 
-  const menu = useMemo(() => mealData?.list || [], [mealData]);
+  // Convert meal data
+  const mealList = useMemo(() => mealData?.list || [], [mealData]);
 
-  useEffect(() => {
-    // setMenu([]); // This is no longer needed as menu is derived from mealData
-  }, []);
+  // Debounce search (UX mượt hơn)
+  const filteredMenu = useMemo(() => {
+    const s = search.toLowerCase().trim();
+    return mealList.filter((m) => {
+      const matchCategory = m.mealType === selectedCategory;
+      const matchSearch =
+        m.name.toLowerCase().includes(s) ||
+        m.mealCode.toLowerCase().includes(s);
 
-  function handleDeleteMenu(id: number) {
-    // Implement delete logic if needed, or remove this function if not used
-    // For now, we just remove from cart if it's there
-    setCart((prev) => prev.filter((c) => c.id !== id));
-  }
+      return matchCategory && matchSearch;
+    });
+  }, [mealList, selectedCategory, search]);
 
-  // add to cart (create or increase)
+  // CART HANDLERS -------------------------------------
+
   function handleAddToCart(menuItem: Meal) {
     setCart((prev) => {
       const existing = prev.find((c) => c.id === menuItem.id);
@@ -44,16 +52,17 @@ const OrderMeal = () => {
         return prev.map((c) =>
           c.id === menuItem.id ? { ...c, quantity: c.quantity + 1 } : c
         );
-      } else {
-        const newCartItem: OrderItem = {
+      }
+      return [
+        ...prev,
+        {
           id: menuItem.id,
           mealCode: menuItem.mealCode,
           name: menuItem.name,
           price: menuItem.price,
           quantity: 1,
-        };
-        return [...prev, newCartItem];
-      }
+        },
+      ];
     });
   }
 
@@ -71,78 +80,73 @@ const OrderMeal = () => {
     setCart((prev) => prev.map((c) => (c.id === id ? { ...c, note } : c)));
   }
 
-  function handleSubmitOrder() {
-    // TODO: Implement submit logic (e.g., create FlightMeals)
-    console.log("Submitting order:", cart);
-    setCart([]);
+  function handleDeleteMenu(id: number) {
+    // Optional: remove from cart
+    setCart((prev) => prev.filter((c) => c.id !== id));
   }
 
-  function handleClearCart() {
-    setCart([]);
-  }
-
-  // search filter
-  const filteredMenu = useMemo(() => {
-    return menu.filter((m) => {
-      const matchesCategory = m.mealType === selectedCategory;
-      const matchesSearch =
-        m.name.toLowerCase().includes(search.toLowerCase()) ||
-        m.mealCode.toLowerCase().includes(search.toLowerCase());
-      return matchesCategory && matchesSearch;
-    });
-  }, [menu, selectedCategory, search]);
+  // ------------------------------------------------------
 
   return (
     <Box>
-      {/* <HeaderBar /> */}
-
       <Container maxWidth="xl" sx={{ mt: 3 }}>
         <Grid container spacing={2}>
+          {/* LEFT CONTENT */}
           <Grid size={8}>
             <Paper variant="outlined" sx={{ p: 2 }}>
+              {/* Search + Add Button */}
               <Box
                 display="flex"
                 justifyContent="space-between"
                 alignItems="center"
                 mb={2}
               >
-                <Box display="flex" gap={1}>
-                  <TextField
-                    size="small"
-                    placeholder="Search menu..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                  />
-                </Box>
-                <Box>
+                <TextField
+                  size="small"
+                  placeholder="Search menu..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Search size={18} />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+
+                <Tooltip title="Add new menu item">
                   <IconButton
                     color="primary"
                     onClick={() => {
-                      setEditingItem(null);
-                      setDialogOpen(true);
+                      // setEditingItem(null);
+                      // setDialogOpen(true);
                     }}
                   >
                     <PlusCircle />
                   </IconButton>
-                </Box>
+                </Tooltip>
               </Box>
 
+              {/* Menu Tabs */}
               <MenuTabs
                 menu={filteredMenu}
                 onAddToCart={handleAddToCart}
                 value={selectedCategory}
                 onChange={(c) => setSelectedCategory(c)}
-                onEditItem={(i) => {
+                onEditItem={() => {
                   // setEditingItem(i);
-                  setDialogOpen(true);
+                  // setDialogOpen(true);
                 }}
-                onDeleteItem={(id) => handleDeleteMenu(id)}
+                onDeleteItem={handleDeleteMenu}
               />
 
+              {/* Cart Items */}
               <Box mt={3}>
                 <Typography variant="h6" gutterBottom>
                   Selected Items
                 </Typography>
+
                 <OrderTable
                   items={cart}
                   onUpdateQty={handleUpdateQty}
@@ -153,18 +157,13 @@ const OrderMeal = () => {
             </Paper>
           </Grid>
 
+          {/* RIGHT SIDEBAR PLACEHOLDER */}
           <Grid size={4}>
-            {/* <CartSidebar items={cart} onSubmit={handleSubmitOrder} onClear={handleClearCart} /> */}
+            {/* Future: CartSidebar / Summary */}
+            <Paper sx={{ p: 2, height: "100%" }}>Sidebar</Paper>
           </Grid>
         </Grid>
       </Container>
-
-      {/* <AddMenuItemDialog
-        open={dialogOpen}
-        onClose={()=>setDialogOpen(false)}
-        onSave={handleAddOrUpdateMenu}
-        initial={editingItem}
-      /> */}
     </Box>
   );
 };

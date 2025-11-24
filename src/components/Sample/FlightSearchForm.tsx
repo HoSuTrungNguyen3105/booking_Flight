@@ -18,8 +18,9 @@ import { useDataSection, type SearchFormConfig } from "./search_type_input";
 import useLocalStorage from "../../context/use[custom]/useLocalStorage";
 import SearchFieldRender from "../../common/AdditionalCustomFC/SearchFieldRender";
 import { createSearchParams, useNavigate } from "react-router-dom";
-import { v4 as uuidv4 } from "uuid";
 import FlightGrid from "./FlightCard";
+import { useSearchFlightFromPassenger } from "../../context/Api/EnumApi";
+import { generateSearchToken } from "../../utils/security";
 
 type SearchFlightFromPassengerDto = {
   departureAirport?: string;
@@ -45,13 +46,10 @@ const FlightSearchForm: React.FC<{ type: keyof SearchFormConfig }> = ({
     destination: "",
     departDate: 0,
     returnDate: 0,
-    type: "Economy",
     passengers: 1,
   });
 
-  const handleSubmit = () => {
-    const token = uuidv4();
-
+  const handleSubmit = async () => {
     const params: Record<string, string> = {
       departureAirport: formData.origin || "",
       arrivalAirport: formData.destination || "",
@@ -61,7 +59,6 @@ const FlightSearchForm: React.FC<{ type: keyof SearchFormConfig }> = ({
       scheduledArrival: formData.returnDate ? String(formData.returnDate) : "",
       passengers: "1", // Default to 1 as it's not in the form
       flightClass: formData.type || "",
-      token,
     };
 
     if (hasReturnDay && formData.returnDate) {
@@ -70,10 +67,14 @@ const FlightSearchForm: React.FC<{ type: keyof SearchFormConfig }> = ({
       delete params.scheduledArrival;
     }
 
-    navigate({
-      pathname: "/search",
-      search: createSearchParams(params).toString(),
-    });
+    // Remove token from params before generating it to avoid circular dependency if it was there
+    const { token: _, ...paramsToHash } = params;
+
+    const generatedToken = generateSearchToken(paramsToHash);
+    params.token = generatedToken;
+
+    const search = new URLSearchParams(params).toString();
+    navigate(`/search?${search}`);
   };
 
   const dataSection = useDataSection(type, formData, hasReturnDay);
@@ -113,133 +114,129 @@ const FlightSearchForm: React.FC<{ type: keyof SearchFormConfig }> = ({
           </Typography>
         </Box>
 
-        <Paper
-          elevation={3}
-          sx={{ p: 3, mb: 3, borderRadius: 3, backgroundColor: "#fff" }}
-        >
-          {dataSection?.map((section, index) => (
-            <Box key={index} mb={2}>
-              {!section.visible && (
-                <Box
-                  sx={{ mb: 2, display: "flex", alignItems: "center", gap: 2 }}
-                >
-                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                    {section.label}
-                  </Typography>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={hasReturnDay}
-                        onChange={() => setHasReturnDay((prev) => !prev)}
-                        sx={{ p: 0.5 }}
-                      />
-                    }
-                    label="Khứ hồi (Roundtrip)"
-                    sx={{ mr: 0 }}
-                  />
-                </Box>
-              )}
-
-              <Paper
-                elevation={2}
-                sx={{
-                  p: 1,
-                  display: "flex",
-                  bgcolor: "background.paper",
-                  border: "1px solid #e0e0e0",
-                  flexWrap: "wrap",
-                  gap: 1,
-                }}
+        {dataSection?.map((section, index) => (
+          <Box key={index} mb={2}>
+            {!section.visible && (
+              <Box
+                sx={{ mb: 2, display: "flex", alignItems: "center", gap: 2 }}
               >
-                {section.fields
-                  .filter((field) => !field.disabled)
-                  .map((field, fieldIndex, visibleFields) => (
-                    <React.Fragment key={fieldIndex}>
-                      <Box
+                <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                  {section.label}
+                </Typography>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={hasReturnDay}
+                      onChange={() => setHasReturnDay((prev) => !prev)}
+                      sx={{ p: 0.5 }}
+                    />
+                  }
+                  label="Khứ hồi (Roundtrip)"
+                  sx={{ mr: 0 }}
+                />
+              </Box>
+            )}
+
+            <Paper
+              elevation={2}
+              sx={{
+                p: 1,
+                display: "flex",
+                bgcolor: "background.paper",
+                border: "1px solid #e0e0e0",
+                flexWrap: "wrap",
+                gap: 1,
+              }}
+            >
+              {section.fields
+                .filter((field) => !field.disabled)
+                .map((field, fieldIndex, visibleFields) => (
+                  <React.Fragment key={fieldIndex}>
+                    <Box
+                      sx={{
+                        flex: field.size ? field.size : 1,
+                        minWidth: "150px",
+                        position: "relative",
+                        ...field.sx,
+                      }}
+                    >
+                      <SearchFieldRender
+                        type={field.type}
+                        value={formData[field.id as keyof FormState] ?? ""}
+                        size={field.size}
                         sx={{
-                          flex: field.size ? field.size : 1,
-                          minWidth: "150px",
-                          position: "relative",
-                          ...field.sx,
+                          "& .MuiOutlinedInput-notchedOutline": {
+                            border: "none",
+                          },
+                          "& .MuiInputBase-root": { padding: 0 },
                         }}
-                      >
-                        <SearchFieldRender
-                          type={field.type}
-                          value={formData[field.id as keyof FormState] ?? ""}
-                          size={field.size}
-                          sx={{
-                            "& .MuiOutlinedInput-notchedOutline": {
-                              border: "none",
-                            },
-                            "& .MuiInputBase-root": { padding: 0 },
-                          }}
-                          options={field.options}
-                          placeholder={field.placeholder}
-                          onChange={(val) =>
-                            handleChange(
-                              field.id as keyof FormState,
-                              val as FormState[keyof FormState]
-                            )
-                          }
-                        />
-                      </Box>
-                      {fieldIndex < visibleFields.length - 1 && (
-                        <>
-                          {field.id === "origin" ? (
-                            <Box
+                        options={field.options}
+                        placeholder={field.placeholder}
+                        onChange={(val) =>
+                          handleChange(
+                            field.id as keyof FormState,
+                            val as FormState[keyof FormState]
+                          )
+                        }
+                      />
+                    </Box>
+                    {fieldIndex < visibleFields.length - 1 && (
+                      <>
+                        {field.id === "origin" ? (
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              mx: 1,
+                            }}
+                          >
+                            <IconButton
+                              onClick={handleSwap}
                               sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                mx: 1,
+                                border: "1px solid #e0e0e0",
+                                borderRadius: "50%",
+                                p: 0.5,
+                                "&:hover": { backgroundColor: "#f5f5f5" },
                               }}
                             >
-                              <IconButton
-                                onClick={handleSwap}
-                                sx={{
-                                  border: "1px solid #e0e0e0",
-                                  borderRadius: "50%",
-                                  p: 0.5,
-                                  "&:hover": { backgroundColor: "#f5f5f5" },
-                                }}
-                              >
-                                <SwapHoriz fontSize="small" />
-                              </IconButton>
-                            </Box>
-                          ) : (
-                            <Box
-                              sx={{
-                                width: "1px",
-                                height: "30px",
-                                bgcolor: "#e0e0e0",
-                                mx: 1,
-                              }}
-                            />
-                          )}
-                        </>
-                      )}
-                    </React.Fragment>
-                  ))}
+                              <SwapHoriz fontSize="small" />
+                            </IconButton>
+                          </Box>
+                        ) : (
+                          <Box
+                            sx={{
+                              width: "1px",
+                              height: "30px",
+                              bgcolor: "#e0e0e0",
+                              mx: 1,
+                            }}
+                          />
+                        )}
+                      </>
+                    )}
+                  </React.Fragment>
+                ))}
 
-                <Button
-                  variant="contained"
-                  size="large"
-                  onClick={handleSubmit}
-                  sx={{
-                    borderRadius: 3,
-                    px: 4,
-                    py: 1.5,
-                    ml: "auto",
-                    boxShadow: "none",
-                    fontWeight: "bold",
-                  }}
-                >
-                  Search
-                </Button>
-              </Paper>
-            </Box>
-          ))}
-        </Paper>
+              <Button
+                variant="contained"
+                size="large"
+                onClick={handleSubmit}
+                sx={{
+                  borderRadius: 3,
+                  px: 4,
+                  py: 1.5,
+                  ml: "auto",
+                  boxShadow: "none",
+                  fontWeight: "bold",
+                }}
+              >
+                Search
+              </Button>
+            </Paper>
+          </Box>
+        ))}
+        {/* </Paper> */}
 
         {/* Cookies Notice */}
         <Box sx={{ textAlign: "center", mt: 4 }}>

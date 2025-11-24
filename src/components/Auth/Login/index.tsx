@@ -117,7 +117,7 @@ export const LoginPage: React.FC = () => {
         setViewMode("changePw");
         setUserId(loginRes.userId);
       } else {
-        reset();
+        reset({ password: "" });
       }
     } catch (error) {
       console.error("Login error:", error);

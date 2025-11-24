@@ -12,7 +12,7 @@ import { FlightOutlined, Search } from "@mui/icons-material";
 import {
   mapStringToDropdown,
   useFindAllSeatTypes,
-  useGetAllFlightMainInfo,
+  // useGetAllFlightMainInfo,
   useSearchFlightFromPassenger,
 } from "../../context/Api/useGetApi";
 import { DateFormatEnum, formatDate } from "../../hooks/format";
@@ -24,6 +24,7 @@ import SelectDropdown from "../../common/Dropdown/SelectDropdown";
 import FlightIcon from "../../common/IconComponent/FlightIcon";
 import Smooth from "react-smooth";
 import TabPanel from "../../common/AdditionalCustomFC/TabPanel";
+import { useGetAllFlightMainInfo } from "../../context/Api/FlightApi";
 
 interface SearchFormData {
   departureAirport: string;

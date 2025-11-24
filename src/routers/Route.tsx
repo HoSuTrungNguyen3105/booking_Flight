@@ -73,6 +73,7 @@ import BookingPassengerSearch from "../components/Admin/component/Booking/Bookin
 import SomeComponent from "../components/Admin/component/Meal/SomeComponent";
 import BookingDemo from "../components/Sample/BookingDemo";
 import { DiscountBatchCreator } from "../components/Contact/DiscountBatchCreator";
+import SeedPermissionsPage from "../common/Setting/Component/SeedPermissionsPage";
 
 const routes = [
   {
@@ -286,8 +287,8 @@ const routes = [
         // element: <BulkMealCreator />,
       },
       {
-        path: ROUTE_PATHS.SAMPLE_FORM,
-        // element: <FlightPage />,
+        path: ROUTE_PATHS.SEED_PERMISSIONS,
+        element: <SeedPermissionsPage />,
       },
       {
         path: ROUTE_PATHS.FLIGHT_STATISTICS,

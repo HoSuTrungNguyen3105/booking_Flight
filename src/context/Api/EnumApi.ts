@@ -4,6 +4,7 @@ import {
   type DetailResponseMessage,
   type Payroll,
   type SearchFlightFromPassengerParams,
+  type SearchFlightResponse,
 } from "../../utils/type";
 import { useFetch } from "../use[custom]/useFetch";
 
@@ -286,8 +287,8 @@ export interface FlightSearchFromPassengerRes {
 }
 
 export const useSearchFlightFromPassenger = () => {
-  const { refetch, loading, setParams } = useFetch<
-    DetailResponseMessage<DataFlight>,
+  const { data, refetch, loading, setParams } = useFetch<
+    SearchFlightResponse,
     SearchFlightFromPassengerParams
   >({
     url: "/sys/flights/passenger/searchs",
@@ -295,6 +296,7 @@ export const useSearchFlightFromPassenger = () => {
     config: getMethod,
   });
   return {
+    dataSearchFlightFromPassenger: data,
     setParamsSearch: setParams,
     refetchSearchFlightFromPassenger: refetch,
     loadingSearchFlightFromPassenger: loading,

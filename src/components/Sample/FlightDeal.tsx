@@ -117,44 +117,6 @@ const FlightDealsAccept = () => {
             }}
           />
         </Box>
-
-        {/* TEXT */}
-        {/* <Box
-          sx={{
-            px: 4,
-            py: 3,
-            display: "flex",
-            flexDirection: "column",
-            gap: 1,
-          }}
-        >
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Typography
-              sx={{ fontSize: "16px", color: "#6E7491", fontWeight: 500 }}
-            >
-              Tsavo East National Park,{" "}
-              <Typography component="span" sx={{ color: "#605DEC" }}>
-                Kenya
-              </Typography>
-            </Typography>
-
-            <Typography
-              sx={{ fontSize: "16px", color: "#6E7491", fontWeight: 500 }}
-            >
-              $1,248
-            </Typography>
-          </Stack>
-
-          <Typography sx={{ color: "#7C8DB0", fontSize: "14px" }}>
-            Named after the Tsavo River, and opened in April 1984, Tsavo East
-            National Park is one of the oldest parks in Kenya. It is located in
-            the semi-arid Taru Desert.
-          </Typography>
-        </Box> */}
       </Box>
     </Box>
   );

@@ -1,4 +1,8 @@
-import { MethodType, type ResponseGGAuthenticate } from "../../utils/type";
+import {
+  MethodType,
+  type ResponseGGAuthenticate,
+  type ResponseMessage,
+} from "../../utils/type";
 import { useFetch } from "../use[custom]/useFetch";
 
 const getMethod = {
@@ -25,6 +29,7 @@ export interface MfaCodeRequest {
   email: string;
   code: string;
 }
+
 export const useLoginByMfa = () => {
   const { data: setLoginMfa, refetch: refetchSetLoginMfa } = useFetch<
     ResponseGGAuthenticate,
@@ -37,5 +42,18 @@ export const useLoginByMfa = () => {
   return {
     setLoginMfa,
     refetchSetLoginMfa,
+  };
+};
+
+export const useSeedPermissions = () => {
+  const { data: setSeedPermissions, refetch: refetchSetSeedPermissions } =
+    useFetch<ResponseMessage, void>({
+      url: "/auth/seed-permissions",
+      autoFetch: false,
+      config: postMethod,
+    });
+  return {
+    setSeedPermissions,
+    refetchSetSeedPermissions,
   };
 };

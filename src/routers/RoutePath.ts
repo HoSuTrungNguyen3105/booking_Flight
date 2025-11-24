@@ -26,6 +26,7 @@ export const ROUTE_PATHS = {
   LEAVE_REQUEST_TABLE: "LeaveRequestTable",
   DOMESTIC: "domestic",
   BULK_MEAL_CREATOR: "BulkMealCreator",
+  SEED_PERMISSIONS: "SEED_PERMISSIONS",
   AIRPORT_MAP: "AirportMap",
   FLIGHT_STATISTICS: "FlightStatisticsPage",
   SERVICE: "service",

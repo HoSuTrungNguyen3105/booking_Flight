@@ -5,7 +5,6 @@ import {
   type UserData,
   type DetailResponseMessage,
   type FlightMealDetailApiResponse,
-  type FlightListApiResponse,
   type MealResponse,
   type FlightResponse,
   type SeatResponseMessage,
@@ -355,18 +354,18 @@ export const useGetAllAircraftInfo = () => {
   };
 };
 
-export const useGetAllFlightMainInfo = () => {
-  const { data: getAllFlightInfoInfo, refetch: refetchGetAllFlightInfoInfo } =
-    useFetch<FlightDetailApiResponse, null>({
-      url: "/sys/flights/flight-info/main",
-      autoFetch: true,
-      config: getMethod,
-    });
-  return {
-    getAllFlightInfoInfo,
-    refetchGetAllFlightInfoInfo,
-  };
-};
+// export const useGetAllFlightMainInfo = () => {
+//   const { data: getAllFlightInfoInfo, refetch: refetchGetAllFlightInfoInfo } =
+//     useFetch<FlightDetailApiResponse, null>({
+//       url: "/sys/flights/flight-info/main",
+//       autoFetch: true,
+//       config: getMethod,
+//     });
+//   return {
+//     getAllFlightInfoInfo,
+//     refetchGetAllFlightInfoInfo,
+//   };
+// };
 
 export const useGetAllHotels = () => {
   const { data: dataGetAllHotels, refetch: refetchGetAllHotels } = useFetch<

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Grid,
@@ -6,16 +6,52 @@ import {
   Button,
   Checkbox,
   FormControlLabel,
-  Rating,
   Divider,
   Slider,
+  CircularProgress,
 } from "@mui/material";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import InputTextField from "../../common/Input/InputTextField";
+import { useSearchFlightFromPassenger } from "../../context/Api/EnumApi";
+import type { SearchFlightFromPassengerParams } from "../../utils/type";
+import { FlightCard } from "../Sample/FlightCard";
+import Umage from "../../svgs/Plane1.png";
+import { generateSearchToken } from "../../utils/security";
+import { useToast } from "../../context/ToastContext";
+
+type SearchFlightWithNoToken = SearchFlightFromPassengerParams & {
+  token: string;
+};
 
 const FlightsPage: React.FC = () => {
   const [searchParams] = useSearchParams();
-  searchParams.get("from");
+  const toast = useToast();
+  const searchFlightFromPassengerParams = Object.fromEntries(
+    searchParams.entries()
+  ) as unknown as SearchFlightFromPassengerParams;
+  const {
+    refetchSearchFlightFromPassenger,
+    dataSearchFlightFromPassenger,
+    loadingSearchFlightFromPassenger,
+  } = useSearchFlightFromPassenger();
+
+  useEffect(() => {
+    if (searchParams.toString()) {
+      const { token, ...paramsToValidate } =
+        searchFlightFromPassengerParams as SearchFlightWithNoToken;
+      const expectedToken = generateSearchToken(
+        paramsToValidate as Record<string, string>
+      );
+
+      if (token !== expectedToken) {
+        toast("Invalid search parameters or token!", "error");
+        navigate("/"); // Redirect to home or handle error appropriately
+        return;
+      }
+
+      refetchSearchFlightFromPassenger(searchFlightFromPassengerParams);
+    }
+  }, [searchParams]);
 
   const [filter, setFilter] = useState({
     freeCancel: false,
@@ -49,18 +85,9 @@ const FlightsPage: React.FC = () => {
     console.log("Price range:", priceRange);
   };
 
-  //   const filteredHotels = hotels.filter((h) => {
-  //     if (filter.freeCancel && !h.freeCancel) return false;
-  //     if (filter.payLater && !h.payLater) return false;
-  //     if (filter.minRating > 0 && h.rating < filter.minRating) return false;
-  //     return true;
-  //   });
-
-  const handleNvigate = (code: string) => {
-    navigate("/hotels/detail", {
-      state: { code },
-    });
-  };
+  const outboundFlights = dataSearchFlightFromPassenger?.data?.outbound || [];
+  const inboundFlights = dataSearchFlightFromPassenger?.data?.inbound || [];
+  const allFlights = [...outboundFlights, ...inboundFlights];
 
   return (
     <Box sx={{ display: "flex", p: 3, gap: 3 }}>
@@ -146,95 +173,41 @@ const FlightsPage: React.FC = () => {
         </Box>
       </Box>
 
-      {/* Hotel List */}
-      <Grid container spacing={3} sx={{ flex: 1 }}>
-        {/* {filteredHotels.map((hotel) => (
-          <Grid size={12} key={hotel.id}>
-            <Card sx={{ display: "flex", boxShadow: 3, borderRadius: 2 }}>
-              <CardMedia
-                component="img"
-                sx={{ width: 280, borderRadius: "8px 0 0 8px" }}
-                image={hotel.imageUrl}
-                alt={hotel.name}
-              />
-              <CardContent sx={{ flex: 1 }}>
-                <Typography variant="h6" fontWeight="bold">
-                  {hotel.name}
-                </Typography>
-                <Chip label={hotel.hotelCode} />
-                <Typography variant="body2" color="text.secondary">
-                  {hotel.city} • {hotel.distanceToCenter} km from City centre
-                </Typography>
-                <Rating value={hotel.rating} precision={0.5} readOnly />
-                <Stack direction="row" spacing={1} mt={1}>
-                  {hotel.isPrime && (
-                    <Box
-                      sx={{
-                        px: 1.5,
-                        py: 0.5,
-                        bgcolor: "#004080",
-                        color: "#fff",
-                        borderRadius: 1,
-                        fontSize: 12,
-                      }}
-                    >
-                      Prime discount
-                    </Box>
-                  )}
-                  {hotel.freeWifi && (
-                    <Typography fontSize={13} color="green">
-                      Free WiFi
-                    </Typography>
-                  )}
-                  {hotel.covidMeasures && (
-                    <Typography fontSize={13} color="blue">
-                      COVID-19 measures
-                    </Typography>
-                  )}
-                </Stack>
-                {hotel.discountPercent && (
-                  <Typography
-                    variant="body2"
-                    color="error"
-                    sx={{ mt: 1, fontWeight: "bold" }}
-                  >
-                    -{hotel.discountPercent}% OFF
-                  </Typography>
-                )}
-              </CardContent>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  p: 3,
-                  bgcolor: "#f9fafb",
-                  borderRadius: "0 8px 8px 0",
-                }}
-              >
-                <Typography variant="h6" fontWeight="bold" color="#00647A">
-                  €{hotel.price.toFixed(2)}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  per night
-                </Typography>
-                <Button
-                  variant="contained"
-                  onClick={() => handleNvigate(hotel?.hotelCode || "")}
-                  sx={{
-                    mt: 1.5,
-                    bgcolor: "#00647A",
-                    "&:hover": { bgcolor: "#004d5e" },
-                  }}
-                >
-                  Select
-                </Button>
-              </Box>
-            </Card>
+      {/* Flight List */}
+      <Box sx={{ flex: 1 }}>
+        {loadingSearchFlightFromPassenger ? (
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            height="100%"
+          >
+            <CircularProgress />
+          </Box>
+        ) : (
+          <Grid container spacing={3}>
+            {allFlights.length > 0 ? (
+              allFlights.map((flight, index) => (
+                <Grid size={4} key={flight.flightId || index}>
+                  <FlightCard
+                    from={
+                      flight.departureAirportRel?.city ||
+                      flight.departureAirport
+                    }
+                    to={flight.arrivalAirportRel?.city || flight.arrivalAirport}
+                    image={flight.aircraft?.imageAircraft || Umage}
+                    price={flight.priceEconomy || 0}
+                  />
+                </Grid>
+              ))
+            ) : (
+              <Typography variant="body1" sx={{ p: 2 }}>
+                No flights found.
+              </Typography>
+            )}
           </Grid>
-        ))} */}
-      </Grid>
+        )}
+      </Box>
     </Box>
   );
 };

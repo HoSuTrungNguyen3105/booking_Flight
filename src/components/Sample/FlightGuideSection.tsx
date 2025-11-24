@@ -56,13 +56,8 @@ const FlightGuideCard: React.FC<FlightGuideCardProps> = ({
 
 const FlightGuideSection: React.FC<{ title: string }> = ({ title }) => {
   const section = menuData[title];
-const navigate = useNavigate();
+  const navigate = useNavigate();
   if (!section) return null;
-
-  const cards = section.items.map((item) => ({
-    title: item.label,
-    image: item.image || "",
-  }));
 
   return (
     <Box sx={{ width: "100%", px: { xs: 2, md: 8 }, py: 5 }}>
@@ -79,12 +74,12 @@ const navigate = useNavigate();
       </Typography>
 
       <Grid container spacing={3}>
-        {cards.map((card, idx) => (
+        {section.items.map((item, idx) => (
           <Grid size={3} key={idx}>
             <FlightGuideCard
-              image={card.image}
-              title={card.title}
-              onClick={() =>  navigate(`/${card.title}`)}
+              image={item.image || ""}
+              title={item.label}
+              onClick={() => navigate(`/${item.value}`)}
             />
           </Grid>
         ))}

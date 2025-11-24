@@ -16,7 +16,7 @@ export const useChooseSeatToBooking = ({ id }: FlightWithSeatLayoutProps) => {
   const [selectedSeats, setSelectedSeats] = useState<Seat[]>([]);
   const maxSelectSeats = 1;
   const [filter] = useState<FilterType>("ALL");
-  const flightData = getAllInfoFlightByIdData?.data;
+  const flightData = getAllInfoFlightByIdData?.list?.[0];
 
   const filteredSeats = useMemo(() => {
     if (!flightData?.seats) return [];

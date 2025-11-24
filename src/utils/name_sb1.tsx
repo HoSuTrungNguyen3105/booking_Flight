@@ -104,7 +104,7 @@ export const menuData: TabData = {
     items: [
       {
         icon: <Building2 size={24} />,
-        value: ROUTE_PATHS.ADMIN,
+        value: ROUTE_PATHS.ADMIN.replace("/", ""),
         label: "Admin Dashboard",
       },
       {

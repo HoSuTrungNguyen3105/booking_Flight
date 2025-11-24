@@ -45,6 +45,20 @@ export const useGetAllAircraftInfo = () => {
   };
 };
 
+export const useCreateAircraftFlight = () => {
+  const { refetch: refetchCreateAircraftFlight } = useFetch<
+    FlightAircraftResponse,
+    FormData
+  >({
+    url: "/sys/flights/aircraft",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchCreateAircraftFlight,
+  };
+};
+
 export const useCreateAircraftBatchFlight = () => {
   const { refetch: refetchCreateAircraftBatchFlightData } = useFetch<
     FlightAircraftResponse,
@@ -56,6 +70,23 @@ export const useCreateAircraftBatchFlight = () => {
   });
   return {
     refetchCreateAircraftBatchFlightData,
+  };
+};
+
+export const useGetAircraftByCodeFlight = (code: string) => {
+  const {
+    refetch: refetchGetAircraftByCodeFlight,
+    data: dataAircraftByCodeFlight,
+    loading: loadingGetAircraftByCodeFlight,
+  } = useFetch<ResponseMessage, void>({
+    url: `/sys/flights/aircraft/${code}`,
+    autoFetch: true,
+    config: postMethod,
+  });
+  return {
+    dataAircraftByCodeFlight,
+    refetchGetAircraftByCodeFlight,
+    loadingGetAircraftByCodeFlight,
   };
 };
 

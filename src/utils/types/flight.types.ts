@@ -242,17 +242,29 @@ export type Facility = {
   terminal: Terminal;
 };
 
+interface FlightResponseWithPagination {
+  resultCode: string;
+  resultMessage: string;
+  list: DataFlight[];
+  meta?: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+}
+
 export type FacilyByTerminalIdResponseMessage = DetailResponseMessage<Facility>;
 
 export type TerminalResponse = DetailResponseMessage<Terminal>;
 
-export type FlightResponse = DetailResponseMessage<DataFlight>;
+export type FlightResponse = FlightResponseWithPagination;
 
 export type FlightDetailApiResponse = DetailResponseMessage<DataFlight>;
 
 export type SearchFlightResponse = DetailResponseMessage<SearchFlightProps>;
 
-export type FlightListApiResponse = DetailResponseMessage<DataFlight>;
+// export type FlightListApiResponse = DetailResponseMessage<DataFlight>;
 export type FlightAircraftResponse =
   DetailResponseMessage<AircraftCodeBatchProps>;
 
@@ -355,6 +367,12 @@ export type CreateGateProps = {
 export type TerminalLabelValue = {
   value: string;
   label: string;
+};
+
+export type FlightByDay = {
+  day: string;
+  date: string;
+  year: number;
 };
 
 export type TerminalLabelListResponse =
