@@ -12,10 +12,6 @@ const getMethod = {
   method: MethodType.GET,
 };
 
-const postMethod = {
-  method: MethodType.POST,
-};
-
 export const useFindAllRoles = () => {
   const { data, refetch, loading } = useFetch<
     DetailResponseMessage<string[]>,
@@ -26,6 +22,19 @@ export const useFindAllRoles = () => {
     config: getMethod,
   });
   return { dataRoles: data, refetchRoles: refetch, loadingRoles: loading };
+};
+
+export const useFindAllPermissionsRole = () => {
+  const { data: dataPermissionsRole, refetch: refetchPermissionsRole } =
+    useFetch<DetailResponseMessage<Record<string, boolean>>, void>({
+      url: "/auth/permissions/type/enum",
+      autoFetch: true,
+      config: getMethod,
+    });
+  return {
+    dataPermissionsRole,
+    refetchPermissionsRole,
+  };
 };
 
 // LeaveStatus

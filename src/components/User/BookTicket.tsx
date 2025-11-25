@@ -46,7 +46,7 @@ const flightParams: SearchFlightDto = {
   includeCancelled: false,
 };
 
-const BookTicket = () => {
+const SearchBookTicket = () => {
   const { getAllCode } = useGetAllCode();
   const { dataFlightTypes } = useFindAllFlightTypes();
   const { dataSeatTypes } = useFindAllSeatTypes();
@@ -101,13 +101,6 @@ const BookTicket = () => {
   const onResetForm = () => {
     resetSearch();
   };
-
-  // const formatBookingTime = (bookingTime: string | number) => {
-  //   if (typeof bookingTime === "number") {
-  //     return new Date(bookingTime).toLocaleString();
-  //   }
-  //   return new Date(bookingTime).toLocaleString();
-  // };
 
   const optionAirportCode = (getAllCode?.data?.airport ?? []).map((item) => ({
     value: item.code,
@@ -487,4 +480,4 @@ const BookTicket = () => {
   );
 };
 
-export default memo(BookTicket);
+export default memo(SearchBookTicket);

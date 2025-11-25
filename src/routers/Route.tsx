@@ -17,8 +17,8 @@ import SecurityManage from "../components/User/SecurityManage";
 import ManageMyInformation from "../common/Setting/ManageMyInformation";
 import ManageMyInfo from "../components/Profile/ManageMyInfo";
 import AircraftPage from "../components/Admin/component/Aircraft/AircraftPage";
-import UnlockRequestTable from "../components/User/UnlockRequestTable";
-import LeaveRequestTable from "../components/Admin/component/LeaveRequest/LeaveRequestTable";
+import UnlockRequestTable from "../components/Admin/component/Request/UnlockRequestTable";
+import LeaveRequestTable from "../components/Admin/component/Request/LeaveRequestTable";
 import PayrollManagement from "../components/Admin/component/Payroll/PayrollManagement";
 import AdditionalServicesPage from "../components/Sample/BaggageList";
 import ChatContainer from "../components/Chat/ChatContainer";
@@ -79,6 +79,9 @@ import { DiscountBatchCreator } from "../components/Contact/DiscountBatchCreator
 import SeedPermissionsPage from "../common/Setting/Component/SeedPermissionsPage";
 import AccessDeniedPage from "../components/Layout/AccessDeniedPage";
 import PermissionPage from "../components/Admin/component/Permission/PermissionView";
+import PermissionMatrix from "../components/Admin/component/Permission/PermissionMatrix";
+import PermissionSettings from "../components/Admin/component/Permission";
+import PermissionAdminSettings from "../components/Admin/component/Permission/PermissionSettings";
 
 const routes = [
   {
@@ -252,6 +255,18 @@ const routes = [
       {
         path: "/PermissionPage",
         element: <PermissionPage />,
+      },
+      {
+        path: "/PermissionMatrix",
+        element: <PermissionMatrix />,
+      },
+      {
+        path: "/PermissionSettings",
+        element: <PermissionSettings />,
+      },
+      {
+        path: "/PermissionAdminSettings",
+        element: <PermissionAdminSettings />,
       },
       {
         path: "/explore/:arrival/:departure/:dateRange/:passengerCount/:hasTicket",

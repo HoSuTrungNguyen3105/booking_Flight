@@ -8,7 +8,6 @@ import { ROUTE_PATHS } from "../../routers/RoutePath";
 import theme from "../../scss/theme";
 import LanguageButton from "../Common/HeaderOptionSelect";
 import { useTranslation } from "react-i18next";
-import DialogConfirm from "../../common/Modal/DialogConfirm";
 import SignOut from "../Common/SignOut";
 
 const Header = () => {

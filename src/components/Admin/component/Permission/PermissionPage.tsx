@@ -19,15 +19,6 @@ import type {
 } from "../../../../utils/type";
 
 type PermissionResponse = DetailResponseMessage<RolePermission>;
-//   resultCode: string;
-//   resultMessage: string;
-//   data: Record<string, string>;
-// }
-
-// interface RolePermissions {
-//   role: string;
-//   permissions: string[];
-// }
 
 const PermissionPage: React.FC = () => {
   const [permissionsData, setPermissionsData] = useState<RolePermission[]>([]);
@@ -74,7 +65,10 @@ const PermissionPage: React.FC = () => {
   }, []);
 
   // Render Table for each role
-  const renderPermissionTable = (role: string, permissions: string[]) => {
+  const renderPermissionTable = (
+    role: string,
+    permissions: Record<string, boolean>
+  ) => {
     return (
       <TableContainer component={Paper} sx={{ marginBottom: 3 }}>
         <Typography variant="h6" sx={{ padding: 2 }}>

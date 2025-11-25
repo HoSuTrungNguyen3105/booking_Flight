@@ -3,7 +3,7 @@ import { Box, Typography, Grid, Button, alpha } from "@mui/material";
 import _ from "lodash";
 import { ArrowBack } from "@mui/icons-material";
 import theme from "../../scss/theme";
-import { useChooseSeatToBooking } from "../Employee/useChooseSeatToBooking";
+import { useChooseSeatToBooking } from "../Employee/hooks/useChooseSeatToBooking";
 import BookingSeatButton from "./BookingSeatButton";
 import { useLocation } from "react-router-dom";
 import { string } from "prop-types";

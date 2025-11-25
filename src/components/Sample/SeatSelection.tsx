@@ -20,7 +20,7 @@ import { useSeatColor } from "../Admin/component/Seat/hook/useSeatColor";
 import { useSeatFeatures } from "../Admin/component/Seat/hook/useSeatFeature";
 import LegendItem from "../Admin/component/Seat/ButtonSeat/LegendItem";
 import { useLocation } from "react-router-dom";
-import { useChooseSeatToBooking } from "../Employee/useChooseSeatToBooking";
+import { useChooseSeatToBooking } from "../Employee/hooks/useChooseSeatToBooking";
 
 const SeatSelection: React.FC = () => {
   const location = useLocation();

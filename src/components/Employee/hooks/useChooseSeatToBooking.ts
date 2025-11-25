@@ -1,9 +1,9 @@
 import { useCallback, useMemo, useState } from "react";
 import _ from "lodash";
-import type { Seat } from "../../utils/type";
-import { useToast } from "../../context/ToastContext";
-import type { FilterType } from "../Admin/component/Flight/hooks/useSeatInFlightDetail";
-import { useGetAllInfoFlightByIDData } from "../../context/Api/FlightApi";
+import type { Seat } from "../../../utils/type";
+import { useToast } from "../../../context/ToastContext";
+import type { FilterType } from "../../Admin/component/Flight/hooks/useSeatInFlightDetail";
+import { useGetAllInfoFlightByIDData } from "../../../context/Api/FlightApi";
 
 type FlightWithSeatLayoutProps = {
   id: number;
@@ -65,31 +65,6 @@ export const useChooseSeatToBooking = ({ id }: FlightWithSeatLayoutProps) => {
     },
     [maxSelectSeats]
   );
-
-  //  Reset chọn ghế
-  // const handleResetSelections = useCallback(() => {
-  //   setSelectedSeats([]);
-  // }, []);
-
-  // //  Mở trang thanh toán
-  // const handleOpenUpdateModal = useCallback(() => {
-  //   if (selectedSeats.length === 0) {
-  //     toast("Please select at least one seat to continue.");
-  //     return;
-  //   }
-
-  //   const selectedSeatIds = selectedSeats.map((s) => s.id);
-  //   const seatNos = selectedSeats.map((s) => s.seatNumber).join(",");
-
-  //   navigate("/payment", {
-  //     state: {
-  //       flightId: id,
-  //       seats: selectedSeatIds,
-  //       seatNos,
-  //       flightData,
-  //     },
-  //   });
-  // }, [selectedSeats, id, flightData, navigate, toast]);
 
   return {
     handleSelectSeat,

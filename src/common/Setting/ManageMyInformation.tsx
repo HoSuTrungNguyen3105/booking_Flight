@@ -9,7 +9,7 @@ import { UserRole, type UserData } from "../../utils/type";
 import DataAccessPermissionSection from "./DataAccessPermissionSection";
 import DeleteAccount from "../../components/Profile/DeleteAccount";
 import ChangePasswordInProfile from "../../components/Profile/ChangePasswordInProfile";
-import AccountSettings from "../../components/Auth/AccountModel/AccountSettings";
+import AccountSettings from "../../components/Auth/AccountSetting/AccountSettings";
 import { ResponseCode } from "../../utils/response";
 
 export type UserDataToUpdate = Pick<

@@ -10,7 +10,7 @@ import TabPanel, {
   type ITabItem,
 } from "../../../common/AdditionalCustomFC/TabPanel";
 import theme from "../../../scss/theme";
-import AccountYn from "../AccountModel";
+import AccountYn from "../AccountSetting";
 import Registration from "../Registration";
 import { useToast } from "../../../context/ToastContext";
 import { useCheckMfaAvailable } from "../../../context/Api/usePostApi";

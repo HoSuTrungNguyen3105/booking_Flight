@@ -32,6 +32,7 @@ const ManageMyInfo = () => {
     toggleOpenModal,
     rows,
     closeModal,
+    onSearch,
     columns,
     openModal,
   } = useInspectionPerformanceHistory();

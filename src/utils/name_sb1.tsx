@@ -106,6 +106,21 @@ export const menuData: TabData = {
         value: "PermissionPage",
         label: "PermissionPage",
       },
+      {
+        icon: <PermScanWifiSharp />,
+        value: "PermissionMatrix",
+        label: "PermissionMatrix",
+      },
+      {
+        icon: <PermScanWifiSharp />,
+        value: "PermissionSettings",
+        label: "PermissionSettings",
+      },
+      {
+        icon: <PermScanWifiSharp />,
+        value: "PermissionAdminSettings",
+        label: "PermissionAdminSettings",
+      },
     ],
   },
   Admin: {

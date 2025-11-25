@@ -1,16 +1,16 @@
 import { Chip, Box, Button, Typography } from "@mui/material";
 import type { GridColDef } from "@mui/x-data-grid";
-import { useGetUnlockRequests } from "../../context/Api/useGetApi";
+import { useGetUnlockRequests } from "../../../../context/Api/useGetApi";
 import { memo, useCallback, useMemo } from "react";
-import TableSection from "../../common/AdditionalCustomFC/TableSection";
-import { DateFormatEnum, formatDate } from "../../hooks/format";
-import theme from "../../scss/theme";
+import TableSection from "../../../../common/AdditionalCustomFC/TableSection";
+import { DateFormatEnum, formatDate } from "../../../../hooks/format";
+import theme from "../../../../scss/theme";
 import {
   useApproveUnlock,
   useRejectUnlock,
-} from "../../context/Api/usePostApi";
-import { useToast } from "../../context/ToastContext";
-import { ResponseCode } from "../../utils/response";
+} from "../../../../context/Api/usePostApi";
+import { useToast } from "../../../../context/ToastContext";
+import { ResponseCode } from "../../../../utils/response";
 
 enum TypeColor {
   REJECTED = "REJECTED",

@@ -70,16 +70,3 @@ export const useGetPermissionsByRole = (role: string) => {
     refetchPermissionsByRole,
   };
 };
-
-export const useGetPermissions = (role: string) => {
-  const { data: dataPermissionsByRole, refetch: refetchPermissionsByRole } =
-    useFetch<ResponseMessage, void>({
-      url: `/auth/permissions/${role}`,
-      autoFetch: false,
-      config: postMethod,
-    });
-  return {
-    dataPermissionsByRole,
-    refetchPermissionsByRole,
-  };
-};
