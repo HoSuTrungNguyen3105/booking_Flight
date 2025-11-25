@@ -22,19 +22,27 @@ const FormRow: React.FC<FormRowProps> = ({
           flexDirection: direction,
           alignItems: direction === "row" ? "center" : "flex-start",
           justifyContent: "space-around",
-          gap: 2,
+          // gap: 2,
         }}
       >
         <Typography
           variant="body2"
           sx={{
-            minWidth: direction === "row" ? 50 : "auto",
+            width: direction === "row" ? "80px" : "auto",
+            // minWidth: direction === "row" ? 50 : "auto",
             fontWeight: 500,
           }}
         >
           {label}
         </Typography>
-        <Box flex={1}>{children}</Box>
+        <Box
+          sx={{
+            width: direction === "row" ? "80px" : "auto",
+          }}
+          flex={1}
+        >
+          {children}
+        </Box>
       </Box>
     </Box>
   );

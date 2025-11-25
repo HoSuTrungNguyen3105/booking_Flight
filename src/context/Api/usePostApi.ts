@@ -1,5 +1,5 @@
 import {
-  type FlightListApiResponse,
+  // type FlightListApiResponse,
   type FlightDetailApiResponse,
   type CodeItem,
   type AircraftList,
@@ -52,6 +52,7 @@ import {
   type TypeWithErrorResponse,
   type LocaleConfig,
   type CreateFlightMealProps,
+  type FlightResponse,
 } from "../../utils/type.ts";
 import type { DropdownOptions } from "../../common/Dropdown/type.ts";
 import { useFetch } from "../use[custom]/useFetch.ts";
@@ -78,7 +79,7 @@ export const mapToDropdown = (
 
 export const useCreateFlight = () => {
   const { data: createFlightData, refetch: refetchCreateFlightData } = useFetch<
-    FlightListApiResponse,
+    FlightResponse,
     Partial<FlightFormData>
   >({
     url: "/sys/flights",
@@ -933,10 +934,12 @@ interface MfaCodeRequest {
 }
 
 export const useSetUpMfa = () => {
-  const { data: setUpMfa, refetch: refetchSetUpMfa } = useFetch<
-    MFAAuthResponse,
-    MfaRequest
-  >({
+  const {
+    data: setUpMfa,
+    refetch: refetchSetUpMfa,
+    loading: loadingSetUpMfa,
+    error: errorSetUpMfa,
+  } = useFetch<MFAAuthResponse, MfaRequest>({
     url: "/auth/setmfa",
     autoFetch: false,
     config: postMethod,
@@ -944,20 +947,25 @@ export const useSetUpMfa = () => {
   return {
     setUpMfa,
     refetchSetUpMfa,
+    loadingSetUpMfa,
+    errorSetUpMfa,
   };
 };
 
 export const useSetUpMfaFromAdmin = () => {
-  const { refetch: refetchSetUpMfaFromAdmin } = useFetch<
-    MFAAuthResponse,
-    MfaRequest
-  >({
+  const {
+    refetch: refetchSetUpMfaFromAdmin,
+    loading: loadingSetUpMfaFromAdmin,
+    error: errorSetUpMfaFromAdmin,
+  } = useFetch<MFAAuthResponse, MfaRequest>({
     url: "/auth/setmfa",
     autoFetch: false,
     config: postMethod,
   });
   return {
     refetchSetUpMfaFromAdmin,
+    loadingSetUpMfaFromAdmin,
+    errorSetUpMfaFromAdmin,
   };
 };
 
@@ -1404,10 +1412,12 @@ export const useVerifyOtpToAccessEmail = () => {
 };
 
 export const useVerifyMfa = () => {
-  const { data: verifyMfa, refetch: refetchVerifyMfa } = useFetch<
-    MFAAuthResponse,
-    MfaCodeRequest
-  >({
+  const {
+    data: verifyMfa,
+    refetch: refetchVerifyMfa,
+    loading: loadingVerifyMfa,
+    error: errorVerifyMfa,
+  } = useFetch<MFAAuthResponse, MfaCodeRequest>({
     url: "/auth/verifymfa",
     autoFetch: false,
     config: postMethod,
@@ -1415,6 +1425,8 @@ export const useVerifyMfa = () => {
   return {
     verifyMfa,
     refetchVerifyMfa,
+    loadingVerifyMfa,
+    errorVerifyMfa,
   };
 };
 

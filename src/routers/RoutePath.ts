@@ -28,6 +28,7 @@ export const ROUTE_PATHS = {
   BULK_MEAL_CREATOR: "BulkMealCreator",
   SEED_PERMISSIONS: "SEED_PERMISSIONS",
   AIRPORT_MAP: "AirportMap",
+  ACCESS_DENIED: "access-denied",
   FLIGHT_STATISTICS: "FlightStatisticsPage",
   SERVICE: "service",
   MEAL_FORM: "MealForm",

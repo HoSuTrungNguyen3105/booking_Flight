@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -39,39 +39,30 @@ export default function MfaSetup({ email, onClose, authType }: EmailProps) {
     setIsLoading(false);
   };
 
-  const fetchQrCode = async () => {
+  const fetchQrCode = useCallback(async () => {
     if (!email || !authType) {
       toast("Loi ko co authtype hoac chua nhập email để tạo MFA");
       return;
     }
     try {
-      // const data =
-      //   authType === "DEV" || authType === "ADMIN"
-      //     ? await refetchSetUpMfa({ email })
-      //     : await refetchSetUpMfaFromAdmin({ email });
       const isAdmin = ["DEV", "ADMIN"].includes(authType);
+      console.log("isADMIN", isAdmin);
       const data = isAdmin
         ? await refetchSetUpMfa({ email })
         : await refetchSetUpMfaFromAdmin({ email });
 
       if (data?.data?.hasVerified === "Y") {
         setCurrentState("login");
-        // setCanLoginMfa(true);
-        // setIsSetMfa(true);
-        // setQrCode(data.data.qrCodeDataURL);
       } else if (data?.data?.hasVerified === "N" && data?.data?.qrCodeDataURL) {
         setQrCode(data.data.qrCodeDataURL);
         setCurrentState("qrSetup");
-        // setCanLoginMfa(false);
-        // setIsSetMfa(false);
       } else if (data?.resultCode !== ResponseCode.SUCCESS) {
         setCode("");
-        // toast(data?.resultMessage);
       }
     } catch (err) {
       setCode("");
     }
-  };
+  }, [email, authType]);
 
   useEffect(() => {
     if (authType === "MFA") {
@@ -159,7 +150,7 @@ export default function MfaSetup({ email, onClose, authType }: EmailProps) {
         p: 3,
       }}
     >
-      {email}
+      {/* {email} */}
       {currentState === "initial" && (
         <Box
           sx={{

@@ -1,4 +1,8 @@
-import { createBrowserRouter, type RouteObject } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Navigate,
+  type RouteObject,
+} from "react-router-dom";
 import MainLayout from "../components/Layout/MainLayout";
 import ErrorPage from "../components/Layout/Error404Layout";
 import { FileUpload } from "../common/FileUploader";
@@ -63,7 +67,6 @@ import FlightPassengerSelector from "../components/Employee/PassengerSelector";
 import FlightSelection from "../components/Employee/FlightSelection";
 import SeatSelection from "../components/Sample/SeatSelection";
 import FareComparison from "../components/Admin/component/Meal/FareComparison";
-import OrderTable from "../components/Admin/component/Meal/OrderTable";
 import FlightMealList from "../components/Admin/component/Meal/FlightMealList";
 import FlightScheduleDashboard from "../components/User/FlightScheduleDashboard";
 import AdvancedAnalytics from "../common/Header/AdvancedAnalytics";
@@ -74,6 +77,8 @@ import SomeComponent from "../components/Admin/component/Meal/SomeComponent";
 import BookingDemo from "../components/Sample/BookingDemo";
 import { DiscountBatchCreator } from "../components/Contact/DiscountBatchCreator";
 import SeedPermissionsPage from "../common/Setting/Component/SeedPermissionsPage";
+import AccessDeniedPage from "../components/Layout/AccessDeniedPage";
+import PermissionPage from "../components/Admin/component/Permission/PermissionView";
 
 const routes = [
   {
@@ -245,6 +250,10 @@ const routes = [
         element: <ContentPackage />,
       },
       {
+        path: "/PermissionPage",
+        element: <PermissionPage />,
+      },
+      {
         path: "/explore/:arrival/:departure/:dateRange/:passengerCount/:hasTicket",
         element: <ExplorePage />,
       },
@@ -260,162 +269,171 @@ const routes = [
   },
   {
     path: ROUTE_PATHS.ADMIN,
-    element: (
-      // // <AuthGuard allowedRoles={["ADMIN"]}>
-      // <ManageLayout />
-      // // </AuthGuard>
-      <AuthGuard allowedRoles={["ADMIN"]}>
-        <ManageLayout />
-      </AuthGuard>
-    ),
     errorElement: <ErrorPage />,
     children: [
       {
-        path: ROUTE_PATHS.INTERNATIONAL,
-        element: <Security />,
+        index: true,
+        element: <Navigate to={ROUTE_PATHS.INTERNATIONAL} replace />,
       },
       {
-        path: ROUTE_PATHS.LEAVE_REQUEST_TABLE,
-        element: <LeaveRequestTable />,
+        path: ROUTE_PATHS.ACCESS_DENIED,
+        element: <AccessDeniedPage />,
       },
       {
-        path: ROUTE_PATHS.DOMESTIC,
-        element: <SecurityManage />,
-      },
-      {
-        path: ROUTE_PATHS.BULK_MEAL_CREATOR,
-        // element: <BulkMealCreator />,
-      },
-      {
-        path: ROUTE_PATHS.SEED_PERMISSIONS,
-        element: <SeedPermissionsPage />,
-      },
-      {
-        path: ROUTE_PATHS.FLIGHT_STATISTICS,
-        element: <FlightStatisticsPage />,
-      },
-      {
-        path: ROUTE_PATHS.SERVICE,
-        element: <AdditionalServicesPage />,
-      },
-      {
-        path: ROUTE_PATHS.MEAL_FORM,
-      },
-      {
-        path: ROUTE_PATHS.UNLOCK_REQUEST,
-        element: <UnlockRequestTable />,
-      },
-      {
-        path: ROUTE_PATHS.CREATE_HOTELS,
-        element: <HotelBatchCreator />,
-      },
-      {
-        path: ROUTE_PATHS.TRANSFER_ADMIN,
-        element: <TransferAdminTable />,
-      },
-      {
-        path: ROUTE_PATHS.FLIGHTMANAGE,
-        element: <FlightManagement />,
-      },
-      {
-        path: ROUTE_PATHS.FLIGHT_MEALS,
-        element: <MealList />,
-      },
-      {
-        path: ROUTE_PATHS.MESSAGE,
-        element: <ChatContainer />,
-      },
-      {
-        path: ROUTE_PATHS.SPECIAL,
-        element: <RevenueDashboard />,
-      },
-      {
-        path: ROUTE_PATHS.SPECIAL_ONE,
-        element: <FlightRoutesDashboard />,
-      },
-      {
-        path: ROUTE_PATHS.NOTIFICATIONS,
-        element: <Search_layout />,
-      },
-      {
-        path: ROUTE_PATHS.TicketSalesDashboard,
-        element: <TicketSalesDashboard />,
-      },
-      {
-        path: ROUTE_PATHS.TERMINAL_CONTAINER,
-        element: <AirportDiagram />,
-      },
-      {
-        path: ROUTE_PATHS.AIRPORT_MANAGEMENT_DETAIL,
-        element: <AirportManagement />,
-      },
-      {
-        path: ROUTE_PATHS.MANAGEMENT_ATTENDANCE,
-        element: <AttendancePage />,
-      },
-      {
-        path: ROUTE_PATHS.CALENDER_ATTENDANCE,
-        element: <AttendanceCalendar />,
-      },
-      {
-        path: ROUTE_PATHS.TERMINAL_BATCH_CREATOR,
-        element: <TerminalBatchCreator />,
-      },
-      {
-        path: ROUTE_PATHS.AIRPORT_MANAGEMENT,
-        element: <AirportManagement />,
-      },
-      {
-        path: ROUTE_PATHS.TERMINAL_GATE_CONTAINER,
-        element: <TerminalGateContainer />,
-      },
-      {
-        path: "terminal/facility",
-        element: <FacilityManagement />,
-      },
-      // {
-      //   path: ROUTE_PATHS.FLIGHT_PATH,
-      //   element: <FlightPath />,
-      // },
-      {
-        path: ROUTE_PATHS.SETTING,
-        element: <ManageMyInformation />,
-      },
-      {
-        path: ROUTE_PATHS.FILE_UPLOAD,
-        element: <FileUpload name="fileUploader" />,
-      },
-      {
-        path: ROUTE_PATHS.BOOK_TICKET,
-        element: <BookTicket />,
-      },
-      {
-        path: ROUTE_PATHS.FLIGHT_BOOK,
-        // element: <FlightBooking />,
-      },
-      {
-        path: ROUTE_PATHS.MANAGE_MY_INFO,
-        element: <ManageMyInfo />,
-      },
-      {
-        path: ROUTE_PATHS.PAYROLL_MANAGEMENT,
-        element: <PayrollManagement />,
-      },
-      {
-        path: ROUTE_PATHS.AIRCRAFT,
-        element: <AircraftPage />,
-      },
-      {
-        path: ROUTE_PATHS.SUPPORT,
-        // element: <FlightStatus />,
-      },
-      {
-        path: ROUTE_PATHS.CHANGE_PASSWORD_PROFILE,
-        element: <ChangePasswordInProfile />,
-      },
-      {
-        path: ROUTE_PATHS.SEND_EMAIL_TO_USERS,
-        element: <SendEmailToUsers selectedUser={[]} />,
+        element: (
+          <AuthGuard allowedRoles={["ADMIN"]}>
+            <ManageLayout />
+          </AuthGuard>
+        ),
+        children: [
+          {
+            path: ROUTE_PATHS.INTERNATIONAL,
+            element: <Security />,
+          },
+          {
+            path: ROUTE_PATHS.LEAVE_REQUEST_TABLE,
+            element: <LeaveRequestTable />,
+          },
+          {
+            path: ROUTE_PATHS.DOMESTIC,
+            element: <SecurityManage />,
+          },
+          {
+            path: ROUTE_PATHS.BULK_MEAL_CREATOR,
+            // element: <BulkMealCreator />,
+          },
+          {
+            path: ROUTE_PATHS.SEED_PERMISSIONS,
+            element: <SeedPermissionsPage />,
+          },
+          {
+            path: ROUTE_PATHS.FLIGHT_STATISTICS,
+            element: <FlightStatisticsPage />,
+          },
+          {
+            path: ROUTE_PATHS.SERVICE,
+            element: <AdditionalServicesPage />,
+          },
+          {
+            path: ROUTE_PATHS.MEAL_FORM,
+          },
+          {
+            path: ROUTE_PATHS.UNLOCK_REQUEST,
+            element: <UnlockRequestTable />,
+          },
+          {
+            path: ROUTE_PATHS.CREATE_HOTELS,
+            element: <HotelBatchCreator />,
+          },
+          {
+            path: ROUTE_PATHS.TRANSFER_ADMIN,
+            element: <TransferAdminTable />,
+          },
+          {
+            path: ROUTE_PATHS.FLIGHTMANAGE,
+            element: <FlightManagement />,
+          },
+          {
+            path: ROUTE_PATHS.FLIGHT_MEALS,
+            element: <MealList />,
+          },
+          {
+            path: ROUTE_PATHS.MESSAGE,
+            element: <ChatContainer />,
+          },
+          {
+            path: ROUTE_PATHS.SPECIAL,
+            element: <RevenueDashboard />,
+          },
+          {
+            path: ROUTE_PATHS.SPECIAL_ONE,
+            element: <FlightRoutesDashboard />,
+          },
+          {
+            path: ROUTE_PATHS.NOTIFICATIONS,
+            element: <Search_layout />,
+          },
+          {
+            path: ROUTE_PATHS.TicketSalesDashboard,
+            element: <TicketSalesDashboard />,
+          },
+          {
+            path: ROUTE_PATHS.TERMINAL_CONTAINER,
+            element: <AirportDiagram />,
+          },
+          {
+            path: ROUTE_PATHS.AIRPORT_MANAGEMENT_DETAIL,
+            element: <AirportManagement />,
+          },
+          {
+            path: ROUTE_PATHS.MANAGEMENT_ATTENDANCE,
+            element: <AttendancePage />,
+          },
+          {
+            path: ROUTE_PATHS.CALENDER_ATTENDANCE,
+            element: <AttendanceCalendar />,
+          },
+          {
+            path: ROUTE_PATHS.TERMINAL_BATCH_CREATOR,
+            element: <TerminalBatchCreator />,
+          },
+          {
+            path: ROUTE_PATHS.AIRPORT_MANAGEMENT,
+            element: <AirportManagement />,
+          },
+          {
+            path: ROUTE_PATHS.TERMINAL_GATE_CONTAINER,
+            element: <TerminalGateContainer />,
+          },
+          {
+            path: "terminal/facility",
+            element: <FacilityManagement />,
+          },
+          // {
+          //   path: ROUTE_PATHS.FLIGHT_PATH,
+          //   element: <FlightPath />,
+          // },
+          {
+            path: ROUTE_PATHS.SETTING,
+            element: <ManageMyInformation />,
+          },
+          {
+            path: ROUTE_PATHS.FILE_UPLOAD,
+            element: <FileUpload name="fileUploader" />,
+          },
+          {
+            path: ROUTE_PATHS.BOOK_TICKET,
+            element: <BookTicket />,
+          },
+          {
+            path: ROUTE_PATHS.FLIGHT_BOOK,
+            // element: <FlightBooking />,
+          },
+          {
+            path: ROUTE_PATHS.MANAGE_MY_INFO,
+            element: <ManageMyInfo />,
+          },
+          {
+            path: ROUTE_PATHS.PAYROLL_MANAGEMENT,
+            element: <PayrollManagement />,
+          },
+          {
+            path: ROUTE_PATHS.AIRCRAFT,
+            element: <AircraftPage />,
+          },
+          {
+            path: ROUTE_PATHS.SUPPORT,
+            // element: <FlightStatus />,
+          },
+          {
+            path: ROUTE_PATHS.CHANGE_PASSWORD_PROFILE,
+            element: <ChangePasswordInProfile />,
+          },
+          {
+            path: ROUTE_PATHS.SEND_EMAIL_TO_USERS,
+            element: <SendEmailToUsers selectedUser={[]} />,
+          },
+        ],
       },
     ],
   },

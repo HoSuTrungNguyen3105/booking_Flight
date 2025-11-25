@@ -3,7 +3,11 @@ import DirectionsRunIcon from "@mui/icons-material/DirectionsRun";
 import { Building2, Zap } from "lucide-react";
 import type { ReactNode } from "react";
 import Icon from "../svgs/Huongdan_muave_Thumb.webp";
-import { FlightClass, SetMealOutlined } from "@mui/icons-material";
+import {
+  FlightClass,
+  PermScanWifiSharp,
+  SetMealOutlined,
+} from "@mui/icons-material";
 type MenuItemProps = {
   value: string; // route string
   icon: ReactNode;
@@ -96,6 +100,11 @@ export const menuData: TabData = {
         icon: <Info size={24} />,
         label: "Flight Deals",
         image: Icon,
+      },
+      {
+        icon: <PermScanWifiSharp />,
+        value: "PermissionPage",
+        label: "PermissionPage",
       },
     ],
   },

@@ -31,6 +31,7 @@ import {
   type LoginReqProps,
 } from "./Api/UserApi";
 import { useLoginByMfa } from "./Api/AuthApi";
+import i18n from "../i18n";
 
 export type UserWithMFA = {
   email: string;
@@ -42,6 +43,7 @@ export type UserWithMFA = {
 
 interface AuthContextType {
   isAuthenticated: boolean;
+  loading: boolean;
   user: UserData | null;
   passenger: Passenger | null;
   token: string | null;
@@ -104,17 +106,25 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [passenger, setPassenger] = useState<Passenger | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isValid, setIsValid] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const { refetchLogin } = useLoginUser();
-  const { refetchAdminLogin } = useLoginAdmin();
-  const { refetchSetLoginMfa } = useLoginByMfa();
   const { refetchLogoutSession } = useLogoutSessionFromPassenger();
   const { refetchGetMyUserInfo } = useGetMyUserInfo();
   const { refetchGetMyAdminInfo } = useGetMyAdminInfo();
   const { refetchUpdateUserRank } = useUpdateUserRank();
   const { refetchGetSessionByID } = useGetSessionsByID();
   const { fetchVerifyPassword } = useVerifyPw({ id: user?.id });
-  const isAdmin = useMemo(() => user?.role === UserRole.ADMIN, [user]);
+  const { refetchSetLoginMfa } = useLoginByMfa();
+  const { refetchAdminLogin } = useLoginAdmin();
+  const { refetchLogin } = useLoginUser();
+
+  const isAdmin = useMemo(() => {
+    return (
+      user?.role === UserRole.ADMIN ||
+      user?.role === UserRole.MONITOR ||
+      user?.role === UserRole.DEV
+    );
+  }, [user]);
 
   const handleRender = useCallback(() => {
     if (!coords) return;
@@ -262,6 +272,14 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setToken(token);
       setIsAuthenticated(true);
       storage.save(token, id, type);
+
+      // Set default language and currency to English/USD
+      if (!localStorage.getItem("appSettings")) {
+        const defaultSettings = { language: "en", currency: "USD" };
+        localStorage.setItem("appSettings", JSON.stringify(defaultSettings));
+        i18n.changeLanguage("en");
+      }
+
       return { success: true, data: res };
     }
 
@@ -329,7 +347,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const loginPassenger = async (data: LoginReqProps) => {
     const result = await handleLogin(refetchLogin, data, "ID,PW");
-    if (result.success) await fetchMyUserInfo(result.data.data.id);
+    if (result.success) {
+      await fetchMyUserInfo(result.data.data.id);
+    }
     return result.data;
   };
 
@@ -350,6 +370,12 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setToken(token);
         setIsAuthenticated(true);
         storage.save(token, id, "MFA");
+
+        // Set default language and currency to English/USD
+        const defaultSettings = { language: "en", currency: "USD" };
+        localStorage.setItem("appSettings", JSON.stringify(defaultSettings));
+        i18n.changeLanguage("en");
+
         await fetchMyAdminInfo(id);
       } else {
         toast(res?.resultMessage || "Đăng nhập thất bại", "error");
@@ -363,19 +389,25 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const initAuth = async () => {
-      if (!token || !userId) return;
-      setToken(token);
-      setIsAuthenticated(true);
+      try {
+        if (!token || !userId) return;
+        setToken(token);
+        setIsAuthenticated(true);
 
-      await hasValidLogin();
+        await hasValidLogin();
 
-      if (stateLogin === "ID,PW") {
-        await fetchMyUserInfo(userId);
-        return;
-      }
-      if (stateLogin === "ADMIN" || stateLogin === "DEV") {
-        await fetchMyAdminInfo(Number(userId));
-        return;
+        if (stateLogin === "ID,PW") {
+          await fetchMyUserInfo(userId);
+          return;
+        }
+        if (stateLogin === "ADMIN" || stateLogin === "DEV") {
+          await fetchMyAdminInfo(Number(userId));
+          return;
+        }
+      } catch (error) {
+        console.error("Auth initialization failed:", error);
+      } finally {
+        setLoading(false);
       }
     };
     initAuth();
@@ -385,6 +417,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     <AuthContext.Provider
       value={{
         isAuthenticated,
+        loading,
         token,
         user,
         passenger,

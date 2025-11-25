@@ -183,7 +183,7 @@ export const useInspectionPerformanceHistory = () => {
         headerName: "createdAt",
         flex: 1,
         renderCell: ({ row }) =>
-          formatDate(DateFormatEnum.MM_DD_YYYY, row.createdAt),
+          formatDate(DateFormatEnum.DD_MM_YYYY_HH_MM_SS, row.createdAt),
       },
       {
         field: "name",

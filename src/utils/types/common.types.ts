@@ -1,3 +1,5 @@
+import type { UserRole } from "./user.types";
+
 export enum MethodType {
   DELETE = "DELETE",
   PATCH = "PATCH",
@@ -65,6 +67,14 @@ export type CodeItem = {
   code: string;
   codeName?: string;
   acodeName?: string;
+};
+
+export type RolePermission = {
+  id: string;
+  role: string;
+  permissions: Record<string, boolean>;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type Language = "en" | "ko" | "jp";

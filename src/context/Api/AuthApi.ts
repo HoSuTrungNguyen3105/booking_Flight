@@ -57,3 +57,29 @@ export const useSeedPermissions = () => {
     refetchSetSeedPermissions,
   };
 };
+
+export const useGetPermissionsByRole = (role: string) => {
+  const { data: dataPermissionsByRole, refetch: refetchPermissionsByRole } =
+    useFetch<ResponseMessage, void>({
+      url: `/auth/permissions/role/${role}`,
+      autoFetch: false,
+      config: postMethod,
+    });
+  return {
+    dataPermissionsByRole,
+    refetchPermissionsByRole,
+  };
+};
+
+export const useGetPermissions = (role: string) => {
+  const { data: dataPermissionsByRole, refetch: refetchPermissionsByRole } =
+    useFetch<ResponseMessage, void>({
+      url: `/auth/permissions/${role}`,
+      autoFetch: false,
+      config: postMethod,
+    });
+  return {
+    dataPermissionsByRole,
+    refetchPermissionsByRole,
+  };
+};

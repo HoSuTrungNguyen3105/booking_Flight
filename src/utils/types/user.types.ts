@@ -2,16 +2,21 @@ import type { GridRowDef } from "../../common/DataGrid";
 import type { AuthType } from "../../components/Auth/Login";
 import {
   type DetailResponseMessage,
-  type SocketResponseMessage,
+  // type SocketResponseMessage,
 } from "./common.types";
 
 export enum UserRole {
   ADMIN = "ADMIN",
   USER = "USER",
+  DEV = "DEV",
   MONITOR = "MONITOR",
 }
 
-export type UserRoleType = UserRole.ADMIN | UserRole.USER | UserRole.MONITOR;
+export type UserRoleType =
+  | UserRole.ADMIN
+  | UserRole.USER
+  | UserRole.MONITOR
+  | UserRole.DEV;
 
 export type BaseUserData = {
   email: string;

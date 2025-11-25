@@ -7,14 +7,20 @@ interface ProtectedRouteProps {
 }
 
 const AuthGuard = ({ children, allowedRoles }: ProtectedRouteProps) => {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, loading } = useAuth();
+
+  console.log("user role", user?.role);
+
+  if (loading) {
+    return null; // Or a loading spinner
+  }
 
   if (!isAuthenticated) {
     return <Navigate to="/init/loginPage" replace />;
   }
 
   if (allowedRoles && !allowedRoles.includes(user?.role || "")) {
-    return <Navigate to="/admin" />;
+    return <Navigate to="/admin/access-denied" />;
   }
 
   return <>{children}</>;

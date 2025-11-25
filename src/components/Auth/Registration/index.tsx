@@ -10,6 +10,7 @@ import InputTextField from "../../../common/Input/InputTextField";
 import { ResponseCode } from "../../../utils/response";
 import theme from "../../../scss/theme";
 import type { AuthType } from "../Login";
+import FormRow from "../../../common/AdditionalCustomFC/FormRow";
 
 interface RegisterProps {
   email?: string;
@@ -73,38 +74,46 @@ const Registration = ({ email }: RegisterProps) => {
       </Typography>
 
       <Box display="flex" flexDirection="column" gap={2}>
-        <InputTextField
-          value={formData.name}
-          placeholder="name"
-          onChange={(value) =>
-            setFormData((prev) => ({ ...prev, name: value }))
-          }
-        />
-        <InputTextField
-          value={formData.email}
-          placeholder="email"
-          isEmail
-          onError={(err) => setError(err as string)}
-          onChange={(value) =>
-            setFormData((prev) => ({ ...prev, email: value }))
-          }
-        />
-        <InputTextField
-          type="password"
-          placeholder="password"
-          value={formData.password}
-          showEyeIcon
-          onChange={(value) =>
-            setFormData((prev) => ({ ...prev, password: value }))
-          }
-        />
-        <InputTextField
-          value={formData.phone}
-          placeholder="phone"
-          onChange={(value) =>
-            setFormData((prev) => ({ ...prev, phone: value }))
-          }
-        />
+        <FormRow direction="column" label="Name">
+          <InputTextField
+            value={formData.name}
+            placeholder="name"
+            onChange={(value) =>
+              setFormData((prev) => ({ ...prev, name: value }))
+            }
+          />
+        </FormRow>
+        <FormRow direction="column" label="Email">
+          <InputTextField
+            value={formData.email}
+            placeholder="email"
+            isEmail
+            onError={(err) => setError(err as string)}
+            onChange={(value) =>
+              setFormData((prev) => ({ ...prev, email: value }))
+            }
+          />
+        </FormRow>
+        <FormRow direction="column" label="Password">
+          <InputTextField
+            type="password"
+            placeholder="password"
+            value={formData.password}
+            showEyeIcon
+            onChange={(value) =>
+              setFormData((prev) => ({ ...prev, password: value }))
+            }
+          />
+        </FormRow>
+        <FormRow direction="column" label="Phone">
+          <InputTextField
+            value={formData.phone}
+            placeholder="phone"
+            onChange={(value) =>
+              setFormData((prev) => ({ ...prev, phone: value }))
+            }
+          />
+        </FormRow>
         <Box display={"flex"} justifyContent={"end"}>
           {error && (
             <Typography sx={{ color: theme.palette.error.dark }}>

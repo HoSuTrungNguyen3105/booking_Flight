@@ -24,14 +24,7 @@ interface ILoginForm {
 }
 
 export type AuthType = "ID,PW" | "DEV" | "MFA" | "ADMIN" | "MONITER";
-type ViewMode =
-  | "login"
-  | "register"
-  | "mfa"
-  | "verify"
-  | "changePw"
-  // | "forgotPw"
-  | "unlock";
+type ViewMode = "login" | "register" | "mfa" | "verify" | "changePw" | "unlock";
 
 export const LoginPage: React.FC = () => {
   const AUTH_TYPE_OPTIONS: { label: string; value: AuthType }[] = [
@@ -93,7 +86,7 @@ export const LoginPage: React.FC = () => {
       }
 
       // CASE 2 & 3: ADMIN or ID,PW
-      const isAdminTypes = ["ADMIN", "DEV"];
+      const isAdminTypes = ["ADMIN", "DEV", "MONITER"];
       const loginFn = isAdminTypes.includes(authType)
         ? loginAdmin
         : loginPassenger;
@@ -107,6 +100,7 @@ export const LoginPage: React.FC = () => {
         location: countryCode as string,
         ...session,
       });
+      console.log("loginRes", loginRes);
 
       if (loginRes.requireUnlock) {
         setViewMode("unlock");
@@ -167,7 +161,7 @@ export const LoginPage: React.FC = () => {
                     <InputTextField
                       {...field}
                       onError={(err) => console.error("err", err)}
-                      placeholder="Password "
+                      placeholder="Password"
                       type="password"
                       showEyeIcon
                     />
