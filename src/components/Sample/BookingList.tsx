@@ -1,6 +1,5 @@
 import React, { memo, useEffect, useMemo, useState } from "react";
 import { Box, Typography, Tooltip, IconButton } from "@mui/material";
-import { useGetBookingList } from "../../context/Api/useGetApi";
 import theme from "../../scss/theme";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import TableSection from "../../common/AdditionalCustomFC/TableSection";
@@ -8,6 +7,7 @@ import { DateFormatEnum, formatDate } from "../../hooks/format";
 import type { Booking, Passenger, Seat } from "../../utils/type";
 import { Edit, Visibility } from "@mui/icons-material";
 import { ResponseCode } from "../../utils/response";
+import { useGetBookingList } from "../../context/Api/BookingApi";
 
 const BookingList: React.FC = () => {
   const { dataBookingList } = useGetBookingList();

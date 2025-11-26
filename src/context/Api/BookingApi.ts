@@ -70,11 +70,11 @@ export const useFindPassengerTicket = () => {
   };
 };
 
-export type GetReqponseOneTicket = { id: string; ticketNo: string };
+export type ResponseOneTicketProps = { id: string; ticketNo: string };
 
 export const useFindOnePassengerTicket = () => {
   const { data: dataFindPassengerTicket, refetch: refetchFindPassengerTicket } =
-    useFetch<DetailResponseMessage<Ticket>, GetReqponseOneTicket>({
+    useFetch<DetailResponseMessage<Ticket>, ResponseOneTicketProps>({
       url: "/sys/flights/find-one-passenger-ticket",
       autoFetch: false,
       config: postMethod,

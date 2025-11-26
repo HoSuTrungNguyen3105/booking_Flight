@@ -121,6 +121,11 @@ export const menuData: TabData = {
         value: "PermissionAdminSettings",
         label: "PermissionAdminSettings",
       },
+      {
+        icon: <PermScanWifiSharp />,
+        value: "adminPermissionsPage",
+        label: "adminPermissionsPage",
+      },
     ],
   },
   Admin: {

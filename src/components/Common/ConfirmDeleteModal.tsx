@@ -11,20 +11,22 @@ import { Add as AddIcon } from "@mui/icons-material";
 import { Box, Typography, Divider, Button } from "@mui/material";
 
 import type { UserWithRelationsData } from "../Sample/type";
-import {
-  useDeleteAttendance,
-  useDeleteLeaveRequest,
-  useDeletePayroll,
-  useDeleteRequestUnlockById,
-} from "../../context/Api/usePostApi";
 import { DateFormatEnum, formatDate } from "../../hooks/format";
 import type { GridColDef } from "@mui/x-data-grid";
 import TableSection from "../../common/AdditionalCustomFC/TableSection";
 import type { GridRowDef } from "../../common/DataGrid";
 import type { IDetailItem } from "../../common/AdditionalCustomFC/DetailSection";
 import DetailSection from "../../common/AdditionalCustomFC/DetailSection";
-import type { UserRoleType } from "../../utils/type";
-import { useGetUserWithRelations } from "../../context/Api/useGetApi";
+import type { TypeStatus, UserRoleType } from "../../utils/type";
+import {
+  useDeleteAttendance,
+  useGetUserWithRelations,
+} from "../../context/Api/UserApi";
+import {
+  useDeleteLeaveRequest,
+  useDeleteRequestUnlockById,
+} from "../../context/Api/RequestApi";
+import { useDeletePayroll } from "../../context/Api/PayrollApi";
 
 interface IModalGeneratePayrollProps {
   open: boolean;
@@ -197,7 +199,7 @@ const ConfirmDeleteModal = ({
       headerName: "Status",
       flex: 1,
       renderCell: (params) => {
-        const value = params.value as string;
+        const value = params.value as TypeStatus;
         let color = "default";
         if (value === "APPROVED") color = "success";
         if (value === "REJECTED") color = "error";

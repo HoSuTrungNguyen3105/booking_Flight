@@ -29,7 +29,7 @@ import {
   CheckCircle,
   X,
 } from "lucide-react";
-import { useCreateBulkHotels } from "../../../../context/Api/usePostApi";
+import { useCreateBulkHotels } from "../../../../context/Api/HotelApi";
 import type { CreateHotelDto } from "../../../../utils/type";
 import { ResponseCode } from "../../../../utils/response";
 import theme from "../../../../scss/theme";

@@ -74,7 +74,6 @@ import FlightsPage from "../components/Employee/FlightsPage";
 import Confirmation from "../components/Admin/component/Meal/ConfirmationBooking";
 import BookingPassengerSearch from "../components/Admin/component/Booking/BookingPassengerSearch";
 import SomeComponent from "../components/Admin/component/Meal/SomeComponent";
-import BookingDemo from "../components/Sample/BookingDemo";
 import { DiscountBatchCreator } from "../components/Contact/DiscountBatchCreator";
 import SeedPermissionsPage from "../common/Setting/Component/SeedPermissionsPage";
 import AccessDeniedPage from "../components/Layout/AccessDeniedPage";
@@ -82,6 +81,8 @@ import PermissionPage from "../components/Admin/component/Permission/PermissionV
 import PermissionMatrix from "../components/Admin/component/Permission/PermissionMatrix";
 import PermissionSettings from "../components/Admin/component/Permission";
 import PermissionAdminSettings from "../components/Admin/component/Permission/PermissionSettings";
+import AdminPermissionsPage from "../components/Admin/component/Permission/AdminPermissionsPage";
+import BookingDemo from "../components/Admin/component/Booking/BookingDemo";
 
 const routes = [
   {
@@ -203,6 +204,10 @@ const routes = [
       {
         path: "/hotels",
         element: <HotelListPage />,
+      },
+      {
+        path: "/adminPermissionsPage",
+        element: <AdminPermissionsPage />,
       },
       {
         path: "/search",

@@ -26,7 +26,7 @@ import {
   ArrowBack,
 } from "@mui/icons-material";
 import type { CreateMealDto, Meal } from "../../../../utils/type";
-import { useCreateMultiMeal } from "../../../../context/Api/usePostApi";
+import { useCreateMultiMeal } from "../../../../context/Api/MealApi";
 import theme from "../../../../scss/theme";
 import MealForm from "./MealForm";
 import { useToast } from "../../../../context/ToastContext";

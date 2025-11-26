@@ -1,22 +1,17 @@
 import { Chip, Box, Button, Typography } from "@mui/material";
 import type { GridColDef } from "@mui/x-data-grid";
-import { useGetUnlockRequests } from "../../../../context/Api/useGetApi";
 import { memo, useCallback, useMemo } from "react";
 import TableSection from "../../../../common/AdditionalCustomFC/TableSection";
 import { DateFormatEnum, formatDate } from "../../../../hooks/format";
 import theme from "../../../../scss/theme";
-import {
-  useApproveUnlock,
-  useRejectUnlock,
-} from "../../../../context/Api/usePostApi";
 import { useToast } from "../../../../context/ToastContext";
 import { ResponseCode } from "../../../../utils/response";
-
-enum TypeColor {
-  REJECTED = "REJECTED",
-  APPROVED = "APPROVED",
-  PENDING = "PENDING",
-}
+import {
+  useApproveUnlock,
+  useGetUnlockRequests,
+  useRejectUnlock,
+} from "../../../../context/Api/RequestApi";
+import type { TypeStatus } from "../../../../utils/type";
 
 const UnlockRequestTable = () => {
   const { getUnlockRequests, refetchGetUnlockRequests } =
@@ -30,13 +25,13 @@ const UnlockRequestTable = () => {
     [getUnlockRequests]
   );
 
-  const getStatusColor = useCallback((status: string) => {
+  const getStatusColor = useCallback((status: TypeStatus) => {
     switch (status) {
-      case TypeColor.APPROVED:
+      case "APPROVED":
         return theme.palette.background.default;
-      case TypeColor.REJECTED:
+      case "REJECTED":
         return theme.palette.primary.light;
-      case TypeColor.PENDING:
+      case "PENDING":
         return theme.palette.grey[700];
       default:
         return theme.palette.error.dark;

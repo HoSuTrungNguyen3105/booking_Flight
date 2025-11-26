@@ -10,7 +10,6 @@ import SendEmailToUsers from "../Common/SendEmailToUsers";
 import TableSection from "../../common/AdditionalCustomFC/TableSection";
 import type { GridRowId } from "@mui/x-data-grid";
 import BatchUpdateEmployeeNo from "./BatchUpdateEmployeeNo";
-import type { BatchEmployeeNoReq } from "../../context/Api/usePostApi";
 import ConfirmDeleteModal from "../Common/ConfirmDeleteModal";
 import DeleteUserModal from "../../common/Setting/Component/DeleteUserModal";
 import TransferAdminModal from "../../common/Setting/Component/TransferAdminModal";
@@ -18,6 +17,7 @@ import { useAuth } from "../../context/AuthContext";
 import PermissionRoleModal from "../../common/Setting/Component/PermissionRoleModal";
 import ResetPasswordModal from "../../common/Setting/Component/ResetPasswordModal";
 import DisableMFALoginModal from "../../common/Setting/Component/DisableMFALoginModal";
+import type { BatchEmployeeNoReq } from "../../utils/type";
 
 export type ReqUpdateEmployeeNo = BatchEmployeeNoReq & {
   name: string;

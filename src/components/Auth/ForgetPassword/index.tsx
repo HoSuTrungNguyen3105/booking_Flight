@@ -2,7 +2,7 @@ import { memo, useCallback, useState } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import { useToast } from "../../../context/ToastContext";
 import InputTextField from "../../../common/Input/InputTextField";
-import { useForgotPassword } from "../../../context/Api/usePostApi";
+import { useForgotPassword } from "../../../context/Api/AuthApi";
 import { useNavigate } from "react-router-dom";
 import { ResponseCode } from "../../../utils/response";
 import { ArrowBack } from "@mui/icons-material";

@@ -1,71 +1,22 @@
-import {
-  Box,
-  Button,
-  Typography,
-  IconButton,
-  LinearProgress,
-  Chip,
-  Alert,
-} from "@mui/material";
+import { Box, Button, Typography, LinearProgress, Alert } from "@mui/material";
 import { useEffect, useState } from "react";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import DeleteIcon from "@mui/icons-material/Delete";
-import ImageIcon from "@mui/icons-material/Image";
-import DescriptionIcon from "@mui/icons-material/Description";
-import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
+import { FileUpload } from "./index";
+import { type TFileUploader, INPUT_TYPE } from "./type";
 import AttachEmailIcon from "@mui/icons-material/AttachEmail";
-import { styled } from "@mui/material/styles";
+import type { SendCcBccDto } from "../../context/Api/UserApi";
 
-const VisuallyHiddenInput = styled("input")({
-  clip: "rect(0 0 0 0)",
-  clipPath: "inset(50%)",
-  height: 1,
-  overflow: "hidden",
-  position: "absolute",
-  bottom: 0,
-  left: 0,
-  whiteSpace: "nowrap",
-  width: 1,
-});
-
-const PreviewImage = styled("img")({
-  maxWidth: "100%",
-  maxHeight: 200,
-  borderRadius: 8,
-  objectFit: "cover",
-  border: "2px solid #e0e0e0",
-});
-
-const UploadProgressContainer = styled(Box)({
-  width: "100%",
-  marginTop: 8,
-});
-
-// Types
-export interface TFileUploader {
+// Extended type to include upload status
+export interface ExtendedFileUploader extends TFileUploader {
   id: string;
-  preview: string;
-  raw: File;
-  size: number;
-  name: string;
-  type: string;
-  fileName: string;
   uploadStatus?: "pending" | "uploading" | "success" | "error";
-  serverResponse?: any;
   error?: string;
   url?: string;
 }
 
-export interface UploadProgress {
-  loaded: number;
-  total: number;
-  percentage: number;
-}
-
 export interface FileUploaderProps {
   name?: string;
-  onChange?: (files: TFileUploader[]) => void;
-  onFilesUploaded?: (uploadedFiles: TFileUploader[]) => void;
+  onChange?: (files: ExtendedFileUploader[]) => void;
+  onFilesUploaded?: (uploadedFiles: ExtendedFileUploader[]) => void;
   accept?: string;
   maxSize?: string;
   maxFiles?: number;
@@ -74,209 +25,89 @@ export interface FileUploaderProps {
   width?: string;
   height?: string;
   multiple?: boolean;
-  value?: TFileUploader[];
+  value?: ExtendedFileUploader[];
 }
 
 interface EmailAttachmentUploaderProps extends FileUploaderProps {
   title: string;
   uploadUrl: string;
-  emailData?: {
-    toList: string[];
-    ccList?: string[];
-    bccList?: string[];
-    subject: string;
-    text: string;
-    html?: string;
-  };
-  onUploadSuccess?: (response: any, files: TFileUploader[]) => void;
-  onUploadError?: (error: any, files: TFileUploader[]) => void;
+  emailData?: SendCcBccDto;
+  onUploadSuccess?: (response: any, files: ExtendedFileUploader[]) => void;
+  onUploadError?: (error: any, files: ExtendedFileUploader[]) => void;
   headers?: Record<string, string>;
   withCredentials?: boolean;
   autoUpload?: boolean;
 }
-
-// Utility functions
-export const sizeToBytes = (sizeStr: string): number => {
-  const units: { [key: string]: number } = {
-    B: 1,
-    KB: 1024,
-    MB: 1024 * 1024,
-    GB: 1024 * 1024 * 1024,
-  };
-
-  const match = sizeStr.match(/^(\d+(?:\.\d+)?)\s*([KMG]?B)$/i);
-  if (!match) return 5 * 1024 * 1024; // default 5MB
-
-  const value = parseFloat(match[1]);
-  const unit = match[2].toUpperCase();
-
-  return value * (units[unit] || units["MB"]);
-};
-
-export const getFileInformation = (
-  filename: string
-): { type: string; extension: string } => {
-  const extension = filename.split(".").pop()?.toLowerCase() || "";
-  const typeMap: { [key: string]: string } = {
-    jpg: "image",
-    jpeg: "image",
-    png: "image",
-    gif: "image",
-    bmp: "image",
-    webp: "image",
-    pdf: "pdf",
-    doc: "document",
-    docx: "document",
-    txt: "text",
-    xls: "spreadsheet",
-    xlsx: "spreadsheet",
-    ppt: "presentation",
-    pptx: "presentation",
-    zip: "archive",
-    rar: "archive",
-  };
-
-  return {
-    type: typeMap[extension] || "file",
-    extension,
-  };
-};
-
-export const concatStrings = (
-  separator: string,
-  ...strings: string[]
-): string => {
-  return strings.filter((str) => str).join(separator);
-};
 
 export const EmailAttachmentUploader = ({
   title,
   name,
   onChange,
   onFilesUploaded,
-  accept = "image/*,application/pdf,.doc,.docx,.txt,.xls,.xlsx,.ppt,.pptx,.zip,.rar",
+  accept = ".jpg,.jpeg,.png,.pdf,.doc,.docx,.txt,.xls,.xlsx,.ppt,.pptx,.zip,.rar",
   maxSize = "10 MB",
   maxFiles = 10,
-  hidePreview = false,
   disabled = false,
   multiple = true,
   value = [],
   uploadUrl,
   emailData,
   onUploadError,
+  onUploadSuccess,
   autoUpload = true,
+  headers = {},
+  withCredentials = false,
 }: EmailAttachmentUploaderProps) => {
-  const [files, setFiles] = useState<TFileUploader[]>(value ?? []);
+  const [files, setFiles] = useState<ExtendedFileUploader[]>(value ?? []);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [uploadProgress, setUploadProgress] = useState<
-    Record<string, UploadProgress>
+    Record<string, { loaded: number; total: number; percentage: number }>
   >({});
   const [isUploading, setIsUploading] = useState<boolean>(false);
 
-  // Validate files on initial load
+  // Sync internal state with prop value if needed
   useEffect(() => {
-    if (value && value.length > 0) {
-      const validatedFiles = value.map((file) => ({
-        ...file,
-        preview:
-          file.preview ||
-          (file.type?.startsWith("image/") ? file.url || "" : ""),
-      }));
-      setFiles(validatedFiles);
+    if (value !== files) {
+      // logic to sync if needed, but avoiding loops
     }
   }, [value]);
 
-  const validateFile = (file: File): { isValid: boolean; error?: string } => {
-    const maxSizeBytes = sizeToBytes(maxSize);
-    const acceptTypes = accept.split(",").map((t) => t.trim().toLowerCase());
-
-    if (file.size > maxSizeBytes) {
-      return {
-        isValid: false,
-        error: `File "${file.name}" exceeds maximum size of ${maxSize}`,
-      };
-    }
-
-    const { type: fileType, extension } = getFileInformation(file.name);
-    const validExt = concatStrings(".", extension);
-
-    if (
-      accept !== "*/*" &&
-      !acceptTypes.some((acceptType) => {
-        // Check MIME type
-        if (file.type && acceptType.includes("/")) {
-          return file.type.includes(acceptType.replace("*", ""));
-        }
-        // Check file extension
-        return validExt === acceptType || `.${fileType}` === acceptType;
-      })
-    ) {
-      return {
-        isValid: false,
-        error: `File "${file.name}" is not in accepted format. Accepted: ${accept}`,
-      };
-    }
-
-    return { isValid: true };
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newFiles = e.target.files ? Array.from(e.target.files) : [];
-    if (!newFiles.length) return;
-
+  const handleFileChange = (newFiles: TFileUploader[]) => {
     setErrorMessage("");
 
-    // Check max files limit
-    if (multiple && maxFiles > 0 && files.length + newFiles.length > maxFiles) {
-      setErrorMessage(`Maximum ${maxFiles} files allowed`);
-      e.target.value = "";
-      return;
-    }
+    const updatedFiles: ExtendedFileUploader[] = newFiles.map((newFile) => {
+      const existing = files.find(
+        (f) =>
+          f.name === newFile.name &&
+          f.size === newFile.size &&
+          f.type === newFile.type
+      );
 
-    const validated: TFileUploader[] = [];
-    const errors: string[] = [];
-
-    for (const file of newFiles) {
-      const validation = validateFile(file);
-
-      if (!validation.isValid) {
-        errors.push(validation.error!);
-        continue;
+      if (existing) {
+        return existing;
       }
 
-      validated.push({
+      return {
+        ...newFile,
         id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-        preview: file.type.startsWith("image/")
-          ? URL.createObjectURL(file)
-          : "",
-        raw: file,
-        size: file.size,
-        name: file.name,
-        type: file.type,
-        fileName: file.name,
         uploadStatus: "pending",
-      });
-    }
+      };
+    });
 
-    if (errors.length > 0) {
-      setErrorMessage(errors.join(", "));
-    }
+    setFiles(updatedFiles);
+    onChange?.(updatedFiles);
 
-    if (validated.length > 0) {
-      const updated = multiple ? [...files, ...validated] : validated;
-      setFiles(updated);
-      onChange?.(updated);
-
-      // Auto-upload if enabled and uploadUrl is provided
-      if (autoUpload && uploadUrl) {
-        uploadFiles(validated);
+    if (autoUpload && uploadUrl) {
+      const pendingFiles = updatedFiles.filter(
+        (f) => f.uploadStatus === "pending"
+      );
+      if (pendingFiles.length > 0) {
+        uploadFiles(pendingFiles);
       }
     }
-
-    e.target.value = ""; // reset input
   };
 
-  const uploadFiles = async (filesToUpload: TFileUploader[]) => {
+  const uploadFiles = async (filesToUpload: ExtendedFileUploader[]) => {
     if (!uploadUrl) {
       console.error("Upload URL is required");
       return;
@@ -294,7 +125,6 @@ export const EmailAttachmentUploader = ({
     try {
       const formData = new FormData();
 
-      // Append email data
       formData.append("toList", JSON.stringify(emailData.toList));
       formData.append("subject", emailData.subject);
       formData.append("text", emailData.text);
@@ -311,20 +141,16 @@ export const EmailAttachmentUploader = ({
         formData.append("html", emailData.html);
       }
 
-      // Append files - NestJS AnyFilesInterceptor expects multiple files with the same field name
       filesToUpload.forEach((file) => {
-        formData.append("files", file.raw); // Use 'files' field for multiple files
+        formData.append("files", file.raw);
       });
 
       const xhr = new XMLHttpRequest();
 
-      // Track upload progress for all files
       xhr.upload.addEventListener("progress", (event) => {
         if (event.lengthComputable) {
           const progress = (event.loaded / event.total) * 100;
-
-          // Update progress for all files being uploaded
-          const newProgress: Record<string, UploadProgress> = {};
+          const newProgress: Record<string, any> = {};
           filesToUpload.forEach((file) => {
             newProgress[file.id] = {
               loaded: event.loaded,
@@ -336,7 +162,6 @@ export const EmailAttachmentUploader = ({
         }
       });
 
-      // Update all files status to uploading
       setFiles((prev) =>
         prev.map((f) =>
           filesToUpload.some((uploadFile) => uploadFile.id === f.id)
@@ -345,35 +170,32 @@ export const EmailAttachmentUploader = ({
         )
       );
 
-      // const response = await new Promise((resolve, reject) => {
-      //   xhr.onreadystatechange = () => {
-      //     if (xhr.readyState === 4) {
-      //       if (xhr.status >= 200 && xhr.status < 300) {
-      //         let responseData;
-      //         try {
-      //           responseData = JSON.parse(xhr.responseText);
-      //         } catch {
-      //           responseData = xhr.responseText;
-      //         }
-      //         resolve(responseData);
-      //       } else {
-      //         reject(
-      //           new Error(`Upload failed: ${xhr.status} ${xhr.statusText}`)
-      //         );
-      //       }
-      //     }
-      //   };
+      const response = await new Promise((resolve, reject) => {
+        xhr.onreadystatechange = () => {
+          if (xhr.readyState === 4) {
+            if (xhr.status >= 200 && xhr.status < 300) {
+              let responseData;
+              try {
+                responseData = JSON.parse(xhr.responseText);
+              } catch {
+                responseData = xhr.responseText;
+              }
+              resolve(responseData);
+            } else {
+              reject(
+                new Error(`Upload failed: ${xhr.status} ${xhr.statusText}`)
+              );
+            }
+          }
+        };
 
-      //   xhr.open("POST", uploadUrl);
-
-      //   // Set headers
-      //   Object.entries(headers).forEach(([key, value]) => {
-      //     xhr.setRequestHeader(key, value);
-      //   });
-
-      //   xhr.withCredentials = withCredentials;
-      //   xhr.send(formData);
-      // });
+        xhr.open("POST", uploadUrl);
+        Object.entries(headers).forEach(([key, value]) => {
+          xhr.setRequestHeader(key, value);
+        });
+        xhr.withCredentials = withCredentials;
+        xhr.send(formData);
+      });
 
       setFiles((prev) =>
         prev.map((f) =>
@@ -384,27 +206,25 @@ export const EmailAttachmentUploader = ({
       );
 
       onFilesUploaded?.(filesToUpload);
+      if (onUploadSuccess) {
+        onUploadSuccess(response, filesToUpload);
+      }
     } catch (error) {
       console.error("Upload failed:", error);
+      const msg = error instanceof Error ? error.message : "Upload failed";
+      setErrorMessage(msg);
 
       setFiles((prev) =>
         prev.map((f) =>
           filesToUpload.some((uploadFile) => uploadFile.id === f.id)
-            ? {
-                ...f,
-                uploadStatus: "error",
-                error: error instanceof Error ? error.message : "Upload failed",
-              }
+            ? { ...f, uploadStatus: "error", error: msg }
             : f
         )
       );
 
-      setErrorMessage(error instanceof Error ? error.message : "Upload failed");
       onUploadError?.(error, filesToUpload);
     } finally {
       setIsUploading(false);
-
-      // Clear progress after a delay
       setTimeout(() => {
         setUploadProgress((prev) => {
           const newProgress = { ...prev };
@@ -417,28 +237,6 @@ export const EmailAttachmentUploader = ({
     }
   };
 
-  const handleRemoveFile = (index: number) => {
-    const fileToRemove = files[index];
-
-    if (fileToRemove?.preview) {
-      URL.revokeObjectURL(fileToRemove.preview);
-    }
-
-    const updated = files.filter((_, i) => i !== index);
-    setFiles(updated);
-
-    // Remove from progress tracking
-    if (fileToRemove.id) {
-      setUploadProgress((prev) => {
-        const newProgress = { ...prev };
-        delete newProgress[fileToRemove.id];
-        return newProgress;
-      });
-    }
-
-    onChange?.(updated);
-  };
-
   const handleManualUpload = () => {
     const pendingFiles = files.filter(
       (file) => file.uploadStatus === "pending" || !file.uploadStatus
@@ -448,197 +246,60 @@ export const EmailAttachmentUploader = ({
     }
   };
 
-  const getFileIcon = (fileType: string) => {
-    if (fileType.startsWith("image/")) return <ImageIcon fontSize="small" />;
-    if (fileType === "application/pdf")
-      return <DescriptionIcon fontSize="small" />;
-    return <InsertDriveFileIcon fontSize="small" />;
-  };
-
-  const getStatusColor = (status?: string) => {
-    switch (status) {
-      case "success":
-        return "success";
-      case "error":
-        return "error";
-      case "uploading":
-        return "primary";
-      default:
-        return "default";
-    }
-  };
-
-  const hasPendingFiles = files.some(
-    (file) => file.uploadStatus === "pending" || !file.uploadStatus
-  );
-  const allFilesUploaded =
-    files.length > 0 && files.every((file) => file.uploadStatus === "success");
-
-  useEffect(() => {
-    return () => {
-      files.forEach((f) => {
-        if (f.preview) URL.revokeObjectURL(f.preview);
-      });
-    };
-  }, [files]);
+  const isAnyUploading = files.some((f) => f.uploadStatus === "uploading");
+  const hasPending = files.some((f) => f.uploadStatus === "pending");
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-      {/* Upload Controls */}
-      <Box
-        sx={{ display: "flex", alignItems: "center", gap: 2, flexWrap: "wrap" }}
-      >
-        <Button
-          component="label"
-          variant="contained"
-          startIcon={<CloudUploadIcon />}
-          disabled={disabled || isUploading}
-          sx={{ minWidth: 200 }}
-        >
-          {isUploading ? "Uploading..." : title}
-          <VisuallyHiddenInput
-            type="file"
-            name={name}
-            onChange={handleFileChange}
-            accept={accept}
-            multiple={multiple}
-            disabled={disabled || isUploading}
-          />
-        </Button>
+      <Typography variant="subtitle2" fontWeight="bold">
+        {title}
+      </Typography>
 
-        {/* Manual upload button for non-auto upload mode */}
-        {!autoUpload && hasPendingFiles && uploadUrl && (
-          <Button
-            variant="outlined"
-            startIcon={<AttachEmailIcon />}
-            onClick={handleManualUpload}
-            disabled={isUploading || !emailData}
-          >
-            Send with Attachments
-          </Button>
-        )}
+      <FileUpload
+        name={name || "file-upload"}
+        accept={accept}
+        maxSize={maxSize}
+        maxFiles={maxFiles}
+        multiple={multiple}
+        disabled={disabled || isUploading}
+        value={files}
+        onChange={handleFileChange}
+        inputType={INPUT_TYPE.THUMBNAIL}
+      />
 
-        {/* File count indicator */}
-        {maxFiles > 0 && (
-          <Typography variant="body2" color="text.secondary">
-            {files.length} / {maxFiles} files
-          </Typography>
-        )}
-      </Box>
-
-      {/* Success Alert */}
-      {allFilesUploaded && (
-        <Alert severity="success" sx={{ mt: 1 }}>
-          All files have been uploaded successfully and are ready to be sent
-          with the email.
-        </Alert>
+      {isAnyUploading && (
+        <Box sx={{ mt: 1 }}>
+          {files
+            .filter((f) => f.uploadStatus === "uploading")
+            .map((f) => (
+              <Box key={f.id} sx={{ mb: 1 }}>
+                <Typography variant="caption">{f.name}</Typography>
+                <LinearProgress
+                  variant="determinate"
+                  value={uploadProgress[f.id]?.percentage || 0}
+                />
+              </Box>
+            ))}
+        </Box>
       )}
 
-      {/* File list */}
-      {files.map((file, index) => (
-        <Box
-          key={file.id}
-          sx={{
-            mt: 1,
-            p: 2,
-            border: 1,
-            borderColor: "divider",
-            borderRadius: 1,
-          }}
+      {!autoUpload && hasPending && (
+        <Button
+          variant="contained"
+          startIcon={<AttachEmailIcon />}
+          onClick={handleManualUpload}
+          disabled={isUploading || !emailData}
+          sx={{ mt: 1, alignSelf: "flex-start" }}
         >
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <Box
-              sx={{ display: "flex", alignItems: "center", gap: 1, flex: 1 }}
-            >
-              {getFileIcon(file.type)}
-              <Box sx={{ minWidth: 0, flex: 1 }}>
-                <Typography variant="body2" noWrap title={file.name}>
-                  {file.name}
-                </Typography>
-                <Typography variant="caption" color="text.secondary">
-                  {(file.size / 1024 / 1024).toFixed(2)} MB
-                </Typography>
-              </Box>
-            </Box>
+          Send with Attachments
+        </Button>
+      )}
 
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              {/* Upload status chip */}
-              {file.uploadStatus && (
-                <Chip
-                  label={file.uploadStatus}
-                  size="small"
-                  color={getStatusColor(file.uploadStatus) as any}
-                  variant="outlined"
-                />
-              )}
-
-              <IconButton
-                size="small"
-                onClick={() => handleRemoveFile(index)}
-                color="error"
-                title="Remove file"
-                disabled={file.uploadStatus === "uploading"}
-              >
-                <DeleteIcon fontSize="small" />
-              </IconButton>
-            </Box>
-          </Box>
-
-          {/* Upload progress */}
-          {uploadProgress[file.id] && (
-            <UploadProgressContainer>
-              <LinearProgress
-                variant="determinate"
-                value={uploadProgress[file.id].percentage}
-                color={file.uploadStatus === "error" ? "error" : "primary"}
-              />
-              <Typography variant="caption" color="text.secondary">
-                {Math.round(uploadProgress[file.id].percentage)}%
-              </Typography>
-            </UploadProgressContainer>
-          )}
-
-          {/* Error message for individual file */}
-          {file.error && (
-            <Typography
-              variant="caption"
-              color="error"
-              sx={{ mt: 0.5, display: "block" }}
-            >
-              {file.error}
-            </Typography>
-          )}
-
-          {/* Image preview */}
-          {!hidePreview && file.preview && (
-            <Box sx={{ mt: 1 }}>
-              <PreviewImage
-                src={file.preview}
-                alt={`Preview of ${file.name}`}
-              />
-            </Box>
-          )}
-        </Box>
-      ))}
-
-      {/* Global error message */}
       {errorMessage && (
         <Alert severity="error" sx={{ mt: 1 }}>
           {errorMessage}
         </Alert>
       )}
-
-      {/* Helper text */}
-      <Typography variant="caption" color="text.secondary">
-        Accepted formats: {accept} | Max size: {maxSize}{" "}
-        {maxFiles > 0 ? `| Max files: ${maxFiles}` : ""}
-      </Typography>
     </Box>
   );
 };

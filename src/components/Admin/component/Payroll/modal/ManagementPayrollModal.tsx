@@ -12,15 +12,15 @@ import { Add as AddIcon } from "@mui/icons-material";
 import {
   useGetPayrollsById,
   useGetUserIdAndNameToDropdownGeneratePayroll,
-} from "../../../../../context/Api/useGetApi";
-import { useGeneratePayroll } from "../../../../../context/Api/usePostApi";
+  useGeneratePayroll,
+  type GeneratePayroll,
+} from "../../../../../context/Api/PayrollApi";
 import SelectDropdown from "../../../../../common/Dropdown/SelectDropdown";
 import FormRow from "../../../../../common/AdditionalCustomFC/FormRow";
 import LocalAtmIcon from "@mui/icons-material/LocalAtm";
 import InputNumber from "../../../../../common/Input/InputNumber";
 import InputTextField from "../../../../../common/Input/InputTextField";
 import { useToast } from "../../../../../context/ToastContext";
-import type { GeneratePayroll } from "../PayrollManagement";
 
 interface IModalGeneratePayrollProps {
   open: boolean;

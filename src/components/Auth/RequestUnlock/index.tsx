@@ -1,9 +1,9 @@
 import { memo, useState } from "react";
 import { Box, Button, Typography } from "@mui/material";
-import { useRequestUnlockAccount } from "../../../context/Api/usePostApi";
 import InputTextArea from "../../../common/Input/InputTextArea";
 import { ResponseCode } from "../../../utils/response";
 import { useToast } from "../../../context/ToastContext";
+import { useRequestUnlockAccount } from "../../../context/Api/RequestApi";
 
 const RequestUnlock = ({
   userId,
@@ -12,7 +12,7 @@ const RequestUnlock = ({
   userId: number;
   onClose: () => void;
 }) => {
-  const toast = useToast()
+  const toast = useToast();
   const [reason, setReason] = useState("");
   const [loading, setLoading] = useState(false);
   const { refetchRequestUnlockAccount } = useRequestUnlockAccount();
@@ -22,13 +22,13 @@ const RequestUnlock = ({
     try {
       const res = await refetchRequestUnlockAccount({ userId, reason });
       if (res?.resultCode === ResponseCode.SUCCESS) {
-        toast(res?.resultMessage ,'success');
+        toast(res?.resultMessage, "success");
         onClose();
       } else {
-        toast(res?.resultMessage || 'Error');
+        toast(res?.resultMessage || "Error");
       }
     } catch (error) {
-      console.error( error);
+      console.error(error);
     } finally {
       setLoading(false);
     }

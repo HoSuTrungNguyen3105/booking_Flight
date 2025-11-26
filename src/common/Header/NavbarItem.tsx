@@ -6,6 +6,7 @@ import { useAuth } from "../../context/AuthContext";
 import { menuData } from "../../utils/name_sb1";
 import { keyframes } from "@emotion/react";
 import { useNavigate } from "react-router-dom";
+import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
 
 const fadeSlideIn = keyframes`
   0% { opacity: 0; transform: translateY(-10px); }
@@ -43,14 +44,18 @@ export default function NavbarItem() {
       clearTimeout(timeoutRef.current);
     }
     timeoutRef.current = setTimeout(() => {
+      setDownArrowIcon(true);
       setActiveTab(tab);
     }, 300);
   };
+
+  const [downArrowIcon, setDownArrowIcon] = useState(false);
 
   const handleMouseLeave = () => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
+    setDownArrowIcon(false);
   };
 
   const visibleTabs = Object.keys(menuData).filter(
@@ -75,6 +80,9 @@ export default function NavbarItem() {
             key={tab}
             onMouseEnter={() => handleMouseEnter(tab)}
             onMouseLeave={handleMouseLeave}
+            endIcon={
+              downArrowIcon ? <KeyboardArrowDown /> : <KeyboardArrowUp />
+            }
             onClick={() => handleTabClick(tab)}
             sx={{
               fontSize: "14px",

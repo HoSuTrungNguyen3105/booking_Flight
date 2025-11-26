@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import InputTextField from "../../../../../common/Input/InputTextField";
 import { ResponseCode } from "../../../../../utils/response";
-import { useUpdatePriceSeatInFlightByIds } from "../../../../../context/Api/usePostApi";
+import { useUpdatePriceSeatInFlightByIds } from "../../../../../context/Api/SeatApi";
 import { useToast } from "../../../../../context/ToastContext";
 
 type UpdateSeatPriceProps = {

@@ -17,7 +17,6 @@ const getMethod = {
 
 const postMethod = {
   method: MethodType.POST,
-  headers: { "Content-Type": "application/json" },
 };
 
 export const useGetFlightMealsById = (id: number) => {

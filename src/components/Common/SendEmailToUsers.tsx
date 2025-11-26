@@ -1,41 +1,59 @@
 import { useState } from "react";
-import { Box, Button, Divider, Stack, Typography } from "@mui/material";
-import { Send } from "@mui/icons-material";
+import {
+  Box,
+  Button,
+  Divider,
+  Stack,
+  Typography,
+  IconButton,
+  Collapse,
+} from "@mui/material";
+import { Send, Close } from "@mui/icons-material";
 import { useAuth } from "../../context/AuthContext";
 import InputTextField from "../../common/Input/InputTextField";
 import InputTextArea from "../../common/Input/InputTextArea";
-import { useSendMail } from "../../context/Api/usePostApi";
 import { useToast } from "../../context/ToastContext";
 import { EmailAttachmentUploader } from "../../common/FileUploader/FileUploadButton";
+import { useSendMail } from "../../context/Api/UserApi";
+import { ResponseCode } from "../../utils/response";
+import ChipInput from "../../common/Input/ChipInput";
 
 type SendEmailProps = {
   selectedUser: string[];
-  onSubmit?: (payload: {
-    to: string[];
-    cc?: string[];
-    bcc?: string[];
-    subject: string;
-    text: string;
-    files?: File[];
-  }) => Promise<void> | void;
+  // onSubmit?: (payload: {
+  //   to: string[];
+  //   cc?: string[];
+  //   bcc?: string[];
+  //   subject: string;
+  //   text: string;
+  //   files?: File[];
+  // }) => Promise<void> | void;
 };
 
-const SendEmailToUsers = ({ selectedUser, onSubmit }: SendEmailProps) => {
+const SendEmailToUsers = ({ selectedUser }: SendEmailProps) => {
   const { user } = useAuth();
   const [to, setTo] = useState<string[]>(selectedUser);
   const [cc, setCc] = useState<string[]>([]);
   const [bcc, setBcc] = useState<string[]>([]);
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
-  // const [broadcast, setBroadcast] = useState(true);
-  // const [files, setFiles] = useState<File[]>([]);
-  // const [sending, setSending] = useState(false);
+  const [showCc, setShowCc] = useState(false);
+  const [showBcc, setShowBcc] = useState(false);
 
   const { sendCcBcc } = useSendMail();
 
   const toast = useToast();
 
   const handleSendCcBcc = async () => {
+    if (to.length === 0) {
+      toast("Please add at least one recipient", "error");
+      return;
+    }
+    if (!subject) {
+      toast("Please add a subject", "error");
+      return;
+    }
+
     const res = await sendCcBcc({
       toList: to,
       ccList: cc,
@@ -44,17 +62,23 @@ const SendEmailToUsers = ({ selectedUser, onSubmit }: SendEmailProps) => {
       text: body,
     });
 
-    if (res?.resultCode === "00") {
+    if (res?.resultCode === ResponseCode.SUCCESS) {
       toast(res.resultMessage, "success");
+      // Reset form
+      setTo([]);
+      setCc([]);
+      setBcc([]);
+      setSubject("");
+      setBody("");
     } else {
       toast(res?.resultMessage || "Error sending email", "error");
     }
   };
 
   return (
-    <Stack gap={2}>
+    <Stack gap={2} sx={{ maxWidth: 800, margin: "0 auto", padding: 2 }}>
       <Typography variant="h5" fontWeight="bold">
-        Send Email
+        Compose Email
       </Typography>
       <Divider />
 
@@ -65,68 +89,138 @@ const SendEmailToUsers = ({ selectedUser, onSubmit }: SendEmailProps) => {
 
       {/* To */}
       <Box>
-        <Typography variant="body2">To:</Typography>
-        {/* <ChipInput name="Chip" label="Chip" value={to} onChange={setTo} /> */}
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Typography variant="body2" fontWeight="bold" gutterBottom>
+            To:
+          </Typography>
+          <Box>
+            {!showCc && (
+              <Button size="small" onClick={() => setShowCc(true)}>
+                Cc
+              </Button>
+            )}
+            {!showBcc && (
+              <Button size="small" onClick={() => setShowBcc(true)}>
+                Bcc
+              </Button>
+            )}
+          </Box>
+        </Box>
+        <ChipInput
+          label="Recipients"
+          placeholder="Type email and press Enter"
+          value={to}
+          onChange={setTo}
+        />
       </Box>
 
       {/* Cc */}
-      <Box>
-        <Typography variant="body2">Cc:</Typography>
-        {/* <ChipInput value={cc} onChange={setCc} name="Chip" label="Chip" /> */}
-      </Box>
+      <Collapse in={showCc}>
+        <Box>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Typography variant="body2" fontWeight="bold" gutterBottom>
+              Cc:
+            </Typography>
+            <IconButton size="small" onClick={() => setShowCc(false)}>
+              <Close fontSize="small" />
+            </IconButton>
+          </Box>
+          <ChipInput
+            label="Cc"
+            placeholder="Type email and press Enter"
+            value={cc}
+            onChange={setCc}
+          />
+        </Box>
+      </Collapse>
 
       {/* Bcc */}
-      <Box>
-        <Typography variant="body2">Bcc:</Typography>
-        {/* <ChipInput value={bcc} onChange={setBcc} name="Chip" label="Chip" /> */}
-      </Box>
+      <Collapse in={showBcc}>
+        <Box>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Typography variant="body2" fontWeight="bold" gutterBottom>
+              Bcc:
+            </Typography>
+            <IconButton size="small" onClick={() => setShowBcc(false)}>
+              <Close fontSize="small" />
+            </IconButton>
+          </Box>
+          <ChipInput
+            label="Bcc"
+            placeholder="Type email and press Enter"
+            value={bcc}
+            onChange={setBcc}
+          />
+        </Box>
+      </Collapse>
 
       {/* Subject */}
-      <InputTextField value={subject} onChange={(e) => setSubject(e)} />
+      <Box>
+        <Typography variant="body2" fontWeight="bold" gutterBottom>
+          Subject:
+        </Typography>
+        <InputTextField
+          value={subject}
+          onChange={(e) => setSubject(e)}
+          placeholder="Subject"
+        />
+      </Box>
 
       {/* Body */}
-      <InputTextArea
-        placeholder="Type your message..."
-        value={body}
-        onChange={(e) => setBody(e)}
-      />
+      <Box>
+        <InputTextArea
+          placeholder="Type your message here..."
+          value={body}
+          onChange={(e) => setBody(e)}
+          minRows={6}
+        />
+      </Box>
 
-      {/* Broadcast & Buttons */}
-      <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Box display="flex" alignItems="center" gap={1}>
-          {/* <FileUploadButton accept=".img,.svg" name="Upload" title="Files" /> */}
+      {/* Attachments & Buttons */}
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        mt={2}
+      >
+        <Box>
           <EmailAttachmentUploader
-            title="Add Email Attachments"
-            uploadUrl="/api/email/send-cc-bcc"
+            title="Attach Files"
+            uploadUrl="/api/email/send-cc-bcc" // Note: This URL might need to be adjusted based on actual backend endpoint for upload
             emailData={{
-              toList: ["recipient@example.com"],
-              ccList: ["cc@example.com"],
-              bccList: ["bcc@example.com"],
-              subject: "Test Email with Attachments",
-              text: "This email contains the attached files",
-              html: "<p>This email contains the attached files</p>",
+              toList: to,
+              ccList: cc,
+              bccList: bcc,
+              subject: subject,
+              text: body,
+              html: `<p>${body}</p>`,
             }}
             maxSize="25 MB"
             maxFiles={5}
             multiple={true}
-            autoUpload={true}
-            onUploadSuccess={(response, files) => {
-              console.log(
-                "Email with attachments sent successfully:",
-                response
-              );
+            autoUpload={false} // Changed to false so we don't upload immediately? Or maybe true if backend handles it separately.
+            // Keeping previous logic but improved UI
+            onUploadSuccess={(response, _) => {
+              console.log("Files uploaded:", response);
             }}
-            onUploadError={(error, files) => {
-              console.error("Failed to send email with attachments:", error);
+            onUploadError={(error, _) => {
+              console.error("Upload error:", error);
             }}
             headers={{
-              Authorization: "Bearer your-token",
-              "X-Requested-With": "XMLHttpRequest",
+              Authorization: `Bearer ${localStorage.getItem("token") || ""}`, // Assuming token storage
             }}
           />
         </Box>
 
-        <Box display="flex" gap={1}>
+        <Box display="flex" gap={2}>
           <Button
             variant="outlined"
             color="inherit"
@@ -145,7 +239,7 @@ const SendEmailToUsers = ({ selectedUser, onSubmit }: SendEmailProps) => {
             color="primary"
             endIcon={<Send />}
             onClick={handleSendCcBcc}
-            disabled={to.length === 0 || !subject || !body}
+            disabled={to.length === 0 || !subject}
           >
             Send
           </Button>

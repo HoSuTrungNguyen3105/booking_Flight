@@ -2,11 +2,11 @@ import { memo, useCallback, useState } from "react";
 import OTPInput from "../../../common/Input/OTPInput";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import type { EmailProps } from "../../../utils/type";
-import { useVerifyOTPCode } from "../../../context/Api/usePostApi";
 import MfaSetup from ".";
 import { useToast } from "../../../context/ToastContext";
 import { ResponseCode } from "../../../utils/response";
 import type { AuthType } from "../Login";
+import { useVerifyOTPCode } from "../../../context/Api/AuthApi";
 
 const VerifyOpt = ({ email, userId, authType }: EmailProps) => {
   const [otpText, setOtpText] = useState<string>("");
@@ -20,11 +20,6 @@ const VerifyOpt = ({ email, userId, authType }: EmailProps) => {
       return;
     }
     try {
-      // const typeSaved = localStorage.getItem("stateLogin") as
-      //   | "ADMIN"
-      //   | "ID,PW"
-      //   | null;
-
       if (!authType) {
         toast("Không xác định được loại đăng nhập", "error");
         return;

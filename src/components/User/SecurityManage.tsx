@@ -5,10 +5,10 @@ import InspectionSection from "../../common/AdditionalCustomFC/InspectionSection
 import type { GridColDef } from "@mui/x-data-grid";
 import { DateFormatEnum, formatDate } from "../../hooks/format";
 import type { GridRowDef } from "../../common/DataGrid";
-import { useFindAllPassenger } from "../../context/Api/useGetApi";
 import DataSecure from "../../common/Setting/DataSecure";
 import type { ISearchQuery } from "../../common/AdditionalCustomFC/SearchBar";
 import ManageMyInfo from "../Profile/ManageMyInfo";
+import { useFindAllPassenger } from "../../context/Api/UserApi";
 
 export const columnsPassenger: GridColDef[] = [
   { field: "fullName", headerName: "Họ và tên", flex: 1 },

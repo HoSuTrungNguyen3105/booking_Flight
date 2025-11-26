@@ -2,12 +2,17 @@ import {
   MethodType,
   type DetailResponseMessage,
   type Payroll,
+  type ResponseMessage,
 } from "../../utils/type.ts";
 import { useFetch } from "../use[custom]/useFetch.ts";
 import type { ActionType } from "../../common/Dropdown/SelectDropdown.tsx";
 
 const getMethod = {
   method: MethodType.GET,
+};
+
+const postMethod = {
+  method: MethodType.POST,
 };
 
 export const useGetUserIdAndNameToDropdownGeneratePayroll = () => {
@@ -23,6 +28,18 @@ export const useGetUserIdAndNameToDropdownGeneratePayroll = () => {
     dataGetUserIdAndNameToDropdown: data,
     refetchGetUserIdAndNameToDropdown: refetch,
     loadingGetUserIdAndNameToDropdown: loading,
+  };
+};
+
+export const useDeletePayroll = () => {
+  const { refetch, loading } = useFetch<ResponseMessage, { id: number }>({
+    url: "/sys/payrolls/delete",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchDeletePayroll: refetch,
+    loadingDeletePayroll: loading,
   };
 };
 
@@ -74,4 +91,28 @@ export const useExportPayrollExcel = () => {
   };
 
   return { exportExcel, loading };
+};
+
+export interface GeneratePayroll {
+  employeeId: number;
+  month: number;
+  year: number;
+  baseSalary: number;
+  allowances: number;
+  deductions: number;
+  tax: number;
+}
+
+export const useGeneratePayroll = () => {
+  const { refetch: refetchGeneratePayroll } = useFetch<
+    ResponseMessage,
+    GeneratePayroll
+  >({
+    url: "/sys/payrolls/generate",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchGeneratePayroll,
+  };
 };

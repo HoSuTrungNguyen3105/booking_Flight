@@ -9,6 +9,8 @@ import {
   type CreateTerminalDto,
   type AirportCreateResponseMessage,
   type CreateAirportReq,
+  type CreateGateProps,
+  type UpdateAirportReq,
 } from "../../utils/type.ts";
 import { useFetch } from "../use[custom]/useFetch.ts";
 
@@ -109,6 +111,32 @@ export const useCreateTerminalBulk = () => {
   };
 };
 
+export const useCreateAirport = () => {
+  const { refetch: refetchCreateAirport, loading: loadingCreateAirport } =
+    useFetch<ResponseMessage, CreateAirportReq>({
+      url: "/sys/flights/airports",
+      autoFetch: false,
+      config: postMethod,
+    });
+  return {
+    refetchCreateAirport,
+    loadingCreateAirport,
+  };
+};
+
+export const useUpdateAirportById = (code: number) => {
+  const { refetch: refetchUpdateAirport, loading: loadingUpdateAirport } =
+    useFetch<ResponseMessage, UpdateAirportReq>({
+      url: `/sys/flights/airports/update/${String(code)}`,
+      autoFetch: false,
+      config: postMethod,
+    });
+  return {
+    refetchUpdateAirport,
+    loadingUpdateAirport,
+  };
+};
+
 export const useCreateBatchAirport = () => {
   const {
     refetch: refetchCreateBatchAirport,
@@ -139,15 +167,70 @@ export const useDeleteAirportById = () => {
   };
 };
 
-export const useCreateAirport = () => {
-  const { refetch: refetchCreateAirport, loading: loadingCreateAirport } =
-    useFetch<ResponseMessage, CreateAirportReq>({
-      url: "/sys/flights/airports",
-      autoFetch: false,
-      config: postMethod,
-    });
+export const useCreateBatchGate = () => {
+  const { refetch: refetchCreateBatchGate } = useFetch<
+    ResponseMessage,
+    CreateGateProps[]
+  >({
+    url: "/sys/gates/batch",
+    autoFetch: false,
+    config: postMethod,
+  });
   return {
-    refetchCreateAirport,
-    loadingCreateAirport,
+    refetchCreateBatchGate,
+  };
+};
+
+export const useUpdateGate = ({ id }: { id?: string }) => {
+  const { refetch: refetchUpdateGate } = useFetch<
+    ResponseMessage,
+    { code: string; status: string }
+  >({
+    url: `/sys/gates/${id}`,
+    autoFetch: false,
+    config: {
+      method: MethodType.PUT,
+    },
+  });
+  return {
+    refetchUpdateGate,
+  };
+};
+
+export interface FacilityFormProps {
+  id?: string;
+  name: string;
+  type: string;
+  description: string;
+  terminalId: string;
+  location: string;
+  openingHours: string;
+}
+
+export const useCreateFacilities = () => {
+  const { refetch: refetchCreateFacilities } = useFetch<
+    ResponseMessage,
+    FacilityFormProps
+  >({
+    url: "/sys/facilities",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchCreateFacilities,
+  };
+};
+
+export const useUpdateFacilities = (id?: string) => {
+  const { refetch: refetchUpdateFacilities } = useFetch<
+    ResponseMessage,
+    FacilityFormProps
+  >({
+    url: `/sys/facilities/${id}`,
+    autoFetch: false,
+    config: { method: MethodType.PUT },
+  });
+  return {
+    refetchUpdateFacilities,
   };
 };

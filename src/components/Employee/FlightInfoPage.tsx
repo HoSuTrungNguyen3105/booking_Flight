@@ -9,12 +9,6 @@ import {
   Stack,
 } from "@mui/material";
 import { FlightOutlined, Search } from "@mui/icons-material";
-import {
-  mapStringToDropdown,
-  useFindAllSeatTypes,
-  // useGetAllFlightMainInfo,
-  useSearchFlightFromPassenger,
-} from "../../context/Api/useGetApi";
 import { DateFormatEnum, formatDate } from "../../hooks/format";
 import { useNavigate } from "react-router-dom";
 import DateTimePickerComponent from "../../common/DayPicker/index";
@@ -24,7 +18,11 @@ import SelectDropdown from "../../common/Dropdown/SelectDropdown";
 import FlightIcon from "../../common/IconComponent/FlightIcon";
 import Smooth from "react-smooth";
 import TabPanel from "../../common/AdditionalCustomFC/TabPanel";
-import { useGetAllFlightMainInfo } from "../../context/Api/FlightApi";
+import {
+  useFindAllSeatTypes,
+  useSearchFlightFromPassenger,
+} from "../../context/Api/EnumApi";
+import { mapStringToDropdown } from "../../context/Api/CommonApi";
 
 interface SearchFormData {
   departureAirport: string;
@@ -36,12 +34,9 @@ interface SearchFormData {
 }
 
 const FlightInfoPage: React.FC = () => {
-  const { getAllFlightInfoInfo } = useGetAllFlightMainInfo();
   const { refetchSearchFlightFromPassenger } = useSearchFlightFromPassenger(); //setParamsSearch
-  const res = getAllFlightInfoInfo?.list || [];
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState(0);
-
   const [search, setSearch] = useState<SearchFormData>({
     departureAirport: "",
     arrivalAirport: "",
@@ -57,7 +52,7 @@ const FlightInfoPage: React.FC = () => {
     { label: "CHECK IN", value: "checkin", description: "Check-in chuyến bay" },
   ];
 
-  const [filtered, setFiltered] = useState(res);
+  const [filtered, setFiltered] = useState([]);
 
   const { dataSeatTypes } = useFindAllSeatTypes();
   const optionsSeatTypes = mapStringToDropdown(dataSeatTypes?.data || []);
@@ -67,7 +62,7 @@ const FlightInfoPage: React.FC = () => {
     const res = await refetchSearchFlightFromPassenger({
       ...search,
     });
-    setFiltered(res?.list || []);
+    // setFiltered(res?.list || []);
   };
 
   /** Reset filter */
@@ -80,7 +75,7 @@ const FlightInfoPage: React.FC = () => {
       passengers: 1,
       flightClass: "Economy",
     });
-    setFiltered(res);
+    // setFiltered(res);
   };
 
   /** Cập nhật state khi nhập input */

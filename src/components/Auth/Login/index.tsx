@@ -13,10 +13,10 @@ import theme from "../../../scss/theme";
 import AccountYn from "../AccountSetting";
 import Registration from "../Registration";
 import { useToast } from "../../../context/ToastContext";
-import { useCheckMfaAvailable } from "../../../context/Api/usePostApi";
 import { useNavigate } from "react-router-dom";
 import { ResponseCode } from "../../../utils/response";
 import { getDeviceInfo } from "../../../hooks/format";
+import { useCheckMfaAvailable } from "../../../context/Api/AuthApi";
 
 interface ILoginForm {
   email: string;

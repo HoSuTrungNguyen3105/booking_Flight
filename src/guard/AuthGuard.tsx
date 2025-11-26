@@ -9,10 +9,8 @@ interface ProtectedRouteProps {
 const AuthGuard = ({ children, allowedRoles }: ProtectedRouteProps) => {
   const { isAuthenticated, user, loading } = useAuth();
 
-  console.log("user role", user?.role);
-
   if (loading) {
-    return null; // Or a loading spinner
+    return null;
   }
 
   if (!isAuthenticated) {

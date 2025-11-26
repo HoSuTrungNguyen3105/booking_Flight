@@ -3,9 +3,9 @@ import { Button, IconButton, Stack, Typography, Paper } from "@mui/material";
 import { Add, Delete, Send } from "@mui/icons-material";
 import {
   useUpdateBatchEmployeeNo,
-  type BatchEmployeeNoReq,
   type BatchUpdateEmployeesDto,
-} from "../../context/Api/usePostApi";
+} from "../../context/Api/UserApi";
+import { type BatchEmployeeNoReq } from "../../utils/type";
 import { useToast } from "../../context/ToastContext";
 import InputTextField from "../../common/Input/InputTextField";
 import type { ReqUpdateEmployeeNo } from "./ManageMyInfo";
@@ -29,7 +29,7 @@ const BatchUpdateEmployeeNo: React.FC<UpdateEmployeeIDProps> = ({
     value: string | number
   ) => {
     const newUpdates = [...updates];
-    (newUpdates[index][field] as string | number) = value;
+    (newUpdates[index] as any)[field] = value;
     setUpdates(newUpdates);
   };
 

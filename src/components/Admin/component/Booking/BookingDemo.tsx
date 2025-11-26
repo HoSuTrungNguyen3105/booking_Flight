@@ -19,7 +19,7 @@ import {
   initialState,
   type Action,
   type BookingState,
-} from "../../components/Employee/types/booking";
+} from "../Admin/component/Booking/booking";
 import type { DataFlight, Meal } from "../../utils/type";
 
 // --- MOCK DATA ---

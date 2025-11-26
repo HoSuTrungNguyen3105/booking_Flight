@@ -9,16 +9,16 @@ import {
   Stack,
 } from "@mui/material";
 import { QrCode2, Security, Login, ArrowBack } from "@mui/icons-material";
-import {
-  useSetUpMfa,
-  useSetUpMfaFromAdmin,
-  useVerifyMfa,
-} from "../../../context/Api/usePostApi";
 import { useToast } from "../../../context/ToastContext";
 import InputTextField from "../../../common/Input/InputTextField";
 import { useAuth } from "../../../context/AuthContext";
 import type { EmailProps } from "../../../utils/type";
 import { ResponseCode } from "../../../utils/response";
+import {
+  useSetUpMfa,
+  useSetUpMfaFromAdmin,
+  useVerifyMfa,
+} from "../../../context/Api/AuthApi";
 
 type MfaState = "initial" | "qrSetup" | "verification" | "login" | "success";
 

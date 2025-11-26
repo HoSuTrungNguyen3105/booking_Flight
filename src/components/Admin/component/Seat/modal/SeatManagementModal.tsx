@@ -4,7 +4,7 @@ import AddIcon from "@mui/icons-material/Add";
 import BaseModal from "../../../../../common/Modal/BaseModal";
 import SelectDropdown from "../../../../../common/Dropdown/SelectDropdown";
 import type { Seat } from "../../../../../utils/type";
-import { useSeatUpdateByIds } from "../../../../../context/Api/usePostApi";
+import { useSeatUpdateByIds } from "../../../../../context/Api/SeatApi";
 import { getMessage, ResponseCode } from "../../../../../utils/response";
 import { useToast } from "../../../../../context/ToastContext";
 import { useSeatFeatures } from "../hook/useSeatFeature";

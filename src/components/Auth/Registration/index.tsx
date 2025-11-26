@@ -1,9 +1,5 @@
 import { memo, useState } from "react";
 import { Box, Button, Typography } from "@mui/material";
-import {
-  useRegisterUser,
-  type PassengerFormData,
-} from "../../../context/Api/usePostApi";
 import { useToast } from "../../../context/ToastContext";
 import VerifyOpt from "../MFA/VerifyOTP";
 import InputTextField from "../../../common/Input/InputTextField";
@@ -11,6 +7,8 @@ import { ResponseCode } from "../../../utils/response";
 import theme from "../../../scss/theme";
 import type { AuthType } from "../Login";
 import FormRow from "../../../common/AdditionalCustomFC/FormRow";
+import { useRegisterUser } from "../../../context/Api/AuthApi";
+import type { PassengerFormProps } from "../../../utils/type";
 
 interface RegisterProps {
   email?: string;
@@ -23,7 +21,7 @@ const Registration = ({ email }: RegisterProps) => {
 
   const toast = useToast();
 
-  const [formData, setFormData] = useState<PassengerFormData>({
+  const [formData, setFormData] = useState<PassengerFormProps>({
     name: "",
     email: email || "",
     password: "",

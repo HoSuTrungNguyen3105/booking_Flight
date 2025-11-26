@@ -4,8 +4,8 @@ import type {
   FlightMeal,
   MealOrder,
   Passenger,
-} from "../../../utils/type";
-import { BookingStatus } from "../../../utils/type";
+} from "../../../../utils/type";
+import { BookingStatus } from "../../../../utils/type";
 
 export type MealOrderToBooking = Omit<
   MealOrder,

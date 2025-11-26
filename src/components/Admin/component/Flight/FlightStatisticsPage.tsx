@@ -37,16 +37,16 @@ import {
 } from "recharts";
 import type { DataFlight } from "../../../../utils/type";
 import {
-  useGetAllFlightIds,
-  useGetFlightData,
-} from "../../../../context/Api/useGetApi";
-import {
   FlightTakeoff,
   Schedule,
   Cancel,
   AirlineSeatReclineNormal,
 } from "@mui/icons-material";
 import theme from "../../../../scss/theme";
+import {
+  useGetAllFlightIds,
+  useGetFlightData,
+} from "../../../../context/Api/FlightApi";
 
 type StatCardProps = {
   icon: ReactNode;

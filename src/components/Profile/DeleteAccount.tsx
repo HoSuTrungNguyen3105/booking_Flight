@@ -17,7 +17,7 @@ import theme from "../../scss/theme";
 import {
   getUserIdByEmail,
   useDeleteMyAccount,
-} from "../../context/Api/usePostApi";
+} from "../../context/Api/UserApi";
 import { useToast } from "../../context/ToastContext";
 import { useAuth } from "../../context/AuthContext";
 import { ResponseCode } from "../../utils/response";

@@ -4,7 +4,7 @@ import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
 import BaseModal from "../../../../../common/Modal/BaseModal";
 import InputTextField from "../../../../../common/Input/InputTextField";
 import type { Seat } from "../../../../../utils/type";
-import { useSeatUpdateByIds } from "../../../../../context/Api/usePostApi";
+import { useSeatUpdateByIds } from "../../../../../context/Api/SeatApi";
 import Android12Switch from "../../../../../common/Switch/Switch";
 import InputNumber from "../../../../../common/Input/InputNumber";
 import { ResponseCode } from "../../../../../utils/response";

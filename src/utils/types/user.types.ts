@@ -219,6 +219,12 @@ export interface ResetPasswordByMfa {
 export interface EmailUserProps {
   email: string;
 }
+
 export interface UserIdResponse {
   userId: number;
 }
+
+export type BatchEmployeeNoReq = {
+  userId: number;
+  employeeNo: string;
+};

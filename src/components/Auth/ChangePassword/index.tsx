@@ -1,11 +1,11 @@
 import { Box, Typography, Stack, FormControl, Button } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import InputTextField from "../../../common/Input/InputTextField";
-import { useChangePassword } from "../../../context/Api/usePostApi";
 import { memo, useState } from "react";
 import VerifyOpt from "../MFA/VerifyOTP";
 import type { ChangePasswordProps } from "../../../utils/type";
 import { ResponseCode } from "../../../utils/response";
+import { useChangePassword } from "../../../context/Api/AuthApi";
 
 interface IUserIdNumber {
   onClose: () => void;

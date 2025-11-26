@@ -9,7 +9,7 @@ import {
 import Grid from "@mui/material/Grid";
 import { memo, useCallback, useState } from "react";
 import { KeyOutlined, LockOpenOutlined } from "@mui/icons-material";
-import { useChangePasswordInProfile } from "../../context/Api/usePostApi";
+import { useChangePasswordInProfile } from "../../context/Api/AuthApi";
 import InputTextField from "../../common/Input/InputTextField";
 import { useAuth } from "../../context/AuthContext";
 import theme from "../../scss/theme";

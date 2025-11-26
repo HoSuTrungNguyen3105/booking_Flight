@@ -16,6 +16,8 @@ import {
   // type SearchEmailFromSidebarMessageRes,
   type LoginDataResponse,
   type UserSession,
+  type UserIdResponse,
+  type EmailUserProps,
   // type UpdatePassengerDto,
 } from "../../utils/type.ts";
 import { useFetch } from "../use[custom]/useFetch.ts";
@@ -60,6 +62,32 @@ export const usefindAllTransferRequests = () => {
     dataFindAllTransferRequests,
     refetchFindAllTransferRequests,
     loadingFindAllTransferRequests,
+  };
+};
+
+export const useUpdateUserInfo = (id: number) => {
+  // const isValid = !!id;
+  const { refetch: refetchUpdateUserInfo, loading: loadingUpdateUserInfo } =
+    useFetch<ResponseMessage, UserUpdateProps>({
+      url: `/sys/users/updateMyInfo/${id}`,
+      autoFetch: false,
+      config: postMethod,
+    });
+  return {
+    refetchUpdateUserInfo,
+    loadingUpdateUserInfo,
+  };
+};
+
+export const useDeleteAttendance = () => {
+  const { refetch, loading } = useFetch<ResponseMessage, { id: number }>({
+    url: "/sys/users/attendance/delete",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchDeleteAttendance: refetch,
+    loadingDeleteAttendance: loading,
   };
 };
 
@@ -402,6 +430,65 @@ export const useLogoutSessionFromPassenger = () => {
 interface UpdateUserRankProps {
   userId: number;
 }
+
+export type SendManyDto = {
+  toList: string[];
+  subject: string;
+  text: string;
+  html?: string;
+};
+
+export type SendCcBccDto = {
+  toList: string[];
+  subject: string;
+  text: string;
+  html?: string;
+  ccList?: string[];
+  bccList?: string[];
+};
+
+export const useSendMail = () => {
+  const { data: sendManyRes, refetch: sendMany } = useFetch<
+    ResponseMessage,
+    SendManyDto
+  >({
+    url: "/service/mail/send-many",
+    autoFetch: false,
+    config: postMethod,
+  });
+
+  // send-cc-bcc
+  const { data: sendCcBccRes, refetch: sendCcBcc } = useFetch<
+    ResponseMessage,
+    SendCcBccDto
+  >({
+    url: "/service/mail/send-cc-bcc",
+    autoFetch: false,
+    config: postMethod,
+  });
+
+  return {
+    sendManyRes,
+    sendCcBccRes,
+    sendMany,
+    sendCcBcc,
+  };
+};
+
+export const getUserIdByEmail = () => {
+  const { refetch: refetchUserEmailData } = useFetch<
+    DetailResponseMessage<UserIdResponse>,
+    EmailUserProps
+  >({
+    url: "/sys/users/getUserIdByEmail",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchUserEmailData,
+  };
+};
+
 export const useUpdateUserRank = () => {
   const { refetch: refetchUpdateUserRank } = useFetch<
     ResponseMessage,
@@ -414,5 +501,37 @@ export const useUpdateUserRank = () => {
   });
   return {
     refetchUpdateUserRank,
+  };
+};
+
+export const useDeleteMyAccount = () => {
+  const { refetch: refetchDeleteMyAccount } = useFetch<
+    ResponseMessage,
+    { id: number }
+  >({
+    url: "/sys/users/delete-my-account",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchDeleteMyAccount,
+  };
+};
+
+export type BatchUpdateEmployeesDto = {
+  updates: { userId: number; employeeNo: string; name?: string }[];
+};
+
+export const useUpdateBatchEmployeeNo = () => {
+  const { refetch: refetchUpdateBatchEmployeeNo } = useFetch<
+    ResponseMessage,
+    BatchUpdateEmployeesDto
+  >({
+    url: "/sys/users/batch-update-employee-no",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchUpdateBatchEmployeeNo,
   };
 };

@@ -10,22 +10,15 @@ import {
   Stack,
   CardHeader,
 } from "@mui/material";
-import {
-  type DataFlight,
-  type Hotel,
-  type Seat,
-} from "../../../../utils/type";
+import { type DataFlight, type Hotel, type Seat } from "../../../../utils/type";
 import { useLocation } from "react-router-dom";
-import {
-  DateFormatEnum,
-  formatDate,
-} from "../../../../hooks/format";
+import { DateFormatEnum, formatDate } from "../../../../hooks/format";
 import {
   ACTIONS,
   initialState,
   type Action,
   type BookingState,
-} from "../../../Employee/types/booking";
+} from "./booking";
 import InputTextField from "../../../../common/Input/InputTextField";
 import { Restaurant } from "@mui/icons-material";
 
@@ -42,7 +35,7 @@ const BookingPage = () => {
   const location = useLocation();
   const statelocale = location.state as BookingStateProps | undefined;
 
-    console.log('location.location',location.state)
+  console.log("location.location", location.state);
 
   const [state, dispatch] = useReducer(
     (state: BookingState, action: Action): BookingState => {
@@ -105,7 +98,10 @@ const BookingPage = () => {
         case ACTIONS.UPDATE_FORM_FIELD:
           return {
             ...state,
-            form: { ...state.form, [action.payload.name]: action.payload.value },
+            form: {
+              ...state.form,
+              [action.payload.name]: action.payload.value,
+            },
           };
         default:
           return state;
@@ -114,22 +110,25 @@ const BookingPage = () => {
     initialState
   );
 
-   const selectedMeals =
-    state.bookingData.mealOrders?.filter((meal) => statelocale?.mealIds.includes(meal.mealId)) ||
-    [];
+  const selectedMeals =
+    state.bookingData.mealOrders?.filter((meal) =>
+      statelocale?.mealIds.includes(meal.mealId)
+    ) || [];
 
   // Initialize data
   useEffect(() => {
     if (statelocale?.flightId && state.passengerInfo?.id) {
       dispatch({
         type: ACTIONS.SET_INITIAL_DATA,
-        payload: { flightId:statelocale?.flightId, passengerId:state.passengerInfo?.id },
+        payload: {
+          flightId: statelocale?.flightId,
+          passengerId: state.passengerInfo?.id,
+        },
       });
     }
-    const code =
-      "BK" + Math.floor(Math.random() * (99999 - 10000 + 1) + 10000);
+    const code = "BK" + Math.floor(Math.random() * (99999 - 10000 + 1) + 10000);
     dispatch({ type: ACTIONS.SET_BOOKING_CODE, payload: code });
-  }, [statelocale?.flightId,state.passengerInfo?.id]);
+  }, [statelocale?.flightId, state.passengerInfo?.id]);
 
   const handleChange = (name: keyof typeof state.form, value: string) => {
     dispatch({ type: ACTIONS.UPDATE_FORM_FIELD, payload: { name, value } });
@@ -162,7 +161,8 @@ const BookingPage = () => {
                   Chuyến bay: {statelocale?.flightData.flightNo}
                 </Typography>
                 <Typography color="text.secondary">
-                  {statelocale?.flightData.departureAirport} → {statelocale?.flightData?.arrivalAirport}
+                  {statelocale?.flightData.departureAirport} →{" "}
+                  {statelocale?.flightData?.arrivalAirport}
                 </Typography>
                 <Typography color="text.secondary" mt={1}>
                   {formatDate(
@@ -303,7 +303,8 @@ const BookingPage = () => {
               {selectedMeals.length > 0 && (
                 <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                   <Typography variant="body2" color="text.secondary">
-                    Meals ({selectedMeals.length} × {state.passengerInfo?.fullName})
+                    Meals ({selectedMeals.length} ×{" "}
+                    {state.passengerInfo?.fullName})
                   </Typography>
                   <Typography
                     variant="body2"

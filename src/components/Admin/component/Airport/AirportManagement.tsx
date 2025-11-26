@@ -16,7 +16,7 @@ import {
 import type { Airport } from "../../../../utils/type";
 import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import TableSection from "../../../../common/AdditionalCustomFC/TableSection";
-import AirportManageModal from "./AirportManageModal";
+import AirportManageModal from "./modal/AirportManageModal";
 import AirportBatchCreator from "./AirportBatchCreator";
 import DialogConfirm from "../../../../common/Modal/DialogConfirm";
 import { useToast } from "../../../../context/ToastContext";

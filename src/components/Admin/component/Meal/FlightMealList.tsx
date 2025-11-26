@@ -8,11 +8,7 @@ import {
   Stack,
   Avatar,
 } from "@mui/material";
-import { useGetMealByFlightId } from "../../../../context/Api/useGetApi";
-
-// interface Props {
-//   mealId: number;
-// }
+import { useGetMealByFlightId } from "../../../../context/Api/MealApi";
 
 export default function FlightMealList() {
   const { getGetMealByFlightId } = useGetMealByFlightId(71);

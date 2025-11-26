@@ -1,8 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
-import {
-  useFindOnePassengerTicket,
-  type GetReqponseOneTicket,
-} from "../../context/Api/usePostApi";
+import { useCallback, useEffect, useState } from "react";
 import { Box, Stack, Typography } from "@mui/material";
 import { DateFormatEnum, formatDate } from "../../hooks/format";
 import {
@@ -14,8 +10,12 @@ import {
 import ButtonCircle from "../../common/Button/ButtonCircle";
 import type { Ticket } from "../../utils/type";
 import { ResponseCode } from "../../utils/response";
+import {
+  useFindOnePassengerTicket,
+  type ResponseOneTicketProps,
+} from "../../context/Api/BookingApi";
 
-const TicketInfo = ({ id, ticketNo }: GetReqponseOneTicket) => {
+const TicketInfo = ({ id, ticketNo }: ResponseOneTicketProps) => {
   const [ticket, setTicket] = useState<Ticket[]>([]);
   const { refetchFindPassengerTicket } = useFindOnePassengerTicket();
 

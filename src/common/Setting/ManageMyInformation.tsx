@@ -4,13 +4,14 @@ import DialogConfirm from "../Modal/DialogConfirm";
 import UserInfoSection from "../../components/User/UserInfoSection";
 import TransferAuthoritySection from "./TransferAuthoritySection";
 import { useAuth } from "../../context/AuthContext";
-import { useUpdateUserInfo } from "../../context/Api/usePostApi";
 import { UserRole, type UserData } from "../../utils/type";
 import DataAccessPermissionSection from "./DataAccessPermissionSection";
 import DeleteAccount from "../../components/Profile/DeleteAccount";
 import ChangePasswordInProfile from "../../components/Profile/ChangePasswordInProfile";
-import AccountSettings from "../../components/Auth/AccountSetting/AccountSettings";
+// import AccountSettings from "../../components/Auth/AccountModel/AccountSettings";
 import { ResponseCode } from "../../utils/response";
+import AccountSettings from "../../components/Auth/AccountSetting/AccountSettings";
+import { useUpdateUserInfo } from "../../context/Api/UserApi";
 
 export type UserDataToUpdate = Pick<
   UserData,

@@ -27,6 +27,23 @@ export interface UnlockRequest {
   };
 }
 
+export const useDeleteLeaveRequest = () => {
+  const {
+    data: dataDeleteLeaveRequest,
+    refetch: refetchDeleteLeaveRequest,
+    loading: loadingDeleteLeaveRequest,
+  } = useFetch<DetailResponseMessage<LeaveRequest>, { id: number }>({
+    url: "/sys/users/leave-requests/delete",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    dataDeleteLeaveRequest,
+    refetchDeleteLeaveRequest,
+    loadingDeleteLeaveRequest,
+  };
+};
+
 export const useGetUnlockRequests = () => {
   const { data: getUnlockRequests, refetch: refetchGetUnlockRequests } =
     useFetch<DetailResponseMessage<UnlockRequest>, null>({

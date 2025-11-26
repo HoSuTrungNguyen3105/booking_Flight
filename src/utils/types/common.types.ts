@@ -69,6 +69,14 @@ export type CodeItem = {
   acodeName?: string;
 };
 
+export type PassengerFormProps = {
+  name: string;
+  email: string;
+  role: string;
+  password: string;
+  phone: string;
+};
+
 export type RolePermission = {
   id: string;
   role: string;

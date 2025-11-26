@@ -4,7 +4,7 @@ import { memo, useState } from "react";
 import {
   useSeatCreate,
   type CreateSeatDto,
-} from "../../../../../context/Api/usePostApi";
+} from "../../../../../context/Api/SeatApi";
 import CreateSeatModal from "../modal/CreateSeatModal";
 import { getMessage, ResponseCode } from "../../../../../utils/response";
 import { useToast } from "../../../../../context/ToastContext";

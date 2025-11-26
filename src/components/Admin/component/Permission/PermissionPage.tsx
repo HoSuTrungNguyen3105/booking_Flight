@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React from "react";
 import {
   Grid,
   Paper,
@@ -13,85 +12,69 @@ import {
   CircularProgress,
   Box,
 } from "@mui/material";
-import type {
-  DetailResponseMessage,
-  RolePermission,
-} from "../../../../utils/type";
+import { useGetPermissionsByRole } from "../../../../context/Api/AuthApi";
 
-type PermissionResponse = DetailResponseMessage<RolePermission>;
+interface RolePermissionTableProps {
+  role: string;
+}
+
+const RolePermissionTable: React.FC<RolePermissionTableProps> = ({ role }) => {
+  const { dataPermissionsByRole } = useGetPermissionsByRole(role);
+
+  if (!dataPermissionsByRole) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" p={2}>
+        <CircularProgress size={24} />
+      </Box>
+    );
+  }
+
+  const permissions = dataPermissionsByRole.data || {};
+
+  return (
+    <TableContainer component={Paper} sx={{ marginBottom: 3 }}>
+      <Typography variant="h6" sx={{ padding: 2, backgroundColor: "#f5f5f5" }}>
+        {role} Permissions
+      </Typography>
+      <Table size="small">
+        <TableHead>
+          <TableRow>
+            <TableCell sx={{ fontWeight: "bold" }}>Module</TableCell>
+            <TableCell sx={{ fontWeight: "bold" }}>Action</TableCell>
+            <TableCell sx={{ fontWeight: "bold" }}>Key</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {/* {Object.entries(permissions).map(([module, actions]) =>
+            Object.entries(actions).map(([action, key], index) => (
+              <TableRow key={key}>
+                {index === 0 && (
+                  <TableCell
+                    rowSpan={Object.keys(actions).length}
+                    sx={{ verticalAlign: "top", fontWeight: "bold" }}
+                  >
+                    {module}
+                  </TableCell>
+                )}
+                <TableCell>{action}</TableCell>
+                <TableCell>{key}</TableCell>
+              </TableRow>
+            ))
+          )} */}
+          {Object.keys(permissions).length === 0 && (
+            <TableRow>
+              <TableCell colSpan={3} align="center">
+                No permissions found for this role.
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
+};
 
 const PermissionPage: React.FC = () => {
-  const [permissionsData, setPermissionsData] = useState<RolePermission[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-
-  // Fetch the role-permission data when the component mounts
-  useEffect(() => {
-    const fetchPermissions = async () => {
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        // const response = await axios.get<PermissionResponse>('http://your-api-endpoint/permissions');
-
-        if (response.data.resultCode === "00") {
-          // Assuming data is returned as a list of roles and their permissions
-          const rolePermissions = [
-            {
-              role: "ADMIN",
-              permissions: Object.keys(response.data.data).slice(0, 8),
-            },
-            {
-              role: "MONITOR",
-              permissions: Object.keys(response.data.data).slice(8, 14),
-            },
-            {
-              role: "USER",
-              permissions: Object.keys(response.data.data).slice(14),
-            },
-          ];
-          setPermissionsData(rolePermissions);
-        } else {
-          setError("Failed to fetch permissions");
-        }
-      } catch (err) {
-        setError("Error fetching permissions");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchPermissions();
-  }, []);
-
-  // Render Table for each role
-  const renderPermissionTable = (
-    role: string,
-    permissions: Record<string, boolean>
-  ) => {
-    return (
-      <TableContainer component={Paper} sx={{ marginBottom: 3 }}>
-        <Typography variant="h6" sx={{ padding: 2 }}>
-          {role} Permissions
-        </Typography>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Permission</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {permissions.map((permission, index) => (
-              <TableRow key={index}>
-                <TableCell>{permission}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    );
-  };
-
   return (
     <Grid container spacing={3} justifyContent="center">
       <Grid size={8}>
@@ -99,27 +82,13 @@ const PermissionPage: React.FC = () => {
           <Typography variant="h5" gutterBottom>
             Manage Permissions
           </Typography>
+          <Typography variant="body2" color="textSecondary" paragraph>
+            View permissions assigned to each role.
+          </Typography>
 
-          {isLoading && (
-            <Box display="flex" justifyContent="center" alignItems="center">
-              <CircularProgress />
-            </Box>
-          )}
-
-          {error && <Typography color="error">{error}</Typography>}
-
-          {!isLoading && !error && permissionsData.length > 0 && (
-            <>
-              {permissionsData.map((rolePermission, index) => (
-                <React.Fragment key={index}>
-                  {renderPermissionTable(
-                    rolePermission.role,
-                    rolePermission.permissions
-                  )}
-                </React.Fragment>
-              ))}
-            </>
-          )}
+          <RolePermissionTable role="ADMIN" />
+          <RolePermissionTable role="MONITOR" />
+          <RolePermissionTable role="USER" />
         </Paper>
       </Grid>
     </Grid>

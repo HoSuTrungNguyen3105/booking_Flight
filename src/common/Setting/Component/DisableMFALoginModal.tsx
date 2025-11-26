@@ -4,8 +4,8 @@ import AddIcon from "@mui/icons-material/Add";
 import type { UserData } from "../../../utils/type";
 import BaseModal from "../../Modal/BaseModal";
 import { useToast } from "../../../context/ToastContext";
-import { useDisabledMFALogin } from "../../../context/Api/usePostApi";
 import { ResponseCode } from "../../../utils/response";
+import { useDisabledMFALogin } from "../../../context/Api/UserApi";
 
 interface IDisableMFALoginModalProps {
   open: boolean;
