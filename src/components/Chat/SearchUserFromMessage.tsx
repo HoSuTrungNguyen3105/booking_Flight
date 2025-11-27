@@ -1,12 +1,17 @@
 import React, { memo, useCallback, useState } from "react";
 import { Box } from "@mui/material";
-import {
-  useFindUserFromMessage,
-  type SearchEmailFromSidebarMessageRes,
-} from "../../context/Api/usePostApi";
 import { useAuth } from "../../context/AuthContext";
 import type { DropdownOptions } from "../../common/Dropdown/type";
 import { SearchInputWithList } from "./SearchInputWithList";
+import { useFindUserFromMessage } from "../../context/Api/UserApi";
+
+export type SearchEmailFromSidebarMessageRes = {
+  userId: number;
+  name: string;
+  email: string;
+  employeeNo: string;
+  role: string;
+};
 
 type SearchUserFromMessageProps = {
   onChange: (searchResult: SearchEmailFromSidebarMessageRes[]) => void;

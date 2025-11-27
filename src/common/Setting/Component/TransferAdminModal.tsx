@@ -1,11 +1,11 @@
 import React, { memo, useCallback, useState } from "react";
 import { Box, Button, Typography, Stack } from "@mui/material";
 import { useToast } from "../../../context/ToastContext";
-import { useRequestChangeRole } from "../../../context/Api/usePostApi";
 import BaseModal from "../../Modal/BaseModal";
 import { AddAlert } from "@mui/icons-material";
 import type { UserData } from "../../../utils/type";
 import InputTextField from "../../Input/InputTextField";
+import { useRequestChangeRole } from "../../../context/Api/UserApi";
 
 interface TransferAdminModalProps {
   open: boolean;

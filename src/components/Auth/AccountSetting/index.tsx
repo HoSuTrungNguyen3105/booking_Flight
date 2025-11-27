@@ -65,7 +65,14 @@ const AccountModePage = ({ mode, onClose, authType }: AccountModePageProps) => {
   }, [email, refetchUserEmailData, mode, toast]);
 
   if (verifyOTPcode) {
-    return <VerifyOpt authType={authType} userId={userId} email={email} />;
+    return (
+      <VerifyOpt
+        state="verify"
+        authType={authType}
+        userId={userId}
+        email={email}
+      />
+    );
   }
 
   if (hasValidate && userId) {

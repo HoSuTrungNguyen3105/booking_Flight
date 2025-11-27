@@ -4,7 +4,6 @@ import { Box, Button, Typography } from "@mui/material";
 import TableSection from "../AdditionalCustomFC/TableSection";
 import type { GridColDef } from "@mui/x-data-grid";
 import theme from "../../scss/theme";
-import { useFindPassengerFromBooking } from "../../context/Api/usePostApi";
 import type { Passenger } from "../../utils/type";
 import DetailSection, {
   type IDetailItem,
@@ -12,6 +11,7 @@ import DetailSection, {
 import { DateFormatEnum, formatDate } from "../../hooks/format";
 import { useToast } from "../../context/ToastContext";
 import { ResponseCode } from "../../utils/response";
+import { useFindPassengerFromBooking } from "../../context/Api/BookingApi";
 
 type DataSecureProps = {
   passenger: string;

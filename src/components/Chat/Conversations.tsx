@@ -15,8 +15,9 @@ import {
 import theme from "../../scss/theme";
 import { DateFormatEnum, formatDate } from "../../hooks/format";
 import useDebounce from "../../context/use[custom]/useDebounce";
-import SearchUserFromMessage from "./SearchUserFromMessage";
-import type { SearchEmailFromSidebarMessageRes } from "../../context/Api/usePostApi";
+import SearchUserFromMessage, {
+  type SearchEmailFromSidebarMessageRes,
+} from "./SearchUserFromMessage";
 import { ResponseCode } from "../../utils/response";
 
 const Conversations = ({

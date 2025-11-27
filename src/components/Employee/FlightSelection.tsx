@@ -15,19 +15,10 @@ import {
   Card,
   CardContent,
 } from "@mui/material";
-import { Flight } from "@mui/icons-material";
 import CardGroup from "../../common/AdditionalCustomFC/CardGroup";
 import TimeSelectCard from "../../common/DayPicker/TimeSelectCard";
 import type { DataFlight, FlightByDay } from "../../utils/type";
-import { useGetFlightAvailableDates } from "../../context/Api/useGetApi";
-
-interface FlightOption {
-  departure: string;
-  arrival: string;
-  code: string;
-  aircraftCode: string;
-  price: number;
-}
+import { useGetFlightAvailableDates } from "../../context/Api/FlightApi";
 
 const FlightSelection: React.FC<{ aircraftCode: string }> = ({
   aircraftCode,

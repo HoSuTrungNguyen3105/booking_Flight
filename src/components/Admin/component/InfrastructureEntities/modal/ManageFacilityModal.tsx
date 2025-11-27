@@ -8,24 +8,22 @@ import {
 } from "@mui/material";
 import { type Facility } from "../../../../../utils/type";
 import { HoursPicker } from "../../../../../common/DayPicker/hours-picker";
-import {
-  mapStringToDropdown,
-  useFindAllFacilityTypes,
-  useFindTerminalIDStatuses,
-} from "../../../../../context/Api/useGetApi";
 import type { ActionType } from "../../../../../common/Dropdown/SelectDropdown";
 import SelectDropdown from "../../../../../common/Dropdown/SelectDropdown";
-import {
-  useCreateFacilities,
-  useUpdateFacilities,
-  type FacilityFormProps,
-} from "../../../../../context/Api/usePostApi";
 import InputTextArea from "../../../../../common/Input/InputTextArea";
 import InputTextField from "../../../../../common/Input/InputTextField";
 import BaseModal from "../../../../../common/Modal/BaseModal";
 import { ManageAccountsSharp } from "@mui/icons-material";
 import { useToast } from "../../../../../context/ToastContext";
 import { ResponseCode } from "../../../../../utils/response";
+import {
+  useCreateFacilities,
+  useFindTerminalIDStatuses,
+  useUpdateFacilities,
+  type FacilityFormProps,
+} from "../../../../../context/Api/AirportApi";
+import { useFindAllFacilityTypes } from "../../../../../context/Api/EnumApi";
+import { mapStringToDropdown } from "../../../../../context/Api/CommonApi";
 
 type IManageFacilityModalProps = {
   open: boolean;

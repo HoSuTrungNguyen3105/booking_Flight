@@ -3,9 +3,9 @@ import { Box, Chip, Typography, Stack, Button } from "@mui/material";
 import type { GridColDef } from "@mui/x-data-grid";
 import TableSection from "../../common/AdditionalCustomFC/TableSection";
 import type { Baggage, TicketResponseMessage } from "../../utils/type";
-import { useGetAllTicketInfo } from "../../context/Api/useGetApi";
 import { DateFormatEnum, formatDate } from "../../hooks/format";
 import TicketListManagement from "./TicketCard";
+import { useGetAllTicketInfo } from "../../context/Api/FlightApi";
 
 const TicketList: React.FC = () => {
   const { getTicketInfo, loadingGetTicketInfo } = useGetAllTicketInfo();

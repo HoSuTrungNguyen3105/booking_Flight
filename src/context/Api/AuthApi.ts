@@ -10,6 +10,9 @@ import {
   type RegisterResponseMessage,
   type ResponseGGAuthenticate,
   type ResponseMessage,
+  type UserCreateProps,
+  type UserCreateResponse,
+  type VerifyOtpFromEmailChangeProps,
   type VerifyOTPProps,
 } from "../../utils/type";
 import { useFetch } from "../use[custom]/useFetch";
@@ -111,7 +114,7 @@ export const useSetUpMfaFromAdmin = () => {
 };
 
 export const useVerifyOTPCode = () => {
-  const { refetch: refetchVerifyOTPcode } = useFetch<
+  const { refetch: refetchVerifyOTPcode, loading: loadingVerifyOTP } = useFetch<
     RegisterOTPCodeVerifyResponse,
     VerifyOTPProps
   >({
@@ -121,6 +124,7 @@ export const useVerifyOTPCode = () => {
   });
   return {
     refetchVerifyOTPcode,
+    loadingVerifyOTP,
   };
 };
 
@@ -164,35 +168,77 @@ export const useRegisterUser = () => {
   };
 };
 
-export type Action = "VIEW" | "CREATE" | "EDIT" | "DELETE";
+// export type Action = "VIEW" | "CREATE" | "EDIT" | "DELETE";
 
-export type PermissionItem =
-  // Record<"VIEW" | "CREATE" | "EDIT" | "DELETE", string | undefined>;
-  Record<string, Record<Action, string>>;
+// export type PermissionItem =
+//   // Record<"VIEW" | "CREATE" | "EDIT" | "DELETE", string | undefined>;
+//   Record<string, Record<Action, string>>;
 
-export const useGetPermissionsByRole = (role: string) => {
-  const { data: dataPermissionsByRole, refetch: refetchPermissionsByRole } =
-    useFetch<DetailResponseMessage<string>, void>({
-      url: `/auth/permissions/role/${role}`,
-      autoFetch: true,
-      config: getMethod,
-    });
+// export const useGetPermissionsByRole = (role: string) => {
+//   const { data: dataPermissionsByRole, refetch: refetchPermissionsByRole } =
+//     useFetch<DetailResponseMessage<string>, void>({
+//       url: `/auth/permissions/role/${role}`,
+//       autoFetch: true,
+//       config: getMethod,
+//     });
+//   return {
+//     dataPermissionsByRole,
+//     refetchPermissionsByRole,
+//   };
+// };
+
+// export const useUpdatePermissions = (role: string) => {
+//   const { data: updatePermissions, refetch: refetchUpdatePermissions } =
+//     useFetch<ResponseMessage, { permissions: string[] }>({
+//       url: `/auth/permissions/role/${role}`,
+//       autoFetch: false,
+//       config: postMethod,
+//     });
+//   return {
+//     updatePermissions,
+//     refetchUpdatePermissions,
+//   };
+// };
+
+export const useResetPassword = () => {
+  const { refetch: refetchResetPassword } = useFetch<
+    ResponseMessage,
+    { userId: number; tempPassword: string }
+  >({
+    url: "/auth/resetTempPassword",
+    autoFetch: false,
+    config: postMethod,
+  });
   return {
-    dataPermissionsByRole,
-    refetchPermissionsByRole,
+    refetchResetPassword,
   };
 };
 
-export const useUpdatePermissions = (role: string) => {
-  const { data: updatePermissions, refetch: refetchUpdatePermissions } =
-    useFetch<ResponseMessage, { permissions: string[] }>({
-      url: `/auth/permissions/role/${role}`,
-      autoFetch: false,
-      config: postMethod,
-    });
+export const useVerifyOtpToAccessEmail = () => {
+  const { refetch: refetchVerifyOtp } = useFetch<
+    ResponseMessage,
+    VerifyOtpFromEmailChangeProps
+  >({
+    url: "/auth/passenger/verify-otp",
+    autoFetch: false,
+    config: postMethod,
+  });
+
+  return { refetchVerifyOtp };
+};
+
+export const useCreateUserByAdmin = () => {
+  const { refetch: refetchCreateUser, loading: loadingUser } = useFetch<
+    UserCreateResponse,
+    UserCreateProps
+  >({
+    url: "/sys/users/createUserByAdmin",
+    autoFetch: false,
+    config: postMethod,
+  });
   return {
-    updatePermissions,
-    refetchUpdatePermissions,
+    refetchCreateUser,
+    loadingUser,
   };
 };
 

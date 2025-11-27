@@ -4,13 +4,13 @@ import {
   FieldType,
   type IFormField,
 } from "../../AdditionalCustomFC/FieldRenderer";
+import { mapStringToDropdown } from "../../../context/Api/CommonApi";
 import {
-  mapStringToDropdown,
   useFindAllDepartments,
   useFindAllEmployeeStatuses,
   useFindAllPositions,
   useFindAllRoles,
-} from "../../../context/Api/useGetApi";
+} from "../../../context/Api/EnumApi";
 
 export type UserFormConfig = {
   id?: number;
@@ -35,7 +35,6 @@ export const useDataSection = (
   const { dataDepartments } = useFindAllDepartments();
   const { dataPositions } = useFindAllPositions();
 
-  /** ✅ Memoize dropdown options */
   const departmentOptions = useMemo(
     () => mapStringToDropdown(dataDepartments?.data ?? []),
     [dataDepartments?.data]

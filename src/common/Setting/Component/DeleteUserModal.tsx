@@ -3,9 +3,9 @@ import { memo, useCallback, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import type { UserData } from "../../../utils/type";
 import BaseModal from "../../Modal/BaseModal";
-import { useDeleteUserById } from "../../../context/Api/usePostApi";
 import theme from "../../../scss/theme";
 import { ResponseCode } from "../../../utils/response";
+import { useDeleteUserById } from "../../../context/Api/UserApi";
 
 interface IDeleteAccountModalProps {
   open: boolean;

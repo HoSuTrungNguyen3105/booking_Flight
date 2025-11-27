@@ -18,16 +18,15 @@ import {
 import { GridActionsCellItem, type GridColDef } from "@mui/x-data-grid";
 import { useMemo, useState } from "react";
 import TableSection from "../../../../common/AdditionalCustomFC/TableSection";
-import {
-  useExportPayrollExcel,
-  useGetPayrollData,
-} from "../../../../context/Api/useGetApi";
 import SelectDropdown, {
   type ActionType,
 } from "../../../../common/Dropdown/SelectDropdown";
 import { DateFormatEnum, formatDate } from "../../../../hooks/format";
 import FormRow from "../../../../common/AdditionalCustomFC/FormRow";
 import ManagementPayrollModal from "./modal/ManagementPayrollModal";
+import { useGetPayrollData } from "../../../../context/Api/EnumApi";
+import { useExportPayrollExcel } from "../../../../context/Api/PayrollApi";
+import type { Payroll } from "../../../../utils/type";
 
 const PayrollManagement = () => {
   const [month, setMonth] = useState<number | undefined>(
@@ -109,42 +108,6 @@ const PayrollManagement = () => {
         return maskValue(params.value, isVisible);
       },
     },
-    // {
-    //   field: "allowances",
-    //   headerName: "Phụ cấp",
-    //   flex: 1,
-    //   renderCell: (params) => {
-    //     const isVisible = visibleIds.includes(params.row.id);
-    //     return maskValue(params.value, isVisible);
-    //   },
-    // },
-    // {
-    //   field: "deductions",
-    //   headerName: "Khấu trừ",
-    //   flex: 1,
-    //   renderCell: (params) => {
-    //     const isVisible = visibleIds.includes(params.row.id);
-    //     return maskValue(params.value, isVisible);
-    //   },
-    // },
-    // {
-    //   field: "tax",
-    //   headerName: "Thuế",
-    //   flex: 1,
-    //   renderCell: (params) => {
-    //     const isVisible = visibleIds.includes(params.row.id);
-    //     return maskValue(params.value, isVisible);
-    //   },
-    // },
-    // {
-    //   field: "netPay",
-    //   headerName: "Thực lĩnh",
-    //   flex: 1,
-    //   renderCell: (params) => {
-    //     const isVisible = visibleIds.includes(params.row.id);
-    //     return maskValue(params.value, isVisible);
-    //   },
-    // },
     {
       field: "status",
       headerName: "Trạng thái",

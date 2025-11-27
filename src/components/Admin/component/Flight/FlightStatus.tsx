@@ -1,20 +1,18 @@
 import { useCallback, useState } from "react";
 import { Typography, Grid, Button, Stack, Chip, Box } from "@mui/material";
 import { Save as SaveIcon } from "@mui/icons-material";
-import {
-  mapStringToDropdown,
-  useFindAllFlightStatuses,
-  useGetAllFlightIds,
-} from "../../../../context/Api/useGetApi";
 import SelectDropdown from "../../../../common/Dropdown/SelectDropdown";
-import {
-  useCreateFlightStatus,
-  useUpdateFlightStatus,
-} from "../../../../context/Api/usePostApi";
 import { useToast } from "../../../../context/ToastContext";
 import InputTextField from "../../../../common/Input/InputTextField";
 import { ResponseCode } from "../../../../utils/response";
 import { FlightStatusType } from "../../../../utils/type";
+import { useFindAllFlightStatuses } from "../../../../context/Api/EnumApi";
+import {
+  useCreateFlightStatus,
+  useGetAllFlightIds,
+  useUpdateFlightStatus,
+} from "../../../../context/Api/FlightApi";
+import { mapStringToDropdown } from "../../../../context/Api/CommonApi";
 
 const FlightStatus = ({ onReturn }: { onReturn: () => void }) => {
   const { dataFlightStatuses } = useFindAllFlightStatuses();

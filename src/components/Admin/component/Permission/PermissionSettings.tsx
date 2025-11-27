@@ -10,45 +10,38 @@ import {
   Box,
   CircularProgress,
 } from "@mui/material";
-import {
-  useGetPermissionsByRole,
-  useUpdatePermissions,
-} from "../../../../context/Api/AuthApi";
 
 const PermissionAdminSettings: React.FC = () => {
   const [permissions, setPermissions] = useState<Set<string>>(new Set());
-  const { dataPermissionsByRole } = useGetPermissionsByRole("ADMIN");
-  const { updatePermissions, refetchUpdatePermissions } =
-    useUpdatePermissions("ADMIN");
 
   // Initialize permissions state when data is fetched
-  useEffect(() => {
-    if (dataPermissionsByRole?.list) {
-      setPermissions(new Set(dataPermissionsByRole.list));
-    }
-  }, [dataPermissionsByRole]);
+  // useEffect(() => {
+  //   if (dataPermissionsByRole?.list) {
+  //     setPermissions(new Set(dataPermissionsByRole.list));
+  //   }
+  // }, [dataPermissionsByRole]);
 
-  // Group permissions by module
-  const permissionGroups = useMemo(() => {
-    if (!dataPermissionsByRole?.list) return {};
+  // // Group permissions by module
+  // const permissionGroups = useMemo(() => {
+  //   if (!dataPermissionsByRole?.list) return {};
 
-    const groups: Record<string, Record<string, string>> = {};
+  //   const groups: Record<string, Record<string, string>> = {};
 
-    dataPermissionsByRole.list.forEach((perm) => {
-      const parts = perm.split("_");
-      const action = parts.pop(); // Last part is the action (VIEW, CREATE, etc.)
-      const module = parts.join("_"); // Rest is the module
+  //   dataPermissionsByRole.list.forEach((perm) => {
+  //     const parts = perm.split("_");
+  //     const action = parts.pop(); // Last part is the action (VIEW, CREATE, etc.)
+  //     const module = parts.join("_"); // Rest is the module
 
-      if (action && module) {
-        if (!groups[module]) {
-          groups[module] = {};
-        }
-        groups[module][action] = perm;
-      }
-    });
+  //     if (action && module) {
+  //       if (!groups[module]) {
+  //         groups[module] = {};
+  //       }
+  //       groups[module][action] = perm;
+  //     }
+  //   });
 
-    return groups;
-  }, [dataPermissionsByRole]);
+  //   return groups;
+  // }, [dataPermissionsByRole]);
 
   const handlePermissionChange = (key: string) => {
     setPermissions((prev) => {
@@ -60,14 +53,14 @@ const PermissionAdminSettings: React.FC = () => {
   };
 
   const handleSave = async () => {
-    await refetchUpdatePermissions({ permissions: Array.from(permissions) })
-      .then((res) => {
-        if (res?.resultMessage) alert(res.resultMessage);
-      })
-      .catch((err) => {
-        console.error(err);
-        alert("Error saving permissions");
-      });
+    // await refetchUpdatePermissions({ permissions: Array.from(permissions) })
+    //   .then((res) => {
+    //     if (res?.resultMessage) alert(res.resultMessage);
+    //   })
+    //   .catch((err) => {
+    //     console.error(err);
+    //     alert("Error saving permissions");
+    //   });
   };
 
   const renderPermissionGroup = (
@@ -99,18 +92,18 @@ const PermissionAdminSettings: React.FC = () => {
     );
   };
 
-  if (!dataPermissionsByRole) {
-    return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height="100vh"
-      >
-        <CircularProgress />
-      </Box>
-    );
-  }
+  // if (!dataPermissionsByRole) {
+  //   return (
+  //     <Box
+  //       display="flex"
+  //       justifyContent="center"
+  //       alignItems="center"
+  //       height="100vh"
+  //     >
+  //       <CircularProgress />
+  //     </Box>
+  //   );
+  // }
 
   return (
     <Grid container spacing={3} justifyContent="center">
@@ -120,9 +113,9 @@ const PermissionAdminSettings: React.FC = () => {
             Admin Permission Management
           </Typography>
 
-          {Object.entries(permissionGroups).map(([module, items]) =>
+          {/* {Object.entries(permissionGroups).map(([module, items]) =>
             renderPermissionGroup(module, items)
-          )}
+          )} */}
 
           <Button
             variant="contained"

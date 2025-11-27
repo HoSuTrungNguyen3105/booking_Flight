@@ -13,24 +13,22 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import DeleteIcon from "@mui/icons-material/Delete";
 import LockIcon from "@mui/icons-material/Lock";
 import DevicesIcon from "@mui/icons-material/Devices";
-import {
-  useDeleteSessionsFromID,
-  useLogoutAllSessions,
-  usePassengerSessions,
-} from "../../context/Api/usePostApi";
 import { useAuth } from "../../context/AuthContext";
 import type { UserSession } from "../../utils/type";
 import { ResponseCode } from "../../utils/response";
 import { DateFormatEnum, formatDate } from "../../hooks/format";
 import InputTextField from "../../common/Input/InputTextField";
 import type { AuthType } from "../Auth/Login";
+import {
+  useDeleteSessionsFromID,
+  useLogoutAllSessions,
+  usePassengerSessions,
+} from "../../context/Api/UserApi";
 
 const AccountSecurity: React.FC = () => {
   const { passenger, user } = useAuth();
   const [displaySessions, setDisplaySessions] = useState<UserSession[]>([]);
   const [loading, setLoading] = useState(true);
-
-  // const [sessionId, setSessionId] = useState<number | null>(null);
 
   const { refetchPassengerSessions } = usePassengerSessions();
 

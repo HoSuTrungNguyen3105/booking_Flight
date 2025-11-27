@@ -4,10 +4,10 @@ import LockResetIcon from "@mui/icons-material/LockReset";
 import type { UserData } from "../../../utils/type";
 import BaseModal from "../../Modal/BaseModal";
 import theme from "../../../scss/theme";
-import { useResetPassword } from "../../../context/Api/usePostApi";
-import { useRandomPassword } from "../../../context/Api/useGetApi";
 import InputTextField from "../../Input/InputTextField";
 import { useToast } from "../../../context/ToastContext";
+import { useRandomPassword } from "../../../context/Api/UserApi";
+import { useResetPassword } from "../../../context/Api/AuthApi";
 
 interface IResetPasswordModalProps {
   open: boolean;

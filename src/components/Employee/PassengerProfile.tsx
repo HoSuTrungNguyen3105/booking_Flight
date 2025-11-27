@@ -14,10 +14,10 @@ import InputTextField from "../../common/Input/InputTextField";
 import TicketPage from ".";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
-import { useUpdatePassengerInProfile } from "../../context/Api/usePostApi";
 import { DateFormatEnum, formatDate } from "../../hooks/format";
 import { refethDistancesToGetCallingCode } from "../../context/Api/useGetLocation";
 import theme from "../../scss/theme";
+import { useUpdatePassengerInProfile } from "../../context/Api/UserApi";
 
 type ProfilePassenger = Pick<
   Passenger,

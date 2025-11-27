@@ -1,3 +1,5 @@
+import type { UserFormConfig } from "../../common/Setting/hooks/useDataSection.ts";
+import type { SearchEmailFromSidebarMessageRes } from "../../components/Chat/SearchUserFromMessage.tsx";
 import type { UserWithRelationsData } from "../../components/Sample/type.ts";
 import {
   MethodType,
@@ -18,6 +20,7 @@ import {
   type UserSession,
   type UserIdResponse,
   type EmailUserProps,
+  type ChangeEmailPassengerProps,
   // type UpdatePassengerDto,
 } from "../../utils/type.ts";
 import { useFetch } from "../use[custom]/useFetch.ts";
@@ -183,19 +186,48 @@ export const useGetUserById = (id: number) => {
   };
 };
 
-export const useFindAllRoles = () => {
-  const { data, refetch, loading } = useFetch<
-    DetailResponseMessage<string[]>,
-    null
-  >({
-    url: "/sys/enums/roles",
-    autoFetch: true,
-    config: getMethod,
-  });
+export const useFindUserFromMessage = () => {
+  const { data: dataUserFromMessage, refetch: refetchUserFromMessage } =
+    useFetch<
+      DetailResponseMessage<SearchEmailFromSidebarMessageRes>,
+      SearchEmailFromSidebarMessageReq
+    >({
+      url: "sys/users/findUserFromMessage",
+      autoFetch: false, // thường search thì gọi khi cần
+      config: postMethod,
+    });
+
+  return { dataUserFromMessage, refetchUserFromMessage };
+};
+
+export const useUpdateUserFromAdmin = () => {
+  // const isValid = !!id;
+  const { refetch: refetchUpdateUserFromAdmin, loading: loadingUser } =
+    useFetch<DetailResponseMessage<UserIdResponse>, Partial<UserFormConfig>>({
+      url: "/sys/users/updateUserFromAdmin",
+      autoFetch: false,
+      config: postMethod,
+    });
   return {
-    dataRoles: data,
-    refetchRoles: refetch,
-    loadingRoles: loading,
+    refetchUpdateUserFromAdmin,
+    loadingUser,
+  };
+};
+
+export const useApproveOrRejectTransfer = () => {
+  const {
+    refetch: refetchApproveOrRejectTransfer,
+    loading: loadingApproveOrRejectTransfer,
+  } = useFetch<ResponseMessage, { userId: number; mode: "approve" | "reject" }>(
+    {
+      url: "/sys/users/modeTransfer",
+      autoFetch: false,
+      config: postMethod,
+    }
+  );
+  return {
+    refetchApproveOrRejectTransfer,
+    loadingApproveOrRejectTransfer,
   };
 };
 
@@ -475,6 +507,90 @@ export const useSendMail = () => {
   };
 };
 
+export type RequestChangeRoleProps = {
+  userId: number;
+  fromUserId: number;
+  employeeNo: string;
+};
+
+export const useRequestChangeRole = () => {
+  const { refetch: refetchRequestChangeRole, error: errorRequestChangeRole } =
+    useFetch<ResponseMessage, RequestChangeRoleProps>({
+      url: "/sys/users/request-change-role",
+      autoFetch: false,
+      config: postMethod,
+    });
+  return {
+    errorRequestChangeRole,
+    refetchRequestChangeRole,
+  };
+};
+
+export const usePermissionChangeRole = () => {
+  const {
+    refetch: refetchPermissionChangeRole,
+    error: errorPermissionChangeRole,
+    loading: loadingPermissionChangeRole,
+  } = useFetch<ResponseMessage, { id: number; employeeNo: string }>({
+    url: "/sys/users/permission-change-role",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchPermissionChangeRole,
+    errorPermissionChangeRole,
+    loadingPermissionChangeRole,
+  };
+};
+
+export const useDeleteUserById = () => {
+  const { refetch: refetchDeleteUser } = useFetch<
+    ResponseMessage,
+    ReqUserIDProps
+  >({
+    url: "/sys/users/deleteUser",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchDeleteUser,
+  };
+};
+
+export interface ILockAccountProps {
+  id?: number;
+  accountLockYn: string;
+}
+
+export const useAccountLock = () => {
+  const { refetch: refetchAccountLock, loading: loadingAccountLock } = useFetch<
+    ResponseMessage,
+    ILockAccountProps
+  >({
+    url: "/sys/users/setAccountLock",
+    // params: ,
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    loadingAccountLock,
+    refetchAccountLock,
+  };
+};
+
+export const useChangeEmailPassenger = () => {
+  const { refetch: refetchChangeEmailPassenger } = useFetch<
+    DetailResponseMessage<{ requireVerified: true }>,
+    ChangeEmailPassengerProps
+  >({
+    url: "/auth/passenger/change-email",
+    autoFetch: false,
+    config: postMethod,
+  });
+
+  return { refetchChangeEmailPassenger };
+};
+
 export const getUserIdByEmail = () => {
   const { refetch: refetchUserEmailData } = useFetch<
     DetailResponseMessage<UserIdResponse>,
@@ -486,6 +602,26 @@ export const getUserIdByEmail = () => {
   });
   return {
     refetchUserEmailData,
+  };
+};
+
+export type UpdatePassengerProps = {
+  fullName?: string;
+  phone?: string;
+  passport?: string;
+};
+
+export const useUpdatePassengerInProfile = (id: string) => {
+  const { refetch: refetchUpdatePassengerInProfile } = useFetch<
+    ResponseMessage,
+    UpdatePassengerProps
+  >({
+    url: `/sys/users/passenger/update/profile/${id}`,
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchUpdatePassengerInProfile,
   };
 };
 

@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
 import { type GridColDef, type GridRowId } from "@mui/x-data-grid";
-import { useGetMeal } from "../../../../context/Api/useGetApi";
 import { Box, Button } from "@mui/material";
 import { type GridRowDef } from "../../../../common/DataGrid/index";
 import TableSection from "../../../../common/AdditionalCustomFC/TableSection";
@@ -8,6 +7,7 @@ import { AddBoxOutlined } from "@mui/icons-material";
 import { useAuth } from "../../../../context/AuthContext";
 import { UserRole } from "../../../../utils/type";
 import BulkMealCreator from "./BulkMealCreator";
+import { useGetMeal } from "../../../../context/Api/MealApi";
 
 export default function MealList() {
   const { refetchMealData, mealData, loadingMealData } = useGetMeal();

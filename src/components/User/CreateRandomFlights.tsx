@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Button, CircularProgress } from "@mui/material";
-import { useCreateRandomFlight } from "../../context/Api/usePostApi";
 import { useToast } from "../../context/ToastContext";
 import { ResponseCode } from "../../utils/response";
+import { useCreateRandomFlight } from "../../context/Api/FlightApi";
 
 const CreateRandomFlights: React.FC = () => {
   const [loading, setLoading] = useState(false);

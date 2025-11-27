@@ -20,6 +20,7 @@ export const ROUTE_PATHS = {
   PROFILE: "/profile",
   SETTINGS: "/settings",
   DASHBOARD: "/dashboard",
+  PERMISSION: "permission",
   SUPPORT: "support",
   NOTIFICATIONS: "notifications",
   INTERNATIONAL: "international",

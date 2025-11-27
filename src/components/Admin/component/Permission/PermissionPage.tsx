@@ -12,24 +12,23 @@ import {
   CircularProgress,
   Box,
 } from "@mui/material";
-import { useGetPermissionsByRole } from "../../../../context/Api/AuthApi";
 
 interface RolePermissionTableProps {
   role: string;
 }
 
 const RolePermissionTable: React.FC<RolePermissionTableProps> = ({ role }) => {
-  const { dataPermissionsByRole } = useGetPermissionsByRole(role);
+  // const { dataPermissionsByRole } = useGetPermissionsByRole(role);
 
-  if (!dataPermissionsByRole) {
-    return (
-      <Box display="flex" justifyContent="center" alignItems="center" p={2}>
-        <CircularProgress size={24} />
-      </Box>
-    );
-  }
+  // if (!dataPermissionsByRole) {
+  //   return (
+  //     <Box display="flex" justifyContent="center" alignItems="center" p={2}>
+  //       <CircularProgress size={24} />
+  //     </Box>
+  //   );
+  // }
 
-  const permissions = dataPermissionsByRole.data || {};
+  // const permissions = dataPermissionsByRole.data || {};
 
   return (
     <TableContainer component={Paper} sx={{ marginBottom: 3 }}>
@@ -61,13 +60,13 @@ const RolePermissionTable: React.FC<RolePermissionTableProps> = ({ role }) => {
               </TableRow>
             ))
           )} */}
-          {Object.keys(permissions).length === 0 && (
+          {/* {Object.keys(permissions).length === 0 && (
             <TableRow>
               <TableCell colSpan={3} align="center">
                 No permissions found for this role.
               </TableCell>
             </TableRow>
-          )}
+          )} */}
         </TableBody>
       </Table>
     </TableContainer>

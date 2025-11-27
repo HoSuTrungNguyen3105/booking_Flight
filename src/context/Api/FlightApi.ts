@@ -174,18 +174,38 @@ export const useGetAllInfoFlightByIDData = ({ id }: ReqUserIDProps) => {
   };
 };
 
-// export const useGetAllFlightMainInfo = () => {
-//   const { data: getAllFlightInfoInfo, refetch: refetchGetAllFlightInfoInfo } =
-//     useFetch<FlightDetailApiResponse, null>({
-//       url: "/sys/flights/flight-info/main",
-//       autoFetch: true,
-//       config: getMethod,
-//     });
-//   return {
-//     getAllFlightInfoInfo,
-//     refetchGetAllFlightInfoInfo,
-//   };
-// };
+export const useCreateFlightStatus = () => {
+  const {
+    refetch: refetchCreateFlightStatus,
+    loading: loadingCreateFlightStatus,
+  } = useFetch<
+    ResponseMessage,
+    { flightId: number; status: string; description?: string }
+  >({
+    url: "/sys/flights/flight-status/add",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchCreateFlightStatus,
+    loadingCreateFlightStatus,
+  };
+};
+
+export const useUpdateFlightStatus = () => {
+  const {
+    refetch: refetchUpdateFlightStatus,
+    loading: loadingUpdateFlightStatus,
+  } = useFetch<ResponseMessage, { id: number; status: string }>({
+    url: "/sys/flights/flight-status/update",
+    autoFetch: false,
+    config: postMethod,
+  });
+  return {
+    refetchUpdateFlightStatus,
+    loadingUpdateFlightStatus,
+  };
+};
 
 export const useGetAllFlightIds = () => {
   const { data: getAllFlightIds, refetch: refetchGetAllFlightIds } = useFetch<

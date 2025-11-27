@@ -23,7 +23,7 @@ interface ILoginForm {
   password: string;
 }
 
-export type AuthType = "ID,PW" | "DEV" | "MFA" | "ADMIN" | "MONITER";
+export type AuthType = "ID,PW" | "DEV" | "MFA" | "ADMIN" | "MONITOR";
 type ViewMode = "login" | "register" | "mfa" | "verify" | "changePw" | "unlock";
 
 export const LoginPage: React.FC = () => {
@@ -32,7 +32,7 @@ export const LoginPage: React.FC = () => {
     { label: "MFA", value: "MFA" },
     { label: "DEV", value: "DEV" },
     { label: "ADMIN", value: "ADMIN" },
-    { label: "MONITER", value: "MONITER" },
+    { label: "MONITOR", value: "MONITOR" },
   ];
   const navigate = useNavigate();
   const [authType, setAuthType] = useState<AuthType>("ID,PW");
@@ -86,7 +86,7 @@ export const LoginPage: React.FC = () => {
       }
 
       // CASE 2 & 3: ADMIN or ID,PW
-      const isAdminTypes = ["ADMIN", "DEV", "MONITER"];
+      const isAdminTypes = ["ADMIN", "DEV", "MONITOR"];
       const loginFn = isAdminTypes.includes(authType)
         ? loginAdmin
         : loginPassenger;
@@ -100,7 +100,6 @@ export const LoginPage: React.FC = () => {
         location: countryCode as string,
         ...session,
       });
-      console.log("loginRes", loginRes);
 
       if (loginRes.requireUnlock) {
         setViewMode("unlock");
@@ -211,6 +210,7 @@ export const LoginPage: React.FC = () => {
       return (
         <MfaSetup
           authType={authType}
+          state="qrSetup"
           onClose={() => setViewMode("login")}
           email={mfaEmailValue}
         />

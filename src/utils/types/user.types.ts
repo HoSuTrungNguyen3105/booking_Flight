@@ -47,14 +47,9 @@ export type BaseUserData = {
   fromTransferAdminUserYn?: string;
 };
 
-export type UserData = BaseUserData &
-  GridRowDef & {
-    id: number;
-  };
+export type UserData = BaseUserData & GridRowDef & UserIdResponse;
 
-export type UserDataNoGrid = BaseUserData & {
-  userId?: number;
-};
+export type UserDataNoGrid = BaseUserData & UserIdResponse;
 
 export type UserCreateProps = {
   email?: string;
@@ -182,6 +177,7 @@ export type VerifyOTPProps = {
 
 export type EmailProps = {
   email?: string;
+  state: string;
   userId?: string | number;
   authType?: string;
   onClose?: () => void;

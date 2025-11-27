@@ -4,12 +4,14 @@ import type { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { DateFormatEnum, formatDate } from "../../hooks/format";
 import TableSection from "../AdditionalCustomFC/TableSection";
 import type { TypeStatus } from "../../utils/type";
-import { usefindAllTransferRequests } from "../../context/Api/useGetApi";
 import { CheckCircle, Cancel } from "@mui/icons-material";
-import { useApproveOrRejectTransfer } from "../../context/Api/usePostApi";
 import { useToast } from "../../context/ToastContext";
 import DialogConfirm from "../Modal/DialogConfirm";
 import { ResponseCode } from "../../utils/response";
+import {
+  useApproveOrRejectTransfer,
+  usefindAllTransferRequests,
+} from "../../context/Api/UserApi";
 
 const TransferAdminTable = () => {
   const {

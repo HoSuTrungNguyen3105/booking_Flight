@@ -38,7 +38,14 @@ const ChangePassword = ({ userId, email, onClose }: IUserIdNumber) => {
   };
 
   if (verifyOTPcode) {
-    return <VerifyOpt userId={userId} email={email} />;
+    return (
+      <VerifyOpt
+        state="verify"
+        authType="qrSetup"
+        userId={userId}
+        email={email}
+      />
+    );
   }
 
   return (

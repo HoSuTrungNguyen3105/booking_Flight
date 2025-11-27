@@ -44,6 +44,8 @@ export interface IInputTextFieldProps {
   onChange?: (value: string) => void;
   onError?: (error: string | null) => void;
   onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+  select?: boolean;
+  children?: React.ReactNode;
 }
 
 export type InputNumberProps = {

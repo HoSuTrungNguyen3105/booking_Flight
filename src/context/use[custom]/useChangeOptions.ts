@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import i18n from "../../i18n";
 import { optionLanguage } from "../../i18n/resource";
 import type { ActionType } from "../../common/Dropdown/SelectDropdown";
-import { useFindLocaleConfig, type LocaleTypeProps } from "../Api/usePostApi";
+import { useFindLocaleConfig, type LocaleTypeProps } from "../Api/CommonApi";
 
 export interface CurrencyInfo {
   title: string;

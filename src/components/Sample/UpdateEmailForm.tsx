@@ -1,15 +1,13 @@
 import { useState } from "react";
 import { Box, Button, TextField, Typography, Stack } from "@mui/material";
 import { useAuth } from "../../context/AuthContext";
-import {
-  useChangeEmailPassenger,
-  useVerifyOtpToAccessEmail,
-} from "../../context/Api/usePostApi";
 import { ResponseCode } from "../../utils/response";
 import OTPInput from "../../common/Input/OTPInput";
 import { useToast } from "../../context/ToastContext";
 import { useNavigate } from "react-router-dom";
 import InputTextField from "../../common/Input/InputTextField";
+import { useChangeEmailPassenger } from "../../context/Api/UserApi";
+import { useVerifyOtpToAccessEmail } from "../../context/Api/AuthApi";
 
 export const UpdateEmailForm = () => {
   const { passenger } = useAuth();

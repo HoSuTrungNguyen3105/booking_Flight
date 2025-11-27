@@ -19,8 +19,8 @@ import {
 } from "@mui/material";
 import { BookOnline, Info, Search } from "@mui/icons-material";
 import { useLocation } from "react-router-dom";
-import { useGetHotelByHotelCode } from "../../../../context/Api/useGetApi";
 import { useExit } from "../../../../context/use[custom]/useExit";
+import { useGetHotelByHotelCode } from "../../../../context/Api/HotelApi";
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {

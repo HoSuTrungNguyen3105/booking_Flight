@@ -28,8 +28,8 @@ import SelectDropdown, {
   type ActionType,
 } from "../../../../common/Dropdown/SelectDropdown";
 import InputTextField from "../../../../common/Input/InputTextField";
-import { useFindAllMealTypes } from "../../../../context/Api/useGetApi";
 import InputNumber from "../../../../common/Input/InputNumber";
+import { useFindAllMealTypes } from "../../../../context/Api/EnumApi";
 
 interface MealFormProps {
   meal: CreateMealDto;

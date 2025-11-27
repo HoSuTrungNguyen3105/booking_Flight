@@ -2,14 +2,14 @@ import { Box, Button, CircularProgress } from "@mui/material";
 import { memo, useCallback, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import { useToast } from "../../../context/ToastContext";
-import {
-  useAccountLock,
-  type ILockAccountProps,
-} from "../../../context/Api/usePostApi";
 import { useTranslation } from "react-i18next";
 import type { UserData } from "../../../utils/type";
 import BaseModal from "../../Modal/BaseModal";
 import { ResponseCode } from "../../../utils/response";
+import {
+  useAccountLock,
+  type ILockAccountProps,
+} from "../../../context/Api/UserApi";
 
 interface IModalStatisticalDataLearningProps {
   open: boolean;

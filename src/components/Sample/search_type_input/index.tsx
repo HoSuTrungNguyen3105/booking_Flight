@@ -1,15 +1,12 @@
-import { useMemo, useState } from "react";
-import { FieldType } from "../../../common/AdditionalCustomFC/FieldRenderer";
-import {
-  mapStringToDropdown,
-  useFindAllFlightTypes,
-  useGetAllCode,
-} from "../../../context/Api/useGetApi";
+import { useMemo } from "react";
 import type { ActionType } from "../../../common/Dropdown/SelectDropdown";
 import {
   SearchFieldType,
   type ISearchFieldRender,
 } from "../../../common/AdditionalCustomFC/SearchFieldRender";
+import { useGetAllCode } from "../../../context/Api/FlightApi";
+import { useFindAllFlightTypes } from "../../../context/Api/EnumApi";
+import { mapStringToDropdown } from "../../../context/Api/CommonApi";
 
 export type SearchFormConfig = {
   passenger: {

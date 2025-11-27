@@ -6,17 +6,17 @@ import SelectDropdown, {
 } from "../../../../../common/Dropdown/SelectDropdown";
 import InputTextField from "../../../../../common/Input/InputTextField";
 import theme from "../../../../../scss/theme";
-import { useFindAllGateStatuses } from "../../../../../context/Api/useGetApi";
 import BaseModal from "../../../../../common/Modal/BaseModal";
 import { Loading } from "../../../../../common/Loading/Loading";
-import {
-  useCreateBatchGate,
-  useUpdateGate,
-} from "../../../../../context/Api/usePostApi";
 import type { UpdateGateProps } from "../TerminalContainer";
 import type { CreateGateProps, Gate } from "../../../../../utils/type";
 import { useToast } from "../../../../../context/ToastContext";
 import { ResponseCode } from "../../../../../utils/response";
+import { useFindAllGateStatuses } from "../../../../../context/Api/EnumApi";
+import {
+  useCreateBatchGate,
+  useUpdateGate,
+} from "../../../../../context/Api/AirportApi";
 
 type IGateModalProps = {
   terminalId: string;
@@ -40,10 +40,6 @@ const ManageGateModal = ({
   const [formData, setFormData] = useState<CreateGateProps[]>([
     { code: "", terminalId, status: "" },
   ]);
-
-  // const [errors, setErrors] = useState<
-  //   Partial<Record<keyof CreateGateProps, string>>
-  // >({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { dataGateStatuses } = useFindAllGateStatuses();
   const { refetchCreateBatchGate } = useCreateBatchGate();

@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState } from "react";
 import {
   Checkbox,
   FormControlLabel,
@@ -10,14 +9,12 @@ import {
   Paper,
 } from "@mui/material";
 import type { RolePermission } from "../../../../utils/type";
-import { useFindAllPermissionsRole } from "../../../../context/Api/EnumApi";
+// import { useFindAllPermissionsRole } from "../../../../context/Api/EnumApi";
 
 const PermissionSettings: React.FC = () => {
   const [permissions, setPermissions] = useState<Set<RolePermission>>(
     new Set()
   );
-
-  const { dataPermissionsRole } = useFindAllPermissionsRole();
 
   //   useEffect(() => {
   //     axios

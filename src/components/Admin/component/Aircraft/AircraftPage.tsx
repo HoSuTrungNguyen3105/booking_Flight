@@ -18,15 +18,17 @@ import {
   Edit as EditIcon,
   Delete,
 } from "@mui/icons-material";
-import { useGetAircraftCode } from "../../../../context/Api/useGetApi";
 import { memo, useCallback, useState } from "react";
 import AircarftDetail from "./AircraftDetail";
-import { useDeleteAircraftFlight } from "../../../../context/Api/usePostApi";
 import DialogConfirm from "../../../../common/Modal/DialogConfirm";
 import DeleteIcon from "../../../../svgs/delete-2-svgrepo.svg";
 import type { Aircraft } from "../../../../utils/type";
 import AircraftBatchCreator from "./AircraftBatchCreator";
 import { ResponseCode } from "../../../../utils/response";
+import {
+  useDeleteAircraftFlight,
+  useGetAircraftCode,
+} from "../../../../context/Api/AircraftApi";
 
 const AircraftPage = () => {
   const { getAircraftCodeData, refetchGetAircraftCodeData } =
@@ -111,10 +113,21 @@ const AircraftPage = () => {
         <Grid container spacing={2}>
           {getAircraftCodeData?.list?.map((aircraft: Aircraft) => (
             <Grid size={6} key={aircraft.code}>
-              <Card sx={{borderRadius: 3,height: "100%",display: "flex",flexDirection: "column"}}>
+              <Card
+                sx={{
+                  borderRadius: 3,
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
                 <CardContent sx={{ flexGrow: 1, p: 3 }}>
                   <Stack spacing={2}>
-                    <Stack direction="row"justifyContent="space-between"alignItems="flex-start">
+                    <Stack
+                      direction="row"
+                      justifyContent="space-between"
+                      alignItems="flex-start"
+                    >
                       <Chip
                         label={aircraft.code}
                         color="primary"

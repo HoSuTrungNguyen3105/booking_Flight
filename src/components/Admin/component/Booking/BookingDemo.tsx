@@ -14,13 +14,13 @@ import {
   Typography,
   Divider,
 } from "@mui/material";
+import type { DataFlight, Meal } from "../../../../utils/type";
 import {
   ACTIONS,
   initialState,
   type Action,
   type BookingState,
-} from "../Admin/component/Booking/booking";
-import type { DataFlight, Meal } from "../../utils/type";
+} from "./booking";
 
 // --- MOCK DATA ---
 const MOCK_FLIGHT: DataFlight = {

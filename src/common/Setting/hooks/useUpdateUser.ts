@@ -6,8 +6,8 @@ import {
   type UserRoleType,
 } from "../../../utils/type";
 import { useDataSection, type UserFormConfig } from "./useDataSection";
-import { useUpdateUserFromAdmin } from "../../../context/Api/usePostApi";
 import { useToast } from "../../../context/ToastContext";
+import { useUpdateUserFromAdmin } from "../../../context/Api/UserApi";
 
 interface IUseUpdateUserProps {
   onClose: () => void;
@@ -66,7 +66,6 @@ export const useUpdateUser = ({
   const toast = useToast();
 
   const handleSubmit = useCallback(async () => {
-    //formData: AdminUpdateUserForm
     try {
       const payload: Partial<UserFormConfig> = {
         id: formData.id,

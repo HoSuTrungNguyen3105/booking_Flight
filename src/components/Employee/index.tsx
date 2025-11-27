@@ -12,7 +12,6 @@ import {
   Button,
 } from "@mui/material";
 import ForwardToInboxIcon from "@mui/icons-material/ForwardToInbox";
-import { useFindPassengerTicket } from "../../context/Api/usePostApi";
 import { useAuth } from "../../context/AuthContext";
 import type { Ticket } from "../../utils/type";
 import { ResponseCode } from "../../utils/response";
@@ -22,6 +21,7 @@ import theme from "../../scss/theme";
 import AccountSecurity from "../Common/AccountSecurity";
 import { FaTicketAlt } from "react-icons/fa";
 import { Download, KeyboardArrowDown, Print } from "@mui/icons-material";
+import { useFindPassengerTicket } from "../../context/Api/BookingApi";
 
 const TicketPage: React.FC = () => {
   const { passenger } = useAuth();

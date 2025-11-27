@@ -16,9 +16,9 @@ import {
   Chip,
 } from "@mui/material";
 import type { Hotel } from "../../../../utils/type";
-import { useGetAllHotels } from "../../../../context/Api/useGetApi";
 import InputTextField from "../../../../common/Input/InputTextField";
 import { useNavigate } from "react-router-dom";
+import { useGetAllHotels } from "../../../../context/Api/HotelApi";
 
 const HotelListPage: React.FC = () => {
   const [hotels, setHotels] = useState<Hotel[]>([]);

@@ -354,6 +354,10 @@ const routes = [
             element: <FlightManagement />,
           },
           {
+            path: ROUTE_PATHS.PERMISSION,
+            element: <AdminPermissionsPage />,
+          },
+          {
             path: ROUTE_PATHS.FLIGHT_MEALS,
             element: <MealList />,
           },

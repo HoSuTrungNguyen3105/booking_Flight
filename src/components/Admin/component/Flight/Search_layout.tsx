@@ -7,14 +7,12 @@ import {
   Card,
   CardContent,
   Button,
-  Paper,
   Divider,
   Chip,
   Skeleton,
   Stack,
 } from "@mui/material";
 import { Add, DeleteForever } from "@mui/icons-material";
-import { useSearchFlight } from "../../../../context/Api/usePostApi.ts";
 import { type DataFlight } from "../../../../utils/type.ts";
 import type { GridColDef, GridRowId } from "@mui/x-data-grid";
 import { type GridRowDef } from "../../../../common/DataGrid/index.tsx";
@@ -24,6 +22,10 @@ import {
   Refresh as RefreshIcon,
   Flight as FlightIcon,
   StarBorder as StarBorderIcon,
+  Person as PersonIcon,
+  FlightTakeoff as FlightTakeoffIcon,
+  FlightLand as FlightLandIcon,
+  AirlineSeatReclineNormal as SeatIcon,
 } from "@mui/icons-material";
 import FlightDetail from "./FlightDetail.tsx";
 import TableSection from "../../../../common/AdditionalCustomFC/TableSection.tsx";
@@ -33,6 +35,9 @@ import type { IDetailItem } from "../../../../common/AdditionalCustomFC/DetailSe
 import DetailSection from "../../../../common/AdditionalCustomFC/DetailSection.tsx";
 import { DateFormatEnum, formatDate } from "../../../../hooks/format.ts";
 import { ResponseCode } from "../../../../utils/response.ts";
+import { useSearchFlight } from "../../../../context/Api/FlightApi.ts";
+import DateTimePickerComponent from "../../../../common/DayPicker/index.tsx";
+import { MenuItem } from "@mui/material";
 
 type FlightId = {
   id: number;
@@ -69,7 +74,7 @@ const Search_layout: React.FC = () => {
   const [isReset, setIsReset] = React.useState<boolean>(false);
   const [error, setError] = React.useState<string | null>(null);
   const [_, setLoading] = React.useState<boolean>(true);
-  const [flightParams, setFlightParams] = React.useState<SearchFlightDto>({
+  const defaultFlightParams: SearchFlightDto = {
     from: "",
     to: "",
     departDate: undefined,
@@ -86,8 +91,10 @@ const Search_layout: React.FC = () => {
     minDelayMinutes: undefined,
     maxDelayMinutes: undefined,
     includeCancelled: false,
-  });
+  };
 
+  const [flightParams, setFlightParams] =
+    React.useState<SearchFlightDto>(defaultFlightParams);
   const [showDelete, setShowDelete] = React.useState<boolean>(false);
 
   const toast = useToast();
@@ -99,16 +106,6 @@ const Search_layout: React.FC = () => {
     handlePasswordConfirm,
     hasPendingRequest,
   } = useSearchFlight();
-
-  const {
-    control,
-    handleSubmit: handleSearchSubmit,
-    getValues: getValues,
-    register,
-    reset: resetSearch,
-  } = useForm<SearchFlightDto>({
-    defaultValues: flightParams,
-  });
   const [isVerifying, setIsVerifying] = React.useState(false);
 
   const [rowData, setRowData] = React.useState<DataFlight[]>([]);
@@ -189,6 +186,16 @@ const Search_layout: React.FC = () => {
     }));
   };
 
+  const handleDateChange = (
+    field: "departDate" | "returnDate",
+    value: number
+  ) => {
+    setFlightParams((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
   const handleValidPassword = () => {
     console.log(" Xác thực thành công, data sẽ được cập nhật");
   };
@@ -220,8 +227,8 @@ const Search_layout: React.FC = () => {
 
   const onResetForm = (): void => {
     if (isReset) return;
-    resetSearch();
-    refetchSearchFlightList(flightParams);
+    setFlightParams(defaultFlightParams);
+    refetchSearchFlightList(defaultFlightParams);
   };
 
   const [flightRows, setFlightRows] = React.useState<GridRowDef[]>([]);
@@ -297,54 +304,84 @@ const Search_layout: React.FC = () => {
   ];
 
   const renderDataOption1 = React.useCallback(() => {
-    const currentValues = getValues(); // Lấy giá trị hiện tại
-
     const detailInfoProfile: IDetailItem[] = [
       {
-        title: "from",
-        size: 4,
+        title: "From",
+        size: 3,
         description: (
           <InputTextField
             name="from"
             placeholder="e.g., HAN"
-            value={currentValues.from} // Truyền value vào
+            value={flightParams.from}
             onChange={(e) => handleInputChange("from", e)}
+            startIcon={<FlightTakeoffIcon color="action" />}
           />
         ),
       },
       {
-        title: "name",
-        size: 4,
+        title: "To",
+        size: 3,
         description: (
           <InputTextField
             value={flightParams.to}
             name="to"
-            placeholder="e.g., HAN"
+            placeholder="e.g., SGN"
             onChange={(e) => handleInputChange("to", e)}
+            startIcon={<FlightLandIcon color="action" />}
           />
         ),
       },
       {
-        title: "returnDate",
-        size: 4,
+        title: "Depart Date",
+        size: 3,
         description: (
-          <InputTextField
-            value={String(flightParams.returnDate)}
-            name="returnDate"
-            onChange={(e) => handleNumberChange("returnDate", e)}
+          <DateTimePickerComponent
+            language="en"
+            value={flightParams.departDate}
+            onChange={(val) => handleDateChange("departDate", val)}
           />
         ),
       },
       {
-        title: "passengers",
-        size: 6,
+        title: "Return Date",
+        size: 3,
+        description: (
+          <DateTimePickerComponent
+            language="en"
+            value={flightParams.returnDate}
+            onChange={(val) => handleDateChange("returnDate", val)}
+          />
+        ),
+      },
+      {
+        title: "Passengers",
+        size: 3,
         description: (
           <InputTextField
             name="passengers"
             placeholder="1"
-            value={String(flightParams.passengers)}
+            type="number"
+            value={String(flightParams.passengers ?? "")}
             onChange={(event) => handleNumberChange("passengers", event)}
+            startIcon={<PersonIcon color="action" />}
           />
+        ),
+      },
+      {
+        title: "Cabin Class",
+        size: 3,
+        description: (
+          <InputTextField
+            name="cabinClass"
+            select
+            value={flightParams.cabinClass}
+            onChange={(e) => handleInputChange("cabinClass", e)}
+            startIcon={<SeatIcon color="action" />}
+          >
+            <MenuItem value="ECONOMY">Economy</MenuItem>
+            <MenuItem value="BUSINESS">Business</MenuItem>
+            <MenuItem value="VIP">VIP</MenuItem>
+          </InputTextField>
         ),
       },
     ];
@@ -364,35 +401,67 @@ const Search_layout: React.FC = () => {
     const detailInfoProfile: IDetailItem[] = [
       {
         title: "Gate",
-        size: 6,
+        size: 3,
         description: (
           <InputTextField
             value={flightParams.gate}
             name="gate"
-            placeholder="e.g., A12, B3"
+            placeholder="e.g., A12"
             onChange={(e) => handleInputChange("gate", e)}
           />
         ),
       },
       {
         title: "Terminal",
-        size: 6,
+        size: 3,
         description: (
           <InputTextField
             value={flightParams.terminal}
             name="terminal"
-            placeholder="e.g., T1, T2"
+            placeholder="e.g., T1"
             onChange={(e) => handleInputChange("terminal", e)}
           />
         ),
       },
       {
+        title: "Status",
+        size: 3,
+        description: (
+          <InputTextField
+            name="status"
+            select
+            value={flightParams.status ?? ""}
+            onChange={(e) => handleInputChange("status", e)}
+          >
+            <MenuItem value="">All</MenuItem>
+            <MenuItem value="SCHEDULED">Scheduled</MenuItem>
+            <MenuItem value="DELAYED">Delayed</MenuItem>
+            <MenuItem value="CANCELLED">Cancelled</MenuItem>
+            <MenuItem value="ARRIVED">Arrived</MenuItem>
+            <MenuItem value="DEPARTED">Departed</MenuItem>
+          </InputTextField>
+        ),
+      },
+      {
+        title: "Aircraft Code",
+        size: 3,
+        description: (
+          <InputTextField
+            name="aircraftCode"
+            placeholder="e.g., VN-A321"
+            value={flightParams.aircraftCode}
+            onChange={(e) => handleInputChange("aircraftCode", e)}
+          />
+        ),
+      },
+      {
         title: "Min Price",
-        size: 6,
+        size: 3,
         description: (
           <InputTextField
             name="minPrice"
             placeholder="Min"
+            type="number"
             value={String(flightParams.minPrice ?? "")}
             onChange={(e) => handleNumberChange("minPrice", e)}
           />
@@ -400,35 +469,38 @@ const Search_layout: React.FC = () => {
       },
       {
         title: "Max Price",
-        size: 6,
+        size: 3,
         description: (
           <InputTextField
             name="maxPrice"
             placeholder="Max"
+            type="number"
             value={String(flightParams.maxPrice ?? "")}
             onChange={(e) => handleNumberChange("maxPrice", e)}
           />
         ),
       },
       {
-        title: "Min Delay (minutes)",
-        size: 6,
+        title: "Min Delay (min)",
+        size: 3,
         description: (
           <InputTextField
             name="minDelayMinutes"
             placeholder="Min"
+            type="number"
             value={String(flightParams.minDelayMinutes ?? "")}
             onChange={(e) => handleNumberChange("minDelayMinutes", e)}
           />
         ),
       },
       {
-        title: "Max Delay (minutes)",
-        size: 6,
+        title: "Max Delay (min)",
+        size: 3,
         description: (
           <InputTextField
             name="maxDelayMinutes"
             placeholder="Max"
+            type="number"
             value={String(flightParams.maxDelayMinutes ?? "")}
             onChange={(e) => handleNumberChange("maxDelayMinutes", e)}
           />
@@ -488,7 +560,10 @@ const Search_layout: React.FC = () => {
   return (
     <Box
       component="form"
-      onSubmit={handleSearchSubmit(onSubmitValue)}
+      onSubmit={(e) => {
+        e.preventDefault();
+        onSubmitValue(flightParams);
+      }}
       // sx={{ p: 2 }}
     >
       <Stack
@@ -524,24 +599,25 @@ const Search_layout: React.FC = () => {
               {renderDataOption1()}
             </Grid>
 
-            <Grid size={12}>
-              <Typography
-                variant="h6"
-                gutterBottom
-                sx={{
-                  color: "primary.main",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 1,
-                }}
-              >
-                <StarBorderIcon /> Flight Details
-              </Typography>
-            </Grid>
-
-            {/* {mode === "advance" && ( */}
-            {renderDataOptionDetails()}
-            {/* )} */}
+            {mode === "advance" && (
+              <>
+                <Grid size={12}>
+                  <Typography
+                    variant="h6"
+                    gutterBottom
+                    sx={{
+                      color: "primary.main",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                    }}
+                  >
+                    <StarBorderIcon /> Flight Details
+                  </Typography>
+                </Grid>
+                {renderDataOptionDetails()}
+              </>
+            )}
           </Grid>
 
           <Divider sx={{ my: 3 }} />

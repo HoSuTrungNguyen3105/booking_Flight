@@ -22,10 +22,15 @@ import {
 
 type MfaState = "initial" | "qrSetup" | "verification" | "login" | "success";
 
-export default function MfaSetup({ email, onClose, authType }: EmailProps) {
+export default function MfaSetup({
+  email,
+  onClose,
+  authType,
+  state,
+}: EmailProps) {
   const [qrCode, setQrCode] = useState<string | null>(null);
   const [code, setCode] = useState("");
-  const [currentState, setCurrentState] = useState<MfaState>("initial");
+  const [currentState, setCurrentState] = useState<MfaState>(state as MfaState);
   const [isLoading, setIsLoading] = useState(false);
 
   const { refetchVerifyMfa } = useVerifyMfa();
@@ -39,13 +44,15 @@ export default function MfaSetup({ email, onClose, authType }: EmailProps) {
     setIsLoading(false);
   };
 
+  console.log("rele", authType);
+
   const fetchQrCode = useCallback(async () => {
     if (!email || !authType) {
       toast("Loi ko co authtype hoac chua nhập email để tạo MFA");
       return;
     }
     try {
-      const isAdmin = ["DEV", "ADMIN"].includes(authType);
+      const isAdmin = ["DEV", "ADMIN", "MONITOR"].includes(authType);
       console.log("isADMIN", isAdmin);
       const data = isAdmin
         ? await refetchSetUpMfa({ email })

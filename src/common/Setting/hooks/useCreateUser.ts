@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { UserRole, type UserCreateProps } from "../../../utils/type";
-import { useRandomPassword } from "../../../context/Api/useGetApi";
 import { useDataSection, type UserFormConfig } from "./useDataSection";
-import { useCreateUserByAdmin } from "../../../context/Api/usePostApi";
 import { useToast } from "../../../context/ToastContext";
 import { ResponseCode } from "../../../utils/response";
 import type { FieldValue } from "../../AdditionalCustomFC/FieldRenderer";
+import { useRandomPassword } from "../../../context/Api/UserApi";
+import { useCreateUserByAdmin } from "../../../context/Api/AuthApi";
 
 interface IUseUpdateUserProps {
   onClose: () => void;
@@ -43,13 +43,13 @@ export const useCreateUser = ({ onClose, onSuccess }: IUseUpdateUserProps) => {
   };
   const { refetchCreateUser } = useCreateUserByAdmin();
   const handleSubmit = async () => {
-    if (updateInfo.email) {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(updateInfo.email)) {
-        setError("Invalid email format");
-        return;
-      }
-    }
+    // if (updateInfo.email) {
+    //   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    //   if (!emailRegex.test(updateInfo.email)) {
+    //     setError("Invalid email format");
+    //     return;
+    //   }
+    // }
     const payload: UserCreateProps = {
       ...updateInfo,
     };
