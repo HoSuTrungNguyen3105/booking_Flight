@@ -6,31 +6,26 @@ import {
   Container,
   Link,
   Button,
-  FormControlLabel,
-  Checkbox,
-  IconButton,
+  Grid,
+  ToggleButton,
+  ToggleButtonGroup,
 } from "@mui/material";
-import { SwapHoriz } from "@mui/icons-material";
+import {
+  FlightTakeoff,
+  FlightLand,
+  CalendarToday,
+  Person,
+  AirlineSeatReclineNormal,
+} from "@mui/icons-material";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import theme from "../../scss/theme";
 import { useDataSection, type SearchFormConfig } from "./search_type_input";
 import useLocalStorage from "../../context/use[custom]/useLocalStorage";
 import SearchFieldRender from "../../common/AdditionalCustomFC/SearchFieldRender";
-import { createSearchParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import FlightGrid from "./FlightCard";
-import { useSearchFlightFromPassenger } from "../../context/Api/EnumApi";
 import { generateSearchToken } from "../../utils/security";
-
-type SearchFlightFromPassengerDto = {
-  departureAirport?: string;
-  arrivalAirport?: string;
-  scheduledDeparture?: number; // timestamp hoặc Date string
-  scheduledArrival?: number; // timestamp hoặc Date string
-  passengers?: number;
-  flightClass?: string; // ECONOMY, BUSINESS, ...
-  token?: string;
-};
 
 type FormState = SearchFormConfig["flight"];
 
@@ -77,7 +72,15 @@ const FlightSearchForm: React.FC<{ type: keyof SearchFormConfig }> = ({
     navigate(`/search?${search}`);
   };
 
-  const dataSection = useDataSection(type, formData, hasReturnDay);
+  const handleSwap = () => {
+    setFormData((prev: FormState) => ({
+      ...prev,
+      origin: prev.destination,
+      destination: prev.origin,
+    }));
+  };
+
+  const dataSection = useDataSection(type, formData, hasReturnDay, handleSwap);
 
   useEffect(() => {
     setFormData(formData);
@@ -93,12 +96,31 @@ const FlightSearchForm: React.FC<{ type: keyof SearchFormConfig }> = ({
     }));
   };
 
-  const handleSwap = () => {
-    setFormData((prev: FormState) => ({
-      ...prev,
-      origin: prev.destination,
-      destination: prev.origin,
-    }));
+  const handleTripTypeChange = (
+    _: React.MouseEvent<HTMLElement>,
+    newAlignment: string
+  ) => {
+    if (newAlignment !== null) {
+      setHasReturnDay(newAlignment === "roundtrip");
+    }
+  };
+
+  const getIconForField = (id: string) => {
+    switch (id) {
+      case "origin":
+        return <FlightTakeoff color="action" />;
+      case "destination":
+        return <FlightLand color="action" />;
+      case "departDate":
+      case "returnDate":
+        return <CalendarToday color="action" />;
+      case "passengers":
+        return <Person color="action" />;
+      case "type":
+        return <AirlineSeatReclineNormal color="action" />;
+      default:
+        return null;
+    }
   };
 
   return (
@@ -115,61 +137,67 @@ const FlightSearchForm: React.FC<{ type: keyof SearchFormConfig }> = ({
         </Box>
 
         {dataSection?.map((section, index) => (
-          <Box key={index} mb={2}>
+          <Box key={index} mb={4}>
             {!section.visible && (
-              <Box
-                sx={{ mb: 2, display: "flex", alignItems: "center", gap: 2 }}
-              >
-                <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                  {section.label}
-                </Typography>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={hasReturnDay}
-                      onChange={() => setHasReturnDay((prev) => !prev)}
-                      sx={{ p: 0.5 }}
-                    />
-                  }
-                  label="Khứ hồi (Roundtrip)"
-                  sx={{ mr: 0 }}
-                />
+              <Box sx={{ mb: 2, display: "flex", justifyContent: "center" }}>
+                <ToggleButtonGroup
+                  value={hasReturnDay ? "roundtrip" : "oneway"}
+                  exclusive
+                  onChange={handleTripTypeChange}
+                  aria-label="trip type"
+                  sx={{
+                    bgcolor: "background.paper",
+                    "& .MuiToggleButton-root": {
+                      px: 3,
+                      py: 1,
+                      fontWeight: "bold",
+                      border: "none",
+                      borderRadius: "20px !important",
+                      "&.Mui-selected": {
+                        bgcolor: "primary.main",
+                        color: "white",
+                        "&:hover": {
+                          bgcolor: "primary.dark",
+                        },
+                      },
+                    },
+                  }}
+                >
+                  <ToggleButton value="oneway">One way</ToggleButton>
+                  <ToggleButton value="roundtrip">Round trip</ToggleButton>
+                </ToggleButtonGroup>
               </Box>
             )}
 
             <Paper
-              elevation={2}
+              elevation={3}
               sx={{
-                p: 1,
-                display: "flex",
+                p: 3,
                 bgcolor: "background.paper",
-                border: "1px solid #e0e0e0",
-                flexWrap: "wrap",
-                gap: 1,
+                borderRadius: 4,
+                position: "relative",
               }}
             >
-              {section.fields
-                .filter((field) => !field.disabled)
-                .map((field, fieldIndex, visibleFields) => (
-                  <React.Fragment key={fieldIndex}>
-                    <Box
+              <Grid container spacing={2} alignItems="center">
+                {section.fields
+                  .filter((field) => !field.disabled)
+                  .map((field, fieldIndex) => (
+                    <Grid
+                      size={field.size}
+                      key={fieldIndex}
                       sx={{
-                        flex: field.size ? field.size : 1,
-                        minWidth: "150px",
                         position: "relative",
-                        ...field.sx,
+                        sm: field.size === 6 ? 6 : field.size === 3 ? 6 : 12,
+                        md: field.size ? field.size : 3,
                       }}
                     >
                       <SearchFieldRender
                         type={field.type}
                         value={formData[field.id as keyof FormState] ?? ""}
                         size={field.size}
-                        sx={{
-                          "& .MuiOutlinedInput-notchedOutline": {
-                            border: "none",
-                          },
-                          "& .MuiInputBase-root": { padding: 0 },
-                        }}
+                        onClick={field.onClick}
+                        sx={field.sx}
+                        startIcon={getIconForField(field.id) || field.startIcon}
                         options={field.options}
                         placeholder={field.placeholder}
                         onChange={(val) =>
@@ -179,68 +207,39 @@ const FlightSearchForm: React.FC<{ type: keyof SearchFormConfig }> = ({
                           )
                         }
                       />
-                    </Box>
-                    {fieldIndex < visibleFields.length - 1 && (
-                      <>
-                        {field.id === "origin" ? (
-                          <Box
-                            sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              mx: 1,
-                            }}
-                          >
-                            <IconButton
-                              onClick={handleSwap}
-                              sx={{
-                                border: "1px solid #e0e0e0",
-                                borderRadius: "50%",
-                                p: 0.5,
-                                "&:hover": { backgroundColor: "#f5f5f5" },
-                              }}
-                            >
-                              <SwapHoriz fontSize="small" />
-                            </IconButton>
-                          </Box>
-                        ) : (
-                          <Box
-                            sx={{
-                              width: "1px",
-                              height: "30px",
-                              bgcolor: "#e0e0e0",
-                              mx: 1,
-                            }}
-                          />
-                        )}
-                      </>
-                    )}
-                  </React.Fragment>
-                ))}
-
-              <Button
-                variant="contained"
-                size="large"
-                onClick={handleSubmit}
-                sx={{
-                  borderRadius: 3,
-                  px: 4,
-                  py: 1.5,
-                  ml: "auto",
-                  boxShadow: "none",
-                  fontWeight: "bold",
-                }}
-              >
-                Search
-              </Button>
+                    </Grid>
+                  ))}
+                <Grid size={12} sx={{ ml: "auto" }}>
+                  <Button
+                    variant="contained"
+                    size="large"
+                    onClick={handleSubmit}
+                    sx={{
+                      // borderRadius: 3,
+                      // px: 6,
+                      // py: 1.5,
+                      fontWeight: "bold",
+                      fontSize: "1.1rem",
+                      boxShadow: 4,
+                      textTransform: "none",
+                      minWidth: { xs: "100%", md: "auto" },
+                    }}
+                  >
+                    Search Flights
+                  </Button>
+                </Grid>
+              </Grid>
             </Paper>
           </Box>
         ))}
-        {/* </Paper> */}
 
         {/* Cookies Notice */}
-        <Box sx={{ textAlign: "center", mt: 4 }}>
-          <Typography variant="body2" color="text.secondary">
+        <Box sx={{ textAlign: "center", mt: 6, maxWidth: 800, mx: "auto" }}>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ lineHeight: 1.6 }}
+          >
             We use cookies to make sure that our website works properly and to
             offer you the best experience possible. By continuing to use our
             site, you consent to the use of cookies. If you wish to learn more

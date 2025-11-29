@@ -7,6 +7,7 @@ import {
   Typography,
   type SelectChangeEvent,
   type SxProps,
+  InputAdornment,
 } from "@mui/material";
 import { memo, useCallback, useState, type FC, type ReactNode } from "react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -33,6 +34,7 @@ interface OptionSelectDropdownProps {
   defaultValue?: string | number;
   onChange?: (event: string | number) => void;
   withBorder?: boolean;
+  startIcon?: ReactNode;
 }
 
 // Di chuyển styled component ra ngoài để tránh re-render
@@ -57,6 +59,7 @@ const SelectDropdown: FC<OptionSelectDropdownProps> = ({
   variant = "outlined",
   defaultValue,
   error,
+  startIcon,
 }) => {
   const [selectOpen, setSelectOpen] = useState<boolean>(false);
 
@@ -95,6 +98,13 @@ const SelectDropdown: FC<OptionSelectDropdownProps> = ({
         size="small"
         displayEmpty
         IconComponent={CustomSelectIcon}
+        startAdornment={
+          startIcon ? (
+            <InputAdornment position="start" sx={{ pl: 1 }}>
+              {startIcon}
+            </InputAdornment>
+          ) : null
+        }
         MenuProps={{
           disableScrollLock: true,
           PaperProps: {

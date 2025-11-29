@@ -1,9 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   useGetPermissionsForRole,
   useUpdatePermissionsForRole,
-  useGetPermissionDefinitions,
-  type PermissionDefinition,
 } from "../../../../context/Api/PermissionsApi";
 import {
   Paper,
@@ -20,6 +18,15 @@ import { Refresh as RefreshIcon, Save as SaveIcon } from "@mui/icons-material";
 import { ResponseCode } from "../../../../utils/response";
 import Switch from "../../../../common/Switch/Switch";
 import DetailSection from "../../../../common/AdditionalCustomFC/DetailSection";
+import { useToast } from "../../../../context/ToastContext";
+
+interface PermissionItem {
+  action: string; // VIEW, EDIT
+  key: string; // FLIGHT_VIEW
+  description?: string;
+}
+
+type PermissionGroup = Record<string, PermissionItem[]>;
 
 const RolePermissionsTab: React.FC = () => {
   const [selectedRole, setSelectedRole] = useState<"ADMIN" | "MONITOR">(
@@ -28,26 +35,26 @@ const RolePermissionsTab: React.FC = () => {
   const [hasChanges, setHasChanges] = useState(false);
   const [permissions, setPermissions] = useState<Record<string, boolean>>({});
 
-  // Fetch all permission definitions to show all available options
-  const { refetchPermissionDefinitions, loadingPermissionDefinitions } =
-    useGetPermissionDefinitions();
-  const [selected, setSelected] = useState("");
-
-  // Fetch current role permissions
   const {
     rolePermissions,
     refetchRolePermissions,
     loadingRolePermissions,
-    errorRolePermissions,
+    // errorRolePermissions,
   } = useGetPermissionsForRole(selectedRole);
 
   const { updateRolePermissions, loadingUpdateRolePermissions } =
     useUpdatePermissionsForRole(selectedRole);
 
+  useEffect(() => {
+    refetchRolePermissions();
+  }, [selectedRole]);
+
+  const toast = useToast();
+
   // Update local state when data is fetched
   useEffect(() => {
-    if (rolePermissions?.list) {
-      setPermissions(rolePermissions.list.permissions);
+    if (rolePermissions?.data) {
+      setPermissions(rolePermissions.data.permissions);
       setHasChanges(false);
     }
   }, [rolePermissions]);
@@ -64,38 +71,51 @@ const RolePermissionsTab: React.FC = () => {
     const result = await updateRolePermissions(permissions);
     if (result?.resultCode === ResponseCode.SUCCESS) {
       setHasChanges(false);
-      alert(`Permissions for ${selectedRole} updated successfully!`);
+      toast(`Permissions for ${selectedRole} updated successfully!`);
       refetchRolePermissions();
     } else {
-      alert("Failed to update permissions");
+      toast("Failed to update permissions", "error");
     }
   };
 
-  const handleRoleChange = (role: "ADMIN" | "MONITOR") => {
-    if (hasChanges) {
-      if (!confirm("You have unsaved changes. Do you want to discard them?")) {
-        return;
-      }
-    }
-    setSelectedRole(role);
-    setHasChanges(false);
-  };
+  const groupPermissions = (
+    permissions: Record<string, boolean>
+  ): PermissionGroup => {
+    const groups: PermissionGroup = {};
 
-  // Group permissions by category
-  const groupedPermissions = useMemo(() => {
-    if (!permissionDefinitions?.data) return {};
-    const groups: Record<string, PermissionDefinition[]> = {};
+    Object.keys(permissions).forEach((key) => {
+      const [module, action] = key.split("_"); // FLIGHT_VIEW => ["FLIGHT", "VIEW"]
 
-    permissionDefinitions.data.forEach((def) => {
-      if (!groups[def.category]) {
-        groups[def.category] = [];
-      }
-      groups[def.category].push(def);
+      if (!groups[module]) groups[module] = [];
+
+      groups[module].push({
+        action,
+        key,
+      });
     });
-    return groups;
-  }, [permissionDefinitions]);
 
-  if (loadingRolePermissions || loadingPermissionDefinitions) {
+    return groups;
+  };
+
+  const grouped = groupPermissions(permissions);
+
+  const handleRoleChange = useCallback(
+    async (role: "ADMIN" | "MONITOR") => {
+      if (hasChanges) {
+        if (
+          !confirm("You have unsaved changes. Do you want to discard them?")
+        ) {
+          return;
+        }
+      }
+      setSelectedRole(role);
+      //   await refetchRolePermissions();
+      setHasChanges(false);
+    },
+    [hasChanges, refetchRolePermissions]
+  );
+
+  if (loadingRolePermissions || loadingUpdateRolePermissions) {
     return (
       <Box
         display="flex"
@@ -105,14 +125,6 @@ const RolePermissionsTab: React.FC = () => {
       >
         <CircularProgress />
       </Box>
-    );
-  }
-
-  if (errorRolePermissions) {
-    return (
-      <Alert severity="error" sx={{ mt: 2 }}>
-        Failed to load permissions. Please try again.
-      </Alert>
     );
   }
 
@@ -159,7 +171,6 @@ const RolePermissionsTab: React.FC = () => {
           mb={3}
         >
           <Typography variant="h6">
-            Permissions for {selectedRole}
             {hasChanges && (
               <Chip
                 label="Unsaved Changes"
@@ -180,15 +191,16 @@ const RolePermissionsTab: React.FC = () => {
           </Button>
         </Box>
 
-        {Object.keys(groupedPermissions).length === 0 ? (
+        {Object.entries(grouped).length === 0 ? (
           <Alert severity="info">No permission definitions found.</Alert>
         ) : (
-          Object.entries(groupedPermissions).map(([category, items]) => (
-            <Box key={category} mb={4}>
+          Object.entries(grouped).map(([module, items]) => (
+            <Box key={module} mb={4}>
               <DetailSection
-                title={category}
+                title={module}
                 data={items.map((item) => ({
-                  title: item.action, // Display Action (e.g., VIEW, CREATE)
+                  title: item.action,
+                  hasBorder: false,
                   description: (
                     <Box display="flex" alignItems="center" gap={1}>
                       <Switch
@@ -201,7 +213,7 @@ const RolePermissionsTab: React.FC = () => {
                       </Typography>
                     </Box>
                   ),
-                  size: 4, // 3 items per row (12/4 = 3)
+                  size: 4,
                 }))}
                 itemPerRow={3}
                 border

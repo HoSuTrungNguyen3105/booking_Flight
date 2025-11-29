@@ -1,18 +1,20 @@
 import InputTextArea from "../Input/InputTextArea";
 import Android12Switch from "../Switch/Switch";
 import InputTextField from "../Input/InputTextField";
-import type { SxProps } from "@mui/system";
+import { height, type SxProps } from "@mui/system";
 import SelectDropdown, { type ActionType } from "../Dropdown/SelectDropdown";
 import InputNumber from "../Input/InputNumber";
 import { memo } from "react";
 import DateTimePickerComponent from "../DayPicker/index";
-import { Box } from "@mui/material";
+import { Box, IconButton } from "@mui/material";
+import type { ReactNode } from "react";
 
 export type FieldValue = boolean | string | number | null;
 
 export enum SearchFieldType {
   SWITCH = "switch",
   DROPDOWN = "dropdown",
+  ICON = "icon",
   DATE = "date",
   INPUT_WITH_TYPE_TEXT = "input_text",
   INPUT_WITH_NUMBER = "input_number",
@@ -30,6 +32,8 @@ type SearchFieldRenderProps = {
   readOnly?: boolean;
   disabled?: boolean;
   onChange?: (value: FieldValue) => void;
+  onClick?: () => void;
+  startIcon?: ReactNode;
 };
 
 export type ISearchFieldRender = {
@@ -54,10 +58,16 @@ const SearchFieldRender = ({
   error,
   readOnly,
   onChange,
+  onClick,
   sx,
+  startIcon,
 }: IFieldRendererProps) => {
   const renderBox = () => {
-    const commonStyle = { width: "40rem", maxWidth: "100%", ...sx };
+    const commonStyle = {
+      width: "40rem",
+      maxWidth: "100%",
+      ...sx,
+    };
 
     switch (type) {
       case SearchFieldType.SWITCH:
@@ -78,7 +88,25 @@ const SearchFieldRender = ({
             value={value as string | number}
             disabled={disabled}
             onChange={onChange}
+            startIcon={startIcon}
           />
+        );
+
+      case SearchFieldType.ICON:
+        return (
+          <IconButton
+            onClick={onClick}
+            sx={{
+              bgcolor: "background.paper",
+              border: "1px solid",
+              borderColor: "grey.300",
+              boxShadow: 1,
+              "&:hover": { bgcolor: "grey.50" },
+            }}
+            size="small"
+          >
+            {startIcon}
+          </IconButton>
         );
 
       case SearchFieldType.INPUT_WITH_TYPE_TEXT:
@@ -92,6 +120,7 @@ const SearchFieldRender = ({
             value={value as string}
             onChange={onChange}
             placeholder={placeholder}
+            startIcon={startIcon}
           />
         );
 

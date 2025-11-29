@@ -60,7 +60,7 @@ export const useLoginByMfa = () => {
 export const useSeedPermissions = () => {
   const { data: setSeedPermissions, refetch: refetchSetSeedPermissions } =
     useFetch<ResponseMessage, void>({
-      url: "/auth/seed-permissions",
+      url: "/auth/permissions/definitions/seed",
       autoFetch: false,
       config: postMethod,
     });

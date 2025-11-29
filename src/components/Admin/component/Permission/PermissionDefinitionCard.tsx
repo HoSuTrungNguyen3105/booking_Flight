@@ -8,7 +8,6 @@ import {
   Card,
   CardContent,
   CardActions,
-  Switch,
 } from "@mui/material";
 import { Delete as DeleteIcon } from "@mui/icons-material";
 import {
@@ -17,6 +16,7 @@ import {
   type PermissionDefinition,
 } from "../../../../context/Api/PermissionsApi";
 import { ResponseCode } from "../../../../utils/response";
+import Switch from "../../../../common/Switch/Switch";
 
 const PermissionDefinitionCard: React.FC<{
   definition: PermissionDefinition;
@@ -26,6 +26,10 @@ const PermissionDefinitionCard: React.FC<{
     useUpdatePermissionDefinition(definition.id);
   const { deletePermissionDefinition, loadingDeleteDefinition } =
     useDeletePermissionDefinition(definition.id);
+
+  const filterPermission = definition.category
+    .toLowerCase()
+    .includes(definition.category.toLowerCase());
 
   const handleToggleActive = async () => {
     const result = await updatePermissionDefinition({
@@ -49,58 +53,61 @@ const PermissionDefinitionCard: React.FC<{
   };
 
   return (
-    <Card elevation={2}>
-      <CardContent>
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="start"
-          mb={2}
-        >
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{ wordBreak: "break-word" }}
-          >
-            {definition.key}
-          </Typography>
-          <Chip
-            label={definition.isActive ? "Active" : "Inactive"}
-            color={definition.isActive ? "success" : "default"}
-            size="small"
-          />
-        </Box>
-        <Box mb={1}>
-          <Chip label={definition.category} size="small" sx={{ mr: 1 }} />
-          <Chip label={definition.action} size="small" variant="outlined" />
-        </Box>
-        {definition.description && (
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-            {definition.description}
-          </Typography>
-        )}
-      </CardContent>
-      <CardActions>
-        <Tooltip title={definition.isActive ? "Deactivate" : "Activate"}>
-          <Switch
-            checked={definition.isActive}
-            onChange={handleToggleActive}
-            disabled={loadingUpdateDefinition}
-            size="small"
-          />
-        </Tooltip>
-        <Box flexGrow={1} />
-        <Tooltip title="Delete">
-          <IconButton
-            size="small"
-            onClick={handleDelete}
-            disabled={loadingDeleteDefinition}
-            color="error"
-          >
-            <DeleteIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
-      </CardActions>
+    <Card elevation={2} sx={{ mb: 2 }}>
+      {filterPermission && (
+        <>
+          <CardContent>
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="start"
+              mb={2}
+            >
+              <Typography
+                variant="h6"
+                component="div"
+                sx={{ wordBreak: "break-word" }}
+              >
+                {definition.key}
+              </Typography>
+              <Chip
+                label={definition.isActive ? "Active" : "Inactive"}
+                color={definition.isActive ? "success" : "default"}
+                size="small"
+              />
+            </Box>
+            <Box mb={1}>
+              <Chip label={definition.category} size="small" sx={{ mr: 1 }} />
+              <Chip label={definition.action} size="small" variant="outlined" />
+            </Box>
+            {definition.description && (
+              <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+                {definition.description}
+              </Typography>
+            )}
+          </CardContent>
+          <CardActions>
+            <Tooltip title={definition.isActive ? "Deactivate" : "Activate"}>
+              <Switch
+                checked={definition.isActive}
+                onChange={handleToggleActive}
+                disabled={loadingUpdateDefinition}
+              />
+            </Tooltip>
+            <Box flexGrow={1} />
+            <Tooltip title="Delete">
+              <IconButton
+                size="small"
+                onClick={handleDelete}
+                disabled={loadingDeleteDefinition}
+                color="error"
+              >
+                <DeleteIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          </CardActions>
+        </>
+      )}
     </Card>
   );
 };

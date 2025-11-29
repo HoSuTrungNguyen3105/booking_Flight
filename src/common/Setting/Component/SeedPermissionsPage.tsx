@@ -50,21 +50,21 @@ const SeedPermissionsPage: React.FC = () => {
   return (
     <Box
       sx={{
-        minHeight: "100vh",
+        minHeight: "30vh",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
-        p: 2,
+        // background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
+        // p: 2,
       }}
     >
       <Container maxWidth="sm">
         <Card
           sx={{
             borderRadius: 4,
-            boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.15)",
-            backdropFilter: "blur(20px)",
-            bgcolor: "rgba(255, 255, 255, 0.9)",
+            // boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.15)",
+            // backdropFilter: "blur(20px)",
+            // bgcolor: "rgba(255, 255, 255, 0.9)",
           }}
         >
           <CardContent sx={{ p: 4, textAlign: "center" }}>
@@ -112,20 +112,20 @@ const SeedPermissionsPage: React.FC = () => {
               onClick={handleSeedPermissions}
               disabled={loading}
               fullWidth
-              sx={{
-                py: 1.5,
-                borderRadius: 3,
-                fontSize: "1rem",
-                fontWeight: "600",
-                background: "linear-gradient(90deg, #0072ff 0%, #00c6ff 100%)",
-                boxShadow: "0 4px 14px rgba(0, 114, 255, 0.3)",
-                textTransform: "none",
-                "&:hover": {
-                  boxShadow: "0 6px 20px rgba(0, 114, 255, 0.4)",
-                  transform: "translateY(-1px)",
-                },
-                transition: "all 0.3s ease",
-              }}
+              // sx={{
+              //   py: 1.5,
+              //   borderRadius: 3,
+              //   fontSize: "1rem",
+              //   fontWeight: "600",
+              //   background: "linear-gradient(90deg, #0072ff 0%, #00c6ff 100%)",
+              //   boxShadow: "0 4px 14px rgba(0, 114, 255, 0.3)",
+              //   textTransform: "none",
+              //   "&:hover": {
+              //     boxShadow: "0 6px 20px rgba(0, 114, 255, 0.4)",
+              //     transform: "translateY(-1px)",
+              //   },
+              //   transition: "all 0.3s ease",
+              // }}
             >
               {loading ? (
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>

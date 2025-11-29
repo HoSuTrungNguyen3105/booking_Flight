@@ -9,6 +9,7 @@ import {
   Paper,
   Button,
 } from "@mui/material";
+import { useGetAllPermissions } from "../../../../context/Api/PermissionsApi";
 
 interface PermissionResponse {
   resultCode: string;
@@ -18,41 +19,17 @@ interface PermissionResponse {
 
 const PermissionPage: React.FC = () => {
   const [permissions, setPermissions] = useState<Record<string, string>>({});
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
 
-  // Fetch data when component mounts
-  useEffect(() => {
-    const fetchPermissions = async () => {
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        const response = await axios.get<PermissionResponse>(
-          "http://localhost:3000/auth/permissions/type/all"
-        );
-        if (response.data.resultCode === "00") {
-          setPermissions(response.data.data);
-        } else {
-          setError("Failed to fetch permissions");
-        }
-      } catch (err) {
-        setError("Error fetching permissions");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchPermissions();
-  }, []);
+  const { allPermissions, errorAllPermissions, loadingAllPermissions } =
+    useGetAllPermissions();
 
   const handlePermissionChange = (permission: string) => {
     setPermissions((prevPermissions) => {
       const newPermissions = { ...prevPermissions };
       if (newPermissions[permission]) {
-        delete newPermissions[permission]; // Remove permission if already selected
+        delete newPermissions[permission];
       } else {
-        newPermissions[permission] = permission; // Add permission if not selected
+        newPermissions[permission] = permission;
       }
       return newPermissions;
     });
@@ -82,11 +59,13 @@ const PermissionPage: React.FC = () => {
             Manage Permissions
           </Typography>
 
-          {isLoading && <Typography>Loading...</Typography>}
+          {loadingAllPermissions && <Typography>Loading...</Typography>}
 
-          {error && <Typography color="error">{error}</Typography>}
+          {errorAllPermissions && (
+            <Typography color="error">{errorAllPermissions}</Typography>
+          )}
 
-          {Object.keys(permissions).length > 0 && (
+          {Object.keys(allPermissions?.list || {}).length > 0 && (
             <FormGroup>{renderPermissionCheckboxes()}</FormGroup>
           )}
 

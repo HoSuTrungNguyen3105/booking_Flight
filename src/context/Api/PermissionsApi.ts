@@ -2,6 +2,7 @@ import {
   MethodType,
   type ResponseMessage,
   type DetailResponseMessage,
+  type RolePermission,
 } from "../../utils/type";
 import { useFetch } from "../use[custom]/useFetch";
 
@@ -22,20 +23,20 @@ export interface PermissionDefinition {
   action: string;
   description?: string;
   isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: number;
+  updatedAt: number;
 }
 
 export interface PermissionDefinitionsResponse {
   resultCode: string;
   resultMessage: string;
-  data: PermissionDefinition[];
+  list: PermissionDefinition[];
 }
 
 export interface RolePermissionsResponse {
   resultCode: string;
   resultMessage: string;
-  list: {
+  data: {
     permissions: Record<string, boolean>;
   };
 }
@@ -70,7 +71,10 @@ export interface SeedPermissionsFromDatabaseDto {
  * Get all permissions (role/all)
  */
 export const useGetAllPermissions = () => {
-  const { data, refetch, loading, error } = useFetch<ResponseMessage, void>({
+  const { data, refetch, loading, error } = useFetch<
+    DetailResponseMessage<RolePermission>,
+    void
+  >({
     url: "/auth/permissions/role/all",
     autoFetch: true,
     config: getMethod,
@@ -138,13 +142,26 @@ export const useSeedPermissionDefinitions = () => {
  * Get permission definitions with optional filters
  */
 export const useGetPermissionDefinitions = () => {
-  //   const queryParams = new URLSearchParams();
-  //   if (category) queryParams.append("category", category);
-  //   if (isActive !== undefined) queryParams.append("isActive", String(isActive));
-
-  //   const queryString = queryParams.toString();
   const url = "/auth/permissions/definitions";
+  const { refetch, loading, error, data } = useFetch<
+    PermissionDefinitionsResponse,
+    { category?: string; isActive?: boolean }
+  >({
+    url,
+    autoFetch: true,
+    config: postMethod,
+  });
 
+  return {
+    permissionDefinitions: data,
+    refetchPermissionDefinitions: refetch,
+    loadingPermissionDefinitions: loading,
+    errorPermissionDefinitions: error,
+  };
+};
+
+export const useGetPermissionDefinitionsEnum = () => {
+  const url = "/auth/permissions/type/permission_definition";
   const { refetch, loading, error } = useFetch<
     PermissionDefinitionsResponse,
     { category?: string; isActive?: boolean }

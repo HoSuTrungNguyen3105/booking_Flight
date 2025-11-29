@@ -7,6 +7,7 @@ import {
 import { useGetAllCode } from "../../../context/Api/FlightApi";
 import { useFindAllFlightTypes } from "../../../context/Api/EnumApi";
 import { mapStringToDropdown } from "../../../context/Api/CommonApi";
+import { SwapHoriz } from "@mui/icons-material";
 
 export type SearchFormConfig = {
   passenger: {
@@ -43,7 +44,8 @@ export type SearchFormConfig = {
 export const useDataSection = (
   section: keyof SearchFormConfig,
   data: Partial<SearchFormConfig[keyof SearchFormConfig]>,
-  hasValue: boolean
+  hasValue: boolean,
+  handleSwap: () => void
 ): ISearchFieldRender[] => {
   const { getAllCode } = useGetAllCode();
   const { dataFlightTypes } = useFindAllFlightTypes();
@@ -110,15 +112,24 @@ export const useDataSection = (
             {
               id: "origin",
               type: SearchFieldType.DROPDOWN,
-              size: 6,
+              size: 5,
               value: flight.origin ?? "",
               placeholder: "Điểm đi…",
               options: airports,
             },
             {
+              id: "swap",
+              type: SearchFieldType.ICON,
+              size: 1,
+              value: null,
+              onClick: handleSwap,
+              startIcon: <SwapHoriz fontSize="small" />,
+              disabled: !hasValue,
+            },
+            {
               id: "destination",
               type: SearchFieldType.DROPDOWN,
-              size: 6,
+              size: 5,
               value: flight.destination ?? "",
               placeholder: "Điểm đến…",
               options: airports,
@@ -127,15 +138,16 @@ export const useDataSection = (
             {
               id: "departDate",
               type: SearchFieldType.DATE,
-              size: 8,
+              size: 5,
               value: flight.departDate ?? 0,
               placeholder: "Ngày đi…",
               sx: { width: "100%" },
             },
+
             {
               id: "returnDate",
               type: SearchFieldType.DATE,
-              size: 8,
+              size: 5,
               value: flight.returnDate ?? 0,
               placeholder: "Ngày về…",
               sx: { width: "100%" },
@@ -144,7 +156,7 @@ export const useDataSection = (
             {
               id: "type",
               type: SearchFieldType.DROPDOWN,
-              size: 2,
+              size: 3,
               value: flight.type ?? "Economy",
               placeholder: "Loại chuyến bay…",
               options: optionDataFlightTypes,
@@ -249,5 +261,5 @@ export const useDataSection = (
     }
 
     return [];
-  }, [section, data, airports, hasValue, optionDataFlightTypes]);
+  }, [section, data, airports, hasValue, optionDataFlightTypes, handleSwap]);
 };

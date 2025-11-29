@@ -20,7 +20,6 @@ import {
   useSeedPermissionDefinitions,
   type CreatePermissionDefinitionDto,
 } from "../../../../context/Api/PermissionsApi";
-import PermissionDefinitionCard from "./PermissionDefinitionCard";
 import { ResponseCode } from "../../../../utils/response";
 import InputTextField from "../../../../common/Input/InputTextField";
 import Switch from "../../../../common/Switch/Switch";
@@ -42,7 +41,9 @@ const PermissionDefinitionsTab: React.FC = () => {
   });
 
   const { refetchPermissionDefinitions, loadingPermissionDefinitions } =
-    useGetPermissionDefinitions(categoryFilter, isActiveFilter);
+    useGetPermissionDefinitions();
+
+  // console.log("permissionDefinitions", permissionDefinitions);
 
   const { addPermissionDefinition, loadingAddDefinition } =
     useAddPermissionDefinition();
@@ -89,9 +90,7 @@ const PermissionDefinitionsTab: React.FC = () => {
     }
   };
 
-  console.log("loading", loadingPermissionDefinitions);
-
-  if (loadingPermissionDefinitions || !permissionDefinitions) {
+  if (loadingPermissionDefinitions) {
     return (
       <Box
         display="flex"
@@ -204,17 +203,16 @@ const PermissionDefinitionsTab: React.FC = () => {
         </Paper>
       )}
 
-      {/* Definitions List */}
-      <Grid container spacing={2}>
-        {permissionDefinitions?.data?.map((definition) => (
+      {/* {permissionDefinitions?.list?.map((definition) => (
+        <Grid container spacing={2}>
           <Grid size={{ xs: 12, md: 6, lg: 4 }} key={definition.id}>
             <PermissionDefinitionCard
               definition={definition}
               onRefresh={refetchPermissionDefinitions}
             />
           </Grid>
-        ))}
-      </Grid>
+        </Grid>
+      ))} */}
 
       {/* {permissionDefinitions?.data?.length === 0 && (
         <Alert severity="info" sx={{ mt: 2 }}>

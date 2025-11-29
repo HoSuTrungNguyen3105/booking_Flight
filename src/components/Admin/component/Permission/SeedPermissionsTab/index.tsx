@@ -59,7 +59,7 @@ const SeedPermissionsTab: React.FC = () => {
   };
 
   return (
-    <Box>
+    <Box pt={1}>
       <Grid container spacing={3}>
         <Grid size={{ xs: 12, md: 6 }}>
           <Card elevation={2}>
@@ -80,7 +80,7 @@ const SeedPermissionsTab: React.FC = () => {
             <CardActions>
               <Button
                 variant="contained"
-                color="primary"
+                // color="primary"
                 startIcon={<SeedIcon />}
                 onClick={handleSeedDefault}
                 disabled={loadingSeedDefault}
@@ -103,15 +103,15 @@ const SeedPermissionsTab: React.FC = () => {
                 stored in your database. Useful for dynamic permission
                 management.
               </Typography>
-              <Alert severity="warning" sx={{ mt: 2 }}>
+              <Alert severity="info" sx={{ mt: 2 }}>
                 Ensure permission definitions are properly configured before
                 seeding.
               </Alert>
             </CardContent>
             <CardActions>
               <Button
-                variant="contained"
-                color="secondary"
+                variant="outlined"
+                // color="secondary"
                 startIcon={<SeedIcon />}
                 onClick={handleSeedFromDatabase}
                 disabled={loadingSeedFromDatabase}
